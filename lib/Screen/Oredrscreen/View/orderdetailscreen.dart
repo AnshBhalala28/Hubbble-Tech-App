@@ -1,0 +1,1423 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:readmore/readmore.dart';
+import 'package:sizer/sizer.dart';
+import 'package:wavee/Screen/Oredrscreen/Model/service_order_model.dart';
+import 'package:wavee/Screen/Oredrscreen/View/order_screen_view.dart';
+import 'package:wavee/comman/Custom_AppBar.dart';
+import 'package:wavee/comman/SideMenu.dart';
+import 'package:wavee/comman/colors.dart';
+import 'package:wavee/comman/const.dart';
+import 'package:wavee/comman/custom_button.dart';
+import 'package:wavee/comman/loader.dart';
+
+import '../../../comman/check_inernet_connecty.dart';
+import '../../../comman/error_dialog.dart';
+import '../Model/order_detail_model.dart';
+import '../Provider/order_screen_provider.dart';
+
+class Orderdetail_Screen extends StatefulWidget {
+  String? orderid;
+
+  Orderdetail_Screen({super.key, this.orderid});
+
+  @override
+  State<Orderdetail_Screen> createState() => _Orderdetail_ScreenState();
+}
+
+class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
+  final GlobalKey<ScaffoldState> productDetailKey = GlobalKey<ScaffoldState>();
+  final CarouselSliderController _controller = CarouselSliderController();
+  int _currentIndex = 0;
+
+  String selectedMethod = '';
+  String selectedDate = '25-05-2025';
+  bool isLoading = false;
+  bool isCancleOrder = false;
+  String? selectedGateway =
+      orderDetailModel?.data?.paymentGateway?.toLowerCase();
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      isLoading = true;
+    });
+    OrderDetailAPI();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    DateTime? bookingDateTime = DateTime.tryParse(
+      serviceOrderDetail?.data?.products?[0].bookingDetails?.bookingDatetime ??
+          '',
+    );
+
+    bool shouldShowCancelButton = false;
+
+    if (bookingDateTime != null) {
+      final now = DateTime.now();
+      final difference = bookingDateTime.difference(now);
+      if (difference.inHours >= 48 && difference.inSeconds > 0) {
+        shouldShowCancelButton = true;
+      }
+    }
+
+    return Scaffold(
+      key: productDetailKey,
+      drawer: SideMenu(),
+      body: Stack(
+        children: [
+          orderDetailModel?.data?.products?[0]?.type == "service"
+              ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 4.h),
+                  TitleBar(
+                    title:
+                        serviceOrderDetail?.data?.products?[0].service?.title
+                            .toString()
+                            .capitalizeFirst ??
+                        "",
+                    drawerCallback: () {
+                      productDetailKey.currentState?.openDrawer();
+                    },
+                    back: () {
+                      Get.back();
+                    },
+                  ),
+                  SizedBox(height: 2.h),
+                  isLoading
+                      ? Loader().paddingOnly(top: 30.h)
+                      : Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CarouselSlider(
+                                carouselController: _controller,
+                                options: CarouselOptions(
+                                  height: 25.h,
+                                  autoPlay: true,
+                                  enlargeCenterPage: true,
+                                  viewportFraction: 1.0,
+                                  onPageChanged: (index, reason) {
+                                    setState(() {
+                                      _currentIndex = index;
+                                    });
+                                  },
+                                ),
+                                items:
+                                    serviceOrderDetail!
+                                        .data!
+                                        .products![0]
+                                        .service!
+                                        .galleryImages!
+                                        .map((imageUrl) {
+                                          return Builder(
+                                            builder: (BuildContext context) {
+                                              return Stack(
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                    child: CachedNetworkImage(
+                                                      imageUrl: imageUrl,
+                                                      fit: BoxFit.cover,
+                                                      width: double.infinity,
+                                                      placeholder:
+                                                          (
+                                                            context,
+                                                            url,
+                                                          ) => const Center(
+                                                            child: CircularProgressIndicator(
+                                                              color:
+                                                                  AppColors
+                                                                      .maincolor,
+                                                            ),
+                                                          ),
+                                                      errorWidget:
+                                                          (
+                                                            context,
+                                                            url,
+                                                            error,
+                                                          ) => const Center(
+                                                            child: Icon(
+                                                              Icons.error,
+                                                            ),
+                                                          ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        })
+                                        .toList(),
+                              ),
+                              SizedBox(height: 1.h),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children:
+                                    serviceOrderDetail!
+                                        .data!
+                                        .products![0]
+                                        .service!
+                                        .galleryImages!
+                                        .asMap()
+                                        .entries
+                                        .map((entry) {
+                                          return GestureDetector(
+                                            onTap:
+                                                () => _controller.animateToPage(
+                                                  entry.key,
+                                                ),
+                                            child: Container(
+                                              width:
+                                                  _currentIndex == entry.key
+                                                      ? 10
+                                                      : 8,
+                                              height:
+                                                  _currentIndex == entry.key
+                                                      ? 10
+                                                      : 8,
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 4,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    _currentIndex == entry.key
+                                                        ? AppColors.maincolor
+                                                        : Colors.grey,
+                                              ),
+                                            ),
+                                          );
+                                        })
+                                        .toList(),
+                              ),
+                              SizedBox(height: 1.h),
+
+                              SizedBox(height: 1.h),
+                              Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(Icons.local_mall, size: 18.sp),
+                                      SizedBox(width: 2.w),
+                                      Text(
+                                        "Order Id: #ORDERNO${serviceOrderDetail?.data?.orderNo}",
+                                        style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                          fontFamily: AppConstants.manrope,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 1.h),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.inventory, size: 18.sp),
+                                      SizedBox(width: 2.w),
+                                      Text(
+                                        "Collect Token: ${serviceOrderDetail?.data?.tokenNo}",
+                                        style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                          fontFamily: AppConstants.manrope,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  serviceOrderDetail
+                                              ?.data
+                                              ?.products?[0]
+                                              .bookingDetails ==
+                                          null
+                                      ? SizedBox()
+                                      : SizedBox(height: 1.h),
+                                  serviceOrderDetail
+                                              ?.data
+                                              ?.products?[0]
+                                              .bookingDetails ==
+                                          null
+                                      ? SizedBox()
+                                      : Row(
+                                        children: [
+                                          Icon(Icons.date_range, size: 18.sp),
+                                          SizedBox(width: 2.w),
+                                          Text(
+                                            "Booking Confirm: ${formatDateTime(serviceOrderDetail?.data?.products?[0].bookingDetails?.bookingDatetime ?? "")}",
+                                            style: TextStyle(
+                                              fontSize: 15.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                              fontFamily: AppConstants.manrope,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                  SizedBox(height: 1.h),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        getStatusIconData(
+                                          serviceOrderDetail?.data?.status ??
+                                              "",
+                                        ),
+                                        size: 18.sp,
+                                        color: getStatusColor(
+                                          serviceOrderDetail?.data?.status
+                                                  ?.toString()
+                                                  .capitalizeFirst ??
+                                              "",
+                                        ),
+                                      ),
+                                      SizedBox(width: 2.w),
+                                      Text(
+                                        "Status: ${serviceOrderDetail?.data?.status?.toString().capitalizeFirst ?? "Status"}",
+                                        style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: getStatusColor(
+                                            orderDetailModel?.data?.status
+                                                    ?.toString()
+                                                    .capitalizeFirst ??
+                                                "",
+                                          ),
+                                          fontFamily: AppConstants.manrope,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 1.5.h),
+                              Text(
+                                serviceOrderDetail
+                                        ?.data
+                                        ?.products?[0]
+                                        .service
+                                        ?.title
+                                        .toString()
+                                        .capitalizeFirst ??
+                                    "",
+                                style: TextStyle(
+                                  fontFamily: AppConstants.manrope,
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text:
+                                          "£${serviceOrderDetail?.data?.totalAmount ?? ""}",
+                                      // Discounted Price
+                                      style: TextStyle(
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                        fontFamily: AppConstants.manrope,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              Container(
+                                width: 92.w,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ReadMoreText(
+                                  "${serviceOrderDetail?.data?.products?[0].service?.description ?? ""}",
+                                  trimLines: 4,
+                                  trimLength: 145,
+                                  colorClickableText: Colors.blue,
+                                  trimMode: TrimMode.Length,
+                                  trimCollapsedText: ' Show more',
+                                  trimExpandedText: ' Show less',
+                                  moreStyle: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manrope,
+                                    letterSpacing: 1,
+                                    color: AppColors.maincolor,
+                                  ),
+                                  lessStyle: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontFamily: AppConstants.manrope,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1,
+                                    color: AppColors.maincolor,
+                                  ),
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    color: Colors.grey.shade500,
+                                    fontWeight: FontWeight.normal,
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              Text(
+                                "Payment Method",
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: AppConstants.manrope,
+                                  color: AppColors.maincolor,
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              serviceOrderDetail != null &&
+                                      serviceOrderDetail
+                                              ?.data
+                                              ?.paymentGateway !=
+                                          null
+                                  ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(height: 1.5.h),
+                                      if (orderDetailModel!
+                                              .data!
+                                              .paymentGateway!
+                                              .toLowerCase() ==
+                                          'stripe')
+                                        paymentOptionContainer(
+                                          image:
+                                              "assets/images/stripe_pay_image2.png",
+                                          value: "Stripe",
+                                        ),
+                                      if (serviceOrderDetail!
+                                              .data!
+                                              .paymentGateway!
+                                              .toLowerCase() ==
+                                          'googlepay')
+                                        paymentOptionContainer(
+                                          image: "assets/images/google_pay.png",
+                                          value: "Google Pay",
+                                        ),
+                                      if (serviceOrderDetail!
+                                              .data!
+                                              .paymentGateway!
+                                              .toLowerCase() ==
+                                          'applepay')
+                                        paymentOptionContainer(
+                                          image: "assets/images/apple_pay.png",
+                                          value: "Apple Pay",
+                                        ),
+                                    ],
+                                  )
+                                  : SizedBox(), // or a placeholder/loading
+
+                              SizedBox(height: 10.h),
+                            ],
+                          ),
+                        ),
+                      ),
+                ],
+              ).paddingOnly(left: 2.w, right: 2.w)
+              : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 4.h),
+                  TitleBar(
+                    title:
+                        orderDetailModel?.data?.products?[0].product?.name
+                            .toString()
+                            .capitalizeFirst ??
+                        "",
+                    drawerCallback: () {
+                      productDetailKey.currentState?.openDrawer();
+                    },
+                    back: () {
+                      Get.back();
+                    },
+                  ),
+                  SizedBox(height: 2.h),
+                  isLoading
+                      ? Loader().paddingOnly(top: 30.h)
+                      : Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CarouselSlider(
+                                carouselController: _controller,
+                                options: CarouselOptions(
+                                  height: 25.h,
+                                  autoPlay: true,
+                                  enlargeCenterPage: true,
+                                  viewportFraction: 1.0,
+                                  onPageChanged: (index, reason) {
+                                    setState(() {
+                                      _currentIndex = index;
+                                    });
+                                  },
+                                ),
+                                items:
+                                    orderDetailModel!
+                                        .data!
+                                        .products![0]
+                                        .product!
+                                        .images!
+                                        .map((imageUrl) {
+                                          return Builder(
+                                            builder: (BuildContext context) {
+                                              return Stack(
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                    child: CachedNetworkImage(
+                                                      imageUrl: imageUrl,
+                                                      fit: BoxFit.cover,
+                                                      width: double.infinity,
+                                                      placeholder:
+                                                          (
+                                                            context,
+                                                            url,
+                                                          ) => const Center(
+                                                            child: CircularProgressIndicator(
+                                                              color:
+                                                                  AppColors
+                                                                      .maincolor,
+                                                            ),
+                                                          ),
+                                                      errorWidget:
+                                                          (
+                                                            context,
+                                                            url,
+                                                            error,
+                                                          ) => const Center(
+                                                            child: Icon(
+                                                              Icons.error,
+                                                            ),
+                                                          ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        })
+                                        .toList(),
+                              ),
+                              SizedBox(height: 1.h),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children:
+                                    orderDetailModel!
+                                        .data!
+                                        .products![0]
+                                        .product!
+                                        .images!
+                                        .asMap()
+                                        .entries
+                                        .map((entry) {
+                                          return GestureDetector(
+                                            onTap:
+                                                () => _controller.animateToPage(
+                                                  entry.key,
+                                                ),
+                                            child: Container(
+                                              width:
+                                                  _currentIndex == entry.key
+                                                      ? 10
+                                                      : 8,
+                                              height:
+                                                  _currentIndex == entry.key
+                                                      ? 10
+                                                      : 8,
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 4,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    _currentIndex == entry.key
+                                                        ? AppColors.maincolor
+                                                        : Colors.grey,
+                                              ),
+                                            ),
+                                          );
+                                        })
+                                        .toList(),
+                              ),
+                              SizedBox(height: 1.h),
+                              // Row(
+                              //   children: [
+                              //     Icon(Icons.storefront),
+                              //     SizedBox(
+                              //       width: 2.w,
+                              //     ),
+                              //     Text(
+                              //       "Keshav Enterprise",
+                              //       style: TextStyle(
+                              //         fontWeight: FontWeight.bold,
+                              //         fontSize: 16.sp,
+                              //         fontFamily: AppConstants.manrope,
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
+                              SizedBox(height: 1.h),
+                              Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(Icons.local_mall, size: 18.sp),
+                                      SizedBox(width: 2.w),
+                                      Text(
+                                        "Order Id: #ORDERNO${orderDetailModel?.data?.orderNo}",
+                                        style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                          fontFamily: AppConstants.manrope,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 1.h),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.inventory, size: 18.sp),
+                                      SizedBox(width: 2.w),
+                                      Text(
+                                        "Collect Code: ${orderDetailModel?.data?.tokenNo}",
+                                        style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                          fontFamily: AppConstants.manrope,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 1.h),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.timer, size: 18.sp),
+                                      SizedBox(width: 2.w),
+                                      Text(
+                                        "Pickup Time: ${orderDetailModel?.data?.pickupTime}",
+                                        style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                          fontFamily: AppConstants.manrope,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 1.h),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        getStatusIconData(
+                                          orderDetailModel?.data?.status ?? "",
+                                        ),
+                                        size: 18.sp,
+                                        color: getStatusColor(
+                                          orderDetailModel?.data?.status
+                                                  ?.toString()
+                                                  .capitalizeFirst ??
+                                              "",
+                                        ),
+                                      ),
+                                      SizedBox(width: 2.w),
+                                      Text(
+                                        "Status: ${orderDetailModel?.data?.status?.toString().capitalizeFirst ?? "Status"}",
+                                        style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: getStatusColor(
+                                            orderDetailModel?.data?.status
+                                                    ?.toString()
+                                                    .capitalizeFirst ??
+                                                "",
+                                          ),
+                                          fontFamily: AppConstants.manrope,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 1.5.h),
+                              Text(
+                                orderDetailModel
+                                        ?.data
+                                        ?.products?[0]
+                                        .product
+                                        ?.name
+                                        .toString()
+                                        .capitalizeFirst ??
+                                    "",
+                                style: TextStyle(
+                                  fontFamily: AppConstants.manrope,
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text:
+                                          "£${orderDetailModel?.data?.totalAmount ?? ""}",
+                                      // Discounted Price
+                                      style: TextStyle(
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                        fontFamily: AppConstants.manrope,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              Container(
+                                width: 92.w,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ReadMoreText(
+                                  "${orderDetailModel?.data?.products?[0].product?.description ?? ""}",
+                                  trimLines: 4,
+                                  trimLength: 145,
+                                  colorClickableText: Colors.blue,
+                                  trimMode: TrimMode.Length,
+                                  trimCollapsedText: ' Show more',
+                                  trimExpandedText: ' Show less',
+                                  moreStyle: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manrope,
+                                    letterSpacing: 1,
+                                    color: AppColors.maincolor,
+                                  ),
+                                  lessStyle: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontFamily: AppConstants.manrope,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1,
+                                    color: AppColors.maincolor,
+                                  ),
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    color: Colors.grey.shade500,
+                                    fontWeight: FontWeight.normal,
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              Text(
+                                "Payment Method",
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: AppConstants.manrope,
+                                  color: AppColors.maincolor,
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              orderDetailModel != null &&
+                                      orderDetailModel?.data?.paymentGateway !=
+                                          null
+                                  ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(height: 1.5.h),
+                                      if (orderDetailModel!
+                                              .data!
+                                              .paymentGateway!
+                                              .toLowerCase() ==
+                                          'stripe')
+                                        paymentOptionContainer(
+                                          image:
+                                              "assets/images/stripe_pay_image2.png",
+                                          value: "Stripe",
+                                        ),
+                                      if (orderDetailModel!
+                                              .data!
+                                              .paymentGateway!
+                                              .toLowerCase() ==
+                                          'googlepay')
+                                        paymentOptionContainer(
+                                          image: "assets/images/google_pay.png",
+                                          value: "Google Pay",
+                                        ),
+                                      if (orderDetailModel!
+                                              .data!
+                                              .paymentGateway!
+                                              .toLowerCase() ==
+                                          'applepay')
+                                        paymentOptionContainer(
+                                          image: "assets/images/apple_pay.png",
+                                          value: "Apple Pay",
+                                        ),
+                                    ],
+                                  )
+                                  : SizedBox(), // or a placeholder/loading
+
+                              SizedBox(height: 10.h),
+                            ],
+                          ),
+                        ),
+                      ),
+                ],
+              ).paddingOnly(left: 2.w, right: 2.w),
+          if (isCancleOrder)
+            Container(
+              color: Colors.black.withOpacity(0.3),
+              child: Center(child: Loader()),
+            ),
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton:
+          (isLoading ||
+                  orderDetailModel?.data?.status == "Collected" ||
+                  orderDetailModel?.data?.status == "cancelled")
+              ? SizedBox.shrink()
+              : (orderDetailModel?.data?.status?.toLowerCase() == "declined" ||
+                  orderDetailModel?.data?.status?.toLowerCase() ==
+                      "packing your bag" ||
+                  orderDetailModel?.data?.status?.toLowerCase() ==
+                      "ready for collection")
+              ? Container(
+                height: 7.5.h,
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 10,
+                      offset: Offset(0, -2),
+                    ),
+                  ],
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Material(
+                        elevation: 1,
+                        borderRadius: BorderRadius.circular(12),
+                        child: batan(
+                          title: _getStatusMessage(
+                            orderDetailModel?.data?.status,
+                          ),
+                          route: () {},
+                          color: getStatusColor(
+                            orderDetailModel?.data?.status.toString() ?? "",
+                          ),
+                          fontcolor: Colors.white,
+                          height: 5.h,
+                          fontsize: 15.sp,
+                          iconData: Icons.free_cancellation_outlined,
+                          radius: 12.0,
+                          width: 0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+              : (shouldShowCancelButton ||
+                  (orderDetailModel?.data?.status?.toLowerCase() ==
+                      "pending approval"))
+              // && (orderDetailModel?.data?.products?[0].type== "product")
+              ? Container(
+                height: 7.5.h,
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 10,
+                      offset: Offset(0, -2),
+                    ),
+                  ],
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Material(
+                        elevation: 1,
+                        borderRadius: BorderRadius.circular(12),
+                        child: batan(
+                          title: "Cancel Order",
+                          route: () {
+                            showCancelConfirmationDialog(
+                              context: context,
+                              onConfirm: CancleOrder,
+                            );
+                          },
+                          color: AppColors.maincolor,
+                          fontcolor: AppColors.white,
+                          height: 5.h,
+                          fontsize: 15.sp,
+                          iconData: Icons.free_cancellation_outlined,
+                          radius: 12.0,
+                          width: 0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+              : SizedBox.shrink(),
+      // floatingActionButton: (isLoading ||
+      //     orderDetailModel?.data?.status == "Collected" ||      orderDetailModel?.data?.status == "Booking Confirmed" ||
+      //     orderDetailModel?.data?.status == "cancelled")
+      //     ? SizedBox.shrink()
+      //     : (orderDetailModel?.data?.status?.toLowerCase() == "declined" ||
+      //     orderDetailModel?.data?.status?.toLowerCase() ==
+      //         "packing your bag" ||
+      //     orderDetailModel?.data?.status?.toLowerCase() ==
+      //         "ready for collection")
+      //     ? Container(
+      //   height: 7.5.h,
+      //   width: double.infinity,
+      //   padding: EdgeInsets.symmetric(horizontal: 4.w),
+      //   decoration: const BoxDecoration(
+      //     color: Colors.white,
+      //     boxShadow: [
+      //       BoxShadow(
+      //         color: Colors.black12,
+      //         blurRadius: 10,
+      //         offset: Offset(0, -2),
+      //       )
+      //     ],
+      //     borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      //   ),
+      //   child: Row(
+      //     children: [
+      //       Expanded(
+      //         child: Material(
+      //           elevation: 1,
+      //           borderRadius: BorderRadius.circular(12),
+      //           child: batan(
+      //             title: _getStatusMessage(
+      //                 orderDetailModel?.data?.status),
+      //             route: () {},
+      //             color: getStatusColor(
+      //                 orderDetailModel?.data?.status.toString() ?? ""),
+      //             fontcolor: Colors.white,
+      //             height: 5.h,
+      //             fontsize: 15.sp,
+      //             iconData: Icons.free_cancellation_outlined,
+      //             radius: 12.0,
+      //           ),
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // )
+      //     : shouldShowCancelButton
+      //     ? Container(
+      //   height: 7.5.h,
+      //   width: double.infinity,
+      //   padding: EdgeInsets.symmetric(horizontal: 4.w),
+      //   decoration: const BoxDecoration(
+      //     color: Colors.white,
+      //     boxShadow: [
+      //       BoxShadow(
+      //         color: Colors.black12,
+      //         blurRadius: 10,
+      //         offset: Offset(0, -2),
+      //       )
+      //     ],
+      //     borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      //   ),
+      //   child: Row(
+      //     children: [
+      //       Expanded(
+      //         child: Material(
+      //           elevation: 1,
+      //           borderRadius: BorderRadius.circular(12),
+      //           child: batan(
+      //             title: "Cancel Order",
+      //             route: () {
+      //               showCancelConfirmationDialog(
+      //                 context: context,
+      //                 onConfirm: CancleOrder,
+      //               );
+      //             },
+      //             color: AppColors.maincolor,
+      //             fontcolor: AppColors.white,
+      //             height: 5.h,
+      //             fontsize: 15.sp,
+      //             iconData: Icons.free_cancellation_outlined,
+      //             radius: 12.0,
+      //           ),
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // )
+      //     : SizedBox.shrink(),
+    );
+  }
+
+  String _getStatusMessage(String? status) {
+    switch (status?.toLowerCase()) {
+      case "declined":
+        return "Sorry, your order was declined.";
+      case "packing your bag":
+        return "Packing your bag";
+      case "ready for collection":
+        return "Ready for collection";
+      default:
+        return "";
+    }
+  }
+
+  Future<void> showCancelConfirmationDialog({
+    required BuildContext context,
+    required VoidCallback onConfirm,
+  }) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // prevent accidental tap outside
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          elevation: 16,
+          backgroundColor: Colors.white,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 15),
+                Text(
+                  "Are you sure?",
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                    fontFamily: AppConstants.manrope,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Do you really want to cancel this order?\nThis action cannot be undone.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    color: Colors.black54,
+                    fontFamily: AppConstants.manrope,
+                  ),
+                ),
+                const SizedBox(height: 25),
+                Row(
+                  children: [
+                    Expanded(
+                      child: batan(
+                        title: "No, Keep It",
+                        route: () {
+                          Get.back();
+                        },
+                        color: AppColors.white,
+                        fontcolor: Colors.black,
+                        height: 5.h,
+                        fontsize: 16.sp,
+                        radius: 12.0,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: batan(
+                        title: "Yes, Cancel",
+                        route: () {
+                          onConfirm();
+                          Get.back();
+                        },
+                        color: AppColors.maincolor,
+                        fontcolor: Colors.white,
+                        height: 5.h,
+                        fontsize: 16.sp,
+                        radius: 12.0,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> confirmShowDialog({required BuildContext context}) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // prevent accidental tap outside
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          elevation: 16,
+          backgroundColor: Colors.white,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 15),
+                Text(
+                  "Your Order has Cancelled!",
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                    fontFamily: AppConstants.manrope,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Your booking has been cancelled.\n You will receive your refund within 48 hours.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    color: Colors.black54,
+                    fontFamily: AppConstants.manrope,
+                  ),
+                ),
+                const SizedBox(height: 25),
+                Row(
+                  children: [
+                    Expanded(
+                      child: batan(
+                        title: "Yes",
+                        route: () {
+                          Get.back();
+                        },
+                        color: AppColors.maincolor,
+                        fontcolor: Colors.white,
+                        height: 5.h,
+                        fontsize: 16.sp,
+                        radius: 12.0,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Color getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case "pending approval":
+        return Colors.orange;
+      case "packing your bag":
+        return Colors.green;
+      case "collected" || "booking confirmed":
+        return AppColors.maincolor;
+      case "ready for collection":
+        return AppColors.maincolor;
+      case "declined" || "cancelled":
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  IconData getStatusIconData(String status) {
+    switch (status.toLowerCase()) {
+      case "pending approval":
+        return Icons.pending_actions;
+      case "packing your bag":
+        return Icons.local_shipping;
+      case "ready for collection":
+        return Icons.outbox;
+      case "collected" || "booking confirmed":
+        return Icons.task_alt;
+      case "declined" || "cancelled":
+        return Icons.cancel;
+      default:
+        return Icons.info_outline;
+    }
+  }
+
+  void OrderDetailAPI() {
+    checkInternet().then((internet) async {
+      if (internet) {
+        OrderProvider()
+            .OrderDetailApi(
+              loginModel?.data?.user?.id.toString() ?? "",
+              widget.orderid,
+            )
+            .then((response) async {
+              orderDetailModel = OrderDetailModel.fromJson(
+                jsonDecode(response.body),
+              );
+              serviceOrderDetail = ServiceOrderDetail.fromJson(
+                jsonDecode(response.body),
+              );
+              if (response.statusCode == 200) {
+                print("Data ave che all review no ${response.body}");
+                // print("Data ave che all review no $status");
+
+                setState(() {
+                  isLoading = false;
+                });
+              } else {
+                setState(() {
+                  isLoading = false;
+                });
+                log("Error");
+              }
+            });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  CancleOrder() async {
+    setState(() {
+      isCancleOrder = true;
+    });
+    Map<String, String> data = {
+      "user_id": loginModel?.data?.user?.id.toString() ?? "",
+      "order_id": widget.orderid.toString(),
+    };
+
+    log("📤 Booking Data: $data");
+
+    checkInternet().then((internet) async {
+      if (internet) {
+        try {
+          var response = await OrderProvider().CancleOrder(data);
+          // parcelShowCountModel =
+          //     ParcelShowCountModel.fromJson(jsonDecode(response.body));
+
+          if (response.statusCode == 200) {
+            log("data ave chee ${response.body}");
+            Get.to(Order_Screen());
+            setState(() {
+              isCancleOrder = false;
+            });
+            confirmShowDialog(context: context);
+          } else {
+            setState(() {
+              isCancleOrder = false;
+            });
+            print(response.body);
+          }
+        } catch (e) {
+          setState(() {
+            isCancleOrder = false;
+          });
+        }
+      } else {
+        setState(() {
+          isCancleOrder = false;
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  // Widget paymentOptionContainer({
+  //   required String image,
+  //   required String value,
+  // }) {
+  //   bool isSelected = selectedMethod == value;
+  //   log("data avve che ee payment no ${orderDetailModel?.data?.paymentGateway?.toLowerCase()}");
+  //
+  //   return GestureDetector(
+  //     onTap: () {
+  //       setState(() {
+  //         selectedMethod = value;
+  //       });
+  //     },
+  //     child: Container(
+  //       margin: EdgeInsets.only(bottom: 1.5.h),
+  //       padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.8.h),
+  //       decoration: BoxDecoration(
+  //         color:
+  //             isSelected ? AppColors.maincolor.withOpacity(0.08) : Colors.white,
+  //         borderRadius: BorderRadius.circular(12),
+  //         border: Border.all(
+  //           color: isSelected ? AppColors.maincolor : Colors.grey.shade300,
+  //           width: 1.2,
+  //         ),
+  //       ),
+  //       child: Row(
+  //         children: [
+  //           Image.asset(
+  //             image,
+  //             height: 5.h,
+  //             width: 15.w,
+  //             fit: BoxFit.contain,
+  //           ),
+  //           SizedBox(width: 4.w),
+  //           Text(
+  //             value,
+  //             style: TextStyle(
+  //               fontSize: 16.sp,
+  //               fontWeight: FontWeight.w600,
+  //               fontFamily: AppConstants.manrope,
+  //             ),
+  //           ),
+  //           Spacer(),
+  //           if (isSelected)
+  //             Icon(Icons.check_circle, color: AppColors.maincolor, size: 20.sp),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+  String formatDateTime(String? createdAt) {
+    if (createdAt == null || createdAt.isEmpty) return "N/A";
+
+    DateTime parsedDate = DateTime.parse(createdAt);
+    return DateFormat('dd-MM-yyyy hh:mm a').format(parsedDate);
+  }
+
+  Widget paymentOptionContainer({
+    required String image,
+    required String value,
+  }) {
+    // Automatically select based on API response
+    String? selectedGateway =
+        orderDetailModel?.data?.paymentGateway?.toLowerCase();
+    bool isSelected = selectedGateway == value.toLowerCase();
+
+    return Container(
+      margin: EdgeInsets.only(bottom: 1.5.h),
+      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.8.h),
+      decoration: BoxDecoration(
+        color:
+            isSelected ? AppColors.maincolor.withOpacity(0.08) : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isSelected ? AppColors.maincolor : Colors.grey.shade300,
+          width: 1.2,
+        ),
+      ),
+      child: Row(
+        children: [
+          Image.asset(image, height: 5.h, width: 15.w, fit: BoxFit.contain),
+          SizedBox(width: 4.w),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+              fontFamily: AppConstants.manrope,
+            ),
+          ),
+          Spacer(),
+          if (isSelected)
+            Icon(Icons.check_circle, color: AppColors.maincolor, size: 20.sp),
+        ],
+      ),
+    );
+  }
+}
+
+class CustomFeatureCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  const CustomFeatureCard({
+    Key? key,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 1.2.h),
+      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2)),
+        ],
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 24.sp, color: AppColors.maincolor),
+          SizedBox(width: 4.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: AppConstants.manrope,
+                  ),
+                ),
+                SizedBox(height: 0.5.h),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    color: Colors.grey.shade600,
+                    fontFamily: AppConstants.manrope,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

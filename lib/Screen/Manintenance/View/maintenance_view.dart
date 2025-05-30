@@ -1,0 +1,955 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:sizer/sizer.dart';
+import 'package:wavee/comman/SideMenu.dart';
+import 'package:wavee/comman/colors.dart';
+import 'package:wavee/comman/custom_batan.dart';
+import 'package:wavee/comman/input_decoration.dart';
+import 'package:wavee/comman/loader.dart';
+
+import '../../../comman/Custom_AppBar.dart';
+import '../../../comman/check_inernet_connecty.dart';
+import '../../../comman/const.dart';
+import '../../../comman/error_dialog.dart';
+import '../../open_ai_chatbot/view/open_ai_screen.dart';
+import '../Model/maintenance_detail_model.dart';
+import '../Model/maintenance_modal.dart';
+import '../Provider/maintenance_provider.dart';
+
+class MaintenanceScreen extends StatefulWidget {
+  const MaintenanceScreen({super.key});
+
+  @override
+  State<MaintenanceScreen> createState() => _MaintenanceScreenState();
+}
+
+class _MaintenanceScreenState extends State<MaintenanceScreen> {
+  final GlobalKey<ScaffoldState> maintanceKey = GlobalKey<ScaffoldState>();
+  bool isLoading = false;
+
+  //List<String> categories = ['All', 'Approved', 'In Progress ', 'Completed'];
+  List<String> categories = ['Approved', 'In Progress', 'Completed'];
+  int selectedCategory = 0;
+  final TextEditingController subjectController = TextEditingController();
+  final TextEditingController noteController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  DateTime? selectedDate;
+  String? dateErrorText;
+  bool isDetailLoading = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      isLoading = true;
+    });
+    AllMaintenanceApi();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: maintanceKey,
+      drawer: SideMenu(),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 4.h),
+                TitleBar(
+                  back: () {
+                    Get.back();
+                  },
+                  title: 'Maintenance',
+                  drawerCallback: () {
+                    maintanceKey.currentState?.openDrawer();
+                  },
+                ),
+                SizedBox(height: 2.h),
+                SizedBox(
+                  height: 5.5.h,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          if (selectedCategory != index) {
+                            setState(() {
+                              selectedCategory = index;
+                              isLoading = true;
+                            });
+                            AllMaintenanceApi();
+                          }
+                        },
+                        child: Container(
+                          height: 6.h,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 1.h,
+                            horizontal: 5.w,
+                          ),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 0.5, color: Colors.grey),
+                            color:
+                                selectedCategory == index
+                                    ? Color(0xFF734F96)
+                                    : Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          margin: EdgeInsets.symmetric(horizontal: 1.2.w),
+                          child: Text(
+                            categories[index],
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              color:
+                                  selectedCategory == index
+                                      ? Colors.white
+                                      : Colors.black,
+                              fontFamily: AppConstants.manrope,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: 2.h),
+                isLoading
+                    ? Loader().paddingOnly(top: 20.h)
+                    : maintenanceModel?.data?.length == null ||
+                        maintenanceModel?.data?.length == 0
+                    ? Center(
+                      child: Text(
+                        "No Maintenance Avaiable",
+                        style: TextStyle(
+                          fontSize: 17.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.black,
+                          fontFamily: AppConstants.manrope,
+                        ),
+                      ).paddingOnly(top: 30.h),
+                    )
+                    : SizedBox(
+                      child: Column(
+                        children: [
+                          ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: EdgeInsets.zero,
+                            itemCount: maintenanceModel?.data?.length ?? 0,
+                            itemBuilder: (context, index) {
+                              var booking = maintenanceModel?.data?[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  MaintenanceDetailApi(
+                                    booking?.id.toString() ?? "",
+                                  );
+                                  log(
+                                    "Maintenance Details Id ave ####${booking?.id}",
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.2),
+                                        spreadRadius: 2,
+                                        blurRadius: 5,
+                                        offset: Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: 1.w,
+                                    vertical: 1.h,
+                                  ),
+                                  padding: const EdgeInsets.all(12),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(width: 2.h),
+                                      Expanded(
+                                        child: Stack(
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    formatDate(
+                                                      booking?.createdAt ?? "",
+                                                    ),
+                                                    style: TextStyle(
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.black54,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 4),
+
+                                                  /// Amenity Name
+                                                  Text(
+                                                    booking?.subject ?? '',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                      color: Colors.black87,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 4),
+                                                ],
+                                              ),
+                                            ),
+                                            // Right Side (Status + More Icon if pending)
+                                            Align(
+                                              alignment: Alignment.topRight,
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Container(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 4,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      color: getStatusColor(
+                                                        booking?.status ?? '',
+                                                      ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            10,
+                                                          ),
+                                                    ),
+                                                    // height: 3.h,
+                                                    child: Text(
+                                                      booking?.status
+                                                              .toString()
+                                                              .capitalizeFirst ??
+                                                          "",
+                                                      style: const TextStyle(
+                                                        fontSize: 13,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white,
+                                                        fontFamily:
+                                                            AppConstants
+                                                                .manrope,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          SizedBox(height: 10.h),
+                        ],
+                      ),
+                    ),
+              ],
+            ).paddingSymmetric(horizontal: 3.w),
+          ),
+          if (isDetailLoading)
+            Container(
+              color: Colors.black.withOpacity(0.3),
+              child: Center(child: Loader()),
+            ),
+        ],
+      ),
+      floatingActionButton:
+          isLoading
+              ? Container()
+              : Row(
+                children: [
+                  Spacer(),
+                  FloatingActionButton.extended(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(900),
+                    ),
+                    backgroundColor: Colors.white,
+                    onPressed: () {
+                      // showAddRequestDialog(context);
+                      showAddRequestBottomSheet(context);
+                    },
+                    // icon: Icon(FontAwesomeIcons.toolbox, color: Colors.black),
+                    label: SizedBox(
+                      width: 44.w,
+                      child: Text(
+                        "Add Maintenance Request ",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15.sp,
+                          fontFamily: AppConstants.manrope,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 2.w),
+                  FloatingActionButton.extended(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(900),
+                    ),
+                    backgroundColor: Colors.white,
+                    onPressed: () {
+                      Get.to(() => const ChatBotScreen());
+                    },
+                    icon: Icon(
+                      CupertinoIcons.chat_bubble_2,
+                      color: Colors.black,
+                    ),
+                    label: Text(
+                      "Ai Concierge",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15.sp,
+                        fontFamily: AppConstants.manrope,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+    );
+  }
+
+  Color getStatusColor(String status) {
+    return status == "pending" || status == "Pending"
+        ? Colors.yellow.shade800
+        : status == "Approved" || status == "approved"
+        ? Colors.green
+        : status == "completed" || status == "Completed"
+        ? Colors.blue
+        : status == "rejected"
+        ? Colors.orange
+        : Colors.black; // default color if none match
+  }
+
+  String getStatusFromTab(int index) {
+    switch (index) {
+      case 0:
+        return "approved";
+      case 1:
+        return "pending";
+      case 2:
+        // return "rejected";
+        return "completed";
+      default:
+        return ""; // For "All"
+    }
+  }
+
+  String formatDate(String? rawDate) {
+    if (rawDate == null || rawDate.isEmpty) return "N/A";
+    try {
+      DateTime parsedDate = DateTime.parse(rawDate);
+      return DateFormat('dd-MM-yyyy').format(parsedDate);
+    } catch (e) {
+      return "Invalid date";
+    }
+  }
+
+  void showAddRequestBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 16,
+            right: 16,
+            top: 24,
+          ),
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'Add Maintenance',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: AppConstants.manrope,
+                        ),
+                      ),
+                      SizedBox(height: 2.h),
+                      // Align(
+                      //   alignment: Alignment.topLeft,
+                      //   child: Text(
+                      //     "Request Date",
+                      //     style: TextStyle(
+                      //       fontFamily: AppConstants.manrope,
+                      //       fontSize: 16.sp,
+                      //       fontWeight: FontWeight.bold,
+                      //     ),
+                      //   ),
+                      // ).paddingOnly(bottom: 1.h),
+                      // GestureDetector(
+                      //   onTap: () async {
+                      //     final picked = await showDatePicker(
+                      //       context: context,
+                      //       initialDate: DateTime.now(),
+                      //       firstDate: DateTime(2020),
+                      //       lastDate: DateTime(2100),
+                      //     );
+                      //     if (picked != null) {
+                      //       setState(() {
+                      //         selectedDate = picked;
+                      //         dateErrorText =
+                      //         null; // clear error on date select
+                      //       });
+                      //     }
+                      //   },
+                      //   child: Column(
+                      //     crossAxisAlignment: CrossAxisAlignment.start,
+                      //     children: [
+                      //       Container(
+                      //         padding: EdgeInsets.all(12),
+                      //         decoration: BoxDecoration(
+                      //           border: Border.all(
+                      //             color: dateErrorText == null
+                      //                 ? AppColors.maincolor
+                      //                 : Colors.red,
+                      //           ),
+                      //           borderRadius: BorderRadius.circular(25),
+                      //         ),
+                      //         child: Row(
+                      //           mainAxisAlignment:
+                      //           MainAxisAlignment.spaceBetween,
+                      //           children: [
+                      //             Text(
+                      //               selectedDate == null
+                      //                   ? 'Select Date'
+                      //                   : '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}',
+                      //               style: const TextStyle(
+                      //                 fontFamily: AppConstants.manrope,
+                      //               ),
+                      //             ),
+                      //             Icon(
+                      //               Icons.calendar_today,
+                      //               color: dateErrorText == null
+                      //                   ? AppColors.maincolor
+                      //                   : Colors.red,
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //       if (dateErrorText != null)
+                      //         Padding(
+                      //           padding: const EdgeInsets.only(top: 6, left: 8),
+                      //           child: Text(
+                      //             dateErrorText!,
+                      //             style: TextStyle(
+                      //               color: Colors.red,
+                      //               fontSize: 12,
+                      //               fontFamily: AppConstants.manrope,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //     ],
+                      //   ),
+                      // ),
+                      SizedBox(height: 1.5.h),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Subject",
+                          style: TextStyle(
+                            fontFamily: AppConstants.manrope,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ).paddingOnly(bottom: 1.h),
+
+                      TextFormField(
+                        controller: subjectController,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Please enter subject';
+                          }
+                          return null;
+                        },
+                        style: const TextStyle(
+                          fontFamily: AppConstants.manrope,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        decoration: inputDecoration(
+                          cr: AppColors.black,
+                          hintText: "Enter Subject",
+                        ),
+                      ),
+                      SizedBox(height: 1.5.h),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Note",
+                          style: TextStyle(
+                            fontFamily: AppConstants.manrope,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ).paddingOnly(bottom: 1.h),
+                      TextFormField(
+                        controller: noteController,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Please enter note';
+                          }
+                          return null;
+                        },
+                        style: const TextStyle(
+                          fontFamily: AppConstants.manrope,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        decoration: inputDecoration(
+                          hintText: "Enter Note",
+                          cr: AppColors.black,
+                        ),
+                        maxLines: 4,
+                      ),
+                      SizedBox(height: 2.h),
+                      // batan(
+                      //   title: "Submit",
+                      //   route: () {
+                      //     bool isValid = _formKey.currentState!.validate();
+                      //     if (selectedDate == null) {
+                      //       setState(() {
+                      //         dateErrorText = "Please select a request date.";
+                      //       });
+                      //       isValid = false;
+                      //     }
+                      //
+                      //     if (isValid) {
+                      //       AddMaintenance();
+                      //       Navigator.of(context).pop();
+                      //     }
+                      //   },
+                      //   color: AppColors.maincolor,
+                      //   fontcolor: Colors.white,
+                      //   height: 5.5.h,
+                      //   width: double.infinity,
+                      //   fontsize: 16.sp,
+                      //   radius: 20.0,
+                      // ),
+                      isLoading
+                          ? const CircularProgressIndicator(
+                            color: AppColors.maincolor,
+                          )
+                          : batan(
+                            title: "Submit",
+                            route: () {
+                              bool isValid = _formKey.currentState!.validate();
+                              // if (selectedDate == null) {
+                              //   setState(() {
+                              //     dateErrorText =
+                              //         "Please select a request date.";
+                              //   });
+                              //   isValid = false;
+                              // }
+                              if (isValid) {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                AddMaintenance();
+                                Navigator.of(context).pop();
+                              }
+                            },
+                            color: AppColors.maincolor,
+                            fontcolor: Colors.white,
+                            height: 5.5.h,
+                            width: double.infinity,
+                            fontsize: 16.sp,
+                            radius: 20.0,
+                          ),
+
+                      SizedBox(height: 5.h),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  void AddMaintenance1() {
+    final Map<String, String> data = {
+      'user_id': loginModel?.data?.user?.id.toString() ?? '',
+      "subject": subjectController.text.trim(),
+      "note": noteController.text.trim(),
+    };
+    print("RegisterApi : ${data}");
+    checkInternet().then((internet) async {
+      if (internet) {
+        MaintenanceProvider().AddMaintenanceRequest(data).then((
+          response,
+        ) async {
+          // profileModel = ProfileModel.fromJson(jsonDecode(response.body));
+          if (response.statusCode == 200) {
+            print("1111111111>>>>>>>>>>>>.${response.body}");
+            AllMaintenanceApi();
+            setState(() {
+              isLoading = false;
+              subjectController.clear();
+              noteController.clear();
+            });
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+            log("Error");
+          }
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  void AddMaintenance() {
+    final Map<String, String> data = {
+      'user_id': loginModel?.data?.user?.id.toString() ?? '',
+      "subject": subjectController.text.trim(),
+      "note": noteController.text.trim(),
+    };
+
+    print("RegisterApi : $data");
+
+    setState(() {
+      isLoading = true; // 👈 Loader start
+    });
+
+    checkInternet().then((internet) async {
+      if (internet) {
+        MaintenanceProvider().AddMaintenanceRequest(data).then((
+          response,
+        ) async {
+          if (response.statusCode == 200) {
+            print("✅ Add Response: ${response.body}");
+            AllMaintenanceApi(); // This will also manage its own loader stop
+            setState(() {
+              subjectController.clear();
+              noteController.clear();
+            });
+          } else {
+            setState(() {
+              isLoading = false; // 👈 Stop loader on error
+            });
+            log("❌ Add Error: ${response.statusCode}");
+          }
+        });
+      } else {
+        setState(() {
+          isLoading = false; // 👈 Stop loader on no internet
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  void AllMaintenanceApi() {
+    String status = getStatusFromTab(selectedCategory);
+
+    final Map<String, String> data = {
+      'user_id': loginModel?.data?.user?.id.toString() ?? '',
+    };
+
+    if (status.isNotEmpty) {
+      data['status'] = status;
+    }
+
+    print("RegisterApi status data jay che: $data");
+
+    checkInternet().then((internet) async {
+      if (internet) {
+        MaintenanceProvider().AllMaintenanceStaus(data).then((response) async {
+          maintenanceModel = MaintenanceModel.fromJson(
+            jsonDecode(response.body),
+          );
+
+          if (response.statusCode == 200) {
+            print("✅ Response: ${response.body}");
+
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
+          } else {
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
+            log("❌ Error: ${response.statusCode}");
+          }
+        });
+      } else {
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+          });
+        }
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  void MaintenanceDetailApi1(String detailId) {
+    final Map<String, String> data = {
+      'user_id': loginModel?.data?.user?.id.toString() ?? '',
+      "id": detailId ?? "",
+    };
+
+    print("RegisterApi status data jay che: $data");
+
+    checkInternet().then((internet) async {
+      if (internet) {
+        MaintenanceProvider().AllMaintenanceStaus(data).then((response) async {
+          maintenanceDetailModel = MaintenanceDetailModel.fromJson(
+            jsonDecode(response.body),
+          );
+
+          if (response.statusCode == 200) {
+            print("✅ Response: ${response.body}");
+            showMaintenanceDetailBottomSheet(context, maintenanceDetailModel!);
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
+          } else {
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
+            log("❌ Error: ${response.statusCode}");
+          }
+        });
+      } else {
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+          });
+        }
+
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  void MaintenanceDetailApi(String detailId) async {
+    setState(() {
+      isDetailLoading = true;
+    });
+
+    final Map<String, String> data = {
+      'user_id': loginModel?.data?.user?.id.toString() ?? '',
+      'id': detailId,
+    };
+
+    print("📤 Detail API Request: $data");
+
+    bool hasInternet = await checkInternet();
+
+    if (!hasInternet) {
+      setState(() {
+        isDetailLoading = false;
+      });
+      buildErrorDialog(context, 'Error', "Internet Required");
+      return;
+    }
+
+    try {
+      var response = await MaintenanceProvider().AllMaintenanceStaus(data);
+
+      if (response.statusCode == 200) {
+        maintenanceDetailModel = MaintenanceDetailModel.fromJson(
+          jsonDecode(response.body),
+        );
+
+        if (mounted) {
+          setState(() {
+            isDetailLoading = false;
+          });
+
+          showMaintenanceDetailBottomSheet(context, maintenanceDetailModel!);
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            isDetailLoading = false;
+          });
+        }
+        log("❌ Server Error: ${response.statusCode}");
+      }
+    } catch (e) {
+      log("❌ Exception in API: $e");
+      if (mounted) {
+        setState(() {
+          isDetailLoading = false;
+        });
+      }
+    }
+  }
+
+  void showMaintenanceDetailBottomSheet(
+    BuildContext context,
+    MaintenanceDetailModel detail,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 16,
+            right: 16,
+            top: 24,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  height: 4,
+                  width: 20.w,
+                  margin: EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              Text(
+                "Maintenance Details",
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: AppConstants.manrope,
+                ),
+              ),
+              SizedBox(height: 2.h),
+              _detailRow("Subject", detail.data?.subject ?? "-"),
+              _detailRow("Note", detail.data?.note ?? "-"),
+              _detailRow(
+                "Status",
+                detail.data?.status.toString().capitalizeFirst ?? "-",
+                // color: detail.data?.status == "Rejected" ? Colors.red : Colors.green,
+                color: getStatusColor(detail.data?.status.toString() ?? ""),
+              ),
+              _detailRow(
+                "Created",
+                detail.data?.createdAt != null
+                    ? DateFormat('dd MMM yyyy, hh:mm a').format(
+                      DateTime.parse(detail.data?.createdAt.toString() ?? ""),
+                    )
+                    : "-",
+              ),
+              SizedBox(height: 24),
+              batan(
+                title: "Close",
+                route: () {
+                  Get.back();
+                },
+                color: AppColors.maincolor,
+                fontcolor: AppColors.white,
+                height: 5.h,
+                width: double.infinity,
+                fontsize: 18.sp,
+                radius: 12.0,
+              ),
+              SizedBox(height: 30),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _detailRow(String title, String value, {Color? color}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text(
+              "$title:",
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: AppConstants.manrope,
+                fontSize: 15,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 4,
+            child: Text(
+              value,
+              style: TextStyle(
+                color: color ?? Colors.black,
+                fontSize: 15,
+                fontFamily: AppConstants.manrope,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

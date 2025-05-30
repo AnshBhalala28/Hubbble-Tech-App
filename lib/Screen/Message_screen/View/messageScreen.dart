@@ -1,0 +1,1323 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:sizer/sizer.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:wavee/Screen/Message_screen/View/videourlscreen.dart';
+import 'package:wavee/comman/const.dart';
+
+import '../../../comman/check_inernet_connecty.dart';
+import '../../../comman/colors.dart';
+import '../../../comman/error_dialog.dart';
+import '../../../comman/loader.dart';
+import '../../Message_board/View/AppUserFriendProfileScreen.dart';
+import '../Model/SendMessageModel.dart';
+import '../Model/messagescreen_model.dart';
+import '../Provider/messagescreen_provider.dart';
+import 'UserProfileScreen.dart';
+
+class MessageScreen extends StatefulWidget {
+  String? chatName;
+  String? image;
+  String? conciergeID;
+  String? senderid;
+  String? type;
+  final String? address;
+  final String? phone;
+  final String? dob;
+  final String? email;
+
+  MessageScreen({
+    super.key,
+    required this.chatName,
+    this.conciergeID,
+    this.type,
+    this.image,
+    this.address,
+    this.phone,
+    this.dob,
+    this.email,
+    this.senderid,
+  });
+
+  @override
+  _MessageScreenState createState() => _MessageScreenState();
+}
+
+class _MessageScreenState extends State<MessageScreen> {
+  final TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  bool isLoading = false;
+  File? selectedImage;
+  String profileImage = "";
+  Timer? _timer;
+  ImagePicker _picker = ImagePicker();
+  File? _pickedFile = null;
+  var photo = "";
+  int type = 0;
+  bool isSending = false;
+  String loadingMessage = '';
+  List<String> messages = [];
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      isLoading = true;
+    });
+    print(
+      '.......................image........................ ${widget.image}',
+    );
+    print(
+      '.......................senderid....................... ${widget.senderid}',
+    );
+    print(
+      '.......................receiveid....................... ${widget.conciergeID}',
+    );
+    print(
+      '.......................loginid....................... ${loginModel?.data?.user?.id.toString() ?? ""}',
+    );
+
+    _timer = Timer.periodic(const Duration(seconds: 2), (timer) {
+      MessageApi();
+    });
+  }
+
+  // Format Time
+  // String formatDateTime(String dateTimeStr) {
+  //   try {
+  //     DateTime dateTime =
+  //         DateTime.parse(dateTimeStr); // Convert string to DateTime
+  //     return DateFormat('hh:mm a').format(dateTime); // Format time
+  //   } catch (e) {
+  //     return "Invalid Date";
+  //   }
+  // }
+  // String formatDateTime(String? dateTime) {
+  //   if (dateTime == null || dateTime.isEmpty) return "N/A";
+  //   try {
+  //     DateTime parsedDate = DateTime.parse(dateTime);
+  //     return DateFormat("dd-MM-yyyy hh:mm a").format(parsedDate);
+  //   } catch (e) {
+  //     return "N/A";
+  //   }
+  // }
+  String formatDateTime(String? dateTime) {
+    if (dateTime == null || dateTime.isEmpty) return "N/A";
+    try {
+      DateTime parsedDate = DateTime.parse(dateTime);
+      DateTime now = DateTime.now();
+
+      DateTime today = DateTime(now.year, now.month, now.day);
+      DateTime yesterday = today.subtract(const Duration(days: 1));
+      DateTime dateToCompare = DateTime(
+        parsedDate.year,
+        parsedDate.month,
+        parsedDate.day,
+      );
+
+      String time = DateFormat("hh:mm a").format(parsedDate);
+
+      if (dateToCompare == today) {
+        return "Today • $time";
+      } else if (dateToCompare == yesterday) {
+        return "Yesterday • $time";
+      } else {
+        return "${DateFormat("dd-MM-yyyy").format(parsedDate)} • $time";
+      }
+    } catch (e) {
+      return "N/A";
+    }
+  }
+
+  void _scrollToBottom({bool forceScroll = false}) {
+    Future.delayed(Duration(seconds: 0), () {
+      if (_scrollController.hasClients) {
+        if (forceScroll) {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: Duration(seconds: 0),
+            curve: Curves.easeOut,
+          );
+        }
+      }
+    });
+  }
+
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    // MessageApi();
+    return WillPopScope(
+      onWillPop: () async {
+        Get.back(result: 'refresh'); // Phone back press પર refresh return કરો
+        return true; // return true to allow back navigation
+      },
+      child: Scaffold(
+        body: Form(
+          key: _formKey,
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  // Chat Header
+                  Container(
+                    height: 100,
+                    padding: EdgeInsets.only(top: 20, left: 5),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 2,
+                          offset: Offset(0, 1),
+                        ),
+                      ],
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        // Get.to(UserProfileScreen(
+                        //   id : widget.conciergeID,));
+                        String friendid =
+                            (widget.conciergeID.toString() ==
+                                    (loginModel?.data?.user?.id.toString() ??
+                                        ""))
+                                ? (widget.senderid?.toString() ?? "")
+                                : (widget.conciergeID?.toString() ?? "");
+
+                        // if (widget.type == "concierge" &&
+                        //     widget.conciergeID != null) {
+                        //   Get.to(UserProfileScreen(id: widget.conciergeID!));
+                        // }
+
+                        if (widget.type == "concierge") {
+                          Get.to(
+                            () => UserProfileScreen(id: widget.conciergeID),
+                          );
+                        } else if (widget.type == "residents") {
+                          Get.to(
+                            () => AppUserFriendProfileScreen(id: friendid),
+                          );
+                        }
+                        print("dasdasdd${friendid}");
+                      },
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.arrow_back,
+                              color: Colors.black,
+                              size: 30,
+                            ),
+                            onPressed: () {
+                              Get.back(
+                                result: 'refresh',
+                              ); // This will send the 'refresh' result back
+                            },
+                          ),
+                          InkWell(
+                            onTap: () {
+                              // Get.to(UserProfileScreen(
+                              //   id : widget.conciergeID,));
+                              String friendid =
+                                  (widget.conciergeID.toString() ==
+                                          (loginModel?.data?.user?.id
+                                                  .toString() ??
+                                              ""))
+                                      ? (widget.senderid?.toString() ?? "")
+                                      : (widget.conciergeID?.toString() ?? "");
+
+                              // if (widget.type == "concierge" &&
+                              //     widget.conciergeID != null) {
+                              //   Get.to(UserProfileScreen(id: widget.conciergeID!));
+                              // }
+
+                              if (widget.type == "concierge") {
+                                Get.to(
+                                  () =>
+                                      UserProfileScreen(id: widget.conciergeID),
+                                );
+                              } else if (widget.type == "residents") {
+                                Get.to(
+                                  () =>
+                                      AppUserFriendProfileScreen(id: friendid),
+                                );
+                              }
+                              print("dasdasdd${friendid}");
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(25.sp),
+                              child: CachedNetworkImage(
+                                imageUrl: widget.image ?? "",
+                                placeholder:
+                                    (context, url) => CircleAvatar(
+                                      radius: 20.sp,
+                                      backgroundColor: Colors.grey.shade300,
+                                    ),
+                                errorWidget:
+                                    (context, url, error) => CircleAvatar(
+                                      radius: 20.sp,
+                                      child: Image.asset(
+                                        "assets/images/waveeLogoShort.png",
+                                      ),
+                                    ),
+                                width: 26.sp,
+                                height: 26.sp,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 12),
+                          Text(
+                            widget.chatName!,
+                            style: TextStyle(
+                              fontFamily: AppConstants.manrope,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Messages List
+                  // isLoading
+                  //     ? Center(
+                  //         child: Center(
+                  //             child: CircularProgressIndicator(
+                  //         color: AppColors.maincolor,
+                  //       ))).paddingOnly(top: 30.h)
+                  //     : messageModel?.data == '' || messageModel?.data == null
+                  //         ? Expanded(
+                  //             child: Center(
+                  //               child: Text(
+                  //                 "No Message available",
+                  //                 style: TextStyle(
+                  //                   fontSize: 16.sp,
+                  //                   fontWeight: FontWeight.bold,
+                  //                   color: Colors.grey,
+                  //                   fontFamily: AppConstants.manrope,
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           )
+                  //         : Expanded(
+                  //             // messageModel?.data?[index].message ?? ""
+                  //             child: ListView.builder(
+                  //               reverse: true,
+                  //               controller: _scrollController,
+                  //               itemCount: messageModel?.data?.length ?? 0,
+                  //               itemBuilder: (context, index) {
+                  //                 bool isMe =
+                  //                     messageModel?.data?[index].sender?.id ==
+                  //                         loginModel?.data?.user?.id;
+                  //                 return Column(
+                  //                   children: [
+                  //                     isMe
+                  //                         ? Padding(
+                  //                             padding: EdgeInsets.symmetric(
+                  //                                 vertical: 5, horizontal: 10),
+                  //                             child: Row(
+                  //                               mainAxisAlignment: isMe
+                  //                                   ? MainAxisAlignment.end
+                  //                                   : MainAxisAlignment.start,
+                  //                               crossAxisAlignment:
+                  //                                   CrossAxisAlignment.center,
+                  //                               children: [
+                  //                                 // Sender's Date (Left Side)
+                  //                                 if (isMe)
+                  //                                   Text(
+                  //                                     formatDateTime(
+                  //                                         messageModel?.data?[0]
+                  //                                                 .createdAt ??
+                  //                                             ""),
+                  //                                     // Display time for sender on left
+                  //                                     style: TextStyle(
+                  //                                       fontSize: 12,
+                  //                                       color: Colors.grey,
+                  //                                       fontFamily: AppConstants
+                  //                                           .manrope,
+                  //                                     ),
+                  //                                   ),
+                  //
+                  //                                 if (isMe) SizedBox(width: 20),
+                  //                                 // Space between date and message
+                  //
+                  //                                 if (!isMe)
+                  //                                   CircleAvatar(
+                  //                                     radius: 19.sp,
+                  //                                     backgroundColor:
+                  //                                         Colors.grey.shade300,
+                  //                                     backgroundImage: widget
+                  //                                                 .image !=
+                  //                                             null
+                  //                                         ? NetworkImage(
+                  //                                             widget.image!)
+                  //                                         : AssetImage(
+                  //                                                 'assets/images/waveeLogoShort.png')
+                  //                                             as ImageProvider,
+                  //                                   ),
+                  //                                 if (!isMe) SizedBox(width: 8),
+                  //
+                  //                                 //send msg container
+                  //                                 Flexible(
+                  //                                   child: Container(
+                  //                                     constraints:
+                  //                                         BoxConstraints(
+                  //                                       minWidth: 60.w,
+                  //                                       // Minimum width (adjust as needed)
+                  //                                       maxWidth: 80
+                  //                                           .w, // Maximum width
+                  //                                     ),
+                  //                                     padding:
+                  //                                         EdgeInsets.symmetric(
+                  //                                             vertical: 1.h,
+                  //                                             horizontal: 3.w),
+                  //                                     decoration: BoxDecoration(
+                  //                                       color: isMe
+                  //                                           ?Color(0xFF734F96)
+                  //                                           : Colors.grey[300],
+                  //                                       borderRadius:
+                  //                                           BorderRadius
+                  //                                               .circular(10),
+                  //                                     ),
+                  //                                     child: getMessageWidget(
+                  //                                         messageModel
+                  //                                             ?.data?[index],
+                  //                                         isMe),
+                  //                                   ),
+                  //                                 ),
+                  //                                 if (!isMe)
+                  //                                   SizedBox(width: 20),
+                  //                                 // Space between message and date
+                  //                                 // Receiver's Date (Right Side)
+                  //                                 if (!isMe)
+                  //                                   Text(
+                  //                                     formatDateTime(
+                  //                                         messageModel?.data?[0]
+                  //                                                 .createdAt ??
+                  //                                             ""),
+                  //                                     style: TextStyle(
+                  //                                       fontSize: 12,
+                  //                                       color: Colors.grey,
+                  //                                       fontFamily: AppConstants
+                  //                                           .manrope,
+                  //                                     ),
+                  //                                   ),
+                  //
+                  //                                 if (isMe) SizedBox(width: 8),
+                  //                                 if (isMe)
+                  //                                   ClipRRect(
+                  //                                     borderRadius:
+                  //                                         BorderRadius.circular(
+                  //                                             25.sp),
+                  //                                     child: CachedNetworkImage(
+                  //                                       imageUrl: messageModel
+                  //                                               ?.data?[index]
+                  //                                               .sender
+                  //                                               ?.profile ??
+                  //                                           "",
+                  //                                       placeholder:
+                  //                                           (context, url) =>
+                  //                                               CircleAvatar(
+                  //                                         radius: 18.sp,
+                  //                                         backgroundColor:
+                  //                                             Colors.grey
+                  //                                                 .shade300,
+                  //                                       ),
+                  //                                       errorWidget: (context,
+                  //                                               url, error) =>
+                  //                                           CircleAvatar(
+                  //                                         radius: 18.sp,
+                  //
+                  //                                         child: Image.asset(
+                  //                                             "assets/images/waveeLogoShort.png"),
+                  //                                       ),
+                  //                                       width: 26.sp,
+                  //                                       height: 26.sp,
+                  //                                       fit: BoxFit.cover,
+                  //                                     ),
+                  //                                   ),
+                  //                               ],
+                  //                             ),
+                  //                           )
+                  //                         : Padding(
+                  //                             padding: EdgeInsets.symmetric(
+                  //                                 vertical: 5, horizontal: 10),
+                  //                             child: Row(
+                  //                               mainAxisAlignment: isMe
+                  //                                   ? MainAxisAlignment.end
+                  //                                   : MainAxisAlignment.start,
+                  //                               crossAxisAlignment:
+                  //                                   CrossAxisAlignment.center,
+                  //                               children: [
+                  //                                 // Sender's Date (Left Side)
+                  //                                 if (isMe)
+                  //                                   Text(
+                  //                                     formatDateTime(
+                  //                                         messageModel?.data?[0]
+                  //                                                 .createdAt ??
+                  //                                             ""),
+                  //                                     // Display time for sender on left
+                  //                                     style: TextStyle(
+                  //                                       fontSize: 12,
+                  //                                       color: Colors.grey,
+                  //                                       fontFamily: AppConstants
+                  //                                           .manrope,
+                  //                                     ),
+                  //                                   ),
+                  //
+                  //                                 if (isMe) SizedBox(width: 20),
+                  //                                 // Space between date and message
+                  //
+                  //                                 if (!isMe)
+                  //                                   CircleAvatar(
+                  //                                     radius: 19.sp,
+                  //                                     backgroundColor:
+                  //                                         Colors.grey.shade300,
+                  //                                     child: ClipOval(
+                  //                                       child:
+                  //                                           CachedNetworkImage(
+                  //                                         imageUrl:
+                  //                                             widget.image ??
+                  //                                                 '',
+                  //                                         fit: BoxFit.cover,
+                  //                                         width: 38.sp,
+                  //                                         // 2 * radius
+                  //                                         height: 38.sp,
+                  //                                         placeholder: (context,
+                  //                                                 url) =>
+                  //                                             CircularProgressIndicator(
+                  //                                                 strokeWidth:
+                  //                                                     1),
+                  //                                         errorWidget: (context,
+                  //                                                 url, error) =>
+                  //                                             Image.asset(
+                  //                                           'assets/images/waveeLogoShort.png',
+                  //                                           fit: BoxFit.cover,
+                  //                                           width: 38.sp,
+                  //                                           height: 38.sp,
+                  //                                         ),
+                  //                                       ),
+                  //                                     ),
+                  //                                   ),
+                  //                                 if (!isMe) SizedBox(width: 8),
+                  //
+                  //                                 //// recevier side container msg
+                  //                                 Flexible(
+                  //                                   child: Container(
+                  //                                     constraints:
+                  //                                         BoxConstraints(
+                  //                                       minWidth: 60.w,
+                  //                                       // Minimum width (adjust as needed)
+                  //                                       maxWidth: 80
+                  //                                           .w, // Maximum width
+                  //                                     ),
+                  //                                     padding:
+                  //                                         EdgeInsets.symmetric(
+                  //                                             vertical: 1.h,
+                  //                                             horizontal: 3.w),
+                  //                                     decoration: BoxDecoration(
+                  //                                       color: isMe
+                  //                                           ? Color(0xFF734F96)
+                  //                                           : Colors.grey[300],
+                  //                                       borderRadius:
+                  //                                           BorderRadius
+                  //                                               .circular(10),
+                  //                                     ),
+                  //                                     child: getMessageWidget(
+                  //                                         messageModel
+                  //                                             ?.data?[index],
+                  //                                         isMe),
+                  //                                   ),
+                  //                                 ),
+                  //
+                  //                                 if (!isMe)
+                  //                                   SizedBox(width: 20),
+                  //                                 // Space between message and date
+                  //                                 // Receiver's Date (Right Side)
+                  //                                 if (!isMe)
+                  //                                   Text(
+                  //                                     formatDateTime(
+                  //                                         messageModel?.data?[0]
+                  //                                                 .createdAt ??
+                  //                                             ""),
+                  //                                     style: TextStyle(
+                  //                                       fontSize: 12,
+                  //                                       color: Colors.grey,
+                  //                                       fontFamily: AppConstants
+                  //                                           .manrope,
+                  //                                     ),
+                  //                                   ),
+                  //
+                  //                                 if (isMe) SizedBox(width: 8),
+                  //                                 if (isMe)
+                  //                                   ClipRRect(
+                  //                                     borderRadius:
+                  //                                         BorderRadius.circular(
+                  //                                             25.sp),
+                  //                                     child: CachedNetworkImage(
+                  //                                       imageUrl: messageModel
+                  //                                               ?.data?[index]
+                  //                                               .sender
+                  //                                               ?.profile ??
+                  //                                           "",
+                  //                                       placeholder:
+                  //                                           (context, url) =>
+                  //                                               CircleAvatar(
+                  //                                         radius: 18.sp,
+                  //                                         backgroundColor:
+                  //                                             Colors.grey
+                  //                                                 .shade300,
+                  //                                       ),
+                  //                                       errorWidget: (context,
+                  //                                               url, error) =>
+                  //                                           CircleAvatar(
+                  //                                         radius: 18.sp,
+                  //                                         child: Image.asset(
+                  //                                             "assets/images/waveeLogoShort.png"),
+                  //                                       ),
+                  //                                       width: 26.sp,
+                  //                                       height: 26.sp,
+                  //                                       fit: BoxFit.cover,
+                  //                                     ),
+                  //                                   ),
+                  //                               ],
+                  //                             ),
+                  //                           )
+                  //                   ],
+                  //                 );
+                  //               },
+                  //             ),
+                  //           ),
+                  isLoading
+                      ? Center(
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.maincolor,
+                          ),
+                        ),
+                      ).paddingOnly(top: 30.h)
+                      : messageModel?.data == '' || messageModel?.data == null
+                      ? Expanded(
+                        child: Center(
+                          child: Text(
+                            "No Message available",
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                              fontFamily: AppConstants.manrope,
+                            ),
+                          ),
+                        ),
+                      )
+                      : Expanded(
+                        child: ListView.builder(
+                          reverse: true,
+                          controller: _scrollController,
+                          itemCount: messageModel?.data?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            bool isMe =
+                                messageModel?.data?[index].sender?.id ==
+                                loginModel?.data?.user?.id;
+
+                            DateTime? currentMessageDate;
+                            try {
+                              final created = DateTime.parse(
+                                messageModel?.data?[index].createdAt ?? "",
+                              );
+                              currentMessageDate = DateTime(
+                                created.year,
+                                created.month,
+                                created.day,
+                              );
+                            } catch (_) {}
+
+                            // Track if we should show the date separator
+                            bool showDateSeparator = false;
+                            if (index == messageModel!.data!.length - 1) {
+                              // Always show date for the last message (bottom)
+                              showDateSeparator = true;
+                            } else {
+                              try {
+                                final nextMessageDate = DateTime.parse(
+                                  messageModel?.data?[index + 1].createdAt ??
+                                      "",
+                                );
+                                final nextDate = DateTime(
+                                  nextMessageDate.year,
+                                  nextMessageDate.month,
+                                  nextMessageDate.day,
+                                );
+
+                                if (currentMessageDate != null &&
+                                    currentMessageDate != nextDate) {
+                                  showDateSeparator = true;
+                                }
+                              } catch (_) {}
+                            }
+
+                            return Column(
+                              children: [
+                                if (showDateSeparator)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 10,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        formatDateTime(
+                                          messageModel
+                                                  ?.data?[index]
+                                                  .createdAt ??
+                                              "",
+                                        ),
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                          fontFamily: AppConstants.manrope,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 5,
+                                    horizontal: 10,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        isMe
+                                            ? MainAxisAlignment.end
+                                            : MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      if (!isMe)
+                                        CircleAvatar(
+                                          radius: 19.sp,
+                                          backgroundColor: Colors.grey.shade300,
+                                          child: ClipOval(
+                                            child: CachedNetworkImage(
+                                              imageUrl: widget.image ?? '',
+                                              fit: BoxFit.cover,
+                                              width: 38.sp,
+                                              height: 38.sp,
+                                              placeholder:
+                                                  (context, url) =>
+                                                      CircularProgressIndicator(
+                                                        strokeWidth: 1,
+                                                      ),
+                                              errorWidget:
+                                                  (
+                                                    context,
+                                                    url,
+                                                    error,
+                                                  ) => Image.asset(
+                                                    'assets/images/waveeLogoShort.png',
+                                                    fit: BoxFit.cover,
+                                                    width: 38.sp,
+                                                    height: 38.sp,
+                                                  ),
+                                            ),
+                                          ),
+                                        ),
+                                      if (!isMe) SizedBox(width: 8),
+                                      Flexible(
+                                        child: Container(
+                                          constraints: BoxConstraints(
+                                            minWidth: 60.w,
+                                            maxWidth: 80.w,
+                                          ),
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 1.h,
+                                            horizontal: 3.w,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                isMe
+                                                    ? Color(0xFF734F96)
+                                                    : Colors.grey[300],
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                          ),
+                                          child: getMessageWidget(
+                                            messageModel?.data?[index],
+                                            isMe,
+                                          ),
+                                        ),
+                                      ),
+                                      if (isMe) SizedBox(width: 8),
+                                      if (isMe)
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            25.sp,
+                                          ),
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                messageModel
+                                                    ?.data?[index]
+                                                    .sender
+                                                    ?.profile ??
+                                                "",
+                                            placeholder:
+                                                (context, url) => CircleAvatar(
+                                                  radius: 18.sp,
+                                                  backgroundColor:
+                                                      Colors.grey.shade300,
+                                                ),
+                                            errorWidget:
+                                                (
+                                                  context,
+                                                  url,
+                                                  error,
+                                                ) => CircleAvatar(
+                                                  radius: 18.sp,
+                                                  child: Image.asset(
+                                                    "assets/images/waveeLogoShort.png",
+                                                  ),
+                                                ),
+                                            width: 26.sp,
+                                            height: 26.sp,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                  // Message Input Field
+                  isLoading
+                      ? Center(child: Text(""))
+                      : Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          10,
+                          10,
+                          10,
+                          20,
+                        ), // Added bottom padding of 20
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: Color(0xFF734F96),
+                              radius: 22,
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  selectfile();
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: Container(
+                                height: 50,
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(25),
+                                  border: Border.all(
+                                    color: Colors.grey.shade300,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: TextField(
+                                  onSubmitted: (text) {
+                                    if (text.isNotEmpty) {
+                                      setState(() {
+                                        messages.add(text);
+                                      });
+                                    }
+                                  },
+                                  controller: _messageController,
+                                  textInputAction: TextInputAction.send,
+                                  decoration: const InputDecoration(
+                                    hintText: "Type a message...",
+                                    hintStyle: TextStyle(color: Colors.grey),
+
+                                    border:
+                                        InputBorder
+                                            .none, // Removes default border
+                                    contentPadding: EdgeInsets.symmetric(
+                                      vertical: 12,
+                                      horizontal: 16,
+                                    ),
+                                  ),
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            CircleAvatar(
+                              backgroundColor: Color(0xFF734F96),
+                              radius: 22,
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.send,
+                                  color: Colors.white,
+                                  size: 22,
+                                ),
+                                onPressed: () {
+                                  if (_messageController.text.trim().isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Message cannot be empty',
+                                        ),
+                                        backgroundColor: AppColors.redColor,
+                                        // Optional: Set background color
+                                        duration: Duration(
+                                          seconds: 1,
+                                        ), // Optional: Auto dismiss time
+                                      ),
+                                    );
+                                  } else {
+                                    setState(() {
+                                      type = 1;
+                                    });
+                                    isLoading ? null : SendMessagApi();
+                                    _scrollToBottom();
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                ],
+              ),
+
+              isSending
+                  ? Positioned.fill(
+                    child: Container(
+                      color: Colors.black.withOpacity(
+                        0.4,
+                      ), // Background overlay
+                      child: Center(child: Loader()), // Centered Loader
+                    ),
+                  )
+                  : SizedBox(), // Hide when not sending
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget getMessageWidget(message, bool isMe) {
+    if (message == null) return SizedBox.shrink();
+
+    switch (message.messageType) {
+      case '1': // Text Message
+        return Text(
+          message.message ?? "",
+          style: TextStyle(
+            fontFamily: AppConstants.manrope,
+            color: isMe ? Colors.white : Colors.black,
+          ),
+        );
+
+      case '2': // Image Message
+        return ClipRRect(
+          // borderRadius: BorderRadius.circular(2),
+          child: CachedNetworkImage(
+            imageUrl: message.file ?? "",
+            placeholder: (context, url) => CircularProgressIndicator(),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          ),
+        );
+
+      case '3': // Video Message
+        return GestureDetector(
+          onTap: () {
+            Get.to(VideoPlayerScreen(videoUrl: message.file ?? ""));
+          },
+          child: Column(
+            children: [
+              Icon(Icons.play_circle_fill, size: 50, color: Colors.blue),
+              Text("Play Video", style: TextStyle(color: Colors.black)),
+            ],
+          ),
+        );
+
+      case '4': // PDF Message
+        return GestureDetector(
+          onTap: () async {
+            await launch(message.file ?? "");
+          },
+          child: Container(
+            width: 78,
+            height: 60,
+            child: Row(
+              children: [
+                Icon(Icons.picture_as_pdf, size: 70, color: Colors.black),
+                SizedBox(width: 8),
+                // Text("Open PDF", style: TextStyle(color: Colors.black)),
+              ],
+            ),
+          ),
+        );
+
+      default:
+        return Text("Unsupported Message Type");
+    }
+  }
+
+  void MessageApi() async {
+    checkInternet().then((internet) async {
+      if (internet) {
+        try {
+          String userId = loginModel?.data?.user?.id.toString() ?? '';
+          String conciergeId =
+              (widget.conciergeID.toString() ==
+                      (loginModel?.data?.user?.id.toString() ?? ""))
+                  ? (widget.senderid?.toString() ?? "")
+                  : (widget.conciergeID?.toString() ?? "");
+
+          String type =
+              widget.type?.isNotEmpty == true
+                  ? widget.type.toString() ?? ""
+                  : 'business';
+
+          var response = await MessageProvider().MessageApi(
+            userId,
+            conciergeId,
+            type,
+          );
+          log("data jay che receive id no  ${conciergeId}");
+          if (response.statusCode == 200) {
+            var data = jsonDecode(response.body);
+            messageModel = MessageModel.fromJson(data);
+            log("✅ API Body Data:\n${jsonEncode(data)}");
+            print("🔹 Message List:");
+            // for (var msg in data['data']['messages']) {
+            //   print(
+            //       "📩 Message: ${msg['message']}, Sender: ${msg['sender_id']}");
+            // }
+          } else {
+            log("❌ Error: ${response.body}");
+          }
+
+          setState(() {
+            isLoading = false;
+          });
+        } catch (e, stackTrace) {
+          if (mounted) {
+            setState(() {
+              isLoading = false;
+            });
+          }
+          print("❗ Exception: $e $stackTrace");
+        }
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  void SendMessagApi() {
+    if (type == 2 || type == 3 || type == 4 || type == 1) {
+      setState(() {
+        isSending = true;
+        loadingMessage =
+            type == 2
+                ? 'Sending Photo'
+                : type == 3
+                ? 'Sending Video'
+                : type == 1
+                ? 'Sending Message'
+                : 'Sending File';
+      });
+    }
+    String conciergeId =
+        (widget.conciergeID.toString() ==
+                (loginModel?.data?.user?.id.toString() ?? ""))
+            ? (widget.senderid?.toString() ?? "")
+            : (widget.conciergeID?.toString() ?? "");
+    final Map<String, String> data = {
+      "message": _messageController.text.trim(),
+      "sender_id": loginModel?.data?.user?.id.toString() ?? '',
+      "receiver_id": conciergeId.toString() ?? "",
+      "msg_to": widget.type ?? '',
+      "type": "1",
+      // "type": '1',
+      "files": type == 1 ? '' : _pickedFile!.path,
+    };
+
+    print("data jai che$data");
+    checkInternet().then((internet) async {
+      if (internet) {
+        try {
+          var response = await MessageProvider().sendmessageapi(data);
+          sendMessageModel = SendMessageModel.fromJson(
+            jsonDecode(response.body),
+          );
+
+          if (response.statusCode == 200 && sendMessageModel?.status == 200) {
+            setState(() {
+              isSending = false;
+              _messageController.clear();
+            });
+            setState(() {
+              isLoading = false;
+              _messageController.clear();
+            });
+            MessageApi();
+            // _messageController.clear();
+          } else {
+            log("Error sending message: ${response.body}");
+          }
+        } catch (e, stackTrace) {
+          log("Error: $e");
+          print("StackTrace: $stackTrace");
+        } finally {
+          isLoading = false; // Reset flag after API response
+        }
+      } else {
+        buildErrorDialog(context, 'Error', "Internet Required");
+        isLoading = false;
+      }
+    });
+  }
+
+  selectfile() {
+    AlertDialog alert = AlertDialog(
+      backgroundColor: Colors.white,
+      alignment: Alignment.center,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+      content: Stack(
+        children: [
+          Container(
+            width:
+                MediaQuery.of(
+                  context,
+                ).size.width, // Set the width to 80% of the screen width
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 1.h),
+                Text(
+                  "Select File Type",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15.sp,
+                    fontFamily: AppConstants.manrope,
+                  ),
+                ),
+                SizedBox(height: 1.h),
+                Divider(color: Colors.black),
+                SizedBox(height: 1.h),
+                SizedBox(
+                  width: 80.w,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              final XFile? photo = await _picker.pickImage(
+                                source: ImageSource.gallery,
+                              );
+                              setState(() {
+                                _pickedFile = File(photo!.path);
+                                type = 2;
+                                print(_pickedFile);
+                              });
+                              SendMessagApi();
+                              Navigator.of(context).pop();
+
+                              // XFile? photo = await _picker.pickVideo(source: ImageSource.gallery);
+                              // setState(() {
+                              //   _pickedFile = File(photo!.path);
+                              // });
+                              // addchat();
+                            },
+                            child: Container(
+                              height: 13.w,
+                              width: 13.w,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(80),
+                                color: AppColors.maincolor,
+                              ),
+                              child: Icon(
+                                Icons.photo,
+                                size: 20.sp,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 0.5.h),
+                          Text(
+                            "Photo",
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 13.sp,
+                              fontFamily: AppConstants.manrope,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              final XFile? photo = await _picker.pickVideo(
+                                source: ImageSource.gallery,
+                              );
+                              setState(() {
+                                type = 3;
+                                _pickedFile = File(photo!.path);
+                                print("video daat");
+                                print(_pickedFile);
+                              });
+                              SendMessagApi();
+                              // getvideo();
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                              height: 13.w,
+                              width: 13.w,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(80),
+                                color: AppColors.maincolor,
+                              ),
+                              child: Icon(
+                                CupertinoIcons.videocam_circle_fill,
+                                color: Colors.white,
+                                size: 20.sp,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 0.5.h),
+                          Text(
+                            "Video",
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 13.sp,
+                              fontFamily: AppConstants.manrope,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              print("hooo");
+                              FilePickerResult? result =
+                                  await FilePicker.platform.pickFiles();
+                              if (result != null) {
+                                setState(() {
+                                  type = 4;
+                                  _pickedFile = File(
+                                    result.files.single.path.toString(),
+                                  );
+                                  print(_pickedFile);
+                                  SendMessagApi();
+                                });
+                              } else {
+                                // User canceled the picker
+                              }
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                              height: 13.w,
+                              width: 13.w,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(80),
+                                color: AppColors.maincolor,
+                              ),
+                              child: Icon(
+                                Icons.file_present_outlined,
+                                color: Colors.white,
+                                size: 20.sp,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 0.5.h),
+                          Text(
+                            "File",
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 13.sp,
+                              fontFamily: AppConstants.manrope,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            right: 0,
+            child: InkWell(
+              onTap: () {
+                Get.back();
+              },
+              child: Container(
+                height: 8.w,
+                width: 8.w,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.close, color: Colors.black),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    showDialog(
+      context: context,
+      builder: (context) {
+        return alert;
+      },
+    );
+  }
+
+  void dispose() {
+    _messageController.dispose();
+    _scrollController.dispose();
+    _timer!.cancel();
+    super.dispose();
+  }
+}
