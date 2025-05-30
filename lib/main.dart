@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -15,6 +16,7 @@ import 'Screen/HomeNewPage/Provider/homescreen_provider.dart';
 import 'Screen/ViewProfile/Provider/profile_provider.dart';
 import 'comman/locationServices.dart';
 import 'comman/store_local.dart';
+import 'firebase_options.dart';
 
 void configLoading() {
   EasyLoading.instance
@@ -31,6 +33,8 @@ void configLoading() {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   SharedPreferences prefs = await SharedPreferences.getInstance();
   LoginModel? loginModel = await SaveDataLocal.getDataFromLocal();
   await LocationService().requestLocationPermission();
