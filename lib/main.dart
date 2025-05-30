@@ -33,7 +33,6 @@ void configLoading() {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   SharedPreferences prefs = await SharedPreferences.getInstance();
   LoginModel? loginModel = await SaveDataLocal.getDataFromLocal();
@@ -77,3 +76,5 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+

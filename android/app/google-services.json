@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "106443104504",
+    "project_id": "wavee-dcf27",
+    "storage_bucket": "wavee-dcf27.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106443104504:android:dc0b8069e2c099d09cdb0d",
+        "android_client_info": {
+          "package_name": "com.wavee.community"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmz0t3_EFyHxuu9YKIakEjTq_eqKS2PdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

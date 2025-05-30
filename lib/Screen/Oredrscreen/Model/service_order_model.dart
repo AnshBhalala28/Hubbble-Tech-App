@@ -418,7 +418,8 @@ class Products {
   }
 }
 
-class Service {
+class Service
+{
   int? id;
   int? userId;
   int? categoryId;
@@ -466,6 +467,30 @@ class Service {
         this.createdAt,
         this.updatedAt});
 
+  // Service.fromJson(Map<String, dynamic> json) {
+  //   id = json['id'];
+  //   userId = json['user_id'];
+  //   categoryId = json['category_id'];
+  //   title = json['title'];
+  //   slug = json['slug'];
+  //   description = json['description'];
+  //   price = json['price'];
+  //   pricingType = json['pricing_type'];
+  //   duration = json['duration'];
+  //   images = json['images'];
+  //   galleryImages = json['gallery_images'].cast<String>();
+  //   features = json['features'].cast<String>();
+  //   benefits = json['benefits'].cast<String>();
+  //   availability = json['availability'];
+  //   typeOfService = json['type_of_service'];
+  //   serviceProvider = json['service_provider'];
+  //   contactEmail = json['contact_email'];
+  //   contactPhone = json['contact_phone'];
+  //   location = json['location'];
+  //   status = json['status'];
+  //   createdAt = json['created_at'];
+  //   updatedAt = json['updated_at'];
+  // }
   Service.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userId = json['user_id'];
@@ -477,9 +502,19 @@ class Service {
     pricingType = json['pricing_type'];
     duration = json['duration'];
     images = json['images'];
-    galleryImages = json['gallery_images'].cast<String>();
-    features = json['features'].cast<String>();
-    benefits = json['benefits'].cast<String>();
+
+    galleryImages = json['gallery_images'] is List
+        ? List<String>.from(json['gallery_images'])
+        : [];
+
+    features = json['features'] is List
+        ? List<String>.from(json['features'])
+        : [];
+
+    benefits = json['benefits'] is List
+        ? List<String>.from(json['benefits'])
+        : [];
+
     availability = json['availability'];
     typeOfService = json['type_of_service'];
     serviceProvider = json['service_provider'];
