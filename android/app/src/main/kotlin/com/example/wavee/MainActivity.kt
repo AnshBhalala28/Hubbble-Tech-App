@@ -1,4 +1,4 @@
-package com.example.wavee
+package com.wavee.community
 
 import io.flutter.embedding.android.FlutterActivity
 

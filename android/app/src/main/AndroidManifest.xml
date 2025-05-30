@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.wavee"> <!-- Ensure correct package name -->
+    package="com.wavee.community"> <!-- Ensure correct package name -->
 
     <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
