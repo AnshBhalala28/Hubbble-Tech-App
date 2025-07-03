@@ -234,7 +234,18 @@ class Product {
     status = json['status'];
     isFeatured = json['is_featured'];
     image = json['image'];
-    images = json['images'].cast<String>();
+    if (json['images'] != null) {
+      if (json['images'] is List) {
+        images = List<String>.from(json['images']);
+      } else if (json['images'] is String) {
+        images =
+            (json['images'] as String).split(',').map((e) => e.trim()).toList();
+      } else {
+        images = [];
+      }
+    } else {
+      images = [];
+    }
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }
