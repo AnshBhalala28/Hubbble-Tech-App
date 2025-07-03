@@ -1,18 +1,20 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:mime/mime.dart'; // for MIME type detection
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 
 import '../../../comman/CustomExpection.dart';
 import '../../../comman/const.dart';
 import '../../../comman/responses.dart';
 
 class MessageBoardProvider extends ChangeNotifier {
-  Future<http.Response> conciergerlistApi(String user_id,) async {
+  Future<http.Response> conciergerlistApi(
+    String user_id,
+  ) async {
     String url = '${baseUrl}/list-concierger?user_id=$user_id';
     print("Get conciergerlist Url : $url");
     try {
@@ -77,9 +79,6 @@ class MessageBoardProvider extends ChangeNotifier {
     return responseJson;
   }
 
-
-
-  // ram Api
   Future<http.Response> localpostap(Map<String, String> bodyData) async {
     const url = '${baseUrl}/get_post_app';
     print("localpost url : $url");
@@ -100,51 +99,24 @@ class MessageBoardProvider extends ChangeNotifier {
     return responseJson;
   }
 
-
-  // Future<dynamic> GetMyJoinGroup(Map<String, String> bodyData) async {
-  //   const url = '${baseUrl}/my-joined-groups';
-  //   print("post Dwell time Url : $url");
-  //
-  //   // HTTP request મોકલો
-  //   final response = await http
-  //       .post(
-  //     Uri.parse(url),
-  //     body: bodyData,
-  //   )
-  //       .timeout(
-  //     const Duration(seconds: 60),
-  //     onTimeout: () {
-  //       throw const SocketException('Some thing went wrong');
-  //     },
-  //   );
-  //
-  //   // Response body parse કરો
-  //   var responseJson = responses(response); // response pass કરીને process કરો
-  //
-  //   print(response.body); // Response body print કરો
-  //   return responseJson; // Processed response return કરો
-  // }
-
-
-  Future<http.Response> creategroupapi(Map<String, String> bodyData, List<String> memberIds, {File? imageFile}) async {
+  Future<http.Response> creategroupapi(
+      Map<String, String> bodyData, List<String> memberIds,
+      {File? imageFile}) async {
     const url = '${baseUrl}/add-group';
     print("Request URL: $url");
 
     try {
       var request = http.MultipartRequest('POST', Uri.parse(url));
 
-      // **Add Text Fields**
       bodyData.forEach((key, value) {
         request.fields[key] = value;
       });
 
-      // **Add List of Member IDs**
       for (int i = 0; i < memberIds.length; i++) {
         request.fields['members[$i]'] = memberIds[i];
         log("Member id jay che ${memberIds[i]}");
       }
 
-      // **Add Image File if provided**
       if (imageFile != null) {
         var fileStream = http.ByteStream(imageFile.openRead());
         var fileLength = await imageFile.length();
@@ -183,25 +155,19 @@ class MessageBoardProvider extends ChangeNotifier {
     print("Request URL: $url");
 
     try {
-      // Prepare a multipart request for both text and files
       final imageUploadRequest = http.MultipartRequest('POST', Uri.parse(url));
 
-      // Add text fields to the request (skip 'files' as we handle them separately)
       bodyData.forEach((key, value) {
         if (key != 'files') {
-          // Exclude 'files' field from text fields
           imageUploadRequest.fields[key] = value;
         }
       });
 
-      // Check if there are files to upload
       if (bodyData['files']?.isNotEmpty ?? false) {
         final String filePath = bodyData['files']!;
 
-        // Log the file path for debugging
         print('Uploading file: $filePath');
 
-        // Determine the media type based on the file extension or other logic
         String fileExtension = filePath.split('.').last.toLowerCase();
         MediaType mediaType;
 
@@ -221,16 +187,14 @@ class MessageBoardProvider extends ChangeNotifier {
             throw Exception('Unsupported media type');
         }
 
-        // Add the file as an array of files
         final file = await http.MultipartFile.fromPath(
-          'files', // Important: note the array-like naming 'files[]'
+          'files',
           filePath,
           contentType: mediaType,
         );
         imageUploadRequest.files.add(file);
       }
 
-      // Send the request and get the response
       final streamResponse = await imageUploadRequest.send();
       final response = await http.Response.fromStream(streamResponse);
 
@@ -301,6 +265,7 @@ class MessageBoardProvider extends ChangeNotifier {
     print(response.body);
     return responseJson;
   }
+
   Future<http.Response> addpostapWithImages({
     required Map<String, String> bodyData,
     required List<XFile> images,
@@ -310,10 +275,8 @@ class MessageBoardProvider extends ChangeNotifier {
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
 
-    // Add fields
     request.fields.addAll(bodyData);
 
-    // Add images with dynamic MIME type
     for (int i = 0; i < images.length; i++) {
       final mimeType = lookupMimeType(images[i].path);
 
@@ -331,7 +294,6 @@ class MessageBoardProvider extends ChangeNotifier {
       }
     }
 
-    // Send request
     var streamedResponse = await request.send().timeout(
       const Duration(seconds: 60),
       onTimeout: () {
@@ -339,15 +301,13 @@ class MessageBoardProvider extends ChangeNotifier {
       },
     );
 
-    // Convert to http.Response
     final response = await http.Response.fromStream(streamedResponse);
     print("Response: ${response.body}");
     return response;
   }
 
-
   Future<http.Response> postlikeapii(Map<String, String> bodyData) async {
-    const url = '${baseUrl}/post-offers-promo-like-dislike';
+    const url = '${baseUrl}/add-like-comment';
     print("post like send Url : $url");
     var responseJson;
     final response = await http
@@ -365,27 +325,6 @@ class MessageBoardProvider extends ChangeNotifier {
     print(response.body);
     return responseJson;
   }
-
-  // Future<http.Response> getcommentsapi(Map<String, String> bodyData) async {
-  //   const url = '${baseUrl}/get-post-comments';
-  //   print("get comments list request Url : $url");
-  //   var responseJson;
-  //   final response = await http
-  //       .post(
-  //     Uri.parse(url),
-  //     body: bodyData,
-  //   )
-  //       .timeout(
-  //     const Duration(seconds: 60),
-  //     onTimeout: () {
-  //       throw const SocketException('Something went wrong');
-  //     },
-  //   );
-  //   responseJson = responses(response);
-  //   print(response.body);
-  //   return responseJson;
-  // }
-
 
   Future<http.Response> getcommentsapi(Map<String, String> bodyData) async {
     const url = '${baseUrl}/get-post-comments';
@@ -410,6 +349,7 @@ class MessageBoardProvider extends ChangeNotifier {
       throw Exception('An error occurred: $e');
     }
   }
+
   Future<http.Response> DeletePost(Map<String, String> bodyData) async {
     const url = '${baseUrl}/app-post-delete';
     print("get comments list request Url: $url");
@@ -434,10 +374,8 @@ class MessageBoardProvider extends ChangeNotifier {
     }
   }
 
-
-  // Ram Api
-
-  Future<http.Response> getcommentslocalpostap(Map<String, String> bodyData) async {
+  Future<http.Response> getcommentslocalpostap(
+      Map<String, String> bodyData) async {
     const url = '${baseUrl}/get-post-comments';
     print("get comments list request Url: $url");
     try {
@@ -460,26 +398,6 @@ class MessageBoardProvider extends ChangeNotifier {
       throw Exception('An error occurred: $e');
     }
   }
-
-  // Future<http.Response> sendcommentsapi(Map<String, String> bodyData) async {
-  //   const url = '${baseUrl}/add-like-comment';
-  //   print("send comments list request Url : $url");
-  //   var responseJson;
-  //   final response = await http
-  //       .post(
-  //     Uri.parse(url),
-  //     body: bodyData,
-  //   )
-  //       .timeout(
-  //     const Duration(seconds: 60),
-  //     onTimeout: () {
-  //       throw const SocketException('Something went wrong');
-  //     },
-  //   );
-  //   responseJson = responses(response);
-  //   print(response.body);
-  //   return responseJson;
-  // }
 
   Future<http.Response> sendcommentsapi(Map<String, String> bodyData) async {
     const url = '${baseUrl}/add-like-comment';
@@ -505,7 +423,9 @@ class MessageBoardProvider extends ChangeNotifier {
     }
   }
 
-  Future<http.Response> getgroupmembers(String GroupId,) async {
+  Future<http.Response> getgroupmembers(
+    String GroupId,
+  ) async {
     String url = '${baseUrl}/group-member/$GroupId';
     print("group members url${url}");
     print(url);
@@ -525,7 +445,8 @@ class MessageBoardProvider extends ChangeNotifier {
     return responseJson;
   }
 
-  Future<http.Response> RemoveGroupmemberapi(Map<String, String> bodyData) async {
+  Future<http.Response> RemoveGroupmemberapi(
+      Map<String, String> bodyData) async {
     const url = '${baseUrl}/remove-group-member';
     print("remove group Url : $url");
     var responseJson;
@@ -565,7 +486,8 @@ class MessageBoardProvider extends ChangeNotifier {
     return responseJson;
   }
 
-  Future<http.Response> deletegroup(String GroupId, id) async {String url = '${baseUrl}/delete-my-group/$GroupId?user_id=$id';
+  Future<http.Response> deletegroup(String GroupId, id) async {
+    String url = '${baseUrl}/delete-my-group/$GroupId?user_id=$id';
     print("Delete group url${url}");
     print(url);
     var responseJson;
@@ -584,7 +506,9 @@ class MessageBoardProvider extends ChangeNotifier {
     return responseJson;
   }
 
-  Future<http.Response> GetRequestApi(String user_id,) async {
+  Future<http.Response> GetRequestApi(
+    String user_id,
+  ) async {
     String url = '${baseUrl}/get_request_app?user_id=$user_id';
     print("Get Request person  Url : $url");
     try {
@@ -609,7 +533,8 @@ class MessageBoardProvider extends ChangeNotifier {
     }
   }
 
-  Future<http.Response> AppFrienduserpersonalinfo(Map<String, String> bodyData) async {
+  Future<http.Response> AppFrienduserpersonalinfo(
+      Map<String, String> bodyData) async {
     const url = '${baseUrl}/residents-app-view';
     print("send comments list request Url: $url");
     try {
@@ -635,17 +560,15 @@ class MessageBoardProvider extends ChangeNotifier {
 
   Future<http.Response> UpdatePost({
     required Map<String, String> bodyData,
-    required List<File> images, // <-- Changed to File
+    required List<File> images,
   }) async {
     const url = '${baseUrl}/app_post_update_feed';
     print("Post request URL: $url");
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
 
-    // Add fields
     request.fields.addAll(bodyData);
 
-    // Add images with dynamic MIME type
     for (int i = 0; i < images.length; i++) {
       final mimeType = lookupMimeType(images[i].path);
 
@@ -663,7 +586,6 @@ class MessageBoardProvider extends ChangeNotifier {
       }
     }
 
-    // Send request
     var streamedResponse = await request.send().timeout(
       const Duration(seconds: 60),
       onTimeout: () {
@@ -675,5 +597,4 @@ class MessageBoardProvider extends ChangeNotifier {
     print("Response: ${response.body}");
     return response;
   }
-
 }

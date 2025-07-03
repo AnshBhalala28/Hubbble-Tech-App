@@ -38,16 +38,11 @@ class Data {
     id = json['id'];
     comment = json['comment'];
 
-    //user = json['user'] != null ? new User.fromJson(json['user']) : null;
-
-
-    // FIX: Only parse user if it's a Map, not a List
     if (json['user'] is Map<String, dynamic>) {
       user = User.fromJson(json['user']);
     } else {
       user = null;
     }
-
   }
 
   Map<String, dynamic> toJson() {

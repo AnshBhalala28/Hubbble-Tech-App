@@ -28,7 +28,7 @@ class Data {
   String? name;
   String? price;
   String? offerPrice;
-  int? quantity;
+  String? quantity;
   String? description;
   List<String>? features;
   String? status;
@@ -41,31 +41,32 @@ class Data {
   String? businessName;
   int? productRating;
   List<LatestReviews>? latestReviews;
-var galleryImages;var benefits;
+  var galleryImages;
+  var benefits;
   String? discount;
 
   Data(
       {this.id,
-        this.userId,
-        this.name,
-        this.price,
-        this.offerPrice,
-        this.quantity,
-        this.description,
-        this.features,
-        this.status,
-        this.isFeatured,
-        this.image,
-        this.images,
-        this.createdAt,
-        this.updatedAt,
-        this.businessId,
-        this.businessName,
-        this.productRating,
-        this.latestReviews,
-        this.galleryImages,
-        this.benefits,
-        this.discount});
+      this.userId,
+      this.name,
+      this.price,
+      this.offerPrice,
+      this.quantity,
+      this.description,
+      this.features,
+      this.status,
+      this.isFeatured,
+      this.image,
+      this.images,
+      this.createdAt,
+      this.updatedAt,
+      this.businessId,
+      this.businessName,
+      this.productRating,
+      this.latestReviews,
+      this.galleryImages,
+      this.benefits,
+      this.discount});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -75,22 +76,51 @@ var galleryImages;var benefits;
     offerPrice = json['offer_price'];
     quantity = json['quantity'];
     description = json['description'];
-    features = json['features'].cast<String>();
+
+    if (json['features'] != null) {
+      if (json['features'] is List) {
+        features = List<String>.from(json['features']);
+      } else if (json['features'] is String) {
+        features = (json['features'] as String)
+            .split(',')
+            .map((e) => e.trim())
+            .toList();
+      } else {
+        features = [];
+      }
+    } else {
+      features = [];
+    }
+
     status = json['status'];
     isFeatured = json['is_featured'];
     image = json['image'];
-    images = json['images'].cast<String>();
+
+    if (json['images'] != null) {
+      if (json['images'] is List) {
+        images = List<String>.from(json['images']);
+      } else if (json['images'] is String) {
+        images = [json['images']];
+      } else {
+        images = [];
+      }
+    } else {
+      images = [];
+    }
+
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     businessId = json['business_id'];
     businessName = json['business_name'];
     productRating = json['product_rating'];
+
     if (json['latest_reviews'] != null) {
       latestReviews = <LatestReviews>[];
       json['latest_reviews'].forEach((v) {
-        latestReviews!.add(new LatestReviews.fromJson(v));
+        latestReviews!.add(LatestReviews.fromJson(v));
       });
     }
+
     galleryImages = json['gallery_images'];
     benefits = json['benefits'];
     discount = json['discount'];
@@ -139,14 +169,14 @@ class LatestReviews {
 
   LatestReviews(
       {this.id,
-        this.userId,
-        this.productId,
-        this.rating,
-        this.review,
-        this.createdAt,
-        this.updatedAt,
-        this.userName,
-        this.userProfile});
+      this.userId,
+      this.productId,
+      this.rating,
+      this.review,
+      this.createdAt,
+      this.updatedAt,
+      this.userName,
+      this.userProfile});
 
   LatestReviews.fromJson(Map<String, dynamic> json) {
     id = json['id'];

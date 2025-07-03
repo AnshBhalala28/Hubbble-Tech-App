@@ -7,9 +7,8 @@ import 'package:http/http.dart' as http;
 import '../../../../comman/const.dart';
 
 class ServiceProvider extends ChangeNotifier {
-
-
-  Future<http.Response> ServiceDetailApi(String UserId, String serviceid, String type) async {
+  Future<http.Response> ServiceDetailApi(
+      String UserId, String serviceid, String type) async {
     String url =
         '${baseUrl}/getProductDetails?user_id=$UserId&id=$serviceid&type=$type';
     print("Product Detail Url : $url");
@@ -34,6 +33,4 @@ class ServiceProvider extends ChangeNotifier {
       throw Exception('An error occurred: $e');
     }
   }
-
-
 }

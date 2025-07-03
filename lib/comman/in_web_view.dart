@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+
 import 'package:wavee/Screen/Buy%20Product/place_order_model.dart';
 import 'package:wavee/Screen/Thankyou%20Page/view/thankyou_page.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -35,42 +38,38 @@ class _StripeWebViewState extends State<StripeWebView> {
   }
 
   WebViewController _createWebViewController() {
-    final controller =
-        WebViewController()
-          ..setJavaScriptMode(JavaScriptMode.unrestricted)
-          ..setBackgroundColor(Colors.transparent)
-          ..loadRequest(Uri.parse(widget.link.toString()))
-          ..setNavigationDelegate(
-            NavigationDelegate(
-              onPageStarted: (String url) {
-                setState(() {
-                  _load = true;
-                });
-              },
-              onPageFinished: (String url) async {
-                setState(() {
-                  _load = false;
-                });
+    final controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(Colors.transparent)
+      ..loadRequest(Uri.parse(widget.link.toString()))
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (String url) {
+            setState(() {
+              _load = true;
+            });
+          },
+          onPageFinished: (String url) async {
+            setState(() {
+              _load = false;
+            });
 
-                log("Current URL app redirect: $url");
+            log("Current URL app redirect: $url");
 
-                if (url.contains("payment-successful")) {
-                  await Future.delayed(const Duration(seconds: 2));
-                  if (mounted) {
-                    CheckOutAPI();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ThankYouPage(),
-                      ),
-                    );
-                  }
-                }
-              },
-            ),
-          );
+            if (url.contains("payment-successful")) {
+              await Future.delayed(const Duration(seconds: 2));
+              if (mounted) {
+                CheckOutAPI();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ThankYouPage()),
+                );
+              }
+            }
+          },
+        ),
+      );
 
-    // Platform specific configuration
     if (controller.platform is AndroidWebViewController) {
       (controller.platform as AndroidWebViewController)
           .setMediaPlaybackRequiresUserGesture(false);
@@ -94,13 +93,22 @@ class _StripeWebViewState extends State<StripeWebView> {
           children: [
             SizedBox(height: 5.5.h),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                GestureDetector(
+                  onTap: () {
+                    Get.back();
+                  },
+                  child: Icon(
+                    Icons.arrow_back,
+                  ),
+                ),
+                SizedBox(width: 35.w,),
                 Text(
                   widget.title.toString(),
                   style: TextStyle(
                     fontSize: 15.5.sp,
-                    fontFamily: "task",
+                    fontFamily: AppConstants.manrope,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

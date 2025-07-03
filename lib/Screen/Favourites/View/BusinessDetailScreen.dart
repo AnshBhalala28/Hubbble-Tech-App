@@ -4,6 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
@@ -16,6 +18,7 @@ import '../../../comman/SideMenu.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
+import '../../../comman/custom_batan.dart';
 import '../../../comman/error_dialog.dart';
 import '../../../comman/loader.dart';
 import '../../../comman/videowidget.dart';
@@ -24,7 +27,11 @@ import '../../Community Screen/Community Screen/Model/OfferPromoAsViewedModel.da
 import '../../Community Screen/Community Screen/Model/businesslikemodel.dart';
 import '../../Community Screen/Community Screen/Provider/community_provider.dart';
 import '../../Community Screen/Community Screen/view/FullScreenImageView.dart';
+import '../../Event/Model/send_event_model.dart';
+import '../../Event/Provider/event_provider.dart';
 import '../../Message_screen/View/messageScreen.dart';
+import '../../Product Detail Page/view/product_detail_page.dart';
+import '../../Service Detail Page/View/service_detail_page.dart';
 
 class BusinessDetailScreen extends StatefulWidget {
   final BusnessViewModal? busnessviewmodal;
@@ -42,544 +49,111 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
   String AppLat = '';
   String AppLon = '';
   String selectedUserId = '';
+  List<String> sentEventIds = [];
+  bool isRequestValid = false;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController requestController = TextEditingController();
+  late String _mapStyle;
+  bool isLoading = false;
+  bool load = false;
+  bool isMapLoading = false;
+  bool isLocationFetched = false;
 
   @override
   void initState() {
     super.initState();
     setState(() {});
+
+    _getCurrentLocation();
   }
 
-  void moveToLocation() {
-    // Implement your location functionality here
-    // Same as in your bottom sheet
-  }
+  void moveToLocation() {}
 
-  Widget buildListTile(
-      {required IconData icon,
-      required String title,
-      required String subtitle}) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(icon, size: 25, color: Colors.black54),
-          SizedBox(width: 4.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: AppConstants.manrope),
-                ),
-                SizedBox(height: 0.5.h),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                      fontSize: 15.sp,
-                      color: Colors.black87,
-                      fontFamily: AppConstants.manrope),
-                ),
-              ],
-            ),
-          ),
-          Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
-        ],
-      ),
-    );
-  }
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
 
-  Widget buildMediaListView(List<Posts> mediaItems) {
-    return SizedBox(
-      height: 35.h,
-      child: InViewNotifierList(
-        scrollDirection: Axis.horizontal,
-        isInViewPortCondition: (deltaTop, deltaBottom, viewPortDimension) {
-          return deltaTop < (0.5 * viewPortDimension) &&
-              deltaBottom > (0.5 * viewPortDimension);
-        },
-        itemCount: mediaItems.length,
-        builder: (context, index) {
-          final item = mediaItems[index];
-          return InViewNotifierWidget(
-            id: '$index',
-            builder: (context, isInView, _) {
-              return Container(
-                width: 44.w,
-                height: 30.h,
-                margin: EdgeInsets.symmetric(horizontal: 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey.shade300, width: 1.5),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: item.type == 'video'
-                      ? VideoWidget(
-                          videoUrl: item.file ?? '',
-                          play: isInView,
-                          postId: item.id ?? 0,
-                        )
-                      : GestureDetector(
-                          onTap: () {
-                            print("Image tapped: ${item.file}");
-                            Get.to(() => FullScreenImageView(
-                                  imageUrl: item.file ?? '',
-                                  postId: item.id ?? 0,
-                                ));
-                          },
-                          child: CachedNetworkImage(
-                            imageUrl: item.file ?? '',
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: double.infinity,
-                            placeholder: (context, url) => Image.asset(
-                              'assets/images/waveeLogoShort.png',
-                            ),
-                            errorWidget: (context, url, error) => Image.asset(
-                              'aassets/images/waveeLogoShort.png',
-                            ),
-                          ),
-                        ),
-                ),
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
-
-  Widget buildEventListView() {
-    if (busnessviewmodal?.data?.events == null ||
-        busnessviewmodal!.data!.events!.isEmpty) {
-      return Center(
-          // child: Container(
-          //   margin: EdgeInsets.only(top: 4.h),
-          //   child: Text(
-          //     "No Events Available",
-          //     style: TextStyle(
-          //         fontSize: 17.sp,
-          //         fontWeight: FontWeight.bold,
-          //         color: Colors.grey),
-          //   ),
-          // ),
-          );
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      print("📌 Location services are disabled.");
+      setState(() {
+        isLoading = false;
+        isMapLoading = false;
+      });
+      return;
     }
 
-    // Return Column instead of SizedBox to avoid nested scrolling issues
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Use List.generate instead of ListView.builder to avoid nested scrolling
-        ...List.generate(busnessviewmodal!.data!.events!.length, (index) {
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: ListTile(
-                onTap: () {
-                  // Handle event tap if needed
-                },
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                leading: Container(
-                  width: 15.w,
-                  height: 7.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    // boxShadow: [
-                    //   BoxShadow(
-                    //     color: Colors.black12,
-                    //     blurRadius: 3,
-                    //     spreadRadius: 1,
-                    //   ),
-                    // ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: busnessviewmodal?.data?.events?[index].attachment !=
-                            null
-                        ? CachedNetworkImage(
-                            imageUrl: busnessviewmodal!
-                                .data!.events![index].attachment!,
-                            placeholder: (context, url) =>
-                                Center(child: CircularProgressIndicator()),
-                            errorWidget: (context, url, error) => Icon(
-                              Icons.event,
-                              color: Colors.grey,
-                              size: 8.w,
-                            ),
-                            fit: BoxFit.cover,
-                          )
-                        : Icon(
-                            Icons.event,
-                            color: Colors.grey,
-                            size: 8.w,
-                          ),
-                  ),
-                ),
-                title: Text(
-                  busnessviewmodal?.data?.events?[index].title ?? "No Title",
-                  style: TextStyle(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: AppConstants.manrope),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(Icons.location_on, color: Colors.red, size: 16.sp),
-                        SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            "${busnessviewmodal?.data?.events?[index].location ?? 'No Location'}",
-                            style: TextStyle(
-                                fontSize: 14.sp,
-                                color: Colors.grey[600],
-                                fontFamily: AppConstants.manrope),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(Icons.access_time,
-                            color: Colors.blue, size: 16.sp),
-                        SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            (String? eventDate) {
-                              if (eventDate == null || eventDate.isEmpty)
-                                return "N/A";
-                              DateTime parsedDate = DateTime.parse(eventDate);
-                              return DateFormat('yyyy-MM-dd hh:mm a')
-                                  .format(parsedDate);
-                            }(busnessviewmodal
-                                    ?.data?.events?[index].eventDate ??
-                                ""),
-                            style: TextStyle(
-                                fontSize: 12.sp, color: Colors.grey[700]),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                trailing: Icon(Icons.arrow_forward_ios,
-                    size: 16, color: Colors.black54),
-              ),
-            ),
-          );
-        }),
-      ],
-    );
-  }
-
-  //Offers/promotion
-  Widget buildListView(
-      List<String?> items, List<String?> links, List<String?> titles) {
-    if (busnessviewmodal?.data?.offerPromotions == null ||
-        busnessviewmodal!.data!.offerPromotions!.isEmpty) {
-      // return Center(
-      //   child: Container(
-      //     margin: EdgeInsets.only(top: 4.h),
-      //     child: Text(
-      //       "No Offers/Promotions Available",
-      //       style: TextStyle(
-      //           fontSize: 17.sp,
-      //           fontWeight: FontWeight.bold,
-      //           color: Colors.grey),
-      //     ),
-      //   ),
-      // );
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        print("📌 Location permission denied.");
+        setState(() {
+          isLoading = false;
+          isMapLoading = false;
+        });
+        return;
+      }
     }
 
-    // Remove SizedBox height constraint and ListView.builder scrolling
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Use Column instead of ListView.builder to avoid nested scrolling
-        ...List.generate(items.length, (index) {
-          String? linkUrl = links[index]?.trim();
-          // Format URL for display - show only domain
-          String displayUrl = '';
-          if (linkUrl != null && linkUrl.isNotEmpty) {
-            try {
-              Uri uri = Uri.parse(linkUrl);
-              displayUrl = uri.host;
-              // If URL is too long, truncate it
-              if (displayUrl.length > 30) {
-                displayUrl = displayUrl.substring(0, 27) + '...';
-              }
-            } catch (e) {
-              displayUrl = linkUrl;
-              if (displayUrl.length > 30) {
-                displayUrl = displayUrl.substring(0, 27) + '...';
-              }
-            }
-          }
-
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: ListTile(
-                onTap: () async {
-                  OfferPromoAsViewedApi();
-                  if (linkUrl != null && linkUrl.isNotEmpty) {
-                    Uri uri = Uri.parse(linkUrl);
-                    print("Opening URL: $linkUrl"); // Debugging
-
-                    // Check if the URL can be launched before opening
-                    if (await canLaunchUrl(uri)) {
-                      await launchUrl(uri,
-                          mode: LaunchMode.externalApplication);
-                    } else {
-                      print("Error: Could not launch $linkUrl");
-                    }
-                  } else {
-                    print("Error: Invalid URL");
-                  }
-                },
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                leading: Container(
-                  width: 15.w,
-                  height: 7.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 3,
-                        spreadRadius: 1,
-                      ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: CachedNetworkImage(
-                      imageUrl: items[index] ?? '',
-                      placeholder: (context, url) =>
-                          Center(child: CircularProgressIndicator()),
-                      errorWidget: (context, url, error) => Image.network(
-                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdQLwDqDwd2JfzifvfBTFT8I7iKFFevcedYg&s"),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                title: Text(
-                  titles[index] ?? "No Title",
-                  style: TextStyle(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: AppConstants.manrope),
-                ),
-                subtitle: Row(
-                  children: [
-                    Icon(
-                      Icons.link,
-                      size: 16.sp,
-                      color: Colors.blue,
-                    ),
-                    SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        displayUrl.isNotEmpty
-                            ? displayUrl
-                            : "No link available",
-                        style: TextStyle(
-                          fontFamily: AppConstants.manrope,
-                          fontSize: 14.sp,
-                          color: Colors.blue,
-                          decoration: linkUrl != null && linkUrl.isNotEmpty
-                              ? TextDecoration.underline
-                              : TextDecoration.none,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                trailing: Icon(Icons.arrow_forward_ios,
-                    size: 16, color: Colors.black54),
-              ),
-            ),
-          );
-        }),
-      ],
-    );
-  }
-
-  Widget buildServiceListView(List<Services> services) {
-    if (busnessviewmodal?.data?.services == null ||
-        busnessviewmodal!.data!.services!.isEmpty) {
-      return Center(
-          // child: Container(
-          //   margin: EdgeInsets.only(top: 4.h),
-          //   child: Text(
-          //     "No Services Available",
-          //     style: TextStyle(
-          //         fontSize: 17.sp,
-          //         fontWeight: FontWeight.bold,
-          //         color: Colors.grey),
-          //   ),
-          // ),
-          );
+    if (permission == LocationPermission.deniedForever) {
+      print("📌 Location permission permanently denied.");
+      setState(() {
+        isLoading = false;
+        isMapLoading = false;
+      });
+      return;
     }
 
-    // Return Column instead of SizedBox to avoid nested scrolling issues
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Use List.generate instead of ListView.builder to avoid nested scrolling
-        ...List.generate(services.length, (index) {
-          String imageUrl = services[index].images ?? ''; // Handle null case
-
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: ListTile(
-                onTap: () {
-                  // Handle service tap if needed
-                },
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                leading: Container(
-                  width: 15.w,
-                  height: 7.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    // boxShadow: [
-                    //   BoxShadow(
-                    //     color: Colors.black12,
-                    //     blurRadius: 3,
-                    //     spreadRadius: 1,
-                    //   ),
-                    // ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: CachedNetworkImage(
-                      imageUrl: imageUrl.isNotEmpty
-                          ? imageUrl
-                          : 'https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL3BsYXlcLzBiN2Y0ZTliLWY1OWMtNDAyNC05ZjA2LWIzZGMxMjg1MGFiNy0xOTIwLTEwODAuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0=',
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) =>
-                          Center(child: CircularProgressIndicator()),
-                      errorWidget: (context, url, error) => Icon(
-                        Icons.home_repair_service,
-                        color: Colors.grey,
-                        size: 8.w,
-                      ),
-                    ),
-                  ),
-                ),
-                title: Text(
-                  services[index].title ?? "Service Name",
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: AppConstants.manrope,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 4),
-                    Row(
-                      children: [
-                        // Icon(Icons.attach_money,
-                        //     color: Colors.green, size: 16.sp),
-
-                        Text(
-                          "£",
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green,
-                          ),
-                        ),
-
-                        SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            "Price: ${services[index].price ?? 'N/A'}",
-                            style: TextStyle(
-                              fontSize: 15.sp,
-                              color: Colors.green[700],
-                              fontFamily: AppConstants.manrope,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(Icons.event_available,
-                            color: Colors.blue, size: 16.sp),
-                        SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            "Availability: ${services[index].availability ?? 'N/A'}",
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              color: Colors.blue[700],
-                              fontFamily: AppConstants.manrope,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                trailing: Icon(Icons.arrow_forward_ios,
-                    size: 16, color: Colors.black54),
-              ),
-            ),
-          );
-        }),
-      ],
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
     );
+
+    AppLat = position.latitude.toString();
+    AppLon = position.longitude.toString();
+    print("Latitude Check again: $AppLat, Longitude Check: $AppLon");
+
+    setState(() {
+      isLocationFetched = true;
+    });
+
+    getCityName(position.latitude, position.longitude);
+
+    setState(() {
+      isMapLoading = false;
+    });
+  }
+
+  String? city;
+
+  Future<void> getCityName(double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+
+      if (placemarks.isNotEmpty) {
+        setState(() {
+          city = placemarks[0].locality;
+        });
+
+        BussinessViewProfile((busnessviewmodal?.data?.business?.id).toString());
+
+        setState(() {
+          isSending = false;
+        });
+        print(""
+            ""
+            ""
+            ""
+            ""
+            " $city");
+      }
+    } catch (e) {
+      print("Error: $e");
+      setState(() {
+        isSending = false;
+      });
+    }
   }
 
   @override
@@ -598,9 +172,9 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 2.h),
+                SizedBox(height: 1.h),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.symmetric(horizontal: 14),
                   child: TitleBar(
                     back: () {
                       Get.back();
@@ -611,7 +185,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                     },
                   ),
                 ),
-                SizedBox(height: 2.h),
+                SizedBox(height: 1.h),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(
@@ -630,7 +204,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                               ),
                               child: Column(
                                 children: [
-                                  // Business info row
                                   Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
@@ -670,7 +243,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                             ),
                                             SizedBox(height: 0.5.h),
                                             Text(
-                                              "${(busnessviewmodal?.data?.distanceToBusiness ?? 0).toStringAsFixed(1)} Miles",
+                                              "${(busnessviewmodal?.data?.distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
                                               style: TextStyle(
                                                 fontSize: 15.sp,
                                                 fontFamily:
@@ -722,8 +295,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                       ),
                                     ],
                                   ).paddingOnly(left: 2.w),
-
-                                  // Tags row
                                   Container(
                                     margin: EdgeInsets.only(top: 1.5.h),
                                     child: Row(
@@ -800,8 +371,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                               ),
                             ),
                           ).paddingSymmetric(horizontal: 16, vertical: 1.h),
-
-                          // Action buttons row
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -931,10 +500,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                               ),
                             ],
                           ).paddingSymmetric(horizontal: 16),
-
                           SizedBox(height: 1.h),
-
-                          // Posts, Events, Offers, Services sections
                           if ((busnessviewmodal?.data?.posts ?? [])
                                   .isNotEmpty ||
                               (busnessviewmodal?.data?.events ?? [])
@@ -942,21 +508,20 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                               (busnessviewmodal?.data?.offerPromotions ?? [])
                                   .isNotEmpty ||
                               (busnessviewmodal?.data?.services ?? [])
+                                  .isNotEmpty ||
+                              (busnessviewmodal?.data?.products ?? [])
                                   .isNotEmpty)
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  //posts
                                   if ((busnessviewmodal?.data?.posts ?? [])
                                       .isNotEmpty) ...[
                                     SizedBox(height: 1.h),
                                     buildMediaListView(
                                         busnessviewmodal?.data?.posts ?? []),
                                   ],
-
-                                  //events
                                   if ((busnessviewmodal?.data?.events ?? [])
                                       .isNotEmpty) ...[
                                     SizedBox(height: 2.h),
@@ -975,8 +540,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                     SizedBox(height: 1.h),
                                     buildEventListView(),
                                   ],
-
-                                  //offers
                                   if ((busnessviewmodal
                                               ?.data?.offerPromotions ??
                                           [])
@@ -1011,8 +574,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                           [],
                                     ),
                                   ],
-
-                                  //services
                                   if ((busnessviewmodal?.data?.services ?? [])
                                       .isNotEmpty) ...[
                                     SizedBox(height: 2.h),
@@ -1035,10 +596,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                 ],
                               ).paddingSymmetric(horizontal: 0),
                             ),
-
                           SizedBox(height: 3.h),
-
-                          // Address and Phone container
                           Container(
                             width: 110.w,
                             padding: EdgeInsets.symmetric(vertical: 2.h),
@@ -1075,10 +633,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                               ],
                             ),
                           ).paddingSymmetric(horizontal: 16),
-
                           SizedBox(height: 2.h),
-
-                          // You May Also Like section
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 16.0),
@@ -1092,9 +647,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                               ),
                             ),
                           ),
-
                           SizedBox(height: 1.h),
-
                           Column(
                             children: [
                               for (int i = 0;
@@ -1105,11 +658,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                       i < 5;
                                   i++) ...[
                                 InkWell(
-                                  // onTap: () {
-                                  //   print("Business Check ID: ${busnessviewmodal?.data?.nearbyBusinesses?[i].id}");
-                                  //   BussinessViewProfile((busnessviewmodal?.data?.nearbyBusinesses?[i].id).toString());
-                                  // },
-
                                   onTap: () async {
                                     final businessId = busnessviewmodal
                                         ?.data?.nearbyBusinesses?[i].id
@@ -1118,7 +666,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                       await BussinessViewProfile(businessId);
                                     }
                                   },
-
                                   child: Container(
                                     width: 110.w,
                                     margin: EdgeInsets.symmetric(
@@ -1290,7 +837,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                               ]
                             ],
                           ),
-                          SizedBox(height: 20), // Bottom padding
+                          SizedBox(height: 20),
                         ],
                       ),
                     ),
@@ -1310,59 +857,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
       ),
     );
   }
-
-  // BussinessViewProfile(String id) {
-  //   // EasyLoading.show();
-  //
-  //   setState(() {
-  //     isSending = true; // Show Loader
-  //   });
-  //
-  //   checkInternet().then((internet) async {
-  //     if (internet) {
-  //       CommunityProvider()
-  //           .projectlistapi(
-  //           (loginModel?.data?.user?.id).toString(), id, AppLat, AppLon)
-  //           .then((response) async {
-  //         busnessviewmodal =
-  //             BusnessViewModal.fromJson(json.decode(response.body));
-  //         if (response.statusCode == 200) {
-  //           print("check navigate");
-  //           //log("data ave che che ${response.body}");
-  //           //  EasyLoading.dismiss();
-  //           setState(() {
-  //             isSending = false; // Hide Loader
-  //           });
-  //
-  //           // final String businessId =
-  //           // (busnessviewmodal?.data?.business?.id).toString();
-  //           // Get.back();
-  //           // await Future.delayed(Duration(milliseconds: 100));
-  //           // BussinessViewProfile(businessId);
-  //
-  //           Get.to(() => BusinessDetailScreen(busnessviewmodal: busnessviewmodal));
-  //         } else if (response.statusCode == 422) {
-  //           // EasyLoading.dismiss();
-  //           setState(() {
-  //             isSending = false; // Hide Loader
-  //           });
-  //         } else {
-  //           //EasyLoading.dismiss();
-  //           setState(() {
-  //             isSending = false;
-  //           });
-  //         }
-  //       });
-  //     } else {
-  //       // setState(() {});
-  //       // EasyLoading.dismiss();
-  //       setState(() {
-  //         isSending = false;
-  //       });
-  //       buildErrorDialog(context, 'Error', "Internet Required");
-  //     }
-  //   });
-  // }
 
   Future<void> BussinessViewProfile(String id) async {
     setState(() => isSending = true);
@@ -1384,7 +878,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
     if (response.statusCode == 200) {
       final newModal = BusnessViewModal.fromJson(json.decode(response.body));
 
-      // setState(() => isSending = false);
       print("check navigate");
 
       setState(() {
@@ -1408,11 +901,9 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
     print("🟢 Request Parameter: $data");
 
     setState(() {
-      isSending = true; // Show Loader
-      //  showSuccessMsg = true;
+      isSending = true;
     });
 
-    //   EasyLoading.show();
     checkInternet().then((internet) async {
       if (internet) {
         CommunityProvider().IsLikeApi(data).then((response) async {
@@ -1423,40 +914,29 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
             print("Response: ${response.body}");
 
             setState(() {
-              isSending = true; // Show Loader
-              //  showSuccessMsg = false;
+              isSending = true;
             });
 
-            // EasyLoading.dismiss();
-            // EasyLoading.showSuccess("Like Sent Successfully!");
-            //request.clear();
             final String businessId =
                 (busnessviewmodal?.data?.business?.id).toString();
-            Get.back(); // પહેલા પાછળ જાઓ
-            await Future.delayed(Duration(milliseconds: 100)); // થોડી રાહ જુઓ
+            Get.back();
+            await Future.delayed(Duration(milliseconds: 100));
             BussinessViewProfile(businessId);
           } else if (response.statusCode == 429) {
             setState(() {
-              isSending = true; // Show Loader
-              //  showSuccessMsg = false;
+              isSending = true;
             });
-
-            //  EasyLoading.dismiss();
           } else {
             print(
                 "Internal Server Error - Status Code: ${response.statusCode}");
-            //  EasyLoading.dismiss();
+
             EasyLoading.showError("Internal Server Error");
           }
         }).catchError((error, stackTrace) {
-          // EasyLoading.dismiss();
-          //           // EasyLoading.showError("Something went wrong");
-          //log("Erroerwerwrwerwr");
           print(" Error in like API: $error");
-          print(" Stack Trace: $stackTrace"); // 🔹 Stack Trace print
+          print(" Stack Trace: $stackTrace");
         });
       } else {
-        //  EasyLoading.dismiss();
         buildErrorDialog(context, 'Error', "Internet Required");
       }
     });
@@ -1488,7 +968,847 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
       }
     });
   }
-}
 
-// How to use this screen:
-// Get.to(BusinessDetailScreen(busnessviewmodal: busnessViewModal));
+  Widget buildListTile(
+      {required IconData icon,
+      required String title,
+      required String subtitle}) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(icon, size: 25, color: Colors.black54),
+          SizedBox(width: 4.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: AppConstants.manrope),
+                ),
+                SizedBox(height: 0.5.h),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                      fontSize: 15.sp,
+                      color: Colors.black87,
+                      fontFamily: AppConstants.manrope),
+                ),
+              ],
+            ),
+          ),
+          Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
+        ],
+      ),
+    );
+  }
+
+  Widget buildMediaListView(List<Posts> mediaItems) {
+    return SizedBox(
+      height: 35.h,
+      child: InViewNotifierList(
+        scrollDirection: Axis.horizontal,
+        isInViewPortCondition: (deltaTop, deltaBottom, viewPortDimension) {
+          return deltaTop < (0.5 * viewPortDimension) &&
+              deltaBottom > (0.5 * viewPortDimension);
+        },
+        itemCount: mediaItems.length,
+        builder: (context, index) {
+          final item = mediaItems[index];
+          return InViewNotifierWidget(
+            id: '$index',
+            builder: (context, isInView, _) {
+              return Container(
+                width: 44.w,
+                height: 30.h,
+                margin: EdgeInsets.symmetric(horizontal: 4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey.shade300, width: 1.5),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: item.type == 'video'
+                      ? VideoWidget(
+                          videoUrl: item.file ?? '',
+                          play: isInView,
+                          postId: item.id ?? 0,
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            print("Image tapped: ${item.file}");
+                            Get.to(() => FullScreenImageView(
+                                  imageUrl: item.file ?? '',
+                                  postId: item.id ?? 0,
+                                ));
+                          },
+                          child: item.file == null || item.file!.isEmpty
+                              ? Center(child: CircularProgressIndicator())
+                              : CachedNetworkImage(
+                                  imageUrl: item.file!,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  placeholder: (context, url) => Center(
+                                      child: CircularProgressIndicator()),
+                                  errorWidget: (context, url, error) => Icon(
+                                      Icons.broken_image,
+                                      size: 40,
+                                      color: Colors.grey),
+                                ),
+                        ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget buildEventListView() {
+    if (busnessviewmodal?.data?.events == null ||
+        busnessviewmodal!.data!.events!.isEmpty) {
+      return Center();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ...List.generate(busnessviewmodal!.data!.events!.length, (index) {
+          String eventId =
+              busnessviewmodal?.data?.events?[index].id?.toString() ?? "";
+
+          bool isRequestSent = sentEventIds.contains(eventId);
+          bool isLoading = false;
+
+          return StatefulBuilder(builder: (context, setState) {
+            void showRequestDialog() {
+              if (busnessviewmodal?.data?.events?[index]?.requestEvent
+                      ?.toLowerCase() ==
+                  "pending") {
+                return;
+              }
+
+              requestController.clear();
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return StatefulBuilder(
+                    builder: (context, setDialogState) {
+                      return Dialog(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Form(
+                            key: _formKey,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Stack(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.center,
+                                      child: Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 10),
+                                        child: Text(
+                                          "${profileModel?.data?.user?.name?.firstName.toString().capitalizeFirst ?? ""} "
+                                          "${profileModel?.data?.user?.name?.lastName.toString().capitalizeFirst ?? ""}",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 18.sp,
+                                            fontFamily: AppConstants.manrope,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.topRight,
+                                      child: CloseButton(),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  busnessviewmodal
+                                          ?.data?.events?[index]?.title ??
+                                      "N/A",
+                                  style: TextStyle(
+                                    fontFamily: AppConstants.manrope,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black38,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  busnessviewmodal?.data?.events?[index]
+                                              ?.eventDate !=
+                                          null
+                                      ? DateFormat.jm().format(DateTime.parse(
+                                          busnessviewmodal!.data!
+                                              .events![index]!.eventDate!))
+                                      : "N/A",
+                                  style: TextStyle(
+                                    fontFamily: AppConstants.manrope,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black38,
+                                  ),
+                                ),
+                                SizedBox(height: 12),
+                                TextFormField(
+                                  controller: requestController,
+                                  maxLines: 3,
+                                  decoration: InputDecoration(
+                                    hintText: "Enter your request...",
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide:
+                                          BorderSide(color: Colors.black26),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide:
+                                          BorderSide(color: Colors.black26),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide:
+                                          BorderSide(color: Colors.blue),
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                  ),
+                                  style: TextStyle(color: Colors.black),
+                                  validator: (value) {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return "Please enter your request";
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                SizedBox(height: 20),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    batan(
+                                      title: "Send Request",
+                                      route: () async {
+                                        if (_formKey.currentState!.validate()) {
+                                          setDialogState(() {
+                                            isLoading = true;
+                                          });
+                                          setState(() {
+                                            busnessviewmodal!
+                                                .data!
+                                                .events![index]
+                                                .requestEvent = "pending";
+                                          });
+                                          await sendlistap(eventId);
+                                          setDialogState(() {
+                                            isLoading = false;
+                                          });
+                                          Get.back();
+                                        }
+                                      },
+                                      radius: 4.0.w,
+                                      color: AppColors.maincolor,
+                                      fontcolor: AppColors.white,
+                                      height: 5.h,
+                                      width: 72.w,
+                                      fontsize: 17.sp,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
+            }
+
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: ListTile(
+                  onTap: () {
+                    showRequestDialog();
+                  },
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  leading: Container(
+                    width: 15.w,
+                    height: 7.h,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: busnessviewmodal
+                                  ?.data?.events?[index].attachment !=
+                              null
+                          ? CachedNetworkImage(
+                              imageUrl: busnessviewmodal!
+                                  .data!.events![index].attachment!,
+                              placeholder: (context, url) => Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                              errorWidget: (context, url, error) => Image.asset(
+                                "assets/images/waveeLogoShort.png",
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
+                              ),
+                              fit: BoxFit.cover,
+                            )
+                          : Image.asset(
+                              "assets/images/waveeLogoShort.png",
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: double.infinity,
+                            ),
+                    ),
+                  ),
+                  title: Text(
+                    busnessviewmodal?.data?.events?[index].title ?? "No Title",
+                    style: TextStyle(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppConstants.manrope),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(Icons.location_on,
+                              color: Colors.red, size: 16.sp),
+                          SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              "${busnessviewmodal?.data?.events?[index].location ?? 'No Location'}",
+                              style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: Colors.grey[600],
+                                  fontFamily: AppConstants.manrope),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(Icons.access_time,
+                              color: Colors.blue, size: 16.sp),
+                          SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              (String? eventDate) {
+                                if (eventDate == null || eventDate.isEmpty)
+                                  return "N/A";
+                                DateTime parsedDate = DateTime.parse(eventDate);
+                                return DateFormat('yyyy-MM-dd hh:mm a')
+                                    .format(parsedDate);
+                              }(busnessviewmodal
+                                      ?.data?.events?[index].eventDate ??
+                                  ""),
+                              style: TextStyle(
+                                  fontSize: 12.sp, color: Colors.grey[700]),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  trailing: isLoading
+                      ? CircularProgressIndicator(color: Colors.blue)
+                      : InkWell(
+                          onTap: () {
+                            showRequestDialog();
+                          },
+                          child: busnessviewmodal
+                                      ?.data?.events?[index]?.requestEvent
+                                      ?.toLowerCase() ==
+                                  "pending"
+                              ? Text(
+                                  "Requested",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.orange,
+                                  ),
+                                )
+                              : Icon(Icons.arrow_forward_ios,
+                                  size: 16, color: Colors.black54),
+                        ),
+                ),
+              ),
+            );
+          });
+        }),
+      ],
+    );
+  }
+
+  sendlistap(selectedid) {
+    final Map<String, String> data = {};
+    data['user_id'] = loginModel?.data?.user?.id.toString() ?? "";
+    data['event_id'] = selectedid ?? "";
+    print("send event data jai che$data");
+
+    setState(() {
+      isLoading = true;
+    });
+
+    checkInternet().then((internet) async {
+      if (internet) {
+        EventProvider().sendeventapi(data).then((response) async {
+          sendeventModel = SendeventModel.fromJson(json.decode(response.body));
+
+          if (response.statusCode == 200 || sendeventModel?.data == 200) {
+            print("Response body avve che che ==>> ${response.body}");
+          } else if (response.statusCode == 422) {
+            load = false;
+          } else {
+            EasyLoading.showError("Internal Server Error");
+          }
+
+          setState(() {
+            isLoading = false;
+          });
+          return false;
+        }).catchError((error) {
+          setState(() {
+            isLoading = false;
+          });
+          EasyLoading.showError("Request Failed");
+          return false;
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+        return false;
+      }
+    });
+  }
+
+  Widget buildListView(
+      List<String?> items, List<String?> links, List<String?> titles) {
+    if (busnessviewmodal?.data?.offerPromotions == null ||
+        busnessviewmodal!.data!.offerPromotions!.isEmpty) {}
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ...List.generate(items.length, (index) {
+          String? linkUrl = links[index]?.trim();
+
+          String displayUrl = '';
+          if (linkUrl != null && linkUrl.isNotEmpty) {
+            try {
+              Uri uri = Uri.parse(linkUrl);
+              displayUrl = uri.host;
+
+              if (displayUrl.length > 30) {
+                displayUrl = displayUrl.substring(0, 27) + '...';
+              }
+            } catch (e) {
+              displayUrl = linkUrl;
+              if (displayUrl.length > 30) {
+                displayUrl = displayUrl.substring(0, 27) + '...';
+              }
+            }
+          }
+
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade300),
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: ListTile(
+                onTap: () async {
+                  OfferPromoAsViewedApi();
+                  if (linkUrl != null && linkUrl.isNotEmpty) {
+                    Uri uri = Uri.parse(linkUrl);
+                    print("Opening URL: $linkUrl");
+
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(uri,
+                          mode: LaunchMode.externalApplication);
+                    } else {
+                      print("Error: Could not launch $linkUrl");
+                    }
+                  } else {
+                    print("Error: Invalid URL");
+                  }
+                },
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                leading: Container(
+                  width: 15.w,
+                  height: 7.h,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 3,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: CachedNetworkImage(
+                      imageUrl: items[index] ?? '',
+                      placeholder: (context, url) =>
+                          Center(child: CircularProgressIndicator()),
+                      errorWidget: (context, url, error) => Image.network(
+                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdQLwDqDwd2JfzifvfBTFT8I7iKFFevcedYg&s"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                title: Text(
+                  titles[index] ?? "No Title",
+                  style: TextStyle(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: AppConstants.manrope),
+                ),
+                subtitle: Row(
+                  children: [
+                    Icon(
+                      Icons.link,
+                      size: 16.sp,
+                      color: Colors.blue,
+                    ),
+                    SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        displayUrl.isNotEmpty
+                            ? displayUrl
+                            : "No link available",
+                        style: TextStyle(
+                          fontFamily: AppConstants.manrope,
+                          fontSize: 14.sp,
+                          color: Colors.blue,
+                          decoration: linkUrl != null && linkUrl.isNotEmpty
+                              ? TextDecoration.underline
+                              : TextDecoration.none,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                trailing: Icon(Icons.arrow_forward_ios,
+                    size: 16, color: Colors.black54),
+              ),
+            ),
+          );
+        }),
+      ],
+    );
+  }
+
+  Widget buildServiceListView(List<Services> services) {
+    if (busnessviewmodal?.data?.services == null ||
+        busnessviewmodal!.data!.services!.isEmpty) {
+      return Center();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ...List.generate(services.length, (index) {
+          String imageUrl = services[index].images ?? '';
+
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade300),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: ListTile(
+                onTap: () {
+                  print(
+                      "service Detail ID Ave che che : ${services?[index].id ?? ''}");
+                  print(
+                      "service Detail ID Ave che che : ${busnessviewmodal?.data?.business?.id.toString()}");
+                  Get.to(() => ServiceDetailsPage(
+                        serviceID: services?[index].id.toString() ?? "",
+                        businessID:
+                            busnessviewmodal?.data?.business?.id.toString() ??
+                                "",
+                      ));
+                },
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                leading: Container(
+                  width: 15.w,
+                  height: 7.h,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: CachedNetworkImage(
+                      imageUrl: imageUrl.isNotEmpty
+                          ? imageUrl
+                          : 'https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL3BsYXlcLzBiN2Y0ZTliLWY1OWMtNDAyNC05ZjA2LWIzZGMxMjg1MGFiNy0xOTIwLTEwODAuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0=',
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) =>
+                          Center(child: CircularProgressIndicator()),
+                      errorWidget: (context, url, error) => Icon(
+                        Icons.home_repair_service,
+                        color: Colors.grey,
+                        size: 8.w,
+                      ),
+                    ),
+                  ),
+                ),
+                title: Text(
+                  services[index].title ?? "Service Name",
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: AppConstants.manrope,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Text(
+                          "£",
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
+                        SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            "Price: ${services[index].price ?? 'N/A'}",
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              color: Colors.green[700],
+                              fontFamily: AppConstants.manrope,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(Icons.event_available,
+                            color: Colors.blue, size: 16.sp),
+                        SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            "Availability: ${services[index].availability ?? 'N/A'}",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colors.blue[700],
+                              fontFamily: AppConstants.manrope,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                trailing: Icon(Icons.arrow_forward_ios,
+                    size: 16, color: Colors.black54),
+              ),
+            ),
+          );
+        }),
+      ],
+    );
+  }
+
+  Widget buildProductList(List<Products> products) {
+    if (busnessviewmodal?.data?.products == null ||
+        busnessviewmodal!.data!.products!.isEmpty) {
+      return Center();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ...List.generate(products.length, (index) {
+          final product = products[index];
+
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade300),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: ListTile(
+                onTap: () {
+                  Get.to(() => ProductDetailPage(
+                        productID: product.id.toString() ?? "",
+                        type: "product",
+                      ));
+                },
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: (product.image != null && product.image!.isNotEmpty)
+                      ? CachedNetworkImage(
+                          imageUrl: product.image!,
+                          width: 60,
+                          height: 60,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(
+                            width: 60,
+                            height: 60,
+                            color: Colors.grey[300],
+                            child: const Center(
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => Image.asset(
+                            'assets/images/waveeLogoShort.png',
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : Image.asset(
+                          'assets/images/waveeLogoShort.png',
+                          width: 60,
+                          height: 60,
+                          fit: BoxFit.cover,
+                        ),
+                ),
+                title: Text(
+                  product.name ?? '',
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: AppConstants.manrope,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 4),
+                    Row(
+                      children: [
+                        if (product.offerPrice != null)
+                          Text(
+                            "£${product.offerPrice}",
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                              fontFamily: AppConstants.manrope,
+                            ),
+                          ),
+                        if (product.offerPrice != null) SizedBox(width: 6),
+                        Text(
+                          "£${product.price}",
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            color: product.offerPrice != null
+                                ? Colors.grey
+                                : Colors.black,
+                            decoration: product.offerPrice != null
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none,
+                            fontFamily: AppConstants.manrope,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      product.description ?? '',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 15.sp, fontFamily: AppConstants.manrope),
+                    ),
+                  ],
+                ),
+                trailing: Icon(Icons.arrow_forward_ios,
+                    size: 16, color: Colors.black54),
+              ),
+            ),
+          );
+        }),
+      ],
+    );
+  }
+}

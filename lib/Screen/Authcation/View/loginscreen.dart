@@ -1,9 +1,11 @@
 import 'dart:convert';
-
+import 'dart:developer';
+import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Screen/Authcation/model/login_model.dart';
+
 import 'package:wavee/comman/colors.dart';
 import 'package:wavee/comman/const.dart';
 
@@ -13,6 +15,7 @@ import '../../../comman/error_dialog.dart';
 import '../../../comman/input_decoration.dart';
 import '../../../comman/store_local.dart';
 import '../../HomeNewPage/View/homenewpage.dart';
+import '../Model/login_model.dart';
 import '../Provider/authcation_provider.dart';
 import 'forgotpassword.dart';
 
@@ -29,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
   bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
-
+  // rtfgvb
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Center(
                   child: Container(
                     child: Image.asset(
-                      "assets/images/waveeLogoShort.png",
+                      "assets/images/Applogo_remove_background.png",
                       height: 30.h,
                       width: 65.w,
                       fit: BoxFit.cover,
@@ -257,15 +260,38 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+  String? usertoken, userrole, userId;
+  void LoginApi()async {
 
-  void LoginApi() {
+
+    await FirebaseMessaging.instance.requestPermission(provisional: true);
+    if (Platform.isIOS) {
+      // Get APNS token
+      String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+      print(apnsToken);
+      // final notificationSettings = await FirebaseMessaging.instance.requestPermission(provisional: true);
+      if (apnsToken == null) {
+        print(
+          "APNS Token not set. Please ensure Push Notifications are enabled.",
+        );
+        return;
+      }
+    }
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+    if (fcmToken == null) {
+      // Handle error if FCM token is not available
+      print("FCM Token not available.");
+      return;
+    }
+    log("FCM TOKEN AVE CHE $fcmToken");
     final Map<String, String> data = {
       'email': email.text.trim(),
       'password': password.text.trim(),
       'role': '4',
+"fcm_token":fcmToken,
     };
 
-    print("Request data: $data");
+    print("Request data sending: $data");
 
     checkInternet().then((internet) async {
       if (internet) {
@@ -285,7 +311,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 IconColor: AppColors.white,
                 IconName: Icons.check_circle,
               );
-              await Get.offAll(() => HomeNewPage(selected: 1, userName: ""));
+              await Get.offAll(() => HomePage(selected: 1, userName: ""));
               setState(() {
                 isLoading = false;
               });
@@ -318,7 +344,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ColorText: Colors.white,
             IconColor: Colors.white,
           );
-          print("Error:265156 $e");
+          print("Error: $e");
         }
       } else {
         setState(() {

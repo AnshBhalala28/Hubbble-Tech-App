@@ -1,24 +1,28 @@
-import 'package:wavee/Screen/Authcation/model/login_model.dart';
+import 'package:wavee/Screen/Authcation/Model/DeleteAccountModel.dart';
+import 'package:wavee/Screen/Authcation/Model/forgotPasswordModel.dart';
+import 'package:wavee/Screen/Authcation/Model/login_model.dart';
 import 'package:wavee/Screen/Booking/Model/amenities_book_status_model.dart';
 import 'package:wavee/Screen/Buy%20Product/place_order_model.dart';
+import 'package:wavee/Screen/Chatscreen/Model/Chatstorymodal.dart';
 import 'package:wavee/Screen/Community%20Screen/Community%20Screen/Model/BusnessViewModal.dart';
 import 'package:wavee/Screen/HomeNewPage/Model/parcel_show_count.dart';
 import 'package:wavee/Screen/HomeNewPage/Model/visitor_show_count_model.dart';
 import 'package:wavee/Screen/Manintenance/Model/maintenance_detail_model.dart';
-
 import 'package:wavee/Screen/UpcomingRequest/Model/get_my_new_request.dart';
 import 'package:wavee/Screen/ViewProfile/Model/profile_model.dart';
 
 import '../Screen/Add to Cart/model/add_to_cart_model.dart';
-import '../Screen/Authcation/Model/delete_account_model.dart';
-import '../Screen/Authcation/Model/forgotPasswordModel.dart';
+
 import '../Screen/Booking/Model/AllAmenitiesModel.dart';
 import '../Screen/Booking/Model/booking_model.dart';
 import '../Screen/Booking/Model/event_booking_modal.dart';
 import '../Screen/Booking/Model/event_detail_model.dart';
 import '../Screen/Booking/Model/rejectbooking.dart';
 import '../Screen/Booking/Model/service_booking_model.dart';
+import '../Screen/Category/Modal/category_detail_modal.dart';
 import '../Screen/Chatscreen/Model/chat_screen_model.dart';
+import '../Screen/Community Detail Page/Model/SearchProductModel.dart';
+import '../Screen/Community Detail Page/Model/category_modal.dart';
 import '../Screen/Community Screen/Community Screen/Model/BusinessSearchModal.dart';
 import '../Screen/Community Screen/Community Screen/Model/CategoriesModel.dart';
 import '../Screen/Community Screen/Community Screen/Model/DwellTimeModel.dart';
@@ -56,6 +60,7 @@ import '../Screen/Message_board/Model/RemoveGroupMemberModel.dart';
 import '../Screen/Message_board/Model/ResidentAppUserprofileModel.dart';
 import '../Screen/Message_board/Model/SendMsgModel.dart';
 import '../Screen/Message_board/Model/SendPostCommentsModel.dart';
+import '../Screen/Message_screen/Model/OrderSendMessageModel.dart';
 import '../Screen/Message_screen/Model/RemoveFriendModel.dart';
 import '../Screen/Message_screen/Model/SendMessageModel.dart';
 import '../Screen/Message_screen/Model/UserPersonalInfoModel.dart';
@@ -69,7 +74,6 @@ import '../Screen/Oredrscreen/Model/service_view_model.dart';
 import '../Screen/Parcel/Model/parcel_model.dart';
 import '../Screen/Product Detail Page/model/all_review_model.dart';
 import '../Screen/Product Detail Page/model/product_model.dart';
-
 import '../Screen/Service Detail Page/Model/ServiceDetailsModel.dart';
 import '../Screen/UpcomingRequest/Model/OnGoing_Freind_Request_Model.dart';
 import '../Screen/UpcomingRequest/Model/my_request_model.dart';
@@ -77,11 +81,36 @@ import '../Screen/Visitor/Model/latest_visitor_modal/latest_visitor_modal.dart';
 import '../Screen/open_ai_chatbot/modal/chat_bot_data_modal.dart';
 import '../Screen/open_ai_chatbot/modal/send_data_model.dart';
 
-// const String baseUrl = "https://wave.londontechequity.ai/api";
 const String baseUrl = "https://portal.wavee.ai/api";
+const String jsonString = "assets/google_pay.json";
 
 class AppConstants {
-  static const String manrope = "Manrope";
+  static const String path = "assets/Svg/";
+  static const String manrope1 = "Manrope";
+  static const String manrope = "AlbertSans";
+  static const String AlbertSansLight = "AlbertSans-Light";
+
+  static const String homeScreen = "assets/images/homescreen_map.png";
+  static const String home = "${path}home.svg";
+  static const String cart = "${path}cart.svg";
+  static const String chat1 = "${path}chat1.svg";
+  static const String community = "${path}community.svg";
+  static const String chat = "${path}chat.svg";
+  static const String parcel = "${path}parcel.svg";
+  static const String visitor = "${path}visitor.svg";
+  static const String amenities = "${path}amenities.svg";
+  static const String building = "${path}building.svg";
+  static const String booking = "${path}booking.svg";
+  static const String maintance = "${path}maintance.svg";
+  static const String events = "${path}events.svg";
+  static const String myOrder = "${path}myorder.svg";
+  static const String serviceBooking = "${path}servicebooking.svg";
+  static const String shopping = "${path}shopping.svg";
+  static const String profile = "${path}profile.svg";
+  static const String settings = "${path}settings.svg";
+  static const String Privacy = "${path}Privacy1.svg";
+  static const String terms = "${path}terms.svg";
+  static const String messageBoard = "${path}messageboard.svg";
 }
 
 LoginModel? loginModel;
@@ -94,7 +123,7 @@ ProfileModel? profileModel;
 ParcelShowCountModel? parcelShowCountModel;
 VisitorShowCountModel? visitorShowCountModel;
 BussinessLikeModel? bussinesslikemodel;
-// Hiren Api
+
 LatestVisitorModal? latestVisitorModal;
 ChatShowCountModal? chatShowCountModal;
 MessageBoardModal? messageBoardModal;
@@ -126,12 +155,11 @@ DeleteGroupModel? deletegroupModel;
 RemoveFriendModel? removefriendModel;
 UserPersonalInfoModel? userpersonalInfoModel;
 
-// Response models
 SendMsgModel? sendmsgModel;
 GetMsgModel? getmsgModel;
 CreateFriendModel? createfriendModel;
 GetFriendListModel? getfriendListModel;
-//HIren
+
 ChatbotDataModal? chatbotDataModal;
 SendChatModal? sendChatModal;
 AmenitiesModel? amenitiesModel;
@@ -163,7 +191,12 @@ ServiceDetailsModel? servicedetailsmodel;
 ServiceOrderDetail? serviceOrderDetail;
 ServiceViewModel? serviceViewModel;
 ServiceBookingModel? serviceBookingModel;
-//Ram Api
+
 Localpost_model? localpost_model;
 Localpost_comments_Model? localpost_comments_Model;
 Add_Post_Model? add_Post_Model;
+CategoryModal? categoryModal;
+CategoryDetailModal? categoryDetailModal;
+OrdersendMessageModel? ordersendmessagemodel;
+SearchProductModel? searchproductmodel;
+ChatStoryModal? chatStories;

@@ -46,9 +46,7 @@ class _ThankYouPageState extends State<ThankYouPage> {
                   height: 22.h,
                   repeat: false,
                 ),
-
                 SizedBox(height: 3.h),
-
                 Text(
                   "Order Placed Successfully!",
                   style: TextStyle(
@@ -59,7 +57,6 @@ class _ThankYouPageState extends State<ThankYouPage> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-
                 SizedBox(height: 2.h),
                 Text(
                   "Order Number: $orderNumber",
@@ -70,20 +67,7 @@ class _ThankYouPageState extends State<ThankYouPage> {
                     color: Colors.black,
                   ),
                 ),
-
-                // SizedBox(height: 1.h),
-                // Text(
-                //   "Collection Code: $collectionCode",
-                //   style: TextStyle(
-                //     fontSize: 15.sp,
-                //     fontWeight: FontWeight.w600,
-                //     fontFamily: AppConstants.manrope,
-                //     color: AppColors.maincolor,
-                //   ),
-                // ),
                 SizedBox(height: 2.5.h),
-
-                /// ℹ️ Message
                 Text(
                   "Thanks for your order! It’s waiting for approval. We’ll notify you as soon as the business responds.",
                   style: TextStyle(
@@ -93,7 +77,6 @@ class _ThankYouPageState extends State<ThankYouPage> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-
                 SizedBox(height: 6.h),
                 batan(
                   title: "Continue Shopping",

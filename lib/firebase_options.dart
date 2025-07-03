@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -25,9 +28,15 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
-        return windows;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -40,49 +49,20 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCGVrph1btQR0ZCudt7c1Y1MqNDtkxnGIg',
-    appId: '1:106443104504:web:b4200203b24ad6cd9cdb0d',
-    messagingSenderId: '106443104504',
-    projectId: 'wavee-dcf27',
-    authDomain: 'wavee-dcf27.firebaseapp.com',
-    storageBucket: 'wavee-dcf27.firebasestorage.app',
-    measurementId: 'G-QY0TK3233S',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBmz0t3_EFyHxuu9YKIakEjTq_eqKS2PdQ',
-    appId: '1:106443104504:android:dc0b8069e2c099d09cdb0d',
-    messagingSenderId: '106443104504',
-    projectId: 'wavee-dcf27',
-    storageBucket: 'wavee-dcf27.firebasestorage.app',
+    apiKey: 'AIzaSyCU0HX1dubs_QM-OMNZvBQuVgBiJMT4EWc',
+    appId: '1:303252200537:android:8b67b305bc28e7ea562548',
+    messagingSenderId: '303252200537',
+    projectId: 'wavee-ai',
+    storageBucket: 'wavee-ai.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBui3Z0r5cX9ovOiqVmJyLPANMncyxajO4',
-    appId: '1:106443104504:ios:c85bbfe6d9d612949cdb0d',
-    messagingSenderId: '106443104504',
-    projectId: 'wavee-dcf27',
-    storageBucket: 'wavee-dcf27.firebasestorage.app',
+    apiKey: 'AIzaSyB_N1yTaHsNDepf9w_f3KBRc2Rkp72wS0o',
+    appId: '1:303252200537:ios:76609871307d8c20562548',
+    messagingSenderId: '303252200537',
+    projectId: 'wavee-ai',
+    storageBucket: 'wavee-ai.firebasestorage.app',
     iosBundleId: 'com.wavee.community',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBui3Z0r5cX9ovOiqVmJyLPANMncyxajO4',
-    appId: '1:106443104504:ios:c85bbfe6d9d612949cdb0d',
-    messagingSenderId: '106443104504',
-    projectId: 'wavee-dcf27',
-    storageBucket: 'wavee-dcf27.firebasestorage.app',
-    iosBundleId: 'com.wavee.community',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyCGVrph1btQR0ZCudt7c1Y1MqNDtkxnGIg',
-    appId: '1:106443104504:web:0cbfd7968d8c681f9cdb0d',
-    messagingSenderId: '106443104504',
-    projectId: 'wavee-dcf27',
-    authDomain: 'wavee-dcf27.firebaseapp.com',
-    storageBucket: 'wavee-dcf27.firebasestorage.app',
-    measurementId: 'G-ZLTLN723SJ',
   );
 }

@@ -10,10 +10,11 @@ import '../../../comman/const.dart';
 import '../../../comman/responses.dart';
 
 class MessageProvider extends ChangeNotifier {
-  Future<http.Response> MessageApi(
-      String user_id, String concierge_id, String type) async {
-    final String url = '$baseUrl/get-chat/$user_id/$concierge_id?type=$type';
-    // final url = '$baseUrl/get-chat/$user_id/$concierge_id';
+  Future<http.Response> MessageApi(String user_id, String concierge_id,
+      String type, String orderproductid) async {
+    final String url =
+        '$baseUrl/get-chat/$user_id/$concierge_id?type=$type&order_product_id=$orderproductid';
+
     print("Request URL: $url");
     print("concierge_id: $concierge_id");
     print("type: $type");
@@ -48,25 +49,19 @@ class MessageProvider extends ChangeNotifier {
     print("Request URL: $url");
 
     try {
-      // Prepare a multipart request for both text and files
       final imageUploadRequest = http.MultipartRequest('POST', Uri.parse(url));
 
-      // Add text fields to the request (skip 'files' as we handle them separately)
       bodyData.forEach((key, value) {
         if (key != 'files') {
-          // Exclude 'files' field from text fields
           imageUploadRequest.fields[key] = value;
         }
       });
 
-      // Check if there are files to upload
       if (bodyData['files']?.isNotEmpty ?? false) {
         final String filePath = bodyData['files']!;
 
-        // Log the file path for debugging
         print('Uploading file: $filePath');
 
-        // Determine the media type based on the file extension or other logic
         String fileExtension = filePath.split('.').last.toLowerCase();
         MediaType mediaType;
 
@@ -86,16 +81,14 @@ class MessageProvider extends ChangeNotifier {
             throw Exception('Unsupported media type');
         }
 
-        // Add the file as an array of files
         final file = await http.MultipartFile.fromPath(
-          'files', // Important: note the array-like naming 'files[]'
+          'files',
           filePath,
           contentType: mediaType,
         );
         imageUploadRequest.files.add(file);
       }
 
-      // Send the request and get the response
       final streamResponse = await imageUploadRequest.send();
       final response = await http.Response.fromStream(streamResponse);
 
@@ -178,5 +171,85 @@ class MessageProvider extends ChangeNotifier {
     responseJson = responses(response);
     print(response.body);
     return responseJson;
+  }
+
+  Future<http.Response> sendmessageorderapi1(
+      Map<String, String> bodyData) async {
+    const url = '$baseUrl/sendOrderChat';
+    print("Request URL: $url");
+
+    try {
+      final imageUploadRequest = http.MultipartRequest('POST', Uri.parse(url));
+
+      bodyData.forEach((key, value) {
+        if (key != 'files') {
+          imageUploadRequest.fields[key] = value;
+        }
+      });
+
+      if (bodyData['files']?.isNotEmpty ?? false) {
+        final String filePath = bodyData['files']!;
+
+        print('Uploading file: $filePath');
+
+        String fileExtension = filePath.split('.').last.toLowerCase();
+        MediaType mediaType;
+
+        switch (fileExtension) {
+          case "jpg":
+          case "jpeg":
+          case "png":
+            mediaType = MediaType('image', fileExtension);
+            break;
+          case "mp4":
+            mediaType = MediaType('video', 'mp4');
+            break;
+          case "pdf":
+            mediaType = MediaType('application', 'pdf');
+            break;
+          default:
+            throw Exception('Unsupported media type');
+        }
+
+        final file = await http.MultipartFile.fromPath(
+          'file',
+          filePath,
+          contentType: mediaType,
+        );
+        imageUploadRequest.files.add(file);
+      }
+
+      final streamResponse = await imageUploadRequest.send();
+      final response = await http.Response.fromStream(streamResponse);
+
+      return responses(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    } catch (e, stackTrace) {
+      throw Exception('Error: $e &&& \n strace error $stackTrace');
+    }
+  }
+
+  Future<http.Response> sendmessageorderapi(
+      Map<String, String> data, File? file) async {
+    var uri = Uri.parse("https://portal.wavee.ai/api/sendOrderChat");
+    var request = http.MultipartRequest("POST", uri);
+
+    data.forEach((key, value) {
+      request.fields[key] = value;
+    });
+
+    if (file != null && file.existsSync()) {
+      request.files.add(await http.MultipartFile.fromPath('file', file.path));
+    }
+
+    try {
+      var streamedResponse = await request.send();
+      return await http.Response.fromStream(streamedResponse);
+    } catch (e, stackTrace) {
+      debugPrint("API Send Error: $e");
+      debugPrint("StackTrace:\n$stackTrace");
+      rethrow;
+    }
   }
 }

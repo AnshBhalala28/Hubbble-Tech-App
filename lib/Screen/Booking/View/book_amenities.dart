@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:wavee/Screen/HomeNewPage/View/homenewpage.dart';
 import 'package:wavee/comman/loader.dart';
 
 import '../../../comman/Custom_AppBar.dart';
@@ -53,7 +54,6 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
       load = true;
     });
     AmenitiesApi();
-    // AmenitiesApi1(widget.id??"");
   }
 
   @override
@@ -72,9 +72,12 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                   SizedBox(height: 4.h),
                   TitleBar(
                     back: () {
-                      Get.back();
+                      Get.to(HomePage(
+                        userName: "",
+                        selected: 1,
+                      ));
                     },
-                    title: 'Book Amenities',
+                    title: 'Amenities',
                     drawerCallback: () {
                       _scaffoldKeyBookAmenities.currentState?.openDrawer();
                     },
@@ -83,316 +86,171 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                   isLoading
                       ? Loader().paddingOnly(top: 35.h)
                       : aneminitiesDataModel?.data == null
-                      ? Center(
-                        child: Text(
-                          "No Amenities Available",
-                          style: TextStyle(
-                            fontSize: 17.sp,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.black,
-                            fontFamily: AppConstants.manrope,
-                          ),
-                        ).paddingOnly(top: 35.h),
-                      )
-                      : SizedBox(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          physics: NeverScrollableScrollPhysics(),
-                          padding: EdgeInsets.zero,
-                          itemCount: aneminitiesDataModel?.data?.length ?? 0,
-                          itemBuilder: (context, index) {
-                            var booking = aneminitiesDataModel?.data?[index];
-                            return GestureDetector(
-                              onTap: () {
-                                Get.to(
-                                  () => Form_Screen(
-                                    amenites_id: booking?.id.toString() ?? '',
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(20),
-                                  ),
+                          ? Center(
+                              child: Text(
+                                "No Amenities Available",
+                                style: TextStyle(
+                                  fontSize: 17.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.black,
+                                  fontFamily: AppConstants.manrope,
                                 ),
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 5,
-                                  vertical: 5,
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.all(10),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                              ).paddingOnly(top: 35.h),
+                            )
+                          : SizedBox(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.vertical,
+                                physics: NeverScrollableScrollPhysics(),
+                                padding: EdgeInsets.zero,
+                                itemCount:
+                                    aneminitiesDataModel?.data?.length ?? 0,
+                                itemBuilder: (context, index) {
+                                  var booking =
+                                      aneminitiesDataModel?.data?[index];
+
+                                  return Stack(
+                                    alignment: Alignment.topRight,
                                     children: [
-                                      ClipRRect(
-                                        // jayss@gmail.com
-                                        // 12345678
-                                        borderRadius: BorderRadius.circular(10),
-                                        child:
-                                            (booking?.imageUrl != null &&
-                                                    booking!
-                                                        .imageUrl!
-                                                        .isNotEmpty &&
-                                                    booking
-                                                        .imageUrl!
-                                                        .first
-                                                        .isNotEmpty)
-                                                ? CachedNetworkImage(
-                                                  imageUrl:
-                                                      booking.imageUrl!.first,
-                                                  width: 80,
-                                                  height: 80,
-                                                  fit: BoxFit.cover,
-                                                  placeholder:
-                                                      (
-                                                        context,
-                                                        url,
-                                                      ) => Container(
-                                                        width: 80,
-                                                        height: 80,
-                                                        color: Colors.grey[300],
-                                                        child: Center(
-                                                          child:
-                                                              CircularProgressIndicator(
-                                                                strokeWidth: 2,
-                                                              ),
-                                                        ),
-                                                      ),
-                                                  errorWidget:
-                                                      (
-                                                        context,
-                                                        url,
-                                                        error,
-                                                      ) => Image.network(
-                                                        "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D",
-                                                        width: 80,
-                                                        height: 80,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                )
-                                                : Image.network(
-                                                  "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D",
-                                                  // fallback image for empty list
-                                                  width: 80,
-                                                  height: 80,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                      ),
-                                      SizedBox(width: 10),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
+                                      Material(
+                                        elevation: 1,
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Get.to(() => Form_Screen(
+                                                  amenites_id:
+                                                      booking?.id.toString() ??
+                                                          '',
+                                                  isPage: false,
+                                                ));
+                                          },
+                                          child: Container(
+                                            height: 33.h,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              color: Colors.white,
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                Text(
-                                                  booking?.name ?? '',
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily:
-                                                        AppConstants.manrope,
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(12),
+                                                    topRight:
+                                                        Radius.circular(12),
+                                                  ),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: (booking
+                                                                    ?.imageUrl !=
+                                                                null &&
+                                                            booking!.imageUrl!
+                                                                .isNotEmpty)
+                                                        ? booking!
+                                                            .imageUrl!.first
+                                                        : "https://portal.wavee.ai/public/business/img/logos/waveeLogoShort.png",
+                                                    fit: BoxFit.cover,
+                                                    width: double.infinity,
+                                                    height: 20.h,
+                                                    placeholder: (context,
+                                                            url) =>
+                                                        Center(
+                                                            child:
+                                                                CircularProgressIndicator()),
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            Image(
+                                                      image: NetworkImage(
+                                                        "https://portal.wavee.ai/public/business/img/logos/waveeLogoShort.png",
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 1.h),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 2.w),
+                                                  child: Text(
+                                                    booking?.name ?? "No Title",
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      fontSize: 16.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 0.5.h),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 2.w),
+                                                  child: Text(
+                                                    booking?.description ??
+                                                        "No Description",
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      fontSize: 15.sp,
+                                                      color: Colors.grey[700],
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                    ),
                                                   ),
                                                 ),
                                                 Spacer(),
-                                                GestureDetector(
-                                                  // onTap: () {
-                                                  //   showDialog(
-                                                  //     context: context,
-                                                  //     builder:
-                                                  //         (BuildContext
-                                                  //             context) {
-                                                  //       return Dialog(
-                                                  //         shape:
-                                                  //             RoundedRectangleBorder(
-                                                  //           borderRadius:
-                                                  //               BorderRadius
-                                                  //                   .circular(
-                                                  //                       16),
-                                                  //         ),
-                                                  //         elevation: 8,
-                                                  //         backgroundColor:
-                                                  //             Colors
-                                                  //                 .white,
-                                                  //         child: Padding(
-                                                  //           padding:
-                                                  //               const EdgeInsets
-                                                  //                   .all(
-                                                  //                   20),
-                                                  //           child: Column(
-                                                  //             mainAxisSize:
-                                                  //                 MainAxisSize
-                                                  //                     .min,
-                                                  //             crossAxisAlignment:
-                                                  //                 CrossAxisAlignment
-                                                  //                     .center,
-                                                  //             children: [
-                                                  //               Text(
-                                                  //                 "Confirm Booking",
-                                                  //                 textAlign:
-                                                  //                     TextAlign.center,
-                                                  //                 style:
-                                                  //                     TextStyle(
-                                                  //                   fontSize:
-                                                  //                       20,
-                                                  //                   fontWeight:
-                                                  //                       FontWeight.w700,
-                                                  //                   color:
-                                                  //                       Colors.black87,
-                                                  //                   fontFamily:
-                                                  //                       AppConstants.manrope,
-                                                  //                 ),
-                                                  //               ),
-                                                  //               const SizedBox(
-                                                  //                   height:
-                                                  //                       12),
-                                                  //               Text(
-                                                  //                 "Are you sure you want to confirm this booking?",
-                                                  //                 textAlign:
-                                                  //                     TextAlign.center,
-                                                  //                 style:
-                                                  //                     TextStyle(
-                                                  //                   fontSize:
-                                                  //                       15,
-                                                  //                   color:
-                                                  //                       Colors.black54,
-                                                  //                   fontFamily:
-                                                  //                       AppConstants.manrope,
-                                                  //                 ),
-                                                  //               ),
-                                                  //               const SizedBox(
-                                                  //                   height:
-                                                  //                       20),
-                                                  //               batan(
-                                                  //                 title:
-                                                  //                     "Yes",
-                                                  //                 route:
-                                                  //                     () async {
-                                                  //                   Navigator.pop(
-                                                  //                       context);
-                                                  //                   AddBookingApi(booking?.id.toString() ??
-                                                  //                       "");
-                                                  //                   // await route(); // Navigate using your custom logic
-                                                  //                 },
-                                                  //                 radius:
-                                                  //                     4.0.w,
-                                                  //                 color: AppColors
-                                                  //                     .maincolor,
-                                                  //                 fontcolor:
-                                                  //                     AppColors.white,
-                                                  //                 height:
-                                                  //                     6.h,
-                                                  //                 width: Get.width *
-                                                  //                     .65,
-                                                  //                 fontsize:
-                                                  //                     19.sp,
-                                                  //               ),
-                                                  //             ],
-                                                  //           ),
-                                                  //         ),
-                                                  //       );
-                                                  //     },
-                                                  //   );
-                                                  // },
-                                                  onTap: () {
-                                                    AmenitiesApi1(
-                                                      booking?.id.toString() ??
-                                                          "",
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    width: 23.w,
-                                                    height: 4.h,
-                                                    alignment: Alignment.center,
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                          horizontal: 10,
-                                                          vertical: 4,
-                                                        ),
-                                                    decoration: BoxDecoration(
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                      right: 2.w, bottom: 1.h),
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.bottomRight,
+                                                    child: Icon(
+                                                      Icons.arrow_forward,
+                                                      size: 18.sp,
                                                       color:
                                                           AppColors.maincolor,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            12,
-                                                          ),
-                                                    ),
-                                                    child: const Text(
-                                                      "Book Now",
-                                                      style: TextStyle(
-                                                        fontSize: 13,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: AppColors.white,
-                                                        fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                      ),
                                                     ),
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                            // SizedBox(height: 4),
-                                            Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.timer,
-                                                  size: 16,
-                                                  color: Colors.black,
-                                                ),
-                                                SizedBox(width: 5),
-                                                Text(
-                                                  _formatDuration(
-                                                    booking?.durationOptions,
-                                                  ),
-                                                  style: TextStyle(
-                                                    fontSize: 15.sp,
-                                                    color: Colors.black,
-                                                    fontFamily:
-                                                        AppConstants.manrope,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-
-                                            SizedBox(height: 1.h),
-                                            Row(
-                                              children: [
-                                                // Icon(Icons.timer,
-                                                //     size: 16,
-                                                //     color:
-                                                //         Colors.black54),
-                                                Spacer(),
-                                                Text(
-                                                  "View Detail",
-                                                  style: TextStyle(
-                                                    fontSize: 15.sp,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: AppColors.maincolor,
-                                                  ),
-                                                ),
-                                              ],
-                                            ).paddingOnly(
-                                              right: 2.w,
-                                              bottom: 1.h,
-                                            ),
-                                          ],
+                                          ),
+                                        ),
+                                      ).marginOnly(bottom: 1.h),
+                                      Positioned(
+                                        top: 1.h,
+                                        right: 1.w,
+                                        child: batan(
+                                          title: "Book Now",
+                                          route: () {
+                                            Get.to(() => Form_Screen(
+                                                  amenites_id:
+                                                      booking?.id.toString() ??
+                                                          '',
+                                                  isPage: false,
+                                                ));
+                                          },
+                                          color: AppColors.maincolor,
+                                          fontcolor: Colors.white,
+                                          height: 4.h,
+                                          width: 22.w,
+                                          fontsize: 15.sp,
+                                          radius: 7.0,
                                         ),
                                       ),
                                     ],
-                                  ),
-                                ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-                      ),
+                            ),
                 ],
               ),
             ),
@@ -401,59 +259,13 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
             Container(
               color: Colors.black.withOpacity(0.3),
               child: Center(child: Loader()),
-            ),
+            )
         ],
       ),
     );
   }
 
-  // AddBookingApi(String id) async {
-  //    Map<String, String> data = {
-  //      "user_id": loginModel?.data?.user?.id.toString() ?? "",
-  //      "amenity_id": id,
-  //      "date": selectedDate ?? "",
-  //    };
-  //    log("add data jay che${data}");
-  //    checkInternet().then((internet) async {
-  //      if (internet) {
-  //        try {
-  //          var response = await AmenitiesProvider().AddBooking(data);
-  //
-  //          if (response.statusCode == 200) {
-  //            log("API Response: ${response.body}");
-  //            setState(() {
-  //              isLoading = false;
-  //            });
-  //            // Get.off(() => BookingScreen(), arguments: {
-  //            //   'tabIndex': 0,
-  //            // });
-  //            showBookingConfirmedDialog(
-  //                context: context, selectedDate: selectedDate.toString());
-  //          } else {
-  //            setState(() {
-  //              isLoading = false;
-  //            });
-  //          }
-  //        } catch (e, stackTrace) {
-  //          log("Error ave che $stackTrace");
-  //          setState(() {
-  //            isLoading = false;
-  //          });
-  //        }
-  //      } else {
-  //        setState(() {
-  //          isLoading = false;
-  //        });
-  //        buildErrorDialog(context, 'Error', "Internet Required");
-  //      }
-  //    });
-  //  }
   Future<bool> AddBookingApi(String id) async {
-    // Map<String, String> data = {
-    //   "user_id": loginModel?.data?.user?.id.toString() ?? "",
-    //   "amenity_id": id ?? "",
-    //   "date": selectedDate ?? "",
-    // };
     String finalDate =
         selectedDate ?? DateFormat('dd/MM/yyyy').format(DateTime.now());
 
@@ -483,7 +295,6 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
           });
         }
 
-        // Show confirmation dialog
         showBookingConfirmedDialog(
           context: context,
           selectedDate: finalDate.toString(),
@@ -534,13 +345,9 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
       if (internet) {
         try {
           var response = await AmenitiesProvider().AmenitiesApi(
-            loginModel?.data?.user?.id.toString() ?? '',
-            "",
-            "",
-          );
-          aneminitiesDataModel = AmenitiesModel.fromJson(
-            jsonDecode(response.body),
-          );
+              loginModel?.data?.user?.id.toString() ?? '', "", "");
+          aneminitiesDataModel =
+              AmenitiesModel.fromJson(jsonDecode(response.body));
           if (response.statusCode == 200) {
             log("API Response: ${response.body}");
             setState(() {
@@ -553,7 +360,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
             });
           }
         } catch (e, stackTrace) {
-          log("Error ave che $stackTrace");
+          log("Geeting Error $stackTrace");
           setState(() {
             isLoading = false;
           });
@@ -650,9 +457,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                               child: DropdownButton(
                                 icon: Padding(
                                   padding: EdgeInsets.symmetric(
-                                    horizontal: 2.w,
-                                    vertical: 1.h,
-                                  ),
+                                      horizontal: 2.w, vertical: 1.h),
                                   child: Icon(
                                     CupertinoIcons.chevron_down,
                                     size: 16.sp,
@@ -669,10 +474,9 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                     child: Text(
                                       "This Week",
                                       style: TextStyle(
-                                        color: Colors.black,
-                                        fontFamily: AppConstants.manrope,
-                                        fontSize: 16.sp,
-                                      ),
+                                          color: Colors.black,
+                                          fontFamily: AppConstants.manrope,
+                                          fontSize: 16.sp),
                                     ),
                                   ),
                                   DropdownMenuItem(
@@ -680,10 +484,9 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                     child: Text(
                                       "This Month",
                                       style: TextStyle(
-                                        color: Colors.black,
-                                        fontFamily: AppConstants.manrope,
-                                        fontSize: 16.sp,
-                                      ),
+                                          color: Colors.black,
+                                          fontFamily: AppConstants.manrope,
+                                          fontSize: 16.sp),
                                     ),
                                   ),
                                   DropdownMenuItem(
@@ -691,10 +494,9 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                     child: Text(
                                       "This Year",
                                       style: TextStyle(
-                                        color: Colors.black,
-                                        fontFamily: AppConstants.manrope,
-                                        fontSize: 16.sp,
-                                      ),
+                                          color: Colors.black,
+                                          fontFamily: AppConstants.manrope,
+                                          fontSize: 16.sp),
                                     ),
                                   ),
                                 ],
@@ -711,115 +513,90 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                       SizedBox(height: 1.h),
                       isLoading
                           ? Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.maincolor,
-                            ),
-                          )
+                              child: CircularProgressIndicator(
+                                  color: AppColors.maincolor))
                           : selectedValue == "days"
-                          ? _buildWeekView(
-                            id,
-                          ).paddingOnly(left: 4.w, right: 4.w, bottom: 2.h)
-                          : selectedValue == "month"
-                          ? _buildMonthView(
-                            id,
-                          ).paddingOnly(left: 4.w, right: 4.w)
-                          : _buildYearView(
-                            id,
-                          ).paddingOnly(left: 4.w, right: 4.w, bottom: 2.h),
+                              ? _buildWeekView(id).paddingOnly(
+                                  left: 4.w, right: 4.w, bottom: 2.h)
+                              : selectedValue == "month"
+                                  ? _buildMonthView(id)
+                                      .paddingOnly(left: 4.w, right: 4.w)
+                                  : _buildYearView(id).paddingOnly(
+                                      left: 4.w, right: 4.w, bottom: 2.h),
                       load
                           ? CircularProgressIndicator()
                           : Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 4.w,
-                                  vertical: 2.h,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 4.w, vertical: 2.h),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      _slotCard(
+                                        countColor: Colors.black,
+                                        statusColor: Colors.black,
+                                        title: "Total Slots",
+                                        value: amenitiesModel
+                                                ?.data?[0].totalBookingSlots
+                                                .toString() ??
+                                            "0",
+                                        background: Colors.black26,
+                                        color: Colors.white,
+                                      ),
+                                      _slotCard(
+                                        title: "Booked",
+                                        statusColor: Colors.white,
+                                        countColor: Colors.white,
+                                        background: Colors.white,
+                                        value: amenitiesModel
+                                                ?.data?[0].bookedSlots
+                                                .toString() ??
+                                            "0",
+                                        color: Colors.redAccent,
+                                      ),
+                                      _slotCard(
+                                        title: "Available",
+                                        value: amenitiesModel
+                                                ?.data?[0].availableSlots
+                                                .toString() ??
+                                            "0",
+                                        countColor: Colors.white,
+                                        statusColor: Colors.white,
+                                        background: Colors.white,
+                                        color: Colors.green,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    _slotCard(
-                                      countColor: Colors.black,
-                                      statusColor: Colors.black,
-                                      title: "Total Slots",
-                                      value:
-                                          amenitiesModel
-                                              ?.data?[0]
-                                              .totalBookingSlots
-                                              .toString() ??
-                                          "0",
-                                      iconColor: Colors.white,
-                                      background: Colors.black26,
-                                      color: Colors.white,
-                                      icon: Icons.event_available,
-                                    ),
-                                    _slotCard(
-                                      title: "Booked",
-                                      iconColor: AppColors.redColor,
-                                      statusColor: Colors.white,
-                                      countColor: Colors.white,
-                                      background: Colors.white,
-                                      value:
-                                          amenitiesModel?.data?[0].bookedSlots
-                                              .toString() ??
-                                          "0",
-                                      color: Colors.redAccent,
-                                      icon: Icons.event_busy,
-                                    ),
-                                    _slotCard(
-                                      title: "Available",
-                                      value:
-                                          amenitiesModel
-                                              ?.data?[0]
-                                              .availableSlots
-                                              .toString() ??
-                                          "0",
-                                      iconColor: Colors.green,
-                                      countColor: Colors.white,
-                                      statusColor: Colors.white,
-                                      background: Colors.white,
-                                      color: Colors.green,
-                                      icon: Icons.schedule,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 4.w),
-                                child:
-                                    isLoading == true
-                                        ? CircularProgressIndicator()
-                                        : batan(
+                                const SizedBox(height: 20),
+                                Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 4.w),
+                                  child: isLoading == true
+                                      ? CircularProgressIndicator()
+                                      : batan(
                                           title: "Confirm Booking",
                                           route: () async {
-                                            int available =
-                                                int.tryParse(
-                                                  amenitiesModel
-                                                          ?.data?[0]
-                                                          .availableSlots
-                                                          .toString() ??
-                                                      "0",
-                                                ) ??
+                                            int available = int.tryParse(
+                                                    amenitiesModel?.data?[0]
+                                                            .availableSlots
+                                                            .toString() ??
+                                                        "0") ??
                                                 0;
 
                                             if (available > 0) {
-                                              // 1️⃣ Close the bottom sheet
                                               Navigator.pop(context);
 
-                                              // 2️⃣ Show full screen loader
                                               setState(() {
                                                 isGlobalLoading = true;
                                               });
 
-                                              // 3️⃣ Wait a bit to show animation smoothly
                                               await Future.delayed(
-                                                Duration(milliseconds: 300),
-                                              );
+                                                  Duration(milliseconds: 300));
 
-                                              // 4️⃣ Call the API
                                               bool success =
                                                   await AddBookingApi(id);
 
@@ -829,14 +606,11 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                                 });
                                               }
 
-                                              // ✅ Optional: Do something else if success
                                               if (success) {
                                                 print(
-                                                  "Booking added successfully",
-                                                );
+                                                    "Booking added successfully");
                                               }
                                             } else {
-                                              // ❌ No slots available
                                               Get.snackbar(
                                                 "Sorry!",
                                                 "No available slots for booking",
@@ -875,61 +649,10 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                           iconsize1: 22.sp,
                                           iconData1: Icons.check_circle_outline,
                                         ),
-                                // batan(
-                                //         title: "Confirm Booking",
-                                //         route: () {
-                                //           int available = int.tryParse(
-                                //                   amenitiesModel?.data?[0]
-                                //                           .availableSlots
-                                //                           .toString() ??
-                                //                       "0") ??
-                                //               0;
-                                //
-                                //           if (available > 0) {
-                                //             AddBookingApi(id);
-                                //           } else {
-                                //             Get.snackbar(
-                                //               "Sorry!",
-                                //               "No available slots for booking",
-                                //               backgroundColor:
-                                //                   AppColors.redColor,
-                                //               colorText: Colors.white,
-                                //               titleText: Text(
-                                //                 "Sorry!",
-                                //                 style: TextStyle(
-                                //                   fontSize: 18.sp,
-                                //                   fontWeight:
-                                //                       FontWeight.bold,
-                                //                   color: Colors.white,
-                                //                   fontFamily:
-                                //                       AppConstants.manrope,
-                                //                 ),
-                                //               ),
-                                //               messageText: Text(
-                                //                 "No available slots for booking",
-                                //                 style: TextStyle(
-                                //                   fontSize: 16.sp,
-                                //                   color: Colors.white,
-                                //                   fontFamily:
-                                //                       AppConstants.manrope,
-                                //                 ),
-                                //               ),
-                                //             );
-                                //           }
-                                //         },
-                                //         color: AppColors.maincolor,
-                                //         fontcolor: Colors.white,
-                                //         height: 6.h,
-                                //         width: double.infinity,
-                                //         fontsize: 18.sp,
-                                //         radius: 12.0,
-                                //         iconData1:
-                                //             Icons.check_circle_outline,
-                                //       )
-                              ),
-                              const SizedBox(height: 16),
-                            ],
-                          ),
+                                ),
+                                const SizedBox(height: 16),
+                              ],
+                            ),
                     ],
                   ),
                 );
@@ -939,7 +662,6 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
         );
       },
     ).whenComplete(() {
-      // 👇 Reset context when bottom sheet is closed
       _bookingSheetContext = null;
       log("Bottom sheet closed & context cleared.");
     });
@@ -952,8 +674,6 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
     required Color background,
     required Color statusColor,
     required Color countColor,
-    required Color iconColor,
-    required IconData icon,
   }) {
     return Material(
       elevation: 2,
@@ -974,11 +694,6 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
         ),
         child: Column(
           children: [
-            CircleAvatar(
-              radius: 25,
-              backgroundColor: background,
-              child: Icon(icon, color: iconColor, size: 22.sp),
-            ),
             const SizedBox(height: 4),
             Text(
               title,
@@ -1011,7 +726,6 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
     dates.clear();
 
     if (selectedValue == "days") {
-      // **This Week Dates**
       DateTime startOfWeek = today.subtract(Duration(days: today.weekday - 1));
       for (int i = 0; i < 7; i++) {
         DateTime date = startOfWeek.add(Duration(days: i));
@@ -1029,7 +743,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
       }
     }
 
-    setState(() {}); // UI Update
+    setState(() {});
   }
 
   DateTime? selectedCalendarDate;
@@ -1057,85 +771,6 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
 
   DateTime today = DateTime.now();
 
-  // Widget _buildWeekView(String id) {
-  //   return Container(
-  //     height: 12.h,
-  //     alignment: Alignment.center,
-  //     child: ListView.builder(
-  //       scrollDirection: Axis.horizontal,
-  //       itemCount: dates.length,
-  //       itemBuilder: (context, index) {
-  //         DateTime date = dates[index]['fullDate'];
-  //         bool isSelected = isSameDay(selectedCalendarDate, date);
-  //
-  //         return GestureDetector(
-  //           onTap: () async {
-  //             setState(() {
-  //               selectedIndex = index;
-  //               selectedCalendarDate = date;
-  //               selectedDate = DateFormat('dd/MM/yyyy').format(date);
-  //             });
-  //
-  //             await Future.delayed(Duration(milliseconds: 300));
-  //
-  //             setState(() {
-  //               load = true;
-  //             });
-  //             // Navigator.pop(context);
-  //
-  //             var success = await AmenitiesApi1(id); // API call
-  //
-  //             setState(() {
-  //               load = false;
-  //               Navigator.pop(context);
-  //             });
-  //
-  //             if (success) {
-  //               submitBooking(id);
-  //             } else {
-  //               ScaffoldMessenger.of(context).showSnackBar(
-  //                 SnackBar(
-  //                   content: Text("Something went wrong. Please try again."),
-  //                 ),
-  //               );
-  //             }
-  //           },
-  //           child: Container(
-  //             width: 20.w,
-  //             margin: const EdgeInsets.only(right: 10),
-  //             decoration: BoxDecoration(
-  //               color: isSelected ? AppColors.maincolor : Colors.white,
-  //               borderRadius: BorderRadius.circular(20),
-  //             ),
-  //             child: Column(
-  //               mainAxisAlignment: MainAxisAlignment.center,
-  //               children: [
-  //                 Text(
-  //                   dates[index]['day']!,
-  //                   style: TextStyle(
-  //                     color: isSelected ? Colors.white : Colors.black,
-  //                     fontSize: 17,
-  //                     fontWeight: FontWeight.bold,
-  //                     fontFamily: AppConstants.manrope,
-  //                   ),
-  //                 ),
-  //                 Text(
-  //                   dates[index]['weekday']!,
-  //                   style: TextStyle(
-  //                     color: isSelected ? Colors.white : Colors.black,
-  //                     fontSize: 15,
-  //                     fontFamily: AppConstants.manrope,
-  //                     fontWeight: FontWeight.bold,
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
   Widget _buildWeekView(String id) {
     return Container(
       height: 12.h,
@@ -1160,7 +795,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
 
               if (mounted) setState(() => load = true);
 
-              var success = await AmenitiesApi1(id); // API call
+              var success = await AmenitiesApi1(id);
 
               if (mounted) {
                 setState(() {
@@ -1259,22 +894,14 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
           color: AppColors.maincolor,
           shape: BoxShape.circle,
         ),
-        selectedTextStyle: TextStyle(
-          color: Colors.white,
-          fontFamily: AppConstants.manrope,
-        ),
-        todayTextStyle: TextStyle(
-          color: Colors.white,
-          fontFamily: AppConstants.manrope,
-        ),
-        defaultTextStyle: TextStyle(
-          color: Colors.white,
-          fontFamily: AppConstants.manrope,
-        ),
-        weekendTextStyle: TextStyle(
-          color: Colors.white,
-          fontFamily: AppConstants.manrope,
-        ),
+        selectedTextStyle:
+            TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
+        todayTextStyle:
+            TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
+        defaultTextStyle:
+            TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
+        weekendTextStyle:
+            TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
       ),
       selectedDayPredicate: (day) {
         return isSameDay(selectedCalendarDate, day);
@@ -1297,7 +924,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                 load = true;
               });
 
-              var success = await AmenitiesApi1(id); // API call
+              var success = await AmenitiesApi1(id);
 
               setState(() {
                 load = false;
@@ -1409,7 +1036,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                 load = true;
               });
 
-              var success = await AmenitiesApi1(id); // Api call
+              var success = await AmenitiesApi1(id);
 
               setState(() {
                 load = false;
@@ -1447,17 +1074,15 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
       ),
       onDaySelected: (newSelectedDay, focusedDay) {
         setState(() {
-          selectedYear = newSelectedDay; // Update selected day
+          selectedYear = newSelectedDay;
           selectedDate = DateFormat('yyyy/MM/dd').format(newSelectedDay);
           load = true;
         });
-        // projectlistap();
       },
       onPageChanged: (focusedDay) {
-        // Prevent going to past months
         if (focusedDay.isBefore(firstDayOfYear)) {
           setState(() {
-            selectedYear = firstDayOfYear; // Reset to current month
+            selectedYear = firstDayOfYear;
           });
         }
       },
@@ -1485,13 +1110,12 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
           isLoading = false;
           load = false;
         });
-        log("data jay che che ${loginModel?.data?.user?.id ?? ''}");
-        log("data jay che che ${Id}");
-        log("data jay che che ${selectedDate ?? ""}");
+        log(" ADD DATA ${loginModel?.data?.user?.id ?? ''}");
+        log(" ADD DATA ${Id}");
+        log(" ADD DATA ${selectedDate ?? ""}");
         submitBooking(Id);
         log("API mathi javab ave che che : ${response.body}");
 
-        // AmenitiesApi();
         return true;
       } else {
         setState(() {
@@ -1501,7 +1125,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
         return false;
       }
     } catch (e, stackTrace) {
-      log("Error ave che $stackTrace");
+      log("Geeting Error $stackTrace");
       setState(() {
         isLoading = false;
         load = false;
@@ -1559,10 +1183,8 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                   ),
                   SizedBox(height: 1.h),
                   Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 1.2.h,
-                      horizontal: 4.w,
-                    ),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 1.2.h, horizontal: 4.w),
                     decoration: BoxDecoration(
                       color: AppColors.maincolor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
@@ -1572,11 +1194,11 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(
-                          Icons.calendar_today, // or Icons.event
+                          Icons.calendar_today,
                           size: 20.sp,
                           color: AppColors.maincolor,
                         ),
-                        SizedBox(width: 2.w), // spacing between icon and text
+                        SizedBox(width: 2.w),
                         Text(
                           selectedDate,
                           style: TextStyle(
@@ -1601,51 +1223,6 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                     ),
                   ),
                   SizedBox(height: 1.h),
-                  // TextFormField(
-                  //   maxLines: 3,
-                  //   decoration: InputDecoration(
-                  //     hintText: 'Enter note',
-                  //     filled: true,
-                  //     fillColor: AppColors.maincolor.withOpacity(0.1),
-                  //     contentPadding:
-                  //         EdgeInsets.symmetric(vertical: 1.2.h, horizontal: 4.w),
-                  //     hintStyle: TextStyle(
-                  //       fontSize: 16.sp,
-                  //       fontWeight: FontWeight.w500,
-                  //       fontFamily: AppConstants.manrope,
-                  //       color: Colors.black45,
-                  //     ),
-                  //     enabledBorder: OutlineInputBorder(
-                  //       borderSide: BorderSide.none,
-                  //       borderRadius: BorderRadius.circular(12),
-                  //     ),
-                  //     focusedBorder: OutlineInputBorder(
-                  //       borderSide: BorderSide(color: AppColors.maincolor),
-                  //       borderRadius: BorderRadius.circular(12),
-                  //     ),
-                  //   ),
-                  //   style: TextStyle(
-                  //     fontSize: 16.sp,
-                  //     fontWeight: FontWeight.bold,
-                  //     fontFamily: AppConstants.manrope,
-                  //     color: AppColors.maincolor,
-                  //   ),
-                  // ),
-                  // SizedBox(height: 3.h),
-                  // batan(
-                  //   title: "Ok",
-                  //   route: () {
-                  //     Get.off(() => BookingScreen(), arguments: {
-                  //       'tabIndex': 0,
-                  //     });
-                  //   },
-                  //   color: AppColors.maincolor,
-                  //   fontcolor: Colors.white,
-                  //   height: 5.h,
-                  //   width: double.infinity,
-                  //   fontsize: 18,
-                  //   radius: 12.0,
-                  // ),
                   TextFormField(
                     maxLines: 3,
                     decoration: InputDecoration(
@@ -1653,9 +1230,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                       filled: true,
                       fillColor: AppColors.maincolor.withOpacity(0.1),
                       contentPadding: EdgeInsets.symmetric(
-                        vertical: 1.2.h,
-                        horizontal: 4.w,
-                      ),
+                          vertical: 1.2.h, horizontal: 4.w),
                       hintStyle: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
@@ -1697,10 +1272,9 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                     title: "Ok",
                     route: () {
                       if (_formKey.currentState!.validate()) {
-                        Get.off(
-                          () => BookingScreen(),
-                          arguments: {'tabIndex': 0},
-                        );
+                        Get.off(() => BookingScreen(), arguments: {
+                          'tabIndex': 0,
+                        });
                       }
                     },
                     color: AppColors.maincolor,

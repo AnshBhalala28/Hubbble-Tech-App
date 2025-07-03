@@ -53,7 +53,8 @@ class _EditProfileState extends State<EditProfile> {
                       CircleAvatar(
                         radius: 27.sp,
                         backgroundColor: Colors.grey.shade300,
-                        backgroundImage: AssetImage('assets/images/waveeLogoShort.png'),
+                        backgroundImage:
+                            AssetImage('assets/images/waveeLogoShort.png'),
                       ),
                       Positioned(
                         bottom: 0,

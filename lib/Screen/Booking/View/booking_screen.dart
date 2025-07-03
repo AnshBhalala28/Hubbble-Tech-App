@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/Screen/Booking/Model/amenities_book_status_model.dart';
+import 'package:wavee/Screen/HomeNewPage/View/homenewpage.dart';
 import 'package:wavee/comman/loader.dart';
 
 import '../../../comman/Custom_AppBar.dart';
@@ -15,14 +15,11 @@ import '../../../comman/SideMenu.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
-import '../../../comman/custom_batan.dart';
 import '../../../comman/error_dialog.dart';
 import '../../open_ai_chatbot/view/open_ai_screen.dart';
-import '../Model/booking_model.dart';
 import '../Model/rejectbooking.dart';
 import '../Provider/booking_provider.dart';
 import 'book_amenities.dart';
-import 'detailScreen.dart';
 import 'form_screen.dart';
 
 class BookingScreen extends StatefulWidget {
@@ -43,11 +40,7 @@ class _BookingScreenState extends State<BookingScreen> {
   String? selectedAmenity;
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-  List<Data1> allamenities = [];
-  List<Data1> Requestedamenities = [];
-  List<Data1> Rejectedamenities = [];
-  List<Data1>? approvedAmenities = [];
-  List<Data1>? requestedAmenities = [];
+
   Map<String, dynamic>? newBooking;
 
   @override
@@ -56,23 +49,23 @@ class _BookingScreenState extends State<BookingScreen> {
     setState(() {
       isLoading = true;
     });
-    BookAmetiesStatusApi();
+    BookAmetiesStatusApi(selectedType.toLowerCase());
   }
 
   Color getStatusColor1(String status) {
     return status == "Pending"
         ? Colors.yellow.shade800
         : status == "Confirmed"
-        ? Colors.green
-        : status == "Cancelled"
-        ? Colors.red
-        : status == "Rejected"
-        ? Colors.orange
-        : Colors.black; // default color if none match
+            ? Colors.green
+            : status == "Cancelled"
+                ? Colors.red
+                : status == "Rejected"
+                    ? Colors.orange
+                    : Colors.black;
   }
 
   Color getStatusColor(String status, String? rsvp, String? attended) {
-    if (attended == "1") return Colors.green;
+    if (attended == "1") return AppColors.maincolor;
     if (attended == "0") return Colors.redAccent;
 
     if (status == "Confirmed") {
@@ -89,12 +82,12 @@ class _BookingScreenState extends State<BookingScreen> {
     return status == "Pending"
         ? Colors.yellow.shade800
         : status == "Confirmed"
-        ? Colors.green
-        : status == "Cancelled"
-        ? Colors.red
-        : status == "Rejected"
-        ? Colors.orange
-        : Colors.black; // default
+            ? Colors.green
+            : status == "Cancelled"
+                ? Colors.red
+                : status == "Rejected"
+                    ? Colors.orange
+                    : Colors.black;
   }
 
   String getStatusText(String status, String? rsvp, String? attended) {
@@ -116,8 +109,24 @@ class _BookingScreenState extends State<BookingScreen> {
     return status;
   }
 
+  String selectedType = "all";
+
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic>? bookingsData =
+        bookAmenitiesStatusModel?.data?.toJson();
+
+    final List<dynamic> nonEmptyBookings = [];
+    bookingsData?.forEach((monthName, bookings) {
+      if (bookings != null && bookings.isNotEmpty) {
+        for (var booking in bookings) {
+          nonEmptyBookings.add({
+            "month": monthName,
+            "booking": booking,
+          });
+        }
+      }
+    });
     return Scaffold(
       drawer: SideMenu(),
       key: _scaffoldKeyBooking,
@@ -130,455 +139,430 @@ class _BookingScreenState extends State<BookingScreen> {
               SizedBox(height: 4.h),
               TitleBar(
                 back: () {
-                  Get.back();
+                  Get.to(
+                    HomePage(
+                      userName: '',
+                      selected: 1,
+                    ),
+                  );
                 },
-                title: 'Booking',
+                title: 'My Bookings',
                 drawerCallback: () {
                   _scaffoldKeyBooking.currentState?.openDrawer();
                 },
               ),
               SizedBox(height: 3.h),
-              SizedBox(
-                height: 6.h,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        if (selectedCategory != index) {
+              Row(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "Filter Status By",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: AppConstants.manrope,
+                        ),
+                      ),
+                      SizedBox(width: 2.w),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 17.sp,
+                        color: Colors.black,
+                      ),
+                    ],
+                  ),
+                  Spacer(),
+                  Material(
+                    elevation: 2,
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      height: 4.5.h,
+                      width: 32.w,
+                      decoration: BoxDecoration(
+                        color: AppColors.maincolor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: PopupMenuButton<String>(
+                        onSelected: (value) {
                           setState(() {
-                            selectedCategory = index;
+                            selectedType = value;
                             isLoading = true;
                           });
-                          BookAmetiesStatusApi(); // 👈 API call on tab change
-                        }
-                      },
-                      child: Container(
-                        height: 6.h,
-                        padding: EdgeInsets.symmetric(
-                          vertical: 1.h,
-                          horizontal: 5.w,
-                        ),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 0.5, color: Colors.grey),
-                          color:
-                              selectedCategory == index
-                                  ? Color(0xFF734F96)
-                                  : Colors.white,
+                          print("Selected: $value");
+                          BookAmetiesStatusApi(selectedType.toLowerCase());
+                        },
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        margin: EdgeInsets.symmetric(horizontal: 1.2.w),
-                        child: Text(
-                          categories[index],
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            color:
-                                selectedCategory == index
-                                    ? Colors.white
-                                    : Colors.black,
-                            fontFamily: AppConstants.manrope,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1,
+                        offset: Offset(0, 45),
+                        itemBuilder: (BuildContext context) => [
+                          PopupMenuItem(
+                            value: "all",
+                            child: Text(
+                              "All",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: AppConstants.manrope,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              SizedBox(height: 2.h),
-              isLoading
-                  ? Loader().paddingOnly(top: 20.h)
-                  : bookAmenitiesStatusModel?.data?.length == null ||
-                      bookAmenitiesStatusModel?.data?.length == 0
-                  ? Center(
-                    child: Text(
-                      "No Booking Available",
-                      style: TextStyle(
-                        fontSize: 17.sp,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.black,
-                        fontFamily: AppConstants.manrope,
-                      ),
-                    ).paddingOnly(top: 30.h),
-                  )
-                  : SizedBox(
-                    child: Column(
-                      children: [
-                        ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          physics: const NeverScrollableScrollPhysics(),
-                          padding: EdgeInsets.zero,
-                          itemCount:
-                              bookAmenitiesStatusModel?.data?.length ?? 0,
-                          itemBuilder: (context, index) {
-                            var booking =
-                                bookAmenitiesStatusModel?.data?[index];
-                            return GestureDetector(
-                              onTap: () {
-                                Get.to(
-                                  () => Form_Screen(
-                                    amenites_id:
-                                        booking?.amenity?.id.toString() ?? '',
-                                    status: booking?.status ?? "",
-                                    bookingDate: booking?.requestedAt ?? '',
-                                    attend: booking?.attended.toString() ?? "",
-                                    rsvp: booking?.rsvp,
-                                    EventName: booking?.amenity?.name ?? "",
-                                    bookingId:
-                                        booking?.bookingId.toString() ?? "",
-                                    requestedDate:
-                                        booking?.requestedAt ?? "N/A",
-                                    isPage: true,
-                                  ),
-                                );
-                                log(
-                                  "Booking Date Ave chee # ${booking?.requestedAt}",
-                                );
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
+                          PopupMenuItem(
+                            value: "confirmed",
+                            child: Text(
+                              "Confirmed",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: AppConstants.manrope,
+                              ),
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: "pending",
+                            child: Text(
+                              "Pending",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: AppConstants.manrope,
+                              ),
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: "cancelled",
+                            child: Text(
+                              "Cancelled",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: AppConstants.manrope,
+                              ),
+                            ),
+                          ),
+                        ],
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                selectedType.toString().capitalizeFirst ?? "",
+                                style: TextStyle(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(20),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.2),
-                                      spreadRadius: 2,
-                                      blurRadius: 5,
-                                      offset: Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 1.w,
-                                  vertical: 1.h,
-                                ),
-                                padding: const EdgeInsets.all(12),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: CachedNetworkImage(
-                                        imageUrl:
-                                            booking?.amenity?.imageUrl?.first
-                                                ?.toString() ??
-                                            '',
-                                        width: 80,
-                                        height: 80,
-                                        fit: BoxFit.cover,
-                                        placeholder:
-                                            (context, url) => Container(
-                                              width: 80,
-                                              height: 80,
-                                              color: Colors.grey[300],
-                                              child: Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                      strokeWidth: 2,
-                                                    ),
-                                              ),
-                                            ),
-                                        errorWidget:
-                                            (context, url, error) =>
-                                                Icon(Icons.error),
-                                      ),
-                                    ),
-                                    SizedBox(width: 2.h),
-                                    Expanded(
-                                      child: Stack(
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                /// Date
-                                                Text(
-                                                  formatDate(
-                                                    booking?.requestedAt ?? "",
-                                                  ),
-                                                  style: TextStyle(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.black54,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 4),
-
-                                                /// Amenity Name
-                                                Text(
-                                                  booking?.amenity?.name ?? '',
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily:
-                                                        AppConstants.manrope,
-                                                    color: Colors.black87,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 4),
-
-                                                /// Duration
-                                                Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.timer,
-                                                      size: 16,
-                                                      color: Colors.black45,
-                                                    ),
-                                                    SizedBox(width: 4),
-                                                    Text(
-                                                      _formatDuration(
-                                                        booking
-                                                            ?.amenity
-                                                            ?.durationOptions,
-                                                      ),
-                                                      style: TextStyle(
-                                                        fontSize: 13,
-                                                        color: Colors.black54,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          // Right Side (Status + More Icon if pending)
-                                          Align(
-                                            alignment: Alignment.topRight,
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                    horizontal: 10,
-                                                    vertical: 4,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: getStatusColor(
-                                                      booking?.status
-                                                              .toString() ??
-                                                          "",
-                                                      booking?.rsvp,
-                                                      booking?.attended,
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          10,
-                                                        ),
-                                                  ),
-                                                  child: Text(
-                                                    getStatusText(
-                                                      booking?.status
-                                                              .toString() ??
-                                                          "",
-                                                      booking?.rsvp,
-                                                      booking?.attended,
-                                                    ),
-                                                    style: TextStyle(
-                                                      fontSize: 13,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white,
-                                                      fontFamily:
-                                                          AppConstants.manrope,
-                                                    ),
-                                                  ),
-                                                ),
-                                                if ((booking?.status
-                                                            ?.toLowerCase() ==
-                                                        'pending') &&
-                                                    selectedCategory == 2) ...[
-                                                  SizedBox(width: 10),
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (
-                                                          BuildContext context,
-                                                        ) {
-                                                          return Dialog(
-                                                            shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    16,
-                                                                  ),
-                                                            ),
-                                                            elevation: 8,
-                                                            backgroundColor:
-                                                                Colors.white,
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets.all(
-                                                                    20,
-                                                                  ),
-                                                              child: Column(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .min,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Text(
-                                                                    'Cancel Booking',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: TextStyle(
-                                                                      fontSize:
-                                                                          20,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w700,
-                                                                      color:
-                                                                          Colors
-                                                                              .black87,
-                                                                      fontFamily:
-                                                                          AppConstants
-                                                                              .manrope,
-                                                                    ),
-                                                                  ),
-                                                                  const SizedBox(
-                                                                    height: 12,
-                                                                  ),
-                                                                  Text(
-                                                                    'Are you sure you want to cancel this booking?',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: TextStyle(
-                                                                      fontSize:
-                                                                          15,
-                                                                      color:
-                                                                          Colors
-                                                                              .black54,
-                                                                      fontFamily:
-                                                                          AppConstants
-                                                                              .manrope,
-                                                                    ),
-                                                                  ),
-                                                                  const SizedBox(
-                                                                    height: 20,
-                                                                  ),
-                                                                  batan(
-                                                                    title:
-                                                                        "Yes",
-                                                                    route: () async {
-                                                                      Navigator.pop(
-                                                                        context,
-                                                                      );
-                                                                      rejectBooking(
-                                                                        booking?.bookingId.toString() ??
-                                                                            '',
-                                                                        booking?.userId.toString() ??
-                                                                            '',
-                                                                      );
-                                                                    },
-                                                                    radius:
-                                                                        4.0.w,
-                                                                    color:
-                                                                        AppColors
-                                                                            .maincolor,
-                                                                    fontcolor:
-                                                                        AppColors
-                                                                            .white,
-                                                                    height: 6.h,
-                                                                    width:
-                                                                        Get.width *
-                                                                        .65,
-                                                                    fontsize:
-                                                                        19.sp,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          );
-                                                        },
-                                                      );
-                                                    },
-                                                    child: Icon(
-                                                      Icons.more_vert,
-                                                      color: Colors.black,
-                                                      size: 22,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: AppConstants.manrope,
                                 ),
                               ),
-                            );
-                          },
+                              SizedBox(width: 2.w),
+                              Icon(
+                                CupertinoIcons.chevron_down,
+                                color: Colors.white,
+                                size: 15.sp,
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-            ],
-          ),
-        ),
-      ),
-      floatingActionButton:
-          isLoading
-              ? Container()
-              : Row(
-                children: [
-                  Spacer(),
-                  FloatingActionButton.extended(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(900),
-                    ),
-                    backgroundColor: Colors.white,
-                    onPressed: () {
-                      Get.to(() => BookAmenities_Screen());
-                    },
-                    icon: Icon(Icons.home_repair_service, color: Colors.black),
-                    label: Text(
-                      "Amenities",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16.sp,
-                        fontFamily: AppConstants.manrope,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 2.w),
-                  FloatingActionButton.extended(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(900),
-                    ),
-                    backgroundColor: Colors.white,
-                    onPressed: () {
-                      Get.to(() => const ChatBotScreen());
-                    },
-                    icon: Icon(
-                      CupertinoIcons.chat_bubble_2,
-                      color: Colors.black,
-                    ),
-                    label: Text(
-                      "Ai Concierge",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16.sp,
-                        fontFamily: AppConstants.manrope,
                       ),
                     ),
                   ),
                 ],
               ),
+              SizedBox(height: 2.h),
+              isLoading
+                  ? Loader().paddingOnly(top: 20.h)
+                  : nonEmptyBookings.length == 0 || nonEmptyBookings.isEmpty
+                      ? Center(
+                          child: Text(
+                            "No ${selectedType.capitalizeFirst} Bookings found",
+                            style: TextStyle(
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.black,
+                              fontFamily: AppConstants.manrope,
+                            ),
+                          ).paddingOnly(top: 30.h),
+                        )
+                      : SizedBox(
+                          child: Column(
+                            children: [
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: nonEmptyBookings.length,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                itemBuilder: (context, index) {
+                                  final entry = nonEmptyBookings[index];
+                                  final monthName = entry['month'].toString();
+                                  final booking = entry['booking'];
+
+                                  final dateTime =
+                                      DateFormat("yyyy-MM-dd hh:mm a").parse(
+                                    booking['requested_at'] ?? "",
+                                    true,
+                                  );
+
+                                  final day = DateFormat('EEE')
+                                      .format(dateTime)
+                                      .toUpperCase();
+                                  final dayNum =
+                                      DateFormat('d').format(dateTime);
+                                  final monthFormatted =
+                                      DateFormat('MMMM').format(dateTime);
+                                  final time =
+                                      DateFormat('hh:mm a').format(dateTime);
+
+                                  final isFirstOfMonth = index == 0 ||
+                                      nonEmptyBookings[index - 1]['month'] !=
+                                          monthName;
+
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      if (isFirstOfMonth)
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 16.0, bottom: 8),
+                                          child: Text(
+                                            monthFormatted,
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                        ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Get.to(() => Form_Screen(
+                                                amenites_id: booking['amenity']
+                                                        ['id']
+                                                    .toString(),
+                                                status: booking['status'],
+                                                bookingDate:
+                                                    booking['requested_at'],
+                                                attend: booking['attended']
+                                                        ?.toString() ??
+                                                    "",
+                                                rsvp: booking['rsvp'],
+                                                EventName: booking['amenity']
+                                                    ['name'],
+                                                bookingId: booking['booking_id']
+                                                    .toString(),
+                                                requestedDate:
+                                                    booking['requested_at'] ??
+                                                        "N/A",
+                                                isPage: true,
+                                              ));
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    day,
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.grey[600],
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 2),
+                                                  Text(
+                                                    dayNum,
+                                                    style: TextStyle(
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black87,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(width: 12),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          time,
+                                                          style: TextStyle(
+                                                            fontSize: 13,
+                                                            color:
+                                                                Colors.black87,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                        Spacer(),
+                                                        Container(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal: 8,
+                                                                  vertical: 4),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color:
+                                                                getStatusColor(
+                                                              booking['status'] ??
+                                                                  "",
+                                                              booking['rsvp'],
+                                                              booking[
+                                                                  'attended'],
+                                                            ),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        8),
+                                                          ),
+                                                          child: Text(
+                                                            getStatusText(
+                                                              booking['status']
+                                                                  .toString(),
+                                                              booking['rsvp'],
+                                                              booking[
+                                                                  'attended'],
+                                                            ),
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(height: 4),
+                                                    Text(
+                                                      booking['amenity']
+                                                              ['name'] ??
+                                                          "Meeting Room",
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.black87,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 2),
+                                                    Text(
+                                                      booking['amenity']
+                                                              ['description'] ??
+                                                          "",
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: Colors.black54,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 8),
+                                                    Divider(thickness: 0.5),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+              SizedBox(
+                height: 5.h,
+              )
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: isLoading
+          ? Container()
+          : Row(
+              children: [
+                Spacer(),
+                FloatingActionButton.extended(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(900)),
+                  backgroundColor: Colors.white,
+                  onPressed: () {
+                    Get.to(() => BookAmenities_Screen());
+                  },
+                  icon: Icon(Icons.home_repair_service, color: Colors.black),
+                  label: Text(
+                    "Amenities",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16.sp,
+                        fontFamily: AppConstants.manrope),
+                  ),
+                ),
+                SizedBox(
+                  width: 2.w,
+                ),
+                // FloatingActionButton.extended(
+                //   shape: RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.circular(900)),
+                //   backgroundColor: Colors.white,
+                //   onPressed: () {
+                //     Get.to(() => const ChatBotScreen());
+                //   },
+                //   icon: Icon(CupertinoIcons.chat_bubble_2, color: Colors.black),
+                //   label: Text(
+                //     "Ai Concierge",
+                //     style: TextStyle(
+                //         color: Colors.black,
+                //         fontWeight: FontWeight.w600,
+                //         fontSize: 16.sp,
+                //         fontFamily: AppConstants.manrope),
+                //   ),
+                // ),
+              ],
+            ),
     );
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'confirmed':
+        return Colors.green;
+      case 'pending':
+        return Colors.orange;
+      case 'rejected':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
   }
 
   String getStatusFromTab(int index) {
@@ -590,7 +574,7 @@ class _BookingScreenState extends State<BookingScreen> {
       case 3:
         return "cancelled";
       default:
-        return ""; // For "All"
+        return "";
     }
   }
 
@@ -599,7 +583,7 @@ class _BookingScreenState extends State<BookingScreen> {
       "user_id": loginModel?.data?.user?.id.toString() ?? "",
       "amenity_id": id,
     };
-    log("add data jay che${data}");
+    log("add data sending${data}");
     checkInternet().then((internet) async {
       if (internet) {
         try {
@@ -610,14 +594,16 @@ class _BookingScreenState extends State<BookingScreen> {
             setState(() {
               isLoading = false;
             });
-            Get.off(() => BookingScreen(), arguments: {'tabIndex': 0});
+            Get.off(() => BookingScreen(), arguments: {
+              'tabIndex': 0,
+            });
           } else {
             setState(() {
               isLoading = false;
             });
           }
         } catch (e, stackTrace) {
-          log("Error ave che $stackTrace");
+          log("Geeting Error $stackTrace");
           setState(() {
             isLoading = false;
           });
@@ -648,35 +634,23 @@ class _BookingScreenState extends State<BookingScreen> {
           log("Reject Booking API Response: ${response.body}");
 
           if (response.statusCode == 200) {
-            rejectBookingModel = RejectBookingModel.fromJson(
-              jsonDecode(response.body),
-            );
+            rejectBookingModel =
+                RejectBookingModel.fromJson(jsonDecode(response.body));
 
             if (rejectBookingModel?.status == 1) {
-              buildErrorDialog(
-                context,
-                'Success',
-                rejectBookingModel?.message ?? 'Rejected Successfully',
-              );
+              buildErrorDialog(context, 'Success',
+                  rejectBookingModel?.message ?? 'Rejected Successfully');
 
               setState(() {
                 selectedCategory = 3;
               });
-
-              // await AmenitiesApi();
             } else {
-              buildErrorDialog(
-                context,
-                'Failed',
-                rejectBookingModel?.message ?? 'Something went wrong',
-              );
+              buildErrorDialog(context, 'Failed',
+                  rejectBookingModel?.message ?? 'Something went wrong');
             }
           } else {
             buildErrorDialog(
-              context,
-              'Error',
-              'Server Error: ${response.statusCode}',
-            );
+                context, 'Error', 'Server Error: ${response.statusCode}');
           }
         } catch (e, stackTrace) {
           log("Exception while rejecting booking: $stackTrace");
@@ -692,15 +666,13 @@ class _BookingScreenState extends State<BookingScreen> {
     });
   }
 
-  Future<void> BookAmetiesStatusApi() async {
-    String status = getStatusFromTab(selectedCategory); // 👈 Added line
+  Future<void> BookAmetiesStatusApi(String status) async {
+    String mappedStatus = status == "all" ? "" : status;
 
     Map<String, String> data = {
       "user_id": loginModel?.data?.user?.id.toString() ?? "",
-      "status": status, // 👈 Use mapped status
+      "status": mappedStatus,
     };
-
-    log("Data jay che che $data");
 
     checkInternet().then((internet) async {
       if (internet) {
@@ -708,9 +680,8 @@ class _BookingScreenState extends State<BookingScreen> {
           var response = await AmenitiesProvider().BookAmenitiesStatus(data);
           if (response.statusCode == 200) {
             log("API Response: ${response.body}");
-            bookAmenitiesStatusModel = BookAmenitiesStatusModel.fromJson(
-              jsonDecode(response.body),
-            );
+            bookAmenitiesStatusModel =
+                BookAmenitiesStatusModel.fromJson(jsonDecode(response.body));
 
             setState(() {
               isLoading = false;
@@ -722,7 +693,7 @@ class _BookingScreenState extends State<BookingScreen> {
             });
           }
         } catch (e, stackTrace) {
-          log("Error ave che $stackTrace");
+          log("Geeting Error $stackTrace");
           setState(() {
             isLoading = false;
           });
@@ -734,29 +705,6 @@ class _BookingScreenState extends State<BookingScreen> {
         buildErrorDialog(context, 'Error', "Internet Required");
       }
     });
-  }
-
-  List<Data>? filteredAmenities() {
-    if (amenitiesModel?.data == null) return [];
-
-    switch (selectedCategory) {
-      case 0: // All
-        return amenitiesModel!.data!;
-      case 1: // Approved
-        return amenitiesModel!.data!
-            .where((item) => item.status?.toLowerCase() == 'active')
-            .toList();
-      case 2: // Requested
-        return amenitiesModel!.data!
-            .where((item) => item.status?.toLowerCase() == 'inactive')
-            .toList();
-      case 3: // Rejected
-        return amenitiesModel!.data!
-            .where((item) => item.status?.toLowerCase() == 'rejected')
-            .toList();
-      default:
-        return [];
-    }
   }
 
   String formatDate(String? rawDate) {

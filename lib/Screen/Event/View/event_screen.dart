@@ -17,7 +17,6 @@ import '../../../comman/const.dart';
 import '../../../comman/custom_batan.dart';
 import '../../../comman/error_dialog.dart';
 import '../../HomeNewPage/View/homenewpage.dart';
-import '../../open_ai_chatbot/view/open_ai_screen.dart';
 import '../Model/event_model.dart';
 import '../Model/send_event_model.dart';
 import '../Provider/event_provider.dart';
@@ -45,7 +44,7 @@ class _EventScreenState extends State<EventScreen> {
   String? selectedStatus;
   bool isRequestValid = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool isRequested = false; // Track if the request has been sent
+  bool isRequested = false;
   final GlobalKey<ScaffoldState> _scaffoldKeyEvent = GlobalKey<ScaffoldState>();
 
   @override
@@ -84,9 +83,9 @@ class _EventScreenState extends State<EventScreen> {
     if (dateTime == null || dateTime.isEmpty) return "N/A";
     try {
       DateTime parsedDate = DateTime.parse(dateTime);
-      return DateFormat("dd-MM-yyyy").format(parsedDate); // Format: 2025-03-1
+      return DateFormat("dd-MM-yyyy").format(parsedDate);
     } catch (e) {
-      return "N/A"; // Error handle
+      return "N/A";
     }
   }
 
@@ -95,7 +94,6 @@ class _EventScreenState extends State<EventScreen> {
     dates.clear();
 
     if (selectedValue == "month") {
-      // **This Week Dates**
       DateTime startOfWeek = today.subtract(Duration(days: today.weekday - 1));
       for (int i = 0; i < 7; i++) {
         DateTime date = startOfWeek.add(Duration(days: i));
@@ -113,7 +111,7 @@ class _EventScreenState extends State<EventScreen> {
       }
     }
 
-    setState(() {}); // UI Update
+    setState(() {});
   }
 
   String _getWeekday(int weekday) {
@@ -151,7 +149,7 @@ class _EventScreenState extends State<EventScreen> {
               SizedBox(height: 4.h),
               TitleBar(
                 back: () {
-                  Get.to(HomeNewPage(
+                  Get.to(HomePage(
                     selected: 1,
                     userName: '',
                   ));
@@ -221,15 +219,11 @@ class _EventScreenState extends State<EventScreen> {
                         ],
                         onChanged: (value) {
                           setState(() {
-                            // isLoading = true; // Show loader
                             selectedValue = value.toString();
                           });
 
                           Future.delayed(Duration(milliseconds: 500), () {
-                            setState(() {
-                              // isLoading =
-                              // false; // Hide loader after delay
-                            });
+                            setState(() {});
                           });
                         },
                       ),
@@ -238,391 +232,6 @@ class _EventScreenState extends State<EventScreen> {
                 ],
               ),
               SizedBox(height: 2.h),
-
-              // isLoading
-              //     ? Center(
-              //         child:
-              //             CircularProgressIndicator(color: AppColors.maincolor))
-              //     :
-              // selectedValue == "days"
-              //         ? _buildWeekView()
-              //         : selectedValue == "month"
-              //             ? _buildMonthView()
-              //             : _buildYearView(),
-              //
-              //
-              // load
-              //     ? SizedBox(
-              //   height: 65.h,
-              //   child: Center(
-              //     child: CircularProgressIndicator(color: AppColors.maincolor),
-              //   ),
-              // )
-              //     :
-              // event_list_Model?.data?.length == 0 ||
-              //             event_list_Model?.data?.length == null
-              //         ? Container(
-              //             height: selectedValue == "days" ? 65.h : 20.h,
-              //             alignment: Alignment.center,
-              //             child: Text(
-              //               "No Events Available",
-              //               style: TextStyle(
-              //                 color: Colors.black,
-              //                 fontFamily: AppConstants.manrope,
-              //                 fontWeight: FontWeight.bold,
-              //                 fontSize: 17.sp,
-              //               ),
-              //             ),
-              //           )
-              //         : Container(
-              //             alignment: Alignment.center,
-              //             child: ListView.builder(
-              //               padding: EdgeInsets.zero,
-              //               shrinkWrap: true,
-              //               scrollDirection: Axis.vertical,
-              //               physics: NeverScrollableScrollPhysics(),
-              //               itemCount: event_list_Model?.data?.length ?? 0,
-              //               itemBuilder: (context, index) {
-              //                 String eventId = event_list_Model
-              //                         ?.data?[index]?.id
-              //                         ?.toString() ??
-              //                     "";
-              //                 bool isRequestSent =
-              //                     sentEventIds.contains(eventId);
-              //                 bool isLoading = false; // Local state for loader
-              //                 return StatefulBuilder(
-              //                   builder: (context, setState) {
-              //                     return GestureDetector(
-              //                       onTap: () {},
-              //                       child: Container(
-              //                         margin:
-              //                             EdgeInsets.symmetric(vertical: 10),
-              //                         padding: EdgeInsets.all(16),
-              //                         decoration: BoxDecoration(
-              //                           color: Colors.white,
-              //                           borderRadius: BorderRadius.circular(20),
-              //                         ),
-              //                         child: Column(
-              //                           crossAxisAlignment:
-              //                               CrossAxisAlignment.start,
-              //                           children: [
-              //                             Row(
-              //                               children: [
-              //                                 Text(
-              //                                   formatDate(event_list_Model
-              //                                       ?.data?[index].eventDate),
-              //                                   style: TextStyle(
-              //                                     color: Colors.black,
-              //                                     fontFamily:
-              //                                         AppConstants.manrope,
-              //                                     fontWeight: FontWeight.bold,
-              //                                     fontSize: 15.sp,
-              //                                   ),
-              //                                 ),
-              //                                 Spacer(),
-              //                                 if (isLoading)
-              //                                   CircularProgressIndicator()
-              //                                 else if (event_list_Model
-              //                                         ?.data?[index]
-              //                                         ?.requestEvent
-              //                                         ?.toLowerCase() ==
-              //                                     "pending")
-              //                                   Text(
-              //                                     "Requested",
-              //                                     style: TextStyle(
-              //                                       fontWeight: FontWeight.bold,
-              //                                       color: Colors.orange,
-              //                                     ),
-              //                                   ),
-              //                                 if (!isRequestSent &&
-              //                                     (event_list_Model
-              //                                                 ?.data?[index]
-              //                                                 ?.requestEvent ==
-              //                                             null ||
-              //                                         event_list_Model!
-              //                                             .data![index]
-              //                                             .requestEvent!
-              //                                             .isEmpty))
-              //                                   InkWell(
-              //                                     onTap: () {
-              //                                       requestController.clear();
-              //                                       showDialog(
-              //                                         context: context,
-              //                                         builder: (BuildContext
-              //                                             context) {
-              //                                           return StatefulBuilder(
-              //                                             builder: (context,
-              //                                                 setDialogState) {
-              //                                               return Dialog(
-              //                                                 backgroundColor:
-              //                                                     Colors.white,
-              //                                                 shape:
-              //                                                     RoundedRectangleBorder(
-              //                                                   borderRadius:
-              //                                                       BorderRadius
-              //                                                           .circular(
-              //                                                               16),
-              //                                                 ),
-              //                                                 child: Container(
-              //                                                   padding:
-              //                                                       EdgeInsets
-              //                                                           .all(
-              //                                                               20),
-              //                                                   decoration:
-              //                                                       BoxDecoration(
-              //                                                     color: Colors
-              //                                                         .white,
-              //                                                     borderRadius:
-              //                                                         BorderRadius
-              //                                                             .circular(
-              //                                                                 16),
-              //                                                   ),
-              //                                                   child: Form(
-              //                                                     key: _formKey,
-              //                                                     autovalidateMode:
-              //                                                         AutovalidateMode
-              //                                                             .onUserInteraction,
-              //                                                     child: Column(
-              //                                                       mainAxisSize:
-              //                                                           MainAxisSize
-              //                                                               .min,
-              //                                                       children: [
-              //                                                         // Name
-              //                                                         Text(
-              //                                                           "${profileModel?.data?.user?.name?.firstName.toString().capitalizeFirst ?? ""} ${profileModel?.data?.user?.name?.lastName.toString().capitalizeFirst ?? ""}",
-              //                                                           style:
-              //                                                               TextStyle(
-              //                                                             color:
-              //                                                                 Colors.black,
-              //                                                             fontSize:
-              //                                                                 20.sp,
-              //                                                             fontFamily:
-              //                                                                 AppConstants.manrope,
-              //                                                             fontWeight:
-              //                                                                 FontWeight.bold,
-              //                                                           ),
-              //                                                         ),
-              //                                                         SizedBox(
-              //                                                             height:
-              //                                                                 8),
-              //                                                         //Title
-              //                                                         Text(
-              //                                                           event_list_Model?.data?[index]?.title ??
-              //                                                               "N/A",
-              //                                                           style:
-              //                                                               TextStyle(
-              //                                                             fontFamily:
-              //                                                                 AppConstants.manrope,
-              //                                                             fontSize:
-              //                                                                 16,
-              //                                                             fontWeight:
-              //                                                                 FontWeight.bold,
-              //                                                             color:
-              //                                                                 Colors.black38,
-              //                                                           ),
-              //                                                         ),
-              //                                                         SizedBox(
-              //                                                             height:
-              //                                                                 10),
-              //                                                         //time
-              //                                                         // Text(
-              //                                                         //   event_list_Model?.data?[index]?.eventDate ?? "N/A",
-              //                                                         //   style: TextStyle(
-              //                                                         //     fontFamily: AppConstants.manrope,
-              //                                                         //     fontSize: 16,
-              //                                                         //     fontWeight: FontWeight.bold,
-              //                                                         //     color: Colors.black38,
-              //                                                         //   ),
-              //                                                         // ),
-              //                                                         Text(
-              //                                                           event_list_Model?.data?[index]?.eventDate !=
-              //                                                                   null
-              //                                                               ? DateFormat.jm().format(DateTime.parse(event_list_Model!.data![index]!.eventDate!))
-              //                                                               : "N/A",
-              //                                                           style:
-              //                                                               TextStyle(
-              //                                                             fontFamily:
-              //                                                                 AppConstants.manrope,
-              //                                                             fontSize:
-              //                                                                 16,
-              //                                                             fontWeight:
-              //                                                                 FontWeight.bold,
-              //                                                             color:
-              //                                                                 Colors.black38,
-              //                                                           ),
-              //                                                         ),
-              //                                                         SizedBox(
-              //                                                             height:
-              //                                                                 12),
-              //
-              //                                                         TextFormField(
-              //                                                           controller:
-              //                                                               requestController,
-              //                                                           maxLines:
-              //                                                               3,
-              //                                                           decoration:
-              //                                                               InputDecoration(
-              //                                                             hintText:
-              //                                                                 "Enter your request...",
-              //                                                             border:
-              //                                                                 OutlineInputBorder(
-              //                                                               borderRadius:
-              //                                                                   BorderRadius.circular(10),
-              //                                                               borderSide:
-              //                                                                   BorderSide(color: Colors.black26),
-              //                                                             ),
-              //                                                             enabledBorder:
-              //                                                                 OutlineInputBorder(
-              //                                                               borderRadius:
-              //                                                                   BorderRadius.circular(10),
-              //                                                               borderSide:
-              //                                                                   BorderSide(color: Colors.black26),
-              //                                                             ),
-              //                                                             focusedBorder:
-              //                                                                 OutlineInputBorder(
-              //                                                               borderRadius:
-              //                                                                   BorderRadius.circular(10),
-              //                                                               borderSide:
-              //                                                                   BorderSide(color: Colors.blue),
-              //                                                             ),
-              //                                                             errorBorder:
-              //                                                                 OutlineInputBorder(
-              //                                                               borderRadius:
-              //                                                                   BorderRadius.circular(10),
-              //                                                               borderSide:
-              //                                                                   BorderSide(color: Colors.red),
-              //                                                             ),
-              //                                                             focusedErrorBorder:
-              //                                                                 OutlineInputBorder(
-              //                                                               borderRadius:
-              //                                                                   BorderRadius.circular(10),
-              //                                                               borderSide:
-              //                                                                   BorderSide(color: Colors.red),
-              //                                                             ),
-              //                                                             fillColor:
-              //                                                                 Colors.white,
-              //                                                             filled:
-              //                                                                 true,
-              //                                                           ),
-              //                                                           style: TextStyle(
-              //                                                               color:
-              //                                                                   Colors.black),
-              //                                                           validator:
-              //                                                               (value) {
-              //                                                             if (value == null ||
-              //                                                                 value.trim().isEmpty) {
-              //                                                               return "Please enter your request";
-              //                                                             }
-              //                                                             return null;
-              //                                                           },
-              //                                                         ),
-              //                                                         SizedBox(
-              //                                                             height:
-              //                                                                 20),
-              //
-              //                                                         Row(
-              //                                                           mainAxisAlignment:
-              //                                                               MainAxisAlignment.center,
-              //                                                           children: [
-              //                                                             batan(
-              //                                                               title:
-              //                                                                   "Yes",
-              //                                                               route:
-              //                                                                   () async {
-              //                                                                 if (_formKey.currentState!.validate()) {
-              //                                                                   setDialogState(() {
-              //                                                                     isLoading = true;
-              //                                                                   });
-              //                                                                   setState(() {
-              //                                                                     event_list_Model!.data![index].requestEvent = "pending";
-              //                                                                   });
-              //                                                                   await sendlistap(eventId);
-              //                                                                   setDialogState(() {
-              //                                                                     isLoading = false; // Stop loader
-              //                                                                   });
-              //                                                                   Get.back();
-              //                                                                 }
-              //                                                               },
-              //                                                               radius:
-              //                                                                   4.0.w,
-              //                                                               color:
-              //                                                                   AppColors.maincolor,
-              //                                                               fontcolor:
-              //                                                                   AppColors.white,
-              //                                                               height:
-              //                                                                   6.h,
-              //                                                               width:
-              //                                                                   Get.width * .65,
-              //                                                               fontsize:
-              //                                                                   19.sp,
-              //                                                             ),
-              //                                                           ],
-              //                                                         ),
-              //                                                       ],
-              //                                                     ),
-              //                                                   ),
-              //                                                 ),
-              //                                               );
-              //                                             },
-              //                                           );
-              //                                         },
-              //                                       );
-              //                                     },
-              //                                     child: isLoading
-              //                                         ? CircularProgressIndicator(
-              //                                             color: Colors.blue)
-              //                                         : Icon(Icons.more_vert,
-              //                                             color: Colors.black),
-              //                                   ),
-              //                               ],
-              //                             ),
-              //                             SizedBox(height: 1.h),
-              //                             Text(
-              //                               event_list_Model
-              //                                       ?.data?[index]?.title ??
-              //                                   "N/A",
-              //                               style: TextStyle(
-              //                                 color: Colors.black,
-              //                                 fontSize: 16.5.sp,
-              //                                 fontWeight: FontWeight.bold,
-              //                                 fontFamily: AppConstants.manrope,
-              //                               ),
-              //                             ),
-              //                             SizedBox(height: 1.h),
-              //                             Row(
-              //                               children: [
-              //
-              //                                 Icon(Icons.location_on,
-              //                                     color: Colors.black,
-              //                                     size: 18.sp),
-              //                                 SizedBox(width: 5),
-              //                                 Expanded(
-              //                                   child: Text(
-              //                                     event_list_Model?.data?[index]
-              //                                             ?.location ??
-              //                                         "N/A",
-              //                                     style: TextStyle(
-              //                                       color: Colors.black,
-              //                                       fontSize: 15.sp,
-              //                                       fontFamily:
-              //                                           AppConstants.manrope,
-              //                                     ),
-              //                                     overflow:
-              //                                         TextOverflow.ellipsis,
-              //                                   ),
-              //                                 ),
-              //                               ],
-              //                             ),
-              //                           ],
-              //                         ),
-              //                       ),
-              //                     );
-              //                   },
-              //                 );
-              //               },
-              //             ),
-              //           ),
-
               isLoading
                   ? SizedBox(
                       height: 65.h,
@@ -634,8 +243,7 @@ class _EventScreenState extends State<EventScreen> {
                   : Column(
                       children: [
                         selectedValue == "days"
-                           ? _buildWeekView()
-                        //_buildWeekView()
+                            ? _buildWeekView()
                             : selectedValue == "month"
                                 ? _buildMonthView()
                                 : _buildYearView(),
@@ -668,8 +276,7 @@ class _EventScreenState extends State<EventScreen> {
                                       "";
                                   bool isRequestSent =
                                       sentEventIds.contains(eventId);
-                                  bool isLoading =
-                                      false; // Local state for loader
+                                  bool isLoading = false;
                                   return StatefulBuilder(
                                     builder: (context, setState) {
                                       return GestureDetector(
@@ -749,18 +356,11 @@ class _EventScreenState extends State<EventScreen> {
                                                                             16),
                                                                   ),
                                                                   child:
-                                                                      Container(
+                                                                      Padding(
                                                                     padding:
-                                                                        EdgeInsets.all(
+                                                                        const EdgeInsets
+                                                                            .all(
                                                                             10),
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              16),
-                                                                    ),
                                                                     child: Form(
                                                                       key:
                                                                           _formKey,
@@ -772,14 +372,13 @@ class _EventScreenState extends State<EventScreen> {
                                                                         mainAxisSize:
                                                                             MainAxisSize.min,
                                                                         children: [
-                                                                          // Name
                                                                           Row(
                                                                             children: [
-
-                                                                              SizedBox(width: 21.w,),
+                                                                              SizedBox(
+                                                                                width: 15.w,
+                                                                              ),
                                                                               Text(
-                                                                              //  profileModel?.data?.name?.toString().capitalizeFirst ?? "",
-                                                                                "${profileModel?.data?.user?.name?.firstName.toString().capitalizeFirst ?? ""} ${profileModel?.data?.user?.name?.lastName.toString().capitalizeFirst ?? ""}",
+                                                                                "${profileModel?.data?.user?.name?.firstName?.capitalizeFirst ?? ""} ${profileModel?.data?.user?.name?.lastName?.capitalizeFirst ?? ""}",
                                                                                 style: TextStyle(
                                                                                   color: Colors.black,
                                                                                   fontSize: 20.sp,
@@ -787,23 +386,14 @@ class _EventScreenState extends State<EventScreen> {
                                                                                   fontWeight: FontWeight.bold,
                                                                                 ),
                                                                               ),
-                                                                              SizedBox(width: 8.w,),
+                                                                              Spacer(),
                                                                               CloseButton(),
                                                                             ],
                                                                           ),
-                                                                          // Text(
-                                                                          //   "${profileModel?.data?.user?.name?.firstName.toString().capitalizeFirst ?? ""} ${profileModel?.data?.user?.name?.lastName.toString().capitalizeFirst ?? ""}",
-                                                                          //   style:
-                                                                          //       TextStyle(
-                                                                          //     color: Colors.black,
-                                                                          //     fontSize: 20.sp,
-                                                                          //     fontFamily: AppConstants.manrope,
-                                                                          //     fontWeight: FontWeight.bold,
-                                                                          //   ),
-                                                                          // ),
-                                                                          // SizedBox(
-                                                                          //     height: 8),
-                                                                          //Title
+                                                                          SizedBox(
+                                                                              height: 8),
+
+                                                                          /// Event Title
                                                                           Text(
                                                                             event_list_Model?.data?[index]?.title ??
                                                                                 "N/A",
@@ -816,17 +406,9 @@ class _EventScreenState extends State<EventScreen> {
                                                                             ),
                                                                           ),
                                                                           SizedBox(
-                                                                              height: 10),
-                                                                          //time
-                                                                          // Text(
-                                                                          //   event_list_Model?.data?[index]?.eventDate ?? "N/A",
-                                                                          //   style: TextStyle(
-                                                                          //     fontFamily: AppConstants.manrope,
-                                                                          //     fontSize: 16,
-                                                                          //     fontWeight: FontWeight.bold,
-                                                                          //     color: Colors.black38,
-                                                                          //   ),
-                                                                          // ),
+                                                                              height: 5),
+
+                                                                          /// Event Time
                                                                           Text(
                                                                             event_list_Model?.data?[index]?.eventDate != null
                                                                                 ? DateFormat.jm().format(DateTime.parse(event_list_Model!.data![index]!.eventDate!))
@@ -842,6 +424,7 @@ class _EventScreenState extends State<EventScreen> {
                                                                           SizedBox(
                                                                               height: 12),
 
+                                                                          /// Request Text Field
                                                                           TextFormField(
                                                                             controller:
                                                                                 requestController,
@@ -850,6 +433,8 @@ class _EventScreenState extends State<EventScreen> {
                                                                             decoration:
                                                                                 InputDecoration(
                                                                               hintText: "Enter your request...",
+                                                                              filled: true,
+                                                                              fillColor: Colors.white,
                                                                               border: OutlineInputBorder(
                                                                                 borderRadius: BorderRadius.circular(10),
                                                                                 borderSide: BorderSide(color: Colors.black26),
@@ -870,8 +455,6 @@ class _EventScreenState extends State<EventScreen> {
                                                                                 borderRadius: BorderRadius.circular(10),
                                                                                 borderSide: BorderSide(color: Colors.red),
                                                                               ),
-                                                                              fillColor: Colors.white,
-                                                                              filled: true,
                                                                             ),
                                                                             style:
                                                                                 TextStyle(color: Colors.black),
@@ -886,35 +469,31 @@ class _EventScreenState extends State<EventScreen> {
                                                                           SizedBox(
                                                                               height: 20),
 
-                                                                          Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.center,
-                                                                            children: [
-                                                                              batan(
-                                                                                title: "Send Request",
-                                                                                route: () async {
-                                                                                  if (_formKey.currentState!.validate()) {
-                                                                                    setDialogState(() {
-                                                                                      isLoading = true;
-                                                                                    });
-                                                                                    setState(() {
-                                                                                      event_list_Model!.data![index].requestEvent = "pending";
-                                                                                    });
-                                                                                    await sendlistap(eventId);
-                                                                                    setDialogState(() {
-                                                                                      isLoading = false; // Stop loader
-                                                                                    });
-                                                                                    Get.back();
-                                                                                  }
-                                                                                },
-                                                                                radius: 4.0.w,
-                                                                                color: AppColors.maincolor,
-                                                                                fontcolor: AppColors.white,
-                                                                                height: 6.h,
-                                                                                width:72.w,
-                                                                                fontsize: 19.sp,
-                                                                              ),
-                                                                            ],
+                                                                          /// Submit Button
+                                                                          SizedBox(
+                                                                            width:
+                                                                                double.infinity,
+                                                                            child:
+                                                                                batan(
+                                                                              title: "Send Request",
+                                                                              route: () async {
+                                                                                if (_formKey.currentState!.validate()) {
+                                                                                  setDialogState(() => isLoading = true);
+                                                                                  setState(() {
+                                                                                    event_list_Model!.data![index].requestEvent = "pending";
+                                                                                  });
+                                                                                  await sendlistap(eventId);
+                                                                                  setDialogState(() => isLoading = false);
+                                                                                  Get.back();
+                                                                                }
+                                                                              },
+                                                                              radius: 4.0.w,
+                                                                              color: AppColors.maincolor,
+                                                                              fontcolor: AppColors.white,
+                                                                              height: 6.h,
+                                                                              width: 72.w,
+                                                                              fontsize: 19.sp,
+                                                                            ),
                                                                           ),
                                                                         ],
                                                                       ),
@@ -989,25 +568,25 @@ class _EventScreenState extends State<EventScreen> {
           ),
         ),
       ),
-      floatingActionButton: isLoading
-          ? Container()
-          : FloatingActionButton.extended(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(900)),
-              backgroundColor: Colors.white,
-              onPressed: () {
-                Get.to(() => const ChatBotScreen());
-              },
-              icon: Icon(CupertinoIcons.chat_bubble_2, color: Colors.black),
-              label: Text(
-                "Ai Concierge",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16.sp,
-                    fontFamily: AppConstants.manrope),
-              ),
-            ),
+      // floatingActionButton: isLoading
+      //     ? Container()
+      //     : FloatingActionButton.extended(
+      //         shape: RoundedRectangleBorder(
+      //             borderRadius: BorderRadius.circular(900)),
+      //         backgroundColor: Colors.white,
+      //         onPressed: () {
+      //           Get.to(() => const ChatBotScreen());
+      //         },
+      //         icon: Icon(CupertinoIcons.chat_bubble_2, color: Colors.black),
+      //         label: Text(
+      //           "Ai Concierge",
+      //           style: TextStyle(
+      //               color: Colors.black,
+      //               fontWeight: FontWeight.w600,
+      //               fontSize: 16.sp,
+      //               fontFamily: AppConstants.manrope),
+      //         ),
+      //       ),
     );
   }
 
@@ -1017,7 +596,6 @@ class _EventScreenState extends State<EventScreen> {
     data['event_id'] = selectedid ?? "";
     print("send event data jai che$data");
 
-    // Show full-screen loader
     setState(() {
       isLoading = true;
     });
@@ -1037,22 +615,22 @@ class _EventScreenState extends State<EventScreen> {
           }
 
           setState(() {
-            isLoading = false; // Loader Stop (Success or Error both cases)
+            isLoading = false;
           });
-          return false; // Failed request
+          return false;
         }).catchError((error) {
           setState(() {
-            isLoading = false; // Loader Stop on Error
+            isLoading = false;
           });
           EasyLoading.showError("Request Failed");
-          return false; // Failed request due to error
+          return false;
         });
       } else {
         setState(() {
-          isLoading = false; // Loader Stop on No Internet
+          isLoading = false;
         });
         buildErrorDialog(context, 'Error', "Internet Required");
-        return false; // No internet connection
+        return false;
       }
     });
   }
@@ -1105,7 +683,7 @@ class _EventScreenState extends State<EventScreen> {
     data['user_id'] = loginModel?.data?.user?.id.toString() ?? "";
     data['date'] = selectedDate.toString() ?? "";
 
-    print("data jai che$data");
+    print(" Sending datasending$data");
     checkInternet().then((internet) async {
       if (internet) {
         EventProvider().eventapi(data).then((response) async {
@@ -1196,10 +774,13 @@ class _EventScreenState extends State<EventScreen> {
   }
 
   Widget _buildMonthView() {
+    final DateTime today = DateTime.now();
+    final DateTime todayOnly = DateTime(today.year, today.month, today.day);
+
     return TableCalendar(
-      firstDay: DateTime(now.year, now.month, 1),
-      lastDay: DateTime(now.year, now.month + 1, 0),
-      focusedDay: now,
+      firstDay: DateTime(today.year, today.month, 1),
+      lastDay: DateTime(today.year, today.month + 1, 0),
+      focusedDay: today,
       calendarFormat: CalendarFormat.month,
       headerStyle: HeaderStyle(
         formatButtonVisible: false,
@@ -1228,17 +809,17 @@ class _EventScreenState extends State<EventScreen> {
       ),
       calendarStyle: const CalendarStyle(
         todayDecoration: BoxDecoration(
-          color: AppColors.maincolor,
+          color: Colors.grey,
           shape: BoxShape.circle,
         ),
         selectedDecoration: BoxDecoration(
-          color: Colors.black45,
+          color: AppColors.maincolor,
           shape: BoxShape.circle,
         ),
         selectedTextStyle:
             TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
         todayTextStyle:
-            TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
+            TextStyle(color: Colors.black, fontFamily: AppConstants.manrope),
         defaultTextStyle:
             TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
         weekendTextStyle:
@@ -1251,30 +832,46 @@ class _EventScreenState extends State<EventScreen> {
         defaultBuilder: (context, day, _) {
           DateTime normalizedDay = DateTime(day.year, day.month, day.day);
           bool isHighlighted = projectDates.any((createdDate) {
-            DateTime normalizedCreatedDate =
-                DateTime(createdDate.year, createdDate.month, createdDate.day);
+            DateTime normalizedCreatedDate = DateTime(
+              createdDate.year,
+              createdDate.month,
+              createdDate.day,
+            );
             return isSameDay(normalizedCreatedDate, normalizedDay);
           });
+
+          bool isPast = normalizedDay.isBefore(todayOnly);
+
           return GestureDetector(
-            onTap: () {
-              setState(() {
-                selectedDay = day;
-                selectedDate = DateFormat('yyyy-MM-dd').format(day);
-                load = true;
-              });
-              projectlistap();
-            },
+            onTap: isPast
+                ? null
+                : () {
+                    setState(() {
+                      selectedDay = day;
+                      selectedDate = DateFormat('yyyy-MM-dd').format(day);
+                      load = true;
+                    });
+                    projectlistap();
+                  },
             child: Container(
               margin: EdgeInsets.all(6.0),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: isHighlighted ? AppColors.maincolor : AppColors.white,
+                color: isHighlighted
+                    ? AppColors.maincolor
+                    : isPast
+                        ? Colors.grey.shade300
+                        : AppColors.white,
                 shape: BoxShape.circle,
               ),
               child: Text(
                 '${day.day}',
                 style: TextStyle(
-                  color: isHighlighted ? Colors.white : Colors.black,
+                  color: isHighlighted
+                      ? AppColors.white
+                      : isPast
+                          ? Colors.black
+                          : AppColors.black,
                   fontWeight: FontWeight.bold,
                   fontFamily: AppConstants.manrope,
                 ),
@@ -1284,6 +881,14 @@ class _EventScreenState extends State<EventScreen> {
         },
       ),
       onDaySelected: (newSelectedDay, focusedDay) {
+        DateTime normalizedNewDay = DateTime(
+          newSelectedDay.year,
+          newSelectedDay.month,
+          newSelectedDay.day,
+        );
+
+        if (normalizedNewDay.isBefore(todayOnly)) return;
+
         setState(() {
           selectedDay = newSelectedDay;
           selectedDate = DateFormat('yyyy-MM-dd').format(newSelectedDay);
@@ -1297,6 +902,9 @@ class _EventScreenState extends State<EventScreen> {
   Widget _buildYearView() {
     DateTime firstDayOfYear = DateTime(now.year, 1, 1);
     DateTime lastDayOfYear = DateTime(now.year, 12, 31);
+    DateTime today = DateTime.now();
+    DateTime todayOnly = DateTime(today.year, today.month, today.day);
+
     return TableCalendar(
       firstDay: firstDayOfYear,
       lastDay: lastDayOfYear,
@@ -1328,11 +936,11 @@ class _EventScreenState extends State<EventScreen> {
       ),
       calendarStyle: const CalendarStyle(
         todayDecoration: BoxDecoration(
-          color: AppColors.maincolor,
+          color: Colors.grey,
           shape: BoxShape.circle,
         ),
         selectedDecoration: BoxDecoration(
-          color: Colors.black45,
+          color: AppColors.maincolor,
           shape: BoxShape.circle,
         ),
         selectedTextStyle: TextStyle(
@@ -1361,37 +969,60 @@ class _EventScreenState extends State<EventScreen> {
             return isSameDay(projectDate, day);
           });
 
-          return Container(
-            margin: EdgeInsets.all(6.0),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: isMonthDate ? AppColors.maincolor : AppColors.white,
-              shape: BoxShape.circle,
-            ),
-            child: Text(
-              '${day.day}',
-              style: TextStyle(
-                color: isMonthDate ? Colors.white : Colors.black,
-                fontFamily: AppConstants.manrope,
-                fontWeight: FontWeight.bold,
+          bool isPast = day.isBefore(todayOnly);
+
+          return GestureDetector(
+            onTap: isPast
+                ? null
+                : () {
+                    setState(() {
+                      selectedYear = day;
+                      selectedDate = DateFormat('yyyy-MM-dd').format(day);
+                      load = true;
+                    });
+                    projectlistap();
+                  },
+            child: Container(
+              margin: EdgeInsets.all(6.0),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: isMonthDate
+                    ? AppColors.maincolor
+                    : isPast
+                        ? Colors.grey.shade300
+                        : AppColors.white,
+                shape: BoxShape.circle,
+              ),
+              child: Text(
+                '${day.day}',
+                style: TextStyle(
+                  color: isMonthDate
+                      ? AppColors.maincolor
+                      : isPast
+                          ? Colors.grey.shade300
+                          : AppColors.black,
+                  fontFamily: AppConstants.manrope,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           );
         },
       ),
       onDaySelected: (newSelectedDay, focusedDay) {
+        if (newSelectedDay.isBefore(todayOnly)) return;
+
         setState(() {
-          selectedYear = newSelectedDay; // Update selected day
+          selectedYear = newSelectedDay;
           selectedDate = DateFormat('yyyy-MM-dd').format(newSelectedDay);
           load = true;
         });
         projectlistap();
       },
       onPageChanged: (focusedDay) {
-        // Prevent going to past months
         if (focusedDay.isBefore(firstDayOfYear)) {
           setState(() {
-            selectedYear = firstDayOfYear; // Reset to current month
+            selectedYear = todayOnly;
           });
         }
       },

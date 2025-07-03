@@ -6,14 +6,14 @@ import '../../../comman/const.dart';
 class StoryScreen extends StatelessWidget {
   final List<String> storyImages;
   final List<String> userNames;
-  final List<String> userProfileImages; // New: List of user profile images
+  final List<String> userProfileImages;
   final int initialIndex;
 
   const StoryScreen({
     Key? key,
     required this.storyImages,
     required this.userNames,
-    required this.userProfileImages, // Required user profile images
+    required this.userProfileImages,
     this.initialIndex = 0,
   }) : super(key: key);
 
@@ -54,8 +54,6 @@ class StoryScreen extends StatelessWidget {
                       },
                     ),
                   ),
-
-                  // User Profile and Name
                   Positioned(
                     top: 40,
                     left: 20,
@@ -66,7 +64,6 @@ class StoryScreen extends StatelessWidget {
                           backgroundColor: Colors.grey[800],
                           backgroundImage:
                               NetworkImage(userProfileImages[index]),
-                          // Show user profile image
                           onBackgroundImageError: (_, __) =>
                               Icon(Icons.person, color: Colors.white),
                         ),

@@ -40,7 +40,6 @@ class _NotificationPageState extends State<NotificationPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setState(() {
       isLoading = true;
@@ -62,7 +61,7 @@ class _NotificationPageState extends State<NotificationPage> {
             SizedBox(height: 4.h),
             TitleBar(
               back: () {
-                Get.to(HomeNewPage(selected: 1, userName: ''));
+                Get.to(HomePage(selected: 1, userName: ''));
               },
               title: 'Notifications',
               drawerCallback: () {
@@ -70,7 +69,15 @@ class _NotificationPageState extends State<NotificationPage> {
               },
             ),
             SizedBox(height: 3.h),
-            Expanded(child: Column(children: [_buildNotificationList()])),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _buildNotificationList(),
+                  ],
+                ),
+              ),
+            ),
             if (notifications != null && notifications!.length! > 5)
               Center(
                 child: TextButton(
@@ -125,11 +132,9 @@ class _NotificationPageState extends State<NotificationPage> {
       shrinkWrap: true,
       padding: EdgeInsets.zero,
       physics: NeverScrollableScrollPhysics(),
-      itemCount:
-          (notificationmodel?.data?.notifications?.length ?? 0) > 5
-              ? 5
-              : notificationmodel?.data?.notifications?.length ?? 0,
-      //(notificationmodel?.data?.notifications?.length ?? 0) ,
+      itemCount: (notificationmodel?.data?.notifications?.length ?? 0) > 5
+          ? 5
+          : notificationmodel?.data?.notifications?.length ?? 0,
       itemBuilder: (context, index) {
         var notification = notificationmodel?.data?.notifications?[index];
 
@@ -137,33 +142,26 @@ class _NotificationPageState extends State<NotificationPage> {
           onTap: () {
             String? type = notification?.type;
             String notificationId = notification?.id?.toString() ?? "";
-            log("Notification Type: $type"); // Debugging માટે
-            log("Notification ID: $notificationId"); // ID ચેક કરવા
+            log("Notification Type: $type");
+            log("Notification ID: $notificationId");
 
             Readnotification(notificationId);
             if (type == "messageboard") {
               Get.to(() => Messageboard());
             } else if (type == "parcel") {
               Get.to(() => ParcelScreen());
-            }
-            // _buildNotificationList() ફંક્શનમાં chat type નોટિફિકેશન માટે onTap માં નીચેનો કોડ વાપરો
-            // જૂના કોડની જગ્યાએ (else if (type == "chat") { ... } ની જગ્યાએ)
-            else if (type == "chat") {
-              // ચેક કરો કે કયા પ્રકારની ચેટ છે (concierge કે business)
+            } else if (type == "chat") {
               String chatName = "";
               String profileImage = "";
               String chatType = notification?.msgTo ?? "";
 
-              // જો conciergeProfile ઉપલબ્ધ હોય તો
               if (notification?.conciergeProfile != null) {
                 chatName =
                     "${notification?.conciergeProfile?.firstName ?? ''} ${notification?.conciergeProfile?.lastName ?? ''}"
                         .trim();
                 if (notification?.conciergeProfile?.conciergeImage != null &&
                     notification!
-                        .conciergeProfile!
-                        .conciergeImage!
-                        .isNotEmpty) {
+                        .conciergeProfile!.conciergeImage!.isNotEmpty) {
                   profileImage =
                       notification.conciergeProfile!.conciergeImage!.first;
                 }
@@ -174,28 +172,25 @@ class _NotificationPageState extends State<NotificationPage> {
                 log("Business Chat: $chatName");
               }
 
-              Get.to(
-                () => MessageScreen(
-                  chatName: chatName,
-                  conciergeID: notification?.chatCreateId.toString() ?? "",
-                  type: chatType,
-                  image: profileImage,
-                ),
-              );
+              Get.to(() => MessageScreen(
+                    chatName: chatName,
+                    conciergeID: notification?.chatCreateId.toString() ?? "",
+                    type: chatType,
+                    image: profileImage,
+                  ));
             } else if (type == "visitor") {
               Get.to(() => VisitorScreen());
             } else if (type == "order") {
-              Get.to(
-                () => Orderdetail_Screen(orderid: notification?.msgTo ?? ""),
-              );
+              Get.to(() => Orderdetail_Screen(
+                    orderid: notification?.msgTo ?? "",
+                    orderProductID: notification?.chatCreateId.toString() ?? "",
+                  ));
             } else {
               log("Unknown notification type: $type");
             }
-
-            //  Readnotification();
           },
           child: Container(
-            height: 14.h,
+            height: 14.5.h,
             margin: EdgeInsets.only(bottom: 1.h),
             width: double.infinity,
             padding: EdgeInsets.all(16),
@@ -207,7 +202,7 @@ class _NotificationPageState extends State<NotificationPage> {
                   color: Colors.black12,
                   blurRadius: 6,
                   spreadRadius: 2,
-                ),
+                )
               ],
             ),
             child: Row(
@@ -216,18 +211,14 @@ class _NotificationPageState extends State<NotificationPage> {
                 CircleAvatar(
                   backgroundColor: AppColors.maincolor,
                   radius: 6.w,
-                  child: Icon(
-                    Icons.notifications,
-                    color: Colors.white,
-                    size: 5.w,
-                  ),
+                  child:
+                      Icon(Icons.notifications, color: Colors.white, size: 5.w),
                 ),
                 SizedBox(width: 4.w),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Notification Title
                       Text(
                         notification?.type?.capitalizeFirst ?? "No Type",
                         style: TextStyle(
@@ -237,8 +228,6 @@ class _NotificationPageState extends State<NotificationPage> {
                         ),
                       ),
                       SizedBox(height: 0.5.h),
-
-                      // Notification Body
                       Text(
                         notification?.data?.capitalizeFirst ?? "No Data",
                         style: TextStyle(
@@ -248,8 +237,6 @@ class _NotificationPageState extends State<NotificationPage> {
                         ),
                       ),
                       SizedBox(height: 0.5.h),
-
-                      // Notification Time (Right Aligned)
                       Align(
                         alignment: Alignment.bottomRight,
                         child: Row(
@@ -259,8 +246,7 @@ class _NotificationPageState extends State<NotificationPage> {
                             SizedBox(width: 1.w),
                             Text(
                               formatDateTime(
-                                notification?.notificationDate ?? "No Date",
-                              ),
+                                  notification?.notificationDate ?? "No Date"),
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 color: Colors.grey.shade500,
@@ -289,28 +275,23 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   getnotification() {
-    // EasyLoading.show();
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response = await NotificationProvider().NotificationApi(
-            (loginModel?.data?.user?.id).toString(),
-          );
+          final response = await NotificationProvider()
+              .NotificationApi((loginModel?.data?.user?.id).toString());
           print(
-            "login user id newwwww: ${(loginModel?.data?.user?.id).toString()}",
-          );
+              "login user id newwwww: ${(loginModel?.data?.user?.id).toString()}");
           EasyLoading.dismiss();
           if (response.statusCode == 200) {
-            notificationmodel = NotificationModell.fromJson(
-              json.decode(response.body),
-            );
+            notificationmodel =
+                NotificationModell.fromJson(json.decode(response.body));
             print("Notification get: ${response.body}");
           } else {
             log(" Failed response error ave che: ${response.statusCode}");
             log(" Response body: ${response.body}");
           }
         } catch (e, stackTrace) {
-          //  EasyLoading.dismiss();
           log("Exception occurred: $e");
           log("Exception occurred: $stackTrace");
         }
@@ -322,29 +303,24 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   Readnotification(String notificationId) {
-    // EasyLoading.show();
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response = await NotificationProvider().ReadNotificationApi(
-            notificationId,
-          );
+          final response =
+              await NotificationProvider().ReadNotificationApi(notificationId);
           print("Reading Notification ID: ${notificationId}");
           EasyLoading.dismiss();
           if (response.statusCode == 200) {
-            notificationreadModel = NotificationReadModel.fromJson(
-              json.decode(response.body),
-            );
+            notificationreadModel =
+                NotificationReadModel.fromJson(json.decode(response.body));
             print("Read Notification get: ${response.body}");
 
-            // પછી નોટિફિકેશન કાઉન્ટ અપડેટ કરવા માટે ફરીથી API કૉલ કરો
             getnotificationCount();
           } else {
             log(" Failed response error ave che: ${response.statusCode}");
             log(" Response body: ${response.body}");
           }
         } catch (e, stackTrace) {
-          //  EasyLoading.dismiss();
           log("Exception occurred: $e");
           log("Exception occurred: $stackTrace");
         }
@@ -356,19 +332,16 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   getnotificationCount() {
-    // EasyLoading.show();
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response = await NotificationProvider().NotificationApi(
-            (loginModel?.data?.user?.id).toString(),
-          );
+          final response = await NotificationProvider()
+              .NotificationApi((loginModel?.data?.user?.id).toString());
           print("login user id : ${(loginModel?.data?.user?.id).toString()}");
-          // EasyLoading.dismiss();
+
           if (response.statusCode == 200) {
-            notificationmodel = NotificationModell.fromJson(
-              json.decode(response.body),
-            );
+            notificationmodel =
+                NotificationModell.fromJson(json.decode(response.body));
             print("Notification get: ${response.body}");
             setState(() {
               notificationCount = notificationmodel?.data?.totalCount ?? 0;
@@ -380,43 +353,11 @@ class _NotificationPageState extends State<NotificationPage> {
             log(" Response body: ${response.body}");
           }
         } catch (e) {
-          //  EasyLoading.dismiss();
           log("Exception occurred: $e");
         }
       } else {
-        //  EasyLoading.dismiss();
         buildErrorDialog(context, 'Error', "Internet Required");
       }
     });
   }
-
-  // Readnotification() {
-  //   // EasyLoading.show();
-  //   checkInternet().then((internet) async {
-  //     if (internet) {
-  //       try {
-  //         final response = await NotificationProvider().ReadNotificationApi(
-  //             (notificationmodel?.data?.notifications?[0].id).toString());
-  //         print(
-  //             "Get Notification user id : ${(notificationmodel?.data?.notifications?[0].id).toString()}");
-  //         EasyLoading.dismiss();
-  //         if (response.statusCode == 200) {
-  //           notificationreadModel =
-  //               NotificationReadModel.fromJson(json.decode(response.body));
-  //           print("Read Notification get: ${response.body}");
-  //         } else {
-  //           log(" Failed response error ave che: ${response.statusCode}");
-  //           log(" Response body: ${response.body}");
-  //         }
-  //       } catch (e, stackTrace) {
-  //         //  EasyLoading.dismiss();
-  //         log("Exception occurred: $e");
-  //         log("Exception occurred: $stackTrace");
-  //       }
-  //     } else {
-  //       EasyLoading.dismiss();
-  //       buildErrorDialog(context, 'Error', "Internet Required");
-  //     }
-  //   });
-  // }
 }

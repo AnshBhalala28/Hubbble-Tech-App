@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_typedefs/rx_typedefs.dart';
 import 'package:sizer/sizer.dart';
@@ -22,37 +21,38 @@ Container TitleBar({
       children: [
         isBackEnabled
             ? InkWell(
-              onTap:
-                  back == null
-                      ? () {
+                onTap: back == null
+                    ? () {
                         Get.back();
                       }
-                      : back,
-              child: Container(
-                height: 12.w,
+                    : back,
+                child: Container(
+                    height: 12.w,
+                    width: 12.w,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: AppColors.maincolor),
+                    child: Icon(
+                      Icons.arrow_back,
+                      size: 20.sp,
+                      color: Colors.white,
+                    )),
+              )
+            : Container(
                 width: 12.w,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  color: AppColors.maincolor,
-                ),
-                child: Icon(Icons.arrow_back, size: 20.sp, color: Colors.white),
+                height: 12.w,
               ),
-            )
-            : Container(width: 12.w, height: 12.w),
         SizedBox(
           width: 72.w,
-          child: Text(
-            title.toString(),
-            overflow: TextOverflow.clip,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontFamily: AppConstants.manrope,
-
-              fontSize: 20.sp,
-              color: Colors.black,
-            ),
-          ),
+          child: Text(title.toString(),
+              overflow: TextOverflow.clip,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontFamily: AppConstants.manrope,
+                fontSize: 20.sp,
+                color: Colors.black,
+              )),
         ),
         MenuIcon(route: drawerCallback, color: headerColor),
       ],
@@ -60,7 +60,10 @@ Container TitleBar({
   );
 }
 
-InkWell MenuIcon({required Callback? route, required Color? color}) {
+InkWell MenuIcon({
+  required Callback? route,
+  required Color? color,
+}) {
   return InkWell(
     onTap: route,
     child: Column(

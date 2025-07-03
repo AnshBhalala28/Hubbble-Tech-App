@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
@@ -47,10 +46,8 @@ class GroupChatPage extends StatefulWidget {
 class _GroupChatPageState extends State<GroupChatPage> {
   final TextEditingController _messageController = TextEditingController();
 
-  // final List<Map<String, dynamic>> _messages = [];
   final ScrollController _scrollController = ScrollController();
 
-  // Assuming loginModel is accessible globally
   String get currentUserId => loginModel?.data?.user?.id.toString() ?? '';
 
   String get currentUserImage => loginModel?.data?.user?.profile ?? '';
@@ -59,38 +56,33 @@ class _GroupChatPageState extends State<GroupChatPage> {
 
   final ImagePicker _picker = ImagePicker();
   File? _pickedFile;
-  int type = 1; // Default: text message
+  int type = 1;
   bool isSending = false;
   String loadingMessage = '';
   bool isLoading = true;
 
   Timer? _messagePollingTimer;
   int _lastMessageCount = 0;
-  int _lastMessageId = 0; // Track the ID of the last message
+  int _lastMessageId = 0;
   bool _userScrolling = false;
   bool _hasNewMessages = false;
 
   @override
   void initState() {
     super.initState();
-    // Load existing messages for this group
+
     _loadMessages();
     _setupMessagePolling();
     _scrollController.addListener(_onScrollChanged);
   }
 
-  /// live chat sam same tarat msg show karva mate function by ai _onScrollChanged,_isAtBottom,_setupMessagePolling,_checkForNewMessages,_checkForNewMessages
   void _onScrollChanged() {
-    // Check if user is actively scrolling
     if (_scrollController.hasClients) {
       _userScrolling = true;
 
-      // Reset user scrolling flag after 2 seconds of inactivity
       Future.delayed(Duration(seconds: 2), () {
         _userScrolling = false;
 
-        // If there are new messages and user has stopped scrolling near bottom,
-        // show them automatically
         if (_hasNewMessages && _isAtBottom()) {
           _scrollToBottom();
           _hasNewMessages = false;
@@ -102,20 +94,17 @@ class _GroupChatPageState extends State<GroupChatPage> {
   bool _isAtBottom() {
     if (!_scrollController.hasClients) return true;
 
-    // Since ListView is reversed, bottom is at position 0
     final currentScroll = _scrollController.position.pixels;
-    return currentScroll < 10; // Allow small tolerance for "bottom"
+    return currentScroll < 10;
   }
 
   void _setupMessagePolling() {
-    // Poll every 2 seconds for new messages
     _messagePollingTimer = Timer.periodic(Duration(seconds: 2), (timer) {
       _checkForNewMessages();
     });
   }
 
   void _checkForNewMessages() async {
-    // Silent check for new messages without showing loading state
     checkInternet().then((internet) async {
       if (internet) {
         try {
@@ -130,7 +119,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
                 ? newMsgModel.data?.first?.id
                 : null;
 
-            // Check if new messages arrived
             bool hasNewContent = newCount > _lastMessageCount ||
                 (latestMsgId != null && latestMsgId > _lastMessageId);
 
@@ -143,18 +131,13 @@ class _GroupChatPageState extends State<GroupChatPage> {
                   _lastMessageId = newMsgModel.data!.first.id ?? _lastMessageId;
                 }
 
-                // Only set flag if we detected new messages
                 _hasNewMessages = true;
               });
 
-              // Auto-scroll only if user is already at the bottom and not scrolling
               if (_isAtBottom() && !_userScrolling) {
                 _scrollToBottom();
                 _hasNewMessages = false;
-              } else {
-                // Could show a "New messages" indicator here
-                // For example, displaying a floating button at the bottom
-              }
+              } else {}
             }
           }
         } catch (e) {
@@ -189,7 +172,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
               isLoading = false;
             });
 
-            // Scroll to bottom on initial load
             Future.delayed(Duration(milliseconds: 300), () {
               _scrollToBottom();
             });
@@ -213,10 +195,11 @@ class _GroupChatPageState extends State<GroupChatPage> {
       }
     });
   }
+
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
-        0, // Since ListView is reversed
+        0,
         duration: Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
@@ -236,8 +219,8 @@ class _GroupChatPageState extends State<GroupChatPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Get.back(result: 'refresh'); // Phone back press પર refresh return કરો
-        return true; // return true to allow back navigation
+        Get.back(result: 'refresh');
+        return true;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -246,9 +229,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back, size: 30, color: Colors.black),
             onPressed: () {
-            //  Get.back();
               Get.back(result: 'refresh');
-              //  Get.back();
             },
           ),
           title: InkWell(
@@ -268,8 +249,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
                       ? NetworkImage(widget.image!)
                       : NetworkImage(
                           "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg"),
-                  // AssetImage('assets/images/image 2.png')
-                  //         as ImageProvider,
                   radius: 20,
                 ),
                 SizedBox(width: 10),
@@ -320,7 +299,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
                                   final bool isCurrentUser =
                                       senderId == loggedInUserId;
 
-                                  // Logs for debugging
                                   log("------ Message $index ------");
                                   log("Login ID: $loggedInUserId");
                                   log("Sender ID: $senderId");
@@ -384,7 +362,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
                                                 padding: EdgeInsets.all(12),
                                                 decoration: BoxDecoration(
                                                   color: isCurrentUser
-                                                      ? Colors.blue
+                                                      ? AppColors.maincolor
                                                       : Colors.grey[200],
                                                   borderRadius:
                                                       BorderRadius.circular(12),
@@ -425,8 +403,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
                                   );
                                 },
                               )),
-
-                /// Message input area
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
                   decoration: BoxDecoration(
@@ -435,7 +411,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Add button with improved shadow
                       Container(
                         height: 44,
                         width: 44,
@@ -451,7 +426,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
                         ),
                       ),
                       SizedBox(width: 3.w),
-                      // Message input field with improved styling
                       Expanded(
                         child: Container(
                           height: 6.h,
@@ -496,7 +470,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
                         ),
                       ),
                       SizedBox(width: 3.w),
-                      // Send button with improved shadow
                       Container(
                         height: 44,
                         width: 44,
@@ -532,97 +505,8 @@ class _GroupChatPageState extends State<GroupChatPage> {
                     ],
                   ),
                 ),
-                // Container(
-                //   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                //   decoration: BoxDecoration(
-                //     color: Colors.white,
-                //     boxShadow: [
-                //       BoxShadow(
-                //         color: Colors.black12,
-                //         blurRadius: 3,
-                //         offset: Offset(0, -1),
-                //       ),
-                //     ],
-                //   ),
-                //   child: Row(
-                //     children: [
-                //       CircleAvatar(
-                //         backgroundColor: AppColors.maincolor,
-                //         radius: 22,
-                //         child: IconButton(
-                //           icon: Icon(Icons.add, color: Colors.white),
-                //           onPressed: selectfile,
-                //         ),
-                //       ),
-                //       SizedBox(width: 1.w),
-                //       Expanded(
-                //         child: Container(
-                //           height: 5.h,
-                //           padding: EdgeInsets.symmetric(horizontal: 10),
-                //           decoration: BoxDecoration(
-                //             color: Colors.white,
-                //             borderRadius: BorderRadius.circular(25),
-                //             border: Border.all(color: Colors.grey.shade300),
-                //           ),
-                //           child: TextField(
-                //             controller: _messageController,
-                //             onSubmitted: (_) =>
-                //             _messageController.text.trim().isNotEmpty
-                //                 ? sendMessage()
-                //                 : null,
-                //             textInputAction: TextInputAction.send,
-                //             decoration: InputDecoration(
-                //               hintText: "Type a message...",
-                //               hintStyle: TextStyle(
-                //                   color: Colors.grey,
-                //                   fontSize: 15.sp,
-                //                   fontFamily: AppConstants.manrope),
-                //               border: InputBorder.none,
-                //               contentPadding: EdgeInsets.symmetric(vertical: 1.h),
-                //             ),
-                //             style: TextStyle(
-                //                 fontSize: 17.sp,
-                //                 fontFamily: AppConstants.manrope),
-                //           ),
-                //         ),
-                //       ),
-                //       SizedBox(width: 1.w),
-                //       CircleAvatar(
-                //         backgroundColor: AppColors.maincolor,
-                //         radius: 22,
-                //         child: IconButton(
-                //           icon: Icon(Icons.send, color: Colors.white, size: 22),
-                //           onPressed: () {
-                //             if (_messageController.text.trim().isEmpty &&
-                //                 _pickedFile == null) {
-                //               ScaffoldMessenger.of(context).showSnackBar(
-                //                 const SnackBar(
-                //                   content: Text('Message cannot be empty'),
-                //                   backgroundColor: AppColors.redColor,
-                //                   duration: Duration(seconds: 1),
-                //                 ),
-                //               );
-                //             } else {
-                //               setState(() {
-                //                 if (_pickedFile == null) {
-                //                   type = 1;
-                //                 }
-                //               });
-                //               isLoading ? null : sendMessage();
-                //             }
-                //           },
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
-
-                // New message indicator
-                //  _buildNewMessageIndicator(),
               ],
             ),
-
-            ///  Positioned Loader overlay
             if (isSending)
               Positioned.fill(
                 child: Container(
@@ -635,8 +519,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
       ),
     );
   }
-
-
 
   Widget getMessageWidget(dynamic message, bool isCurrentUser) {
     if (message == null) return SizedBox.shrink();
@@ -754,7 +636,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
     final File? currentFile = _pickedFile;
     final int currentType = type;
 
-    // Clear UI input
     setState(() {
       _messageController.clear();
       isSending = true;
@@ -767,13 +648,11 @@ class _GroupChatPageState extends State<GroupChatPage> {
                   : 'Sending Message';
     });
 
-    // Prepare data for API
     final Map<String, String> data = {
       "message": currentMessage,
       "sender_id": currentUserId,
       "receiver_id": widget.groupid,
       "msg_to": widget.type,
-      // "type": currentType.toString(),
       "type": "2",
       "group_id": widget.groupid,
     };
@@ -798,26 +677,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
 
       if (response.statusCode == 200) {
         final parsed = SendMsgModel.fromJson(jsonDecode(response.body));
-        // if (parsed.status == 200 ) {
-        //   // final newMessage = {
-        //   //   'id': parsed.data!.id.toString(),
-        //   //   'message': currentMessage,
-        //   //   'senderId': currentUserId,
-        //   //   'senderName': currentUserName,
-        //   //   'senderImage': currentUserImage,
-        //   //   'timestamp': DateTime.now(),
-        //   //   'messageType': currentType.toString(),
-        //   //   'file': parsed.data!.file ?? '',
-        //   // };
-        //
-        //   setState(() {
-        //     // _messages.add(newMessage);
-        //   });
-        //
-        //   _scrollToBottom();
-        // } else {
-        //   print("Server responded with error status.");
-        // }
+
         setState(() {
           isSending = false;
         });
@@ -833,7 +693,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
       setState(() {
         isSending = false;
         _pickedFile = null;
-        type = 1; // Reset to text type
+        type = 1;
       });
     }
   }
@@ -882,15 +742,15 @@ class _GroupChatPageState extends State<GroupChatPage> {
                                     final XFile? photo =
                                         await _picker.pickImage(
                                       source: ImageSource.gallery,
-                                      imageQuality: 70, // Optimize image size
+                                      imageQuality: 70,
                                     );
                                     if (photo != null) {
                                       setState(() {
                                         _pickedFile = File(photo.path);
-                                        type = 2; // Photo type
+                                        type = 2;
                                       });
                                       Get.back();
-                                      sendMessage(); // Auto-send after selecting
+                                      sendMessage();
                                     }
                                   },
                                   child: Container(
@@ -925,16 +785,15 @@ class _GroupChatPageState extends State<GroupChatPage> {
                                     final XFile? video =
                                         await _picker.pickVideo(
                                       source: ImageSource.gallery,
-                                      maxDuration: Duration(
-                                          minutes: 5), // Limit video length
+                                      maxDuration: Duration(minutes: 5),
                                     );
                                     if (video != null) {
                                       setState(() {
                                         _pickedFile = File(video.path);
-                                        type = 3; // Video type
+                                        type = 3;
                                       });
                                       Get.back();
-                                      sendMessage(); // Auto-send after selecting
+                                      sendMessage();
                                     }
                                   },
                                   child: Container(
@@ -972,10 +831,10 @@ class _GroupChatPageState extends State<GroupChatPage> {
                                       setState(() {
                                         _pickedFile =
                                             File(result.files.single.path!);
-                                        type = 4; // File type
+                                        type = 4;
                                       });
                                       Get.back();
-                                      sendMessage(); // Auto-send after selecting
+                                      sendMessage();
                                     }
                                   },
                                   child: Container(

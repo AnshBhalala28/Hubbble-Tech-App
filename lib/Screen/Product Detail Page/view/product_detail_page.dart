@@ -12,7 +12,6 @@ import 'package:wavee/Screen/Add%20to%20Cart/view/add_to_cart_view.dart';
 import 'package:wavee/Screen/Buy%20Product/view/buy_product_view.dart';
 import 'package:wavee/Screen/Product%20Detail%20Page/model/product_model.dart';
 import 'package:wavee/Screen/Product%20Detail%20Page/provider/product_provider.dart';
-import 'package:wavee/comman/Custom_AppBar.dart';
 import 'package:wavee/comman/SideMenu.dart';
 import 'package:wavee/comman/check_inernet_connecty.dart';
 import 'package:wavee/comman/colors.dart';
@@ -20,7 +19,9 @@ import 'package:wavee/comman/const.dart';
 import 'package:wavee/comman/custom_button.dart';
 import 'package:wavee/comman/loader.dart';
 
+import '../../../comman/bottom_bar.dart';
 import '../../../comman/error_dialog.dart';
+import '../../../comman/product_disable.dart';
 import '../../Add to Cart/model/add_to_cart_model.dart';
 import '../../Add to Cart/provider/add_to_cart_provider.dart';
 import '../model/all_review_model.dart';
@@ -58,141 +59,145 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       double o = double.parse(original ?? "0");
       double p = double.parse(offer ?? "0");
       double discount = ((o - p) / o) * 100;
-      return discount.toStringAsFixed(0); // Round to 0 decimal
+      return discount.toStringAsFixed(0);
     } catch (e) {
       return "0";
     }
   }
 
+  int count = 1;
+
   @override
   Widget build(BuildContext context) {
-    // log("Product ID Ave che che${widget.productID}");
     return Scaffold(
       key: productDetailKey,
       drawer: SideMenu(),
       body: Stack(
         children: [
           isLoading
-              ? Center(child: Loader())
+              ? Center(
+                  child: Loader(),
+                )
               : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 4.h),
-                  TitleBar(
-                    title:
-                        productViewModel?.data?.name
-                            .toString()
-                            .capitalizeFirst ??
-                        "",
-                    drawerCallback: () {
-                      productDetailKey.currentState?.openDrawer();
-                    },
-                    back: () {
-                      Get.back();
-                    },
-                  ),
-                  SizedBox(height: 2.h),
-                  isLoading
-                      ? Loader().paddingOnly(top: 30.h)
-                      : Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                height: 25.h,
-                                width: double.infinity,
-                                decoration: const BoxDecoration(
-                                  color: AppColors.white,
-                                ),
-                                child:
-                                    (productViewModel?.data?.images == null ||
-                                            productViewModel!
-                                                .data!
-                                                .images!
-                                                .isEmpty)
-                                        ? ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                                productViewModel?.data?.image ??
-                                                "", // fallback to empty string if image is null
-                                            fit: BoxFit.cover,
-                                            width: double.infinity,
-                                            placeholder:
-                                                (context, url) => const Center(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    isLoading
+                        ? Loader().paddingOnly(top: 30.h)
+                        : Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 2.h, horizontal: 3.w),
+                            decoration: BoxDecoration(
+                              color: AppColors.bgcolor,
+                              border: Border(
+                                top: BorderSide(color: Colors.grey),
+                                left: BorderSide(color: Colors.grey),
+                                right: BorderSide(color: Colors.grey),
+                              ),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(45),
+                                topRight: Radius.circular(45),
+                              ),
+                            ),
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.7,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      productViewModel?.data?.businessName ??
+                                          "",
+                                      style: TextStyle(
+                                        fontFamily: AppConstants.manrope,
+                                        fontSize: 20.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(height: 2.h),
+                                    Container(
+                                      height: 20.h,
+                                      width: double.infinity,
+                                      decoration: const BoxDecoration(
+                                          color: AppColors.white),
+                                      child: (productViewModel?.data?.images ==
+                                                  null ||
+                                              productViewModel!
+                                                  .data!.images!.isEmpty)
+                                          ? ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              child: CachedNetworkImage(
+                                                imageUrl: productViewModel
+                                                        ?.data?.image ??
+                                                    "",
+                                                fit: BoxFit.cover,
+                                                width: double.infinity,
+                                                placeholder: (context, url) =>
+                                                    const Center(
                                                   child:
                                                       CircularProgressIndicator(
-                                                        color:
-                                                            AppColors.maincolor,
-                                                      ),
-                                                ),
-                                            errorWidget:
-                                                (context, url, error) => Center(
-                                                  child: Image(
-                                                    image: AssetImage(
-                                                      'assets/images/waveeLogoShort.png',
-                                                    ),
+                                                    color: AppColors.maincolor,
                                                   ),
                                                 ),
-                                          ),
-                                        )
-                                        : CarouselSlider(
-                                          carouselController: _controller,
-                                          options: CarouselOptions(
-                                            height: 25.h,
-                                            autoPlay: true,
-                                            enlargeCenterPage: true,
-                                            viewportFraction: 1.0,
-                                            onPageChanged: (index, reason) {
-                                              setState(() {
-                                                _currentIndex = index;
-                                              });
-                                            },
-                                          ),
-                                          items:
-                                              productViewModel!.data!.images!.map((
-                                                imageUrl,
-                                              ) {
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Center(
+                                                  child: Image.asset(
+                                                      'assets/images/waveeLogoShort.png'),
+                                                ),
+                                              ),
+                                            )
+                                          : CarouselSlider(
+                                              carouselController: _controller,
+                                              options: CarouselOptions(
+                                                height: 25.h,
+                                                autoPlay: true,
+                                                enlargeCenterPage: true,
+                                                viewportFraction: 1.0,
+                                                onPageChanged: (index, reason) {
+                                                  setState(() {
+                                                    _currentIndex = index;
+                                                  });
+                                                },
+                                              ),
+                                              items: productViewModel!
+                                                  .data!.images!
+                                                  .map((imageUrl) {
                                                 return Builder(
-                                                  builder: (
-                                                    BuildContext context,
-                                                  ) {
+                                                  builder:
+                                                      (BuildContext context) {
                                                     return Stack(
                                                       children: [
                                                         ClipRRect(
                                                           borderRadius:
-                                                              BorderRadius.circular(
-                                                                10,
-                                                              ),
-                                                          child: CachedNetworkImage(
+                                                              BorderRadius
+                                                                  .circular(20),
+                                                          child:
+                                                              CachedNetworkImage(
                                                             imageUrl: imageUrl,
                                                             fit: BoxFit.cover,
                                                             width:
                                                                 double.infinity,
                                                             placeholder:
-                                                                (
-                                                                  context,
-                                                                  url,
-                                                                ) => const Center(
-                                                                  child: CircularProgressIndicator(
-                                                                    color:
-                                                                        AppColors
-                                                                            .maincolor,
-                                                                  ),
-                                                                ),
-                                                            errorWidget:
-                                                                (
-                                                                  context,
-                                                                  url,
-                                                                  error,
-                                                                ) => const Center(
-                                                                  child: Icon(
-                                                                    Icons.error,
-                                                                  ),
-                                                                ),
+                                                                (context,
+                                                                        url) =>
+                                                                    const Center(
+                                                              child:
+                                                                  CircularProgressIndicator(
+                                                                color: AppColors
+                                                                    .maincolor,
+                                                              ),
+                                                            ),
+                                                            errorWidget: (context,
+                                                                    url,
+                                                                    error) =>
+                                                                const Center(
+                                                                    child: Icon(
+                                                                        Icons
+                                                                            .error)),
                                                           ),
                                                         ),
                                                       ],
@@ -200,44 +205,40 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                   },
                                                 );
                                               }).toList(),
-                                        ),
-                              ),
-
-                              SizedBox(height: 1.h),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children:
-                                    (productViewModel?.data?.images != null &&
-                                                productViewModel!
-                                                    .data!
-                                                    .images!
-                                                    .isNotEmpty
-                                            ? productViewModel!.data!.images!
-                                            : [
-                                              productViewModel?.data?.image ??
-                                                  "",
-                                            ])
-                                        .asMap()
-                                        .entries
-                                        .map((entry) {
+                                            ),
+                                    ),
+                                    SizedBox(height: 1.h),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: (productViewModel
+                                                          ?.data?.images !=
+                                                      null &&
+                                                  productViewModel!
+                                                      .data!.images!.isNotEmpty
+                                              ? productViewModel!.data!.images!
+                                              : [
+                                                  productViewModel
+                                                          ?.data?.image ??
+                                                      ""
+                                                ])
+                                          .asMap()
+                                          .entries
+                                          .map(
+                                        (entry) {
                                           return GestureDetector(
-                                            onTap:
-                                                () => _controller.animateToPage(
-                                                  entry.key,
-                                                ),
+                                            onTap: () => _controller
+                                                .animateToPage(entry.key),
                                             child: Container(
-                                              width:
-                                                  _currentIndex == entry.key
-                                                      ? 10
-                                                      : 8,
-                                              height:
-                                                  _currentIndex == entry.key
-                                                      ? 10
-                                                      : 8,
+                                              width: _currentIndex == entry.key
+                                                  ? 10
+                                                  : 8,
+                                              height: _currentIndex == entry.key
+                                                  ? 10
+                                                  : 8,
                                               margin:
                                                   const EdgeInsets.symmetric(
-                                                    horizontal: 4,
-                                                  ),
+                                                      horizontal: 4),
                                               decoration: BoxDecoration(
                                                 shape: BoxShape.circle,
                                                 color:
@@ -247,710 +248,375 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                               ),
                                             ),
                                           );
-                                        })
-                                        .toList(),
-                              ),
-                              SizedBox(height: 1.h),
-                              Row(
-                                children: [
-                                  const Icon(Icons.storefront),
-                                  SizedBox(width: 2.w),
-                                  Text(
-                                    productViewModel?.data?.businessName ?? "",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16.sp,
-                                      fontFamily: AppConstants.manrope,
+                                        },
+                                      ).toList(),
                                     ),
-                                  ),
-                                  Spacer(),
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width: 40.w,
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 3.w,
-                                          vertical: 1.h,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(
-                                            12,
+                                    SizedBox(height: 1.h),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            "${productViewModel?.data?.name.toString().capitalizeFirst ?? ""}",
+                                            style: TextStyle(
+                                              fontFamily: AppConstants.manrope,
+                                              fontSize: 20.sp,
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
                                         ),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              (productViewModel
-                                                              ?.data
-                                                              ?.quantity !=
-                                                          null &&
-                                                      productViewModel!
-                                                              .data!
-                                                              .quantity! >
-                                                          0)
-                                                  ? Icons.check_circle
-                                                  : Icons.block,
-                                              size: 18.sp,
-                                              color:
-                                                  (productViewModel
-                                                                  ?.data
-                                                                  ?.quantity !=
-                                                              null &&
-                                                          productViewModel!
-                                                                  .data!
-                                                                  .quantity! >
-                                                              0)
-                                                      ? AppColors.maincolor
-                                                      : Colors.red,
-                                            ),
-                                            SizedBox(width: 2.w),
-                                            Text(
-                                              (productViewModel
-                                                              ?.data
-                                                              ?.quantity !=
-                                                          null &&
-                                                      productViewModel!
-                                                              .data!
-                                                              .quantity! >
-                                                          0)
-                                                  ? "In Stock"
-                                                  : "Out of Stock",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 16.sp,
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                                color:
-                                                    (productViewModel
-                                                                    ?.data
-                                                                    ?.quantity !=
-                                                                null &&
-                                                            productViewModel!
-                                                                    .data!
-                                                                    .quantity! >
-                                                                0)
-                                                        ? Colors.black
-                                                        : Colors.red,
+                                        Container(
+                                          margin: EdgeInsets.only(left: 2.w),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 2.w, vertical: 0.3.h),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                            border: Border.all(
+                                                color: AppColors.maincolor
+                                                    .withOpacity(0.5)),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.star,
+                                                color: AppColors.maincolor,
+                                                size: 16.sp,
                                               ),
-                                            ),
-                                          ],
+                                              SizedBox(width: 1.w),
+                                              Text((productViewModel?.data
+                                                          ?.productRating ??
+                                                      0)
+                                                  .toString()),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 1.5.h),
-                              Row(
-                                children: [
-                                  Container(
-                                    // width: 50.w,
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 3.w,
-                                      vertical: 1.h,
+                                      ],
                                     ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(12),
+                                    SizedBox(height: 0.8.h),
+                                    Container(
+                                      width: 24.w,
+                                      height: 0.7.h,
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey.shade300,
+                                          borderRadius:
+                                              BorderRadius.circular(90)),
                                     ),
-                                    child: Row(
+                                    SizedBox(height: 0.8.h),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Icon(
-                                          Icons.star,
-                                          size: 18.sp,
-                                          color: Colors.orange,
-                                        ),
-                                        SizedBox(width: 2.w),
                                         Text(
-                                          "${productViewModel?.data?.latestReviews?.length ?? 0} Ratings & Reviews",
+                                          "£ ${productViewModel?.data?.price ?? "0.00"}",
                                           style: TextStyle(
-                                            fontSize: 15.sp,
+                                            fontSize: 18.sp,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.black,
                                             fontFamily: AppConstants.manrope,
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ),
-                                  SizedBox(width: 2.w),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 3.w,
-                                      vertical: 1.h,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.inventory,
-                                          size: 18.sp,
+                                    SizedBox(height: 1.h),
+                                    Container(
+                                      width: 92.w,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: ReadMoreText(
+                                        productViewModel?.data?.description ??
+                                            "",
+                                        trimLines: 4,
+                                        trimLength: 145,
+                                        colorClickableText: Colors.blue,
+                                        trimMode: TrimMode.Length,
+                                        trimCollapsedText: ' Show more',
+                                        trimExpandedText: ' Show less',
+                                        moreStyle: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: AppConstants.manrope,
+                                          letterSpacing: 1,
+                                          color: AppColors.maincolor1,
+                                        ),
+                                        lessStyle: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: AppConstants.manrope,
+                                          letterSpacing: 1,
+                                          color: AppColors.maincolor1,
+                                        ),
+                                        style: TextStyle(
+                                          fontSize: 17.sp,
                                           color: AppColors.maincolor,
+                                          fontWeight: FontWeight.normal,
+                                          fontFamily: AppConstants.manrope,
                                         ),
-                                        SizedBox(width: 2.w),
-                                        Text(
-                                          "Stock: ${productViewModel?.data?.quantity.toString() ?? ""}",
-                                          style: TextStyle(
-                                            fontSize: 15.sp,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                            fontFamily: AppConstants.manrope,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 1.5.h),
-                              Text(
-                                "${productViewModel?.data?.name.toString().capitalizeFirst ?? ""}",
-                                style: TextStyle(
-                                  fontFamily: AppConstants.manrope,
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 1.h),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (productViewModel?.data?.offerPrice !=
-                                          null &&
-                                      productViewModel!
-                                          .data!
-                                          .offerPrice!
-                                          .isNotEmpty)
-                                    RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          // Discount Percent (optional: can calculate dynamically)
-                                          TextSpan(
-                                            text:
-                                                "-${_calculateDiscountPercentage(productViewModel!.data!.price, productViewModel!.data!.offerPrice)}%  ",
-                                            style: TextStyle(
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.normal,
-                                              color: Colors.red,
-                                              fontFamily: AppConstants.manrope,
-                                            ),
-                                          ),
-
-                                          TextSpan(
-                                            text:
-                                                "£ ${productViewModel!.data!.offerPrice}",
-                                            style: TextStyle(
-                                              fontSize: 18.sp,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                              fontFamily: AppConstants.manrope,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  else
-                                    Text(
-                                      "£ ${productViewModel?.data?.price ?? "0.00"}",
-                                      style: TextStyle(
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
-                                    ),
-                                  if (productViewModel?.data?.offerPrice !=
-                                          null &&
-                                      productViewModel!
-                                          .data!
-                                          .offerPrice!
-                                          .isNotEmpty)
-                                    // Show original price as MRP with line-through
-                                    Text(
-                                      "M.R.P.: £${productViewModel?.data?.price ?? "0.00"}",
-                                      style: TextStyle(
-                                        fontFamily: AppConstants.manrope,
-                                        decoration: TextDecoration.lineThrough,
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                    ),
-                                ],
-                              ),
-                              SizedBox(height: 1.h),
-                              Container(
-                                width: 92.w,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: ReadMoreText(
-                                  productViewModel?.data?.description ?? "",
-                                  trimLines: 4,
-                                  trimLength: 145,
-                                  colorClickableText: Colors.blue,
-                                  trimMode: TrimMode.Length,
-                                  trimCollapsedText: ' Show more',
-                                  trimExpandedText: ' Show less',
-                                  moreStyle: TextStyle(
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: AppConstants.manrope,
-                                    letterSpacing: 1,
-                                    color: AppColors.maincolor,
-                                  ),
-                                  lessStyle: TextStyle(
-                                    fontSize: 15.sp,
-                                    fontFamily: AppConstants.manrope,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1,
-                                    color: AppColors.maincolor,
-                                  ),
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    color: Colors.grey.shade500,
-                                    fontWeight: FontWeight.normal,
-                                    fontFamily: AppConstants.manrope,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 1.h),
-                              SizedBox(height: 1.5.h),
-                              if (featuresList.isNotEmpty)
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Features",
-                                      style: TextStyle(
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
-                                        color: AppColors.maincolor,
                                       ),
                                     ),
                                     SizedBox(height: 1.h),
-                                    ...featuresList.map((feature) {
-                                      // return Container(
-                                      //   margin: EdgeInsets.only(top: 0.5.h),
-                                      //   padding: EdgeInsets.all(8),
-                                      //   decoration: BoxDecoration(
-                                      //     color: Colors.white,
-                                      //     borderRadius: BorderRadius.circular(10),
-                                      //   ),
-                                      //   child: Row(
-                                      //     children: [
-                                      //       SizedBox(width: 10),
-                                      //       Icon(Icons.check_circle_outline, color: AppColors.maincolor),
-                                      //       SizedBox(width: 10),
-                                      //       Expanded(
-                                      //         child: Text(
-                                      //           feature,
-                                      //           style: TextStyle(
-                                      //             fontSize: 14.sp,
-                                      //             fontFamily: AppConstants.manrope,
-                                      //           ),
-                                      //         ),
-                                      //       ),
-                                      //     ],
-                                      //   ),
-                                      // );
-                                      return CustomFeatureCard(
-                                        icon: Icons.check_circle_outline,
-                                        title: feature,
-                                      );
-                                    }).toList(),
-                                  ],
-                                ),
-                              SizedBox(height: 0.5.h),
-                              Row(
-                                children: [
-                                  Text(
-                                    "Review & Ratings",
-                                    style: TextStyle(
-                                      fontSize: 17.sp,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: AppConstants.manrope,
-                                      color: AppColors.maincolor,
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  batan(
-                                    title: "Add Review",
-                                    route: () {
-                                      showReviewDialog(context);
-                                    },
-                                    color: AppColors.maincolor,
-                                    fontcolor: Colors.white,
-                                    height: 5.h,
-                                    fontsize: 17.sp,
-                                    width: 35.w,
-                                    radius: 12.0,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 2.h),
-                              SizedBox(
-                                child:
-                                    productViewModel
-                                                ?.data
-                                                ?.latestReviews
-                                                ?.length ==
-                                            0
-                                        ? Center(
-                                          child: Text(
-                                            "No Reviews Avaiable",
+                                    if (featuresList.isNotEmpty)
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Features",
                                             style: TextStyle(
+                                              fontSize: 18.sp,
+                                              fontWeight: FontWeight.bold,
                                               fontFamily: AppConstants.manrope,
-                                              fontSize: 17.sp,
-                                              fontWeight: FontWeight.w100,
+                                              color: AppColors.maincolor,
                                             ),
                                           ),
-                                        )
-                                        : ListView.builder(
-                                          itemCount:
-                                              productViewModel
-                                                  ?.data
-                                                  ?.latestReviews
-                                                  ?.length ??
-                                              0,
-                                          shrinkWrap: true,
-                                          padding: EdgeInsets.zero,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemBuilder: (context, index) {
-                                            final review =
-                                                productViewModel
-                                                    ?.data
-                                                    ?.latestReviews?[index];
-
-                                            return ReviewTile(
-                                              name: review?.userName ?? "",
-                                              rating:
-                                                  review?.rating?.toDouble() ??
-                                                  0.0,
-                                              image: review?.userProfile ?? '',
-                                              review: review?.review ?? "",
-                                            ).marginOnly(bottom: 1.h);
-                                          },
-                                        ),
-                              ),
-                              SizedBox(height: 0.5.h),
-                              productViewModel?.data?.latestReviews?.length == 0
-                                  ? SizedBox()
-                                  : Row(
-                                    children: [
-                                      Spacer(),
-                                      TextButton(
-                                        onPressed: () {
-                                          ShowAllReviewApi(
-                                            widget.productID ?? "",
-                                          );
-                                        },
-                                        child: const Text(
-                                          "View All Reviews",
-                                          style: TextStyle(
-                                            color: Colors.orange,
-                                            decoration:
-                                                TextDecoration.underline,
-                                            decorationColor: Colors.orange,
-                                          ),
-                                        ),
+                                          SizedBox(height: 1.h),
+                                          ...featuresList.map((feature) {
+                                            return CustomFeatureCard(
+                                              icon: Icons.check_circle_rounded,
+                                              icnSize: 18.sp,
+                                              title: feature,
+                                            );
+                                          }).toList(),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                              SizedBox(height: 10.h),
-                            ],
+                                    productViewModel?.data?.quantity != '0'
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 2.w),
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color:
+                                                          Colors.grey.shade300),
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    IconButton(
+                                                      icon: const Icon(
+                                                          Icons.remove,
+                                                          size: 18),
+                                                      padding: EdgeInsets.zero,
+                                                      constraints:
+                                                          const BoxConstraints(),
+                                                      onPressed: () {
+                                                        if (count > 1) {
+                                                          setState(
+                                                              () => count--);
+                                                        }
+                                                      },
+                                                    ),
+                                                    const SizedBox(width: 16),
+                                                    Text(
+                                                      '$count',
+                                                      style: const TextStyle(
+                                                          fontSize: 16),
+                                                    ),
+                                                    const SizedBox(width: 16),
+                                                    count == 10
+                                                        ? Container()
+                                                        : IconButton(
+                                                            icon: const Icon(
+                                                                Icons.add,
+                                                                size: 18),
+                                                            padding:
+                                                                EdgeInsets.zero,
+                                                            constraints:
+                                                                const BoxConstraints(),
+                                                            onPressed: () {
+                                                              setState(() =>
+                                                                  count++);
+                                                            },
+                                                          ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : Container(),
+                                    SizedBox(height: 10.h),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                ],
-              ).paddingOnly(left: 2.w, right: 2.w),
+                  ],
+                ).paddingOnly(left: 1.w, right: 1.w),
           if (isAddReviewLoading)
             Container(
               color: Colors.black.withOpacity(0.3),
-              child: Center(child: Loader()),
+              child: Center(
+                child: Loader(),
+              ),
             ),
         ],
       ),
+      bottomNavigationBar: Bottom_bar(
+        selected: 0,
+      ),
       floatingActionButtonLocation:
           isLoading ? null : FloatingActionButtonLocation.centerDocked,
-      floatingActionButton:
-          isLoading
-              ? null
-              : Container(
-                height: 7.5.h,
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 4.w),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 10,
-                      offset: Offset(0, -2),
-                    ),
-                  ],
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(20),
-                  ),
-                ),
-                child:
-                    (productViewModel?.data?.quantity != null &&
-                            productViewModel!.data!.quantity! > 0)
-                        ? Row(
-                          children: [
-                            /// 🛒 Add to Cart Button
-                            Expanded(
-                              child: Material(
-                                elevation: 1,
-                                borderRadius: BorderRadius.circular(12),
-                                child: batan(
-                                  title: "Add to Cart",
-                                  // route: () {
-                                  //   if (cartDetailsModel?.data != null &&
-                                  //       cartDetailsModel!.data!.isNotEmpty &&
-                                  //       cartDetailsModel!.data![0].type == "service") {
-                                  //     Get.snackbar(
-                                  //       "Service item already in cart",
-                                  //       "Please remove service items before adding a product.",
-                                  //       backgroundColor: AppColors.redColor,
-                                  //       colorText: Colors.white,
-                                  //       margin: EdgeInsets.all(10),
-                                  //       snackPosition: SnackPosition.TOP,
-                                  //     );
-                                  //   } else {
-                                  //     AddCartProductApi();
-                                  //   }
-                                  // },
-                                  route: () {
-                                    if (cartDetailsModel?.data != null &&
-                                        cartDetailsModel!.data!.isNotEmpty) {
-                                      if (cartDetailsModel!.data![0].type ==
-                                          "service") {
-                                        Get.snackbar(
-                                          "Product item already in cart",
-                                          "Please remove service items before adding a product.",
-                                          backgroundColor: AppColors.redColor,
-                                          colorText: Colors.white,
-                                          margin: EdgeInsets.all(10),
-                                          snackPosition: SnackPosition.TOP,
-                                        );
-                                      }
-                                      // BusinessId same chhe ke nahi
-                                      else if (cartDetailsModel!
-                                              .data![0]
-                                              .itemDetails
-                                              ?.businessId ==
-                                          productViewModel?.data?.businessId) {
-                                        // BusinessId same hoy to add karva do
-                                        AddCartProductApi();
-                                      } else {
-                                        // BusinessId alag hoy to alert karo
-                                        Get.snackbar(
-                                          "Business mismatch",
-                                          "You can only add items from the same business to the cart.",
-                                          backgroundColor: AppColors.redColor,
-                                          colorText: Colors.white,
-                                          margin: EdgeInsets.all(10),
-                                          snackPosition: SnackPosition.TOP,
-                                        );
-                                      }
-                                    } else {
-                                      // Cart empty hoy to direct add karva do
-                                      AddCartProductApi();
-                                    }
-                                  },
-
-                                  color: AppColors.maincolor,
-                                  fontcolor: AppColors.white,
-                                  height: 5.h,
-                                  fontsize: 15.sp,
-                                  iconData: Icons.add_shopping_cart_outlined,
-                                  radius: 12.0,
-                                ),
-                              ),
-                            ),
-
-                            SizedBox(width: 4.w),
-
-                            // 🛍️ Buy Now Button
-                            // Expanded(
-                            //   child: Material(
-                            //     elevation: 1,
-                            //     borderRadius: BorderRadius.circular(12),
-                            //     child: batan(
-                            //       title: "Buy Now",
-                            //       route: () {
-                            //         // if (cartDetailsModel?.data != null &&
-                            //         //     cartDetailsModel!.data!.isNotEmpty &&
-                            //         //     cartDetailsModel!.data![0].type == "service") {
-                            //         //   Get.snackbar(
-                            //         //     "Service item already in cart",
-                            //         //     "Please remove service items before adding a product.",
-                            //         //     backgroundColor: AppColors.redColor,
-                            //         //     colorText: Colors.white,
-                            //         //     margin: EdgeInsets.all(10),
-                            //         //     snackPosition: SnackPosition.TOP,
-                            //         //   );
-                            //         // } else {
-                            //         //   BuyNow();
-                            //         // }
-                            //         if (cartDetailsModel?.data != null && cartDetailsModel!.data!.isNotEmpty) {
-                            //           if (cartDetailsModel!.data![0].type == "service") {
-                            //             Get.snackbar(
-                            //               "Product item already in cart",
-                            //               "Please remove service items before adding a product.",
-                            //               backgroundColor: AppColors.redColor,
-                            //               colorText: Colors.white,
-                            //               margin: EdgeInsets.all(10),
-                            //               snackPosition: SnackPosition.TOP,
-                            //             );
-                            //           }
-                            //           // BusinessId same chhe ke nahi
-                            //           else if (cartDetailsModel!.data![0].itemDetails?.businessId ==productViewModel?.data?.businessId) {
-                            //             // BusinessId same hoy to add karva do
-                            //             AddCartProductApi();
-                            //           } else {
-                            //             // BusinessId alag hoy to alert karo
-                            //             Get.snackbar(
-                            //               "Business mismatch",
-                            //               "You can only add items from the same business to the cart.",
-                            //               backgroundColor: AppColors.redColor,
-                            //               colorText: Colors.white,
-                            //               margin: EdgeInsets.all(10),
-                            //               snackPosition: SnackPosition.TOP,
-                            //             );
-                            //           }
-                            //         } else {
-                            //           // Cart empty hoy to direct add karva do
-                            //           AddCartProductApi();
-                            //         }
-                            //       },
-                            //       color: AppColors.maincolor,
-                            //       fontcolor: AppColors.white,
-                            //       height: 5.h,
-                            //       fontsize: 15.sp,
-                            //       iconData: Icons.shopping_bag,
-                            //       radius: 12.0,
-                            //     ),
-                            //   ),
-                            // ),
-                          ],
-                        )
-                        : Row(
-                          children: [
-                            /// ❌ Out of Stock Button
-                            Expanded(
-                              child: Material(
-                                elevation: 1,
-                                borderRadius: BorderRadius.circular(12),
-                                child: batan(
-                                  title: "Out of Stock",
-                                  route: () {},
-                                  color: Colors.grey.shade200,
-                                  fontcolor: AppColors.redColor,
-                                  height: 5.h,
-                                  fontsize: 15.sp,
-                                  iconData: Icons.block,
-                                  radius: 12.0,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+      floatingActionButton: isLoading
+          ? null
+          : Container(
+              width: double.infinity * 0.5,
+              padding: EdgeInsets.symmetric(horizontal: 25.w),
+              margin: EdgeInsets.only(bottom: 2.h),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(20)),
               ),
+              child: productViewModel?.data?.quantity != '0'
+                  ? Row(
+                      children: [
+                        Expanded(
+                          child: Material(
+                            elevation: 1,
+                            borderRadius: BorderRadius.circular(12),
+                            child: batan(
+                              title: "Add ${count} to Cart",
+                              route: () {
+                                bool isBlocked =
+                                    productViewModel?.data?.quantity == 0 ||
+                                        productViewModel?.data?.quantity ==
+                                            null;
+                                int? productStatus = busnessviewmodal
+                                    ?.data?.business?.productStatus;
+                                log("$productStatus");
 
-      // Container(
-      //         height: 7.5.h,
-      //         width: double.infinity,
-      //         padding: EdgeInsets.symmetric(horizontal: 4.w),
-      //         decoration: BoxDecoration(
-      //           color: Colors.white,
-      //           boxShadow: [
-      //             BoxShadow(
-      //               color: Colors.black12,
-      //               blurRadius: 10,
-      //               offset: Offset(0, -2),
-      //             )
-      //           ],
-      //           borderRadius:
-      //               const BorderRadius.vertical(top: Radius.circular(20)),
-      //         ),
-      //         child: (productViewModel?.data?.quantity != null &&
-      //                 productViewModel!.data!.quantity! > 0)
-      //             ? Row(
-      //                 children: [
-      //                   /// 🛒 Add to Cart Button
-      //                   Expanded(
-      //                     child: Material(
-      //                       elevation: 1,
-      //                       borderRadius: BorderRadius.circular(12),
-      //                       child: batan(
-      //                         title: "Add to Cart",
-      //                         route: () {
-      //                           // Get.to(() => AddToCartView());
-      //                           AddCartProductApi();
-      //                         },
-      //                         color: AppColors.maincolor,
-      //                         fontcolor: AppColors.white,
-      //                         height: 5.h,
-      //                         // width: 50.w,
-      //                         fontsize: 15.sp,
-      //                         iconData: Icons.add_shopping_cart_outlined,
-      //                         radius: 12.0,
-      //                       ),
-      //                     ),
-      //                   ),
-      //
-      //                   SizedBox(width: 4.w),
-      //                   Expanded(
-      //                     child: Material(
-      //                       elevation: 1,
-      //                       borderRadius: BorderRadius.circular(12),
-      //                       child: batan(
-      //                         title: "Buy Now",
-      //                         route: () {
-      //                           BuyNow();
-      //                         },
-      //                         color: AppColors.maincolor,
-      //                         fontcolor: AppColors.white,
-      //                         height: 5.h,
-      //                         // width: 50.w,
-      //                         fontsize: 15.sp,
-      //                         iconData: Icons.shopping_bag,
-      //                         radius: 12.0,
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ],
-      //               )
-      //             : Row(
-      //                 children: [
-      //                   /// 🛒 Add to Cart Button
-      //                   Expanded(
-      //                     child: Material(
-      //                       elevation: 1,
-      //                       borderRadius: BorderRadius.circular(12),
-      //                       child: batan(
-      //                         title: "Out of Stock",
-      //                         route: () {},
-      //                         color: Colors.grey.shade200,
-      //                         fontcolor: AppColors.redColor,
-      //                         height: 5.h,
-      //                         // width: 50.w,
-      //                         fontsize: 15.sp,
-      //                         iconData: Icons.block,
-      //                         radius: 12.0,
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ],
-      //               ),
-      //       ),
+                                if (productStatus == 0) {
+                                  showOnlineOrderDisabledDialog(
+                                    context: context,
+                                    businessName: busnessviewmodal
+                                            ?.data?.business?.businessName ??
+                                        "",
+                                    isProduct: true,
+                                  );
+                                  return;
+                                }
+
+                                if (isBlocked) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Product is out of stock.'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                if (cartDetailsModel?.data != null &&
+                                    cartDetailsModel!.data!.isNotEmpty) {
+                                  if (cartDetailsModel!.data![0].type ==
+                                      "service") {
+                                    ShowAddCart(
+                                        context: context,
+                                        businessName: productViewModel
+                                                ?.data?.businessName ??
+                                            "",
+                                        isProduct: true,
+                                        onContinue: () async {
+                                          for (int i = 0;
+                                              i <
+                                                  cartDetailsModel!
+                                                      .data!.length;
+                                              i++) {
+                                            final itemId = cartDetailsModel!
+                                                .data![i].itemDetails?.id;
+                                            final type = cartDetailsModel!
+                                                .data![i].itemDetails?.type;
+                                            if (itemId != null) {
+                                              await RemoveFromCartApi(
+                                                  itemId, type.toString());
+                                            }
+                                          }
+                                          AddCartProductApi();
+                                        });
+                                  } else if (cartDetailsModel!
+                                          .data![0].itemDetails?.businessId ==
+                                      productViewModel?.data?.businessId) {
+                                    AddCartProductApi();
+                                  } else {
+                                    ShowAddCart(
+                                        context: context,
+                                        businessName: productViewModel
+                                                ?.data?.businessName ??
+                                            "",
+                                        isProduct: true,
+                                        onContinue: () async {
+                                          for (int i = 0;
+                                              i <
+                                                  cartDetailsModel!
+                                                      .data!.length;
+                                              i++) {
+                                            final itemId = cartDetailsModel!
+                                                .data![i].itemDetails?.id;
+                                            final type = cartDetailsModel!
+                                                .data![i].itemDetails?.type;
+                                            if (itemId != null) {
+                                              await RemoveFromCartApi(
+                                                  itemId, type.toString());
+                                            }
+                                          }
+                                          AddCartProductApi();
+                                        });
+                                  }
+                                } else {
+                                  AddCartProductApi();
+                                }
+                              },
+                              shadow: [
+                                BoxShadow(
+                                  color: Colors.black54,
+                                  blurRadius: 10,
+                                  offset: Offset(0, 2),
+                                )
+                              ],
+                              color: AppColors.white,
+                              fontcolor: AppColors.maincolor,
+                              height: 5.h,
+                              fontsize: 15.sp,
+                              iconData: Icons.add_shopping_cart_outlined,
+                              radius: 12.0,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 4.w),
+                      ],
+                    )
+                  : Row(
+                      children: [
+                        Expanded(
+                          child: Material(
+                            elevation: 1,
+                            borderRadius: BorderRadius.circular(12),
+                            child: batan(
+                              title: "Out of Stock",
+                              route: () {},
+                              color: Colors.grey.shade200,
+                              fontcolor: AppColors.redColor,
+                              height: 5.h,
+                              fontsize: 15.sp,
+                              iconData: Icons.block,
+                              radius: 12.0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+            ),
     );
   }
 
@@ -958,39 +624,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     return List<String>.from(jsonDecode(raw));
   }
 
-  // void ProductDetail() {
-  //   checkInternet().then((internet) async {
-  //     if (internet) {
-  //       ProductProvider()
-  //           .ProductDetailApi(
-  //               loginModel?.data?.user?.id.toString() ?? "", widget.productID)
-  //           .then((response) async {
-  //         productViewModel =
-  //             ProductViewModel.fromJson(jsonDecode(response.body));
-  //         if (response.statusCode == 200 && profileModel?.status == 200) {
-  //           print("adfdsfsdf${response.body}");
-  //           print(
-  //               "1111111111>>>>>>>>>>>>.${profileModel?.data?.user?.profile}");
-  //
-  //           setState(() {
-  //             isLoading = false;
-  //           });
-  //         } else {
-  //           setState(() {
-  //             isLoading = false;
-  //           });
-  //           log("Error");
-  //         }
-  //       });
-  //     } else {
-  //       setState(() {
-  //         isLoading = false;
-  //       });
-  //
-  //       buildErrorDialog(context, 'Error', "Internet Required");
-  //     }
-  //   });
-  // }
   List<String> featuresList = [];
 
   void ProductDetail() async {
@@ -1027,27 +660,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         if (productViewModel?.data?.features != null) {
           featuresList = List<String>.from(productViewModel!.data!.features!);
         }
-
-        /// Optional: Check if feature string is valid and parse it
-        // String? featureRaw = productViewModel?.data?.features;
-        // if (featureRaw != null && featureRaw.isNotEmpty) {
-        //   try {
-        //     featuresList = List<String>.from(jsonDecode(featureRaw));
-        //   } catch (e) {
-        //     print("⚠️ Error parsing features: $e");
-        //     featuresList = [];
-        //   }
-        // }
       } else {
         print("❌ API Error: ${response.statusCode}");
         setState(() {
           isLoading = false;
         });
         buildErrorDialog(
-          context,
-          'Error',
-          "Something went wrong. Please try again.",
-        );
+            context, 'Error', "Something went wrong. Please try again.");
       }
     } catch (e) {
       print("❌ Exception: $e");
@@ -1057,65 +676,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       buildErrorDialog(context, 'Error', "Server error occurred.");
     }
   }
-
-  // void ProductDetail() async {
-  //   // Show loader
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //
-  //   bool internet = await checkInternet();
-  //
-  //   if (!internet) {
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //     buildErrorDialog(context, 'Error', "Internet Required");
-  //     return;
-  //   }
-  //
-  //   try {
-  //     final response = await ProductProvider().ProductDetailApi(
-  //       loginModel?.data?.user?.id.toString() ?? "",
-  //       widget.productID,
-  //     );
-  //
-  //     if (response.statusCode == 200) {
-  //       final jsonData = jsonDecode(response.body);
-  //
-  //       setState(() {
-  //         productViewModel = ProductViewModel.fromJson(jsonData);
-  //         isLoading = false;
-  //       });
-  //
-  //       print("✅ Product loaded: ${response.body}");
-  //
-  //       /// Optional: Check if feature string is valid and parse it
-  //       String? featureRaw = productViewModel?.data?.features;
-  //       if (featureRaw != null && featureRaw.isNotEmpty) {
-  //         try {
-  //           featuresList = List<String>.from(jsonDecode(featureRaw));
-  //         } catch (e) {
-  //           print("⚠️ Error parsing features: $e");
-  //           featuresList = [];
-  //         }
-  //       }
-  //     } else {
-  //       print("❌ API Error: ${response.statusCode}");
-  //       setState(() {
-  //         isLoading = false;
-  //       });
-  //       buildErrorDialog(
-  //           context, 'Error', "Something went wrong. Please try again.");
-  //     }
-  //   } catch (e) {
-  //     print("❌ Exception: $e");
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //     buildErrorDialog(context, 'Error', "Server error occurred.");
-  //   }
-  // }
 
   void AddReview() {
     setState(() {
@@ -1127,12 +687,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       "rating": tempRating.toInt().toString(),
       "review": reviewController.text.trim(),
     };
-    log("data jay che che ${data}");
+    log("Data Sending ${data}");
     checkInternet().then((internet) async {
       if (internet) {
         ProductProvider().AddReviewApi(data).then((response) async {
-          // productViewModel =
-          //     ProductViewModel.fromJson(jsonDecode(response.body));
           if (response.statusCode == 200) {
             print("adfdsfsdf${response.body}");
 
@@ -1165,11 +723,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     checkInternet().then((internet) async {
       if (internet) {
         ProductProvider().ShowAllReviewApi(productID).then((response) async {
-          showAllReviewModel = ShowAllReviewModel.fromJson(
-            jsonDecode(response.body),
-          );
+          showAllReviewModel =
+              ShowAllReviewModel.fromJson(jsonDecode(response.body));
           if (response.statusCode == 200) {
-            print("Data ave che all review no ${response.body}");
+            print("${response.body}");
 
             setState(() {
               isAddReviewLoading = false;
@@ -1196,27 +753,27 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     checkInternet().then((internet) async {
       if (internet) {
         CartProvider()
-            .GetCartDetailsApi(loginModel?.data?.user?.id.toString() ?? "")
+            .GetCartDetailsApi(
+          loginModel?.data?.user?.id.toString() ?? "",
+        )
             .then((response) async {
-              cartDetailsModel = CartDetailsModel.fromJson(
-                jsonDecode(response.body),
-              );
-              if (response.statusCode == 200) {
-                print("adfdsfsdf${response.body}");
-                print(
-                  "1111111111>>>>>>>>>>>>.${profileModel?.data?.user?.profile}",
-                );
+          cartDetailsModel =
+              CartDetailsModel.fromJson(jsonDecode(response.body));
+          if (response.statusCode == 200) {
+            print("adfdsfsdf${response.body}");
+            print(
+                "1111111111>>>>>>>>>>>>.${profileModel?.data?.user?.profile}");
 
-                setState(() {
-                  isLoading = false;
-                });
-              } else {
-                setState(() {
-                  isLoading = false;
-                });
-                log("Error");
-              }
+            setState(() {
+              isLoading = false;
             });
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+            log("Error");
+          }
+        });
       } else {
         setState(() {
           isLoading = false;
@@ -1240,20 +797,20 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2)),
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// 🧑 Name + Rating
           Row(
             children: [
-              Icon(
-                Icons.account_circle_rounded,
-                size: 22.sp,
-                color: AppColors.maincolor,
-              ),
+              Icon(Icons.account_circle_rounded,
+                  size: 22.sp, color: AppColors.maincolor),
               SizedBox(width: 2.w),
               Text(
                 name,
@@ -1276,12 +833,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     ),
                   ),
                 ],
-              ),
+              )
             ],
           ),
           SizedBox(height: 1.h),
-
-          /// 📝 Review Text
           Text(
             comment,
             style: TextStyle(
@@ -1303,20 +858,22 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       "user_id": loginModel?.data?.user?.id.toString() ?? "",
       "id": widget.productID.toString(),
       "type": "product",
+      "qty": count.toString(),
     };
-    log("data jay che che ${data}");
+    log("Data Sending${data}");
     checkInternet().then((internet) async {
       if (internet) {
         ProductProvider().AddToCart(data).then((response) async {
-          // productViewModel =
-          //     ProductViewModel.fromJson(jsonDecode(response.body));
           if (response.statusCode == 200) {
             print("adfdsfsdf${response.body}");
 
             setState(() {
               isAddReviewLoading = false;
             });
-            Get.to(() => AddToCartView(type: "product"));
+            Get.to(() => AddToCartView(
+                  type: "product",
+                  fromBottomBar: false,
+                ));
           } else {
             setState(() {
               isAddReviewLoading = false;
@@ -1343,12 +900,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       "id": widget.productID.toString(),
       "type": "product",
     };
-    log("data jay che che ${data}");
+    log("DATA ${data}");
     checkInternet().then((internet) async {
       if (internet) {
         ProductProvider().AddToCart(data).then((response) async {
-          // productViewModel =
-          //     ProductViewModel.fromJson(jsonDecode(response.body));
           if (response.statusCode == 200) {
             print("adfdsfsdf${response.body}");
 
@@ -1420,9 +975,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       allowHalfRating: true,
                       itemCount: 5,
                       itemSize: 30.sp,
-                      itemBuilder:
-                          (context, _) =>
-                              const Icon(Icons.star, color: Colors.amber),
+                      itemBuilder: (context, _) => const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
                       onRatingUpdate: (rating) {
                         tempRating = rating;
                       },
@@ -1447,9 +1003,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       filled: true,
                       fillColor: AppColors.maincolor.withOpacity(0.1),
                       contentPadding: EdgeInsets.symmetric(
-                        vertical: 1.2.h,
-                        horizontal: 4.w,
-                      ),
+                          vertical: 1.2.h, horizontal: 4.w),
                       hintStyle: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
@@ -1493,7 +1047,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           ),
                         ),
                       ),
-                      SizedBox(width: 3.w),
+                      SizedBox(
+                        width: 3.w,
+                      ),
                       Expanded(
                         child: Material(
                           elevation: 1,
@@ -1545,11 +1101,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       builder: (context) {
         return DraggableScrollableSheet(
           initialChildSize: 0.5,
-          // Half of the screen
           minChildSize: 0.4,
-          // Minimum height when dragged down
           maxChildSize: 0.9,
-          // Allow it to expand if needed
           expand: false,
           builder: (_, scrollController) {
             return Padding(
@@ -1602,6 +1155,43 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       },
     );
   }
+
+  RemoveFromCartApi(int productId, String type) {
+    setState(() {
+      isAddReviewLoading = true;
+    });
+
+    final Map<String, String> data = {
+      "user_id": loginModel?.data?.user?.id.toString() ?? "",
+      "product_id": productId.toString(),
+      "type": type,
+    };
+
+    log("Sending remove request: $data");
+
+    checkInternet().then((internet) async {
+      if (internet) {
+        CartProvider().RemoveFromCartApi(data).then((response) async {
+          if (response.statusCode == 200) {
+            log("Item removed successfully: ${response.body}");
+            setState(() {
+              isAddReviewLoading = false;
+            });
+          } else {
+            setState(() {
+              isAddReviewLoading = false;
+            });
+            log("Error removing item from cart");
+          }
+        });
+      } else {
+        setState(() {
+          isAddReviewLoading = false;
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
 }
 
 class ReviewTile extends StatelessWidget {
@@ -1627,7 +1217,11 @@ class ReviewTile extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2)),
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
@@ -1638,25 +1232,24 @@ class ReviewTile extends StatelessWidget {
               CircleAvatar(
                 radius: 25,
                 backgroundColor: Colors.grey.shade200,
-                backgroundImage: null, // keep null because we use child
+                backgroundImage: null,
                 child: ClipOval(
                   child: CachedNetworkImage(
                     imageUrl: image,
-                    // ✅ replace with your image URL
                     fit: BoxFit.cover,
                     width: 50,
                     height: 50,
-                    placeholder:
-                        (context, url) => CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: AppColors.maincolor,
-                        ),
-                    errorWidget:
-                        (context, url, error) => Image(
-                          image: AssetImage("assets/images/waveeLogoShort.png"),
-                          height: 20,
-                          width: 20,
-                        ),
+                    placeholder: (context, url) => CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.maincolor,
+                    ),
+                    errorWidget: (context, url, error) => Image(
+                      image: AssetImage(
+                        "assets/images/waveeLogoShort.png",
+                      ),
+                      height: 20,
+                      width: 20,
+                    ),
                   ),
                 ),
               ),
@@ -1682,12 +1275,10 @@ class ReviewTile extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
+              )
             ],
           ),
           SizedBox(height: 1.h),
-
-          /// 📝 Review Text
           Text(
             review,
             style: TextStyle(
@@ -1705,15 +1296,11 @@ class ReviewTile extends StatelessWidget {
 class CustomFeatureCard extends StatelessWidget {
   final IconData icon;
   final String title;
+  final double? icnSize;
 
-  // final String? subtitle;
-
-  const CustomFeatureCard({
-    Key? key,
-    required this.icon,
-    required this.title,
-    // this.subtitle,
-  }) : super(key: key);
+  const CustomFeatureCard(
+      {Key? key, required this.icon, required this.title, this.icnSize})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -1723,17 +1310,14 @@ class CustomFeatureCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: Colors.black12,
-        //     blurRadius: 6,
-        //     offset: Offset(0, 2),
-        //   ),
-        // ],
       ),
       child: Row(
         children: [
-          Icon(icon, size: 24.sp, color: AppColors.maincolor),
+          Icon(
+            icon,
+            size: icnSize == null ? 24.sp : icnSize,
+            color: AppColors.maincolor,
+          ),
           SizedBox(width: 4.w),
           Expanded(
             child: Column(
@@ -1753,19 +1337,17 @@ class CustomFeatureCard extends StatelessWidget {
                     trimCollapsedText: ' Show more',
                     trimExpandedText: ' Show less',
                     moreStyle: TextStyle(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: AppConstants.manrope,
-                      letterSpacing: 1,
-                      color: AppColors.maincolor,
-                    ),
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppConstants.manrope,
+                        letterSpacing: 1,
+                        color: AppColors.maincolor),
                     lessStyle: TextStyle(
-                      fontSize: 15.sp,
-                      fontFamily: AppConstants.manrope,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                      color: AppColors.maincolor,
-                    ),
+                        fontSize: 15.sp,
+                        fontFamily: AppConstants.manrope,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                        color: AppColors.maincolor),
                     style: TextStyle(
                       fontSize: 16.sp,
                       color: Colors.black,
@@ -1775,14 +1357,6 @@ class CustomFeatureCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 0.5.h),
-                // Text(
-                //   subtitle.toString(),
-                //   style: TextStyle(
-                //     fontSize: 14.sp,
-                //     color: Colors.grey.shade600,
-                //     fontFamily: AppConstants.manrope,
-                //   ),
-                // ),
               ],
             ),
           ),

@@ -32,25 +32,23 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
-  Future<http.Response> ProfileEdit(  Map<String, String> bodyData, File? imageFile) async {
+  Future<http.Response> ProfileEdit(
+      Map<String, String> bodyData, File? imageFile) async {
     const url = '${baseUrl}/update-app-resident';
     print("Request URL: $url");
 
     try {
       var request = http.MultipartRequest('POST', Uri.parse(url));
 
-      // **Add Text Fields**
       bodyData.forEach((key, value) {
         request.fields[key] = value;
       });
 
-      // **Add Image File (if selected)**
       if (imageFile != null) {
         request.files.add(await http.MultipartFile.fromPath(
-          'member_image[0]', // <-- API Parameter Name
+          'member_image[0]',
           imageFile.path,
           contentType: MediaType('image', 'jpeg'),
-
         ));
         log("image file path jay che ${imageFile.path}");
         log("image file path jay che ${imageFile}");

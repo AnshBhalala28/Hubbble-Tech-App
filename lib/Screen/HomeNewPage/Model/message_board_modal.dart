@@ -11,19 +11,19 @@ class MessageBoardModal {
     if (json['data'] != null) {
       data = <Data>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(Data.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['message'] = this.message;
-    if (this.data != null) {
-      data['data'] = this.data!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> result = {};
+    result['status'] = status;
+    result['message'] = message;
+    if (data != null) {
+      result['data'] = data!.map((v) => v.toJson()).toList();
     }
-    return data;
+    return result;
   }
 }
 
@@ -32,14 +32,15 @@ class Data {
   int? userId;
   int? buildingId;
   String? residentType;
+  String? title;
   String? coreOpt;
-  Null? boostLevelId;
-  Null? type;
+  String? boostLevelId;
+  String? type;
   String? storyPost;
-  Null? views;
+  String? views;
   String? text;
   List<String>? file;
-  Null? status;
+  String? status;
   String? createdAt;
   String? updatedAt;
   User? user;
@@ -49,44 +50,47 @@ class Data {
   int? totalShare;
   List<PostEngagement>? postEngagement;
 
-  Data(
-      {this.id,
-      this.userId,
-      this.buildingId,
-      this.residentType,
-      this.coreOpt,
-      this.boostLevelId,
-      this.type,
-      this.storyPost,
-      this.views,
-      this.text,
-      this.file,
-      this.status,
-      this.createdAt,
-      this.updatedAt,
-      this.user,
-      this.totalLikes,
-      this.totalComments,
-      this.totalReport,
-      this.totalShare,
-      this.postEngagement});
+  Data({
+    this.id,
+    this.userId,
+    this.buildingId,
+    this.residentType,
+    this.title,
+    this.coreOpt,
+    this.boostLevelId,
+    this.type,
+    this.storyPost,
+    this.views,
+    this.text,
+    this.file,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+    this.user,
+    this.totalLikes,
+    this.totalComments,
+    this.totalReport,
+    this.totalShare,
+    this.postEngagement,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userId = json['user_id'];
     buildingId = json['building_id'];
     residentType = json['residentType'];
+    title = json['title'];
     coreOpt = json['coreOpt'];
     boostLevelId = json['boost_level_id'];
     type = json['type'];
     storyPost = json['story_post'];
     views = json['views'];
     text = json['text'];
-    file = json['file'].cast<String>();
+    file = json['file'] != null ? List<String>.from(json['file']) : null;
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    user = json['user'] != null ? User.fromJson(json['user']) : null;
     totalLikes = json['total_likes'];
     totalComments = json['total_comments'];
     totalReport = json['total_report'];
@@ -94,39 +98,40 @@ class Data {
     if (json['post_engagement'] != null) {
       postEngagement = <PostEngagement>[];
       json['post_engagement'].forEach((v) {
-        postEngagement!.add(new PostEngagement.fromJson(v));
+        postEngagement!.add(PostEngagement.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['user_id'] = this.userId;
-    data['building_id'] = this.buildingId;
-    data['residentType'] = this.residentType;
-    data['coreOpt'] = this.coreOpt;
-    data['boost_level_id'] = this.boostLevelId;
-    data['type'] = this.type;
-    data['story_post'] = this.storyPost;
-    data['views'] = this.views;
-    data['text'] = this.text;
-    data['file'] = this.file;
-    data['status'] = this.status;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    if (this.user != null) {
-      data['user'] = this.user!.toJson();
+    final Map<String, dynamic> result = {};
+    result['id'] = id;
+    result['user_id'] = userId;
+    result['building_id'] = buildingId;
+    result['title'] = title;
+    result['residentType'] = residentType;
+    result['coreOpt'] = coreOpt;
+    result['boost_level_id'] = boostLevelId;
+    result['type'] = type;
+    result['story_post'] = storyPost;
+    result['views'] = views;
+    result['text'] = text;
+    result['file'] = file;
+    result['status'] = status;
+    result['created_at'] = createdAt;
+    result['updated_at'] = updatedAt;
+    if (user != null) {
+      result['user'] = user!.toJson();
     }
-    data['total_likes'] = this.totalLikes;
-    data['total_comments'] = this.totalComments;
-    data['total_report'] = this.totalReport;
-    data['total_share'] = this.totalShare;
-    if (this.postEngagement != null) {
-      data['post_engagement'] =
-          this.postEngagement!.map((v) => v.toJson()).toList();
+    result['total_likes'] = totalLikes;
+    result['total_comments'] = totalComments;
+    result['total_report'] = totalReport;
+    result['total_share'] = totalShare;
+    if (postEngagement != null) {
+      result['post_engagement'] =
+          postEngagement!.map((v) => v.toJson()).toList();
     }
-    return data;
+    return result;
   }
 }
 
@@ -142,43 +147,44 @@ class User {
   String? dateOfBirth;
   String? phoneNumber;
   String? conciergeImage;
-  Null? address;
-  Null? city;
-  Null? state;
-  Null? country;
-  Null? zipCode;
-  Null? shiftStart;
-  Null? shiftEnd;
+  String? address;
+  String? city;
+  String? state;
+  String? country;
+  String? zipCode;
+  String? shiftStart;
+  String? shiftEnd;
   String? conStartTime;
   String? conEndTime;
   String? livestatus;
   String? createdAt;
   String? updatedAt;
 
-  User(
-      {this.id,
-      this.userId,
-      this.buildingId,
-      this.gateId,
-      this.email,
-      this.firstName,
-      this.lastName,
-      this.gender,
-      this.dateOfBirth,
-      this.phoneNumber,
-      this.conciergeImage,
-      this.address,
-      this.city,
-      this.state,
-      this.country,
-      this.zipCode,
-      this.shiftStart,
-      this.shiftEnd,
-      this.conStartTime,
-      this.conEndTime,
-      this.livestatus,
-      this.createdAt,
-      this.updatedAt});
+  User({
+    this.id,
+    this.userId,
+    this.buildingId,
+    this.gateId,
+    this.email,
+    this.firstName,
+    this.lastName,
+    this.gender,
+    this.dateOfBirth,
+    this.phoneNumber,
+    this.conciergeImage,
+    this.address,
+    this.city,
+    this.state,
+    this.country,
+    this.zipCode,
+    this.shiftStart,
+    this.shiftEnd,
+    this.conStartTime,
+    this.conEndTime,
+    this.livestatus,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -207,31 +213,31 @@ class User {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['user_id'] = this.userId;
-    data['building_id'] = this.buildingId;
-    data['gate_id'] = this.gateId;
-    data['email'] = this.email;
-    data['first_name'] = this.firstName;
-    data['last_name'] = this.lastName;
-    data['gender'] = this.gender;
-    data['date_of_birth'] = this.dateOfBirth;
-    data['phone_number'] = this.phoneNumber;
-    data['concierge_image'] = this.conciergeImage;
-    data['address'] = this.address;
-    data['city'] = this.city;
-    data['state'] = this.state;
-    data['country'] = this.country;
-    data['zip_code'] = this.zipCode;
-    data['shift_start'] = this.shiftStart;
-    data['shift_end'] = this.shiftEnd;
-    data['con_start_time'] = this.conStartTime;
-    data['con_end_time'] = this.conEndTime;
-    data['livestatus'] = this.livestatus;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    return data;
+    final Map<String, dynamic> result = {};
+    result['id'] = id;
+    result['user_id'] = userId;
+    result['building_id'] = buildingId;
+    result['gate_id'] = gateId;
+    result['email'] = email;
+    result['first_name'] = firstName;
+    result['last_name'] = lastName;
+    result['gender'] = gender;
+    result['date_of_birth'] = dateOfBirth;
+    result['phone_number'] = phoneNumber;
+    result['concierge_image'] = conciergeImage;
+    result['address'] = address;
+    result['city'] = city;
+    result['state'] = state;
+    result['country'] = country;
+    result['zip_code'] = zipCode;
+    result['shift_start'] = shiftStart;
+    result['shift_end'] = shiftEnd;
+    result['con_start_time'] = conStartTime;
+    result['con_end_time'] = conEndTime;
+    result['livestatus'] = livestatus;
+    result['created_at'] = createdAt;
+    result['updated_at'] = updatedAt;
+    return result;
   }
 }
 
@@ -239,30 +245,34 @@ class PostEngagement {
   int? id;
   int? userId;
   int? postId;
-  Null? likes;
+  String? userType;
+  String? likes;
   String? comments;
-  Null? report;
-  Null? reportComment;
-  Null? share;
+  String? report;
+  String? reportComment;
+  String? share;
   String? createdAt;
   String? updatedAt;
 
-  PostEngagement(
-      {this.id,
-      this.userId,
-      this.postId,
-      this.likes,
-      this.comments,
-      this.report,
-      this.reportComment,
-      this.share,
-      this.createdAt,
-      this.updatedAt});
+  PostEngagement({
+    this.id,
+    this.userId,
+    this.postId,
+    this.userType,
+    this.likes,
+    this.comments,
+    this.report,
+    this.reportComment,
+    this.share,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   PostEngagement.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userId = json['user_id'];
     postId = json['post_id'];
+    userType = json['user_type'];
     likes = json['likes'];
     comments = json['comments'];
     report = json['report'];
@@ -273,17 +283,18 @@ class PostEngagement {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['user_id'] = this.userId;
-    data['post_id'] = this.postId;
-    data['likes'] = this.likes;
-    data['comments'] = this.comments;
-    data['report'] = this.report;
-    data['report_comment'] = this.reportComment;
-    data['share'] = this.share;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    return data;
+    final Map<String, dynamic> result = {};
+    result['id'] = id;
+    result['user_id'] = userId;
+    result['post_id'] = postId;
+    result['user_type'] = userType;
+    result['likes'] = likes;
+    result['comments'] = comments;
+    result['report'] = report;
+    result['report_comment'] = reportComment;
+    result['share'] = share;
+    result['created_at'] = createdAt;
+    result['updated_at'] = updatedAt;
+    return result;
   }
 }

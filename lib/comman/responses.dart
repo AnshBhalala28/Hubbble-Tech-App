@@ -10,9 +10,7 @@ responses(http.Response response) {
   switch (response.statusCode) {
     case 200:
       {
-        if (jsonDecode(response.body)['statusCode'] == 101) {
-          // SaveDataLocal.clearUserData();
-        }
+        if (jsonDecode(response.body)['statusCode'] == 101) {}
         return response;
       }
     case 400:

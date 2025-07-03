@@ -3,31 +3,26 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-import 'package:wavee/Screen/Authcation/model/login_model.dart';
+import 'package:wavee/Screen/Authcation/Model/login_model.dart';
 import 'package:wavee/comman/responses.dart';
 import 'package:wavee/comman/store_local.dart';
 
 import '../../../../comman/const.dart';
+
 
 class CommunityProvider extends ChangeNotifier {
   Future<http.Response> BussinessProfileApi(String UserId, lat, lon) async {
     String url =
         '${baseUrl}/business-profiles?user_id=$UserId&longitude=$lon&latitude=$lat';
 
-    //
-    //
-    // String url =
-    //     '${baseUrl}/business-profiles?user_id=241&longitude=0.0755867&latitude=51.5022582';
-    print("Business Profile Url : $url");
+    print("Business Profile Url avecece : $url");
     try {
-      final response = await http
-          .get(Uri.parse(url))
-          .timeout(
-            const Duration(seconds: 60),
-            onTimeout: () {
-              throw SocketException('Request timed out');
-            },
-          );
+      final response = await http.get(Uri.parse(url)).timeout(
+        const Duration(seconds: 60),
+        onTimeout: () {
+          throw SocketException('Request timed out');
+        },
+      );
       if (response.statusCode == 200) {
         print("Successful response: ${response.body}");
         log("lat");
@@ -47,14 +42,12 @@ class CommunityProvider extends ChangeNotifier {
     String url = '${baseUrl}/businessProfile/$UserId/$id/$lat/$lon';
     print("Business Profile Url shu ave che  : $url");
     try {
-      final response = await http
-          .get(Uri.parse(url))
-          .timeout(
-            const Duration(seconds: 60),
-            onTimeout: () {
-              throw SocketException('Request timed out');
-            },
-          );
+      final response = await http.get(Uri.parse(url)).timeout(
+        const Duration(seconds: 60),
+        onTimeout: () {
+          throw SocketException('Request timed out');
+        },
+      );
       if (response.statusCode == 200) {
         print("Successful response: ${response.body}");
         log("lat");
@@ -81,18 +74,16 @@ class CommunityProvider extends ChangeNotifier {
       throw Exception('Token not found');
     }
     Map<String, String> headers = {
-      'Authorization': 'Bearer $token', // Use the retrieved token
+      'Authorization': 'Bearer $token',
     };
     print(url);
     var responseJson;
-    final response = await http
-        .get(Uri.parse(url), headers: headers)
-        .timeout(
-          const Duration(seconds: 60),
-          onTimeout: () {
-            throw const SocketException('Something went wrong');
-          },
-        );
+    final response = await http.get(Uri.parse(url), headers: headers).timeout(
+      const Duration(seconds: 60),
+      onTimeout: () {
+        throw const SocketException('Something went wrong');
+      },
+    );
     responseJson = responses(response);
     print(response.body);
     return responseJson;
@@ -102,14 +93,12 @@ class CommunityProvider extends ChangeNotifier {
     const url = '${baseUrl}/like-business';
     print("Request URL: $url");
     try {
-      final response = await http
-          .post(Uri.parse(url), body: bodyData)
-          .timeout(
-            const Duration(seconds: 60),
-            onTimeout: () {
-              throw SocketException('Request timed out');
-            },
-          );
+      final response = await http.post(Uri.parse(url), body: bodyData).timeout(
+        const Duration(seconds: 60),
+        onTimeout: () {
+          throw SocketException('Request timed out');
+        },
+      );
       if (response.statusCode == 200) {
         print("Successful response: ${response.body}");
         return response;
@@ -124,7 +113,9 @@ class CommunityProvider extends ChangeNotifier {
     }
   }
 
-  Future<http.Response> BusinessSearch(Map<String, String> bodyData) async {
+  Future<http.Response> BusinessSearch(
+    Map<String, String> bodyData,
+  ) async {
     String url = '${baseUrl}/searchBusinessByName';
     print("urlurlurlurlurlurlurlurlurlurlurlurlurl>>>>>>${url}");
     LoginModel? userData = await SaveDataLocal.getDataFromLocal();
@@ -134,18 +125,18 @@ class CommunityProvider extends ChangeNotifier {
       throw Exception('Token not found');
     }
     Map<String, String> headers = {
-      'Authorization': 'Bearer $token', // Use the retrieved token
+      'Authorization': 'Bearer $token',
     };
     print(url);
     var responseJson;
     final response = await http
         .post(Uri.parse(url), body: bodyData, headers: headers)
         .timeout(
-          const Duration(seconds: 60),
-          onTimeout: () {
-            throw const SocketException('Something went wrong');
-          },
-        );
+      const Duration(seconds: 60),
+      onTimeout: () {
+        throw const SocketException('Something went wrong');
+      },
+    );
     responseJson = responses(response);
     print(response.body);
     return responseJson;
@@ -156,14 +147,12 @@ class CommunityProvider extends ChangeNotifier {
         '${baseUrl}/get-liked-businesses?user_id=$user_id&longitude=$lon&latitude=$lat';
     print("Get like Business Profile Url : $url");
     try {
-      final response = await http
-          .get(Uri.parse(url))
-          .timeout(
-            const Duration(seconds: 60),
-            onTimeout: () {
-              throw SocketException('Request timed out');
-            },
-          );
+      final response = await http.get(Uri.parse(url)).timeout(
+        const Duration(seconds: 60),
+        onTimeout: () {
+          throw SocketException('Request timed out');
+        },
+      );
       if (response.statusCode == 200) {
         print("Successful response: ${response.body}");
         log("lat");
@@ -184,14 +173,12 @@ class CommunityProvider extends ChangeNotifier {
         '${baseUrl}/getVisitedBusinessesByUser?user_id=$user_id&longitude=$lon&latitude=$lat';
     print("Get Visited Business Profile Url : $url");
     try {
-      final response = await http
-          .get(Uri.parse(url))
-          .timeout(
-            const Duration(seconds: 60),
-            onTimeout: () {
-              throw SocketException('Request timed out');
-            },
-          );
+      final response = await http.get(Uri.parse(url)).timeout(
+        const Duration(seconds: 60),
+        onTimeout: () {
+          throw SocketException('Request timed out');
+        },
+      );
       if (response.statusCode == 200) {
         print("Successful response: ${response.body}");
         log("lat");
@@ -212,13 +199,16 @@ class CommunityProvider extends ChangeNotifier {
     print("request send Url : $url");
     var responseJson;
     final response = await http
-        .post(Uri.parse(url), body: bodyData)
+        .post(
+      Uri.parse(url),
+      body: bodyData,
+    )
         .timeout(
-          const Duration(seconds: 60),
-          onTimeout: () {
-            throw const SocketException('Something went wrong');
-          },
-        );
+      const Duration(seconds: 60),
+      onTimeout: () {
+        throw const SocketException('Something went wrong');
+      },
+    );
     responseJson = responses(response);
     print(response.body);
     return responseJson;
@@ -228,14 +218,12 @@ class CommunityProvider extends ChangeNotifier {
     String url = '${baseUrl}/getCategories';
     print("categories Profile Url : $url");
     try {
-      final response = await http
-          .get(Uri.parse(url))
-          .timeout(
-            const Duration(seconds: 60),
-            onTimeout: () {
-              throw SocketException('Request timed out');
-            },
-          );
+      final response = await http.get(Uri.parse(url)).timeout(
+        const Duration(seconds: 60),
+        onTimeout: () {
+          throw SocketException('Request timed out');
+        },
+      );
       if (response.statusCode == 200) {
         print("Successful response: ${response.body}");
         log("lat");
@@ -252,23 +240,17 @@ class CommunityProvider extends ChangeNotifier {
   }
 
   Future<http.Response> categoriesViewApi(
-    String UserId,
-    lon,
-    lat,
-    CatId,
-  ) async {
+      String UserId, lon, lat, CatId) async {
     String url =
         '${baseUrl}/business-profiles-category?user_id=$UserId&longitude=$lon&latitude=$lat&category_id=$CatId';
     print("Business Categories Profile Url : $url");
     try {
-      final response = await http
-          .get(Uri.parse(url))
-          .timeout(
-            const Duration(seconds: 60),
-            onTimeout: () {
-              throw SocketException('Request timed out');
-            },
-          );
+      final response = await http.get(Uri.parse(url)).timeout(
+        const Duration(seconds: 60),
+        onTimeout: () {
+          throw SocketException('Request timed out');
+        },
+      );
       if (response.statusCode == 200) {
         print("Successful response: ${response.body}");
         log("lat");
@@ -289,13 +271,16 @@ class CommunityProvider extends ChangeNotifier {
     print("post like send Url : $url");
     var responseJson;
     final response = await http
-        .post(Uri.parse(url), body: bodyData)
+        .post(
+      Uri.parse(url),
+      body: bodyData,
+    )
         .timeout(
-          const Duration(seconds: 60),
-          onTimeout: () {
-            throw const SocketException('Something went wrong');
-          },
-        );
+      const Duration(seconds: 60),
+      onTimeout: () {
+        throw const SocketException('Something went wrong');
+      },
+    );
     responseJson = responses(response);
     print(response.body);
     return responseJson;
@@ -306,13 +291,16 @@ class CommunityProvider extends ChangeNotifier {
     print("post Dwell time Url : $url");
     var responseJson;
     final response = await http
-        .post(Uri.parse(url), body: bodyData)
+        .post(
+      Uri.parse(url),
+      body: bodyData,
+    )
         .timeout(
-          const Duration(seconds: 60),
-          onTimeout: () {
-            throw const SocketException('Something went wrong');
-          },
-        );
+      const Duration(seconds: 60),
+      onTimeout: () {
+        throw const SocketException('Something went wrong');
+      },
+    );
     responseJson = responses(response);
     print(response.body);
     return responseJson;
@@ -323,13 +311,16 @@ class CommunityProvider extends ChangeNotifier {
     print("post Dwell time Url : $url");
     var responseJson;
     final response = await http
-        .post(Uri.parse(url), body: bodyData)
+        .post(
+      Uri.parse(url),
+      body: bodyData,
+    )
         .timeout(
-          const Duration(seconds: 60),
-          onTimeout: () {
-            throw const SocketException('Something went wrong');
-          },
-        );
+      const Duration(seconds: 60),
+      onTimeout: () {
+        throw const SocketException('Something went wrong');
+      },
+    );
     responseJson = responses(response);
     print(response.body);
     return responseJson;
@@ -340,31 +331,31 @@ class CommunityProvider extends ChangeNotifier {
     print("markOfferPromoAsViewed Url : $url");
     var responseJson;
     final response = await http
-        .post(Uri.parse(url), body: bodyData)
+        .post(
+      Uri.parse(url),
+      body: bodyData,
+    )
         .timeout(
-          const Duration(seconds: 60),
-          onTimeout: () {
-            throw const SocketException('Something went wrong');
-          },
-        );
+      const Duration(seconds: 60),
+      onTimeout: () {
+        throw const SocketException('Something went wrong');
+      },
+    );
     responseJson = responses(response);
     print(response.body);
     return responseJson;
   }
 
   Future<http.Response> stroyapi(String UserId, id) async {
-    //    String url = '${baseUrl}/business-profiles?user_id=$UserId&longitude=$lon&latitude=$lat';
     String url = '${baseUrl}/listFeaturedPosts?user_id=$UserId&business_id=$id';
     print("listFeaturedPosts Profile Url : $url");
     try {
-      final response = await http
-          .get(Uri.parse(url))
-          .timeout(
-            const Duration(seconds: 60),
-            onTimeout: () {
-              throw SocketException('Request timed out');
-            },
-          );
+      final response = await http.get(Uri.parse(url)).timeout(
+        const Duration(seconds: 60),
+        onTimeout: () {
+          throw SocketException('Request timed out');
+        },
+      );
       if (response.statusCode == 200) {
         print("Successful response: ${response.body}");
         log("lat");

@@ -89,7 +89,7 @@ class Lastmessage {
   String? msgTo;
   String? messageType;
   String? message;
-  List<String>? file; // ✅ Updated from List<Null>
+  List<String>? file;
   String? isRead;
   String? createdAt;
   String? updatedAt;
@@ -111,10 +111,10 @@ class Lastmessage {
       this.isRead,
       this.createdAt,
       this.updatedAt,
-        this.firstName,
-        this.lastName,
-        this.profileImage,
-        this.users});
+      this.firstName,
+      this.lastName,
+      this.profileImage,
+      this.users});
 
   Lastmessage.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -182,24 +182,24 @@ class Users {
 
   Users(
       {this.id,
-        this.role,
-        this.name,
-        this.email,
-        this.emailVerifiedAt,
-        this.dPassword,
-        this.mobileNo,
-        this.gender,
-        this.dateOfBirth,
-        this.address,
-        this.psLatitude,
-        this.psLongitude,
-        this.fcmToken,
-        this.forgetPassKey,
-        this.moduleLock,
-        this.status,
-        this.profile,
-        this.createdAt,
-        this.updatedAt});
+      this.role,
+      this.name,
+      this.email,
+      this.emailVerifiedAt,
+      this.dPassword,
+      this.mobileNo,
+      this.gender,
+      this.dateOfBirth,
+      this.address,
+      this.psLatitude,
+      this.psLongitude,
+      this.fcmToken,
+      this.forgetPassKey,
+      this.moduleLock,
+      this.status,
+      this.profile,
+      this.createdAt,
+      this.updatedAt});
 
   Users.fromJson(Map<String, dynamic> json) {
     id = json['id'];

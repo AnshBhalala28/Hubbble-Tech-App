@@ -8,12 +8,15 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Screen/Authcation/View/loginscreen.dart';
 import 'package:wavee/comman/SideMenu.dart';
 import 'package:wavee/comman/colors.dart';
+import 'package:wavee/comman/custom_batan.dart';
 
 import '../../../comman/Custom_AppBar.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/const.dart';
+import '../../../comman/store_local.dart';
 import '../../HomeNewPage/View/homenewpage.dart';
 import '../Model/profile_model.dart';
 import '../Provider/profile_provider.dart';
@@ -55,9 +58,8 @@ class _ViewProfileState extends State<ViewProfile> {
         ProfileProvider().ProfileApi(data).then((response) async {
           if (response.statusCode == 200) {
             setState(() {
-              var profileModel = ProfileModel.fromJson(
-                jsonDecode(response.body),
-              );
+              var profileModel =
+                  ProfileModel.fromJson(jsonDecode(response.body));
               if (profileModel.status == 200) {
                 var user = profileModel.data?.user;
                 if (user != null) {
@@ -101,7 +103,7 @@ class _ViewProfileState extends State<ViewProfile> {
     super.initState();
     setState(() {
       isLoading = true;
-      isEditing = true; // 🔹 Always open in edit mode
+      isEditing = true;
     });
     GetProfile();
   }
@@ -123,12 +125,10 @@ class _ViewProfileState extends State<ViewProfile> {
                 back: () {
                   Get.back();
                 },
-                title: "Edit Profile",
+                title: "My Profile",
                 drawerCallback: () => profileScreen.currentState?.openDrawer(),
               ),
-
               SizedBox(height: 3.h),
-
               Stack(
                 alignment: Alignment.bottomRight,
                 children: [
@@ -136,39 +136,34 @@ class _ViewProfileState extends State<ViewProfile> {
                     radius: 35.sp,
                     backgroundColor: Colors.grey.shade300,
                     child: ClipOval(
-                      child: CachedNetworkImage(
-                        imageUrl: profileImage,
+                        child: CachedNetworkImage(
+                      imageUrl: profileImage,
+                      width: 70.sp,
+                      height: 70.sp,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppColors.maincolor,
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Image.asset(
+                        "assets/images/waveeLogoShort.png",
                         width: 70.sp,
                         height: 70.sp,
                         fit: BoxFit.cover,
-                        placeholder:
-                            (context, url) => Center(
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  AppColors.maincolor,
-                                ),
-                              ),
-                            ),
-                        errorWidget:
-                            (context, url, error) => Image.asset(
-                              "assets/images/waveeLogoShort.png",
-                              width: 70.sp,
-                              height: 70.sp,
-                              fit: BoxFit.cover,
-                            ),
                       ),
-                    ),
+                    )),
                   ),
-
-                  // Camera icon
                 ],
               ),
-
               SizedBox(height: 4.h),
-
               InkWell(
                 onTap: () {
-                  Get.to(Myprofile_Screen(id: loginModel?.data?.user?.id));
+                  Get.to(Myprofile_Screen(
+                    id: loginModel?.data?.user?.id,
+                  ));
                 },
                 child: Container(
                   width: 55.w,
@@ -179,7 +174,7 @@ class _ViewProfileState extends State<ViewProfile> {
                   ),
                   child: Center(
                     child: Text(
-                      "My Profile",
+                      "View Profile",
                       style: TextStyle(
                         color: AppColors.white,
                         fontFamily: AppConstants.manrope,
@@ -190,23 +185,152 @@ class _ViewProfileState extends State<ViewProfile> {
                 ),
               ),
               SizedBox(height: 3.h),
-
               SizedBox(height: 2.h),
               menuItem(
-                Icons.home,
-                "My Home",
-                "Details about your home",
-                context,
-                MyHome_Screen(id: loginModel?.data?.user?.id),
-              ),
+                  Icons.home,
+                  "My Home",
+                  "Details about your home",
+                  context,
+                  MyHome_Screen(
+                    id: loginModel?.data?.user?.id,
+                  )),
               SizedBox(height: 10),
               menuItem(
                 Icons.apartment,
                 "My Building",
                 "Details about your building",
                 context,
-                MyBuilding_Screen(id: loginModel?.data?.user?.id),
+                MyBuilding_Screen(
+                  id: loginModel?.data?.user?.id,
+                ),
               ),
+              SizedBox(
+                height: 2.h,
+              ),
+              batan(
+                title: "Logout",
+                route: () {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      bool isLoading = false;
+
+                      return StatefulBuilder(
+                        builder: (context, setState) {
+                          return Dialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            backgroundColor: Colors.transparent,
+                            child: Container(
+                              width: 73.w,
+                              padding: EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.white,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(height: 2.h),
+                                  Text(
+                                    "Logout",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.black,
+                                      fontFamily: AppConstants.manrope,
+                                    ),
+                                  ),
+                                  SizedBox(height: 1.5.h),
+                                  Text(
+                                    'Are You Sure Want to Logout Your Account',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 15.sp,
+                                      color: Colors.grey.shade800,
+                                      fontFamily: AppConstants.manrope,
+                                    ),
+                                  ),
+                                  SizedBox(height: 2.h),
+                                  isLoading
+                                      ? Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 2.h),
+                                    child:
+                                    CircularProgressIndicator(
+                                      color: AppColors.maincolor,
+                                    ),
+                                  )
+                                      : Row(
+                                    children: [
+                                      Expanded(
+                                        child: Material(
+                                          elevation: 2,
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                              12),
+                                          child: batan(
+                                            title: "No",
+                                            route: () {
+                                              Navigator.of(context)
+                                                  .pop();
+                                            },
+                                            color: AppColors.white,
+                                            fontcolor: Colors.black,
+                                            height: 5.h,
+                                            width: 20.w,
+                                            fontsize: 16.sp,
+                                            radius: 12.0,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 2.w),
+                                      Expanded(
+                                        child: Material(
+                                          elevation: 2,
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                              12),
+                                          child: batan(
+                                            title: "Yes",
+                                            width: 20.w,
+                                            route: () async {
+                                              await SaveDataLocal
+                                                  .clearUserData();
+                                              Get.offAll(() =>
+                                                  LoginScreen());
+                                            },
+                                            color:
+                                            AppColors.maincolor,
+                                            fontcolor: Colors.white,
+                                            height: 5.h,
+                                            fontsize: 16.sp,
+                                            radius: 12.0,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 1.h),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+                color: AppColors.maincolor,
+                fontcolor: AppColors.white,
+                height: 5.h,
+                width: 40.w,
+                fontsize: 18.sp,
+                radius: 12.0,
+              )
             ],
           ),
         ),
@@ -214,13 +338,8 @@ class _ViewProfileState extends State<ViewProfile> {
     );
   }
 
-  Widget menuItem(
-    IconData icon,
-    String title,
-    String description,
-    BuildContext context,
-    Widget screen,
-  ) {
+  Widget menuItem(IconData icon, String title, String description,
+      BuildContext context, Widget screen) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -229,25 +348,18 @@ class _ViewProfileState extends State<ViewProfile> {
       ),
       child: ListTile(
         leading: Icon(icon, color: AppColors.maincolor, size: 30),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            fontFamily: AppConstants.manrope,
-          ),
-        ),
-        subtitle: Text(
-          description,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey,
-            fontFamily: AppConstants.manrope,
-          ),
-        ),
+        title: Text(title,
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                fontFamily: AppConstants.manrope)),
+        subtitle: Text(description,
+            style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+                fontFamily: AppConstants.manrope)),
         trailing: Icon(Icons.arrow_forward_ios, size: 18, color: Colors.grey),
         onTap: () {
-          // Navigate to respective screen
           Get.to(screen);
         },
       ),
@@ -256,58 +368,33 @@ class _ViewProfileState extends State<ViewProfile> {
 
   Future<void> pickImage() async {
     if (Platform.isAndroid) {
-      var status = await Permission.storage.request(); // For Android
+      var status = await Permission.storage.request();
       if (!status.isGranted) {
-        Get.snackbar(
-          "Permission Denied",
-          "Please enable storage permission from settings",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        Get.snackbar("Permission Denied",
+            "Please enable storage permission from settings",
+            backgroundColor: Colors.red, colorText: Colors.white);
         return;
       }
     }
 
     setState(() {
-      isLoading = true; // Set loading to true when picking the image
+      isLoading = true;
     });
 
-    final pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-    );
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
         selectedImage = File(pickedFile.path);
-        isLoading = false; // Set loading to false when image is picked
+        isLoading = false;
       });
     } else {
       setState(() {
-        isLoading = false; // Set loading to false if no image is picked
+        isLoading = false;
       });
     }
   }
-
-  // Future<void> pickImage() async {
-  //   if (Platform.isAndroid) {
-  //     var status = await Permission.storage.request(); // For Android
-  //     if (!status.isGranted) {
-  //       Get.snackbar("Permission Denied",
-  //           "Please enable storage permission from settings",
-  //           backgroundColor: Colors.red, colorText: Colors.white);
-  //       return;
-  //     }
-  //   }
-  //
-  //   final pickedFile =
-  //       await ImagePicker().pickImage(source: ImageSource.gallery);
-  //
-  //   if (pickedFile != null) {
-  //     setState(() {
-  //       selectedImage = File(pickedFile.path);
-  //     });
-  //   }
-  // }
 
   void toggleEdit() {
     if (isEditing) {
@@ -332,62 +419,46 @@ class _ViewProfileState extends State<ViewProfile> {
       'frist_name': nameController.text.trim().split(" ").first,
       'last_name': nameController.text.trim().split(" ").last,
       'contact_no': phoneController.text.trim(),
-      // 'address': addressController.text.trim(),
-      // 'city': cityController.text.trim(),
-      // 'country': countryController.text.trim(),
       'address': address,
       'city': city,
       'country': country,
       'zip_code': zipCodeController.text.trim(),
     };
-    log("data shwoewe$data");
+    log(" Sending datashwoewe$data");
     checkInternet().then((internet) async {
       if (internet) {
-        ProfileProvider().ProfileEdit(data, selectedImage).then((
-          response,
-        ) async {
+        ProfileProvider()
+            .ProfileEdit(data, selectedImage)
+            .then((response) async {
           if (response.statusCode == 200) {
             var profileModel = ProfileModel.fromJson(jsonDecode(response.body));
 
             if (profileModel.status == 200) {
               log("Profile Updated: ${response.body}");
-              Get.snackbar(
-                "Success",
-                "Profile updated successfully",
-                backgroundColor: AppColors.maincolor,
-                colorText: Colors.white,
-              );
+              Get.snackbar("Success", "Profile updated successfully",
+                  backgroundColor: AppColors.maincolor,
+                  colorText: Colors.white);
 
               setState(() {
                 isEditing = false;
               });
               Future.delayed(Duration(microseconds: 100), () {
-                Get.offAll(HomeNewPage(userName: ""));
+                Get.offAll(HomePage(
+                  userName: "",
+                ));
               });
             } else {
-              Get.snackbar(
-                "Error",
-                "Failed to update profile",
-                backgroundColor: Colors.red,
-                colorText: Colors.white,
-              );
+              Get.snackbar("Error", "Failed to update profile",
+                  backgroundColor: Colors.red, colorText: Colors.white);
             }
           } else {
-            Get.snackbar(
-              "Error",
-              "Server error, please try again",
-              backgroundColor: Colors.red,
-              colorText: Colors.white,
-            );
+            Get.snackbar("Error", "Server error, please try again",
+                backgroundColor: Colors.red, colorText: Colors.white);
           }
         });
       } else {
-        Get.snackbar(
-          "Error",
-          "Internet Required",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        Get.snackbar("Error", "Internet Required",
+            backgroundColor: Colors.red, colorText: Colors.white);
       }
     });
   }

@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import '../../../../comman/const.dart';
 
 class OrderProvider extends ChangeNotifier {
-  Future<http.Response> OrderListApi(String userID, status,type) async {
+  Future<http.Response> OrderListApi(String userID, status, type) async {
     String url = '$baseUrl/myOrders?user_id=$userID&status=$status&type=$type';
     print("Request URL: $url");
     try {
@@ -35,8 +35,10 @@ class OrderProvider extends ChangeNotifier {
     }
   }
 
-  Future<http.Response> OrderDetailApi(String userID, orderid) async {
-    String url = '$baseUrl/orderDetails?user_id=$userID&order_id=$orderid';
+  Future<http.Response> OrderDetailApi(
+      String userID, orderid, orderProductID) async {
+    String url =
+        '$baseUrl/orderDetails?user_id=$userID&order_id=$orderid&order_product_id=$orderProductID';
     print("Request URL: $url");
     try {
       final response = await http

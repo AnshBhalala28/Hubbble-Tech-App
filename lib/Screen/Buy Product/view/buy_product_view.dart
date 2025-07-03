@@ -5,22 +5,26 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-// import 'package:pay/pay.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:pay/pay.dart';
 import 'package:sizer/sizer.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+// import 'package:upi_india/upi_india.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wavee/Screen/Buy%20Product/place_order_model.dart';
 import 'package:wavee/Screen/Thankyou%20Page/view/thankyou_page.dart';
 import 'package:wavee/comman/SideMenu.dart';
 import 'package:wavee/comman/const.dart';
+import 'package:wavee/comman/expension_tile.dart';
 import 'package:wavee/comman/loader.dart';
-// import 'package:wavee/comman/payment_config.dart';
 
 import '../../../comman/Custom_AppBar.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/error_dialog.dart';
 import '../../../comman/in_web_view.dart';
+import '../../../comman/payment_config.dart';
 import '../../Add to Cart/model/add_to_cart_model.dart';
 import '../../Add to Cart/provider/add_to_cart_provider.dart';
 import '../../Community Screen/Community Screen/Model/BusnessViewModal.dart';
@@ -29,8 +33,9 @@ import '../provider/check_out_provider.dart';
 
 class BuyProductView extends StatefulWidget {
   String? type;
+  String? bunessid;
 
-  BuyProductView({super.key, this.type});
+  BuyProductView({super.key, this.type, this.bunessid});
 
   @override
   State<BuyProductView> createState() => _BuyProductViewState();
@@ -42,40 +47,34 @@ class _BuyProductViewState extends State<BuyProductView> {
   bool isCheckout = false;
   String selectedPayment = "";
   String selectedPickupTime = "";
-  // UpiIndia _upiIndia = UpiIndia();
-  // List<UpiApp> apps = [];
-  // String transactionStatus = "No transaction yet.";
+  String transactionStatus = "No transaction yet.";
+  String AppLat = '';
+  String AppLon = '';
+  bool _mapVisible = false;
 
   List<Map<String, dynamic>> timeSlots = [];
 
   Future<void> initPickupSlots() async {
-    // Initialize timezone database
     tz.initializeTimeZones();
 
-    // Step 1: Get current location
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
 
-    // Step 2: Get country name from coordinates
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-      position.latitude,
-      position.longitude,
-    );
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
 
     String country = placemarks.first.country ?? "";
 
-    // Step 3: Detect region based on country
     String region;
     if (country.toLowerCase().contains("india")) {
       region = "India";
     } else if (country.toLowerCase().contains("united kingdom")) {
       region = "UK";
     } else {
-      region = "India"; // default fallback
+      region = "India";
     }
 
-    // Step 4: Generate slots with correct region
     generateTimeSlots(region: region);
   }
 
@@ -96,22 +95,78 @@ class _BuyProductViewState extends State<BuyProductView> {
     timeSlots = [];
 
     if (currentHour < 12) {
-      timeSlots.add({'value': '10am-12pm', 'label': '10 AM - 12 PM'});
+      timeSlots.add({
+        'value': '10am-12pm',
+        'label': '10 AM - 12 PM',
+      });
     }
 
     if (currentHour < 16) {
-      timeSlots.add({'value': '1pm-4pm', 'label': '1 PM - 4 PM'});
+      timeSlots.add({
+        'value': '1pm-4pm',
+        'label': '1 PM - 4 PM',
+      });
     }
     if (currentHour < 19) {
-      timeSlots.add({'value': '5pm-7pm', 'label': '5 PM - 7 PM'});
+      timeSlots.add({
+        'value': '5pm-7pm',
+        'label': '5 PM - 7 PM',
+      });
     }
 
     if (timeSlots.isNotEmpty) {
       selectedPickupTime = timeSlots.first['value'];
     }
 
-    // Update UI
     if (mounted) setState(() {});
+  }
+
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      setState(() {
+        print("Location services are disabled.");
+        isLoading = false;
+      });
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        setState(() {
+          print("Location permission denied.");
+          isLoading = false;
+        });
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      setState(() {
+        print("Location permissions are permanently denied.");
+        isLoading = false;
+      });
+      return;
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    if (mounted) {
+      setState(() {
+        AppLat = position.latitude.toString();
+        AppLon = position.longitude.toString();
+        print("AppLat====>>>>${AppLat}");
+        print("AppLat====>>>>${AppLon}");
+        BussinessViewProfile(widget.bunessid ?? "");
+        print(
+            "Latitude: ${position.latitude}, Longitude: ${position.longitude}");
+      });
+    }
   }
 
   @override
@@ -121,478 +176,528 @@ class _BuyProductViewState extends State<BuyProductView> {
       isLoading = true;
     });
     GetCartDetailApi();
-    // _fetchUpiApps();
-    // generateTimeSlots();
+
+    print("widget.bunessid ?? " "${widget.bunessid ?? ""}");
+    log("${widget.bunessid ?? ""}");
+
     initPickupSlots();
+    _getCurrentLocation();
   }
 
-  // void _fetchUpiApps() async {
-  //   List<UpiApp> availableApps = await _upiIndia.getAllUpiApps(
-  //     mandatoryTransactionId: false,
-  //   );
-  //   setState(() {
-  //     apps = availableApps;
-  //   });
-  // }
-
-  // Future<void> _initiateTransaction(UpiApp app) async {
-  //   UpiResponse response = await _upiIndia.startTransaction(
-  //     app: app,
-  //     receiverUpiId: "hirenpchandaliya@okicici",
-  //     receiverName: "Hiren Chandaliya",
-  //     transactionRefId: "TXNID123456",
-  //     transactionNote: "Test Payment",
-  //     amount: 1.0,
-  //   );
-
-  //   setState(() {
-  //     if (response.status == UpiPaymentStatus.SUCCESS) {
-  //       transactionStatus =
-  //           "✅ Payment Successful\nTxn ID: ${response.transactionId}";
-  //     } else if (response.status == UpiPaymentStatus.FAILURE) {
-  //       transactionStatus = "❌ Payment Failed";
-  //     } else {
-  //       transactionStatus = "⚠️ Payment Cancelled by User";
-  //     }
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
+    double subtotal = getSubtotal();
     return Scaffold(
       key: buyKey,
       drawer: SideMenu(),
       body: Stack(
         children: [
-          Column(
-            children: [
-              SizedBox(height: 4.h),
-              TitleBar(
-                title: "Checkout",
-                drawerCallback: () {
-                  buyKey.currentState?.openDrawer();
-                },
-              ),
-              isLoading
-                  ? Loader().paddingOnly(top: 30.h)
-                  : Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 2.h),
-                          Text(
-                            "Customer Details",
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontFamily: AppConstants.manrope,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 1.h),
-                          Container(
-                            padding: EdgeInsets.all(12),
-                            width: double.infinity,
-                            decoration: boxDecoration(),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                infoRow(
-                                  icon: Icons.person_outline,
-                                  label:
-                                      "${loginModel?.data?.user?.name?.firstName ?? ''} ${loginModel?.data?.user?.name?.lastName ?? ''}",
-                                ),
-                                SizedBox(height: 1.h),
-                                // infoRow(
-                                //   icon: Icons.phone,
-                                //   label:
-                                //       "${loginModel?.data?.user?.mobileNo ?? ''}",
-                                // ),
-
-                                // infoRow(
-                                //   icon: Icons.email_outlined,
-                                //   label:
-                                //       "${loginModel?.data?.user?.email ?? 'No email'}",
-                                // ),
-                                // SizedBox(height: 1.h),
-                                // infoRow(
-                                //   icon: Icons.location_on_outlined,
-                                //   label:
-                                //       "${loginModel?.data?.user?.address?.address ?? ''}, ${loginModel?.data?.user?.address?.city ?? ''}, ${loginModel?.data?.user?.address?.country ?? ''}, ${loginModel?.data?.user?.address?.zipCode ?? ''}",
-                                // ),
-                              ],
-                            ),
-                          ),
-                          busnessviewmodal?.data?.business?.user?.mobileNo ==
-                                  null
-                              ? SizedBox()
-                              : Text(
-                                widget.type == "service"
-                                    ? "Business Location"
-                                    : "Pickup Location",
-                                style: TextStyle(
-                                  fontSize: 18.sp,
-                                  fontFamily: AppConstants.manrope,
-                                  fontWeight: FontWeight.bold,
-                                ),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 4.h,
+                ),
+                TitleBar(
+                  title: "Checkout",
+                  drawerCallback: () {
+                    buyKey.currentState?.openDrawer();
+                  },
+                ),
+                isLoading
+                    ? Expanded(child: Center(child: Loader()))
+                    : Expanded(
+                        child: SingleChildScrollView(
+                          padding: EdgeInsets.all(1.w),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 1.h,
                               ),
-                          SizedBox(height: 1.h),
-                          busnessviewmodal?.data?.business?.user?.mobileNo ==
-                                  null
-                              ? SizedBox()
-                              : Container(
-                                padding: EdgeInsets.all(12),
-                                width: double.infinity,
-                                decoration: boxDecoration(),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    infoRow(
-                                      icon: Icons.storefront,
-                                      label:
-                                          busnessviewmodal
-                                              ?.data
-                                              ?.business
-                                              ?.businessName ??
-                                          "N/A",
+                              Column(
+                                children: [
+                                  _buildInfoTile(
+                                    ontap: () {},
+                                    icon: Icons.storefront,
+                                    subtitle: busnessviewmodal
+                                            ?.data?.business?.businessName ??
+                                        "N/A",
+                                  ),
+                                  _buildInfoTile(
+                                    ontap: () {
+                                      final phone = busnessviewmodal
+                                          ?.data?.business?.user?.mobileNo;
+                                      if (phone != null &&
+                                          phone.toString().isNotEmpty) {
+                                        final telUrl = Uri.parse(
+                                            "tel:${phone.toString()}");
+                                        launchUrl(telUrl,
+                                            mode:
+                                                LaunchMode.externalApplication);
+                                      }
+                                      ;
+                                    },
+                                    icon: Icons.phone,
+                                    subtitle: busnessviewmodal
+                                            ?.data?.business?.user?.mobileNo
+                                            ?.toString() ??
+                                        "N/A",
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.all(3.w),
+                                    margin: EdgeInsets.only(top: 0.5.h),
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue[50],
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
-                                    SizedBox(height: 1.h),
-                                    infoRow(
-                                      icon: Icons.phone,
-                                      label:
-                                          busnessviewmodal
-                                              ?.data
-                                              ?.business
-                                              ?.user
-                                              ?.mobileNo
-                                              .toString() ??
-                                          "N/A",
-                                    ),
-                                    SizedBox(height: 1.h),
-                                    infoRow(
-                                      icon: Icons.email_outlined,
-                                      label:
-                                          busnessviewmodal
-                                              ?.data
-                                              ?.business
-                                              ?.user
-                                              ?.email
-                                              .toString() ??
-                                          "N/A",
-                                    ),
-                                    SizedBox(height: 1.h),
-                                    infoRow(
-                                      icon: Icons.location_on_outlined,
-                                      label:
-                                          (busnessviewmodal
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.all(2.w),
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey[100],
+                                              ),
+                                              child: Icon(Icons.map,
+                                                  color: Colors.grey[600],
+                                                  size: 20.sp),
+                                            ),
+                                            SizedBox(width: 3.w),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Business Location",
+                                                    style: TextStyle(
+                                                      fontSize: 14.sp,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.grey[600],
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 0.2.h),
+                                                  Text(
+                                                    (busnessviewmodal
+                                                                    ?.data
+                                                                    ?.business
+                                                                    ?.user
+                                                                    ?.address
+                                                                    ?.address ==
+                                                                null ||
+                                                            busnessviewmodal
+                                                                    ?.data
+                                                                    ?.business
+                                                                    ?.user
+                                                                    ?.address
+                                                                    ?.address ==
+                                                                "")
+                                                        ? "Location on map"
+                                                        : "${busnessviewmodal?.data?.business?.user?.address?.address}",
+                                                    style: TextStyle(
+                                                      fontSize: 12.sp,
+                                                      color: Colors.grey[600],
+                                                    ),
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 1.h),
+                                        Container(
+                                          height: 110,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          clipBehavior: Clip.antiAlias,
+                                          child: (busnessviewmodal
                                                           ?.data
                                                           ?.business
-                                                          ?.user
-                                                          ?.address
-                                                          ?.address ==
-                                                      null ||
+                                                          ?.latitude !=
+                                                      null &&
                                                   busnessviewmodal
                                                           ?.data
                                                           ?.business
-                                                          ?.user
-                                                          ?.address
-                                                          ?.address ==
-                                                      "")
-                                              ? "N/A"
-                                              : "${busnessviewmodal?.data?.business?.user?.address?.address}, "
-                                                  "${busnessviewmodal?.data?.business?.user?.address?.city}, "
-                                                  "${busnessviewmodal?.data?.business?.user?.address?.country}, "
-                                                  "${busnessviewmodal?.data?.business?.user?.address?.zipCode},",
+                                                          ?.longitude !=
+                                                      null)
+                                              ? GoogleMap(
+                                                  initialCameraPosition:
+                                                      CameraPosition(
+                                                    target: LatLng(
+                                                      double.parse(
+                                                          busnessviewmodal!
+                                                              .data!
+                                                              .business!
+                                                              .latitude
+                                                              .toString()),
+                                                      double.parse(
+                                                          busnessviewmodal!
+                                                              .data!
+                                                              .business!
+                                                              .longitude
+                                                              .toString()),
+                                                    ),
+                                                    zoom: 15.0,
+                                                  ),
+                                                  markers: {
+                                                    Marker(
+                                                      markerId:
+                                                          MarkerId('business'),
+                                                      position: LatLng(
+                                                        double.parse(
+                                                            busnessviewmodal!
+                                                                .data!
+                                                                .business!
+                                                                .latitude
+                                                                .toString()),
+                                                        double.parse(
+                                                            busnessviewmodal!
+                                                                .data!
+                                                                .business!
+                                                                .longitude
+                                                                .toString()),
+                                                      ),
+                                                    ),
+                                                  },
+                                                  zoomControlsEnabled: false,
+                                                  scrollGesturesEnabled: true,
+                                                  zoomGesturesEnabled: true,
+                                                )
+                                              : Container(
+                                                  color: Colors.grey[200],
+                                                  child: Center(
+                                                    child: Text(
+                                                        "Location not available"),
+                                                  ),
+                                                ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                          widget.type == 'service'
-                              ? SizedBox()
-                              : SizedBox(height: 2.h),
-                          widget.type == 'service'
-                              ? SizedBox()
-                              : Text(
-                                "Pickup Time",
-                                style: TextStyle(
-                                  fontSize: 18.sp,
-                                  fontFamily: AppConstants.manrope,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                          widget.type == 'service'
-                              ? SizedBox()
-                              : SizedBox(height: 1.h),
-                          widget.type == 'service'
-                              ? SizedBox()
-                              : Container(
-                                padding: EdgeInsets.all(12),
-                                decoration: boxDecoration(),
-                                child: Column(
-                                  children:
-                                      timeSlots.map((slot) {
-                                        return RadioListTile(
-                                          value: slot['value'],
-                                          groupValue: selectedPickupTime,
-                                          activeColor: AppColors.maincolor,
-                                          title: Text(
-                                            slot['label'],
-                                            style: TextStyle(
-                                              fontSize: 15.sp,
-                                              fontFamily: AppConstants.manrope,
-                                              fontWeight: FontWeight.bold,
+                                  ),
+                                  _buildSectionCard(
+                                    title: "Opening Hours",
+                                    icon: Icons.access_time,
+                                    child: Container(
+                                      padding: EdgeInsets.all(2.w),
+                                      decoration: BoxDecoration(
+                                        color:
+                                             Colors.grey[50],
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color:  Colors.grey.shade300,
+                                          width:  1,
+                                        ),
+                                      ),
+                                      child: CustomExpansionTile(
+                                        fontSize: 16.sp,
+                                        title: _getCurrentDayStatus(),
+                                        leadingIcon: Icons.timer,
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 16, vertical: 8),
+                                            child: Column(
+                                              children: [
+                                                _buildHoursRow(
+                                                    "Monday",
+                                                    busnessviewmodal
+                                                        ?.data
+                                                        ?.business
+                                                        ?.openingHours
+                                                        ?.monday),
+                                                _buildHoursRow(
+                                                    "Tuesday",
+                                                    busnessviewmodal
+                                                        ?.data
+                                                        ?.business
+                                                        ?.openingHours
+                                                        ?.tuesday),
+                                                _buildHoursRow(
+                                                    "Wednesday",
+                                                    busnessviewmodal
+                                                        ?.data
+                                                        ?.business
+                                                        ?.openingHours
+                                                        ?.wednesday),
+                                                _buildHoursRow(
+                                                    "Thursday",
+                                                    busnessviewmodal
+                                                        ?.data
+                                                        ?.business
+                                                        ?.openingHours
+                                                        ?.thursday),
+                                                _buildHoursRow(
+                                                    "Friday",
+                                                    busnessviewmodal
+                                                        ?.data
+                                                        ?.business
+                                                        ?.openingHours
+                                                        ?.friday),
+                                                _buildHoursRow(
+                                                    "Saturday",
+                                                    busnessviewmodal
+                                                        ?.data
+                                                        ?.business
+                                                        ?.openingHours
+                                                        ?.saturday),
+                                                _buildHoursRow(
+                                                    "Sunday",
+                                                    busnessviewmodal
+                                                        ?.data
+                                                        ?.business
+                                                        ?.openingHours
+                                                        ?.sunday),
+                                              ],
                                             ),
                                           ),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedPickupTime = value!;
-                                            });
-                                          },
-                                        );
-                                      }).toList(),
-                                ),
-                              ),
-                          SizedBox(height: 2.h),
-                          Text(
-                            "Payment Method",
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontFamily: AppConstants.manrope,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 1.h),
-                          Container(
-                            padding: EdgeInsets.all(12),
-                            decoration: boxDecoration(),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Select Payment Method",
-                                  style: TextStyle(
-                                    fontSize: 15.sp,
-                                    fontFamily: AppConstants.manrope,
-                                  ),
-                                ),
-                                SizedBox(height: 1.5.h),
-                                paymentOptionContainer(
-                                  image: "assets/images/stripe_pay_image2.png",
-                                  value: "Stripe",
-                                ),
-                                // paymentOptionContainer(
-                                //   image: "assets/images/google_pay.png",
-                                //   value: "Google Pay",
-                                // ),
-                                // paymentOptionContainer(
-                                //   image: "assets/images/apple_pay.png",
-                                //   value: "Apple Pay",
-                                // ),
-                                // GooglePayButton(
-                                //   paymentConfiguration:
-                                //       PaymentConfiguration.fromJsonString(
-                                //           defaultGooglePay),
-                                //   paymentItems: const [
-                                //     PaymentItem(
-                                //       label: 'Total',
-                                //       amount: '100.0',
-                                //       status: PaymentItemStatus.final_price,
-                                //     ),
-                                //   ],
-                                //   type: GooglePayButtonType.pay,
-                                //   width: double.infinity,
-                                //   height: 5.h,
-                                //   margin: const EdgeInsets.only(top: 15.0),
-                                //   onPaymentResult: (result) => debugPrint(
-                                //       'Payment Result ave che $result'),
-                                //   loadingIndicator: const Center(
-                                //     child: CircularProgressIndicator(
-                                //       color: AppColors.white,
-                                //     ),
-                                //   ),
-                                // ),
-                                // Platform.isIOS
-                                //     ? applePayButton
-                                //     : SizedBox(
-                                //         height: 2.h,
-                                //       ),
-                                // if (apps.isEmpty)
-                                //   const CircularProgressIndicator()
-                                // else
-                                //   Wrap(
-                                //     spacing: 20,
-                                //     runSpacing: 20,
-                                //     children: apps
-                                //         .map((app) => BuildUpiIcon(app: app))
-                                //         .toList(),
-                                //   ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 2.h),
-                          Text(
-                            "Order Summary",
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontFamily: AppConstants.manrope,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 1.h),
-                          Container(
-                            padding: EdgeInsets.all(12),
-                            decoration: boxDecoration(),
-                            child: Column(
-                              children: [
-                                summaryTile("Subtotal", getSubtotal()),
-                                // summaryTile("Packing Fees", 0.00),
-                                // summaryTile("Taxes", 0.0),
-                                // summaryTile("Other Fees", 0.0),
-                                Divider(height: 2.h),
-                                summaryTile(
-                                  "Total",
-                                  getSubtotal(),
-                                  isTotal: true,
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 3.h),
-                          GestureDetector(
-                            onTap: () {
-                              if (widget.type != 'service' &&
-                                  (selectedPickupTime == null ||
-                                      selectedPickupTime!.isEmpty)) {
-                                Get.snackbar(
-                                  "Pickup Time Required",
-                                  "Please select a pickup time before placing your order.",
-                                  backgroundColor: Colors.red,
-                                  colorText: Colors.white,
-                                  margin: EdgeInsets.all(10),
-                                  snackPosition: SnackPosition.TOP,
-                                );
-                              } else if (selectedPayment == null ||
-                                  selectedPayment!.isEmpty) {
-                                Get.snackbar(
-                                  "Payment Method Required",
-                                  "Please select a payment method before placing your order.",
-                                  backgroundColor: Colors.red,
-                                  colorText: Colors.white,
-                                  margin: EdgeInsets.all(10),
-                                  snackPosition: SnackPosition.TOP,
-                                );
-                              } else if (selectedPayment!.toLowerCase() ==
-                                  "stripe") {
-                                CheckOutAPI(
-                                  selectedPickupTime,
-                                  selectedPayment!.toLowerCase(),
-                                );
-                              } else {
-                                Get.to(ThankYouPage());
-                              }
-                            },
-                            child: Container(
-                              height: 5.5.h,
-                              alignment: Alignment.center,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: AppColors.maincolor,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Click & Collect",
-                                    style: TextStyle(
-                                      fontSize: 18.sp,
-                                      color: AppColors.white,
-                                      fontFamily: AppConstants.manrope,
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  ),
-                                  SizedBox(width: 3.w),
-                                  Container(
-                                    height: 5.h,
-                                    width: 4.h,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: AppColors.white,
+                                        ],
                                       ),
-                                    ),
-                                    child: Icon(
-                                      Icons.shopping_cart_checkout_rounded,
-                                      color: Colors.white,
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
+                              _buildSectionCard(
+                                title: "Payment Method",
+                                icon: Icons.payment,
+                                child: Column(
+                                  children: [
+                                    _buildPaymentOption(
+                                      image:
+                                          "assets/images/stripe_pay_image2.png",
+                                      title: "Stripe",
+                                      subtitle: "Pay securely with Stripe",
+                                      value: "Stripe",
+                                    ),
+                                    // Platform.isAndroid
+                                    //     ? GooglePayButton(
+                                    //         paymentConfiguration:
+                                    //             PaymentConfiguration
+                                    //                 .fromJsonString(
+                                    //                     defaultGooglePay),
+                                    //         paymentItems: [
+                                    //           PaymentItem(
+                                    //             label: 'Total',
+                                    //             amount:
+                                    //                 subtotal.toStringAsFixed(2),
+                                    //             status: PaymentItemStatus
+                                    //                 .final_price,
+                                    //           )
+                                    //         ],
+                                    //         onPressed: () {},
+                                    //         type: GooglePayButtonType.pay,
+                                    //         width: double.infinity,
+                                    //         margin: const EdgeInsets.only(
+                                    //             top: 15.0),
+                                    //         onPaymentResult: (result) {
+                                    //           debugPrint('🔔 Payment Success!');
+                                    //           debugPrint(
+                                    //               '💳 Card Description: ${result['paymentMethodData']['description']}');
+                                    //           debugPrint(
+                                    //               '📞 Phone: ${result['paymentMethodData']['info']['billingAddress']['phoneNumber']}');
+                                    //           debugPrint(
+                                    //               '🏠 Address: ${result['paymentMethodData']['info']['billingAddress']['address1']}');
+                                    //           debugPrint(
+                                    //               '🌍 Country: ${result['paymentMethodData']['info']['billingAddress']['countryCode']}');
+                                    //           debugPrint(
+                                    //               '🧾 Card Last 4 Digits: ${result['paymentMethodData']['info']['cardDetails']}');
+                                    //           debugPrint(
+                                    //               '📦 Token: ${result['paymentMethodData']['tokenizationData']['token']}');
+                                    //         },
+                                    //         loadingIndicator: const Center(
+                                    //           child: CircularProgressIndicator(
+                                    //             color: AppColors.white,
+                                    //           ),
+                                    //         ),
+                                    //       )
+                                    //     : ApplePayButton(
+                                    //         paymentConfiguration:
+                                    //             PaymentConfiguration
+                                    //                 .fromJsonString(
+                                    //                     defaultApplePay),
+                                    //         paymentItems: [
+                                    //           PaymentItem(
+                                    //             label: 'Item A',
+                                    //             amount:
+                                    //                 subtotal.toStringAsFixed(2),
+                                    //             status: PaymentItemStatus
+                                    //                 .final_price,
+                                    //           ),
+                                    //         ],
+                                    //         style: ApplePayButtonStyle.black,
+                                    //         width: double.infinity,
+                                    //         height: 50,
+                                    //         type: ApplePayButtonType.buy,
+                                    //         margin: const EdgeInsets.only(
+                                    //             top: 15.0),
+                                    //         onPaymentResult: (result) {
+                                    //           debugPrint(
+                                    //               'Payment Result $result');
+                                    //         },
+                                    //         loadingIndicator: const Center(
+                                    //           child:
+                                    //               CircularProgressIndicator(),
+                                    //         ),
+                                    //       ),
+                                  ],
+                                ),
+                              ),
+                              _buildSectionCard(
+                                title: "Order Summary",
+                                icon: Icons.receipt,
+                                child: Column(
+                                  children: [
+                                    widget.type != 'service'
+                                        ? _buildSummaryRow(
+                                            "Subtotal", getSubtotal())
+                                        : _buildSummaryRow(
+                                            "Subtotal", getSubtotal1()),
+                                    cartDetailsModel?.data?[0].type ==
+                                                "product" &&
+                                            cartDetailsModel
+                                                    ?.data?[0]
+                                                    .loyaltyDetails
+                                                    ?.willGetLoyaltyDiscountOnCurrentOrder ==
+                                                true
+                                        ? _buildSummaryRow(
+                                            "Loyalty Discount (-${getLoyaltyDiscountPercentage().toStringAsFixed(0)}%)",
+                                            getLoyaltyDiscountAmount(),
+                                            isDiscount: true)
+                                        : SizedBox(),
+                                    Divider(height: 2.5.h, thickness: 1),
+                                    widget.type != 'service'
+                                        ? _buildSummaryRow(
+                                            "Total", getFinalTotal(),
+                                            isTotal: true)
+                                        : _buildSummaryRow(
+                                            "Total", getSubtotal1(),
+                                            isTotal: true),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 2.h),
+                              GestureDetector(
+                                onTap: () {
+                                  if (selectedPayment == null ||
+                                      selectedPayment!.isEmpty) {
+                                    Get.snackbar(
+                                      "Payment Method Required",
+                                      "Please select a payment method before placing your order.",
+                                      backgroundColor: Colors.red,
+                                      colorText: Colors.white,
+                                      margin: EdgeInsets.all(10),
+                                      snackPosition: SnackPosition.TOP,
+                                    );
+                                  } else if (selectedPayment!.toLowerCase() ==
+                                      "stripe") {
+                                    CheckOutAPI(selectedPickupTime,
+                                        selectedPayment!.toLowerCase());
+                                  } else {
+                                    Get.to(ThankYouPage());
+                                  }
+                                },
+                                child: Container(
+                                  height: 6.h,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        AppColors.maincolor,
+                                        AppColors.maincolor.withOpacity(0.8)
+                                      ],
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                    ),
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: AppColors.maincolor
+                                            .withOpacity(0.3),
+                                        blurRadius: 8,
+                                        offset: Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.shopping_bag,
+                                          color: Colors.white, size: 22.sp),
+                                      SizedBox(width: 3.w),
+                                      Text(
+                                        "Click & Collect",
+                                        style: TextStyle(
+                                          fontSize: 16.sp,
+                                          color: Colors.white,
+                                          fontFamily: AppConstants.manrope,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                            ],
                           ),
-                          SizedBox(height: 3.h),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-            ],
-          ).paddingOnly(left: 2.w, right: 2.w),
+              ],
+            ),
+          ),
           if (isCheckout)
             Container(
               color: Colors.black.withOpacity(0.3),
-              child: Center(child: Loader()),
+              child: Center(
+                child: Loader(),
+              ),
             ),
         ],
       ),
     );
   }
 
+  List<PaymentItem> get paymentItem {
+    const _paymentItems = [
+      PaymentItem(
+        amount: '1.99',
+        label: "Total",
+        status: PaymentItemStatus.final_price,
+      )
+    ];
+    return _paymentItems;
+  }
+
   double getSubtotal() {
     double total = 0.0;
     checkoutTotal?.data?.forEach((item) {
-      double price =
-          double.tryParse(
-            item.itemDetails?.offerPrice ?? item.itemDetails?.price ?? '0',
-          ) ??
+      double price = double.tryParse(
+              item.itemDetails?.offerPrice ?? item.itemDetails?.price ?? '0') ??
           0;
       total += price * (item.quantity ?? 1);
     });
     return total;
   }
 
-  // Widget BuildUpiIcon({required UpiApp app}) {
-  //   return GestureDetector(
-  //     onTap: () {
-  //       _initiateTransaction(app);
-  //     },
-  //     child: Container(
-  //       margin: EdgeInsets.only(bottom: 1.5.h),
-  //       padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.8.h),
-  //       decoration: BoxDecoration(
-  //         color: Colors.white,
-  //         borderRadius: BorderRadius.circular(12),
-  //         border: Border.all(color: Colors.grey.shade300, width: 1.2),
-  //       ),
-  //       child: Row(
-  //         children: [
-  //           Image.memory(app.icon, height: 5.h, width: 15.w),
-  //           SizedBox(width: 4.w),
-  //           Text(
-  //             app.name,
-  //             style: TextStyle(
-  //               fontSize: 16.sp,
-  //               fontWeight: FontWeight.w600,
-  //               fontFamily: AppConstants.manrope,
-  //             ),
-  //           ),
-  //           Spacer(),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+  double getSubtotal1() {
+    double total = 0.0;
+    checkoutTotal?.data?.forEach((item) {
+      double price = double.tryParse(
+              item.itemDetails?.offerPrice ?? item.itemDetails?.price ?? '0') ??
+          0;
+      total += price * (item.quantity ?? 1);
+    });
+    return total;
+  }
+
 
   Widget paymentOptionContainer({
     required String image,
@@ -620,7 +725,12 @@ class _BuyProductViewState extends State<BuyProductView> {
         ),
         child: Row(
           children: [
-            Image.asset(image, height: 5.h, width: 15.w, fit: BoxFit.contain),
+            Image.asset(
+              image,
+              height: 5.h,
+              width: 15.w,
+              fit: BoxFit.contain,
+            ),
             SizedBox(width: 4.w),
             Text(
               value,
@@ -674,16 +784,15 @@ class _BuyProductViewState extends State<BuyProductView> {
   }
 
   BoxDecoration boxDecoration() => BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(12),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.grey.withOpacity(0.1),
-        blurRadius: 4,
-        offset: Offset(0, 2),
-      ),
-    ],
-  );
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 4,
+              offset: Offset(0, 2))
+        ],
+      );
 
   Widget summaryTile(String title, double amount, {bool isTotal = false}) {
     return Padding(
@@ -691,14 +800,12 @@ class _BuyProductViewState extends State<BuyProductView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: isTotal ? 18.sp : 17.sp,
-              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-              fontFamily: AppConstants.manrope,
-            ),
-          ),
+          Text(title,
+              style: TextStyle(
+                fontSize: isTotal ? 18.sp : 17.sp,
+                fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+                fontFamily: AppConstants.manrope,
+              )),
           Text(
             "£${amount.toStringAsFixed(2)}",
             style: TextStyle(
@@ -713,46 +820,40 @@ class _BuyProductViewState extends State<BuyProductView> {
   }
 
   BussinessViewProfile(String id) {
-    // EasyLoading.show();
-
     setState(() {
-      isLoading = true; // Show Loader
+      isLoading = true;
     });
 
     checkInternet().then((internet) async {
       if (internet) {
         CommunityProvider()
             .projectlistapi(
-              (loginModel?.data?.user?.id).toString(),
-              id,
-              'AppLat',
-              'AppLon',
-            )
+                (loginModel?.data?.user?.id).toString(), id, AppLat, AppLon)
             .then((response) async {
-              busnessviewmodal = BusnessViewModal.fromJson(
-                json.decode(response.body),
-              );
-              if (response.statusCode == 200) {
-                print("done LIst");
-                //log("data ave che che ${response.body}");
-                //  EasyLoading.dismiss();
-                setState(() {
-                  isLoading = false; // Hide Loader
-                });
+          busnessviewmodal =
+              BusnessViewModal.fromJson(json.decode(response.body));
+          if (response.statusCode == 200) {
+            print("done LIst");
+            print("${busnessviewmodal?.data?.business?.businessName ?? ""}");
+            log(" ${response.body}");
 
-                // await _showBottomSheet(busnessviewmodal);
-              } else if (response.statusCode == 422) {
-                // EasyLoading.dismiss();
-                setState(() {
-                  isLoading = false; // Hide Loader
-                });
-              } else {
-                //EasyLoading.dismiss();
-                setState(() {
-                  isLoading = false;
-                });
-              }
+            setState(() {
+              isLoading = false;
             });
+          } else if (response.statusCode == 422) {
+            log("Error ");
+
+            setState(() {
+              isLoading = false;
+            });
+          } else {
+            log("Error for else ");
+
+            setState(() {
+              isLoading = false;
+            });
+          }
+        });
       } else {
         setState(() {
           isLoading = false;
@@ -766,27 +867,26 @@ class _BuyProductViewState extends State<BuyProductView> {
     checkInternet().then((internet) async {
       if (internet) {
         CartProvider()
-            .GetCartDetailsApi(loginModel?.data?.user?.id.toString() ?? "")
+            .GetCartDetailsApi(
+          loginModel?.data?.user?.id.toString() ?? "",
+        )
             .then((response) async {
-              checkoutTotal = CartDetailsModel.fromJson(
-                jsonDecode(response.body),
-              );
-              if (response.statusCode == 200) {
-                print("adfdsfsdf${response.body}");
-                print(
-                  "1111111111>>>>>>>>>>>>.${profileModel?.data?.user?.profile}",
-                );
+          checkoutTotal = CartDetailsModel.fromJson(jsonDecode(response.body));
+          if (response.statusCode == 200) {
+            print("adfdsfsdf${response.body}");
+            print(
+                "1111111111>>>>>>>>>>>>.${profileModel?.data?.user?.profile}");
 
-                setState(() {
-                  isLoading = false;
-                });
-              } else {
-                setState(() {
-                  isLoading = false;
-                });
-                log("Error");
-              }
+            setState(() {
+              isLoading = false;
             });
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+            log("Error");
+          }
+        });
       } else {
         setState(() {
           isLoading = false;
@@ -820,12 +920,9 @@ class _BuyProductViewState extends State<BuyProductView> {
             setState(() {
               isCheckout = false;
             });
-            log(
-              "Payment Link Ave che che ###${placeOrderModel?.data?.paymentUrl.toString()}",
-            );
+            log("Payment Link Ave che che ###${placeOrderModel?.data?.paymentUrl.toString()}");
             _openPaymentPage(
-              placeOrderModel?.data?.paymentUrl.toString() ?? "",
-            );
+                placeOrderModel?.data?.paymentUrl.toString() ?? "");
           } else {
             setState(() {
               isCheckout = false;
@@ -846,55 +943,390 @@ class _BuyProductViewState extends State<BuyProductView> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => StripeWebView(title: 'Pay Online', link: url),
+        builder: (context) => StripeWebView(
+          title: 'Pay Online',
+          link: url,
+        ),
       ),
     );
   }
 
-  // var applePayButton = ApplePayButton(
-  //   paymentConfiguration: PaymentConfiguration.fromJsonString(defaultApplePay),
-  //   paymentItems: const [
-  //     PaymentItem(
-  //       label: 'Item A',
-  //       amount: '0.01',
-  //       status: PaymentItemStatus.final_price,
-  //     ),
-  //     PaymentItem(
-  //       label: 'Item B',
-  //       amount: '0.01',
-  //       status: PaymentItemStatus.final_price,
-  //     ),
-  //     PaymentItem(
-  //       label: 'Total',
-  //       amount: '0.02',
-  //       status: PaymentItemStatus.final_price,
-  //     ),
-  //   ],
-  //   style: ApplePayButtonStyle.black,
-  //   width: double.infinity,
-  //   height: 50,
-  //   type: ApplePayButtonType.buy,
-  //   margin: const EdgeInsets.only(top: 15.0),
-  //   onPaymentResult: (result) => debugPrint('Payment Result $result'),
-  //   loadingIndicator: const Center(child: CircularProgressIndicator()),
-  // );
+  var applePayButton = ApplePayButton(
+    paymentConfiguration: PaymentConfiguration.fromJsonString(defaultApplePay),
+    paymentItems: const [
+      PaymentItem(
+        label: 'Item A',
+        amount: '0.01',
+        status: PaymentItemStatus.final_price,
+      ),
+      PaymentItem(
+        label: 'Item B',
+        amount: '0.01',
+        status: PaymentItemStatus.final_price,
+      ),
+      PaymentItem(
+        label: 'Total',
+        amount: '0.02',
+        status: PaymentItemStatus.final_price,
+      )
+    ],
+    style: ApplePayButtonStyle.black,
+    width: double.infinity,
+    height: 50,
+    type: ApplePayButtonType.buy,
+    margin: const EdgeInsets.only(top: 15.0),
+    onPaymentResult: (result) => debugPrint('Payment Result $result'),
+    loadingIndicator: const Center(
+      child: CircularProgressIndicator(),
+    ),
+  );
 
-  // var googlePayButton = GooglePayButton(
-  //   paymentConfiguration: PaymentConfiguration.fromJsonString(defaultGooglePay),
-  //   paymentItems: const [
-  //     PaymentItem(
-  //       label: 'Total',
-  //       amount: '100.0',
-  //       status: PaymentItemStatus.final_price,
-  //     ),
-  //   ],
-  //   onPressed: () {},
-  //   type: GooglePayButtonType.pay,
-  //   width: double.infinity,
-  //   margin: const EdgeInsets.only(top: 15.0),
-  //   onPaymentResult: (result) => debugPrint('Payment Result ave che $result'),
-  //   loadingIndicator: const Center(
-  //     child: CircularProgressIndicator(color: AppColors.white),
-  //   ),
-  // );
+  Widget _buildSectionCard({
+    required String title,
+    required IconData icon,
+    required Widget child,
+  }) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: EdgeInsets.all(3.w),
+            decoration: BoxDecoration(
+              color: Colors.grey[50],
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(2.w),
+                  decoration: BoxDecoration(
+                    color: AppColors.maincolor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(icon, color: AppColors.maincolor, size: 20.sp),
+                ),
+                SizedBox(width: 3.w),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontFamily: AppConstants.manrope,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(4.w),
+            child: child,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoTile({
+    required IconData icon,
+    required String subtitle,
+    required VoidCallback ontap,
+  }) {
+    return InkWell(
+      onTap: ontap,
+      child: Container(
+        margin: EdgeInsets.only(bottom: 1.h),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(1.w),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, size: 18.sp, color: Colors.grey[600]),
+            ),
+            SizedBox(width: 3.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontFamily: AppConstants.manrope,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSummaryRow(String title, double amount,
+      {bool isTotal = false, bool isDiscount = false}) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 0.5.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: isTotal ? 17.sp : 17.sp,
+              fontWeight: FontWeight.bold,
+              fontFamily: AppConstants.manrope,
+              color: isDiscount
+                  ? Colors.green[700]
+                  : (isTotal ? Colors.black : Colors.black),
+            ),
+          ),
+          Text(
+            isDiscount
+                ? "-£${amount.toStringAsFixed(2)}"
+                : "£${amount.toStringAsFixed(2)}",
+            style: TextStyle(
+              fontSize: isTotal ? 18.sp : 17.sp,
+              fontWeight: FontWeight.bold,
+              fontFamily: AppConstants.manrope,
+              color: isDiscount
+                  ? Colors.green[700]
+                  : (isTotal ? AppColors.maincolor : Colors.black),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPaymentOption({
+    required String image,
+    required String title,
+    required String subtitle,
+    required String value,
+  }) {
+    bool isSelected = selectedPayment == value;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedPayment = value;
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.all(2.w),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.maincolor.withOpacity(0.1)
+              : Colors.grey[50],
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? AppColors.maincolor : Colors.grey[300]!,
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(1.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[200]!),
+              ),
+              child: Image.asset(
+                image,
+                height: 4.h,
+                width: 8.w,
+                fit: BoxFit.contain,
+              ),
+            ),
+            SizedBox(width: 4.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w600,
+                      color: isSelected ? AppColors.maincolor : Colors.black87,
+                    ),
+                  ),
+                  SizedBox(height: 0.5.h),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (isSelected)
+              Icon(Icons.check_circle, color: AppColors.maincolor, size: 20.sp),
+          ],
+        ),
+      ),
+    );
+  }
+
+  double getLoyaltyDiscountPercentage() {
+    final loyaltyDetails = cartDetailsModel?.data?[0].loyaltyDetails;
+    if (loyaltyDetails?.willGetLoyaltyDiscountOnCurrentOrder != true) {
+      return 0.0;
+    }
+    String discountStr =
+        checkoutTotal?.data?.first.loyaltyDetails?.loyaltyDiscountPercentage ??
+            "0";
+    return double.tryParse(discountStr) ?? 0.0;
+  }
+
+  double getLoyaltyDiscountAmount() {
+    final loyaltyDetails = cartDetailsModel?.data?[0].loyaltyDetails;
+    if (loyaltyDetails?.willGetLoyaltyDiscountOnCurrentOrder != true) {
+      return 0.0;
+    }
+
+    double subtotal = getSubtotal();
+    double discountPercent = getLoyaltyDiscountPercentage();
+
+    return subtotal * (discountPercent / 100);
+  }
+
+  double getFinalTotal() {
+    double subtotal = getSubtotal();
+    double loyaltyDiscount = getLoyaltyDiscountAmount();
+    return subtotal - loyaltyDiscount;
+  }
+
+  String _getCurrentDayStatus() {
+    final now = DateTime.now();
+    final today = _getDayName(now.weekday);
+    final todayHours = _getHoursForDay(today);
+
+    if (todayHours == null) {
+      return "Not Set Yet";
+    }
+
+    if (todayHours.closed == true) {
+      return "Closed Today";
+    }
+
+    if (todayHours.open != null && todayHours.close != null) {
+      return "${todayHours.open} - ${todayHours.close}";
+    }
+
+    return "Hours not available";
+  }
+
+  Widget _buildHoursRow(String day, dynamic dayHours) {
+    final isToday = day == _getDayName(DateTime.now().weekday);
+
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 6),
+      decoration: isToday
+          ? BoxDecoration(
+              color: AppColors.maincolor,
+              borderRadius: BorderRadius.circular(6),
+            )
+          : null,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: isToday ? 8 : 0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              day,
+              style: TextStyle(
+                fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+                color: isToday ? Colors.white : Colors.black87,
+                fontFamily: AppConstants.manrope,
+              ),
+            ),
+            Text(
+              _getHoursText(dayHours),
+              style: TextStyle(
+                fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+                color: isToday ? Colors.white : Colors.grey[600],
+                fontFamily: AppConstants.manrope,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getDayName(int weekday) {
+    switch (weekday) {
+      case 1:
+        return "Monday";
+      case 2:
+        return "Tuesday";
+      case 3:
+        return "Wednesday";
+      case 4:
+        return "Thursday";
+      case 5:
+        return "Friday";
+      case 6:
+        return "Saturday";
+      case 7:
+        return "Sunday";
+      default:
+        return "Monday";
+    }
+  }
+
+  dynamic _getHoursForDay(String day) {
+    final openingHours = busnessviewmodal?.data?.business?.openingHours;
+    if (openingHours == null) return null;
+
+    switch (day.toLowerCase()) {
+      case "monday":
+        return openingHours.monday;
+      case "tuesday":
+        return openingHours.tuesday;
+      case "wednesday":
+        return openingHours.wednesday;
+      case "thursday":
+        return openingHours.thursday;
+      case "friday":
+        return openingHours.friday;
+      case "saturday":
+        return openingHours.saturday;
+      case "sunday":
+        return openingHours.sunday;
+      default:
+        return null;
+    }
+  }
+
+  String _getHoursText(dynamic dayHours) {
+    if (dayHours == null) return "N/A";
+    if (dayHours.closed == true) return "Closed";
+    if (dayHours.open != null && dayHours.close != null) {
+      return "${dayHours.open} - ${dayHours.close}";
+    }
+    return "N/A";
+  }
 }
