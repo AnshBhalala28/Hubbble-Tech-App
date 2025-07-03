@@ -9,16 +9,15 @@ Widget Loader() {
       elevation: 2,
       borderRadius: BorderRadius.circular(10),
       child: Container(
-        height: 9.h, // Reduced height
-        width: 18.w, // Reduced width
+        height: 9.h,
+        width: 18.w,
         decoration: BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(
-          // Center the loader
           child: SizedBox(
-            height: 4.5.h, // Smaller loader size
+            height: 4.5.h,
             width: 4.5.h,
             child: CircularProgressIndicator(
               color: AppColors.maincolor,

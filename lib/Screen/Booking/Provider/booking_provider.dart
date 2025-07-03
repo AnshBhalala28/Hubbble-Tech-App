@@ -221,8 +221,7 @@ class AmenitiesProvider extends ChangeNotifier {
     }
   }
 
-  Future<http.Response> ServiceBookingApi(
-      String userid, String Status) async {
+  Future<http.Response> ServiceBookingApi(String userid, String Status) async {
     final url =
         '${baseUrl}/getBookedServicesForUser?user_id=$userid&status=$Status';
     print("Request URL: $url");
@@ -246,5 +245,4 @@ class AmenitiesProvider extends ChangeNotifier {
       throw Exception('An error occurred: $e');
     }
   }
-
 }

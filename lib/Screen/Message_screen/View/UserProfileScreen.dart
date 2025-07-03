@@ -5,16 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Screen/Chatscreen/View/chatscreen.dart';
-import 'package:wavee/Screen/Message_board/View/messageboard.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wavee/comman/colors.dart';
 import 'package:wavee/comman/const.dart';
+import 'package:wavee/comman/custom_button.dart';
 
 import '../../../comman/check_inernet_connecty.dart';
-import '../../../comman/custom_batan.dart';
 import '../../../comman/error_dialog.dart';
 import '../../../comman/loader.dart';
-import '../Model/RemoveFriendModel.dart';
 import '../Model/UserPersonalInfoModel.dart';
 import '../Provider/messagescreen_provider.dart';
 
@@ -69,50 +67,38 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           children: [
             Column(
               children: [
-                // Top profile section with gradient
                 Container(
                   width: double.infinity,
-                  decoration: BoxDecoration(color: Colors.white),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                  ),
                   child: Column(
                     children: [
                       SizedBox(height: 2.h),
-
-                      // Profile Image with border - Made smaller as requested
                       Container(
                         padding: EdgeInsets.all(3),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.blue.shade100,
-                            width: 2,
-                          ),
+                          border:
+                              Border.all(color: Colors.blue.shade100, width: 2),
                         ),
                         child: CircleAvatar(
                           radius: 35.sp,
                           backgroundColor: Colors.grey.shade200,
-                          backgroundImage:
-                              (userpersonalInfoModel?.data?.conciergeImage !=
-                                          null &&
-                                      userpersonalInfoModel!
-                                          .data!
-                                          .conciergeImage!
-                                          .isNotEmpty)
-                                  ? CachedNetworkImageProvider(
-                                    userpersonalInfoModel!
-                                        .data!
-                                        .conciergeImage!,
-                                  )
-                                  : const AssetImage("assets/images/bg.jpg")
-                                      as ImageProvider<Object>,
+                          backgroundImage: (userpersonalInfoModel
+                                          ?.data?.conciergeImage !=
+                                      null &&
+                                  userpersonalInfoModel!
+                                      .data!.conciergeImage!.isNotEmpty)
+                              ? CachedNetworkImageProvider(
+                                  userpersonalInfoModel!.data!.conciergeImage!)
+                              : const AssetImage("assets/images/bg.jpg")
+                                  as ImageProvider<Object>,
                         ),
                       ),
-
                       SizedBox(height: 2.h),
-
-                      // Name with larger font
                       Text(
                         "${userpersonalInfoModel?.data?.firstName} ${userpersonalInfoModel?.data?.lastName}",
-                        //   userpersonalInfoModel?.data?.firstName ?? "N/A",
                         style: TextStyle(
                           fontSize: 18.sp,
                           fontFamily: AppConstants.manrope,
@@ -120,15 +106,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           color: Colors.black,
                         ),
                       ),
-
                       SizedBox(height: 3.h),
                     ],
                   ),
                 ),
-
                 SizedBox(height: 2.h),
-
-                // Profile information section
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 5.w),
                   child: Container(
@@ -152,53 +134,35 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                         ),
                         Divider(),
+                        buildProfileDetailItem(Icons.email_outlined, "Email",
+                            userpersonalInfoModel?.data?.email),
+                        buildProfileDetailItem(Icons.phone_outlined, "Phone",
+                            userpersonalInfoModel?.data?.phoneNumber),
                         buildProfileDetailItem(
-                          Icons.email_outlined,
-                          "Email",
-                          userpersonalInfoModel?.data?.email,
-                        ),
-                        buildProfileDetailItem(
-                          Icons.phone_outlined,
-                          "Phone",
-                          userpersonalInfoModel?.data?.phoneNumber,
-                        ),
-                        buildProfileDetailItem(
-                          Icons.calendar_today_outlined,
-                          "Date of Birth",
-                          userpersonalInfoModel?.data?.dateOfBirth,
-                        ),
-                        buildProfileDetailItem(
-                          Icons.person,
-                          "Gender",
-                          userpersonalInfoModel?.data?.gender,
-                        ),
+                            Icons.calendar_today_outlined,
+                            "Date of Birth",
+                            userpersonalInfoModel?.data?.dateOfBirth),
+                        buildProfileDetailItem(Icons.person, "Gender",
+                            userpersonalInfoModel?.data?.gender),
                         SizedBox(height: 2.h),
                       ],
                     ),
                   ),
                 ),
-
+                batan(
+                  title: "Block",
+                  route: () {
+                    showBlockUserDialog(context, supportUrl);
+                  },
+                  color: AppColors.maincolor,
+                  fontcolor: AppColors.white,
+                  height: 5.h,
+                  fontsize: 18.sp,
+                  radius: 12.0,
+                ).paddingOnly(left: 4.4.w, right: 4.4.w, top: 2.h),
                 SizedBox(height: 3.h),
-                // Align(
-                //   //alignment: Alignment.centerRight,
-                //   child: batan(
-                //     title: "Remove From Friend",
-                //     route: () {
-                //       showDeleteConfirmation(context);
-                //     },
-                //     radius: 4.0.w,
-                //     color: AppColors.maincolor,
-                //     fontcolor: Colors.white,
-                //     height: 5.5.h,
-                //     width: 70.w,
-                //     fontsize: 15.5.sp,
-                //     iconData1: Icons.delete_forever,
-                //   ),
-                // ),
               ],
             ),
-
-            // Overlay loader while sending
             if (isSending)
               Positioned.fill(
                 child: Container(
@@ -209,6 +173,123 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ],
         ),
       ),
+    );
+  }
+  final String supportUrl = "https://www.wavee.ai/help-center";
+
+  void showBlockUserDialog(BuildContext context, String supportUrl) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        bool isLoading = false;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              backgroundColor: Colors.transparent,
+              child: Container(
+                width: 73.w,
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(height: 2.h),
+                    Text(
+                      "Block User",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.black,
+                        fontFamily: AppConstants.manrope,
+                      ),
+                    ),
+                    SizedBox(height: 1.5.h),
+                    Text(
+                      'Are you sure you want to block this user?',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        color: Colors.grey.shade800,
+                        fontFamily: AppConstants.manrope,
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+                    isLoading
+                        ? Padding(
+                      padding: EdgeInsets.symmetric(vertical: 2.h),
+                      child: CircularProgressIndicator(
+                        color: AppColors.maincolor,
+                      ),
+                    )
+                        : Row(
+                      children: [
+                        Expanded(
+                          child: Material(
+                            elevation: 2,
+                            borderRadius: BorderRadius.circular(12),
+                            child: batan(
+                              title: "No",
+                              width: 30.w,
+                              route: () {
+                                Navigator.of(context).pop();
+                              },
+                              color: AppColors.white,
+                              fontcolor: Colors.black,
+                              height: 5.h,
+                              fontsize: 16.sp,
+                              radius: 12.0,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 2.w),
+                        Expanded(
+                          child: Material(
+                            elevation: 2,
+                            borderRadius: BorderRadius.circular(12),
+                            child: batan(
+                              title: "Yes",
+                              route: () async {
+                                setState(() => isLoading = true);
+
+                                final Uri url = Uri.parse(supportUrl);
+                                if (await canLaunchUrl(url)) {
+                                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text("Could not launch URL")),
+                                  );
+                                }
+
+                                setState(() => isLoading = false);
+                                Navigator.of(context).pop();
+                              },
+                              color: AppColors.maincolor,
+                              fontcolor: Colors.white,
+                              height: 5.h,
+                              fontsize: 16.sp,
+                              radius: 12.0, width: 30.w,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 1.h),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -244,7 +325,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 Text(
                   "Are you sure you want to delete this Friend?",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14.sp),
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                  ),
                 ),
                 SizedBox(height: 20),
                 Divider(thickness: 1),
@@ -255,7 +338,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       Expanded(
                         child: TextButton(
                           onPressed: () {
-                            Navigator.of(context).pop(); // Close dialog
+                            Navigator.of(context).pop();
                           },
                           child: Text(
                             "No",
@@ -271,7 +354,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         child: TextButton(
                           onPressed: () {
                             Get.back();
-                            //  removefriendapi();
                           },
                           child: Text(
                             "Yes",
@@ -305,7 +387,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               color: Colors.blue.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, color: Colors.blue.shade700, size: 17.sp),
+            child: Icon(
+              icon,
+              color: Colors.blue.shade700,
+              size: 17.sp,
+            ),
           ),
           SizedBox(width: 4.w),
           Expanded(
@@ -338,66 +424,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  // removefriendapi() async {
-  //   setState(() {
-  //     isSending = true;
-  //   });
-  //
-  //   checkInternet().then((internet) async {
-  //     if (internet) {
-  //       try {
-  //         final response =
-  //             await MessageProvider().removefriend((widget.id).toString());
-  //
-  //         if (response.statusCode == 200) {
-  //           removefriendModel =
-  //               RemoveFriendModel.fromJson(json.decode(response.body));
-  //
-  //           setState(() {
-  //             isSending = false;
-  //           });
-  //
-  //           print("group delete : ${response.body}");
-  //
-  //           // Show success message
-  //           ScaffoldMessenger.of(context).showSnackBar(
-  //             SnackBar(
-  //               content: Text("Friend deleted successfully!"),
-  //               backgroundColor: AppColors.maincolor,
-  //             ),
-  //           );
-  //
-  //           // Navigate to Messageboard with arguments for Friend UI (selectedCategory=1, selectedLocalSubCategory=1)
-  //           Get.to(ChatScreen(
-  //             selected: 2,
-  //             selectedIndex: 0,
-  //           ));
-  //         } else {
-  //           setState(() {
-  //             isSending = false;
-  //           });
-  //
-  //           // Error handling for non-200 status code
-  //           buildErrorDialog(context, 'Error', "Failed to delete group");
-  //         }
-  //       } catch (e) {
-  //         setState(() {
-  //           isSending = false;
-  //         });
-  //
-  //         print("error: ${e.toString()}");
-  //         buildErrorDialog(context, 'Error', "Something went wrong");
-  //       }
-  //     } else {
-  //       setState(() {
-  //         isSending = false;
-  //       });
-  //
-  //       buildErrorDialog(context, 'Error', "Internet Required");
-  //     }
-  //   });
-  // }
-
   userpersonalinfoapi() async {
     setState(() {
       isSending = true;
@@ -405,15 +431,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response = await MessageProvider().userpersonalinfo(
-            (widget.id).toString(),
-          );
+          final response =
+              await MessageProvider().userpersonalinfo((widget.id).toString());
           if (response.statusCode == 200) {
-            userpersonalInfoModel = UserPersonalInfoModel.fromJson(
-              json.decode(response.body),
-            );
-            print("data ave che  : ${response.body}");
-            print("data ave che id : ${widget.id}");
+            userpersonalInfoModel =
+                UserPersonalInfoModel.fromJson(json.decode(response.body));
+            print("${response.body}");
+            print("${widget.id}");
             setState(() {
               isSending = false;
             });
@@ -421,7 +445,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             setState(() {
               isSending = false;
             });
-            // Error handling for non-200 status code
+
             buildErrorDialog(context, 'Error', "Failed to delete group");
           }
         } catch (e) {

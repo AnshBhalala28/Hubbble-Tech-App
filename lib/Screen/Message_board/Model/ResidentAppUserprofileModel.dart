@@ -37,16 +37,16 @@ class Data {
 
   Data(
       {this.id,
-        this.userId,
-        this.createId,
-        this.unitsId,
-        this.residentType,
-        this.createdAt,
-        this.updatedAt,
-        this.user,
-        this.unit,
-        this.building,
-        this.buildingDocument});
+      this.userId,
+      this.createId,
+      this.unitsId,
+      this.residentType,
+      this.createdAt,
+      this.updatedAt,
+      this.user,
+      this.unit,
+      this.building,
+      this.buildingDocument});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -114,24 +114,24 @@ class User {
 
   User(
       {this.id,
-        this.role,
-        this.name,
-        this.email,
-        this.emailVerifiedAt,
-        this.dPassword,
-        this.mobileNo,
-        this.gender,
-        this.dateOfBirth,
-        this.address,
-        this.psLatitude,
-        this.psLongitude,
-        this.fcmToken,
-        this.forgetPassKey,
-        this.moduleLock,
-        this.status,
-        this.profile,
-        this.createdAt,
-        this.updatedAt});
+      this.role,
+      this.name,
+      this.email,
+      this.emailVerifiedAt,
+      this.dPassword,
+      this.mobileNo,
+      this.gender,
+      this.dateOfBirth,
+      this.address,
+      this.psLatitude,
+      this.psLongitude,
+      this.fcmToken,
+      this.forgetPassKey,
+      this.moduleLock,
+      this.status,
+      this.profile,
+      this.createdAt,
+      this.updatedAt});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -144,7 +144,7 @@ class User {
     gender = json['gender'];
     dateOfBirth = json['date_of_birth'];
     address =
-    json['address'] != null ? new Address.fromJson(json['address']) : null;
+        json['address'] != null ? new Address.fromJson(json['address']) : null;
     psLatitude = json['ps_latitude'];
     psLongitude = json['ps_longitude'];
     fcmToken = json['fcm_token'];
@@ -248,20 +248,20 @@ class Unit {
 
   Unit(
       {this.id,
-        this.buildingId,
-        this.userId,
-        this.blockNumber,
-        this.flatNumber,
-        this.noOfKeys,
-        this.keysOut,
-        this.parkingOption,
-        this.documentsFiles,
-        this.documentsFilesLabel,
-        this.keyWaiver,
-        this.lettingAgentInfo,
-        this.bicycleScooterInfo,
-        this.createdAt,
-        this.updatedAt});
+      this.buildingId,
+      this.userId,
+      this.blockNumber,
+      this.flatNumber,
+      this.noOfKeys,
+      this.keysOut,
+      this.parkingOption,
+      this.documentsFiles,
+      this.documentsFilesLabel,
+      this.keyWaiver,
+      this.lettingAgentInfo,
+      this.bicycleScooterInfo,
+      this.createdAt,
+      this.updatedAt});
 
   Unit.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -316,15 +316,15 @@ class Building {
 
   Building(
       {this.id,
-        this.userId,
-        this.buildingId,
-        this.companyName,
-        this.personName,
-        this.landline,
-        this.mobile,
-        this.buildingImage,
-        this.createdAt,
-        this.updatedAt});
+      this.userId,
+      this.buildingId,
+      this.companyName,
+      this.personName,
+      this.landline,
+      this.mobile,
+      this.buildingImage,
+      this.createdAt,
+      this.updatedAt});
 
   Building.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -380,26 +380,26 @@ class BuildingDocument {
 
   BuildingDocument(
       {this.id,
-        this.userId,
-        this.buildingName,
-        this.address,
-        this.totalFloors,
-        this.totalUnits,
-        this.shiftStart,
-        this.shiftEnd,
-        this.loyaltyCardImage,
-        this.emergencyNumbers,
-        this.emergencyCaptions,
-        this.parkingInformation,
-        this.conciergeInformation,
-        this.fitnessCentreInformation,
-        this.documentsFiles,
-        this.conStartTime,
-        this.conEndTime,
-        this.status,
-        this.createdAt,
-        this.updatedAt,
-        this.documentsFilesLabel});
+      this.userId,
+      this.buildingName,
+      this.address,
+      this.totalFloors,
+      this.totalUnits,
+      this.shiftStart,
+      this.shiftEnd,
+      this.loyaltyCardImage,
+      this.emergencyNumbers,
+      this.emergencyCaptions,
+      this.parkingInformation,
+      this.conciergeInformation,
+      this.fitnessCentreInformation,
+      this.documentsFiles,
+      this.conStartTime,
+      this.conEndTime,
+      this.status,
+      this.createdAt,
+      this.updatedAt,
+      this.documentsFilesLabel});
 
   BuildingDocument.fromJson(Map<String, dynamic> json) {
     id = json['id'];

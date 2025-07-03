@@ -32,6 +32,7 @@ class Data {
   int? userId;
   String? buildingId;
   String? residentType;
+  String? title;
   String? coreOpt;
   String? boostLevelId;
   String? type;
@@ -50,24 +51,25 @@ class Data {
 
   Data(
       {this.id,
-        this.userId,
-        this.buildingId,
-        this.residentType,
-        this.coreOpt,
-        this.boostLevelId,
-        this.type,
-        this.storyPost,
-        this.views,
-        this.text,
-        this.file,
-        this.status,
-        this.createdAt,
-        this.updatedAt,
-        this.totalLikes,
-        this.totalComments,
-        this.totalReport,
-        this.totalShare,
-        this.users});
+      this.userId,
+      this.buildingId,
+      this.title,
+      this.residentType,
+      this.coreOpt,
+      this.boostLevelId,
+      this.type,
+      this.storyPost,
+      this.views,
+      this.text,
+      this.file,
+      this.status,
+      this.createdAt,
+      this.updatedAt,
+      this.totalLikes,
+      this.totalComments,
+      this.totalReport,
+      this.totalShare,
+      this.users});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -80,6 +82,7 @@ class Data {
     storyPost = json['story_post'];
     views = json['views'];
     text = json['text'];
+    title = json['title'];
     file = json['file'].cast<String>();
     status = json['status'];
     createdAt = json['created_at'];
@@ -105,6 +108,7 @@ class Data {
     data['coreOpt'] = this.coreOpt;
     data['boost_level_id'] = this.boostLevelId;
     data['type'] = this.type;
+    data['title'] = this.title;
     data['story_post'] = this.storyPost;
     data['views'] = this.views;
     data['text'] = this.text;
@@ -147,25 +151,25 @@ class Users {
 
   Users(
       {this.id,
-        this.role,
-        this.name,
-        this.email,
-        this.emailVerifiedAt,
-        this.dPassword,
-        this.mobileNo,
-        this.gender,
-        this.dateOfBirth,
-        this.address,
-        this.psLatitude,
-        this.psLongitude,
-        this.fcmToken,
-        this.forgetPassKey,
-        this.moduleLock,
-        this.status,
-        this.profile,
-        this.createdAt,
-        this.updatedAt,
-        this.profiles});
+      this.role,
+      this.name,
+      this.email,
+      this.emailVerifiedAt,
+      this.dPassword,
+      this.mobileNo,
+      this.gender,
+      this.dateOfBirth,
+      this.address,
+      this.psLatitude,
+      this.psLongitude,
+      this.fcmToken,
+      this.forgetPassKey,
+      this.moduleLock,
+      this.status,
+      this.profile,
+      this.createdAt,
+      this.updatedAt,
+      this.profiles});
 
   Users.fromJson(Map<String, dynamic> json) {
     id = json['id'];

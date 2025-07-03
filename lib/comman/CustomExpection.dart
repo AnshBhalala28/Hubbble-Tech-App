@@ -6,8 +6,6 @@ class CustomException implements Exception {
   CustomException([this._message, this._prefix, this.context]);
 
   String toString() {
-    // Utils.dismissProgressBar(context);
-
     return "$_prefix$_message";
   }
 }

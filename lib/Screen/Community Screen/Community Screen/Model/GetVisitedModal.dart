@@ -34,7 +34,12 @@ class Data {
   Business? business;
   UserDetails? userDetails;
 
-  Data({this.businessId, this.isVisited,   this.distanceToBusiness, this.business, this.userDetails});
+  Data(
+      {this.businessId,
+      this.isVisited,
+      this.distanceToBusiness,
+      this.business,
+      this.userDetails});
 
   Data.fromJson(Map<String, dynamic> json) {
     businessId = json['business_id'];

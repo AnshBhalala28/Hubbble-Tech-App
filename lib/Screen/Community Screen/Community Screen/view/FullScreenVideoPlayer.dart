@@ -50,11 +50,9 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
       });
     controller.setLooping(true);
 
-    // Load like status from SharedPreferences
     _loadLikeStatus();
   }
 
-  // Load like status from SharedPreferences
   Future<void> _loadLikeStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final userId = loginModel?.data?.user?.id.toString() ?? '';
@@ -64,7 +62,6 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
     });
   }
 
-  // Save like status to SharedPreferences
   Future<void> _saveLikeStatus(bool liked) async {
     final prefs = await SharedPreferences.getInstance();
     final userId = loginModel?.data?.user?.id.toString() ?? '';
@@ -77,13 +74,11 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
     hideTimer?.cancel();
     controller.dispose();
 
-    //  Dwell time calculation before screen dispose
     endTime = DateTime.now();
     final dwellDuration = endTime!.difference(startTime!);
     final secondsWatched = dwellDuration.inSeconds;
 
     if (secondsWatched > 3) {
-      // Optional: Filter out quick exits
       videodwelltimeapi(secondsWatched);
     }
 
@@ -95,7 +90,6 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
       isPlayPauseVisible = true;
     });
 
-    // Auto-hide the controls after 2 seconds
     hideTimer?.cancel();
     hideTimer = Timer(const Duration(seconds: 2), () {
       if (mounted) {
@@ -116,9 +110,8 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
     });
   }
 
-  // Function to handle like/unlike
   void handleLikeToggle() {
-    if (isLikeInProgress) return; // Prevent multiple rapid clicks
+    if (isLikeInProgress) return;
 
     setState(() {
       isLikeInProgress = true;
@@ -153,7 +146,6 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
               )
             else
               const Center(child: CircularProgressIndicator()),
-            // Close Button (top-right)
             Positioned(
               top: 3.h,
               right: 3.w,
@@ -168,8 +160,6 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                 ),
               ),
             ),
-
-            // Like Button (bottom-right)
             Positioned(
               bottom: 5.h,
               right: 3.w,
@@ -188,13 +178,12 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                 ),
               ),
             ),
-
             if (isPlayPauseVisible)
               Center(
                 child: GestureDetector(
                   onTap: () {
                     _togglePlayPause();
-                    // Reset the timer when explicitly toggling playback
+
                     hideTimer?.cancel();
                     hideTimer = Timer(const Duration(seconds: 2), () {
                       if (mounted) {
@@ -233,16 +222,13 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
             var responseData = json.decode(response.body);
             postlikemodel = PostLikeModel.fromJson(responseData);
 
-            // Update like state based on API response
             setState(() {
               isLiked = !isLiked;
               isLikeInProgress = false;
             });
 
-            // Save the updated like status to SharedPreferences
             _saveLikeStatus(isLiked);
 
-            // Show success message
             if (isLiked) {
               print("Post liked successfully");
             } else {
@@ -328,15 +314,11 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
     });
   }
 
-  // Calculate the scale to ensure video covers the full screen
-  // while maintaining aspect ratio (like Reels/Snapchat)
   double _calculateScale(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
     final double screenAspect = screenSize.width / screenSize.height;
     final double videoAspect = controller.value.aspectRatio;
 
-    // If video is wider than screen, scale by height
-    // If video is taller than screen, scale by width
     if (videoAspect > screenAspect) {
       return screenSize.height / (screenSize.width / videoAspect);
     } else {

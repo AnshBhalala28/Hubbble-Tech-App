@@ -6,12 +6,14 @@ class CustomExpansionTile extends StatefulWidget {
   final String title;
   final IconData leadingIcon;
   final List<Widget> children;
+  final double? fontSize;
 
   const CustomExpansionTile({
     super.key,
     required this.title,
     required this.leadingIcon,
     required this.children,
+    this.fontSize,
   });
 
   @override
@@ -49,9 +51,8 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
                       style: TextStyle(
                         fontFamily: 'Manrope',
                         color: Colors.black,
-                        fontSize: 18.sp,
+                        fontSize:widget.fontSize==null? 18.sp:widget.fontSize,
                         letterSpacing: 1,
-                        // fontWeight: FontWeight.bold
                       ),
                     ),
                   ],

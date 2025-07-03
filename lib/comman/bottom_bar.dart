@@ -1,13 +1,12 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Screen/Add%20to%20Cart/view/add_to_cart_view.dart';
 import 'package:wavee/Screen/Chatscreen/View/chatscreen.dart';
 import 'package:wavee/Screen/Community%20Screen/Community%20Screen/view/community_screen.dart';
-import 'package:wavee/Screen/Message_board/View/messageboard.dart';
-import 'package:wavee/Screen/Oredrscreen/View/order_screen_view.dart';
 import 'package:wavee/comman/const.dart';
 
 import '../Screen/HomeNewPage/View/homenewpage.dart';
@@ -31,7 +30,7 @@ class _Bottom_barState extends State<Bottom_bar> {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: Colors.white, // 🔹 Changed to White
+            color: Colors.white,
           ),
           height: Platform.isAndroid ? 10.h : 12.h,
           width: MediaQuery.of(context).size.width,
@@ -40,37 +39,40 @@ class _Bottom_barState extends State<Bottom_bar> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildNavItem(
-                icon: CupertinoIcons.home,
+                svgIconPath: AppConstants.home,
                 label: "Home",
                 index: 1,
-                onTap:
-                    () => Get.offAll(
-                      () => HomeNewPage(selected: 1, userName: ""),
-                    ),
+                onTap: () => Get.offAll(
+                  () => HomePage(
+                    selected: 1,
+                    userName: "",
+                  ),
+                ),
               ),
               _buildNavItem(
-                icon: CupertinoIcons.chat_bubble_2,
-                label: "Chat",
-                index: 2,
-                onTap: () => Get.offAll(() => ChatScreen(selected: 2)),
-              ),
-              _buildNavItem(
-                icon: CupertinoIcons.location_solid,
+                svgIconPath: AppConstants.community,
                 label: "Community",
+                index: 2,
+                onTap: () => Get.offAll(() => CommunityScreen(
+                      selected: 2,
+                    )),
+              ),
+              _buildNavItem(
+                svgIconPath: AppConstants.chat1,
+                label: "Chat",
                 index: 3,
-                onTap: () => Get.offAll(() => CommunityScreen(selected: 3)),
+                onTap: () => Get.offAll(() => ChatScreen(
+                      selected: 3,
+                    )),
               ),
               _buildNavItem(
-                icon: CupertinoIcons.conversation_bubble,
-                label: "Board",
+                svgIconPath: AppConstants.cart,
+                label: "My Cart",
                 index: 4,
-                onTap: () => Get.offAll(() => Messageboard(selected: 4)),
-              ),
-              _buildNavItem(
-                icon: Icons.shopping_cart,
-                label: "Orders",
-                index: 5,
-                onTap: () => Get.offAll(() => Order_Screen(selected: 5)),
+                onTap: () => Get.offAll(() => AddToCartView(
+                      selected: 4,
+                      fromBottomBar: true,
+                    )),
               ),
             ],
           ),
@@ -80,7 +82,7 @@ class _Bottom_barState extends State<Bottom_bar> {
   }
 
   Widget _buildNavItem({
-    required IconData icon,
+    required String svgIconPath,
     required String label,
     required int index,
     required Function() onTap,
@@ -98,13 +100,11 @@ class _Bottom_barState extends State<Bottom_bar> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(
-            icon,
-            size: 22.sp,
-            color:
-                widget.selected == index
-                    ? AppColors.maincolor
-                    : Colors.grey, // 🔹 Icon Color Change
+          SvgPicture.asset(
+            svgIconPath,
+            height: 22.sp,
+            width: 22.sp,
+            color: widget.selected == index ? AppColors.maincolor : Colors.grey,
           ),
           SizedBox(
             width: 19.w,
@@ -112,11 +112,9 @@ class _Bottom_barState extends State<Bottom_bar> {
               label,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color:
-                    widget.selected == index
-                        ? AppColors.maincolor
-                        : Colors.grey,
-                // 🔹 Text Color Change
+                color: widget.selected == index
+                    ? AppColors.maincolor
+                    : Colors.grey,
                 fontSize: 14.5.sp,
                 fontFamily: AppConstants.manrope,
               ),
@@ -128,10 +126,9 @@ class _Bottom_barState extends State<Bottom_bar> {
             width: 11.w,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
-              color:
-                  widget.selected == index
-                      ? AppColors.maincolor
-                      : Colors.transparent,
+              color: widget.selected == index
+                  ? AppColors.maincolor
+                  : Colors.transparent,
             ),
           ),
         ],

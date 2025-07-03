@@ -12,7 +12,6 @@ import 'package:permission_handler/permission_handler.dart';
 Future<bool> requestStoragePermission() async {
   if (Platform.isAndroid) {
     if (await _isAndroid13orAbove()) {
-      // Request permissions for Android 13 and above
       var imageResult = await Permission.photos.request();
       var videoResult = await Permission.videos.request();
       var audioResult = await Permission.audio.request();
@@ -21,39 +20,32 @@ Future<bool> requestStoragePermission() async {
           videoResult.isGranted &&
           audioResult.isGranted;
     } else {
-      // For Android 12 and below
       var status = await Permission.storage.request();
       if (status.isGranted) {
         return true;
       } else if (status.isPermanentlyDenied) {
-        // Handle "Don't ask again" scenario
         openAppSettings();
       }
     }
   } else if (Platform.isIOS) {
-    // iOS does not require explicit storage permissions
     return true;
   }
   return false;
 }
 
-// Check if the device is Android 13 or above
 Future<bool> _isAndroid13orAbove() async {
   return (await DeviceInfoPlugin().androidInfo).version.sdkInt >= 33;
 }
 
-// Get the appropriate download directory
 Future<Directory?> getDownloadDirectory() async {
   if (Platform.isAndroid) {
-    return Directory(
-        '/storage/emulated/0/Download'); // Android Downloads folder
+    return Directory('/storage/emulated/0/Download');
   } else if (Platform.isIOS) {
-    return await getApplicationDocumentsDirectory(); // iOS Documents directory
+    return await getApplicationDocumentsDirectory();
   }
   return null;
 }
 
-// Download file with progress dialog
 Future<void> downloadFile(
     String url, BuildContext context, String filename, String extension) async {
   try {
@@ -70,21 +62,17 @@ Future<void> downloadFile(
         throw Exception("Downloads directory not found");
       }
 
-      // Create a specific folder for your app inside the Downloads directory
       Directory appDir = Directory('${downloadDir.path}/Project Manager');
       if (!appDir.existsSync()) {
         appDir.createSync(recursive: true);
       }
 
-      // Generate a unique filename with timestamp
       String formattedTime =
           DateFormat('yyyy-MM-dd-hh-mm-ss-a').format(DateTime.now());
       String filePath = '${appDir.path}/$filename-$formattedTime.$extension';
 
-      // Create a ValueNotifier to track download progress
       ValueNotifier<double> downloadProgress = ValueNotifier(0.0);
 
-      // Show the progress dialog with current file name and progress
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -126,7 +114,6 @@ Future<void> downloadFile(
                             height: 60,
                             child: CircularProgressIndicator(
                               value: 1.0,
-                              // Full circle for background
                               color: Colors.grey.shade200,
                               strokeWidth: 6.0,
                             ),
@@ -159,7 +146,6 @@ Future<void> downloadFile(
         },
       );
 
-      // Download the file and track progress
       await dio.download(
         url,
         filePath,
@@ -170,10 +156,8 @@ Future<void> downloadFile(
         },
       );
 
-      // Close the progress dialog once download completes
       Navigator.of(context).pop();
 
-      // Show success toast message
       Fluttertoast.showToast(
         msg: "File downloaded successfully: $filePath",
         toastLength: Toast.LENGTH_LONG,
@@ -183,7 +167,6 @@ Future<void> downloadFile(
         fontSize: 16.0,
       );
     } else {
-      // Handle permission denial
       Fluttertoast.showToast(
         msg: "Storage permission denied",
         toastLength: Toast.LENGTH_LONG,
@@ -194,10 +177,8 @@ Future<void> downloadFile(
       );
     }
   } catch (e) {
-    // Close the progress dialog if an error occurs
     Navigator.of(context).pop();
 
-    // Show error toast message
     Fluttertoast.showToast(
       msg: "Error: $e",
       toastLength: Toast.LENGTH_LONG,

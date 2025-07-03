@@ -43,9 +43,9 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
     if (dateTime == null || dateTime.isEmpty) return "N/A";
     try {
       DateTime parsedDate = DateTime.parse(dateTime);
-      return DateFormat("dd-MM-yyyy").format(parsedDate); // Format: 2025-03-1
+      return DateFormat("dd-MM-yyyy").format(parsedDate);
     } catch (e) {
-      return "N/A"; // Error handle
+      return "N/A";
     }
   }
 
@@ -71,7 +71,6 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
       body: Stack(
         children: [
           Container(
-            // color: AppColors.bgcolor,
             padding: EdgeInsets.symmetric(horizontal: 1.2.h, vertical: 1.w),
             child: SingleChildScrollView(
               child: Column(
@@ -84,7 +83,6 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                     },
                   ),
                   SizedBox(height: 2.h),
-                  // SizedBox(height: 2.h),
                   SizedBox(
                     height: 6.h,
                     child: LayoutBuilder(
@@ -103,7 +101,6 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                                     setState(() {
                                       selectedCategory = index;
                                     });
-                                    //ParselViewApi();
                                   }
                                 },
                                 child: Container(
@@ -114,7 +111,7 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                                     border: Border.all(
                                         width: 0.5, color: Colors.grey),
                                     color: selectedCategory == index
-                                        ? Color(0xFF734F96)
+                                        ? AppColors.maincolor
                                         : Colors.white,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -144,95 +141,7 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                       },
                     ),
                   ),
-                  // SizedBox(height: 1.h),
-
-                  // if (selectedCategory == 1) ...[
-                  //   SizedBox(
-                  //     height: 6.h,
-                  //     child: LayoutBuilder(
-                  //       builder: (context, constraints) {
-                  //         double itemWidth = (constraints.maxWidth - 9.4.w) / 2;
-                  //
-                  //         return ListView.builder(
-                  //           scrollDirection: Axis.horizontal,
-                  //           itemCount: localSubCategories.length,
-                  //           padding: EdgeInsets.zero,
-                  //           itemBuilder: (context, index) {
-                  //             return Padding(
-                  //               padding: EdgeInsets.symmetric(horizontal: 2.w),
-                  //               child: InkWell(
-                  //                 onTap: () {
-                  //                   if (selectedLocalSubCategory != index) {
-                  //                     setState(() {
-                  //                       selectedLocalSubCategory = index;
-                  //                     });
-                  //                   }
-                  //                 },
-                  //                 child: Container(
-                  //                   height: 6.h,
-                  //                   width: itemWidth,
-                  //                   alignment: Alignment.center,
-                  //                   decoration: BoxDecoration(
-                  //                     border: Border.all(
-                  //                         width: 0.5, color: Colors.grey),
-                  //                     color: selectedLocalSubCategory == index
-                  //                         ? Color(0xFF734F96)
-                  //                         : Colors.white,
-                  //                     borderRadius: BorderRadius.circular(10),
-                  //                   ),
-                  //                   child: Padding(
-                  //                     padding:
-                  //                         EdgeInsets.symmetric(horizontal: 2.w),
-                  //                     child: Row(
-                  //                       mainAxisAlignment:
-                  //                           MainAxisAlignment.center,
-                  //                       children: [
-                  //                         Icon(
-                  //                           localSubCategories[index] == 'Group'
-                  //                               ? Icons.group
-                  //                               : Icons.person,
-                  //                           color: selectedLocalSubCategory ==
-                  //                                   index
-                  //                               ? Colors.white
-                  //                               : Colors.black,
-                  //                           size: 18.sp,
-                  //                         ),
-                  //                         SizedBox(width: 1.w),
-                  //                         Flexible(
-                  //                           child: Text(
-                  //                             localSubCategories[index],
-                  //                             style: TextStyle(
-                  //                               fontSize: 16.sp,
-                  //                               color:
-                  //                                   selectedLocalSubCategory ==
-                  //                                           index
-                  //                                       ? Colors.white
-                  //                                       : Colors.black,
-                  //                               fontFamily:
-                  //                                   AppConstants.manrope,
-                  //                               fontWeight: FontWeight.bold,
-                  //                               letterSpacing: 1,
-                  //                             ),
-                  //                             textAlign: TextAlign.center,
-                  //                             overflow: TextOverflow.ellipsis,
-                  //                           ),
-                  //                         ),
-                  //                       ],
-                  //                     ),
-                  //                   ),
-                  //                 ),
-                  //               ),
-                  //             );
-                  //           },
-                  //         );
-                  //       },
-                  //     ),
-                  //   ),
-                  // ],
-
-                  // SizedBox(height: 1.h),
                   if (selectedCategory == 0) ...[
-                    // "My Request" section
                     SizedBox(height: 2.h),
                     isLoading
                         ? Loader().paddingOnly(top: 30.h)
@@ -287,7 +196,6 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                                             ],
                                           ),
                                           child: Row(
-                                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               ClipOval(
                                                 child: CachedNetworkImage(
@@ -296,13 +204,10 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                                                           ?.toString() ??
                                                       "",
                                                   width: 80,
-                                                  // Set fixed width
                                                   height: 80,
-                                                  // Set fixed height
                                                   fit: BoxFit.cover,
                                                   placeholder: (context, url) =>
                                                       CircularProgressIndicator(),
-                                                  // Optional
                                                   errorWidget:
                                                       (context, url, error) =>
                                                           Image.asset(
@@ -313,10 +218,7 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                                                   ),
                                                 ),
                                               ),
-
                                               SizedBox(width: 2.w),
-
-                                              // Request Info
                                               Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -373,8 +275,6 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                                                   )
                                                 ],
                                               ),
-
-                                              // Buttons and Status
                                             ],
                                           ),
                                         );
@@ -509,267 +409,6 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                             },
                           )
                   ],
-
-                  // if (selectedCategory == 1 &&
-                  //     selectedLocalSubCategory == 0) ...[
-                  //   // 👥 Group Requests
-                  //   SizedBox(height: 2.h),
-                  //   myGroupRequestModel?.data?.length == 0 ||
-                  //           myGroupRequestModel?.data?.length == null
-                  //       ? Center(
-                  //           child: Text(
-                  //             "No Friends Request Avaiable213",
-                  //             style: TextStyle(
-                  //               fontSize: 16.sp,
-                  //               fontFamily: AppConstants.manrope,
-                  //               fontWeight: FontWeight.bold,
-                  //             ),
-                  //           ),
-                  //         ).paddingOnly(top: 20.h)
-                  //       : ListView.builder(
-                  //           shrinkWrap: true,
-                  //           physics: NeverScrollableScrollPhysics(),
-                  //           itemCount: myGroupRequestModel?.data?.length,
-                  //           padding: EdgeInsets.zero,
-                  //           itemBuilder: (context, index) {
-                  //             var request = myGroupRequestModel?.data?[index];
-                  //             return Container(
-                  //               height: 13.h,
-                  //               margin: EdgeInsets.symmetric(vertical: 1.h),
-                  //               padding: EdgeInsets.all(2.w),
-                  //               decoration: BoxDecoration(
-                  //                 color: Colors.white,
-                  //                 borderRadius: BorderRadius.circular(10),
-                  //                 boxShadow: [
-                  //                   BoxShadow(
-                  //                     color: Colors.grey.withOpacity(0.2),
-                  //                     blurRadius: 5,
-                  //                     offset: Offset(0, 3),
-                  //                   ),
-                  //                 ],
-                  //               ),
-                  //               child: Row(
-                  //                 children: [
-                  //                   ClipOval(
-                  //                     child: (request?.group?.images != null &&
-                  //                             request!
-                  //                                 .group!.images!.isNotEmpty)
-                  //                         ? CachedNetworkImage(
-                  //                             imageUrl: request!.group!.images!,
-                  //                             width: 80,
-                  //                             height: 80,
-                  //                             fit: BoxFit.cover,
-                  //                             placeholder: (context, url) =>
-                  //                                 CircularProgressIndicator(),
-                  //                             errorWidget:
-                  //                                 (context, url, error) =>
-                  //                                     Image.asset(
-                  //                               "assets/images/waveeLogoShort.png",
-                  //                               fit: BoxFit.cover,
-                  //                               width: 80,
-                  //                               height: 80,
-                  //                             ),
-                  //                           )
-                  //                         : Image.asset(
-                  //                             "assets/images/waveeLogoShort.png",
-                  //                             fit: BoxFit.cover,
-                  //                             width: 80,
-                  //                             height: 80,
-                  //                           ),
-                  //                   ),
-                  //                   SizedBox(width: 2.w),
-                  //                   Column(
-                  //                     crossAxisAlignment:
-                  //                         CrossAxisAlignment.start,
-                  //                     children: [
-                  //                       Text(
-                  //                         request?.group?.name.toString() ?? "",
-                  //                         style: TextStyle(
-                  //                           fontSize: 16.sp,
-                  //                           fontWeight: FontWeight.bold,
-                  //                         ),
-                  //                       ),
-                  //                       SizedBox(height: 0.5.h),
-                  //                       Text(
-                  //                         'Group Request at: ${formatDate(request?.createdAt)}',
-                  //                         style: TextStyle(
-                  //                             fontSize: 13.sp,
-                  //                             color: Colors.black),
-                  //                       ),
-                  //                       SizedBox(height: 1.h),
-                  //                       Row(
-                  //                         children: [
-                  //                           batan(
-                  //                             title: "Reject",
-                  //                             route: () {
-                  //                               RequestGroupActionApi(
-                  //                                   request?.id.toString() ??
-                  //                                       "",
-                  //                                   "reject");
-                  //                             },
-                  //                             color: AppColors.maincolor,
-                  //                             fontcolor: Colors.white,
-                  //                             height: 5.h,
-                  //                             width: 32.w,
-                  //                             radius: 12.sp,
-                  //                             fontsize: 16.sp,
-                  //                           ),
-                  //                           SizedBox(width: 1.h),
-                  //                           batan(
-                  //                             title: "Accept",
-                  //                             route: () {
-                  //                               RequestGroupActionApi(
-                  //                                   request?.id.toString() ??
-                  //                                       "",
-                  //                                   "accept");
-                  //                             },
-                  //                             color: AppColors.maincolor,
-                  //                             fontcolor: Colors.white,
-                  //                             height: 5.h,
-                  //                             width: 32.w,
-                  //                             radius: 12.sp,
-                  //                             fontsize: 16.sp,
-                  //                           )
-                  //                         ],
-                  //                       )
-                  //                     ],
-                  //                   ),
-                  //                 ],
-                  //               ),
-                  //             );
-                  //           },
-                  //         )
-                  // ] else if (selectedCategory == 1 &&
-                  //     selectedLocalSubCategory == 1) ...[
-                  //   // 👤 Friend Requests
-                  //   SizedBox(height: 2.h),
-                  //   onGoingFreindRequestModel?.data?.requests?.length == null ||
-                  //           onGoingFreindRequestModel?.data?.requests?.length ==
-                  //               0
-                  //       ? Center(
-                  //           child: Text(
-                  //             "No Friends Request Avaiable",
-                  //             style: TextStyle(
-                  //               fontSize: 16.sp,
-                  //               fontFamily: AppConstants.manrope,
-                  //               fontWeight: FontWeight.bold,
-                  //             ),
-                  //           ),
-                  //         ).paddingOnly(top: 20.h)
-                  //       : ListView.builder(
-                  //           shrinkWrap: true,
-                  //           physics: NeverScrollableScrollPhysics(),
-                  //           itemCount: onGoingFreindRequestModel
-                  //                   ?.data?.requests?.length ??
-                  //               0,
-                  //           padding: EdgeInsets.zero,
-                  //           itemBuilder: (context, index) {
-                  //             var request = onGoingFreindRequestModel
-                  //                 ?.data?.requests?[index];
-                  //             return Container(
-                  //               height: 13.h,
-                  //               margin: EdgeInsets.symmetric(vertical: 1.h),
-                  //               padding: EdgeInsets.all(2.w),
-                  //               decoration: BoxDecoration(
-                  //                 color: Colors.white,
-                  //                 borderRadius: BorderRadius.circular(10),
-                  //                 boxShadow: [
-                  //                   BoxShadow(
-                  //                     color: Colors.grey.withOpacity(0.2),
-                  //                     blurRadius: 5,
-                  //                     offset: Offset(0, 3),
-                  //                   ),
-                  //                 ],
-                  //               ),
-                  //               child: Row(
-                  //                 children: [
-                  //                   ClipOval(
-                  //                     child: CachedNetworkImage(
-                  //                       imageUrl: request
-                  //                               ?.requestedUserName?.profile
-                  //                               ?.toString() ??
-                  //                           "",
-                  //                       width: 80,
-                  //                       // Set fixed width
-                  //                       height: 80,
-                  //                       // Set fixed height
-                  //                       fit: BoxFit.cover,
-                  //                       placeholder: (context, url) =>
-                  //                           CircularProgressIndicator(),
-                  //                       // Optional
-                  //                       errorWidget: (context, url, error) =>
-                  //                           Image.asset(
-                  //                         "assets/images/waveeLogoShort.png",
-                  //                         fit: BoxFit.cover,
-                  //                         width: 80,
-                  //                         height: 80,
-                  //                       ),
-                  //                     ),
-                  //                   ),
-                  //                   SizedBox(width: 2.w),
-                  //                   Column(
-                  //                     crossAxisAlignment:
-                  //                         CrossAxisAlignment.start,
-                  //                     children: [
-                  //                       Text(
-                  //                         "${request?.requestedUserName?.firstName.toString() ?? ""} ${request?.requestedUserName?.lastName.toString() ?? ""}",
-                  //                         style: TextStyle(
-                  //                           fontSize: 16.sp,
-                  //                           fontWeight: FontWeight.bold,
-                  //                         ),
-                  //                       ),
-                  //                       SizedBox(height: 0.5.h),
-                  //                       Text(
-                  //                         'Friend Request at: ${formatDate(request?.createdAt.toString() ?? "")}',
-                  //                         style: TextStyle(
-                  //                             fontSize: 13.sp,
-                  //                             color: Colors.black),
-                  //                       ),
-                  //                       SizedBox(height: 1.h),
-                  //                       Row(
-                  //                         children: [
-                  //                           batan(
-                  //                             title: "Reject",
-                  //                             route: () {
-                  //                               RequestActionApi(
-                  //                                   request?.id.toString() ??
-                  //                                       '',
-                  //                                   'Rejected');
-                  //                             },
-                  //                             color: AppColors.maincolor,
-                  //                             fontcolor: Colors.white,
-                  //                             height: 5.h,
-                  //                             width: 32.w,
-                  //                             radius: 12.sp,
-                  //                             fontsize: 16.sp,
-                  //                           ),
-                  //                           SizedBox(width: 1.h),
-                  //                           batan(
-                  //                             title: "Accept",
-                  //                             route: () {
-                  //                               log("id ave che single ${request?.id.toString() ?? ''}");
-                  //                               RequestActionApi(
-                  //                                   request?.id.toString() ??
-                  //                                       '',
-                  //                                   'Accepted');
-                  //                             },
-                  //                             color: AppColors.maincolor,
-                  //                             fontcolor: Colors.white,
-                  //                             height: 5.h,
-                  //                             width: 32.w,
-                  //                             radius: 12.sp,
-                  //                             fontsize: 16.sp,
-                  //                           )
-                  //                         ],
-                  //                       )
-                  //                     ],
-                  //                   ),
-                  //                 ],
-                  //               ),
-                  //             );
-                  //           },
-                  //         )
-                  // ],
                   SizedBox(
                     height: 8.h,
                   )
@@ -786,25 +425,25 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
             ),
         ],
       ),
-      floatingActionButton: isLoading || selectedCategory != 0
-          ? Container()
-          : FloatingActionButton.extended(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(900)),
-              backgroundColor: Colors.white,
-              onPressed: () {
-                Get.to(() => const ChatBotScreen());
-              },
-              icon: Icon(CupertinoIcons.chat_bubble_2, color: Colors.black),
-              label: Text(
-                "Ai Concierge",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16.sp,
-                    fontFamily: AppConstants.manrope),
-              ),
-            ),
+      // floatingActionButton: isLoading || selectedCategory != 0
+      //     ? Container()
+      //     : FloatingActionButton.extended(
+      //         shape: RoundedRectangleBorder(
+      //             borderRadius: BorderRadius.circular(900)),
+      //         backgroundColor: Colors.white,
+      //         onPressed: () {
+      //           Get.to(() => const ChatBotScreen());
+      //         },
+      //         icon: Icon(CupertinoIcons.chat_bubble_2, color: Colors.black),
+      //         label: Text(
+      //           "Ai Concierge",
+      //           style: TextStyle(
+      //               color: Colors.black,
+      //               fontWeight: FontWeight.w600,
+      //               fontSize: 16.sp,
+      //               fontFamily: AppConstants.manrope),
+      //         ),
+      //       ),
     );
   }
 
@@ -885,12 +524,10 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
       "id": id,
       "action_type": action,
     };
-    log("data jay che che action na @ ${data}");
+    log("ADD DATA ${data}");
     checkInternet().then((internet) async {
       if (internet) {
         MyRequestProvider().RequestActionApi(data).then((response) async {
-          // productViewModel =
-          //     ProductViewModel.fromJson(jsonDecode(response.body));
           if (response.statusCode == 200) {
             print("adfdsfsdf${response.body}");
 
@@ -923,12 +560,10 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
       "group_id": id,
       "action": action,
     };
-    log("data jay che che action na @ ${data}");
+    log("Data ADD${data}");
     checkInternet().then((internet) async {
       if (internet) {
         MyRequestProvider().RequestActionGroupApi(data).then((response) async {
-          // productViewModel =
-          //     ProductViewModel.fromJson(jsonDecode(response.body));
           if (response.statusCode == 200) {
             print("adfdsfsdf${response.body}");
 

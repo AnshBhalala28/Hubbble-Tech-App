@@ -57,12 +57,7 @@ class Data {
     messageType = json['message_type'];
     message = json['message'];
     isRead = json['is_read'];
-    // if (json['file'] != null) {
-    //   file = <Null>[];
-    //   json['file'].forEach((v) {
-    //     file!.add(new Null.fromJson(v));
-    //   });
-    // }
+
     file = json['file'] != null ? List<String>.from(json['file']) : null;
     type = json['type'];
     msgTo = json['msg_to'];
@@ -83,9 +78,7 @@ class Data {
     if (file != null) {
       data['file'] = file;
     }
-    // if (this.file != null) {
-    //   data['file'] = this.file!.map((v) => v.toJson()).toList();
-    // }
+
     data['type'] = this.type;
     data['msg_to'] = this.msgTo;
     data['receiver_id'] = this.receiverId;

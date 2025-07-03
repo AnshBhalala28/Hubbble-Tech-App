@@ -12,15 +12,17 @@ showSnackBar({
   IconName,
 }) {
   return Get.snackbar(
-    title, // title
-    message, // message
+    title,
+    message,
     backgroundColor: backgoundColor ?? AppColors.maincolor,
     colorText: ColorText ?? Colors.white,
-    icon: Icon(IconName ?? Icons.error, color: IconColor ?? Colors.white),
+    icon: Icon(
+      IconName ?? Icons.error,
+      color: IconColor ?? Colors.white,
+    ),
     onTap: ontap,
     shouldIconPulse: true,
     barBlur: 10,
-
     isDismissible: true,
     duration: const Duration(seconds: 2),
   );

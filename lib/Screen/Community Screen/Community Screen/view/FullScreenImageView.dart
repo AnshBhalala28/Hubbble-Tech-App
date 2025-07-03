@@ -37,13 +37,12 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
   @override
   void initState() {
     super.initState();
-    startTime = DateTime.now(); // Start tracking time here
+    startTime = DateTime.now();
     PostAsViewedap();
-    // Load like status from SharedPreferences
+
     _loadLikeStatus();
   }
 
-  // Load like status from SharedPreferences
   Future<void> _loadLikeStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final userId = loginModel?.data?.user?.id.toString() ?? '';
@@ -53,7 +52,6 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
     });
   }
 
-  // Save like status to SharedPreferences
   Future<void> _saveLikeStatus(bool liked) async {
     final prefs = await SharedPreferences.getInstance();
     final userId = loginModel?.data?.user?.id.toString() ?? '';
@@ -73,13 +71,11 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
 
   @override
   void dispose() {
-    //  Dwell time calculation before screen dispose
     endTime = DateTime.now();
     final dwellDuration = endTime!.difference(startTime!);
     final secondsWatched = dwellDuration.inSeconds;
 
     if (secondsWatched > 3) {
-      // Optional: Filter out quick exits
       imagedwelltimeapi(secondsWatched);
     }
 
@@ -92,7 +88,6 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Fullscreen Centered Image
           Container(
             width: 100.w,
             height: 100.h,
@@ -105,8 +100,6 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
                   const Icon(Icons.error, color: Colors.white),
             ),
           ),
-
-          // Close Button - Top Right with Gray Circle Background
           Positioned(
             top: 3.h,
             right: 3.w,
@@ -122,8 +115,6 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
               ),
             ),
           ),
-
-          // Like Button - Bottom Left with Gray Circle Background
           Positioned(
             bottom: 5.h,
             right: 5.w,
@@ -168,7 +159,6 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
               isLikeInProgress = false;
             });
 
-            // Save the updated like status to SharedPreferences
             _saveLikeStatus(isLiked);
 
             print(isLiked

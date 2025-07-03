@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/Screen/Booking/Model/event_detail_model.dart';
-import 'package:wavee/Screen/Booking/View/detailScreen.dart';
 import 'package:wavee/comman/Custom_AppBar.dart';
 import 'package:wavee/comman/SideMenu.dart';
 import 'package:wavee/comman/custom_batan.dart';
@@ -38,7 +37,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setState(() {
       isLoading = true;
@@ -56,7 +54,9 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
           SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(height: 4.h),
+                SizedBox(
+                  height: 4.h,
+                ),
                 TitleBar(
                   title: "Event Booking",
                   drawerCallback: () {
@@ -66,7 +66,9 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                     Get.back();
                   },
                 ),
-                SizedBox(height: 2.h),
+                SizedBox(
+                  height: 2.h,
+                ),
                 SizedBox(
                   height: 6.h,
                   child: ListView.builder(
@@ -86,16 +88,13 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                         child: Container(
                           height: 6.h,
                           padding: EdgeInsets.symmetric(
-                            vertical: 1.h,
-                            horizontal: 5.w,
-                          ),
+                              vertical: 1.h, horizontal: 5.w),
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             border: Border.all(width: 0.5, color: Colors.grey),
-                            color:
-                                selectedCategory == index
-                                    ? Color(0xFF734F96)
-                                    : Colors.white,
+                            color: selectedCategory == index
+                                ? AppColors.maincolor
+                                : Colors.white,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           margin: EdgeInsets.symmetric(horizontal: 1.2.w),
@@ -103,10 +102,9 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                             categories[index],
                             style: TextStyle(
                               fontSize: 16.sp,
-                              color:
-                                  selectedCategory == index
-                                      ? Colors.white
-                                      : Colors.black,
+                              color: selectedCategory == index
+                                  ? Colors.white
+                                  : Colors.black,
                               fontFamily: AppConstants.manrope,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1,
@@ -117,177 +115,180 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                     },
                   ),
                 ),
-                SizedBox(height: 2.h),
+                SizedBox(
+                  height: 2.h,
+                ),
                 isLoading
                     ? Center(child: Loader()).paddingOnly(top: 25.h)
                     : eventBookingModal?.data?.length == null ||
-                        eventBookingModal?.data?.length == 0
-                    ? Center(
-                      child: Text(
-                        "No Booking Available",
-                        style: TextStyle(
-                          fontSize: 17.sp,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.black,
-                          fontFamily: AppConstants.manrope,
-                        ),
-                      ).paddingOnly(top: 30.h),
-                    )
-                    : SizedBox(
-                      child: Column(
-                        children: [
-                          ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            physics: const NeverScrollableScrollPhysics(),
-                            padding: EdgeInsets.zero,
-                            // itemCount: filteredAmenities()?.length,
-                            itemCount: eventBookingModal?.data?.length ?? 0,
-                            itemBuilder: (context, index) {
-                              // var booking = filteredAmenities()?[index];
-                              var booking = eventBookingModal?.data?[index];
-                              return GestureDetector(
-                                onTap: () {
-                                  EventDetailApi(
-                                    booking?.eventId.toString() ?? "",
-                                  );
-                                  log(
-                                    "event id ave che che ${booking?.eventId.toString() ?? ""}",
-                                  );
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.2),
-                                        spreadRadius: 2,
-                                        blurRadius: 5,
-                                        offset: Offset(0, 3),
-                                      ),
-                                    ],
-                                  ),
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal: 1.w,
-                                    vertical: 1.h,
-                                  ),
-                                  padding: const EdgeInsets.all(12),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(width: 2.h),
-                                      Expanded(
-                                        child: Column(
+                            eventBookingModal?.data?.length == 0
+                        ? Center(
+                            child: Text(
+                              "No Booking Available",
+                              style: TextStyle(
+                                fontSize: 17.sp,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.black,
+                                fontFamily: AppConstants.manrope,
+                              ),
+                            ).paddingOnly(top: 30.h),
+                          )
+                        : SizedBox(
+                            child: Column(
+                              children: [
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: EdgeInsets.zero,
+                                  itemCount:
+                                      eventBookingModal?.data?.length ?? 0,
+                                  itemBuilder: (context, index) {
+                                    var booking =
+                                        eventBookingModal?.data?[index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        EventDetailApi(
+                                            booking?.eventId.toString() ?? "");
+                                        log("event id ave che che ${booking?.eventId.toString() ?? ""}");
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.2),
+                                              spreadRadius: 2,
+                                              blurRadius: 5,
+                                              offset: Offset(0, 3),
+                                            ),
+                                          ],
+                                        ),
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 1.w, vertical: 1.h),
+                                        padding: const EdgeInsets.all(12),
+                                        child: Row(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  formatDate(
-                                                    booking?.eventDate ?? "",
-                                                  ),
-                                                  style: TextStyle(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.black54,
-                                                  ),
-                                                ),
-                                                Spacer(),
-                                                Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                    horizontal: 10,
-                                                    vertical: 4,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: getStatusColor(
-                                                      booking?.status ?? '',
-                                                      booking?.rsvp,
-                                                      booking?.isAttended,
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          10,
+                                            SizedBox(width: 2.h),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        formatDate(booking
+                                                                ?.eventDate ??
+                                                            ""),
+                                                        style: TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.black54,
                                                         ),
+                                                      ),
+                                                      Spacer(),
+                                                      Container(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal: 10,
+                                                                vertical: 4),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: getStatusColor(
+                                                            booking?.status ??
+                                                                '',
+                                                            booking?.rsvp,
+                                                            booking?.isAttended,
+                                                          ),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                        child: Text(
+                                                          getDisplayStatus(
+                                                            booking?.status ??
+                                                                '',
+                                                            booking?.rsvp,
+                                                            booking?.isAttended,
+                                                          ),
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors.white,
+                                                            fontFamily:
+                                                                AppConstants
+                                                                    .manrope,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child: Text(
-                                                    getDisplayStatus(
-                                                      booking?.status ?? '',
-                                                      booking?.rsvp,
-                                                      booking?.isAttended,
-                                                    ),
+                                                  SizedBox(height: 1.h),
+                                                  Text(
+                                                    booking?.eventName ?? '',
                                                     style: TextStyle(
-                                                      fontSize: 12,
+                                                      fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Colors.white,
                                                       fontFamily:
                                                           AppConstants.manrope,
+                                                      color: Colors.black87,
                                                     ),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-
-                                            SizedBox(height: 1.h),
-
-                                            /// Amenity Name
-                                            Text(
-                                              booking?.eventName ?? '',
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                                color: Colors.black87,
-                                              ),
-                                            ),
-                                            SizedBox(height: 1.5.h),
-
-                                            /// Duration
-                                            Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.location_on,
-                                                  size: 16,
-                                                  color: Colors.black45,
-                                                ),
-                                                SizedBox(width: 4),
-                                                Text(
-                                                  booking?.eventLocation ?? "",
-                                                  style: TextStyle(
-                                                    fontSize: 13,
-                                                    color: Colors.black54,
+                                                  SizedBox(height: 1.5.h),
+                                                  Row(
+                                                    children: [
+                                                      Icon(Icons.location_on,
+                                                          size: 16,
+                                                          color:
+                                                              Colors.black45),
+                                                      SizedBox(width: 4),
+                                                      Text(
+                                                        booking?.eventLocation ??
+                                                            "",
+                                                        style: TextStyle(
+                                                            fontSize: 13,
+                                                            color:
+                                                                Colors.black54),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
                                           ],
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    );
+                                  },
                                 ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
+                              ],
+                            ),
+                          )
               ],
             ).paddingSymmetric(horizontal: 3.w, vertical: 2.h),
           ),
           if (isDetailLoading)
             Container(
               color: Colors.black.withOpacity(0.3),
-              child: Center(child: Loader()),
+              child: Center(
+                child: Loader(),
+              ),
             ),
           if (isRsvpLoading)
             Container(
               color: Colors.black.withOpacity(0.3),
-              child: Center(child: Loader()),
+              child: Center(
+                child: Loader(),
+              ),
             ),
         ],
       ),
@@ -374,19 +375,17 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
       case 3:
         return "rejected";
       default:
-        return ""; // For "All"
+        return "";
     }
   }
 
   Future<void> BookEventStatus() async {
-    String status = getStatusFromTab(selectedCategory); // 👈 Added line
+    String status = getStatusFromTab(selectedCategory);
 
     Map<String, String> data = {
       "user_id": loginModel?.data?.user?.id.toString() ?? "",
-      "status": status, // 👈 Use mapped status
+      "status": status,
     };
-
-    log("Data jay che che $data");
 
     checkInternet().then((internet) async {
       if (internet) {
@@ -394,23 +393,20 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
           var response = await AmenitiesProvider().EventBookingStatus(data);
           if (response.statusCode == 200) {
             log("API Response: ${response.body}");
-            eventBookingModal = EventBookingModal.fromJson(
-              jsonDecode(response.body),
-            );
+            eventBookingModal =
+                EventBookingModal.fromJson(jsonDecode(response.body));
 
             setState(() {
               isLoading = false;
             });
-            log(
-              "sucess response data avve che event booking no${response.body}",
-            );
+            log("sucess response data avve che event booking no${response.body}");
           } else {
             setState(() {
               isLoading = false;
             });
           }
         } catch (e, stackTrace) {
-          log("Error ave che $stackTrace");
+          log("Geeting Error $stackTrace");
           setState(() {
             isLoading = false;
           });
@@ -434,7 +430,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
       "event_id": eventId,
     };
 
-    log("Data jay che che $data");
+    log(" ADD DATA $data");
 
     checkInternet().then((internet) async {
       if (internet) {
@@ -442,24 +438,21 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
           var response = await AmenitiesProvider().EventBookingStatus(data);
           if (response.statusCode == 200) {
             log("API Response: ${response.body}");
-            eventDetailModel = EventDetailModel.fromJson(
-              jsonDecode(response.body),
-            );
+            eventDetailModel =
+                EventDetailModel.fromJson(jsonDecode(response.body));
 
             setState(() {
               isDetailLoading = false;
             });
             showEventDetailBottomSheet(context, eventDetailModel!);
-            log(
-              "sucess response data avve che event booking no${response.body}",
-            );
+            log("sucess response data avve che event booking no${response.body}");
           } else {
             setState(() {
               isDetailLoading = false;
             });
           }
         } catch (e, stackTrace) {
-          log("Error ave che $stackTrace");
+          log("Geeting Error $stackTrace");
           if (mounted) {
             setState(() {
               isDetailLoading = false;
@@ -476,9 +469,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
   }
 
   void showEventDetailBottomSheet(
-    BuildContext context,
-    EventDetailModel? booking,
-  ) {
+      BuildContext context, EventDetailModel? booking) {
     final event =
         booking?.data?.isNotEmpty == true ? booking!.data!.first : null;
 
@@ -517,9 +508,9 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
               _detailRow(
                 "Date",
                 event?.eventDate != null
-                    ? DateFormat(
-                      'dd MMM yyyy, hh:mm a',
-                    ).format(DateTime.parse(event!.eventDate!))
+                    ? DateFormat('dd MMM yyyy, hh:mm a').format(
+                        DateTime.parse(event!.eventDate!),
+                      )
                     : "-",
               ),
               _detailRow(
@@ -540,17 +531,15 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                       final rsvp = event?.rsvp?.toLowerCase();
                       if (rsvp == "accept" || rsvp == "maybe") {
                         _showAttendConfirmationDialog(
-                          context,
-                          event?.eventName ?? "",
-                          event?.eventId.toString() ?? "",
-                          event?.rsvp.toString(),
-                        );
+                            context,
+                            event?.eventName ?? "",
+                            event?.eventId.toString() ?? "",
+                            event?.rsvp.toString());
                       } else {
                         showRSVPDialog(
-                          context,
-                          event?.eventName ?? "this event",
-                          event?.eventId.toString() ?? "",
-                        );
+                            context,
+                            event?.eventName ?? "this event",
+                            event?.eventId.toString() ?? "");
                       }
                     } else {
                       Get.back();
@@ -571,41 +560,10 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
     );
   }
 
-  // bool hideAttendBatan(Data? event) {
-  //   if (event == null) return false;
-  //
-  //   final rsvp = event.rsvp?.toLowerCase();
-  //   final isRSVPed = rsvp == "accept" || rsvp == "maybe";
-  //
-  //   if (isRSVPed) {
-  //     if (event.eventDate != null) {
-  //       final eventDateTime = DateTime.tryParse(event.eventDate!);
-  //       if (eventDateTime != null) {
-  //         final now = DateTime.now();
-  //
-  //         // Just compare dates without time
-  //         final todayDate = DateTime(now.year, now.month, now.day);
-  //         final eventDate = DateTime(
-  //             eventDateTime.year, eventDateTime.month, eventDateTime.day);
-  //
-  //         final showAttend = todayDate.isAtSameMomentAs(eventDate) ||
-  //             todayDate.isAfter(eventDate);
-  //
-  //         print(
-  //             "Today: $todayDate, Event: $eventDate => showAttend: $showAttend");
-  //
-  //         return showAttend;
-  //       }
-  //     }
-  //     return false;
-  //   }
-  //
-  //   return true; // Show RSVP if not yet RSVPed
-  // }
   bool hideAttendBatan(Data? event) {
     if (event == null) return false;
     if (event.isAttended == 1) {
-      return false; // hide the button
+      return false;
     }
     final rsvp = event.rsvp?.toLowerCase();
     final isRSVPed = rsvp == "accept" || rsvp == "maybe";
@@ -621,13 +579,11 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
             eventDateTime.day,
           );
 
-          final showAttend =
-              todayDate.isAtSameMomentAs(eventDate) ||
+          final showAttend = todayDate.isAtSameMomentAs(eventDate) ||
               todayDate.isAfter(eventDate);
 
           print(
-            "Today: $todayDate, Event: $eventDate => showAttend: $showAttend",
-          );
+              "Today: $todayDate, Event: $eventDate => showAttend: $showAttend");
 
           return showAttend;
         }
@@ -659,19 +615,14 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
   }
 
   void _showAttendConfirmationDialog(
-    BuildContext context,
-    String eventName,
-    String eventid,
-    rsvp,
-  ) {
+      BuildContext context, String eventName, String eventid, rsvp) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) {
         return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           backgroundColor: Colors.white,
           insetPadding: EdgeInsets.symmetric(horizontal: 24),
           child: Padding(
@@ -679,19 +630,13 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Top icon
                 CircleAvatar(
                   backgroundColor: AppColors.maincolor.withOpacity(0.1),
                   radius: 32,
-                  child: Icon(
-                    Icons.how_to_reg,
-                    color: AppColors.maincolor,
-                    size: 36,
-                  ),
+                  child: Icon(Icons.how_to_reg,
+                      color: AppColors.maincolor, size: 36),
                 ),
                 SizedBox(height: 16),
-
-                // Title
                 Text(
                   "${loginModel?.data?.user?.name?.firstName ?? " "} ${loginModel?.data?.user?.name?.lastName ?? ""}",
                   style: TextStyle(
@@ -701,8 +646,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                   ),
                 ),
                 SizedBox(height: 8),
-
-                // Subtitle
                 Text(
                   "Do you want to mark yourself as attended for\n$eventName\?",
                   style: TextStyle(
@@ -713,11 +656,8 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 24),
-
-                // Action Buttons
                 Row(
                   children: [
-                    // No Button
                     Expanded(
                       child: OutlinedButton(
                         onPressed: () {
@@ -726,7 +666,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                           RSVPAttendApi(eventid, 'no', rsvp);
 
                           print("User chose: No");
-                          // NO logic here
                         },
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(color: Colors.grey.shade400),
@@ -738,16 +677,13 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                         child: const Text(
                           "No",
                           style: TextStyle(
-                            fontFamily: AppConstants.manrope,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.black,
-                          ),
+                              fontFamily: AppConstants.manrope,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.black),
                         ),
                       ),
                     ),
                     SizedBox(width: 12),
-
-                    // Yes Button
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
@@ -755,7 +691,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                           Navigator.pop(context);
                           RSVPAttendApi(eventid, 'yes', rsvp);
                           print("User chose: Yes");
-                          // YES logic here
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.maincolor,
@@ -775,7 +710,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                       ),
                     ),
                   ],
-                ),
+                )
               ],
             ),
           ),
@@ -834,7 +769,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Icon
                 CircleAvatar(
                   radius: 32,
                   backgroundColor: AppColors.maincolor.withOpacity(0.1),
@@ -845,8 +779,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                   ),
                 ),
                 SizedBox(height: 16),
-
-                // Title
                 Text(
                   "You're Invited!",
                   style: TextStyle(
@@ -855,7 +787,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                     fontFamily: AppConstants.manrope,
                   ),
                 ),
-
                 SizedBox(height: 8),
                 Text(
                   "Would you like to RSVP for",
@@ -876,13 +807,9 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                     fontFamily: AppConstants.manrope,
                   ),
                 ),
-
                 SizedBox(height: 24),
-
-                // Buttons
                 Row(
                   children: [
-                    // Maybe
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
@@ -909,8 +836,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                       ),
                     ),
                     SizedBox(width: 12),
-
-                    // Decline
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
@@ -938,8 +863,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                       ),
                     ),
                     SizedBox(width: 12),
-
-                    // Accept
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
@@ -986,31 +909,25 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
       "rsvp": rsvp,
     };
 
-    log("Data jay che che $data");
-
     checkInternet().then((internet) async {
       if (internet) {
         try {
           var response = await AmenitiesProvider().RSVPtoEvetApi(data);
           if (response.statusCode == 200) {
             log("API Response: ${response.body}");
-            // eventBookingModal =
-            //     EventBookingModal.fromJson(jsonDecode(response.body));
 
             setState(() {
               isRsvpLoading = false;
             });
             BookEventStatus();
-            log(
-              "sucess response data avve che event booking no${response.body}",
-            );
+            log("sucess response data avve che event booking no${response.body}");
           } else {
             setState(() {
               isRsvpLoading = false;
             });
           }
         } catch (e, stackTrace) {
-          log("Error ave che $stackTrace");
+          log("Geeting Error $stackTrace");
           setState(() {
             isRsvpLoading = false;
           });
@@ -1035,7 +952,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
       "rsvp": rsvp,
     };
 
-    log("Data jay che che $data");
+    log(" ADD DATA $data");
 
     checkInternet().then((internet) async {
       if (internet) {
@@ -1049,16 +966,14 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
               });
             }
             BookEventStatus();
-            log(
-              "sucess response data avve che event booking no${response.body}",
-            );
+            log("sucess response data avve che event booking no${response.body}");
           } else {
             setState(() {
               isRsvpLoading = false;
             });
           }
         } catch (e, stackTrace) {
-          log("Error ave che $stackTrace");
+          log("Geeting Error $stackTrace");
           setState(() {
             isRsvpLoading = false;
           });

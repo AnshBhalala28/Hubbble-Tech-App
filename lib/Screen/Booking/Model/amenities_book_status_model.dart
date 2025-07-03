@@ -1,19 +1,14 @@
 class BookAmenitiesStatusModel {
   int? status;
   String? message;
-  List<Data1>? data;
+  Data? data;
 
   BookAmenitiesStatusModel({this.status, this.message, this.data});
 
   BookAmenitiesStatusModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    if (json['data'] != null) {
-      data = <Data1>[];
-      json['data'].forEach((v) {
-        data!.add(new Data1.fromJson(v));
-      });
-    }
+    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -21,22 +16,167 @@ class BookAmenitiesStatusModel {
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
-      data['data'] = this.data!.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.toJson();
     }
     return data;
   }
 }
 
-class Data1 {
+class Data {
+  List<December>? december;
+  List<November>? november;
+  List<October>? october;
+  List<September>? september;
+  List<August>? august;
+  List<July>? july;
+  List<June>? june;
+  List<May>? may;
+  List<April>? april;
+  List<March>? march;
+  List<February>? february;
+  List<January>? january;
+
+  Data(
+      {this.december,
+      this.november,
+      this.october,
+      this.september,
+      this.august,
+      this.july,
+      this.june,
+      this.may,
+      this.april,
+      this.march,
+      this.february,
+      this.january});
+
+  Data.fromJson(Map<String, dynamic> json) {
+    if (json['december'] != null) {
+      december = <December>[];
+      json['december'].forEach((v) {
+        december!.add(new December.fromJson(v));
+      });
+    }
+    if (json['november'] != null) {
+      november = <November>[];
+      json['november'].forEach((v) {
+        november!.add(new November.fromJson(v));
+      });
+    }
+    if (json['october'] != null) {
+      october = <October>[];
+      json['october'].forEach((v) {
+        october!.add(new October.fromJson(v));
+      });
+    }
+    if (json['september'] != null) {
+      september = <September>[];
+      json['september'].forEach((v) {
+        september!.add(new September.fromJson(v));
+      });
+    }
+    if (json['august'] != null) {
+      august = <August>[];
+      json['august'].forEach((v) {
+        august!.add(new August.fromJson(v));
+      });
+    }
+    if (json['july'] != null) {
+      july = <July>[];
+      json['july'].forEach((v) {
+        july!.add(new July.fromJson(v));
+      });
+    }
+    if (json['june'] != null) {
+      june = <June>[];
+      json['june'].forEach((v) {
+        june!.add(new June.fromJson(v));
+      });
+    }
+    if (json['may'] != null) {
+      may = <May>[];
+      json['may'].forEach((v) {
+        may!.add(new May.fromJson(v));
+      });
+    }
+    if (json['april'] != null) {
+      april = <April>[];
+      json['april'].forEach((v) {
+        april!.add(new April.fromJson(v));
+      });
+    }
+    if (json['march'] != null) {
+      march = <March>[];
+      json['march'].forEach((v) {
+        march!.add(new March.fromJson(v));
+      });
+    }
+    if (json['february'] != null) {
+      february = <February>[];
+      json['february'].forEach((v) {
+        february!.add(new February.fromJson(v));
+      });
+    }
+    if (json['january'] != null) {
+      january = <January>[];
+      json['january'].forEach((v) {
+        january!.add(new January.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.december != null) {
+      data['december'] = this.december!.map((v) => v.toJson()).toList();
+    }
+    if (this.november != null) {
+      data['november'] = this.november!.map((v) => v.toJson()).toList();
+    }
+    if (this.october != null) {
+      data['october'] = this.october!.map((v) => v.toJson()).toList();
+    }
+    if (this.september != null) {
+      data['september'] = this.september!.map((v) => v.toJson()).toList();
+    }
+    if (this.august != null) {
+      data['august'] = this.august!.map((v) => v.toJson()).toList();
+    }
+    if (this.july != null) {
+      data['july'] = this.july!.map((v) => v.toJson()).toList();
+    }
+    if (this.june != null) {
+      data['june'] = this.june!.map((v) => v.toJson()).toList();
+    }
+    if (this.may != null) {
+      data['may'] = this.may!.map((v) => v.toJson()).toList();
+    }
+    if (this.april != null) {
+      data['april'] = this.april!.map((v) => v.toJson()).toList();
+    }
+    if (this.march != null) {
+      data['march'] = this.march!.map((v) => v.toJson()).toList();
+    }
+    if (this.february != null) {
+      data['february'] = this.february!.map((v) => v.toJson()).toList();
+    }
+    if (this.january != null) {
+      data['january'] = this.january!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class December {
   int? bookingId;
   int? userId;
   String? status;
   String? requestedAt;
-  String? rsvp;
-  var attended;
+  Null? rsvp;
+  Null? attended;
   Amenity? amenity;
 
-  Data1(
+  December(
       {this.bookingId,
       this.userId,
       this.status,
@@ -45,7 +185,7 @@ class Data1 {
       this.attended,
       this.amenity});
 
-  Data1.fromJson(Map<String, dynamic> json) {
+  December.fromJson(Map<String, dynamic> json) {
     bookingId = json['booking_id'];
     userId = json['user_id'];
     status = json['status'];
@@ -144,9 +284,19 @@ class OperatingHours {
   Monday? monday;
   Monday? tuesday;
   Monday? wednesday;
+  Monday? thursday;
+  Monday? friday;
   Monday? saturday;
+  Monday? sunday;
 
-  OperatingHours({this.monday, this.tuesday, this.wednesday, this.saturday});
+  OperatingHours(
+      {this.monday,
+      this.tuesday,
+      this.wednesday,
+      this.thursday,
+      this.friday,
+      this.saturday,
+      this.sunday});
 
   OperatingHours.fromJson(Map<String, dynamic> json) {
     monday =
@@ -156,8 +306,14 @@ class OperatingHours {
     wednesday = json['wednesday'] != null
         ? new Monday.fromJson(json['wednesday'])
         : null;
+    thursday =
+        json['thursday'] != null ? new Monday.fromJson(json['thursday']) : null;
+    friday =
+        json['friday'] != null ? new Monday.fromJson(json['friday']) : null;
     saturday =
         json['saturday'] != null ? new Monday.fromJson(json['saturday']) : null;
+    sunday =
+        json['sunday'] != null ? new Monday.fromJson(json['sunday']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -171,8 +327,17 @@ class OperatingHours {
     if (this.wednesday != null) {
       data['wednesday'] = this.wednesday!.toJson();
     }
+    if (this.thursday != null) {
+      data['thursday'] = this.thursday!.toJson();
+    }
+    if (this.friday != null) {
+      data['friday'] = this.friday!.toJson();
+    }
     if (this.saturday != null) {
       data['saturday'] = this.saturday!.toJson();
+    }
+    if (this.sunday != null) {
+      data['sunday'] = this.sunday!.toJson();
     }
     return data;
   }
@@ -193,6 +358,490 @@ class Monday {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['open'] = this.open;
     data['close'] = this.close;
+    return data;
+  }
+}
+
+class June {
+  int? bookingId;
+  int? userId;
+  String? status;
+  String? requestedAt;
+  String? rsvp;
+  String? attended;
+  Amenity? amenity;
+
+  June(
+      {this.bookingId,
+      this.userId,
+      this.status,
+      this.requestedAt,
+      this.rsvp,
+      this.attended,
+      this.amenity});
+
+  June.fromJson(Map<String, dynamic> json) {
+    bookingId = json['booking_id'];
+    userId = json['user_id'];
+    status = json['status'];
+    requestedAt = json['requested_at'];
+    rsvp = json['rsvp'];
+    attended = json['attended'];
+    amenity =
+        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['booking_id'] = this.bookingId;
+    data['user_id'] = this.userId;
+    data['status'] = this.status;
+    data['requested_at'] = this.requestedAt;
+    data['rsvp'] = this.rsvp;
+    data['attended'] = this.attended;
+    if (this.amenity != null) {
+      data['amenity'] = this.amenity!.toJson();
+    }
+    return data;
+  }
+}
+
+class November {
+  int? bookingId;
+  int? userId;
+  String? status;
+  String? requestedAt;
+  String? rsvp;
+  String? attended;
+  Amenity? amenity;
+
+  November(
+      {this.bookingId,
+      this.userId,
+      this.status,
+      this.requestedAt,
+      this.rsvp,
+      this.attended,
+      this.amenity});
+
+  November.fromJson(Map<String, dynamic> json) {
+    bookingId = json['booking_id'];
+    userId = json['user_id'];
+    status = json['status'];
+    requestedAt = json['requested_at'];
+    rsvp = json['rsvp'];
+    attended = json['attended'];
+    amenity =
+        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['booking_id'] = this.bookingId;
+    data['user_id'] = this.userId;
+    data['status'] = this.status;
+    data['requested_at'] = this.requestedAt;
+    data['rsvp'] = this.rsvp;
+    data['attended'] = this.attended;
+    if (this.amenity != null) {
+      data['amenity'] = this.amenity!.toJson();
+    }
+    return data;
+  }
+}
+
+class October {
+  int? bookingId;
+  int? userId;
+  String? status;
+  String? requestedAt;
+  String? rsvp;
+  String? attended;
+  Amenity? amenity;
+
+  October(
+      {this.bookingId,
+      this.userId,
+      this.status,
+      this.requestedAt,
+      this.rsvp,
+      this.attended,
+      this.amenity});
+
+  October.fromJson(Map<String, dynamic> json) {
+    bookingId = json['booking_id'];
+    userId = json['user_id'];
+    status = json['status'];
+    requestedAt = json['requested_at'];
+    rsvp = json['rsvp'];
+    attended = json['attended'];
+    amenity =
+        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['booking_id'] = this.bookingId;
+    data['user_id'] = this.userId;
+    data['status'] = this.status;
+    data['requested_at'] = this.requestedAt;
+    data['rsvp'] = this.rsvp;
+    data['attended'] = this.attended;
+    if (this.amenity != null) {
+      data['amenity'] = this.amenity!.toJson();
+    }
+    return data;
+  }
+}
+
+class September {
+  int? bookingId;
+  int? userId;
+  String? status;
+  String? requestedAt;
+  String? rsvp;
+  String? attended;
+  Amenity? amenity;
+
+  September(
+      {this.bookingId,
+      this.userId,
+      this.status,
+      this.requestedAt,
+      this.rsvp,
+      this.attended,
+      this.amenity});
+
+  September.fromJson(Map<String, dynamic> json) {
+    bookingId = json['booking_id'];
+    userId = json['user_id'];
+    status = json['status'];
+    requestedAt = json['requested_at'];
+    rsvp = json['rsvp'];
+    attended = json['attended'];
+    amenity =
+        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['booking_id'] = this.bookingId;
+    data['user_id'] = this.userId;
+    data['status'] = this.status;
+    data['requested_at'] = this.requestedAt;
+    data['rsvp'] = this.rsvp;
+    data['attended'] = this.attended;
+    if (this.amenity != null) {
+      data['amenity'] = this.amenity!.toJson();
+    }
+    return data;
+  }
+}
+
+class August {
+  int? bookingId;
+  int? userId;
+  String? status;
+  String? requestedAt;
+  String? rsvp;
+  String? attended;
+  Amenity? amenity;
+
+  August(
+      {this.bookingId,
+      this.userId,
+      this.status,
+      this.requestedAt,
+      this.rsvp,
+      this.attended,
+      this.amenity});
+
+  August.fromJson(Map<String, dynamic> json) {
+    bookingId = json['booking_id'];
+    userId = json['user_id'];
+    status = json['status'];
+    requestedAt = json['requested_at'];
+    rsvp = json['rsvp'];
+    attended = json['attended'];
+    amenity =
+        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['booking_id'] = this.bookingId;
+    data['user_id'] = this.userId;
+    data['status'] = this.status;
+    data['requested_at'] = this.requestedAt;
+    data['rsvp'] = this.rsvp;
+    data['attended'] = this.attended;
+    if (this.amenity != null) {
+      data['amenity'] = this.amenity!.toJson();
+    }
+    return data;
+  }
+}
+
+class July {
+  int? bookingId;
+  int? userId;
+  String? status;
+  String? requestedAt;
+  String? rsvp;
+  String? attended;
+  Amenity? amenity;
+
+  July(
+      {this.bookingId,
+      this.userId,
+      this.status,
+      this.requestedAt,
+      this.rsvp,
+      this.attended,
+      this.amenity});
+
+  July.fromJson(Map<String, dynamic> json) {
+    bookingId = json['booking_id'];
+    userId = json['user_id'];
+    status = json['status'];
+    requestedAt = json['requested_at'];
+    rsvp = json['rsvp'];
+    attended = json['attended'];
+    amenity =
+        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['booking_id'] = this.bookingId;
+    data['user_id'] = this.userId;
+    data['status'] = this.status;
+    data['requested_at'] = this.requestedAt;
+    data['rsvp'] = this.rsvp;
+    data['attended'] = this.attended;
+    if (this.amenity != null) {
+      data['amenity'] = this.amenity!.toJson();
+    }
+    return data;
+  }
+}
+
+class May {
+  int? bookingId;
+  int? userId;
+  String? status;
+  String? requestedAt;
+  String? rsvp;
+  String? attended;
+  Amenity? amenity;
+
+  May(
+      {this.bookingId,
+      this.userId,
+      this.status,
+      this.requestedAt,
+      this.rsvp,
+      this.attended,
+      this.amenity});
+
+  May.fromJson(Map<String, dynamic> json) {
+    bookingId = json['booking_id'];
+    userId = json['user_id'];
+    status = json['status'];
+    requestedAt = json['requested_at'];
+    rsvp = json['rsvp'];
+    attended = json['attended'];
+    amenity =
+        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['booking_id'] = this.bookingId;
+    data['user_id'] = this.userId;
+    data['status'] = this.status;
+    data['requested_at'] = this.requestedAt;
+    data['rsvp'] = this.rsvp;
+    data['attended'] = this.attended;
+    if (this.amenity != null) {
+      data['amenity'] = this.amenity!.toJson();
+    }
+    return data;
+  }
+}
+
+class April {
+  int? bookingId;
+  int? userId;
+  String? status;
+  String? requestedAt;
+  String? rsvp;
+  String? attended;
+  Amenity? amenity;
+
+  April(
+      {this.bookingId,
+      this.userId,
+      this.status,
+      this.requestedAt,
+      this.rsvp,
+      this.attended,
+      this.amenity});
+
+  April.fromJson(Map<String, dynamic> json) {
+    bookingId = json['booking_id'];
+    userId = json['user_id'];
+    status = json['status'];
+    requestedAt = json['requested_at'];
+    rsvp = json['rsvp'];
+    attended = json['attended'];
+    amenity =
+        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['booking_id'] = this.bookingId;
+    data['user_id'] = this.userId;
+    data['status'] = this.status;
+    data['requested_at'] = this.requestedAt;
+    data['rsvp'] = this.rsvp;
+    data['attended'] = this.attended;
+    if (this.amenity != null) {
+      data['amenity'] = this.amenity!.toJson();
+    }
+    return data;
+  }
+}
+
+class March {
+  int? bookingId;
+  int? userId;
+  String? status;
+  String? requestedAt;
+  String? rsvp;
+  String? attended;
+  Amenity? amenity;
+
+  March(
+      {this.bookingId,
+      this.userId,
+      this.status,
+      this.requestedAt,
+      this.rsvp,
+      this.attended,
+      this.amenity});
+
+  March.fromJson(Map<String, dynamic> json) {
+    bookingId = json['booking_id'];
+    userId = json['user_id'];
+    status = json['status'];
+    requestedAt = json['requested_at'];
+    rsvp = json['rsvp'];
+    attended = json['attended'];
+    amenity =
+        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['booking_id'] = this.bookingId;
+    data['user_id'] = this.userId;
+    data['status'] = this.status;
+    data['requested_at'] = this.requestedAt;
+    data['rsvp'] = this.rsvp;
+    data['attended'] = this.attended;
+    if (this.amenity != null) {
+      data['amenity'] = this.amenity!.toJson();
+    }
+    return data;
+  }
+}
+
+class February {
+  int? bookingId;
+  int? userId;
+  String? status;
+  String? requestedAt;
+  String? rsvp;
+  String? attended;
+  Amenity? amenity;
+
+  February(
+      {this.bookingId,
+      this.userId,
+      this.status,
+      this.requestedAt,
+      this.rsvp,
+      this.attended,
+      this.amenity});
+
+  February.fromJson(Map<String, dynamic> json) {
+    bookingId = json['booking_id'];
+    userId = json['user_id'];
+    status = json['status'];
+    requestedAt = json['requested_at'];
+    rsvp = json['rsvp'];
+    attended = json['attended'];
+    amenity =
+        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['booking_id'] = this.bookingId;
+    data['user_id'] = this.userId;
+    data['status'] = this.status;
+    data['requested_at'] = this.requestedAt;
+    data['rsvp'] = this.rsvp;
+    data['attended'] = this.attended;
+    if (this.amenity != null) {
+      data['amenity'] = this.amenity!.toJson();
+    }
+    return data;
+  }
+}
+
+class January {
+  int? bookingId;
+  int? userId;
+  String? status;
+  String? requestedAt;
+  String? rsvp;
+  String? attended;
+  Amenity? amenity;
+
+  January(
+      {this.bookingId,
+      this.userId,
+      this.status,
+      this.requestedAt,
+      this.rsvp,
+      this.attended,
+      this.amenity});
+
+  January.fromJson(Map<String, dynamic> json) {
+    bookingId = json['booking_id'];
+    userId = json['user_id'];
+    status = json['status'];
+    requestedAt = json['requested_at'];
+    rsvp = json['rsvp'];
+    attended = json['attended'];
+    amenity =
+        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['booking_id'] = this.bookingId;
+    data['user_id'] = this.userId;
+    data['status'] = this.status;
+    data['requested_at'] = this.requestedAt;
+    data['rsvp'] = this.rsvp;
+    data['attended'] = this.attended;
+    if (this.amenity != null) {
+      data['amenity'] = this.amenity!.toJson();
+    }
     return data;
   }
 }

@@ -36,13 +36,13 @@ class Data {
 
   Data(
       {this.serviceId,
-        this.title,
-        this.description,
-        this.price,
-        this.totalPrice,
-        this.bookingDatetime,
-        this.status,
-        this.images});
+      this.title,
+      this.description,
+      this.price,
+      this.totalPrice,
+      this.bookingDatetime,
+      this.status,
+      this.images});
 
   Data.fromJson(Map<String, dynamic> json) {
     serviceId = json['service_id'];
@@ -52,7 +52,7 @@ class Data {
     totalPrice = json['total_price'];
     bookingDatetime = json['booking_datetime'];
     status = json['status'];
-    images = json['images'].cast<String>();
+    images = (json['images'] as List?)?.map((e) => e.toString()).toList() ?? [];
   }
 
   Map<String, dynamic> toJson() {

@@ -1,289 +1,1357 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:readmore/readmore.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sizer/sizer.dart';
-import 'package:video_player/video_player.dart';
+import 'package:wavee/Screen/Category/screen/category_screen.dart';
+import 'package:wavee/Screen/Community%20Detail%20Page/view/ProductSearchScreen.dart';
+import 'package:wavee/Screen/Community%20Screen/Community%20Screen/Model/businesslikemodel.dart';
+import 'package:wavee/Screen/Product%20Detail%20Page/view/product_detail_page.dart';
+import 'package:wavee/comman/colors.dart';
+import 'package:wavee/comman/product_disable.dart';
 
-class PostTab extends StatelessWidget {
-  const PostTab({super.key});
+import '../../../comman/bottom_bar.dart';
+import '../../../comman/check_inernet_connecty.dart';
+import '../../../comman/const.dart';
+import '../../../comman/error_dialog.dart';
+import '../../Add to Cart/model/add_to_cart_model.dart';
+import '../../Add to Cart/provider/add_to_cart_provider.dart';
+import '../../Add to Cart/view/add_to_cart_view.dart';
+import '../../Community Screen/Community Screen/Model/BusnessViewModal.dart';
+import '../../Community Screen/Community Screen/Provider/community_provider.dart';
+import '../../Message_screen/View/messageScreen.dart';
+import '../../Product Detail Page/provider/product_provider.dart';
+import '../Model/category_modal.dart';
+import '../Provider/community_detail_provider.dart';
 
-  final List<String> postImages = const [
-    "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?auto=compress&cs=tinysrgb&w=600",
-    "https://images.pexels.com/photos/326055/pexels-photo-326055.jpeg?auto=compress&cs=tinysrgb&w=600",
-    "https://images.pexels.com/photos/1133957/pexels-photo-1133957.jpeg?auto=compress&cs=tinysrgb&w=600",
-    "https://images.pexels.com/photos/206359/pexels-photo-206359.jpeg?auto=compress&cs=tinysrgb&w=600",
-    "https://images.pexels.com/photos/757889/pexels-photo-757889.jpeg?auto=compress&cs=tinysrgb&w=600",
-    "https://images.pexels.com/photos/1308881/pexels-photo-1308881.jpeg?auto=compress&cs=tinysrgb&w=600",
-    "https://images.pexels.com/photos/1659438/pexels-photo-1659438.jpeg?auto=compress&cs=tinysrgb&w=600",
-    "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&w=600",
-  ];
+class BusinessDetailPage extends StatefulWidget {
+  String? userID;
+  String? businessID;
+  String? lat;
+  String? long;
 
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 200, // Adjust height as needed
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal, // Horizontal scrolling
-        itemCount: postImages.length,
-        itemBuilder: (context, index) {
-          return Container(
-            margin: EdgeInsets.symmetric(horizontal: 4), // Space between images
-            width: 150, // Image width
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 5,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: CachedNetworkImage(
-                imageUrl: postImages[index],
-                placeholder: (context, url) =>
-                    Center(child: CircularProgressIndicator()),
-                errorWidget: (context, url, error) => Icon(Icons.error),
-                fit: BoxFit.cover,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-// video
-
-class VideoTab extends StatelessWidget {
-  VideoTab({super.key});
-
-  final List<String> videoUrls = [
-    "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4",
-    "https://media.w3.org/2010/05/sintel/trailer.mp4",
-    "https://media.w3.org/2010/05/sintel/trailer.mp4",
-    "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4",
-  ];
+  BusinessDetailPage(
+      {super.key, this.businessID, this.userID, this.lat, this.long});
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(2.w),
-      child: SizedBox(
-        height: 200, // Required height for horizontal scrolling
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal, // 🔹 Horizontal Scroll
-          itemCount: videoUrls.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4.w),
-              child: SizedBox(
-                width: 200, // Adjust width as needed
-                child: VideoPlayerWidget(videoUrl: videoUrls[index]),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
+  State<BusinessDetailPage> createState() => _BusinessDetailPageState();
 }
 
-// 🔹 Video Player Widget
-class VideoPlayerWidget extends StatefulWidget {
-  final String videoUrl;
+class _BusinessDetailPageState extends State<BusinessDetailPage> {
+  bool isLoading = false;
+  bool isAddtoCart = false;
 
-  const VideoPlayerWidget({required this.videoUrl, super.key});
-
-  @override
-  _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
-}
-
-class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
-  late VideoPlayerController _controller;
+  final ScrollController _scrollController = ScrollController();
+  bool _showTitle = false;
+  List<String> options = [];
 
   @override
   void initState() {
+    setState(() {
+      isLoading = true;
+    });
     super.initState();
-    _controller = VideoPlayerController.network(widget.videoUrl)
-      ..initialize().then((_) {
-        setState(() {});
-      });
+    BussinessViewProfile();
+    BussinessViewProfile();
+    GetCartDetailApi();
+    CategoryAPI();
+    _scrollController.addListener(() {
+      if (_scrollController.hasClients) {
+        if (_scrollController.offset > 200 && !_showTitle) {
+          setState(() {
+            _showTitle = true;
+          });
+        } else if (_scrollController.offset <= 200 && _showTitle) {
+          setState(() {
+            _showTitle = false;
+          });
+        }
+      }
+    });
   }
 
-  @override
+  final TextEditingController searchController = TextEditingController();
+
   void dispose() {
-    _controller.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return _controller.value.isInitialized
-        ? AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: VideoPlayer(_controller),
-          )
-        : Center(child: CircularProgressIndicator());
+  String getTodayKey() {
+    final now = DateTime.now();
+    switch (now.weekday) {
+      case DateTime.monday:
+        return 'Monday';
+      case DateTime.tuesday:
+        return 'Tuesday';
+      case DateTime.wednesday:
+        return 'Wednesday';
+      case DateTime.thursday:
+        return 'Thursday';
+      case DateTime.friday:
+        return 'Friday';
+      case DateTime.saturday:
+        return 'Saturday';
+      case DateTime.sunday:
+        return 'Sunday';
+      default:
+        return '';
+    }
   }
-}
 
-/// event
-class EventTab extends StatelessWidget {
-  const EventTab({super.key});
-
-  final List<Map<String, String>> events = const [
-    {
-      "title": "Tech Conference 2024",
-      "date": "March 20, 2024",
-      "location": "New York, USA",
-      "image":
-          "https://plus.unsplash.com/premium_photo-1672354234377-38ef695dd2ed?w=500&auto=format&fit=crop&q=60"
-    },
-    {
-      "title": "Music Fest 2024",
-      "date": "April 10, 2024",
-      "location": "Los Angeles, USA",
-      "image":
-          "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&auto=format&fit=crop&q=60"
-    },
-    {
-      "title": "Startup Meetup",
-      "date": "May 5, 2024",
-      "location": "San Francisco, USA",
-      "image":
-          "https://plus.unsplash.com/premium_photo-1681487469745-91d1d8a5836b?w=500&auto=format&fit=crop&q=60"
-    },
-    {
-      "title": "Art Exhibition",
-      "date": "June 15, 2024",
-      "location": "Paris, France",
-      "image":
-          "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=500&auto=format&fit=crop&q=60"
-    },
-  ];
+  String? selectedOption;
+  int? selectedIndex;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(2.w),
-      child: SizedBox(
-        height: 200, // Fixed height for horizontal scrolling
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal, // 🔹 Horizontal Scroll Enabled
-          itemCount: events.length,
-          itemBuilder: (context, index) {
-            var event = events[index];
-            return GestureDetector(
-              onTap: () => _showEventDetails(context, event),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                margin: EdgeInsets.symmetric(horizontal: 2.w),
-                // Space between items
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(10)),
-                      child: Image.network(
-                        event["image"]!,
-                        width: 180, // Adjust width for each event card
-                        height: 120,
-                        fit: BoxFit.cover,
+    final todayKey = getTodayKey();
+
+    final openingHours =
+        busnessviewmodal?.data?.business?.openingHours?.toJson();
+    final todayHours = openingHours?[todayKey];
+
+    final isClosedToday = todayHours?['closed'] ?? true;
+    final closeTime = !isClosedToday ? (todayHours?['close'] ?? '') : '';
+    final business = busnessviewmodal?.data?.business;
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: 10.h,
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 2.h),
+              height: 90.h,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Color(0xffdedfe5), width: 1),
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(45),
+                      topRight: Radius.circular(45))),
+              child: Stack(
+                children: [
+                  CustomScrollView(
+                    controller: _scrollController,
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 3.w),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  InkWell(
+                                    onTap: () => Get.back(),
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: Container(
+                                      height: 28,
+                                      width: 28,
+                                      decoration: BoxDecoration(),
+                                      alignment: Alignment.center,
+                                      child: Icon(
+                                        Icons.arrow_back,
+                                        color: AppColors.maincolor,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 2.w,
+                                  ),
+                                  SizedBox(
+                                    width: 70.w,
+                                    child: Text(
+                                      business?.businessName ?? "",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 20.sp,
+                                        fontFamily: AppConstants.manrope,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              _iconCircle(
+                                icon: Icons.share,
+                                color: AppColors.maincolor,
+                                onTap: () async {
+                                  String businessName = busnessviewmodal
+                                          ?.data?.business?.businessName ??
+                                      "Our Business";
+                                  String imageUrl =
+                                      busnessviewmodal?.data?.business?.logo ??
+                                          "";
+                                  String userId = widget.userID ?? "";
+                                  String businessId = widget.businessID ?? "";
+                                  String longitude =
+                                      widget.long?.toString() ?? "0.0";
+                                  String latitude =
+                                      widget.lat?.toString() ?? "0.0";
+
+                                  String businessUrl =
+                                      "https://portal.wavee.ai/api/businessProfile/$userId/$businessId?longitude=$longitude&latitude=$latitude";
+                                  String shareText =
+                                      "Check out $businessName on our app!\n$businessUrl";
+
+                                  try {
+                                    if (imageUrl.isEmpty) {
+                                      throw Exception("Image URL is empty");
+                                    }
+
+                                    final response =
+                                        await http.get(Uri.parse(imageUrl));
+                                    if (response.statusCode != 200) {
+                                      throw Exception("Image download failed");
+                                    }
+
+                                    final bytes = response.bodyBytes;
+
+                                    final tempDir =
+                                        await getTemporaryDirectory();
+                                    final file = await File(
+                                            '${tempDir.path}/shared_business.jpg')
+                                        .create();
+                                    await file.writeAsBytes(bytes);
+
+                                    await Share.shareXFiles(
+                                      [XFile(file.path)],
+                                      text: shareText,
+                                      subject: "Share Business",
+                                    );
+                                  } catch (e) {
+                                    log("Error sharing image: $e");
+                                    Get.snackbar("Error",
+                                        "Could not share business details.");
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(2.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            event["title"]!,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10.w),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 20.w,
+                                height: 0.5.h,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Colors.black),
+                              ),
+                            ],
                           ),
-                          SizedBox(height: 0.5.h),
-                          Text(
-                            "📅 ${event["date"]}",
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          Text(
-                            "📍 ${event["location"]}",
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: 0.5.h,
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: 1.h,
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 2.w),
+                              height: 5.h,
+                              margin: EdgeInsets.symmetric(horizontal: 2.w),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Color(0xffc7c7c7))),
+                              child: TextField(
+                                onTap: () {
+                                  Get.to(SearchScreen(
+                                    businessID: widget.businessID,
+                                    addStatus: busnessviewmodal
+                                        ?.data?.business?.productStatus,
+                                  ));
+                                },
+                                controller: searchController,
+                                decoration: InputDecoration(
+                                  hintText: "Search Products or services",
+                                  hintStyle: TextStyle(
+                                      color: Colors.grey[600], fontSize: 14),
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 10),
+                                  prefixIcon: Icon(Icons.search,
+                                      color: Colors.grey[600], size: 20),
+                                  suffixIcon: searchController.text.isNotEmpty
+                                      ? IconButton(
+                                          icon: Icon(Icons.close,
+                                              color: Colors.grey[600],
+                                              size: 18),
+                                          onPressed: () {
+                                            searchController.clear();
+                                            setState(() {});
+                                          },
+                                        )
+                                      : null,
+                                ),
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: 1.h,
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 4.w),
+                          child: Row(
+                            children: [
+                              Text(
+                                "All Products",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20.sp,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: AppConstants.manrope,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: 1.h,
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 3.w),
+                          child: Row(
+                            children: [
+                              Container(
+                                  height: 5.h,
+                                  padding: EdgeInsets.symmetric(horizontal: 12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        color: Colors.grey.shade300, width: 1),
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 2,
+                                        offset: Offset(0, 1),
+                                      ),
+                                    ],
+                                  ),
+                                  child: DropdownButton<String>(
+                                    borderRadius: BorderRadius.circular(10),
+                                    hint: Text("Select option"),
+                                    underline: Container(),
+                                    value: selectedOption,
+                                    icon: Icon(Icons.keyboard_arrow_down),
+                                    items: categoryOptions
+                                        .map((item) => DropdownMenuItem(
+                                              value: item['name'],
+                                              child: Text(item['name'] ?? ""),
+                                            ))
+                                        .toList(),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedOption = value;
+                                        selectedCategoryId =
+                                            categoryOptions.firstWhere((item) =>
+                                                item['name'] == value)['id'];
+                                        Get.to(CategoryScreen(
+                                          categoryID: selectedCategoryId,
+                                          businessID: widget.businessID,
+                                          CategoryName: selectedOption,
+                                        ));
+                                        print("Selected Name: $selectedOption");
+                                        print(
+                                            "Selected ID: $selectedCategoryId");
+                                      });
+                                    },
+                                  )),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 3.w,
+                          ),
+                          padding: EdgeInsets.symmetric(vertical: 2.h),
+                          child: GridView.builder(
+                            padding: EdgeInsets.zero,
+                            itemCount:
+                                busnessviewmodal?.data?.products?.length ?? 0,
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              childAspectRatio: 0.70,
+                              crossAxisSpacing: 3.w,
+                              mainAxisSpacing: 2.h,
+                            ),
+                            itemBuilder: (context, index) {
+                              final product =
+                                  busnessviewmodal!.data!.products![index];
+                              return GestureDetector(
+                                onTap: () {
+                                  Get.to(ProductDetailPage(
+                                    type: "product",
+                                    productID: product?.id.toString() ?? "",
+                                  ));
+                                },
+                                child: product == null
+                                    ? Center(
+                                        child: Text(
+                                          "No Product Available",
+                                          style: TextStyle(
+                                            fontSize: 14.sp,
+                                            fontFamily: AppConstants.manrope,
+                                          ),
+                                        ),
+                                      )
+                                    : Material(
+                                        elevation: 2,
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: Container(
+                                          height: 25.h,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            border: Border.all(
+                                                color: Color(0xffc7c7c7),
+                                                width: 1),
+                                            color: Colors.white,
+                                          ),
+                                          child: Stack(
+                                            clipBehavior: Clip.none,
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(12),
+                                                  topRight: Radius.circular(12),
+                                                ),
+                                                child: CachedNetworkImage(
+                                                  imageUrl: product.image
+                                                          ?.toString() ??
+                                                      "",
+                                                  height: 28.h,
+                                                  width: double.infinity,
+                                                  fit: BoxFit.cover,
+                                                  placeholder: (context, url) =>
+                                                      const Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      color:
+                                                          AppColors.maincolor,
+                                                    ),
+                                                  ),
+                                                  errorWidget:
+                                                      (context, url, error) =>
+                                                          Image.asset(
+                                                    "assets/images/waveeLogoShort.png",
+                                                    height: 15.h,
+                                                    width: double.infinity,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                bottom: 0.h,
+                                                child: Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 2.w,
+                                                      vertical: 1.h),
+                                                  width: 29.w,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      border: Border.all(
+                                                          width: 1,
+                                                          color: Color(
+                                                              0xffc7c7c7)),
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                              topRight: Radius
+                                                                  .circular(10),
+                                                              topLeft: Radius
+                                                                  .circular(
+                                                                      10))),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        product.name ??
+                                                            "Product Name",
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                          fontSize: 16.sp,
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                          fontFamily:
+                                                              AppConstants
+                                                                  .manrope,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        product.productCategoryName ??
+                                                            "Product Category",
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                          fontSize: 16.sp,
+                                                          fontFamily:
+                                                              AppConstants
+                                                                  .manrope,
+                                                          color:
+                                                              Color(0xffa1a1a1),
+                                                        ),
+                                                      ),
+                                                      (product?.offerPrice !=
+                                                                  null &&
+                                                              product!.offerPrice !=
+                                                                  "0.00" &&
+                                                              product.offerPrice !=
+                                                                  product.price)
+                                                          ? Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .end,
+                                                              children: [
+                                                                Text(
+                                                                  "£${product.price}",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        13.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                    fontFamily:
+                                                                        AppConstants
+                                                                            .manrope,
+                                                                    color: Colors
+                                                                        .grey,
+                                                                    decoration:
+                                                                        TextDecoration
+                                                                            .lineThrough,
+                                                                    decorationColor:
+                                                                        AppColors
+                                                                            .maincolor,
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  "£${product.offerPrice}",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        14.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontFamily:
+                                                                        AppConstants
+                                                                            .manrope,
+                                                                    color: Colors
+                                                                        .black,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )
+                                                          : Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .end,
+                                                              children: [
+                                                                Text(
+                                                                  "£${product?.price ?? ""}",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        14.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontFamily:
+                                                                        AppConstants
+                                                                            .manrope,
+                                                                    color: Colors
+                                                                        .black,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                      product?.quantity == 0 ||
+                                                              product?.quantity ==
+                                                                  null
+                                                          ? Text(
+                                                              "Out of Stock",
+                                                              style: TextStyle(
+                                                                fontSize: 14.sp,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontFamily:
+                                                                    AppConstants
+                                                                        .manrope,
+                                                                color:
+                                                                    Colors.red,
+                                                              ),
+                                                            )
+                                                          : SizedBox(),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                top: 0.5.h,
+                                                right: 2,
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    bool isBlocked =
+                                                        product?.quantity ==
+                                                                0 ||
+                                                            product?.quantity ==
+                                                                null;
+                                                    int? productStatus =
+                                                        busnessviewmodal
+                                                            ?.data
+                                                            ?.business
+                                                            ?.productStatus;
+                                                    log("dsadsadsdadasd$productStatus");
+
+                                                    if (productStatus == 0) {
+                                                      showOnlineOrderDisabledDialog(
+                                                        context: context,
+                                                        businessName:
+                                                            busnessviewmodal
+                                                                    ?.data
+                                                                    ?.business
+                                                                    ?.businessName ??
+                                                                "",
+                                                        isProduct: true,
+                                                      );
+                                                      return;
+                                                    }
+
+                                                    if (isBlocked) {
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        SnackBar(
+                                                          content: Text(
+                                                              'Product is out of stock.'),
+                                                          backgroundColor:
+                                                              Colors.red,
+                                                        ),
+                                                      );
+                                                      return;
+                                                    }
+
+                                                    if (cartDetailsModel
+                                                                ?.data !=
+                                                            null &&
+                                                        cartDetailsModel!
+                                                            .data!.isNotEmpty) {
+                                                      if (cartDetailsModel!
+                                                              .data![0].type ==
+                                                          "service") {
+                                                        ShowAddCart(
+                                                            context: context,
+                                                            businessName:
+                                                                busnessviewmodal
+                                                                        ?.data
+                                                                        ?.business
+                                                                        ?.businessName ??
+                                                                    "",
+                                                            isProduct: false,
+                                                            onContinue:
+                                                                () async {
+                                                              for (int i = 0;
+                                                                  i <
+                                                                      cartDetailsModel!
+                                                                          .data!
+                                                                          .length;
+                                                                  i++) {
+                                                                final itemId =
+                                                                    cartDetailsModel!
+                                                                        .data![
+                                                                            i]
+                                                                        .itemDetails
+                                                                        ?.id;
+                                                                if (itemId !=
+                                                                    null) {
+                                                                  await RemoveFromCartApi(
+                                                                    itemId,
+                                                                    "service",
+                                                                  );
+                                                                }
+                                                              }
+                                                              AddCartProductApi(
+                                                                product?.id
+                                                                        .toString() ??
+                                                                    "",
+                                                              );
+                                                            });
+                                                      } else if (cartDetailsModel!
+                                                              .data![0]
+                                                              .itemDetails
+                                                              ?.businessId ==
+                                                          productViewModel?.data
+                                                              ?.businessId) {
+                                                        AddCartProductApi(product
+                                                                ?.id
+                                                                .toString() ??
+                                                            "");
+                                                      } else {
+                                                        ShowAddCart(
+                                                            context: context,
+                                                            businessName:
+                                                                busnessviewmodal
+                                                                        ?.data
+                                                                        ?.business
+                                                                        ?.businessName ??
+                                                                    "",
+                                                            isProduct: false,
+                                                            onContinue:
+                                                                () async {
+                                                              for (int i = 0;
+                                                                  i <
+                                                                      cartDetailsModel!
+                                                                          .data!
+                                                                          .length;
+                                                                  i++) {
+                                                                final itemId =
+                                                                    cartDetailsModel!
+                                                                        .data![
+                                                                            i]
+                                                                        .itemDetails
+                                                                        ?.id;
+                                                                final itemtype =
+                                                                    cartDetailsModel!
+                                                                        .data![
+                                                                            i]
+                                                                        .itemDetails
+                                                                        ?.type;
+                                                                if (itemId !=
+                                                                    null) {
+                                                                  await RemoveFromCartApi(
+                                                                    itemId,
+                                                                    itemtype
+                                                                        .toString(),
+                                                                  );
+                                                                }
+                                                              }
+                                                              AddCartProductApi(
+                                                                  product?.id
+                                                                          .toString() ??
+                                                                      "");
+                                                            });
+                                                      }
+                                                    } else {
+                                                      AddCartProductApi(product
+                                                              ?.id
+                                                              .toString() ??
+                                                          "");
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    width: 7.w,
+                                                    height: 7.w,
+                                                    alignment: Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      shape: BoxShape.rectangle,
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.black26,
+                                                          blurRadius: 4,
+                                                          offset: Offset(0, 2),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    child: Icon(
+                                                      product?.quantity == "0"
+                                                          ? Icons.block
+                                                          : Icons.add,
+                                                      size: 17.sp,
+                                                      color: product
+                                                                  ?.quantity ==
+                                                              "0"
+                                                          ? AppColors.redColor
+                                                          : AppColors.maincolor,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: 50.h,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                    top: 11.h,
+                    left: 0,
+                    right: 0,
+                    bottom: 0.h,
+                    child: DraggableScrollableSheet(
+                      initialChildSize: 0.50,
+                      minChildSize: 0.50,
+                      builder: (context, scrollController) {
+                        return Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 3.w, vertical: 1.h),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(45),
+                              topLeft: Radius.circular(45),
+                            ),
+                            border:
+                                Border.all(color: Color(0xffc7c7c7), width: 1),
+                            color: Color(0xfff2f2f2),
+                          ),
+                          child: SingleChildScrollView(
+                            controller: scrollController,
+                            physics: BouncingScrollPhysics(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Center(
+                                  child: Container(
+                                    height: 1.h,
+                                    width: 20.w,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xf0D9D9D9),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ).paddingOnly(top: 2.h, bottom: 2.h),
+                                ),
+                                Text(
+                                  "About ${business?.businessName ?? ""}",
+                                  style: TextStyle(
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 0.5.h,
+                                ),
+                                Container(
+                                  width: 20.w,
+                                  height: 0.5.h,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.black),
+                                ),
+                                SizedBox(
+                                  height: 0.5.h,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Material(
+                                          elevation: 1,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 3.w, vertical: 1.h),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.location_history,
+                                                    size: 18.sp,
+                                                    color: AppColors.maincolor),
+                                                SizedBox(width: 2.w),
+                                                Text(
+                                                  "${(busnessviewmodal?.data?.distanceToBusiness ?? 0).toStringAsFixed(2)} miles",
+                                                  style: TextStyle(
+                                                    fontSize: 15.sp,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                    fontFamily:
+                                                        AppConstants.manrope,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 2.w,
+                                        ),
+                                        Material(
+                                          elevation: 1,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 3.w, vertical: 1.h),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.timer,
+                                                    size: 18.sp,
+                                                    color: AppColors.maincolor),
+                                                SizedBox(width: 2.w),
+                                                Text(
+                                                  closeTime.isNotEmpty
+                                                      ? "Closes at $closeTime"
+                                                      : "Closed today",
+                                                  style: TextStyle(
+                                                    fontSize: 15.sp,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                    fontFamily:
+                                                        AppConstants.manrope,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Container(
+                                      width: 92.w,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: ReadMoreText(
+                                        "${busnessviewmodal?.data?.business?.description == null || busnessviewmodal?.data?.business?.description == "" ? "N/A" : busnessviewmodal?.data?.business?.description}",
+                                        trimLines: 4,
+                                        trimLength: 145,
+                                        colorClickableText: AppColors.maincolor,
+                                        trimMode: TrimMode.Length,
+                                        trimCollapsedText: ' Show more',
+                                        trimExpandedText: ' Show less',
+                                        moreStyle: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: AppConstants.manrope,
+                                          letterSpacing: 1,
+                                          color: AppColors.maincolor,
+                                        ),
+                                        lessStyle: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontFamily: AppConstants.manrope,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 1,
+                                          color: AppColors.maincolor,
+                                        ),
+                                        style: TextStyle(
+                                          fontSize: 16.sp,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.normal,
+                                          fontFamily: AppConstants.manrope,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 1.h,
+                                    ),
+                                    Row(
+                                      children: [
+                                        InkWell(
+                                          onTap: () {
+                                            Get.to(MessageScreen(
+                                              type: "business",
+                                              chatName: busnessviewmodal
+                                                      ?.data
+                                                      ?.business
+                                                      ?.businessName ??
+                                                  "N/A",
+                                              conciergeID: (busnessviewmodal
+                                                      ?.data
+                                                      ?.business
+                                                      ?.user
+                                                      ?.id)
+                                                  .toString(),
+                                              image: busnessviewmodal
+                                                      ?.data?.business?.logo ??
+                                                  "",
+                                              chatStatus: busnessviewmodal
+                                                  ?.data?.business?.chatStatus,
+                                            ));
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 2.w,
+                                                vertical: 0.5.h),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: Colors.white,
+                                                border: Border.all(
+                                                    color: Color(0xffc0c0c0),
+                                                    width: 1)),
+                                            child: Text(
+                                              "Live Chat",
+                                              style: TextStyle(
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                                fontFamily:
+                                                    AppConstants.manrope,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 2.w,
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 2.w, vertical: 0.5.h),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: Colors.white,
+                                              border: Border.all(
+                                                  color: Color(0xffc0c0c0),
+                                                  width: 1)),
+                                          child: Icon(
+                                            Icons.add_home,
+                                            color: Colors.black,
+                                            size: 17.sp,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            );
-          },
+            ),
+          ],
         ),
+      ),
+      bottomNavigationBar: Bottom_bar(
+        selected: 0,
       ),
     );
   }
 
-  void _showEventDetails(BuildContext context, Map<String, String> event) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          title: Text(
-            event["title"]!,
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  event["image"]!,
-                  width: double.infinity,
-                  height: 150,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              SizedBox(height: 2.h),
-              Text(
-                "📅 Date: ${event["date"]}",
-                style: TextStyle(fontSize: 16.sp),
-              ),
-              SizedBox(height: 1.h),
-              Text(
-                "📍 Location: ${event["location"]}",
-                style: TextStyle(fontSize: 16.sp),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("Close"),
-            ),
-          ],
-        );
-      },
+  Widget _iconCircle(
+      {required IconData icon,
+      required VoidCallback onTap,
+      required Color color}) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 10.w,
+        width: 10.w,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: color, size: 20),
+      ),
     );
+  }
+
+  BussinessViewProfile() {
+    checkInternet().then((internet) async {
+      if (internet) {
+        CommunityProvider()
+            .projectlistapi(widget.userID.toString(), widget.businessID,
+                widget.long, widget.lat)
+            .then((response) async {
+          busnessviewmodal =
+              BusnessViewModal.fromJson(json.decode(response.body));
+          if (response.statusCode == 200) {
+            print("done LIst");
+
+            setState(() {
+              isLoading = false;
+            });
+            log("${response.body}");
+          } else if (response.statusCode == 422) {
+            setState(() {
+              isLoading = false;
+            });
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+          }
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  AddCartProductApi(String productID) {
+    setState(() {
+      isAddtoCart = true;
+    });
+    final Map<String, String> data = {
+      "user_id": loginModel?.data?.user?.id.toString() ?? "",
+      "id": productID.toString(),
+      "type": "product",
+    };
+    log("DATA SENDING ${data}");
+    checkInternet().then((internet) async {
+      if (internet) {
+        ProductProvider().AddToCart(data).then((response) async {
+          if (response.statusCode == 200) {
+            print("adfdsfsdf${response.body}");
+
+            setState(() {
+              isAddtoCart = false;
+            });
+            Get.to(() => AddToCartView(
+                  type: "product",
+                  fromBottomBar: false,
+                ));
+          } else {
+            setState(() {
+              isAddtoCart = false;
+            });
+            log("Error");
+          }
+        });
+      } else {
+        setState(() {
+          isAddtoCart = false;
+        });
+
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  GetCartDetailApi() {
+    checkInternet().then((internet) async {
+      if (internet) {
+        CartProvider()
+            .GetCartDetailsApi(
+          loginModel?.data?.user?.id.toString() ?? "",
+        )
+            .then((response) async {
+          cartDetailsModel =
+              CartDetailsModel.fromJson(jsonDecode(response.body));
+          if (response.statusCode == 200) {
+            print("adfdsfsdfasdfsadd${response.body}");
+            print(
+                "1111111111>>>>>>>>>>>>.${profileModel?.data?.user?.profile}");
+
+            setState(() {
+              isLoading = false;
+            });
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+            log("Error");
+          }
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  List<Map<String, String>> categoryOptions = [];
+
+  String? selectedCategoryId;
+
+  CategoryAPI() {
+    checkInternet().then((internet) async {
+      if (internet) {
+        CommunityDetailProvider()
+            .CategoryViewApi(
+          widget.businessID.toString(),
+        )
+            .then((response) async {
+          categoryModal = CategoryModal.fromJson(json.decode(response.body));
+          if (response.statusCode == 200) {
+            print("done LIst");
+            if (categoryModal?.data != null) {
+              for (int i = 0; i < categoryModal!.data!.length; i++) {
+                final name = categoryModal?.data![i].name;
+                final id = categoryModal?.data![i].id?.toString() ?? "";
+
+                if (name != null && name.isNotEmpty) {
+                  categoryOptions.add({'name': name, 'id': id});
+                }
+              }
+            }
+            setState(() {
+              isLoading = false;
+            });
+            log("${response.body}");
+          } else if (response.statusCode == 422) {
+            setState(() {
+              isLoading = false;
+            });
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+          }
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  BusinessLikeApi() {
+    bool isCurrentlyLiked = busnessviewmodal?.data?.isLiked ?? false;
+    String newLikeStatus = isCurrentlyLiked ? "0" : "1";
+    final Map<String, String> data = {
+      'user_id': (loginModel?.data?.user?.id).toString(),
+      'business_id': widget.businessID ?? "",
+      'is_like': newLikeStatus,
+    };
+    setState(() {
+      isAddtoCart = true;
+    });
+    checkInternet().then((internet) async {
+      if (internet) {
+        CommunityProvider().IsLikeApi(data).then((response) async {
+          bussinesslikemodel =
+              BussinessLikeModel.fromJson(json.decode(response.body));
+          if (response.statusCode == 200) {
+            print("done LIst");
+
+            setState(() {
+              isAddtoCart = false;
+            });
+            BussinessViewProfile();
+            log("${response.body}");
+          } else if (response.statusCode == 422) {
+            setState(() {
+              isAddtoCart = false;
+            });
+          } else {
+            setState(() {
+              isAddtoCart = false;
+            });
+          }
+        });
+      } else {
+        setState(() {
+          isAddtoCart = false;
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  RemoveFromCartApi(
+    int productId,
+    String type,
+  ) {
+    setState(() {
+      isAddtoCart = true;
+    });
+
+    final Map<String, String> data = {
+      "user_id": loginModel?.data?.user?.id.toString() ?? "",
+      "product_id": productId.toString(),
+      "type": type,
+    };
+
+    log("Sending remove request: $data");
+
+    checkInternet().then((internet) async {
+      if (internet) {
+        CartProvider().RemoveFromCartApi(data).then((response) async {
+          if (response.statusCode == 200) {
+            log("Item removed successfully: ${response.body}");
+            setState(() {
+              isAddtoCart = false;
+            });
+          } else {
+            setState(() {
+              isAddtoCart = false;
+            });
+            log("Error removing item from cart");
+          }
+        });
+      } else {
+        setState(() {
+          isAddtoCart = false;
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
   }
 }

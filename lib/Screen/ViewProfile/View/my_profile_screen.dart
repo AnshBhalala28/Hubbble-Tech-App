@@ -9,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/comman/custom_batan.dart';
 import 'package:wavee/comman/loader.dart';
 
 import '../../../comman/Custom_AppBar.dart';
@@ -66,245 +65,120 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
       body: Stack(
         children: [
           isLoading
-              ? Center(child: Loader())
+              ? Center(
+                  child: Loader(),
+                )
               : Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.h),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 2.h),
-                      TitleBar(
-                        back: () {
-                          Get.back();
-                        },
-                        title: "My Profile",
-                        drawerCallback:
-                            () => Myprofile.currentState?.openDrawer(),
-                      ),
-
-                      SizedBox(height: 3.h),
-                      // GestureDetector(
-                      //   onTap: pickImage,
-                      //   child: Stack(
-                      //     alignment: Alignment.bottomRight,
-                      //     children: [
-                      //       CircleAvatar(
-                      //         radius: 35.sp,
-                      //         backgroundColor: Colors.grey.shade300,
-                      //         child: ClipOval(
-                      //           child: selectedImage != null
-                      //               ? Image.file(
-                      //                   selectedImage!,
-                      //                   width: 70.sp,
-                      //                   height: 70.sp,
-                      //                   fit: BoxFit.cover,
-                      //                 )
-                      //               : profileImage.isNotEmpty
-                      //                   ? Image.network(
-                      //                       profileImage,
-                      //                       width: 70.sp,
-                      //                       height: 70.sp,
-                      //                       fit: BoxFit.cover,
-                      //                       loadingBuilder: (context, child,
-                      //                           loadingProgress) {
-                      //                         if (loadingProgress == null) {
-                      //                           Future.delayed(
-                      //                               Duration(milliseconds: 300),
-                      //                               () {
-                      //                             if (mounted) {
-                      //                               setState(() {
-                      //                                 isLoading = false;
-                      //                               });
-                      //                             }
-                      //                           });
-                      //                           return child;
-                      //                         } else {
-                      //                           return Center(
-                      //                             child:
-                      //                                 CircularProgressIndicator(
-                      //                               valueColor:
-                      //                                   AlwaysStoppedAnimation<
-                      //                                           Color>(
-                      //                                       AppColors.maincolor),
-                      //                             ),
-                      //                           );
-                      //                         }
-                      //                       },
-                      //                       errorBuilder:
-                      //                           (context, error, stackTrace) {
-                      //                         setState(() {
-                      //                           isLoading =
-                      //                               false; // Stop loader if image fails to load
-                      //                         });
-                      //                         return Image.asset(
-                      //                           "assets/images/waveeLogoShort.png",
-                      //                           width: 70.sp,
-                      //                           height: 70.sp,
-                      //                           fit: BoxFit.cover,
-                      //                         );
-                      //                       },
-                      //                     )
-                      //                   : Image.asset(
-                      //                        "assets/images/waveeLogoShort.png",
-                      //                       width: 70.sp,
-                      //                       height: 70.sp,
-                      //                       fit: BoxFit.cover,
-                      //                     ),
-                      //         ),
-                      //       ),
-                      //       // Camera icon
-                      //       Container(
-                      //         decoration: const BoxDecoration(
-                      //           shape: BoxShape.circle,
-                      //           color: AppColors.maincolor,
-                      //         ),
-                      //         padding: EdgeInsets.all(8),
-                      //         child: Icon(Icons.camera_alt,
-                      //             size: 18.sp, color: Colors.white),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      CircleAvatar(
-                        radius: 35.sp,
-                        backgroundColor: Colors.grey.shade300,
-                        child: ClipOval(
-                          child:
-                              selectedImage != null
-                                  ? Image.file(
+                  padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.h),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        SizedBox(height: 2.h),
+                        TitleBar(
+                          back: () {
+                            Get.back();
+                          },
+                          title: "My Profile",
+                          drawerCallback: () =>
+                              Myprofile.currentState?.openDrawer(),
+                        ),
+                        SizedBox(height: 3.h),
+                        CircleAvatar(
+                          radius: 35.sp,
+                          backgroundColor: Colors.grey.shade300,
+                          child: ClipOval(
+                            child: selectedImage != null
+                                ? Image.file(
                                     selectedImage!,
                                     width: 70.sp,
                                     height: 70.sp,
                                     fit: BoxFit.cover,
                                   )
-                                  : profileImage.isNotEmpty
-                                  ? Image.network(
-                                    profileImage,
-                                    width: 70.sp,
-                                    height: 70.sp,
-                                    fit: BoxFit.cover,
-                                    loadingBuilder: (
-                                      context,
-                                      child,
-                                      loadingProgress,
-                                    ) {
-                                      if (loadingProgress == null) {
-                                        Future.delayed(
-                                          Duration(milliseconds: 300),
-                                          () {
-                                            if (mounted) {
-                                              setState(() {
-                                                isLoading = false;
-                                              });
-                                            }
-                                          },
-                                        );
-                                        return child;
-                                      } else {
-                                        return Center(
-                                          child: CircularProgressIndicator(
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                  AppColors.maincolor,
-                                                ),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    errorBuilder: (context, error, stackTrace) {
-                                      setState(() {
-                                        isLoading =
-                                            false; // Stop loader if image fails to load
-                                      });
-                                      return Image.asset(
+                                : profileImage.isNotEmpty
+                                    ? Image.network(
+                                        profileImage,
+                                        width: 70.sp,
+                                        height: 70.sp,
+                                        fit: BoxFit.cover,
+                                        loadingBuilder:
+                                            (context, child, loadingProgress) {
+                                          if (loadingProgress == null) {
+                                            Future.delayed(
+                                                Duration(milliseconds: 300),
+                                                () {
+                                              if (mounted) {
+                                                setState(() {
+                                                  isLoading = false;
+                                                });
+                                              }
+                                            });
+                                            return child;
+                                          } else {
+                                            return Center(
+                                              child: CircularProgressIndicator(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                            Color>(
+                                                        AppColors.maincolor),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          setState(() {
+                                            isLoading = false;
+                                          });
+                                          return Image.asset(
+                                            "assets/images/waveeLogoShort.png",
+                                            width: 70.sp,
+                                            height: 70.sp,
+                                            fit: BoxFit.cover,
+                                          );
+                                        },
+                                      )
+                                    : Image.asset(
                                         "assets/images/waveeLogoShort.png",
                                         width: 70.sp,
                                         height: 70.sp,
                                         fit: BoxFit.cover,
-                                      );
-                                    },
-                                  )
-                                  : Image.asset(
-                                    "assets/images/waveeLogoShort.png",
-                                    width: 70.sp,
-                                    height: 70.sp,
-                                    fit: BoxFit.cover,
-                                  ),
+                                      ),
+                          ),
                         ),
-                      ),
-
-                      SizedBox(height: 4.h),
-
-                      Text(
-                        nameController.text.toString().capitalizeFirst ?? "",
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: AppConstants.manrope,
+                        SizedBox(height: 4.h),
+                        Text(
+                          nameController.text.toString().capitalizeFirst ?? "",
+                          style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: AppConstants.manrope),
                         ),
-                      ),
-
-                      SizedBox(height: 2.h),
-
-                      profileField(
-                        "Full Name",
-                        nameController,
-                        Icons.person,
-                        false,
-                      ),
-                      profileField(
-                        "Email",
-                        emailController,
-                        Icons.email,
-                        false,
-                      ),
-
-                      // profileField(
-                      //     "Phone Number", phoneController, Icons.phone, true,
-                      //     keyboardType: TextInputType.phone,
-                      //     inputFormatters: [
-                      //       FilteringTextInputFormatter.digitsOnly,
-                      //       LengthLimitingTextInputFormatter(10),
-                      //     ]),
-                      // profileField("Gender", genderController, Icons.male, true),
-                      // profileField("Birth Date", birthdateController, Icons.calendar_today, true),
-                      SizedBox(height: 2.h),
-
-                      //
-                      // batan(
-                      //   title: "Save Profile",
-                      //   route: () {
-                      //     EditProfile();
-                      //   },
-                      //   width: double.infinity,
-                      //   color: AppColors.maincolor,
-                      //   fontcolor: Colors.white,
-                      //   height: 5.5.h,
-                      //   fontsize: 17.sp,
-                      //   radius: 12.0,
-                      // ),
-                    ],
+                        SizedBox(height: 2.h),
+                        profileField(
+                            "Full Name", nameController, Icons.person, false),
+                        profileField(
+                            "Email", emailController, Icons.email, false),
+                        SizedBox(height: 2.h),
+                      ],
+                    ),
                   ),
                 ),
-              ),
           if (isEditing)
             Container(
               color: Colors.black.withOpacity(0.3),
-              child: Center(child: Loader()),
+              child: Center(
+                child: Loader(),
+              ),
             ),
         ],
       ),
     );
   }
 
-  Widget profileField(
-    String label,
-    TextEditingController controller,
-    IconData icon,
-    bool isEditable, {
-    TextInputType keyboardType = TextInputType.text,
-    List<TextInputFormatter>? inputFormatters,
-  }) {
+  Widget profileField(String label, TextEditingController controller,
+      IconData icon, bool isEditable,
+      {TextInputType keyboardType = TextInputType.text,
+      List<TextInputFormatter>? inputFormatters}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -326,7 +200,9 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
           textCapitalization: TextCapitalization.words,
           keyboardType: keyboardType,
           inputFormatters: inputFormatters,
-          decoration: inputDecoration(hintText: label).copyWith(
+          decoration: inputDecoration(
+            hintText: label,
+          ).copyWith(
             prefixIcon: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Icon(icon, size: 20.sp, color: AppColors.maincolor),
@@ -370,8 +246,6 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                     user.email == null ? "N/A" : user.email.toString();
                 phoneController.text =
                     user.mobileNo == null ? 'N/A' : user.mobileNo.toString();
-                // genderController.text = user.gender ?? "";
-                // birthdateController.text = formatBirthdate(user.dateOfBirth);
 
                 var address = user.address;
                 if (address != null) {
@@ -386,10 +260,9 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                 if (user.profile != null && user.profile!.isNotEmpty) {
                   profileImage = user.profile!;
                 } else {
-                  profileImage = ""; // fallback if no profile image
+                  profileImage = "";
                 }
               } else {
-                // fallback if no user data
                 nameController.text = "";
                 emailController.text = "";
                 phoneController.text = "";
@@ -420,21 +293,17 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
 
   Future<void> pickImage() async {
     if (Platform.isAndroid) {
-      var status = await Permission.storage.request(); // For Android
+      var status = await Permission.storage.request();
       if (!status.isGranted) {
-        Get.snackbar(
-          "Permission Denied",
-          "Please enable storage permission from settings",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        Get.snackbar("Permission Denied",
+            "Please enable storage permission from settings",
+            backgroundColor: Colors.red, colorText: Colors.white);
         return;
       }
     }
 
-    final pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-    );
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
@@ -446,67 +315,51 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
   void EditProfile() {
     final Map<String, String> data = {
       'update_id': profileModel?.data?.id.toString() ?? '',
-      // 'frist_name': nameController.text.trim().split(" ").first,
-      // 'last_name': nameController.text.trim().split(" ").last,
-      // 'contact_no': phoneController.text.trim(),
     };
     setState(() {
       isEditing = true;
     });
-    log("data shwoewe$data");
+    log("data sending$data");
     checkInternet().then((internet) async {
       if (internet) {
-        ProfileProvider().ProfileEdit(data, selectedImage).then((
-          response,
-        ) async {
+        ProfileProvider()
+            .ProfileEdit(data, selectedImage)
+            .then((response) async {
           if (response.statusCode == 200) {
             var profileModel = ProfileModel.fromJson(jsonDecode(response.body));
 
             if (profileModel.status == 200) {
               log("Profile Updated: ${response.body}");
-              Get.snackbar(
-                "Success",
-                "Profile updated successfully",
-                backgroundColor: AppColors.maincolor,
-                colorText: Colors.white,
-              );
+              Get.snackbar("Success", "Profile updated successfully",
+                  backgroundColor: AppColors.maincolor,
+                  colorText: Colors.white);
 
               setState(() {
                 isEditing = false;
               });
               Future.delayed(Duration(microseconds: 100), () {
-                Get.offAll(HomeNewPage(userName: ""));
+                Get.offAll(HomePage(
+                  userName: "",
+                ));
               });
             } else {
-              Get.snackbar(
-                "Error",
-                "Failed to update profile",
-                backgroundColor: Colors.red,
-                colorText: Colors.white,
-              );
+              Get.snackbar("Error", "Failed to update profile",
+                  backgroundColor: Colors.red, colorText: Colors.white);
               setState(() {
                 isEditing = false;
               });
             }
           } else {
-            Get.snackbar(
-              "Error",
-              "Server error, please try again",
-              backgroundColor: Colors.red,
-              colorText: Colors.white,
-            );
+            Get.snackbar("Error", "Server error, please try again",
+                backgroundColor: Colors.red, colorText: Colors.white);
             setState(() {
               isEditing = false;
             });
           }
         });
       } else {
-        Get.snackbar(
-          "Error",
-          "Internet Required",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        Get.snackbar("Error", "Internet Required",
+            backgroundColor: Colors.red, colorText: Colors.white);
       }
     });
   }

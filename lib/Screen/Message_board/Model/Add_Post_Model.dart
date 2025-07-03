@@ -26,7 +26,7 @@ class Data {
   String? text;
   String? userId;
   String? storyPost;
-  List<String>? file; // <-- changed from List<Null> to List<String>
+  List<String>? file;
   String? residentType;
   String? updatedAt;
   String? createdAt;
@@ -85,4 +85,3 @@ class Data {
     return data;
   }
 }
-

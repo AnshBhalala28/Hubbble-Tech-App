@@ -30,8 +30,8 @@ class MaintenanceModel {
 class Data {
   int? id;
   int? userId;
-  String? buildingId;
-  String? unitId;
+  int? buildingId;
+  int? unitId;
   String? subject;
   String? date;
   String? note;

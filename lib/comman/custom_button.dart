@@ -3,21 +3,21 @@ import 'package:get/get_rx/src/rx_typedefs/rx_typedefs.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/comman/const.dart';
 
-InkWell batan({
-  required String? title,
-  required Callback? route,
-  required Color? color,
-  required Color? fontcolor,
-  required double? height,
-  double? width,
-  required double? fontsize,
-  IconData? iconData,
-  iconData1,
-  FontWeight? fontWeight,
-  double? iconsize,
-  iconsize1,
-  radius,
-}) {
+InkWell batan(
+    {required String? title,
+    required Callback? route,
+    required Color? color,
+    required Color? fontcolor,
+    required double? height,
+    double? width,
+    required double? fontsize,
+    IconData? iconData,
+    iconData1,
+    FontWeight? fontWeight,
+    List<BoxShadow>? shadow,
+    double? iconsize,
+    iconsize1,
+    radius}) {
   return InkWell(
     onTap: route,
     child: Container(
@@ -25,20 +25,27 @@ InkWell batan({
       width: width,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(radius ?? 300),
-      ),
+          color: color,
+          borderRadius: BorderRadius.circular(radius ?? 300),
+          boxShadow: shadow),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Visibility(
-            visible: iconData != null, // Show icon only if iconData is provided
+            visible: iconData != null,
             child: SizedBox(width: 2.w),
           ),
-          if (iconData != null) // Conditionally add icon if provided
-            Icon(iconData, color: fontcolor, size: iconsize),
-          if (iconData != null) SizedBox(width: 2.w),
+          if (iconData != null)
+            Icon(
+              iconData,
+              color: fontcolor,
+              size: iconsize,
+            ),
+          if (iconData != null)
+            SizedBox(
+              width: 2.w,
+            ),
           Text(
             title.toString(),
             style: TextStyle(
@@ -49,17 +56,30 @@ InkWell batan({
               fontSize: fontsize,
             ),
           ),
-          if (iconData1 != null) SizedBox(width: 2.w),
-          if (iconData1 != null) // Conditionally add icon if provided
-            Icon(iconData1, color: fontcolor, size: iconsize1),
-          if (iconData != null) SizedBox(width: 3.w),
+          if (iconData1 != null)
+            SizedBox(
+              width: 2.w,
+            ),
+          if (iconData1 != null)
+            Icon(
+              iconData1,
+              color: fontcolor,
+              size: iconsize1,
+            ),
+          if (iconData != null)
+            SizedBox(
+              width: 3.w,
+            ),
         ],
       ),
     ),
   );
 }
 
-InkWell MenuIcon({required Callback? route, required Color? color}) {
+InkWell MenuIcon({
+  required Callback? route,
+  required Color? color,
+}) {
   return InkWell(
     onTap: route,
     child: Column(

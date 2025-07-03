@@ -41,21 +41,20 @@ class Data {
   List<OrderProducts>? orderProducts;
   String? randomProductImage;
 
-
-  Data(
-      {this.id,
-        this.userId,
-        this.orderNo,
-        this.tokenNo,
-        this.totalAmount,
-        this.pickupTime,
-        this.paymentGateway,
-        this.status,
-        this.createdAt,
-        this.updatedAt,
-        this.orderProducts,
-        this.randomProductImage,
-       });
+  Data({
+    this.id,
+    this.userId,
+    this.orderNo,
+    this.tokenNo,
+    this.totalAmount,
+    this.pickupTime,
+    this.paymentGateway,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+    this.orderProducts,
+    this.randomProductImage,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -75,7 +74,6 @@ class Data {
       });
     }
     randomProductImage = json['random_product_image'];
-
   }
 
   Map<String, dynamic> toJson() {
@@ -116,17 +114,17 @@ class OrderProducts {
 
   OrderProducts(
       {this.id,
-        this.orderId,
-        this.userId,
-        this.type,
-        this.productId,
-        this.quantity,
-        this.price,
-        this.totalPrice,
-        this.isWithdrawn,
-        this.createdAt,
-        this.updatedAt,
-        this.service});
+      this.orderId,
+      this.userId,
+      this.type,
+      this.productId,
+      this.quantity,
+      this.price,
+      this.totalPrice,
+      this.isWithdrawn,
+      this.createdAt,
+      this.updatedAt,
+      this.service});
 
   OrderProducts.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -141,7 +139,7 @@ class OrderProducts {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     service =
-    json['service'] != null ? new Service.fromJson(json['service']) : null;
+        json['service'] != null ? new Service.fromJson(json['service']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -190,52 +188,28 @@ class Service {
 
   Service(
       {this.id,
-        this.userId,
-        this.categoryId,
-        this.title,
-        this.slug,
-        this.description,
-        this.price,
-        this.pricingType,
-        this.duration,
-        this.images,
-        this.galleryImages,
-        this.features,
-        this.benefits,
-        this.availability,
-        this.typeOfService,
-        this.serviceProvider,
-        this.contactEmail,
-        this.contactPhone,
-        this.location,
-        this.status,
-        this.createdAt,
-        this.updatedAt});
+      this.userId,
+      this.categoryId,
+      this.title,
+      this.slug,
+      this.description,
+      this.price,
+      this.pricingType,
+      this.duration,
+      this.images,
+      this.galleryImages,
+      this.features,
+      this.benefits,
+      this.availability,
+      this.typeOfService,
+      this.serviceProvider,
+      this.contactEmail,
+      this.contactPhone,
+      this.location,
+      this.status,
+      this.createdAt,
+      this.updatedAt});
 
-  // Service.fromJson(Map<String, dynamic> json) {
-  //   id = json['id'];
-  //   userId = json['user_id'];
-  //   categoryId = json['category_id'];
-  //   title = json['title'];
-  //   slug = json['slug'];
-  //   description = json['description'];
-  //   price = json['price'];
-  //   pricingType = json['pricing_type'];
-  //   duration = json['duration'];
-  //   images = json['images'];
-  //   galleryImages = json['gallery_images'].cast<String>();
-  //   features = json['features'].cast<String>();
-  //   benefits = json['benefits'].cast<String>();
-  //   availability = json['availability'];
-  //   typeOfService = json['type_of_service'];
-  //   serviceProvider = json['service_provider'];
-  //   contactEmail = json['contact_email'];
-  //   contactPhone = json['contact_phone'];
-  //   location = json['location'];
-  //   status = json['status'];
-  //   createdAt = json['created_at'];
-  //   updatedAt = json['updated_at'];
-  // }
   Service.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userId = json['user_id'];
@@ -248,21 +222,18 @@ class Service {
     duration = json['duration'];
     images = json['images'];
 
-    // Fix for gallery_images
     if (json['gallery_images'] != null && json['gallery_images'] is List) {
       galleryImages = List<String>.from(json['gallery_images']);
     } else {
       galleryImages = [];
     }
 
-    // Fix for features
     if (json['features'] != null && json['features'] is List) {
       features = List<String>.from(json['features']);
     } else {
       features = [];
     }
 
-    // Fix for benefits
     if (json['benefits'] != null && json['benefits'] is List) {
       benefits = List<String>.from(json['benefits']);
     } else {

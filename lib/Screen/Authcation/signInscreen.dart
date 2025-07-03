@@ -2,9 +2,9 @@
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
 // import 'package:sizer/sizer.dart';
-// import 'package:wavee/comman/colors.dart';
-// import 'package:wavee/comman/const.dart';
-// import 'package:wavee/comman/input_decoration.dart';
+// import 'package:waveee/comman/colors.dart';
+// import 'package:waveee/comman/const.dart';
+// import 'package:waveee/comman/input_decoration.dart';
 //
 //
 //

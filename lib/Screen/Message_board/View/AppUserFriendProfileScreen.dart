@@ -1,12 +1,10 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
-
 import 'package:wavee/comman/colors.dart';
 import 'package:wavee/comman/const.dart';
 
@@ -73,55 +71,39 @@ class _AppUserFriendProfileScreenState
           children: [
             Column(
               children: [
-                // Top profile section with gradient
                 Container(
                   width: double.infinity,
-                  decoration: BoxDecoration(color: Colors.white),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                  ),
                   child: Column(
                     children: [
                       SizedBox(height: 2.h),
-
-                      // Profile Image with border - Made smaller as requested
                       Container(
                         padding: EdgeInsets.all(3),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.blue.shade100,
-                            width: 2,
-                          ),
+                          border:
+                              Border.all(color: Colors.blue.shade100, width: 2),
                         ),
                         child: CircleAvatar(
                           radius: 35.sp,
                           backgroundColor: Colors.grey.shade200,
-                          backgroundImage:
-                              (residentappuserprofileModel
-                                              ?.data
-                                              ?.user
-                                              ?.profile !=
-                                          null &&
-                                      residentappuserprofileModel!
-                                          .data!
-                                          .user!
-                                          .profile!
-                                          .isNotEmpty)
-                                  ? CachedNetworkImageProvider(
-                                    residentappuserprofileModel!
-                                        .data!
-                                        .user!
-                                        .profile!,
-                                  )
-                                  : const AssetImage("assets/images/bg.jpg")
-                                      as ImageProvider<Object>,
+                          backgroundImage: (residentappuserprofileModel
+                                          ?.data?.user?.profile !=
+                                      null &&
+                                  residentappuserprofileModel!
+                                      .data!.user!.profile!.isNotEmpty)
+                              ? CachedNetworkImageProvider(
+                                  residentappuserprofileModel!
+                                      .data!.user!.profile!)
+                              : const AssetImage("assets/images/bg.jpg")
+                                  as ImageProvider<Object>,
                         ),
                       ),
-
                       SizedBox(height: 2.h),
-
-                      // Name with larger font
                       Text(
                         "${residentappuserprofileModel?.data?.user?.name?.firstName} ${residentappuserprofileModel?.data?.user?.name?.lastName}",
-                        //   userpersonalInfoModel?.data?.firstName ?? "N/A",
                         style: TextStyle(
                           fontSize: 18.sp,
                           fontFamily: AppConstants.manrope,
@@ -129,15 +111,11 @@ class _AppUserFriendProfileScreenState
                           color: Colors.black,
                         ),
                       ),
-
                       SizedBox(height: 3.h),
                     ],
                   ),
                 ),
-
                 SizedBox(height: 2.h),
-
-                // Profile information section
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 5.w),
                   child: Container(
@@ -161,40 +139,30 @@ class _AppUserFriendProfileScreenState
                           ),
                         ),
                         Divider(),
+                        buildProfileDetailItem(Icons.email_outlined, "Email",
+                            residentappuserprofileModel?.data?.user?.email),
                         buildProfileDetailItem(
-                          Icons.email_outlined,
-                          "Email",
-                          residentappuserprofileModel?.data?.user?.email,
-                        ),
+                            Icons.phone_outlined,
+                            "Phone",
+                            (residentappuserprofileModel?.data?.user?.mobileNo)
+                                .toString()),
                         buildProfileDetailItem(
-                          Icons.phone_outlined,
-                          "Phone",
-                          (residentappuserprofileModel?.data?.user?.mobileNo)
-                              .toString(),
-                        ),
+                            Icons.calendar_today_outlined,
+                            "Date of Birth",
+                            residentappuserprofileModel
+                                ?.data?.user?.dateOfBirth),
                         buildProfileDetailItem(
-                          Icons.calendar_today_outlined,
-                          "Date of Birth",
-                          residentappuserprofileModel?.data?.user?.dateOfBirth,
-                        ),
-                        buildProfileDetailItem(
-                          Icons.location_on_outlined,
-                          "Address",
-                          residentappuserprofileModel
-                              ?.data
-                              ?.user
-                              ?.address
-                              ?.address,
-                        ),
+                            Icons.location_on_outlined,
+                            "Address",
+                            residentappuserprofileModel
+                                ?.data?.user?.address?.address),
                         SizedBox(height: 2.h),
                       ],
                     ),
                   ),
                 ),
-
                 SizedBox(height: 3.h),
                 Align(
-                  //alignment: Alignment.centerRight,
                   child: batan(
                     title: "Remove From Friend",
                     route: () {
@@ -211,8 +179,6 @@ class _AppUserFriendProfileScreenState
                 ),
               ],
             ),
-
-            // Overlay loader while sending
             if (isSending)
               Positioned.fill(
                 child: Container(
@@ -258,7 +224,9 @@ class _AppUserFriendProfileScreenState
                 Text(
                   "Are you sure you want to delete this Friend?",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14.sp),
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                  ),
                 ),
                 SizedBox(height: 20),
                 Divider(thickness: 1),
@@ -269,7 +237,7 @@ class _AppUserFriendProfileScreenState
                       Expanded(
                         child: TextButton(
                           onPressed: () {
-                            Navigator.of(context).pop(); // Close dialog
+                            Navigator.of(context).pop();
                           },
                           child: Text(
                             "No",
@@ -319,7 +287,11 @@ class _AppUserFriendProfileScreenState
               color: Colors.blue.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, color: Colors.blue.shade700, size: 17.sp),
+            child: Icon(
+              icon,
+              color: Colors.blue.shade700,
+              size: 17.sp,
+            ),
           ),
           SizedBox(width: 4.w),
           Expanded(
@@ -360,14 +332,12 @@ class _AppUserFriendProfileScreenState
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response = await MessageProvider().removefriend(
-            (widget.id).toString(),
-          );
+          final response =
+              await MessageProvider().removefriend((widget.id).toString());
 
           if (response.statusCode == 200) {
-            removefriendModel = RemoveFriendModel.fromJson(
-              json.decode(response.body),
-            );
+            removefriendModel =
+                RemoveFriendModel.fromJson(json.decode(response.body));
 
             setState(() {
               isSending = false;
@@ -376,7 +346,6 @@ class _AppUserFriendProfileScreenState
             print("friend delete : ${response.body}");
             print("friend delete id : ${widget.id}");
 
-            // Show success message
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text("Friend deleted successfully!"),
@@ -384,17 +353,15 @@ class _AppUserFriendProfileScreenState
               ),
             );
 
-            // Navigate to Messageboard with arguments for Friend UI (selectedCategory=1, selectedLocalSubCategory=1)
-            Get.to(
-              Messageboard(),
-              arguments: {"selectedCategory": 1, "selectedLocalSubCategory": 1},
-            );
+            Get.to(Messageboard(), arguments: {
+              "selectedCategory": 1,
+              "selectedLocalSubCategory": 1,
+            });
           } else {
             setState(() {
               isSending = false;
             });
 
-            // Error handling for non-200 status code
             buildErrorDialog(context, 'Error', "Failed to delete group");
           }
         } catch (e) {
@@ -415,62 +382,23 @@ class _AppUserFriendProfileScreenState
     });
   }
 
-  // userpersonalinfoapi() async {
-  //   setState(() {
-  //     isSending = true;
-  //   });
-  //   checkInternet().then((internet) async {
-  //     if (internet) {
-  //       try {
-  //         final response =
-  //         await MessageBoardProvider().AppFrienduserpersonalinfo((widget.id).toString());
-  //         if (response.statusCode == 200) {
-  //           residentappuserprofileModel =
-  //               ResidentAppUserprofileModel.fromJson(json.decode(response.body));
-  //           print("data friend na ave che  : ${response.body}");
-  //           log("data jay cvhe${widget.id}");
-  //           setState(() {
-  //             isSending = false;
-  //           });
-  //         } else {
-  //           setState(() {
-  //             isSending = false;
-  //           });
-  //           // Error handling for non-200 status code
-  //           buildErrorDialog(context, 'Error', "Failed to delete group");
-  //         }
-  //       } catch (e) {
-  //         setState(() {
-  //           isSending = false;
-  //         });
-  //         print("error: ${e.toString()}");
-  //         buildErrorDialog(context, 'Error', "Something went wrong");
-  //       }
-  //     } else {
-  //       setState(() {
-  //         isSending = false;
-  //       });
-  //       buildErrorDialog(context, 'Error', "Internet Required");
-  //     }
-  //   });
-  // }
-
   userpersonalinfoapi() async {
     setState(() {
       isSending = true;
     });
-    final Map<String, String> data = {'id': (widget.id).toString()};
+    final Map<String, String> data = {
+      'id': (widget.id).toString(),
+    };
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response = await MessageBoardProvider()
-              .AppFrienduserpersonalinfo(data);
+          final response =
+              await MessageBoardProvider().AppFrienduserpersonalinfo(data);
           if (response.statusCode == 200) {
             residentappuserprofileModel = ResidentAppUserprofileModel.fromJson(
-              json.decode(response.body),
-            );
-            print("data friend na  ave che  : ${response.body}");
-            print("data friend na ave che id : ${widget.id}");
+                json.decode(response.body));
+            print("Datafriend na  ave che  : ${response.body}");
+            print("Datafriend na ave che id : ${widget.id}");
             setState(() {
               isSending = false;
             });
@@ -478,7 +406,7 @@ class _AppUserFriendProfileScreenState
             setState(() {
               isSending = false;
             });
-            // Error handling for non-200 status code
+
             buildErrorDialog(context, 'Error', "Failed to delete group");
           }
         } catch (e) {
