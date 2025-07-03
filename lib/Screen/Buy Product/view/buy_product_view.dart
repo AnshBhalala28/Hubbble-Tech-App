@@ -6,7 +6,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:pay/pay.dart';
+
 import 'package:sizer/sizer.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -665,16 +665,7 @@ class _BuyProductViewState extends State<BuyProductView> {
     );
   }
 
-  List<PaymentItem> get paymentItem {
-    const _paymentItems = [
-      PaymentItem(
-        amount: '1.99',
-        label: "Total",
-        status: PaymentItemStatus.final_price,
-      )
-    ];
-    return _paymentItems;
-  }
+
 
   double getSubtotal() {
     double total = 0.0;
@@ -951,35 +942,7 @@ class _BuyProductViewState extends State<BuyProductView> {
     );
   }
 
-  var applePayButton = ApplePayButton(
-    paymentConfiguration: PaymentConfiguration.fromJsonString(defaultApplePay),
-    paymentItems: const [
-      PaymentItem(
-        label: 'Item A',
-        amount: '0.01',
-        status: PaymentItemStatus.final_price,
-      ),
-      PaymentItem(
-        label: 'Item B',
-        amount: '0.01',
-        status: PaymentItemStatus.final_price,
-      ),
-      PaymentItem(
-        label: 'Total',
-        amount: '0.02',
-        status: PaymentItemStatus.final_price,
-      )
-    ],
-    style: ApplePayButtonStyle.black,
-    width: double.infinity,
-    height: 50,
-    type: ApplePayButtonType.buy,
-    margin: const EdgeInsets.only(top: 15.0),
-    onPaymentResult: (result) => debugPrint('Payment Result $result'),
-    loadingIndicator: const Center(
-      child: CircularProgressIndicator(),
-    ),
-  );
+
 
   Widget _buildSectionCard({
     required String title,
