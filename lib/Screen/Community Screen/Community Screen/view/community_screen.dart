@@ -29,6 +29,7 @@ import 'package:wavee/Screen/Product%20Detail%20Page/view/product_detail_page.da
 import 'package:wavee/Screen/ViewProfile/Model/profile_model.dart';
 import 'package:wavee/Screen/ViewProfile/Provider/profile_provider.dart';
 import 'package:wavee/comman/colors.dart';
+import 'package:wavee/comman/custom_snack_bar.dart';
 
 import '../../../../comman/bottom_bar.dart';
 import '../../../../comman/check_inernet_connecty.dart';
@@ -65,7 +66,7 @@ class CommunityScreen extends StatefulWidget {
   State<CommunityScreen> createState() => _CommunityScreenState();
 }
 
-class _CommunityScreenState extends State<CommunityScreen> {
+class _CommunityScreenState extends State<CommunityScreen>with WidgetsBindingObserver {
   final TextEditingController search = TextEditingController();
   final TextEditingController request = TextEditingController();
   late GoogleMapController mapController;
@@ -74,7 +75,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
   String AppLat = '';
   String AppLon = '';
   final CustomInfoWindowController _customInfoWindowController =
-      CustomInfoWindowController();
+  CustomInfoWindowController();
   int sel = 0;
   bool isLoading = true;
   bool isProfileLoaded = false;
@@ -168,15 +169,40 @@ class _CommunityScreenState extends State<CommunityScreen> {
       ]
     }
   ]''';
-
-    _getCurrentLocation();
+    WidgetsBinding.instance.addObserver(this);
+    _getCurrentLocation(context);
     GetProfile();
     checkLikeStatus();
     businesssearchapi();
     categorieslistapi();
     GetCartDetailApi();
   }
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      // Check permission again when coming back from settings
+      LocationPermission permission = await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse) {
+        // ✅ Permission granted → navigate to HomePage
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => HomePage(userName: '', selected: 1),
+            ),
+          );
+        });
+      }
+    }
+  }
   void moveToLocation() {
     if (AppLat.isNotEmpty && AppLon.isNotEmpty) {
       double latitude = double.tryParse(AppLat) ?? 0.0;
@@ -210,7 +236,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
     }
 
     Data1? selectedUser = businessprofileModel!.data!.firstWhere(
-        (data) => data.id.toString() == selectedUserId,
+            (data) => data.id.toString() == selectedUserId,
         orElse: () => Data1());
 
     if (selectedUser == null ||
@@ -224,7 +250,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
     double lon = double.parse(selectedUser.longitude!);
 
     String profileImage =
-        _getBusinessLogoForProfile(selectedUser.id, selectedUser.logo);
+    _getBusinessLogoForProfile(selectedUser.id, selectedUser.logo);
 
     bool hasStory = selectedUser.featuredPosts?.isNotEmpty == true;
 
@@ -258,7 +284,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
   void checkLikeStatus() async {
     if (busnessviewmodal?.data?.business?.id != null) {
       bool isLiked =
-          await getLikeStatus(busnessviewmodal!.data!.business!.id!.toString());
+      await getLikeStatus(busnessviewmodal!.data!.business!.id!.toString());
       setState(() {
         busnessviewmodal?.data?.isLiked = isLiked;
       });
@@ -299,11 +325,11 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
     final int batchSize = 5;
     final List<MapEntry<String, List<Data1>>> entries =
-        locationGroups.entries.toList();
+    locationGroups.entries.toList();
 
     int processedCount = 0;
     int currentBatchSize =
-        (entries.length < batchSize) ? entries.length : batchSize;
+    (entries.length < batchSize) ? entries.length : batchSize;
 
     List<Future<Marker>> firstBatchFutures = [];
 
@@ -315,10 +341,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
       int? profileId = profiles.first.id;
 
       String profileImage =
-          _getBusinessLogoForProfile(profileId, profiles.first.logo);
+      _getBusinessLogoForProfile(profileId, profiles.first.logo);
       bool hasStory = profiles.first.featuredPosts?.isNotEmpty == true;
       String? storyPreviewUrl =
-          hasStory ? profiles.first.featuredPosts?.first.file : null;
+      hasStory ? profiles.first.featuredPosts?.first.file : null;
 
       firstBatchFutures.add(
         Future(() async {
@@ -326,11 +352,11 @@ class _CommunityScreenState extends State<CommunityScreen> {
             profiles.length > 1
                 ? _getClusterMarker(profiles.length, profileImage)
                 : getCustomMarker(
-                    profileImage,
-                    size: 100,
-                    hasStory: hasStory,
-                    storyPreviewUrl: storyPreviewUrl,
-                  )
+              profileImage,
+              size: 100,
+              hasStory: hasStory,
+              storyPreviewUrl: storyPreviewUrl,
+            )
           ];
 
           final results = await Future.wait(iconFutures);
@@ -357,7 +383,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
       List<Future<Marker>> batchFutures = [];
       int remainingCount = entries.length - processedCount;
       int nextBatchSize =
-          (remainingCount < batchSize) ? remainingCount : batchSize;
+      (remainingCount < batchSize) ? remainingCount : batchSize;
 
       for (int i = 0; i < nextBatchSize; i++) {
         final entry = entries[processedCount + i];
@@ -367,10 +393,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
         int? profileId = profiles.first.id;
 
         String profileImage =
-            _getBusinessLogoForProfile(profileId, profiles.first.logo);
+        _getBusinessLogoForProfile(profileId, profiles.first.logo);
         bool hasStory = profiles.first.featuredPosts?.isNotEmpty == true;
         String? storyPreviewUrl =
-            hasStory ? profiles.first.featuredPosts?.first.file : null;
+        hasStory ? profiles.first.featuredPosts?.first.file : null;
 
         batchFutures.add(
           Future(() async {
@@ -378,11 +404,11 @@ class _CommunityScreenState extends State<CommunityScreen> {
               profiles.length > 1
                   ? _getClusterMarker(profiles.length, profileImage)
                   : getCustomMarker(
-                      profileImage,
-                      size: 100,
-                      hasStory: hasStory,
-                      storyPreviewUrl: storyPreviewUrl,
-                    )
+                profileImage,
+                size: 100,
+                hasStory: hasStory,
+                storyPreviewUrl: storyPreviewUrl,
+              )
             ];
 
             final results = await Future.wait(iconFutures);
@@ -426,7 +452,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
     final Uint8List imgBytes = await getBytesFromCanvas(profileImageUrl, size);
     final ui.Codec codec =
-        await ui.instantiateImageCodec(imgBytes, targetWidth: size);
+    await ui.instantiateImageCodec(imgBytes, targetWidth: size);
     final ui.FrameInfo frameInfo = await codec.getNextFrame();
     final ui.Image image = frameInfo.image;
     canvas.drawImage(image, Offset(0, 0), paint);
@@ -451,7 +477,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
     final ui.Image img = await recorder.endRecording().toImage(size, size);
     final ByteData? byteData =
-        await img.toByteData(format: ui.ImageByteFormat.png);
+    await img.toByteData(format: ui.ImageByteFormat.png);
     return BitmapDescriptor.fromBytes(byteData!.buffer.asUint8List());
   }
 
@@ -465,13 +491,13 @@ class _CommunityScreenState extends State<CommunityScreen> {
       double offsetLat = lat + 0.0001 * cos(angle);
       double offsetLon = lon + 0.0001 * sin(angle);
       int profileSize =
-          (selectedUserId == profiles[i].id.toString()) ? 300 : 150;
+      (selectedUserId == profiles[i].id.toString()) ? 300 : 150;
 
       String profileImage =
-          _getBusinessLogoForProfile(profiles[i].id, profiles[i].logo);
+      _getBusinessLogoForProfile(profiles[i].id, profiles[i].logo);
       bool hasStory = profiles[i].featuredPosts?.isNotEmpty == true;
       String? storyPreviewUrl =
-          hasStory ? profiles[i].featuredPosts?.first.file : null;
+      hasStory ? profiles[i].featuredPosts?.first.file : null;
 
       BitmapDescriptor combinedIcon = await getCustomMarker(
         profileImage,
@@ -501,13 +527,13 @@ class _CommunityScreenState extends State<CommunityScreen> {
   }
 
   Future<BitmapDescriptor> getCustomMarker(
-    String imageUrl, {
-    int size = 100,
-    bool hasStory = false,
-    String? storyPreviewUrl,
-    bool showOnlyStory = false,
-    bool showOnlyProfile = false,
-  }) async {
+      String imageUrl, {
+        int size = 100,
+        bool hasStory = false,
+        String? storyPreviewUrl,
+        bool showOnlyStory = false,
+        bool showOnlyProfile = false,
+      }) async {
     try {
       final Uint8List markerIcon = await getBytesFromCanvas(
         imageUrl,
@@ -525,13 +551,13 @@ class _CommunityScreenState extends State<CommunityScreen> {
   }
 
   Future<Uint8List> getBytesFromCanvas(
-    String url,
-    int size, {
-    bool hasStory = false,
-    String? storyPreviewUrl,
-    bool showOnlyStory = false,
-    bool showOnlyProfile = false,
-  }) async {
+      String url,
+      int size, {
+        bool hasStory = false,
+        String? storyPreviewUrl,
+        bool showOnlyStory = false,
+        bool showOnlyProfile = false,
+      }) async {
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
     final Paint paint = Paint();
@@ -544,11 +570,11 @@ class _CommunityScreenState extends State<CommunityScreen> {
     final double verticalSpacing = size * 0.15;
 
     final double canvasHeight =
-        hasStory ? (size + storySize + verticalSpacing) : size.toDouble();
+    hasStory ? (size + storySize + verticalSpacing) : size.toDouble();
     final double canvasWidth = size.toDouble();
 
     final Offset logoCenter =
-        Offset(size / 2, hasStory ? (canvasHeight - logoRadius) : logoRadius);
+    Offset(size / 2, hasStory ? (canvasHeight - logoRadius) : logoRadius);
 
     final Offset storyCenter = hasStory
         ? Offset(size / 2, storySize * 0.5)
@@ -561,7 +587,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
       final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
       final Uint8List imgBytes = data.buffer.asUint8List();
       final ui.Codec codec =
-          await ui.instantiateImageCodec(imgBytes, targetWidth: size);
+      await ui.instantiateImageCodec(imgBytes, targetWidth: size);
       final ui.FrameInfo frameInfo = await codec.getNextFrame();
       final ui.Image image = frameInfo.image;
 
@@ -590,7 +616,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
       try {
         final ByteData data =
-            await NetworkAssetBundle(Uri.parse(storyPreviewUrl!)).load("");
+        await NetworkAssetBundle(Uri.parse(storyPreviewUrl!)).load("");
         final Uint8List imgBytes = data.buffer.asUint8List();
         final ui.Codec codec = await ui.instantiateImageCodec(imgBytes,
             targetWidth: storySize.toInt());
@@ -633,7 +659,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
         .endRecording()
         .toImage(canvasWidth.toInt(), canvasHeight.toInt());
     final ByteData? byteData =
-        await img.toByteData(format: ui.ImageByteFormat.png);
+    await img.toByteData(format: ui.ImageByteFormat.png);
     return byteData!.buffer.asUint8List();
   }
 
@@ -682,17 +708,23 @@ class _CommunityScreenState extends State<CommunityScreen> {
     }
   }
 
-  Future<void> _getCurrentLocation() async {
+  double fallbackLatitude = 51.5072;
+  double fallbackLongitude = 0.1276;
+
+  Future<void> _getCurrentLocation(BuildContext context) async {
     bool serviceEnabled;
     LocationPermission permission;
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       print("📌 Location services are disabled.");
-      setState(() {
-        isLoading = false;
-        isMapLoading = false;
-      });
+      _showPermissionDialog(
+        context,
+        title: "Location Services",
+        message: "Please enable location services to use map features.",
+        openSettings: true,
+      );
+      _setFallbackLocation();
       return;
     }
 
@@ -701,48 +733,348 @@ class _CommunityScreenState extends State<CommunityScreen> {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         print("📌 Location permission denied.");
-        setState(() {
-          isLoading = false;
-          isMapLoading = false;
-        });
+        _showPermissionDialog(
+          context,
+          title: "Location Services",
+          message: "To provide full functionality and show nearby building services, Wavee AI requires access to your location. You can enable location in Settings.",
+          openSettings: true,
+          showCancel: true,
+        );
         return;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       print("📌 Location permission permanently denied.");
-      setState(() {
-        isLoading = false;
-        isMapLoading = false;
-      });
+      _showPermissionDialog(
+        context,
+        title: "Location Services",
+        message: "To provide full functionality and show nearby building services, Wavee AI requires access to your location. You can enable location in Settings.",
+        openSettings: true,
+        showCancel: true,
+      );
       return;
     }
 
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
 
-    AppLat = position.latitude.toString();
-    AppLon = position.longitude.toString();
-    print("Latitude Check again: $AppLat, Longitude Check: $AppLon");
+      AppLat = position.latitude.toString();
+      AppLon = position.longitude.toString();
+      print("Latitude: $AppLat, Longitude: $AppLon");
 
-    setState(() {
-      isLocationFetched = true;
-    });
+      setState(() {
+        isLocationFetched = true;
+      });
 
-    getCityName(position.latitude, position.longitude);
+      getCityName(position.latitude, position.longitude);
+    } catch (e) {
+      print("📌 Error fetching location: $e");
+      _showPermissionDialog(
+        context,
+        title: "Location Services",
+        message: "To provide full functionality and show nearby building services, Wavee AI requires access to your location. You can enable location in Settings.",
+        showCancel: true,
+      );
+    }
 
     setState(() {
       isMapLoading = false;
     });
   }
+  void _showPermissionDialog(
+      BuildContext context, {
+        required String title,
+        required String message,
+        bool openSettings = false,
+        bool showCancel = false,
+      }) {
+    if (_isDialogVisible) return;
+
+    _isDialogVisible = true;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.only(
+            top: 16,
+            left: 24,
+            right: 24,
+            bottom: 16,
+          ),
+          titlePadding: EdgeInsets.only(top: 16, left: 24, right: 0),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontFamily: AppConstants.manrope,
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              CircleAvatar(
+                backgroundColor: Colors.white,
+                child: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _isDialogVisible = false;
+                    _setFallbackLocation();
+                  },
+                ),
+              ).paddingOnly(right: 2.w),
+            ],
+          ),
+          content: Text(
+            message,
+            style: TextStyle(
+              fontFamily: AppConstants.manrope,
+              fontSize: 16.sp,
+            ),
+          ),
+          actionsPadding: EdgeInsets.only(bottom: 12, left: 16, right: 16),
+          actions: [
+            Row(
+              children: [
+                if (showCancel)
+                  Expanded(
+                    child: batan(
+                      title: "Cancel",
+                      route: () {
+                        Navigator.of(context).pop();
+                        _isDialogVisible = false;
+                        _setFallbackLocation();
+                      },
+                      color: Colors.white,
+                      fontcolor: Colors.black,
+                      height: 5.h,
+                      fontsize: 18.sp,
+                      radius: 12.0,
+                      width: double.infinity,
+                    ),
+                  ),
+                if (openSettings && showCancel) SizedBox(width: 12),
+                if (openSettings)
+                  Expanded(
+                    child: batan(
+                      title: "Open Settings",
+                      route: () async {
+                        Navigator.of(context).pop();
+                        _isDialogVisible = false;
+
+                        await Geolocator.openAppSettings();
+                        await Future.delayed(Duration(seconds: 1)); // give time to apply
+
+                        LocationPermission permission =
+                        await Geolocator.checkPermission();
+
+
+                      },
+                      color: AppColors.maincolor,
+                      fontcolor: AppColors.white,
+                      height: 5.h,
+                      fontsize: 18.sp,
+                      radius: 12.0,
+                      width: double.infinity,
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        );
+      },
+    ).then((_) {
+      _isDialogVisible = false;
+    });
+  }
+
+  // void _showPermissionDialog(
+  //     BuildContext context, {
+  //       required String title,
+  //       required String message,
+  //       bool openSettings = false,
+  //       bool showCancel = false,
+  //     }) {
+  //   if (_isDialogVisible) return;
+  //
+  //   _isDialogVisible = true;
+  //
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (context) {
+  //       return AlertDialog(
+  //         contentPadding: EdgeInsets.only(
+  //           top: 16,
+  //           left: 24,
+  //           right: 24,
+  //           bottom: 16,
+  //         ),
+  //         titlePadding: EdgeInsets.only(top: 16, left: 24, right: 0),
+  //         title: Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Expanded(
+  //               child: Text(
+  //                 title,
+  //                 style: TextStyle(
+  //                   fontFamily: AppConstants.manrope,
+  //                   fontSize: 20.sp,
+  //                   fontWeight: FontWeight.bold,
+  //                 ),
+  //               ),
+  //             ),
+  //             CircleAvatar(
+  //               backgroundColor: Colors.white,
+  //               child: IconButton(
+  //                 icon: Icon(Icons.close),
+  //                 onPressed: () {
+  //                   Navigator.of(context).pop();
+  //                   _isDialogVisible = false;
+  //                   _setFallbackLocation();
+  //                 },
+  //               ),
+  //             ).paddingOnly(right: 2.w),
+  //           ],
+  //         ),
+  //         content: Text(
+  //           message,
+  //           style: TextStyle(
+  //             fontFamily: AppConstants.manrope,
+  //             fontSize: 16.sp,
+  //           ),
+  //         ),
+  //         actionsPadding: EdgeInsets.only(bottom: 12, left: 16, right: 16),
+  //         actions: [
+  //           Row(
+  //             children: [
+  //               if (showCancel)
+  //                 Expanded(
+  //                   child: batan(
+  //                     title: "Cancel",
+  //                     route: () {
+  //                       Navigator.of(context).pop();
+  //                       _isDialogVisible = false;
+  //                       _setFallbackLocation();
+  //                     },
+  //                     color: Colors.white,
+  //                     fontcolor: Colors.black,
+  //                     height: 5.h,
+  //                     fontsize: 18.sp,
+  //                     radius: 12.0,
+  //                     width: double.infinity,
+  //                   ),
+  //                 ),
+  //               if (openSettings && showCancel) SizedBox(width: 12),
+  //               if (openSettings)
+  //                 Expanded(
+  //                   child: batan(
+  //                     title: "Open Settings",
+  //                     route: () async {
+  //                       Navigator.of(context).pop();
+  //                       _isDialogVisible = false;
+  //                       await Geolocator.openAppSettings();
+  //                     },
+  //                     color: AppColors.maincolor,
+  //                     fontcolor: AppColors.white,
+  //                     height: 5.h,
+  //                     fontsize: 18.sp,
+  //                     radius: 12.0,
+  //                     width: double.infinity,
+  //                   ),
+  //                 ),
+  //             ],
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   ).then((_) {
+  //     _isDialogVisible = false;
+  //   });
+  // }
+
+
+
+  bool _isDialogVisible = false;
+  void _setFallbackLocation() {
+    AppLat = fallbackLatitude.toString();
+    AppLon = fallbackLongitude.toString();
+
+    setState(() {
+      isLocationFetched = true;
+      isMapLoading = false;
+    });
+  }
+
+  // Future<void> _getCurrentLocation() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
+  //
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     print("📌 Location services are disabled.");
+  //     setState(() {
+  //       isLoading = false;
+  //       isMapLoading = false;
+  //     });
+  //     return;
+  //   }
+  //
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       print("📌 Location permission denied.");
+  //       setState(() {
+  //         isLoading = false;
+  //         isMapLoading = false;
+  //       });
+  //       return;
+  //     }
+  //   }
+  //
+  //   if (permission == LocationPermission.deniedForever) {
+  //     print("📌 Location permission permanently denied.");
+  //     setState(() {
+  //       isLoading = false;
+  //       isMapLoading = false;
+  //     });
+  //     return;
+  //   }
+  //
+  //   Position position = await Geolocator.getCurrentPosition(
+  //     desiredAccuracy: LocationAccuracy.high,
+  //   );
+  //
+  //   AppLat = position.latitude.toString();
+  //   AppLon = position.longitude.toString();
+  //   print("Latitude Check again: $AppLat, Longitude Check: $AppLon");
+  //
+  //   setState(() {
+  //     isLocationFetched = true;
+  //   });
+  //
+  //   getCityName(position.latitude, position.longitude);
+  //
+  //   setState(() {
+  //     isMapLoading = false;
+  //   });
+  // }
 
   String? city;
 
   Future<void> getCityName(double latitude, double longitude) async {
     try {
       List<Placemark> placemarks =
-          await placemarkFromCoordinates(latitude, longitude);
+      await placemarkFromCoordinates(latitude, longitude);
 
       if (placemarks.isNotEmpty) {
         setState(() {
@@ -751,15 +1083,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
         BussinessProfile();
 
         setState(() {
-          isLoading =
-              false;
+          isLoading = false;
         });
-        print(""
-            ""
-            ""
-            ""
-            ""
-            " $city");
       }
     } catch (e) {
       print("Error: $e");
@@ -780,51 +1105,90 @@ class _CommunityScreenState extends State<CommunityScreen> {
       body: WillPopScope(
         onWillPop: () async {
           Get.offAll(() => HomePage(
-                selected: 1,
-                userName: "",
-              ));
+            selected: 1,
+            userName: "",
+          ));
           return false;
         },
         child: Stack(
           children: [
+            // isLocationFetched
+            //     ? GoogleMap(
+            //         onMapCreated: (GoogleMapController controller) {
+            //           mapController = controller;
+            //           _customInfoWindowController.googleMapController =
+            //               controller;
+            //
+            //           mapController.setMapStyle(_mapStyle);
+            //
+            //           print("Google Map Controller Ready!");
+            //           print("AppLat new check : $AppLat");
+            //           print("AppLon new check: $AppLon");
+            //         },
+            //         onCameraIdle: _onCameraIdle,
+            //         myLocationButtonEnabled: false,
+            //         zoomControlsEnabled: false,
+            //         compassEnabled: false,
+            //         indoorViewEnabled: true,
+            //         mapToolbarEnabled: false,
+            //         myLocationEnabled: false,
+            //         zoomGesturesEnabled: true,
+            //         mapType: MapType.normal,
+            //         initialCameraPosition: CameraPosition(
+            //           target: LatLng(
+            //             double.parse(AppLat),
+            //             double.parse(AppLon),
+            //           ),
+            //           zoom: 14.0,
+            //         ),
+            //         markers: _markers,
+            //         onTap: (_) {
+            //           _customInfoWindowController.hideInfoWindow!();
+            //         },
+            //         onCameraMove: (position) {
+            //           _customInfoWindowController.onCameraMove!();
+            //         },
+            //       )
+            //     : Center(child: Text("Open Setting",),),
             isLocationFetched
                 ? GoogleMap(
-                    onMapCreated: (GoogleMapController controller) {
-                      mapController = controller;
-                      _customInfoWindowController.googleMapController =
-                          controller;
+              onMapCreated: (GoogleMapController controller) {
+                mapController = controller;
+                _customInfoWindowController.googleMapController =
+                    controller;
 
-                      mapController.setMapStyle(_mapStyle);
+                mapController.setMapStyle(_mapStyle);
 
-                      print("Google Map Controller Ready!");
-                      print("AppLat new check : $AppLat");
-                      print("AppLon new check: $AppLon");
-                    },
-                    onCameraIdle: _onCameraIdle,
-                    myLocationButtonEnabled: false,
-                    zoomControlsEnabled: false,
-                    compassEnabled: false,
-                    indoorViewEnabled: true,
-                    mapToolbarEnabled: false,
-                    myLocationEnabled: false,
-                    zoomGesturesEnabled: true,
-                    mapType: MapType.normal,
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(
-                        double.parse(AppLat),
-                        double.parse(AppLon),
-                      ),
-                      zoom: 14.0,
-                    ),
-                    markers: _markers,
-                    onTap: (_) {
-                      _customInfoWindowController.hideInfoWindow!();
-                    },
-                    onCameraMove: (position) {
-                      _customInfoWindowController.onCameraMove!();
-                    },
-                  )
-                : Center(child: CircularProgressIndicator()),
+                print("Google Map Controller Ready!");
+                print("AppLat new check : $AppLat");
+                print("AppLon new check: $AppLon");
+              },
+              onCameraIdle: _onCameraIdle,
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
+              compassEnabled: false,
+              indoorViewEnabled: true,
+              mapToolbarEnabled: false,
+              myLocationEnabled: false,
+              zoomGesturesEnabled: true,
+              mapType: MapType.normal,
+              initialCameraPosition: CameraPosition(
+                target: LatLng(
+                  double.parse(AppLat),
+                  double.parse(AppLon),
+                ),
+                zoom: 14.0,
+              ),
+              markers: _markers,
+              onTap: (_) {
+                _customInfoWindowController.hideInfoWindow!();
+              },
+              onCameraMove: (position) {
+                _customInfoWindowController.onCameraMove!();
+              },
+            )
+                : Center(child: CircularProgressIndicator()), // or fallback UI
+
             CustomInfoWindow(
               controller: _customInfoWindowController,
               height: 27.h,
@@ -902,7 +1266,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
               right: 0,
               child: Container(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -915,7 +1279,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   child: Row(
                     children: [
                       GestureDetector(
-                        onTap: () => _showSearchBottomSheet(context),
+                        onTap: () {
+                          _showSearchBottomSheet(context);
+                        },
                         child: Container(
                           width: 36,
                           height: 36,
@@ -938,6 +1304,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
+                          print("isLocationFetched$isLocationFetched");
+
                           getlikeapi();
                         },
                         child: Container(
@@ -946,7 +1314,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                           height: 5.h,
                           decoration: BoxDecoration(
                             borderRadius:
-                                BorderRadius.all(ui.Radius.circular(20)),
+                            BorderRadius.all(ui.Radius.circular(20)),
                             color: Colors.grey[200],
                           ),
                           child: Row(
@@ -983,7 +1351,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                           height: 5.h,
                           decoration: BoxDecoration(
                             borderRadius:
-                                BorderRadius.all(ui.Radius.circular(20)),
+                            BorderRadius.all(ui.Radius.circular(20)),
                             color: Colors.grey[200],
                           ),
                           child: Row(
@@ -1015,8 +1383,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         runSpacing: 7,
                         children: [
                           for (int i = 0;
-                              i < (categoriesModel?.data?.length ?? 0);
-                              i++)
+                          i < (categoriesModel?.data?.length ?? 0);
+                          i++)
                             GestureDetector(
                               onTap: () {
                                 String categoryId =
@@ -1026,13 +1394,11 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                     categoriesModel?.data?[i].categoryName ??
                                         "";
                                 String categoryImage =
-                                    categoriesModel?.data?[i].img ??
-                                        "";
+                                    categoriesModel?.data?[i].img ?? "";
                                 print("categoryIdcategoryId : ${categoryId}");
                                 print("Selected Category Name: $categoryName");
-
-                                CategoriesProfileView(
-                                    categoryId, categoryName, categoryImage);
+                                CategoriesProfileView(categoryId,
+                                    categoryName, categoryImage);
                               },
                               child: Container(
                                 padding: EdgeInsets.symmetric(horizontal: 10),
@@ -1050,7 +1416,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: getCategoryColor(categoriesModel
-                                                ?.data?[i].categoryName ??
+                                            ?.data?[i].categoryName ??
                                             ""),
                                       ),
                                       child: Center(
@@ -1086,18 +1452,17 @@ class _CommunityScreenState extends State<CommunityScreen> {
                 child: Container(
                   child: Center(
                     child:
-                        CircularProgressIndicator(color: AppColors.maincolor),
+                    CircularProgressIndicator(color: AppColors.maincolor),
                   ),
                 ),
               ),
             isSending
                 ? Positioned.fill(
-                    child: Container(
-                      color:
-                          Colors.black.withOpacity(0.4),
-                      child: Center(child: Loader()),
-                    ),
-                  )
+              child: Container(
+                color: Colors.black.withOpacity(0.4),
+                child: Center(child: Loader()),
+              ),
+            )
                 : SizedBox(),
           ],
         ),
@@ -1163,7 +1528,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   decoration: BoxDecoration(
                     color: AppColors.bgcolor,
                     borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
+                    BorderRadius.vertical(top: Radius.circular(20)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1187,7 +1552,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                               CircleAvatar(
                                 backgroundColor: Colors.pink,
                                 child:
-                                    Icon(Icons.favorite, color: Colors.white),
+                                Icon(Icons.favorite, color: Colors.white),
                               ),
                               SizedBox(width: 8),
                               Column(
@@ -1223,9 +1588,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   Get.back();
                                 },
                                 padding: EdgeInsets.zero,
-
-                                constraints:
-                                    BoxConstraints(),
+                                constraints: BoxConstraints(),
                               ),
                             ),
                           )
@@ -1234,131 +1597,129 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       SizedBox(height: 10),
                       Expanded(
                         child: (getlikeModal?.data == null ||
-                                getlikeModal!.data!.isEmpty)
+                            getlikeModal!.data!.isEmpty)
                             ? Center(
-                                child: Text(
-                                  "No Favourites Added!",
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.grey),
-                                ),
-                              )
+                          child: Text(
+                            "No Favourites Added!",
+                            style: TextStyle(
+                                fontSize: 16, color: Colors.grey),
+                          ),
+                        )
                             : ListView.builder(
-                                controller: scrollController,
-                                padding: EdgeInsets.zero,
-                                itemCount: getlikeModal?.data?.length ?? 0,
-                                itemBuilder: (context, index) {
-                                  bool isFirst =
-                                      index == 0;
-                                  bool isLast = index ==
-                                      (getlikeModal?.data?.length ?? 1) -
-                                          1;
+                          controller: scrollController,
+                          padding: EdgeInsets.zero,
+                          itemCount: getlikeModal?.data?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            bool isFirst = index == 0;
+                            bool isLast = index ==
+                                (getlikeModal?.data?.length ?? 1) - 1;
 
-                                  return Column(
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          Get.back();
-                                          BussinessViewProfile((getlikeModal
-                                                  ?.data?[index].businessId)
-                                              .toString());
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 10),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: isFirst
-                                                  ? Radius.circular(15)
-                                                  : Radius.zero,
-                                              topRight: isFirst
-                                                  ? Radius.circular(15)
-                                                  : Radius.zero,
-                                              bottomLeft: isLast
-                                                  ? Radius.circular(15)
-                                                  : Radius.zero,
-                                              bottomRight: isLast
-                                                  ? Radius.circular(15)
-                                                  : Radius.zero,
-                                            ),
-                                          ),
-                                          child: Row(
+                            return Column(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Get.back();
+                                    BussinessViewProfile((getlikeModal
+                                        ?.data?[index].businessId)
+                                        .toString());
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: isFirst
+                                            ? Radius.circular(15)
+                                            : Radius.zero,
+                                        topRight: isFirst
+                                            ? Radius.circular(15)
+                                            : Radius.zero,
+                                        bottomLeft: isLast
+                                            ? Radius.circular(15)
+                                            : Radius.zero,
+                                        bottomRight: isLast
+                                            ? Radius.circular(15)
+                                            : Radius.zero,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 30,
+                                          backgroundColor:
+                                          Colors.grey[200],
+                                          backgroundImage: (getlikeModal
+                                              ?.data?[index]
+                                              .business
+                                              ?.logo
+                                              ?.isEmpty ??
+                                              true)
+                                              ? const AssetImage(
+                                              "assets/images/waveeLogoShort.png")
+                                              : CachedNetworkImageProvider(
+                                            getlikeModal
+                                                ?.data?[index]
+                                                .business
+                                                ?.logo ??
+                                                "",
+                                          ) as ImageProvider,
+                                        ),
+                                        SizedBox(width: 15),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                             children: [
-                                              CircleAvatar(
-                                                radius: 30,
-                                                backgroundColor:
-                                                    Colors.grey[200],
-                                                backgroundImage: (getlikeModal
-                                                            ?.data?[index]
-                                                            .business
-                                                            ?.logo
-                                                            ?.isEmpty ??
-                                                        true)
-                                                    ? const AssetImage(
-                                                        "assets/images/waveeLogoShort.png")
-                                                    : CachedNetworkImageProvider(
-                                                        getlikeModal
-                                                                ?.data?[index]
-                                                                .business
-                                                                ?.logo ??
-                                                            "",
-                                                      ) as ImageProvider,
-                                              ),
-                                              SizedBox(width: 15),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      getlikeModal
-                                                              ?.data?[index]
-                                                              .business
-                                                              ?.businessName ??
-                                                          "N/A",
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.black87,
-                                                      ),
-                                                      maxLines: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                    SizedBox(height: 3),
-                                                    Text(
-                                                      "${(getlikeModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.black54,
-                                                      ),
-                                                    ),
-                                                  ],
+                                              Text(
+                                                getlikeModal
+                                                    ?.data?[index]
+                                                    .business
+                                                    ?.businessName ??
+                                                    "N/A",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight:
+                                                  FontWeight.bold,
+                                                  color: Colors.black87,
                                                 ),
+                                                maxLines: 1,
+                                                overflow:
+                                                TextOverflow.ellipsis,
                                               ),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  unlikeBusiness(index);
-                                                },
-                                                child: Icon(Icons.favorite,
-                                                    color: Colors.red,
-                                                    size: 28),
+                                              SizedBox(height: 3),
+                                              Text(
+                                                "${(getlikeModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black54,
+                                                ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                      ),
-                                      if (!isLast)
-                                        Divider(
-                                          color: Colors.grey[300],
-                                          thickness: 1,
-                                          height: 0,
+                                        GestureDetector(
+                                          onTap: () {
+                                            unlikeBusiness(index);
+                                          },
+                                          child: Icon(Icons.favorite,
+                                              color: Colors.red,
+                                              size: 28),
                                         ),
-                                    ],
-                                  );
-                                },
-                              ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                if (!isLast)
+                                  Divider(
+                                    color: Colors.grey[300],
+                                    thickness: 1,
+                                    height: 0,
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -1398,7 +1759,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   decoration: BoxDecoration(
                     color: AppColors.bgcolor,
                     borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
+                    BorderRadius.vertical(top: Radius.circular(20)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1464,123 +1825,121 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       SizedBox(height: 10),
                       Expanded(
                         child: (getvisitedModal?.data == null ||
-                                getvisitedModal!.data!.isEmpty)
+                            getvisitedModal!.data!.isEmpty)
                             ? Center(
-                                child: Text(
-                                  "No Businesses Found!",
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.grey),
-                                ),
-                              )
+                          child: Text(
+                            "No Businesses Found!",
+                            style: TextStyle(
+                                fontSize: 16, color: Colors.grey),
+                          ),
+                        )
                             : ListView.builder(
-                                controller: scrollController,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 4, vertical: 2),
-                                itemCount: getvisitedModal?.data?.length ?? 0,
-                                itemBuilder: (context, index) {
-                                  bool isFirst =
-                                      index == 0;
-                                  bool isLast = index ==
-                                      (getvisitedModal?.data?.length ?? 1) -
-                                          1;
+                          controller: scrollController,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 4, vertical: 2),
+                          itemCount: getvisitedModal?.data?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            bool isFirst = index == 0;
+                            bool isLast = index ==
+                                (getvisitedModal?.data?.length ?? 1) - 1;
 
-                                  return Column(
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          Get.back();
-                                          BussinessViewProfile((getvisitedModal
-                                                  ?.data?[index].businessId)
-                                              .toString());
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.all(12),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: isFirst
-                                                  ? Radius.circular(15)
-                                                  : Radius.zero,
-                                              topRight: isFirst
-                                                  ? Radius.circular(15)
-                                                  : Radius.zero,
-                                              bottomLeft: isLast
-                                                  ? Radius.circular(15)
-                                                  : Radius.zero,
-                                              bottomRight: isLast
-                                                  ? Radius.circular(15)
-                                                  : Radius.zero,
-                                            ),
-                                          ),
-                                          child: Row(
+                            return Column(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Get.back();
+                                    BussinessViewProfile((getvisitedModal
+                                        ?.data?[index].businessId)
+                                        .toString());
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: isFirst
+                                            ? Radius.circular(15)
+                                            : Radius.zero,
+                                        topRight: isFirst
+                                            ? Radius.circular(15)
+                                            : Radius.zero,
+                                        bottomLeft: isLast
+                                            ? Radius.circular(15)
+                                            : Radius.zero,
+                                        bottomRight: isLast
+                                            ? Radius.circular(15)
+                                            : Radius.zero,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 28,
+                                          backgroundColor:
+                                          Colors.grey[200],
+                                          backgroundImage: (getvisitedModal
+                                              ?.data?[index]
+                                              .business
+                                              ?.logo
+                                              ?.isEmpty ??
+                                              true)
+                                              ? AssetImage(
+                                              "assets/images/waveeLogoShort.png")
+                                              : CachedNetworkImageProvider(
+                                            getvisitedModal
+                                                ?.data?[index]
+                                                .business
+                                                ?.logo ??
+                                                "",
+                                          ) as ImageProvider,
+                                        ),
+                                        SizedBox(width: 15),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                             children: [
-                                              CircleAvatar(
-                                                radius: 28,
-                                                backgroundColor:
-                                                    Colors.grey[200],
-                                                backgroundImage: (getvisitedModal
-                                                            ?.data?[index]
-                                                            .business
-                                                            ?.logo
-                                                            ?.isEmpty ??
-                                                        true)
-                                                    ? AssetImage(
-                                                        "assets/images/waveeLogoShort.png")
-                                                    : CachedNetworkImageProvider(
-                                                        getvisitedModal
-                                                                ?.data?[index]
-                                                                .business
-                                                                ?.logo ??
-                                                            "",
-                                                      ) as ImageProvider,
+                                              Text(
+                                                getvisitedModal
+                                                    ?.data?[index]
+                                                    .business
+                                                    ?.businessName ??
+                                                    "N/A",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight:
+                                                  FontWeight.bold,
+                                                  color: Colors.black87,
+                                                ),
+                                                maxLines: 1,
+                                                overflow:
+                                                TextOverflow.ellipsis,
                                               ),
-                                              SizedBox(width: 15),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      getvisitedModal
-                                                              ?.data?[index]
-                                                              .business
-                                                              ?.businessName ??
-                                                          "N/A",
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.black87,
-                                                      ),
-                                                      maxLines: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                    SizedBox(height: 3),
-                                                    Text(
-                                                      "${(getvisitedModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.black54,
-                                                      ),
-                                                    ),
-                                                  ],
+                                              SizedBox(height: 3),
+                                              Text(
+                                                "${(getvisitedModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black54,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                      ),
-                                      if (!isLast)
-                                        Divider(
-                                          color: Colors.grey[300],
-                                          thickness: 1,
-                                          height: 1,
-                                        ),
-                                    ],
-                                  );
-                                },
-                              ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                if (!isLast)
+                                  Divider(
+                                    color: Colors.grey[300],
+                                    thickness: 1,
+                                    height: 1,
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
                       )
                     ],
                   ),
@@ -1623,7 +1982,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   decoration: BoxDecoration(
                     color: AppColors.bgcolor,
                     borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
+                    BorderRadius.vertical(top: Radius.circular(20)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1657,13 +2016,13 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                     child: ClipOval(
                                       child: categoryImage.isNotEmpty
                                           ? Image.network(
-                                              categoryImage,
-                                              height: 3.h,
-                                              width: 3.h,
-                                              fit: BoxFit.cover,
-                                            )
+                                        categoryImage,
+                                        height: 3.h,
+                                        width: 3.h,
+                                        fit: BoxFit.cover,
+                                      )
                                           : Icon(Icons.category_rounded,
-                                              color: Colors.white),
+                                          color: Colors.white),
                                     ),
                                   ),
                                 ),
@@ -1702,9 +2061,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   Get.back();
                                 },
                                 padding: EdgeInsets.zero,
-
-                                constraints:
-                                    BoxConstraints(),
+                                constraints: BoxConstraints(),
                               ),
                             ),
                           )
@@ -1713,119 +2070,119 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       SizedBox(height: 10),
                       Expanded(
                         child: (viewcategoriesmodel?.data == null ||
-                                viewcategoriesmodel!.data!.isEmpty)
+                            viewcategoriesmodel!.data!.isEmpty)
                             ? Center(
-                                child: Text(
-                                  "No Businesses Found!",
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.grey),
-                                ),
-                              )
+                          child: Text(
+                            "No Businesses Found!",
+                            style: TextStyle(
+                                fontSize: 16, color: Colors.grey),
+                          ),
+                        )
                             : ListView.builder(
-                                controller: scrollController,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 4, vertical: 2),
-                                itemCount:
-                                    viewcategoriesmodel?.data?.length ?? 0,
-                                itemBuilder: (context, index) {
-                                  bool isFirstItem = index == 0;
-                                  bool isLastItem = index ==
-                                      (viewcategoriesmodel?.data?.length ?? 0) -
-                                          1;
+                          controller: scrollController,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 4, vertical: 2),
+                          itemCount:
+                          viewcategoriesmodel?.data?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            bool isFirstItem = index == 0;
+                            bool isLastItem = index ==
+                                (viewcategoriesmodel?.data?.length ?? 0) -
+                                    1;
 
-                                  return Column(
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          Get.back();
-                                          BussinessViewProfile(
-                                              (viewcategoriesmodel
-                                                      ?.data?[index].id)
-                                                  .toString());
-                                          print(
-                                              "viewcategoriesmodel?.data?[index].id${viewcategoriesmodel?.data?[index].id}");
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.all(12),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(
-                                                  isFirstItem ? 15 : 0),
-                                              topRight: Radius.circular(
-                                                  isFirstItem ? 15 : 0),
-                                              bottomLeft: Radius.circular(
-                                                  isLastItem ? 15 : 0),
-                                              bottomRight: Radius.circular(
-                                                  isLastItem ? 15 : 0),
-                                            ),
-                                            color: Colors.white,
-                                          ),
-                                          child: Row(
+                            return Column(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Get.back();
+                                    BussinessViewProfile(
+                                        (viewcategoriesmodel
+                                            ?.data?[index].id)
+                                            .toString());
+                                    print(
+                                        "viewcategoriesmodel?.data?[index].id${viewcategoriesmodel?.data?[index].id}");
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(
+                                            isFirstItem ? 15 : 0),
+                                        topRight: Radius.circular(
+                                            isFirstItem ? 15 : 0),
+                                        bottomLeft: Radius.circular(
+                                            isLastItem ? 15 : 0),
+                                        bottomRight: Radius.circular(
+                                            isLastItem ? 15 : 0),
+                                      ),
+                                      color: Colors.white,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 28,
+                                          backgroundColor:
+                                          Colors.grey[200],
+                                          backgroundImage: (viewcategoriesmodel
+                                              ?.data?[index]
+                                              ?.logo
+                                              ?.isEmpty ??
+                                              true)
+                                              ? const AssetImage(
+                                              "assets/images/waveeLogoShort.png")
+                                              : CachedNetworkImageProvider(
+                                            viewcategoriesmodel
+                                                ?.data?[index]
+                                                ?.logo ??
+                                                "",
+                                          ) as ImageProvider,
+                                        ),
+                                        SizedBox(width: 15),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                             children: [
-                                              CircleAvatar(
-                                                radius: 28,
-                                                backgroundColor:
-                                                    Colors.grey[200],
-                                                backgroundImage: (viewcategoriesmodel
-                                                            ?.data?[index]
-                                                            ?.logo
-                                                            ?.isEmpty ??
-                                                        true)
-                                                    ? const AssetImage(
-                                                        "assets/images/waveeLogoShort.png")
-                                                    : CachedNetworkImageProvider(
-                                                        viewcategoriesmodel
-                                                                ?.data?[index]
-                                                                ?.logo ??
-                                                            "",
-                                                      ) as ImageProvider,
+                                              Text(
+                                                viewcategoriesmodel
+                                                    ?.data?[index]
+                                                    .businessName ??
+                                                    "N/A",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight:
+                                                  FontWeight.bold,
+                                                  color: Colors.black87,
+                                                ),
+                                                maxLines: 1,
+                                                overflow:
+                                                TextOverflow.ellipsis,
                                               ),
-                                              SizedBox(width: 15),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      viewcategoriesmodel
-                                                              ?.data?[index]
-                                                              .businessName ??
-                                                          "N/A",
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.black87,
-                                                      ),
-                                                      maxLines: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                    SizedBox(height: 3),
-                                                    Text(
-                                                      "${(viewcategoriesmodel?.data?[index].distance ?? 0).toStringAsFixed(2)} Miles",
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.black54,
-                                                      ),
-                                                    ),
-                                                  ],
+                                              SizedBox(height: 3),
+                                              Text(
+                                                "${(viewcategoriesmodel?.data?[index].distance ?? 0).toStringAsFixed(2)} Miles",
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black54,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                      ),
-                                      if (!isLastItem)
-                                        Divider(
-                                          color: Colors.grey[300],
-                                          thickness: 1,
-                                          height: 1,
-                                        ),
-                                    ],
-                                  );
-                                },
-                              ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                if (!isLastItem)
+                                  Divider(
+                                    color: Colors.grey[300],
+                                    thickness: 1,
+                                    height: 1,
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -1843,8 +2200,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
   void _showSearchBottomSheet(BuildContext context) {
     bool isSearching = false;
     search.clear();
-    List<dynamic> filteredList = List.from(
-        businessprofileModel?.data ?? []);
+    List<dynamic> filteredList = List.from(businessprofileModel?.data ?? []);
     if (_isBottomSheetOpen) return;
     _isBottomSheetOpen = true;
     showModalBottomSheet(
@@ -1867,7 +2223,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   decoration: BoxDecoration(
                     color: AppColors.bgcolor,
                     borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
+                    BorderRadius.vertical(top: Radius.circular(20)),
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -1896,7 +2252,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                     fontSize: 16.sp,
                                   ),
                                   prefixIcon:
-                                      Icon(Icons.search, color: Colors.black87),
+                                  Icon(Icons.search, color: Colors.black87),
                                   border: InputBorder.none,
                                 ),
                                 style: TextStyle(
@@ -1919,52 +2275,51 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                       String searchText = value.toLowerCase();
 
                                       filteredList = businessprofileModel?.data
-                                              ?.where((businessData) {
-                                            String businessName =
-                                                (businessData.businessName ??
-                                                        "")
-                                                    .toLowerCase();
+                                          ?.where((businessData) {
+                                        String businessName =
+                                        (businessData.businessName ??
+                                            "")
+                                            .toLowerCase();
 
-                                            String categoryName = (businessData
-                                                        .category
-                                                        ?.categoryName ??
-                                                    "")
-                                                .toLowerCase();
-                                            bool categoryMatch = categoryName
-                                                .contains(searchText);
+                                        String categoryName = (businessData
+                                            .category
+                                            ?.categoryName ??
+                                            "")
+                                            .toLowerCase();
+                                        bool categoryMatch = categoryName
+                                            .contains(searchText);
 
-                                            String subCategoryName =
-                                                (businessData.subCategory
-                                                            ?.subCategoryName ??
-                                                        "")
-                                                    .toLowerCase();
-                                            bool subCategoryMatch =
-                                                subCategoryName
-                                                    .contains(searchText);
+                                        String subCategoryName =
+                                        (businessData.subCategory
+                                            ?.subCategoryName ??
+                                            "")
+                                            .toLowerCase();
+                                        bool subCategoryMatch =
+                                        subCategoryName
+                                            .contains(searchText);
 
-                                            bool tagMatch = businessData.tags
-                                                    ?.any((tag) =>
-                                                        tag.name
-                                                            ?.toLowerCase()
-                                                            .contains(
-                                                                searchText) ??
-                                                        false) ??
-                                                false;
+                                        bool tagMatch = businessData.tags
+                                            ?.any((tag) =>
+                                        tag.name
+                                            ?.toLowerCase()
+                                            .contains(
+                                            searchText) ??
+                                            false) ??
+                                            false;
 
-                                            String distanceString =
-                                                (businessData.distance ?? 0.0)
-                                                    .toStringAsFixed(
-                                                        1);
-                                            bool distanceMatch = distanceString
-                                                .contains(searchText);
+                                        String distanceString =
+                                        (businessData.distance ?? 0.0)
+                                            .toStringAsFixed(1);
+                                        bool distanceMatch = distanceString
+                                            .contains(searchText);
 
-                                            return businessName
-                                                    .contains(searchText) ||
-                                                categoryMatch ||
-                                                subCategoryMatch ||
-                                                tagMatch ||
-                                                distanceMatch;
-                                          }).toList() ??
+                                        return businessName
+                                            .contains(searchText) ||
+                                            categoryMatch ||
+                                            subCategoryMatch ||
+                                            tagMatch ||
+                                            distanceMatch;
+                                      }).toList() ??
                                           [];
                                     }
                                   });
@@ -2012,34 +2367,34 @@ class _CommunityScreenState extends State<CommunityScreen> {
                             child: Row(
                               children: [
                                 _filterButtons("Favourites", Icons.favorite,
-                                    () {
-                                  Get.back();
-                                  getlikeapi();
-                                }, Colors.red, Colors.black),
+                                        () {
+                                      Get.back();
+                                      getlikeapi();
+                                    }, Colors.red, Colors.black),
                                 SizedBox(width: 2.w),
                                 _filterButtons("Visited", Icons.location_on,
-                                    () {
-                                  Get.back();
-                                  getvisitedapi();
-                                }, Colors.black, Colors.black),
+                                        () {
+                                      Get.back();
+                                      getvisitedapi();
+                                    }, Colors.black, Colors.black),
                                 SizedBox(width: 2.w),
                                 Wrap(
                                   spacing: 6.0,
                                   runSpacing: 6.0,
                                   children: [
                                     for (int i = 0;
-                                        i <
-                                            (categoriesModel?.data?.length ??
-                                                0);
-                                        i++)
+                                    i <
+                                        (categoriesModel?.data?.length ??
+                                            0);
+                                    i++)
                                       GestureDetector(
                                         onTap: () {
                                           String categoryId = categoriesModel
-                                                  ?.data?[i].id
-                                                  .toString() ??
+                                              ?.data?[i].id
+                                              .toString() ??
                                               "";
                                           String categoryName = categoriesModel
-                                                  ?.data?[i].categoryName ??
+                                              ?.data?[i].categoryName ??
                                               "";
                                           String categoryImage =
                                               categoriesModel?.data?[i].img ??
@@ -2056,8 +2411,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 8, vertical: 4),
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                                12),
+                                            borderRadius:
+                                            BorderRadius.circular(12),
                                             color: Colors.grey[200],
                                           ),
                                           child: FittedBox(
@@ -2070,20 +2425,20 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                   backgroundColor: Colors.blue,
                                                   backgroundImage: NetworkImage(
                                                       categoriesModel
-                                                              ?.data?[i].img ??
+                                                          ?.data?[i].img ??
                                                           ""),
                                                 ),
                                                 SizedBox(width: 4),
                                                 Text(
                                                   categoriesModel?.data?[i]
-                                                          .categoryName ??
+                                                      .categoryName ??
                                                       "",
                                                   style: TextStyle(
                                                     fontSize: 14.sp,
                                                     fontWeight: FontWeight.w600,
                                                     color: AppColors.black,
                                                     fontFamily:
-                                                        AppConstants.manrope,
+                                                    AppConstants.manrope,
                                                   ),
                                                 ),
                                               ],
@@ -2101,310 +2456,309 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         child: isLoading
                             ? Center(child: CircularProgressIndicator())
                             : (filteredList.isEmpty)
-                                ? Container(
-                                    margin: EdgeInsets.only(top: 6.h),
-                                    child: Text(
-                                      "No business found",
-                                      style: TextStyle(
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey,
+                            ? Container(
+                          margin: EdgeInsets.only(top: 6.h),
+                          child: Text(
+                            "No business found",
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        )
+                            : ListView.builder(
+                          controller: scrollController,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 1.5.h,
+                          ),
+                          itemCount: filteredList.length,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () {
+                                String businessId =
+                                filteredList.isEmpty
+                                    ? BussinessViewProfile(
+                                    (businessprofileModel
+                                        ?.data?[index]
+                                        .id)
+                                        .toString()) ??
+                                    ""
+                                    : filteredList[index]
+                                    .id
+                                    .toString();
+
+                                print(
+                                    "businessId from filteredList: $businessId");
+
+                                Get.back();
+                                BussinessViewProfile(businessId);
+
+                                print(
+                                    "Navigating to business details with ID: $businessId");
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(1.w),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(
+                                        index == 0 ? 15 : 0),
+                                    topRight: Radius.circular(
+                                        index == 0 ? 15 : 0),
+                                    bottomLeft: Radius.circular(
+                                        index ==
+                                            filteredList.length -
+                                                1
+                                            ? 15
+                                            : 0),
+                                    bottomRight: Radius.circular(
+                                        index ==
+                                            filteredList.length -
+                                                1
+                                            ? 15
+                                            : 0),
+                                  ),
+                                ),
+                                child: Stack(
+                                  children: [
+                                    ListTile(
+                                      leading: ClipRRect(
+                                        borderRadius:
+                                        BorderRadius.circular(20),
+                                        child: CachedNetworkImage(
+                                          imageUrl: (filteredList[
+                                          index]
+                                              .profile
+                                              ?.isNotEmpty ??
+                                              false)
+                                              ? filteredList[index]
+                                              .profile
+                                              .toString()
+                                              : "",
+                                          width: 40,
+                                          height: 40,
+                                          fit: BoxFit.cover,
+                                          placeholder: (context,
+                                              url) =>
+                                          const CircularProgressIndicator(),
+                                          errorWidget:
+                                              (context, url, error) =>
+                                          const Image(
+                                            image: AssetImage(
+                                                "assets/images/waveeLogoShort.png"),
+                                            fit: BoxFit.cover,
+                                            width: 40,
+                                            height: 40,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  )
-                                : ListView.builder(
-                                    controller: scrollController,
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: 1.5.h,
-                                    ),
-                                    itemCount: filteredList.length,
-                                    itemBuilder: (context, index) {
-                                      return InkWell(
-                                        onTap: () {
-                                          String businessId =
-                                              filteredList.isEmpty
-                                                  ? BussinessViewProfile(
-                                                          (businessprofileModel
-                                                                  ?.data?[index]
-                                                                  .id)
-                                                              .toString()) ??
-                                                      ""
-                                                  : filteredList[index]
-                                                      .id
-                                                      .toString();
-
-                                          print(
-                                              "businessId from filteredList: $businessId");
-
-                                          Get.back();
-                                          BussinessViewProfile(
-                                              businessId);
-
-                                          print(
-                                              "Navigating to business details with ID: $businessId");
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.all(1.w),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(
-                                                  index == 0 ? 15 : 0),
-                                              topRight: Radius.circular(
-                                                  index == 0 ? 15 : 0),
-                                              bottomLeft: Radius.circular(
-                                                  index ==
-                                                          filteredList.length -
-                                                              1
-                                                      ? 15
-                                                      : 0),
-                                              bottomRight: Radius.circular(
-                                                  index ==
-                                                          filteredList.length -
-                                                              1
-                                                      ? 15
-                                                      : 0),
+                                      title: Text(
+                                        filteredList[index]
+                                            .businessName ??
+                                            "N/A",
+                                        style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily:
+                                          AppConstants.manrope,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                      subtitle: Row(
+                                        children: [
+                                          Text(
+                                            "${(businessprofileModel?.data?[index].subStatus?.capitalizeFirst ?? "")}",
+                                            style: TextStyle(
+                                              fontSize: 13.sp,
+                                              fontWeight:
+                                              FontWeight.bold,
+                                              color: Colors.grey,
                                             ),
                                           ),
-                                          child: Stack(
+                                          SizedBox(width: 3.w),
+                                          Text(
+                                            "${(filteredList[index].distance ?? 0.0).toStringAsFixed(2)} Miles",
+                                            style: TextStyle(
+                                              fontSize: 13.sp,
+                                              color: Colors
+                                                  .grey.shade600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      trailing: Container(
+                                        width: 10.w,
+                                        height: 10.w,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.grey[100],
+                                        ),
+                                        child: IconButton(
+                                          icon: Icon(
+                                            Icons.location_on,
+                                            color: Colors.black,
+                                            size: 5.w,
+                                          ),
+                                          onPressed: () {
+                                            AppLat =
+                                                filteredList[index]
+                                                    .latitude
+                                                    .toString();
+                                            AppLon =
+                                                filteredList[index]
+                                                    .longitude
+                                                    .toString();
+                                            selectedUserId =
+                                                filteredList[index]
+                                                    .id
+                                                    .toString();
+                                            Get.back();
+                                            moveToLocation();
+                                          },
+                                          padding: EdgeInsets.zero,
+                                          constraints:
+                                          BoxConstraints(),
+                                        ),
+                                      ),
+                                    ),
+                                    filteredList[index].tags ==
+                                        null ||
+                                        (filteredList[index]
+                                            .tags
+                                            ?.isEmpty ??
+                                            true)
+                                        ? const SizedBox.shrink()
+                                        : Container(
+                                      margin: EdgeInsets.only(
+                                          top: 8.h),
+                                      height: 5.h,
+                                      child: ListView.builder(
+                                        scrollDirection:
+                                        Axis.horizontal,
+                                        padding:
+                                        EdgeInsets.only(
+                                          left: 2.w,
+                                        ),
+                                        itemCount:
+                                        businessprofileModel
+                                            ?.data?[
+                                        index]
+                                            .tags
+                                            ?.length ??
+                                            0,
+                                        itemBuilder: (context,
+                                            tagIndex) {
+                                          final tag =
+                                          businessprofileModel
+                                              ?.data?[index]
+                                              .tags?[tagIndex];
+                                          print(
+                                              "tag ave che knau @${tag?.img}");
+                                          return Row(
                                             children: [
-                                              ListTile(
-                                                leading: ClipRRect(
+                                              Container(
+                                                padding: EdgeInsets
+                                                    .symmetric(
+                                                    horizontal:
+                                                    2.w,
+                                                    vertical:
+                                                    0.5.h),
+                                                decoration:
+                                                BoxDecoration(
                                                   borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  child: CachedNetworkImage(
-                                                    imageUrl: (filteredList[
-                                                                    index]
-                                                                .profile
-                                                                ?.isNotEmpty ??
-                                                            false)
-                                                        ? filteredList[index]
-                                                            .profile
-                                                            .toString()
-                                                        : "",
-                                                    width: 40,
-                                                    height: 40,
-                                                    fit: BoxFit.cover,
-                                                    placeholder: (context,
-                                                            url) =>
-                                                        const CircularProgressIndicator(),
-                                                    errorWidget:
-                                                        (context, url, error) =>
-                                                            const Image(
-                                                      image: AssetImage(
-                                                          "assets/images/waveeLogoShort.png"),
-                                                      fit: BoxFit.cover,
-                                                      width: 40,
-                                                      height: 40,
-                                                    ),
-                                                  ),
+                                                  BorderRadius
+                                                      .circular(
+                                                      15),
+                                                  border: Border.all(
+                                                      color: Colors
+                                                          .grey
+                                                          .shade200),
                                                 ),
-                                                title: Text(
-                                                  filteredList[index]
-                                                          .businessName ??
-                                                      "N/A",
-                                                  style: TextStyle(
-                                                    fontSize: 15.sp,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily:
-                                                        AppConstants.manrope,
-                                                    color: Colors.black87,
-                                                  ),
-                                                ),
-                                                subtitle: Row(
+                                                child: Row(
+                                                  mainAxisSize:
+                                                  MainAxisSize
+                                                      .min,
                                                   children: [
-                                                    Text(
-                                                      "${(businessprofileModel?.data?[index].subStatus?.capitalizeFirst ?? "")}",
-                                                      style: TextStyle(
-                                                        fontSize: 13.sp,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.grey,
+                                                    Container(
+                                                      height:
+                                                      2.5.h,
+                                                      width:
+                                                      2.5.h,
+                                                      decoration:
+                                                      BoxDecoration(
+                                                        shape: BoxShape
+                                                            .circle,
+                                                      ),
+                                                      child:
+                                                      ClipOval(
+                                                        child:
+                                                        CachedNetworkImage(
+                                                          imageUrl:
+                                                          tag?.img ?? "",
+                                                          height:
+                                                          3.h,
+                                                          width:
+                                                          3.h,
+                                                          fit: BoxFit
+                                                              .cover,
+                                                          placeholder: (context, url) =>
+                                                              CircularProgressIndicator(
+                                                                color:
+                                                                AppColors.maincolor,
+                                                              ),
+                                                          errorWidget: (context, url, error) =>
+                                                              Image.asset(
+                                                                'assets/images/waveeLogoShort.png',
+                                                                height:
+                                                                3.h,
+                                                                width:
+                                                                3.h,
+                                                                fit:
+                                                                BoxFit.cover,
+                                                              ),
+                                                        ),
                                                       ),
                                                     ),
-                                                    SizedBox(width: 3.w),
+                                                    SizedBox(
+                                                        width: 1
+                                                            .w),
                                                     Text(
-                                                      "${(filteredList[index].distance ?? 0.0).toStringAsFixed(2)} Miles",
-                                                      style: TextStyle(
-                                                        fontSize: 13.sp,
-                                                        color: Colors
-                                                            .grey.shade600,
+                                                      tag?.name ??
+                                                          "No Tags",
+                                                      style:
+                                                      TextStyle(
+                                                        color: AppColors
+                                                            .black,
+                                                        fontSize:
+                                                        16.sp,
+                                                        fontWeight:
+                                                        FontWeight.w400,
+                                                        fontFamily:
+                                                        AppConstants.manrope,
                                                       ),
                                                     ),
                                                   ],
                                                 ),
-                                                trailing: Container(
-                                                  width: 10.w,
-                                                  height: 10.w,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Colors.grey[100],
-                                                  ),
-                                                  child: IconButton(
-                                                    icon: Icon(
-                                                      Icons.location_on,
-                                                      color: Colors.black,
-                                                      size: 5.w,
-                                                    ),
-                                                    onPressed: () {
-                                                      AppLat =
-                                                          filteredList[index]
-                                                              .latitude
-                                                              .toString();
-                                                      AppLon =
-                                                          filteredList[index]
-                                                              .longitude
-                                                              .toString();
-                                                      selectedUserId =
-                                                          filteredList[index]
-                                                              .id
-                                                              .toString();
-                                                      Get.back();
-                                                      moveToLocation();
-                                                    },
-                                                    padding: EdgeInsets.zero,
-                                                    constraints:
-                                                        BoxConstraints(),
-                                                  ),
-                                                ),
                                               ),
-                                              filteredList[index].tags ==
-                                                          null ||
-                                                      (filteredList[index]
-                                                              .tags
-                                                              ?.isEmpty ??
-                                                          true)
-                                                  ? const SizedBox.shrink()
-                                                  : Container(
-                                                      margin: EdgeInsets.only(
-                                                          top: 8.h),
-                                                      height: 5.h,
-                                                      child: ListView.builder(
-                                                        scrollDirection:
-                                                            Axis.horizontal,
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                          left: 2.w,
-                                                        ),
-                                                        itemCount:
-                                                            businessprofileModel
-                                                                    ?.data?[
-                                                                        index]
-                                                                    .tags
-                                                                    ?.length ??
-                                                                0,
-                                                        itemBuilder: (context,
-                                                            tagIndex) {
-                                                          final tag =
-                                                              businessprofileModel
-                                                                  ?.data?[index]
-                                                                  .tags?[tagIndex];
-                                                          print(
-                                                              "tag ave che knau @${tag?.img}");
-                                                          return Row(
-                                                            children: [
-                                                              Container(
-                                                                padding: EdgeInsets
-                                                                    .symmetric(
-                                                                        horizontal:
-                                                                            2.w,
-                                                                        vertical:
-                                                                            0.5.h),
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              15),
-                                                                  border: Border.all(
-                                                                      color: Colors
-                                                                          .grey
-                                                                          .shade200),
-                                                                ),
-                                                                child: Row(
-                                                                  mainAxisSize:
-                                                                      MainAxisSize
-                                                                          .min,
-                                                                  children: [
-                                                                    Container(
-                                                                      height:
-                                                                          2.5.h,
-                                                                      width:
-                                                                          2.5.h,
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                        shape: BoxShape
-                                                                            .circle,
-                                                                      ),
-                                                                      child:
-                                                                          ClipOval(
-                                                                        child:
-                                                                            CachedNetworkImage(
-                                                                          imageUrl:
-                                                                              tag?.img ?? "",
-                                                                          height:
-                                                                              3.h,
-                                                                          width:
-                                                                              3.h,
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                          placeholder: (context, url) =>
-                                                                              CircularProgressIndicator(
-                                                                            color:
-                                                                                AppColors.maincolor,
-                                                                          ),
-                                                                          errorWidget: (context, url, error) =>
-                                                                              Image.asset(
-                                                                            'assets/images/waveeLogoShort.png',
-                                                                            height:
-                                                                                3.h,
-                                                                            width:
-                                                                                3.h,
-                                                                            fit:
-                                                                                BoxFit.cover,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                    SizedBox(
-                                                                        width: 1
-                                                                            .w),
-                                                                    Text(
-                                                                      tag?.name ??
-                                                                          "No Tags",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: AppColors
-                                                                            .black,
-                                                                        fontSize:
-                                                                            16.sp,
-                                                                        fontWeight:
-                                                                            FontWeight.w400,
-                                                                        fontFamily:
-                                                                            AppConstants.manrope,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              SizedBox(
-                                                                  width: 2.w),
-                                                            ],
-                                                          );
-                                                        },
-                                                      ),
-                                                    ),
-                                              if (index != 0)
-                                                Divider(
-                                                    thickness: 1,
-                                                    color:
-                                                        Colors.grey.shade300),
+                                              SizedBox(
+                                                  width: 2.w),
                                             ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    if (index != 0)
+                                      Divider(
+                                          thickness: 1,
+                                          color:
+                                          Colors.grey.shade300),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       )
                     ],
                   ),
@@ -2420,12 +2774,12 @@ class _CommunityScreenState extends State<CommunityScreen> {
   }
 
   Widget _filterButtons(
-    String text,
-    IconData icon,
-    VoidCallback onTap,
-    Color iconColor,
-    Color textColor,
-  ) {
+      String text,
+      IconData icon,
+      VoidCallback onTap,
+      Color iconColor,
+      Color textColor,
+      ) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -2501,25 +2855,25 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   CircleAvatar(
                                     radius: 40,
                                     backgroundImage: (busnessviewmodal?.data
-                                                ?.business?.logo?.isNotEmpty ??
-                                            false)
+                                        ?.business?.logo?.isNotEmpty ??
+                                        false)
                                         ? CachedNetworkImageProvider(
-                                            busnessviewmodal!
-                                                .data!.business!.logo!)
+                                        busnessviewmodal!
+                                            .data!.business!.logo!)
                                         : AssetImage(
-                                                "assets/images/waveeLogoShort.png")
-                                            as ImageProvider,
+                                        "assets/images/waveeLogoShort.png")
+                                    as ImageProvider,
                                   ).paddingOnly(right: 2.5.w, top: 1.h),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           busnessviewmodal?.data?.business
-                                                  ?.businessName ??
+                                              ?.businessName ??
                                               "N/A",
                                           style: TextStyle(
                                             fontSize: 18.sp,
@@ -2537,38 +2891,38 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                         ),
                                         SizedBox(height: 0.5.h),
                                         busnessviewmodal?.data?.business?.user
-                                                        ?.address ==
-                                                    null ||
-                                                busnessviewmodal?.data?.business
-                                                        ?.user?.address ==
-                                                    0 ||
-                                                busnessviewmodal?.data?.business
-                                                        ?.user?.address ==
-                                                    ""
+                                            ?.address ==
+                                            null ||
+                                            busnessviewmodal?.data?.business
+                                                ?.user?.address ==
+                                                0 ||
+                                            busnessviewmodal?.data?.business
+                                                ?.user?.address ==
+                                                ""
                                             ? Container()
                                             : Text(
-                                                busnessviewmodal
-                                                                ?.data
-                                                                ?.business
-                                                                ?.user
-                                                                ?.address
-                                                                ?.city !=
-                                                            null &&
-                                                        busnessviewmodal
-                                                                ?.data
-                                                                ?.business
-                                                                ?.user
-                                                                ?.address
-                                                                ?.country !=
-                                                            null
-                                                    ? "${busnessviewmodal?.data?.business?.user?.address?.city}, ${busnessviewmodal?.data?.business?.user?.address?.country}"
-                                                    : "N/A",
-                                                style: TextStyle(
-                                                  fontSize: 15.sp,
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                ),
-                                              ),
+                                          busnessviewmodal
+                                              ?.data
+                                              ?.business
+                                              ?.user
+                                              ?.address
+                                              ?.city !=
+                                              null &&
+                                              busnessviewmodal
+                                                  ?.data
+                                                  ?.business
+                                                  ?.user
+                                                  ?.address
+                                                  ?.country !=
+                                                  null
+                                              ? "${busnessviewmodal?.data?.business?.user?.address?.city}, ${busnessviewmodal?.data?.business?.user?.address?.country}"
+                                              : "N/A",
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontFamily:
+                                            AppConstants.manrope,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -2610,17 +2964,17 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     for (int i = 0;
-                                        i <
-                                            (busnessviewmodal?.data?.business
-                                                    ?.tags?.length ??
-                                                0);
-                                        i++) ...[
+                                    i <
+                                        (busnessviewmodal?.data?.business
+                                            ?.tags?.length ??
+                                            0);
+                                    i++) ...[
                                       Container(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 2.w, vertical: 0.5.h),
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                              BorderRadius.circular(15),
+                                          BorderRadius.circular(15),
                                           border: Border.all(
                                               color: Colors.grey.shade200),
                                         ),
@@ -2636,40 +2990,40 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                               child: ClipOval(
                                                 child: CachedNetworkImage(
                                                   imageUrl: busnessviewmodal
-                                                          ?.data
-                                                          ?.business
-                                                          ?.tags?[i]
-                                                          .img ??
+                                                      ?.data
+                                                      ?.business
+                                                      ?.tags?[i]
+                                                      .img ??
                                                       "",
                                                   height: 3.h,
                                                   width: 3.h,
                                                   fit: BoxFit.cover,
                                                   placeholder: (context, url) =>
                                                       Center(
-                                                    child:
+                                                        child:
                                                         CircularProgressIndicator(
                                                             strokeWidth: 1),
-                                                  ),
+                                                      ),
                                                   errorWidget:
                                                       (context, url, error) =>
-                                                          Image(
-                                                    image: AssetImage(
-                                                        "assets/images/waveeLogoShort.png"),
-                                                  ),
+                                                      Image(
+                                                        image: AssetImage(
+                                                            "assets/images/waveeLogoShort.png"),
+                                                      ),
                                                 ),
                                               ),
                                             ),
                                             SizedBox(width: 1.w),
                                             Text(
                                               busnessviewmodal?.data?.business
-                                                      ?.tags?[i].name ??
+                                                  ?.tags?[i].name ??
                                                   "No Tags",
                                               style: TextStyle(
                                                 color: AppColors.black,
                                                 fontSize: 14.sp,
                                                 fontWeight: FontWeight.w400,
                                                 fontFamily:
-                                                    AppConstants.manrope,
+                                                AppConstants.manrope,
                                               ),
                                             ),
                                           ],
@@ -2716,7 +3070,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                           ? Icons.favorite
                                           : Icons.favorite_outline,
                                       color: busnessviewmodal?.data?.isLiked ==
-                                              true
+                                          true
                                           ? Colors.red
                                           : Colors.black,
                                     ),
@@ -2793,13 +3147,13 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   Get.to(MessageScreen(
                                     type: "business",
                                     chatName: busnessviewmodal
-                                            ?.data?.business?.businessName ??
+                                        ?.data?.business?.businessName ??
                                         "N/A",
                                     conciergeID: (busnessviewmodal
-                                            ?.data?.business?.user?.id)
+                                        ?.data?.business?.user?.id)
                                         .toString(),
                                     image: busnessviewmodal
-                                            ?.data?.business?.logo ??
+                                        ?.data?.business?.logo ??
                                         "",
                                     chatStatus: busnessviewmodal
                                         ?.data?.business?.chatStatus,
@@ -2833,7 +3187,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                               SizedBox(height: 2.h),
                               Padding(
                                 padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
                                   "Events",
                                   style: TextStyle(
@@ -2851,7 +3205,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                               SizedBox(height: 2.h),
                               Padding(
                                 padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
                                   "Offers & Promotions",
                                   style: TextStyle(
@@ -2864,16 +3218,16 @@ class _CommunityScreenState extends State<CommunityScreen> {
                               SizedBox(height: 1.h),
                               buildListView(
                                 busnessviewmodal?.data?.offerPromotions
-                                        ?.map((e) => e.files ?? "")
-                                        .toList() ??
+                                    ?.map((e) => e.files ?? "")
+                                    .toList() ??
                                     [],
                                 busnessviewmodal?.data?.offerPromotions
-                                        ?.map((e) => e.url ?? "")
-                                        .toList() ??
+                                    ?.map((e) => e.url ?? "")
+                                    .toList() ??
                                     [],
                                 busnessviewmodal?.data?.offerPromotions
-                                        ?.map((e) => e.title ?? "No Title")
-                                        .toList() ??
+                                    ?.map((e) => e.title ?? "No Title")
+                                    .toList() ??
                                     [],
                               ),
                             ],
@@ -2882,7 +3236,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                               SizedBox(height: 2.h),
                               Padding(
                                 padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
                                   "Services",
                                   style: TextStyle(
@@ -2901,7 +3255,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                               SizedBox(height: 2.h),
                               Padding(
                                 padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
                                   "Products",
                                   style: TextStyle(
@@ -2916,33 +3270,33 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                 icon: Icons.store,
                                 title: "View Shop",
                                 subtitle: (busnessviewmodal
-                                                ?.data?.business?.loyaltyInfo ==
-                                            null ||
-                                        busnessviewmodal
-                                                ?.data
-                                                ?.business
-                                                ?.loyaltyInfo
-                                                ?.loyaltyOrderThreshold ==
-                                            null ||
-                                        busnessviewmodal
-                                                ?.data
-                                                ?.business
-                                                ?.loyaltyInfo
-                                                ?.loyaltyOrderThreshold ==
-                                            0)
+                                    ?.data?.business?.loyaltyInfo ==
+                                    null ||
+                                    busnessviewmodal
+                                        ?.data
+                                        ?.business
+                                        ?.loyaltyInfo
+                                        ?.loyaltyOrderThreshold ==
+                                        null ||
+                                    busnessviewmodal
+                                        ?.data
+                                        ?.business
+                                        ?.loyaltyInfo
+                                        ?.loyaltyOrderThreshold ==
+                                        0)
                                     ? "Order 5 times to get 20% discount behind the scenes"
                                     : "You're getting closer to an exclusive reward! Complete "
-                                        "${busnessviewmodal?.data?.business?.loyaltyInfo?.loyaltyOrderThreshold} "
-                                        "more orders to unlock a ${busnessviewmodal?.data?.business?.loyaltyInfo?.loyaltyDiscountPercentage?.replaceAll(RegExp(r'\\.0+\$'), '')}% discount on your next purchase.",
+                                    "${busnessviewmodal?.data?.business?.loyaltyInfo?.loyaltyOrderThreshold} "
+                                    "more orders to unlock a ${busnessviewmodal?.data?.business?.loyaltyInfo?.loyaltyDiscountPercentage?.replaceAll(RegExp(r'\\.0+\$'), '')}% discount on your next purchase.",
                                 onTap: () {
                                   Get.to(BusinessDetailPage(
                                     businessID: busnessviewmodal
-                                            ?.data?.business?.id
-                                            .toString() ??
+                                        ?.data?.business?.id
+                                        .toString() ??
                                         "",
                                     userID:
-                                        loginModel?.data?.user?.id.toString() ??
-                                            "",
+                                    loginModel?.data?.user?.id.toString() ??
+                                        "",
                                     long: AppLon,
                                     lat: AppLat,
                                   ));
@@ -3001,7 +3355,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                 decoration: BoxDecoration(
                                                   color: Colors.black,
                                                   borderRadius:
-                                                      BorderRadius.circular(2),
+                                                  BorderRadius.circular(2),
                                                 ),
                                               ),
                                               Padding(
@@ -3009,13 +3363,13 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                     horizontal: 20),
                                                 child: Align(
                                                   alignment:
-                                                      Alignment.centerLeft,
+                                                  Alignment.centerLeft,
                                                   child: Text(
                                                     "Get There",
                                                     style: TextStyle(
                                                       fontSize: 18,
                                                       fontWeight:
-                                                          FontWeight.w600,
+                                                      FontWeight.w600,
                                                       color: Colors.black,
                                                     ),
                                                   ),
@@ -3028,7 +3382,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                 decoration: BoxDecoration(
                                                   color: Colors.white,
                                                   borderRadius:
-                                                      BorderRadius.circular(14),
+                                                  BorderRadius.circular(14),
                                                   boxShadow: [
                                                     BoxShadow(
                                                       color: Colors.black
@@ -3042,91 +3396,91 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                   children: [
                                                     Platform.isIOS
                                                         ? Container(
-                                                            child: ListTile(
-                                                              contentPadding:
-                                                                  EdgeInsets.symmetric(
-                                                                      horizontal:
-                                                                          16,
-                                                                      vertical:
-                                                                          6),
-                                                              leading:
-                                                                  Container(
-                                                                width: 32,
-                                                                height: 30,
-                                                                child:
-                                                                    ClipRRect(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              6),
-                                                                  child: Image
-                                                                      .asset(
-                                                                    'assets/images/applemap.jpg',
-                                                                    width: 32,
-                                                                    height: 32,
-                                                                    fit: BoxFit
-                                                                        .cover,
-                                                                    errorBuilder:
-                                                                        (context,
-                                                                            error,
-                                                                            stackTrace) {
-                                                                      return Container(
-                                                                        width:
-                                                                            32,
-                                                                        height:
-                                                                            32,
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          color:
-                                                                              Colors.blue,
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(6),
-                                                                        ),
-                                                                        child: Icon(
-                                                                            Icons
-                                                                                .map,
-                                                                            color:
-                                                                                Colors.white,
-                                                                            size: 18),
-                                                                      );
-                                                                    },
+                                                      child: ListTile(
+                                                        contentPadding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal:
+                                                            16,
+                                                            vertical:
+                                                            6),
+                                                        leading:
+                                                        Container(
+                                                          width: 32,
+                                                          height: 30,
+                                                          child:
+                                                          ClipRRect(
+                                                            borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                6),
+                                                            child: Image
+                                                                .asset(
+                                                              'assets/images/applemap.jpg',
+                                                              width: 32,
+                                                              height: 32,
+                                                              fit: BoxFit
+                                                                  .cover,
+                                                              errorBuilder:
+                                                                  (context,
+                                                                  error,
+                                                                  stackTrace) {
+                                                                return Container(
+                                                                  width:
+                                                                  32,
+                                                                  height:
+                                                                  32,
+                                                                  decoration:
+                                                                  BoxDecoration(
+                                                                    color:
+                                                                    Colors.blue,
+                                                                    borderRadius:
+                                                                    BorderRadius.circular(6),
                                                                   ),
-                                                                ),
-                                                              ),
-                                                              title: Text(
-                                                                "Open in Apple Maps",
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 17,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  color: Colors
-                                                                      .black,
-                                                                ),
-                                                              ),
-                                                              trailing: Icon(
-                                                                Icons
-                                                                    .chevron_right,
-                                                                color: Colors
-                                                                    .grey[400],
-                                                                size: 20,
-                                                              ),
-                                                              onTap: () {
-                                                                Get.back();
-                                                                final query = Uri
-                                                                    .encodeComponent(
-                                                                        fullAddress);
-                                                                final appleMapsUrl =
-                                                                    Uri.parse(
-                                                                        "https://maps.apple.com/?q=$query");
-                                                                launchUrl(
-                                                                    appleMapsUrl,
-                                                                    mode: LaunchMode
-                                                                        .externalApplication);
+                                                                  child: Icon(
+                                                                      Icons
+                                                                          .map,
+                                                                      color:
+                                                                      Colors.white,
+                                                                      size: 18),
+                                                                );
                                                               },
                                                             ),
-                                                          )
+                                                          ),
+                                                        ),
+                                                        title: Text(
+                                                          "Open in Apple Maps",
+                                                          style:
+                                                          TextStyle(
+                                                            fontSize: 17,
+                                                            fontWeight:
+                                                            FontWeight
+                                                                .w400,
+                                                            color: Colors
+                                                                .black,
+                                                          ),
+                                                        ),
+                                                        trailing: Icon(
+                                                          Icons
+                                                              .chevron_right,
+                                                          color: Colors
+                                                              .grey[400],
+                                                          size: 20,
+                                                        ),
+                                                        onTap: () {
+                                                          Get.back();
+                                                          final query = Uri
+                                                              .encodeComponent(
+                                                              fullAddress);
+                                                          final appleMapsUrl =
+                                                          Uri.parse(
+                                                              "https://maps.apple.com/?q=$query");
+                                                          launchUrl(
+                                                              appleMapsUrl,
+                                                              mode: LaunchMode
+                                                                  .externalApplication);
+                                                        },
+                                                      ),
+                                                    )
                                                         : SizedBox(),
                                                     Container(
                                                       height: 0.5,
@@ -3135,20 +3489,20 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                     Container(
                                                       child: ListTile(
                                                         contentPadding:
-                                                            EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        16,
-                                                                    vertical:
-                                                                        6),
+                                                        EdgeInsets
+                                                            .symmetric(
+                                                            horizontal:
+                                                            16,
+                                                            vertical:
+                                                            6),
                                                         leading: Container(
                                                           width: 32,
                                                           height: 30,
                                                           child: ClipRRect(
                                                             borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        6),
+                                                            BorderRadius
+                                                                .circular(
+                                                                6),
                                                             child: Image.asset(
                                                               'assets/images/gogglemap.jpg',
                                                               width: 32,
@@ -3156,18 +3510,18 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                               fit: BoxFit.cover,
                                                               errorBuilder:
                                                                   (context,
-                                                                      error,
-                                                                      stackTrace) {
+                                                                  error,
+                                                                  stackTrace) {
                                                                 return Container(
                                                                   width: 32,
                                                                   height: 32,
                                                                   decoration:
-                                                                      BoxDecoration(
+                                                                  BoxDecoration(
                                                                     color: Colors
                                                                         .red,
                                                                     borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(6),
+                                                                    BorderRadius
+                                                                        .circular(6),
                                                                   ),
                                                                   child: Icon(
                                                                       Icons
@@ -3185,24 +3539,24 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                           style: TextStyle(
                                                             fontSize: 17,
                                                             fontWeight:
-                                                                FontWeight.w400,
+                                                            FontWeight.w400,
                                                             color: Colors.black,
                                                           ),
                                                         ),
                                                         trailing: Icon(
                                                           Icons.chevron_right,
                                                           color:
-                                                              Colors.grey[400],
+                                                          Colors.grey[400],
                                                           size: 20,
                                                         ),
                                                         onTap: () {
                                                           Get.back();
                                                           final query = Uri
                                                               .encodeComponent(
-                                                                  fullAddress);
+                                                              fullAddress);
                                                           final googleMapsUrl =
-                                                              Uri.parse(
-                                                                  "https://www.google.com/maps/search/?api=1&query=$query");
+                                                          Uri.parse(
+                                                              "https://www.google.com/maps/search/?api=1&query=$query");
                                                           launchUrl(
                                                               googleMapsUrl,
                                                               mode: LaunchMode
@@ -3217,20 +3571,20 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                     Container(
                                                       child: ListTile(
                                                         contentPadding:
-                                                            EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        16,
-                                                                    vertical:
-                                                                        6),
+                                                        EdgeInsets
+                                                            .symmetric(
+                                                            horizontal:
+                                                            16,
+                                                            vertical:
+                                                            6),
                                                         leading: Container(
                                                           width: 32,
                                                           height: 30,
                                                           child: ClipRRect(
                                                             borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        6),
+                                                            BorderRadius
+                                                                .circular(
+                                                                6),
                                                             child: Image.asset(
                                                               'assets/images/copyimage.jpg',
                                                               width: 32,
@@ -3238,26 +3592,26 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                               fit: BoxFit.cover,
                                                               errorBuilder:
                                                                   (context,
-                                                                      error,
-                                                                      stackTrace) {
+                                                                  error,
+                                                                  stackTrace) {
                                                                 return Container(
                                                                   width: 32,
                                                                   height: 32,
                                                                   decoration:
-                                                                      BoxDecoration(
+                                                                  BoxDecoration(
                                                                     color: Colors
-                                                                            .grey[
-                                                                        200],
+                                                                        .grey[
+                                                                    200],
                                                                     borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(6),
+                                                                    BorderRadius
+                                                                        .circular(6),
                                                                   ),
                                                                   child: Icon(
                                                                     Icons
                                                                         .content_copy,
                                                                     color: Colors
-                                                                            .grey[
-                                                                        600],
+                                                                        .grey[
+                                                                    600],
                                                                     size: 18,
                                                                   ),
                                                                 );
@@ -3267,16 +3621,16 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                         ),
                                                         title: Column(
                                                           crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
+                                                          CrossAxisAlignment
+                                                              .start,
                                                           children: [
                                                             Text(
                                                               "Copy Address",
                                                               style: TextStyle(
                                                                 fontSize: 17,
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
+                                                                FontWeight
+                                                                    .w400,
                                                                 color: Colors
                                                                     .black,
                                                               ),
@@ -3287,15 +3641,15 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                               style: TextStyle(
                                                                 fontSize: 13,
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
+                                                                FontWeight
+                                                                    .w400,
                                                                 color: Colors
                                                                     .grey[600],
                                                               ),
                                                               maxLines: 2,
                                                               overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
+                                                              TextOverflow
+                                                                  .ellipsis,
                                                             ),
                                                           ],
                                                         ),
@@ -3303,30 +3657,30 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                           Clipboard.setData(
                                                               ClipboardData(
                                                                   text:
-                                                                      fullAddress));
+                                                                  fullAddress));
                                                           Get.back();
 
                                                           ScaffoldMessenger.of(
-                                                                  context)
+                                                              context)
                                                               .showSnackBar(
                                                             SnackBar(
                                                               content: Text(
                                                                   "Address copied to clipboard"),
                                                               duration:
-                                                                  Duration(
-                                                                      seconds:
-                                                                          2),
+                                                              Duration(
+                                                                  seconds:
+                                                                  2),
                                                               backgroundColor:
-                                                                  Colors.green,
+                                                              Colors.green,
                                                               behavior:
-                                                                  SnackBarBehavior
-                                                                      .floating,
+                                                              SnackBarBehavior
+                                                                  .floating,
                                                               margin: EdgeInsets
                                                                   .only(
                                                                 bottom: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .height -
+                                                                    context)
+                                                                    .size
+                                                                    .height -
                                                                     150,
                                                                 left: 20,
                                                                 right: 20,
@@ -3349,23 +3703,23 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                     Get.back();
                                                   },
                                                   style:
-                                                      ElevatedButton.styleFrom(
+                                                  ElevatedButton.styleFrom(
                                                     backgroundColor:
-                                                        Colors.white,
+                                                    Colors.white,
                                                     foregroundColor:
-                                                        Colors.black,
+                                                    Colors.black,
                                                     elevation: 0,
                                                     padding:
-                                                        EdgeInsets.symmetric(
-                                                            vertical: 12),
+                                                    EdgeInsets.symmetric(
+                                                        vertical: 12),
                                                     shape:
-                                                        RoundedRectangleBorder(
+                                                    RoundedRectangleBorder(
                                                       borderRadius:
-                                                          BorderRadius.circular(
-                                                              14),
+                                                      BorderRadius.circular(
+                                                          14),
                                                       side: BorderSide(
                                                           color:
-                                                              Colors.grey[300]!,
+                                                          Colors.grey[300]!,
                                                           width: 0.5),
                                                     ),
                                                   ),
@@ -3374,7 +3728,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                     style: TextStyle(
                                                       fontSize: 17,
                                                       fontWeight:
-                                                          FontWeight.w600,
+                                                      FontWeight.w600,
                                                     ),
                                                   ),
                                                 ),
@@ -3391,27 +3745,27 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   icon: Icons.location_on,
                                   title: "Address",
                                   subtitle: (busnessviewmodal?.data?.business
-                                                  ?.user?.address?.address ==
-                                              null ||
-                                          busnessviewmodal?.data?.business?.user
-                                                  ?.address?.address ==
-                                              "" ||
-                                          busnessviewmodal?.data?.business?.user
-                                                  ?.address?.city ==
-                                              null ||
-                                          busnessviewmodal?.data?.business?.user
-                                                  ?.address?.city ==
-                                              "" ||
-                                          busnessviewmodal?.data?.business?.user
-                                                  ?.address?.country ==
-                                              null ||
-                                          busnessviewmodal?.data?.business?.user
-                                                  ?.address?.country ==
-                                              "")
+                                      ?.user?.address?.address ==
+                                      null ||
+                                      busnessviewmodal?.data?.business?.user
+                                          ?.address?.address ==
+                                          "" ||
+                                      busnessviewmodal?.data?.business?.user
+                                          ?.address?.city ==
+                                          null ||
+                                      busnessviewmodal?.data?.business?.user
+                                          ?.address?.city ==
+                                          "" ||
+                                      busnessviewmodal?.data?.business?.user
+                                          ?.address?.country ==
+                                          null ||
+                                      busnessviewmodal?.data?.business?.user
+                                          ?.address?.country ==
+                                          "")
                                       ? "N/A"
                                       : "${busnessviewmodal?.data?.business?.user?.address?.address}, "
-                                          "${busnessviewmodal?.data?.business?.user?.address?.city}, "
-                                          "${busnessviewmodal?.data?.business?.user?.address?.country}",
+                                      "${busnessviewmodal?.data?.business?.user?.address?.city}, "
+                                      "${busnessviewmodal?.data?.business?.user?.address?.country}",
                                 ),
                               ),
                               Divider(color: Colors.grey.shade300),
@@ -3422,7 +3776,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   if (phone != null &&
                                       phone.toString().isNotEmpty) {
                                     final telUrl =
-                                        Uri.parse("tel:${phone.toString()}");
+                                    Uri.parse("tel:${phone.toString()}");
                                     launchUrl(telUrl,
                                         mode: LaunchMode.externalApplication);
                                   }
@@ -3431,21 +3785,21 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   icon: Icons.phone,
                                   title: "Phone",
                                   subtitle: busnessviewmodal?.data?.business
-                                              ?.user?.mobileNo ==
-                                          null
+                                      ?.user?.mobileNo ==
+                                      null
                                       ? "N/A"
                                       : (busnessviewmodal
-                                              ?.data?.business?.user?.mobileNo)
-                                          .toString(),
+                                      ?.data?.business?.user?.mobileNo)
+                                      .toString(),
                                 ),
                               ),
                               Divider(color: Colors.grey.shade300),
                               ExpansionTile(
                                 leading:
-                                    Icon(Icons.access_time, color: Colors.grey),
+                                Icon(Icons.access_time, color: Colors.grey),
                                 title: Text("Opening Hours",
                                     style:
-                                        TextStyle(fontWeight: FontWeight.w500)),
+                                    TextStyle(fontWeight: FontWeight.w500)),
                                 subtitle: Text(_getCurrentDayStatus(),
                                     style: TextStyle(color: Colors.grey[600])),
                                 shape: Border(),
@@ -3509,10 +3863,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   icon: Icons.language,
                                   title: "Website",
                                   subtitle: busnessviewmodal?.data?.business
-                                              ?.website?.isNotEmpty ==
-                                          true
+                                      ?.website?.isNotEmpty ==
+                                      true
                                       ? busnessviewmodal!
-                                          .data!.business!.website!
+                                      .data!.business!.website!
                                       : "N/A",
                                 ),
                               ),
@@ -3532,19 +3886,19 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       Column(
                         children: [
                           for (int i = 0;
-                              i <
-                                      (busnessviewmodal?.data?.nearbyBusinesses
-                                              ?.length ??
-                                          0) &&
-                                  i < 5;
-                              i++) ...[
+                          i <
+                              (busnessviewmodal?.data?.nearbyBusinesses
+                                  ?.length ??
+                                  0) &&
+                              i < 5;
+                          i++) ...[
                             InkWell(
                               onTap: () {
                                 Get.back();
                                 print(
                                     "Business Chceck ID: ${busnessviewmodal?.data?.nearbyBusinesses?[i].id}");
                                 BussinessViewProfile((busnessviewmodal
-                                        ?.data?.nearbyBusinesses?[i].id)
+                                    ?.data?.nearbyBusinesses?[i].id)
                                     .toString());
                               },
                               child: Container(
@@ -3570,14 +3924,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                         print(
                                             "Business ID: ${busnessviewmodal?.data?.nearbyBusinesses?[i].id}");
                                         BussinessViewProfile((busnessviewmodal
-                                                ?.data?.nearbyBusinesses?[i].id)
+                                            ?.data?.nearbyBusinesses?[i].id)
                                             .toString());
                                       },
                                       child: CircleAvatar(
                                         radius: 20,
                                         backgroundImage: NetworkImage(
                                           busnessviewmodal?.data
-                                                  ?.nearbyBusinesses?[i].logo ??
+                                              ?.nearbyBusinesses?[i].logo ??
                                               "https://randomuser.me/api/portraits/men/1.jpg",
                                         ),
                                       ),
@@ -3586,43 +3940,43 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             busnessviewmodal
-                                                        ?.data
-                                                        ?.nearbyBusinesses?[i]
-                                                        .businessName
-                                                        ?.isNotEmpty ==
-                                                    true
+                                                ?.data
+                                                ?.nearbyBusinesses?[i]
+                                                .businessName
+                                                ?.isNotEmpty ==
+                                                true
                                                 ? busnessviewmodal!
-                                                    .data!
-                                                    .nearbyBusinesses![i]
-                                                    .businessName!
+                                                .data!
+                                                .nearbyBusinesses![i]
+                                                .businessName!
                                                 : "N/A",
                                             style: TextStyle(
                                                 fontSize: 15,
                                                 fontWeight: FontWeight.bold,
                                                 fontFamily:
-                                                    AppConstants.manrope),
+                                                AppConstants.manrope),
                                           ),
                                           SizedBox(height: 4),
                                           Container(
                                             decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(10),
+                                              BorderRadius.circular(10),
                                             ),
                                             child: ReadMoreText(
                                               busnessviewmodal
-                                                          ?.data
-                                                          ?.nearbyBusinesses?[i]
-                                                          .description
-                                                          ?.isNotEmpty ==
-                                                      true
+                                                  ?.data
+                                                  ?.nearbyBusinesses?[i]
+                                                  .description
+                                                  ?.isNotEmpty ==
+                                                  true
                                                   ? busnessviewmodal!
-                                                      .data!
-                                                      .nearbyBusinesses![i]
-                                                      .description!
+                                                  .data!
+                                                  .nearbyBusinesses![i]
+                                                  .description!
                                                   : "N/A",
                                               trimLines: 3,
                                               colorClickableText: Colors.blue,
@@ -3633,13 +3987,13 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                   fontSize: 15.sp,
                                                   fontWeight: FontWeight.bold,
                                                   fontFamily:
-                                                      AppConstants.manrope,
+                                                  AppConstants.manrope,
                                                   letterSpacing: 1,
                                                   color: AppColors.maincolor),
                                               lessStyle: TextStyle(
                                                   fontSize: 15.sp,
                                                   fontFamily:
-                                                      AppConstants.manrope,
+                                                  AppConstants.manrope,
                                                   fontWeight: FontWeight.bold,
                                                   letterSpacing: 1,
                                                   color: AppColors.maincolor),
@@ -3648,7 +4002,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                 color: Colors.grey.shade500,
                                                 fontWeight: FontWeight.normal,
                                                 fontFamily:
-                                                    AppConstants.manrope,
+                                                AppConstants.manrope,
                                               ),
                                             ),
                                           ),
@@ -3663,16 +4017,16 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 14,
                                                     fontFamily:
-                                                        AppConstants.manrope,
+                                                    AppConstants.manrope,
                                                   ),
                                                 ),
                                                 TextSpan(
                                                   text: (busnessviewmodal
-                                                              ?.data
-                                                              ?.nearbyBusinesses?[
-                                                                  i]
-                                                              .distance !=
-                                                          null)
+                                                      ?.data
+                                                      ?.nearbyBusinesses?[
+                                                  i]
+                                                      .distance !=
+                                                      null)
                                                       ? "${busnessviewmodal!.data!.nearbyBusinesses![i].distance!.toStringAsFixed(2)} Miles"
                                                       : "N/A",
                                                   style: TextStyle(
@@ -3680,7 +4034,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 14.sp,
                                                     fontFamily:
-                                                        AppConstants.manrope,
+                                                    AppConstants.manrope,
                                                   ),
                                                 ),
                                               ],
@@ -3774,7 +4128,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
       if (internet) {
         CommunityProvider()
             .projectlistapi(
-                (loginModel?.data?.user?.id).toString(), id, AppLat, AppLon)
+            (loginModel?.data?.user?.id).toString(), id, AppLat, AppLon)
             .then((response) async {
           busnessviewmodal =
               BusnessViewModal.fromJson(json.decode(response.body));
@@ -3834,7 +4188,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
             request.clear();
             final String businessId =
-                (busnessviewmodal?.data?.business?.id).toString();
+            (busnessviewmodal?.data?.business?.id).toString();
             Get.back();
             await Future.delayed(Duration(milliseconds: 100));
             BussinessViewProfile(businessId);
@@ -4101,7 +4455,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
       if (internet) {
         CommunityProvider()
             .categoriesViewApi(
-                (loginModel?.data?.user?.id).toString(), AppLon, AppLat, id)
+            (loginModel?.data?.user?.id).toString(), AppLon, AppLat, id)
             .then((response) async {
           viewcategoriesmodel =
               ViewCategoriesModel.fromJson(json.decode(response.body));
@@ -4137,7 +4491,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
     final Map<String, String> data = {
       'user_id': (loginModel?.data?.user?.id).toString(),
       'offerPromotion_id':
-          (busnessviewmodal?.data?.offerPromotions?[0].id).toString(),
+      (busnessviewmodal?.data?.offerPromotions?[0].id).toString(),
     };
     print("request offres promotion view parameter : $data");
     checkInternet().then((internet) async {
@@ -4294,7 +4648,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   }
                 },
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 leading: Container(
                   width: 15.w,
                   height: 7.h,
@@ -4392,33 +4746,33 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   borderRadius: BorderRadius.circular(10),
                   child: item.type == 'video'
                       ? VideoWidget(
-                          videoUrl: item.file ?? '',
-                          play: isInView,
-                          postId: item.id ?? 0,
-                        )
+                    videoUrl: item.file ?? '',
+                    play: isInView,
+                    postId: item.id ?? 0,
+                  )
                       : GestureDetector(
-                          onTap: () {
-                            print("Image tapped: ${item.file}");
-                            Get.to(() => FullScreenImageView(
-                                  imageUrl: item.file ?? '',
-                                  postId: item.id ?? 0,
-                                ));
-                          },
-                          child: item.file == null || item.file!.isEmpty
-                              ? Center(child: CircularProgressIndicator())
-                              : CachedNetworkImage(
-                                  imageUrl: item.file!,
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  placeholder: (context, url) => Center(
-                                      child: CircularProgressIndicator()),
-                                  errorWidget: (context, url, error) => Icon(
-                                      Icons.broken_image,
-                                      size: 40,
-                                      color: Colors.grey),
-                                ),
-                        ),
+                    onTap: () {
+                      print("Image tapped: ${item.file}");
+                      Get.to(() => FullScreenImageView(
+                        imageUrl: item.file ?? '',
+                        postId: item.id ?? 0,
+                      ));
+                    },
+                    child: item.file == null || item.file!.isEmpty
+                        ? Center(child: CircularProgressIndicator())
+                        : CachedNetworkImage(
+                      imageUrl: item.file!,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity,
+                      placeholder: (context, url) => Center(
+                          child: CircularProgressIndicator()),
+                      errorWidget: (context, url, error) => Icon(
+                          Icons.broken_image,
+                          size: 40,
+                          color: Colors.grey),
+                    ),
+                  ),
                 ),
               );
             },
@@ -4456,14 +4810,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   print(
                       "service Detail ID Ave che che : ${busnessviewmodal?.data?.business?.id.toString()}");
                   Get.to(() => ServiceDetailsPage(
-                        serviceID: services?[index].id.toString() ?? "",
-                        businessID:
-                            busnessviewmodal?.data?.business?.id.toString() ??
-                                "",
-                      ));
+                    serviceID: services?[index].id.toString() ?? "",
+                    businessID:
+                    busnessviewmodal?.data?.business?.id.toString() ??
+                        "",
+                  ));
                 },
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 leading: Container(
                   width: 15.w,
                   height: 7.h,
@@ -4578,7 +4932,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
           return StatefulBuilder(builder: (context, setState) {
             void showRequestDialog() {
               if (busnessviewmodal?.data?.events?[index]?.requestEvent
-                      ?.toLowerCase() ==
+                  ?.toLowerCase() ==
                   "pending") {
                 return;
               }
@@ -4603,7 +4957,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                           child: Form(
                             key: _formKey,
                             autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                            AutovalidateMode.onUserInteraction,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -4613,10 +4967,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                       alignment: Alignment.center,
                                       child: Padding(
                                         padding:
-                                            EdgeInsets.symmetric(vertical: 10),
+                                        EdgeInsets.symmetric(vertical: 10),
                                         child: Text(
                                           "${profileModel?.data?.user?.name?.firstName.toString().capitalizeFirst ?? ""} "
-                                          "${profileModel?.data?.user?.name?.lastName.toString().capitalizeFirst ?? ""}",
+                                              "${profileModel?.data?.user?.name?.lastName.toString().capitalizeFirst ?? ""}",
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 18.sp,
@@ -4635,7 +4989,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                 ),
                                 Text(
                                   busnessviewmodal
-                                          ?.data?.events?[index]?.title ??
+                                      ?.data?.events?[index]?.title ??
                                       "N/A",
                                   style: TextStyle(
                                     fontFamily: AppConstants.manrope,
@@ -4647,11 +5001,11 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                 SizedBox(height: 10),
                                 Text(
                                   busnessviewmodal?.data?.events?[index]
-                                              ?.eventDate !=
-                                          null
+                                      ?.eventDate !=
+                                      null
                                       ? DateFormat.jm().format(DateTime.parse(
-                                          busnessviewmodal!.data!
-                                              .events![index]!.eventDate!))
+                                      busnessviewmodal!.data!
+                                          .events![index]!.eventDate!))
                                       : "N/A",
                                   style: TextStyle(
                                     fontFamily: AppConstants.manrope,
@@ -4669,17 +5023,17 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10),
                                       borderSide:
-                                          BorderSide(color: Colors.black26),
+                                      BorderSide(color: Colors.black26),
                                     ),
                                     enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10),
                                       borderSide:
-                                          BorderSide(color: Colors.black26),
+                                      BorderSide(color: Colors.black26),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10),
                                       borderSide:
-                                          BorderSide(color: Colors.blue),
+                                      BorderSide(color: Colors.blue),
                                     ),
                                     errorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10),
@@ -4757,7 +5111,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     showRequestDialog();
                   },
                   contentPadding:
-                      EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   leading: Container(
                     width: 15.w,
                     height: 7.h,
@@ -4767,28 +5121,28 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(30),
                       child: busnessviewmodal
-                                  ?.data?.events?[index].attachment !=
-                              null
+                          ?.data?.events?[index].attachment !=
+                          null
                           ? CachedNetworkImage(
-                              imageUrl: busnessviewmodal!
-                                  .data!.events![index].attachment!,
-                              placeholder: (context, url) => Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                              errorWidget: (context, url, error) => Image.asset(
-                                "assets/images/waveeLogoShort.png",
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                height: double.infinity,
-                              ),
-                              fit: BoxFit.cover,
-                            )
+                        imageUrl: busnessviewmodal!
+                            .data!.events![index].attachment!,
+                        placeholder: (context, url) => Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (context, url, error) => Image.asset(
+                          "assets/images/waveeLogoShort.png",
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                        ),
+                        fit: BoxFit.cover,
+                      )
                           : Image.asset(
-                              "assets/images/waveeLogoShort.png",
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: double.infinity,
-                            ),
+                        "assets/images/waveeLogoShort.png",
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                      ),
                     ),
                   ),
                   title: Text(
@@ -4830,14 +5184,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
                           SizedBox(width: 4),
                           Expanded(
                             child: Text(
-                              (String? eventDate) {
+                                  (String? eventDate) {
                                 if (eventDate == null || eventDate.isEmpty)
                                   return "N/A";
                                 DateTime parsedDate = DateTime.parse(eventDate);
                                 return DateFormat('yyyy-MM-dd hh:mm a')
                                     .format(parsedDate);
                               }(busnessviewmodal
-                                      ?.data?.events?[index].eventDate ??
+                                  ?.data?.events?[index].eventDate ??
                                   ""),
                               style: TextStyle(
                                   fontSize: 12.sp, color: Colors.grey[700]),
@@ -4852,23 +5206,23 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   trailing: isLoading
                       ? CircularProgressIndicator(color: Colors.blue)
                       : InkWell(
-                          onTap: () {
-                            showRequestDialog();
-                          },
-                          child: busnessviewmodal
-                                      ?.data?.events?[index]?.requestEvent
-                                      ?.toLowerCase() ==
-                                  "pending"
-                              ? Text(
-                                  "Requested",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.orange,
-                                  ),
-                                )
-                              : Icon(Icons.arrow_forward_ios,
-                                  size: 16, color: Colors.black54),
-                        ),
+                    onTap: () {
+                      showRequestDialog();
+                    },
+                    child: busnessviewmodal
+                        ?.data?.events?[index]?.requestEvent
+                        ?.toLowerCase() ==
+                        "pending"
+                        ? Text(
+                      "Requested",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange,
+                      ),
+                    )
+                        : Icon(Icons.arrow_forward_ios,
+                        size: 16, color: Colors.black54),
+                  ),
                 ),
               ),
             );
@@ -4902,41 +5256,41 @@ class _CommunityScreenState extends State<CommunityScreen> {
               child: ListTile(
                 onTap: () {
                   Get.to(() => ProductDetailPage(
-                        productID: product.id.toString() ?? "",
-                        type: "product",
-                      ));
+                    productID: product.id.toString() ?? "",
+                    type: "product",
+                  ));
                 },
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: (product.image != null && product.image!.isNotEmpty)
                       ? CachedNetworkImage(
-                          imageUrl: product.image!,
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
-                            width: 60,
-                            height: 60,
-                            color: Colors.grey[300],
-                            child: const Center(
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
-                          ),
-                          errorWidget: (context, url, error) => Image.asset(
-                            'assets/images/waveeLogoShort.png',
-                            width: 60,
-                            height: 60,
-                            fit: BoxFit.cover,
-                          ),
-                        )
+                    imageUrl: product.image!,
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      width: 60,
+                      height: 60,
+                      color: Colors.grey[300],
+                      child: const Center(
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Image.asset(
+                      'assets/images/waveeLogoShort.png',
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                    ),
+                  )
                       : Image.asset(
-                          'assets/images/waveeLogoShort.png',
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.cover,
-                        ),
+                    'assets/images/waveeLogoShort.png',
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.cover,
+                  ),
                 ),
                 title: Text(
                   product.name ?? '',
@@ -5072,9 +5426,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
       padding: EdgeInsets.symmetric(vertical: 6),
       decoration: isToday
           ? BoxDecoration(
-              color: Colors.blue.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(6),
-            )
+        color: Colors.blue.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(6),
+      )
           : null,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: isToday ? 8 : 0),

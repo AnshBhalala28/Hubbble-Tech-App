@@ -2,10 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Wavee</string>
+	<string>Wavee Ai</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,16 +15,37 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>wavee</string>
+	<string>Wavee Ai</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>The Wavee Ai App requires access to your camera to capture photos for your profile image and document uploads.</string>
+	<key>NSFileProviderUsageDescription</key>
+	<string>The Wavee Ai App require permission to access files in order to save downloaded documents and files.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>The Wavee Ai App requires access of location to check radius between user and business to show in Community Screen and also to to provide real-time location features in chat also.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>The Wavee Ai App requires access of location to check radius between user and business to show in Community Screen and also to to provide real-time location features in chat also.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>The Wavee Ai App requires access of location to check radius between user and business to show in Community Screen and also to to provide real-time location features in chat also.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>The Wavee Ai App needs permission to access your photo library in order to upload images as your profile picture and for document uploads.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>The Wavee Ai App requests access to your photo library to select photos for your profile image and document uploads.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -41,9 +64,18 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<key>io.flutter.embedded_views_preview</key>
 	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<key>FirebaseAppDelegateProxyEnabled</key>
 	<true/>
+	<key>NSUserNotificationAlertStyle</key>
+	<string>alert</string>
+	<key>UNUserNotificationCenter</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>
