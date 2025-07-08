@@ -26,31 +26,44 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>The Wavee Ai App requires access to your camera to capture photos for your profile image and document uploads.</string>
-	<key>NSFileProviderUsageDescription</key>
-	<string>The Wavee Ai App require permission to access files in order to save downloaded documents and files.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>The Wavee Ai App requires access of location to check radius between user and business to show in Community Screen and also to to provide real-time location features in chat also.</string>
+	<string>Wavee Ai requires camera access to take profile photos and documents.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>The Wavee Ai App requires access of location to check radius between user and business to show in Community Screen and also to to provide real-time location features in chat also.</string>
+	<string>Wavee Ai needs access to your location always to show nearby communities and chat location features.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Wavee Ai needs your location to find nearby communities.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>The Wavee Ai App requires access of location to check radius between user and business to show in Community Screen and also to to provide real-time location features in chat also.</string>
+	<string>Wavee Ai needs your location while the app is in use to offer better services.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>The Wavee Ai App needs permission to access your photo library in order to upload images as your profile picture and for document uploads.</string>
+	<string>Wavee Ai needs access to your photo library to upload profile and document images.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>The Wavee Ai App requests access to your photo library to select photos for your profile image and document uploads.</string>
+	<string>Wavee Ai requests photo library access for profile and chat features.</string>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>INSendMessageIntent</string>
+	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>UIStatusBarStyle</key>
+	<string></string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -63,19 +76,6 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>io.flutter.embedded_views_preview</key>
-	<true/>
-	<key>FirebaseAppDelegateProxyEnabled</key>
-	<true/>
-	<key>NSUserNotificationAlertStyle</key>
-	<string>alert</string>
-	<key>UNUserNotificationCenter</key>
-	<true/>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>remote-notification</string>
 	</array>
 </dict>
 </plist>

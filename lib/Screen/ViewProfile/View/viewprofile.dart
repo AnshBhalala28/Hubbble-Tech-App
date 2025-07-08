@@ -16,7 +16,9 @@ import 'package:wavee/comman/custom_batan.dart';
 import '../../../comman/Custom_AppBar.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/const.dart';
+import '../../../comman/error_dialog.dart';
 import '../../../comman/store_local.dart';
+import '../../Authcation/Provider/authcation_provider.dart';
 import '../../HomeNewPage/View/homenewpage.dart';
 import '../Model/profile_model.dart';
 import '../Provider/profile_provider.dart';
@@ -302,6 +304,8 @@ class _ViewProfileState extends State<ViewProfile> {
                                                   .clearUserData();
                                               Get.offAll(() =>
                                                   LoginScreen());
+                                              Logout();
+
                                             },
                                             color:
                                             AppColors.maincolor,
@@ -462,4 +466,46 @@ class _ViewProfileState extends State<ViewProfile> {
       }
     });
   }
+
+
+  void Logout() {
+    final Map<String, String> data = {};
+    data["user_id"] = loginModel?.data?.user?.id.toString() ?? "";
+
+
+    log("Logout Data $data");
+    checkInternet().then((internet) async {
+      if (internet) {
+        try {
+          var response = await AuthProvider().Logout(data);
+
+          if (response.statusCode == 200 ) {
+            log("Sucess Logout  ${response.body}");
+
+            setState(() {
+
+              isLoading = false;
+            });
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+            print(response.body);
+          }
+        } catch (e) {
+          if (mounted) {
+            setState(() {
+              isLoading = false;
+            });
+          }
+        }
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
 }

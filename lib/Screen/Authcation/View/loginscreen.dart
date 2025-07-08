@@ -135,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           setState(() {
                             _obscurePassword = !_obscurePassword;
-                            print(_obscurePassword);
+                            log(_obscurePassword.toString());
                           });
                         },
                         icon:
@@ -172,23 +172,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-
-                // Align(
-                // alignment: Alignment.centerRight,
-                // child: TextButton(
-                // onPressed: () {
-                //   Get.to(const ForgotPasswordScreen());
-                // },
-                //   child: Text(
-                //     "Forgot Password?",
-                //     style: TextStyle(
-                //       fontWeight: FontWeight.w500,
-                //       fontFamily: AppConstants.manrope,
-                //       fontSize: 16.sp,
-                //     ),
-                //   ),
-                // ),
-                // ),
                 SizedBox(height: 3.h),
                 isLoading == true
                     ? Center(
@@ -270,10 +253,10 @@ class _LoginScreenState extends State<LoginScreen> {
   //   // if (Platform.isIOS) {
   //   //   // Get APNS token
   //   //   String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
-  //   //   print(apnsToken);
+  //   //   log(apnsToken);
   //   //   // final notificationSettings = await FirebaseMessaging.instance.requestPermission(provisional: true);
   //   //   if (apnsToken == null) {
-  //   //     print(
+  //   //     log(
   //   //       "APNS Token not set. Please ensure Push Notifications are enabled.",
   //   //     );
   //   //     return;
@@ -282,7 +265,7 @@ class _LoginScreenState extends State<LoginScreen> {
   //   // String? fcmToken = await FirebaseMessaging.instance.getToken();
   //   // if (fcmToken == null) {
   //   //   // Handle error if FCM token is not available
-  //   //   print("FCM Token not available.");
+  //   //   log("FCM Token not available.");
   //   //   return;
   //   // }
   //   // log("FCM TOKEN AVE CHE $fcmToken");
@@ -293,14 +276,14 @@ class _LoginScreenState extends State<LoginScreen> {
   //     // "fcm_token": fcmToken,
   //   };
   //
-  //   print("Request data sending: $data");
+  //   log("Request data sending: $data");
   //
   //   checkInternet().then((internet) async {
   //     if (internet) {
   //       try {
   //         var response = await AuthProvider().LoginApi(data);
-  //         print("Response status: ${response.statusCode}");
-  //         print("Response body: ${response.body}");
+  //         log("Response status: ${response.statusCode}");
+  //         log("Response body: ${response.body}");
   //         loginModel = LoginModel.fromJson(jsonDecode(response.body));
   //         if (response.statusCode == 200 && loginModel?.status == 200) {
   //           if (loginModel?.data?.user?.role == 4) {
@@ -346,7 +329,7 @@ class _LoginScreenState extends State<LoginScreen> {
   //           ColorText: Colors.white,
   //           IconColor: Colors.white,
   //         );
-  //         print("Error: $e");
+  //         log("Error: $e");
   //       }
   //     } else {
   //       setState(() {
@@ -365,7 +348,7 @@ class _LoginScreenState extends State<LoginScreen> {
     String? fcmToken = await FirebaseMessaging.instance.getToken();
 
     if (fcmToken == null) {
-      print("❌ FCM Token not available");
+      log("❌ FCM Token not available");
       showSnackBar(
         title: "FCM Error",
         message: "Unable to fetch FCM token",
@@ -378,23 +361,23 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    print("🔥 FCM TOKEN: $fcmToken");
+    log("🔥 FCM TOKEN: $fcmToken");
 
     final Map<String, String> data = {
       'email': email.text.trim(),
       'password': password.text.trim(),
       'role': '4',
-      "fcm_token": fcmToken, // ✅ Send this to server
+      "fcm_token": fcmToken,
     };
 
-    print("🔁 Request data sending: $data");
+    log("🔁 Request data sending: $data");
 
     checkInternet().then((internet) async {
       if (internet) {
         try {
           var response = await AuthProvider().LoginApi(data);
-          print("✅ Response status: ${response.statusCode}");
-          print("📦 Response body: ${response.body}");
+          log("✅ Response status: ${response.statusCode}");
+          log("📦 Response body: ${response.body}");
 
           loginModel = LoginModel.fromJson(jsonDecode(response.body));
 
@@ -425,7 +408,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 "Failed to login with status code: ${response.statusCode}");
           }
         } catch (e) {
-          print("❌ Exception in Login: $e");
+          log("❌ Exception in Login: $e");
           showSnackBar(
             title: "Error",
             message: "Something went wrong during login",

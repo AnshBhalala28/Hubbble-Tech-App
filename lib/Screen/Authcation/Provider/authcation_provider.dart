@@ -53,53 +53,8 @@ class AuthProvider extends ChangeNotifier {
       throw Exception('An error occurred: $e');
     }
   }
-
-  // Future<http.Response> DeleteAccount(Map<String, String> bodyData) async {
-  //   LoginModel? userData = await SaveDataLocal.getDataFromLocal();
-  //   String token = userData?.data?.token ?? '';
-  //   print("my token is cpdfsdf:: ${token}");
-  //   if (token.isEmpty) {
-  //     throw Exception('Token not found');
-  //   }
-  //   Map<String, String> headers = {
-  //     'Authorization': 'Bearer $token',
-  //   };
-  //   const url = '${baseUrl}/delete-account';
-  //   print("Request URL: $url");
-  //   try {
-  //     final response = await http
-  //         .post(Uri.parse(url), body: bodyData, headers: headers)
-  //         .timeout(
-  //       const Duration(seconds: 60),
-  //       onTimeout: () {
-  //         throw SocketException('Request timed out');
-  //       },
-  //     );
-  //     if (response.statusCode == 200) {
-  //       print("Successful response: ${response.body}");
-  //       return response;
-  //     } else {
-  //       print("Failed response: ${response.statusCode}");
-  //       throw Exception("Failed to connect to the server");
-  //     }
-  //   } on SocketException catch (e) {
-  //     throw Exception('No Internet connection: $e');
-  //   } catch (e) {
-  //     throw Exception('An error occurred: $e');
-  //   }
-  // }
   Future<http.Response> DeleteAccount(String id) async {
-    // LoginModel? userData = await SaveDataLocal.getDataFromLocal();
-    // String token = userData?.data?.token ?? '';
-    // print("my token ave che :: ${token}");
-    //
-    // if (token.isEmpty) {
-    //   throw Exception('Token not found');
-    // }
-    //
-    // Map<String, String> headers = {
-    //   'Authorization': 'Bearer $token',
-    // };
+
 
     final url = '${baseUrl}/delete-resident-app?id=$id';
     print("Request URL: $url");
@@ -131,4 +86,29 @@ class AuthProvider extends ChangeNotifier {
       throw Exception('An error occurred: $e');
     }
   }
+
+  Future<http.Response> Logout(Map<String, String> bodyData) async {
+    const url = '${baseUrl}/api-logout';
+    print("Request URL: $url");
+    try {
+      final response = await http.post(Uri.parse(url), body: bodyData).timeout(
+        const Duration(seconds: 60),
+        onTimeout: () {
+          throw SocketException('Request timed out');
+        },
+      );
+      if (response.statusCode == 200) {
+        print("Successful response: ${response.body}");
+        return response;
+      } else {
+        print("Failed response: ${response.statusCode}");
+        throw Exception("Failed to connect to the server");
+      }
+    } on SocketException catch (e) {
+      throw Exception('No Internet connection: $e');
+    } catch (e) {
+      throw Exception('An error occurred: $e');
+    }
+  }
+
 }
