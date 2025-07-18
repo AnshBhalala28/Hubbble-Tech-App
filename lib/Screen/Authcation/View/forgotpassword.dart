@@ -119,12 +119,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await AuthProvider().ForgotApi(data);
+          var response = await AuthProvider().forgetPasswordApi(data);
           print("Response status: ${response.statusCode}");
-          print("Response body: ${response.body}");
-          forgotpasswordmodel = Forgotpasswordmodel.fromJson(
-            jsonDecode(response.body),
-          );
+          forgotpasswordmodel = Forgotpasswordmodel.fromJson(response.data);
           if (response.statusCode == 200 &&
               forgotpasswordmodel?.status == 200) {
             // await SaveDataLocal.saveLogInData(loginModel!);

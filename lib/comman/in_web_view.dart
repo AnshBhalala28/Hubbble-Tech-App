@@ -38,37 +38,40 @@ class _StripeWebViewState extends State<StripeWebView> {
   }
 
   WebViewController _createWebViewController() {
-    final controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(Colors.transparent)
-      ..loadRequest(Uri.parse(widget.link.toString()))
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onPageStarted: (String url) {
-            setState(() {
-              _load = true;
-            });
-          },
-          onPageFinished: (String url) async {
-            setState(() {
-              _load = false;
-            });
+    final controller =
+        WebViewController()
+          ..setJavaScriptMode(JavaScriptMode.unrestricted)
+          ..setBackgroundColor(Colors.transparent)
+          ..loadRequest(Uri.parse(widget.link.toString()))
+          ..setNavigationDelegate(
+            NavigationDelegate(
+              onPageStarted: (String url) {
+                setState(() {
+                  _load = true;
+                });
+              },
+              onPageFinished: (String url) async {
+                setState(() {
+                  _load = false;
+                });
 
-            log("Current URL app redirect: $url");
+                log("Current URL app redirect: $url");
 
-            if (url.contains("payment-successful")) {
-              await Future.delayed(const Duration(seconds: 2));
-              if (mounted) {
-                CheckOutAPI();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ThankYouPage()),
-                );
-              }
-            }
-          },
-        ),
-      );
+                if (url.contains("payment-successful")) {
+                  await Future.delayed(const Duration(seconds: 2));
+                  if (mounted) {
+                    CheckOutAPI();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ThankYouPage(),
+                      ),
+                    );
+                  }
+                }
+              },
+            ),
+          );
 
     if (controller.platform is AndroidWebViewController) {
       (controller.platform as AndroidWebViewController)
@@ -99,11 +102,9 @@ class _StripeWebViewState extends State<StripeWebView> {
                   onTap: () {
                     Get.back();
                   },
-                  child: Icon(
-                    Icons.arrow_back,
-                  ),
+                  child: Icon(Icons.arrow_back),
                 ),
-                SizedBox(width: 35.w,),
+                SizedBox(width: 35.w),
                 Text(
                   widget.title.toString(),
                   style: TextStyle(
@@ -140,11 +141,10 @@ class _StripeWebViewState extends State<StripeWebView> {
 
     checkInternet().then((internet) async {
       if (internet) {
-        CheckoutProvider().ProductCheckoutApi(data).then((response) async {
-          placeOrderModel = PlaceOrderModel.fromJson(jsonDecode(response.body));
+        CheckoutProvider().productCheckoutApi(data).then((response) async {
+          placeOrderModel = PlaceOrderModel.fromJson(response.data);
 
           if (response.statusCode == 200) {
-            log("Checkout successful: ${response.body}");
             if (mounted) {
               setState(() {
                 isLoading = false;

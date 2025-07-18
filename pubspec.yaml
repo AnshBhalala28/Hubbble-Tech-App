@@ -37,6 +37,7 @@ dependencies:
   firebase_core: ^3.13.1
   shared_preferences:
   provider: ^6.1.2
+
   connectivity_plus:
   get:
   sizer: ^3.0.5
@@ -60,6 +61,7 @@ dependencies:
   permission_handler:
   url_launcher: ^6.1.14
   chewie: ^1.7.4
+  flutter_secure_storage: 
   flutter_easyloading:
   file_picker: ^10.1.9
   open_file: ^3.3.2
@@ -81,6 +83,7 @@ dependencies:
   googleapis:
   googleapis_auth:
   awesome_notifications: ^0.10.1
+  crypto: ^3.0.6
 
 
 
@@ -111,6 +114,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/Svg/
+    - assets/certificates/wavee_cert.pem
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

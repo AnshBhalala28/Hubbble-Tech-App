@@ -59,10 +59,7 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
 
       if (latitude != 0.0 && longitude != 0.0) {
         mapController.animateCamera(
-          CameraUpdate.newLatLngZoom(
-            LatLng(latitude, longitude),
-            20.0,
-          ),
+          CameraUpdate.newLatLngZoom(LatLng(latitude, longitude), 20.0),
         );
         print("Moved to Location: Lat: $latitude, Lon: $longitude");
       } else {
@@ -77,13 +74,16 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response = await CommunityProvider().GetLikeApi(
-              (loginModel?.data?.user?.id).toString(), AppLat, AppLon);
+          final response = await CommunityProvider().getLikeBusinessApi(
+            (loginModel?.data?.user?.id).toString(),
+            AppLat,
+            AppLon,
+          );
           EasyLoading.dismiss();
           if (response.statusCode == 200) {
             setState(() {
               isLoading = false;
-              getlikeModal = GetLikeModal.fromJson(json.decode(response.body));
+              getlikeModal = GetLikeModal.fromJson(response.data);
             });
           }
         } catch (e) {
@@ -107,28 +107,29 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
 
     checkInternet().then((internet) async {
       if (internet) {
-        CommunityProvider().IsLikeApi(data).then((response) async {
-          if (response.statusCode == 200) {
-            print("Unlike successful: ${response.body}");
+        CommunityProvider()
+            .businessLikeApi(data)
+            .then((response) async {
+              if (response.statusCode == 200) {
+                setState(() {
+                  getlikeModal?.data?.removeAt(index);
+                });
 
-            setState(() {
-              getlikeModal?.data?.removeAt(index);
+                setState(() {
+                  isLoading = false;
+                });
+                getlikeapi();
+              } else {
+                setState(() {
+                  isLoading = false;
+                });
+              }
+            })
+            .catchError((error) {
+              EasyLoading.dismiss();
+              EasyLoading.showError("Something went wrong");
+              print("Error in unlike API: $error");
             });
-
-            setState(() {
-              isLoading = false;
-            });
-            getlikeapi();
-          } else {
-            setState(() {
-              isLoading = false;
-            });
-          }
-        }).catchError((error) {
-          EasyLoading.dismiss();
-          EasyLoading.showError("Something went wrong");
-          print("Error in unlike API: $error");
-        });
       } else {
         EasyLoading.dismiss();
         buildErrorDialog(context, 'Error', "Internet Required");
@@ -142,20 +143,19 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
     });
     checkInternet().then((internet) async {
       if (internet) {
-        CommunityProvider()
-            .projectlistapi(
-                (loginModel?.data?.user?.id).toString(), id, AppLat, AppLon)
-            .then((response) async {
-          busnessviewmodal =
-              BusnessViewModal.fromJson(json.decode(response.body));
+        CommunityProvider().businessProfileViewApi(id, AppLat, AppLon).then((
+          response,
+        ) async {
+          busnessviewmodal = BusnessViewModal.fromJson(response.data);
           if (response.statusCode == 200) {
             print("done LIst");
 
             setState(() {
               isSending = false;
             });
-            Get.to(
-                () => BusinessDetailScreen(busnessviewmodal: busnessviewmodal));
+            Get.to(() {
+              return BusinessDetailScreen(busnessviewmodal: busnessviewmodal);
+            });
           } else if (response.statusCode == 422) {
             setState(() {
               isSending = false;
@@ -233,8 +233,10 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
 
   Future<void> getCityName(double latitude, double longitude) async {
     try {
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(latitude, longitude);
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        latitude,
+        longitude,
+      );
 
       if (placemarks.isNotEmpty) {
         setState(() {
@@ -245,12 +247,14 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
         setState(() {
           isLoading = false;
         });
-        print(""
-            ""
-            ""
-            ""
-            ""
-            " $city");
+        print(
+          ""
+          ""
+          ""
+          ""
+          ""
+          " $city",
+        );
       }
     } catch (e) {
       print("Error: $e");
@@ -278,10 +282,7 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
                 SizedBox(height: 4.h),
                 TitleBar(
                   back: () {
-                    Get.to(HomePage(
-                      selected: 1,
-                      userName: '',
-                    ));
+                    Get.to(HomePage(selected: 1, userName: ''));
                   },
                   title: 'Favourites',
                   drawerCallback: () {
@@ -290,102 +291,116 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
                 ),
                 SizedBox(height: 3.h),
                 Expanded(
-                  child: isLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.maincolor,
-                          ),
-                        )
-                      : (getlikeModal?.data == null ||
+                  child:
+                      isLoading
+                          ? const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.maincolor,
+                            ),
+                          )
+                          : (getlikeModal?.data == null ||
                               getlikeModal!.data!.isEmpty)
                           ? Center(
-                              child: Text(
-                                "No Favourites Added!",
-                                style:
-                                    TextStyle(fontSize: 16, color: Colors.grey),
+                            child: Text(
+                              "No Favourites Added!",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey,
                               ),
-                            )
-                          : ListView.builder(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 5),
-                              itemCount: getlikeModal?.data?.length ?? 0,
-                              itemBuilder: (context, index) {
-                                return InkWell(
-                                  onTap: () {
-                                    print("id tap");
-                                    print(
-                                        "Liked Business ID: ${getlikeModal?.data?[index].businessId}");
-
-                                    BussinessViewProfile(
-                                        (getlikeModal?.data?[index].businessId)
-                                            .toString());
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.only(bottom: 10),
-                                    padding: EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color: Colors.white,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 30,
-                                          backgroundColor: Colors.grey[200],
-                                          backgroundImage:
-                                              CachedNetworkImageProvider(
-                                            (getlikeModal?.data?[index].business
-                                                        ?.logo?.isEmpty ==
-                                                    true)
-                                                ? "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=600"
-                                                : getlikeModal?.data?[index]
-                                                        .business?.logo ??
-                                                    "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=600",
-                                          ),
-                                        ),
-                                        SizedBox(width: 15),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                getlikeModal
-                                                        ?.data?[index]
-                                                        .business
-                                                        ?.businessName ??
-                                                    "N/A",
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black87,
-                                                ),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                              SizedBox(height: 3),
-                                              Text(
-                                                "${(getlikeModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.black54,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(width: 10),
-                                        GestureDetector(
-                                          onTap: () => unlikeBusiness(index),
-                                          child: Icon(Icons.favorite,
-                                              color: Colors.red, size: 28),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
                             ),
+                          )
+                          : ListView.builder(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 5,
+                            ),
+                            itemCount: getlikeModal?.data?.length ?? 0,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () {
+                                  print("id tap");
+                                  print(
+                                    "Liked Business ID: ${getlikeModal?.data?[index].businessId}",
+                                  );
+
+                                  BussinessViewProfile(
+                                    (getlikeModal?.data?[index].businessId)
+                                        .toString(),
+                                  );
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(bottom: 10),
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 30,
+                                        backgroundColor: Colors.grey[200],
+                                        backgroundImage: CachedNetworkImageProvider(
+                                          (getlikeModal
+                                                      ?.data?[index]
+                                                      .business
+                                                      ?.logo
+                                                      ?.isEmpty ==
+                                                  true)
+                                              ? "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                              : getlikeModal
+                                                      ?.data?[index]
+                                                      .business
+                                                      ?.logo ??
+                                                  "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=600",
+                                        ),
+                                      ),
+                                      SizedBox(width: 15),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              getlikeModal
+                                                      ?.data?[index]
+                                                      .business
+                                                      ?.businessName ??
+                                                  "N/A",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black87,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            SizedBox(height: 3),
+                                            Text(
+                                              "${(getlikeModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black54,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      GestureDetector(
+                                        onTap: () => unlikeBusiness(index),
+                                        child: Icon(
+                                          Icons.favorite,
+                                          color: Colors.red,
+                                          size: 28,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                 ),
               ],
             ),

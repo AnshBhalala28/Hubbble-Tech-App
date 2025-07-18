@@ -56,12 +56,12 @@ class _BookingScreenState extends State<BookingScreen> {
     return status == "Pending"
         ? Colors.yellow.shade800
         : status == "Confirmed"
-            ? Colors.green
-            : status == "Cancelled"
-                ? Colors.red
-                : status == "Rejected"
-                    ? Colors.orange
-                    : Colors.black;
+        ? Colors.green
+        : status == "Cancelled"
+        ? Colors.red
+        : status == "Rejected"
+        ? Colors.orange
+        : Colors.black;
   }
 
   Color getStatusColor(String status, String? rsvp, String? attended) {
@@ -82,12 +82,12 @@ class _BookingScreenState extends State<BookingScreen> {
     return status == "Pending"
         ? Colors.yellow.shade800
         : status == "Confirmed"
-            ? Colors.green
-            : status == "Cancelled"
-                ? Colors.red
-                : status == "Rejected"
-                    ? Colors.orange
-                    : Colors.black;
+        ? Colors.green
+        : status == "Cancelled"
+        ? Colors.red
+        : status == "Rejected"
+        ? Colors.orange
+        : Colors.black;
   }
 
   String getStatusText(String status, String? rsvp, String? attended) {
@@ -120,10 +120,7 @@ class _BookingScreenState extends State<BookingScreen> {
     bookingsData?.forEach((monthName, bookings) {
       if (bookings != null && bookings.isNotEmpty) {
         for (var booking in bookings) {
-          nonEmptyBookings.add({
-            "month": monthName,
-            "booking": booking,
-          });
+          nonEmptyBookings.add({"month": monthName, "booking": booking});
         }
       }
     });
@@ -139,12 +136,7 @@ class _BookingScreenState extends State<BookingScreen> {
               SizedBox(height: 4.h),
               TitleBar(
                 back: () {
-                  Get.to(
-                    HomePage(
-                      userName: '',
-                      selected: 1,
-                    ),
-                  );
+                  Get.to(HomePage(userName: '', selected: 1));
                 },
                 title: 'My Bookings',
                 drawerCallback: () {
@@ -198,56 +190,57 @@ class _BookingScreenState extends State<BookingScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         offset: Offset(0, 45),
-                        itemBuilder: (BuildContext context) => [
-                          PopupMenuItem(
-                            value: "all",
-                            child: Text(
-                              "All",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: AppConstants.manrope,
+                        itemBuilder:
+                            (BuildContext context) => [
+                              PopupMenuItem(
+                                value: "all",
+                                child: Text(
+                                  "All",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: "confirmed",
-                            child: Text(
-                              "Confirmed",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: AppConstants.manrope,
+                              PopupMenuItem(
+                                value: "confirmed",
+                                child: Text(
+                                  "Confirmed",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: "pending",
-                            child: Text(
-                              "Pending",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: AppConstants.manrope,
+                              PopupMenuItem(
+                                value: "pending",
+                                child: Text(
+                                  "Pending",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: "cancelled",
-                            child: Text(
-                              "Cancelled",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: AppConstants.manrope,
+                              PopupMenuItem(
+                                value: "cancelled",
+                                child: Text(
+                                  "Cancelled",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ],
+                            ],
                         child: Container(
                           alignment: Alignment.center,
                           padding: EdgeInsets.symmetric(horizontal: 10),
@@ -281,274 +274,261 @@ class _BookingScreenState extends State<BookingScreen> {
               isLoading
                   ? Loader().paddingOnly(top: 20.h)
                   : nonEmptyBookings.length == 0 || nonEmptyBookings.isEmpty
-                      ? Center(
-                          child: Text(
-                            "No ${selectedType.capitalizeFirst} Bookings found",
-                            style: TextStyle(
-                              fontSize: 17.sp,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.black,
-                              fontFamily: AppConstants.manrope,
-                            ),
-                          ).paddingOnly(top: 30.h),
-                        )
-                      : SizedBox(
-                          child: Column(
-                            children: [
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: nonEmptyBookings.length,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
-                                itemBuilder: (context, index) {
-                                  final entry = nonEmptyBookings[index];
-                                  final monthName = entry['month'].toString();
-                                  final booking = entry['booking'];
+                  ? Center(
+                    child: Text(
+                      "No ${selectedType.capitalizeFirst} Bookings found",
+                      style: TextStyle(
+                        fontSize: 17.sp,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.black,
+                        fontFamily: AppConstants.manrope,
+                      ),
+                    ).paddingOnly(top: 30.h),
+                  )
+                  : SizedBox(
+                    child: Column(
+                      children: [
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: nonEmptyBookings.length,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          itemBuilder: (context, index) {
+                            final entry = nonEmptyBookings[index];
+                            final monthName = entry['month'].toString();
+                            final booking = entry['booking'];
 
-                                  final dateTime =
-                                      DateFormat("yyyy-MM-dd hh:mm a").parse(
-                                    booking['requested_at'] ?? "",
-                                    true,
-                                  );
+                            final dateTime = DateFormat(
+                              "yyyy-MM-dd hh:mm a",
+                            ).parse(booking['requested_at'] ?? "", true);
 
-                                  final day = DateFormat('EEE')
-                                      .format(dateTime)
-                                      .toUpperCase();
-                                  final dayNum =
-                                      DateFormat('d').format(dateTime);
-                                  final monthFormatted =
-                                      DateFormat('MMMM').format(dateTime);
-                                  final time =
-                                      DateFormat('hh:mm a').format(dateTime);
+                            final day =
+                                DateFormat(
+                                  'EEE',
+                                ).format(dateTime).toUpperCase();
+                            final dayNum = DateFormat('d').format(dateTime);
+                            final monthFormatted = DateFormat(
+                              'MMMM',
+                            ).format(dateTime);
+                            final time = DateFormat('hh:mm a').format(dateTime);
 
-                                  final isFirstOfMonth = index == 0 ||
-                                      nonEmptyBookings[index - 1]['month'] !=
-                                          monthName;
+                            final isFirstOfMonth =
+                                index == 0 ||
+                                nonEmptyBookings[index - 1]['month'] !=
+                                    monthName;
 
-                                  return Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      if (isFirstOfMonth)
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 16.0, bottom: 8),
-                                          child: Text(
-                                            monthFormatted,
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black87,
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (isFirstOfMonth)
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 16.0,
+                                      bottom: 8,
+                                    ),
+                                    child: Text(
+                                      monthFormatted,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.to(
+                                      () => Form_Screen(
+                                        amenites_id:
+                                            booking['amenity']['id'].toString(),
+                                        status: booking['status'],
+                                        bookingDate: booking['requested_at'],
+                                        attend:
+                                            booking['attended']?.toString() ??
+                                            "",
+                                        rsvp: booking['rsvp'],
+                                        EventName: booking['amenity']['name'],
+                                        bookingId:
+                                            booking['booking_id'].toString(),
+                                        requestedDate:
+                                            booking['requested_at'] ?? "N/A",
+                                        isPage: true,
+                                      ),
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 8.0,
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              day,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey[600],
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
-                                          ),
+                                            SizedBox(height: 2),
+                                            Text(
+                                              dayNum,
+                                              style: TextStyle(
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Get.to(() => Form_Screen(
-                                                amenites_id: booking['amenity']
-                                                        ['id']
-                                                    .toString(),
-                                                status: booking['status'],
-                                                bookingDate:
-                                                    booking['requested_at'],
-                                                attend: booking['attended']
-                                                        ?.toString() ??
-                                                    "",
-                                                rsvp: booking['rsvp'],
-                                                EventName: booking['amenity']
-                                                    ['name'],
-                                                bookingId: booking['booking_id']
-                                                    .toString(),
-                                                requestedDate:
-                                                    booking['requested_at'] ??
-                                                        "N/A",
-                                                isPage: true,
-                                              ));
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 8.0),
-                                          child: Row(
+                                        SizedBox(width: 12),
+                                        Expanded(
+                                          child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
+                                              Row(
                                                 children: [
                                                   Text(
-                                                    day,
+                                                    time,
                                                     style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.grey[600],
+                                                      fontSize: 13,
+                                                      color: Colors.black87,
                                                       fontWeight:
                                                           FontWeight.w500,
                                                     ),
                                                   ),
-                                                  SizedBox(height: 2),
-                                                  Text(
-                                                    dayNum,
-                                                    style: TextStyle(
-                                                      fontSize: 24,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.black87,
+                                                  Spacer(),
+                                                  Container(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                          horizontal: 8,
+                                                          vertical: 4,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      color: getStatusColor(
+                                                        booking['status'] ?? "",
+                                                        booking['rsvp'],
+                                                        booking['attended'],
+                                                      ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
+                                                    ),
+                                                    child: Text(
+                                                      getStatusText(
+                                                        booking['status']
+                                                            .toString(),
+                                                        booking['rsvp'],
+                                                        booking['attended'],
+                                                      ),
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
                                               ),
-                                              SizedBox(width: 12),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                          time,
-                                                          style: TextStyle(
-                                                            fontSize: 13,
-                                                            color:
-                                                                Colors.black87,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                        Spacer(),
-                                                        Container(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  horizontal: 8,
-                                                                  vertical: 4),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color:
-                                                                getStatusColor(
-                                                              booking['status'] ??
-                                                                  "",
-                                                              booking['rsvp'],
-                                                              booking[
-                                                                  'attended'],
-                                                            ),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        8),
-                                                          ),
-                                                          child: Text(
-                                                            getStatusText(
-                                                              booking['status']
-                                                                  .toString(),
-                                                              booking['rsvp'],
-                                                              booking[
-                                                                  'attended'],
-                                                            ),
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(height: 4),
-                                                    Text(
-                                                      booking['amenity']
-                                                              ['name'] ??
-                                                          "Meeting Room",
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.black87,
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 2),
-                                                    Text(
-                                                      booking['amenity']
-                                                              ['description'] ??
-                                                          "",
-                                                      maxLines: 2,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: TextStyle(
-                                                        fontSize: 13,
-                                                        color: Colors.black54,
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 8),
-                                                    Divider(thickness: 0.5),
-                                                  ],
+                                              SizedBox(height: 4),
+                                              Text(
+                                                booking['amenity']['name'] ??
+                                                    "Meeting Room",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black87,
                                                 ),
                                               ),
+                                              SizedBox(height: 2),
+                                              Text(
+                                                booking['amenity']['description'] ??
+                                                    "",
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: Colors.black54,
+                                                ),
+                                              ),
+                                              SizedBox(height: 8),
+                                              Divider(thickness: 0.5),
                                             ],
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
-              SizedBox(
-                height: 5.h,
-              )
+                      ],
+                    ),
+                  ),
+              SizedBox(height: 5.h),
             ],
           ),
         ),
       ),
-      floatingActionButton: isLoading
-          ? Container()
-          : Row(
-              children: [
-                Spacer(),
-                FloatingActionButton.extended(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(900)),
-                  backgroundColor: Colors.white,
-                  onPressed: () {
-                    Get.to(() => BookAmenities_Screen());
-                  },
-                  icon: Icon(Icons.home_repair_service, color: Colors.black),
-                  label: Text(
-                    "Amenities",
-                    style: TextStyle(
+      floatingActionButton:
+          isLoading
+              ? Container()
+              : Row(
+                children: [
+                  Spacer(),
+                  FloatingActionButton.extended(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(900),
+                    ),
+                    backgroundColor: Colors.white,
+                    onPressed: () {
+                      Get.to(() => BookAmenities_Screen());
+                    },
+                    icon: Icon(Icons.home_repair_service, color: Colors.black),
+                    label: Text(
+                      "Amenities",
+                      style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w600,
                         fontSize: 16.sp,
-                        fontFamily: AppConstants.manrope),
+                        fontFamily: AppConstants.manrope,
+                      ),
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: 2.w,
-                ),
-                // FloatingActionButton.extended(
-                //   shape: RoundedRectangleBorder(
-                //       borderRadius: BorderRadius.circular(900)),
-                //   backgroundColor: Colors.white,
-                //   onPressed: () {
-                //     Get.to(() => const ChatBotScreen());
-                //   },
-                //   icon: Icon(CupertinoIcons.chat_bubble_2, color: Colors.black),
-                //   label: Text(
-                //     "Ai Concierge",
-                //     style: TextStyle(
-                //         color: Colors.black,
-                //         fontWeight: FontWeight.w600,
-                //         fontSize: 16.sp,
-                //         fontFamily: AppConstants.manrope),
-                //   ),
-                // ),
-              ],
-            ),
+                  SizedBox(width: 2.w),
+                  // FloatingActionButton.extended(
+                  //   shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(900)),
+                  //   backgroundColor: Colors.white,
+                  //   onPressed: () {
+                  //     Get.to(() => const ChatBotScreen());
+                  //   },
+                  //   icon: Icon(CupertinoIcons.chat_bubble_2, color: Colors.black),
+                  //   label: Text(
+                  //     "Ai Concierge",
+                  //     style: TextStyle(
+                  //         color: Colors.black,
+                  //         fontWeight: FontWeight.w600,
+                  //         fontSize: 16.sp,
+                  //         fontFamily: AppConstants.manrope),
+                  //   ),
+                  // ),
+                ],
+              ),
     );
   }
 
@@ -587,16 +567,13 @@ class _BookingScreenState extends State<BookingScreen> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await AmenitiesProvider().AddBooking(data);
+          var response = await AmenitiesProvider().addBookingApi(data);
 
           if (response.statusCode == 200) {
-            log("API Response: ${response.body}");
             setState(() {
               isLoading = false;
             });
-            Get.off(() => BookingScreen(), arguments: {
-              'tabIndex': 0,
-            });
+            Get.off(() => BookingScreen(), arguments: {'tabIndex': 0});
           } else {
             setState(() {
               isLoading = false;
@@ -631,26 +608,33 @@ class _BookingScreenState extends State<BookingScreen> {
 
         try {
           var response = await AmenitiesProvider().rejectBookingApi(data);
-          log("Reject Booking API Response: ${response.body}");
 
           if (response.statusCode == 200) {
-            rejectBookingModel =
-                RejectBookingModel.fromJson(jsonDecode(response.body));
+            rejectBookingModel = RejectBookingModel.fromJson(response.data);
 
             if (rejectBookingModel?.status == 1) {
-              buildErrorDialog(context, 'Success',
-                  rejectBookingModel?.message ?? 'Rejected Successfully');
+              buildErrorDialog(
+                context,
+                'Success',
+                rejectBookingModel?.message ?? 'Rejected Successfully',
+              );
 
               setState(() {
                 selectedCategory = 3;
               });
             } else {
-              buildErrorDialog(context, 'Failed',
-                  rejectBookingModel?.message ?? 'Something went wrong');
+              buildErrorDialog(
+                context,
+                'Failed',
+                rejectBookingModel?.message ?? 'Something went wrong',
+              );
             }
           } else {
             buildErrorDialog(
-                context, 'Error', 'Server Error: ${response.statusCode}');
+              context,
+              'Error',
+              'Server Error: ${response.statusCode}',
+            );
           }
         } catch (e, stackTrace) {
           log("Exception while rejecting booking: $stackTrace");
@@ -677,16 +661,15 @@ class _BookingScreenState extends State<BookingScreen> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await AmenitiesProvider().BookAmenitiesStatus(data);
+          var response = await AmenitiesProvider().allAmenitiesApi(data);
           if (response.statusCode == 200) {
-            log("API Response: ${response.body}");
-            bookAmenitiesStatusModel =
-                BookAmenitiesStatusModel.fromJson(jsonDecode(response.body));
+            bookAmenitiesStatusModel = BookAmenitiesStatusModel.fromJson(
+              response.data,
+            );
 
             setState(() {
               isLoading = false;
             });
-            log("sucess response data avve che ${response.body}");
           } else {
             setState(() {
               isLoading = false;

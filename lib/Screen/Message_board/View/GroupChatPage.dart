@@ -108,18 +108,22 @@ class _GroupChatPageState extends State<GroupChatPage> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await MessageBoardProvider().getgroupmsgapi(
-              widget.groupid, loginModel?.data?.user?.id.toString());
+          var response = await MessageBoardProvider().groupMessageApi(
+            widget.groupid,
+            loginModel?.data?.user?.id.toString(),
+          );
 
           if (response.statusCode == 200) {
-            var newMsgModel = GetMsgModel.fromJson(json.decode(response.body));
+            var newMsgModel = GetMsgModel.fromJson(response.data);
 
             int newCount = newMsgModel.data?.length ?? 0;
-            int? latestMsgId = newMsgModel.data?.isNotEmpty == true
-                ? newMsgModel.data?.first?.id
-                : null;
+            int? latestMsgId =
+                newMsgModel.data?.isNotEmpty == true
+                    ? newMsgModel.data?.first?.id
+                    : null;
 
-            bool hasNewContent = newCount > _lastMessageCount ||
+            bool hasNewContent =
+                newCount > _lastMessageCount ||
                 (latestMsgId != null && latestMsgId > _lastMessageId);
 
             if (hasNewContent) {
@@ -155,11 +159,13 @@ class _GroupChatPageState extends State<GroupChatPage> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await MessageBoardProvider().getgroupmsgapi(
-              widget.groupid, loginModel?.data?.user?.id.toString());
+          var response = await MessageBoardProvider().groupMessageApi(
+            widget.groupid,
+            loginModel?.data?.user?.id.toString(),
+          );
 
           if (response.statusCode == 200) {
-            var msgModel = GetMsgModel.fromJson(json.decode(response.body));
+            var msgModel = GetMsgModel.fromJson(response.data);
 
             setState(() {
               getmsgModel = msgModel;
@@ -179,7 +185,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
             setState(() {
               isLoading = false;
             });
-            log("Error loading messages: ${response.body}");
           }
         } catch (e) {
           setState(() {
@@ -235,20 +240,23 @@ class _GroupChatPageState extends State<GroupChatPage> {
           title: InkWell(
             onTap: () {
               _messagePollingTimer!.cancel();
-              Get.to(() => GroupProfileScreen(
-                    groupName: widget.chatname,
-                    groupImage: widget.image,
-                    groupid: widget.groupid,
-                  ));
+              Get.to(
+                () => GroupProfileScreen(
+                  groupName: widget.chatname,
+                  groupImage: widget.image,
+                  groupid: widget.groupid,
+                ),
+              );
             },
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundImage: widget.image != null &&
-                          widget.image!.isNotEmpty
-                      ? NetworkImage(widget.image!)
-                      : NetworkImage(
-                          "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg"),
+                  backgroundImage:
+                      widget.image != null && widget.image!.isNotEmpty
+                          ? NetworkImage(widget.image!)
+                          : NetworkImage(
+                            "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
+                          ),
                   radius: 20,
                 ),
                 SizedBox(width: 10),
@@ -269,10 +277,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
           ),
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(1),
-            child: Container(
-              color: Colors.grey.shade300,
-              height: 1,
-            ),
+            child: Container(color: Colors.grey.shade300, height: 1),
           ),
         ),
         body: Stack(
@@ -280,134 +285,139 @@ class _GroupChatPageState extends State<GroupChatPage> {
             Column(
               children: [
                 Expanded(
-                    child: isLoading
-                        ? Center(child: CircularProgressIndicator())
-                        : getmsgModel?.data?.isEmpty ?? true
-                            ? Center(child: Text("No messages yet!"))
-                            : ListView.builder(
-                                controller: _scrollController,
-                                padding: EdgeInsets.all(5),
-                                itemCount: getmsgModel?.data?.length ?? 0,
-                                reverse: true,
-                                itemBuilder: (context, index) {
-                                  final message = getmsgModel?.data?[index];
-                                  String loggedInUserId =
-                                      loginModel?.data?.user?.id.toString() ??
-                                          "";
-                                  String senderId =
-                                      message?.sender?.id?.toString() ?? "";
-                                  final bool isCurrentUser =
-                                      senderId == loggedInUserId;
+                  child:
+                      isLoading
+                          ? Center(child: CircularProgressIndicator())
+                          : getmsgModel?.data?.isEmpty ?? true
+                          ? Center(child: Text("No messages yet!"))
+                          : ListView.builder(
+                            controller: _scrollController,
+                            padding: EdgeInsets.all(5),
+                            itemCount: getmsgModel?.data?.length ?? 0,
+                            reverse: true,
+                            itemBuilder: (context, index) {
+                              final message = getmsgModel?.data?[index];
+                              String loggedInUserId =
+                                  loginModel?.data?.user?.id.toString() ?? "";
+                              String senderId =
+                                  message?.sender?.id?.toString() ?? "";
+                              final bool isCurrentUser =
+                                  senderId == loggedInUserId;
 
-                                  log("------ Message $index ------");
-                                  log("Login ID: $loggedInUserId");
-                                  log("Sender ID: $senderId");
-                                  log("isCurrentUser: ${isCurrentUser ? 'true' : 'false'}");
+                              log("------ Message $index ------");
+                              log("Login ID: $loggedInUserId");
+                              log("Sender ID: $senderId");
+                              log(
+                                "isCurrentUser: ${isCurrentUser ? 'true' : 'false'}",
+                              );
 
-                                  return Padding(
-                                    padding: EdgeInsets.only(bottom: 10),
-                                    child: Column(
-                                      crossAxisAlignment: isCurrentUser
+                              return Padding(
+                                padding: EdgeInsets.only(bottom: 10),
+                                child: Column(
+                                  crossAxisAlignment:
+                                      isCurrentUser
                                           ? CrossAxisAlignment.end
                                           : CrossAxisAlignment.start,
+                                  children: [
+                                    if (!isCurrentUser)
+                                      Text(
+                                        message?.sender?.firstName ?? "",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.sp,
+                                          fontFamily: AppConstants.manrope,
+                                        ),
+                                      ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          isCurrentUser
+                                              ? MainAxisAlignment.end
+                                              : MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        if (!isCurrentUser)
+                                        if (isCurrentUser)
                                           Text(
-                                            message?.sender?.firstName ?? "",
+                                            _formatTime(
+                                              message?.createdAt?.toString() ??
+                                                  "",
+                                            ),
                                             style: TextStyle(
-                                              fontWeight: FontWeight.bold,
                                               fontSize: 16.sp,
+                                              color: Colors.grey[600],
                                               fontFamily: AppConstants.manrope,
                                             ),
                                           ),
-                                        Row(
-                                          mainAxisAlignment: isCurrentUser
-                                              ? MainAxisAlignment.end
-                                              : MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            if (isCurrentUser)
-                                              Text(
-                                                _formatTime(message?.createdAt
-                                                        ?.toString() ??
-                                                    ""),
-                                                style: TextStyle(
-                                                  fontSize: 16.sp,
-                                                  color: Colors.grey[600],
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                ),
-                                              ),
-                                            SizedBox(width: 8),
-                                            if (!isCurrentUser)
-                                              CircleAvatar(
-                                                backgroundImage:
-                                                    CachedNetworkImageProvider(
+                                        SizedBox(width: 8),
+                                        if (!isCurrentUser)
+                                          CircleAvatar(
+                                            backgroundImage:
+                                                CachedNetworkImageProvider(
                                                   message?.sender?.profile ??
                                                       "",
                                                 ),
-                                                radius: 16,
-                                                onBackgroundImageError:
-                                                    (_, __) =>
-                                                        Icon(Icons.person),
-                                              ),
-                                            SizedBox(width: 8),
-                                            Expanded(
-                                              child: Container(
-                                                constraints: BoxConstraints(
-                                                  minWidth: 50.w,
-                                                  maxWidth: 70.w,
-                                                ),
-                                                padding: EdgeInsets.all(12),
-                                                decoration: BoxDecoration(
-                                                  color: isCurrentUser
+                                            radius: 16,
+                                            onBackgroundImageError:
+                                                (_, __) => Icon(Icons.person),
+                                          ),
+                                        SizedBox(width: 8),
+                                        Expanded(
+                                          child: Container(
+                                            constraints: BoxConstraints(
+                                              minWidth: 50.w,
+                                              maxWidth: 70.w,
+                                            ),
+                                            padding: EdgeInsets.all(12),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  isCurrentUser
                                                       ? AppColors.maincolor
                                                       : Colors.grey[200],
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                ),
-                                                child: getMessageWidget(
-                                                    message, isCurrentUser),
-                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
                                             ),
-                                            SizedBox(width: 8),
-                                            if (!isCurrentUser)
-                                              Text(
-                                                _formatTime(message?.createdAt
-                                                        ?.toString() ??
-                                                    ""),
-                                                style: TextStyle(
-                                                  fontSize: 16.sp,
-                                                  color: Colors.grey[600],
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                ),
-                                              ),
-                                            if (isCurrentUser) ...[
-                                              SizedBox(width: 8),
-                                              CircleAvatar(
-                                                backgroundImage:
-                                                    CachedNetworkImageProvider(
-                                                        currentUserImage),
-                                                radius: 16,
-                                                onBackgroundImageError:
-                                                    (_, __) =>
-                                                        Icon(Icons.person),
-                                              ),
-                                            ],
-                                          ],
+                                            child: getMessageWidget(
+                                              message,
+                                              isCurrentUser,
+                                            ),
+                                          ),
                                         ),
+                                        SizedBox(width: 8),
+                                        if (!isCurrentUser)
+                                          Text(
+                                            _formatTime(
+                                              message?.createdAt?.toString() ??
+                                                  "",
+                                            ),
+                                            style: TextStyle(
+                                              fontSize: 16.sp,
+                                              color: Colors.grey[600],
+                                              fontFamily: AppConstants.manrope,
+                                            ),
+                                          ),
+                                        if (isCurrentUser) ...[
+                                          SizedBox(width: 8),
+                                          CircleAvatar(
+                                            backgroundImage:
+                                                CachedNetworkImageProvider(
+                                                  currentUserImage,
+                                                ),
+                                            radius: 16,
+                                            onBackgroundImageError:
+                                                (_, __) => Icon(Icons.person),
+                                          ),
+                                        ],
                                       ],
                                     ),
-                                  );
-                                },
-                              )),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                  ),
+                  decoration: BoxDecoration(color: Colors.white),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -434,14 +444,17 @@ class _GroupChatPageState extends State<GroupChatPage> {
                             color: Colors.grey.shade50,
                             borderRadius: BorderRadius.circular(24),
                             border: Border.all(
-                                color: Colors.grey.shade300, width: 1),
+                              color: Colors.grey.shade300,
+                              width: 1,
+                            ),
                           ),
                           child: TextField(
                             controller: _messageController,
-                            onSubmitted: (_) =>
-                                _messageController.text.trim().isNotEmpty
-                                    ? sendMessage()
-                                    : null,
+                            onSubmitted:
+                                (_) =>
+                                    _messageController.text.trim().isNotEmpty
+                                        ? sendMessage()
+                                        : null,
                             textInputAction: TextInputAction.send,
                             decoration: InputDecoration(
                               hintText: "Type a message...",
@@ -452,8 +465,9 @@ class _GroupChatPageState extends State<GroupChatPage> {
                                 fontWeight: FontWeight.w400,
                               ),
                               border: InputBorder.none,
-                              contentPadding:
-                                  EdgeInsets.symmetric(vertical: 1.3.h),
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: 1.3.h,
+                              ),
                               isDense: true,
                             ),
                             style: TextStyle(
@@ -540,19 +554,21 @@ class _GroupChatPageState extends State<GroupChatPage> {
 
       case '2':
         return GestureDetector(
-          onTap: () => showDialog(
-            context: context,
-            builder: (_) => Dialog(
-              backgroundColor: Colors.transparent,
-              child: InteractiveViewer(
-                child: CachedNetworkImage(
-                  imageUrl: message.file ?? "",
-                  placeholder: (_, __) => CircularProgressIndicator(),
-                  errorWidget: (_, __, ___) => Icon(Icons.error),
-                ),
+          onTap:
+              () => showDialog(
+                context: context,
+                builder:
+                    (_) => Dialog(
+                      backgroundColor: Colors.transparent,
+                      child: InteractiveViewer(
+                        child: CachedNetworkImage(
+                          imageUrl: message.file ?? "",
+                          placeholder: (_, __) => CircularProgressIndicator(),
+                          errorWidget: (_, __, ___) => Icon(Icons.error),
+                        ),
+                      ),
+                    ),
               ),
-            ),
-          ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: CachedNetworkImage(
@@ -566,8 +582,9 @@ class _GroupChatPageState extends State<GroupChatPage> {
 
       case '3':
         return GestureDetector(
-          onTap: () =>
-              Get.to(() => VideoPlayerScreen(videoUrl: message.file ?? "")),
+          onTap:
+              () =>
+                  Get.to(() => VideoPlayerScreen(videoUrl: message.file ?? "")),
           child: Container(
             height: 150,
             width: 200,
@@ -578,11 +595,16 @@ class _GroupChatPageState extends State<GroupChatPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.play_circle_fill,
-                    size: 50, color: AppColors.maincolor),
+                Icon(
+                  Icons.play_circle_fill,
+                  size: 50,
+                  color: AppColors.maincolor,
+                ),
                 SizedBox(height: 8),
-                Text("Play Video",
-                    style: TextStyle(fontFamily: AppConstants.manrope)),
+                Text(
+                  "Play Video",
+                  style: TextStyle(fontFamily: AppConstants.manrope),
+                ),
               ],
             ),
           ),
@@ -594,9 +616,9 @@ class _GroupChatPageState extends State<GroupChatPage> {
             if (await canLaunch(message.file ?? "")) {
               await launch(message.file ?? "");
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Cannot open file")),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text("Cannot open file")));
             }
           },
           child: Container(
@@ -608,15 +630,21 @@ class _GroupChatPageState extends State<GroupChatPage> {
             ),
             child: Row(
               children: [
-                Icon(Icons.insert_drive_file,
-                    size: 40, color: AppColors.maincolor),
+                Icon(
+                  Icons.insert_drive_file,
+                  size: 40,
+                  color: AppColors.maincolor,
+                ),
                 SizedBox(width: 8),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Document",
-                          maxLines: 1, overflow: TextOverflow.ellipsis),
+                      Text(
+                        "Document",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       Text("Tap to open", style: TextStyle(fontSize: 10.sp)),
                     ],
                   ),
@@ -639,13 +667,14 @@ class _GroupChatPageState extends State<GroupChatPage> {
     setState(() {
       _messageController.clear();
       isSending = true;
-      loadingMessage = currentType == 2
-          ? 'Sending Photo'
-          : currentType == 3
+      loadingMessage =
+          currentType == 2
+              ? 'Sending Photo'
+              : currentType == 3
               ? 'Sending Video'
               : currentType == 4
-                  ? 'Sending File'
-                  : 'Sending Message';
+              ? 'Sending File'
+              : 'Sending Message';
     });
 
     final Map<String, String> data = {
@@ -666,26 +695,22 @@ class _GroupChatPageState extends State<GroupChatPage> {
     try {
       final internet = await checkInternet();
       if (!internet) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Internet Required")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Internet Required")));
         return;
       }
 
-      final response = await MessageBoardProvider().sendmessageapi(data);
-      print("Response: ${response.body}");
+      final response = await MessageBoardProvider().sendMessageApi(data);
+      ;
 
       if (response.statusCode == 200) {
-        final parsed = SendMsgModel.fromJson(jsonDecode(response.body));
-
         setState(() {
           isSending = false;
         });
-        log("group chat na message jay che ${response.body}");
+
         _loadMessages();
-      } else {
-        print("HTTP Error: ${response.statusCode} - ${response.body}");
-      }
+      } else {}
     } catch (e, stackTrace) {
       print("Error sending message: $e");
       print("StackTrace: $stackTrace");
@@ -700,199 +725,196 @@ class _GroupChatPageState extends State<GroupChatPage> {
 
   selectfile() {
     showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: Colors.white,
-            alignment: Alignment.center,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            content: Stack(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(height: 1.h),
-                      Text(
-                        "Select File Type",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 15.sp,
-                          fontFamily: AppConstants.manrope,
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      Divider(color: Colors.black),
-                      SizedBox(height: 1.h),
-                      SizedBox(
-                        width: 80.w,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                InkWell(
-                                  onTap: () async {
-                                    final XFile? photo =
-                                        await _picker.pickImage(
-                                      source: ImageSource.gallery,
-                                      imageQuality: 70,
-                                    );
-                                    if (photo != null) {
-                                      setState(() {
-                                        _pickedFile = File(photo.path);
-                                        type = 2;
-                                      });
-                                      Get.back();
-                                      sendMessage();
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 13.w,
-                                    width: 13.w,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(80),
-                                      color: AppColors.maincolor,
-                                    ),
-                                    child: Icon(
-                                      Icons.photo,
-                                      size: 20.sp,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 0.5.h),
-                                Text(
-                                  "Photo",
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 13.sp,
-                                    fontFamily: AppConstants.manrope,
-                                  ),
-                                )
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                InkWell(
-                                  onTap: () async {
-                                    final XFile? video =
-                                        await _picker.pickVideo(
-                                      source: ImageSource.gallery,
-                                      maxDuration: Duration(minutes: 5),
-                                    );
-                                    if (video != null) {
-                                      setState(() {
-                                        _pickedFile = File(video.path);
-                                        type = 3;
-                                      });
-                                      Get.back();
-                                      sendMessage();
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 13.w,
-                                    width: 13.w,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(80),
-                                      color: AppColors.maincolor,
-                                    ),
-                                    child: Icon(
-                                      CupertinoIcons.videocam_circle_fill,
-                                      color: Colors.white,
-                                      size: 20.sp,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 0.5.h),
-                                Text(
-                                  "Video",
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 13.sp,
-                                    fontFamily: AppConstants.manrope,
-                                  ),
-                                )
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                InkWell(
-                                  onTap: () async {
-                                    FilePickerResult? result =
-                                        await FilePicker.platform.pickFiles();
-                                    if (result != null) {
-                                      setState(() {
-                                        _pickedFile =
-                                            File(result.files.single.path!);
-                                        type = 4;
-                                      });
-                                      Get.back();
-                                      sendMessage();
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 13.w,
-                                    width: 13.w,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(80),
-                                      color: AppColors.maincolor,
-                                    ),
-                                    child: Icon(
-                                      Icons.file_present_outlined,
-                                      color: Colors.white,
-                                      size: 20.sp,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 0.5.h),
-                                Text(
-                                  "File",
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 13.sp,
-                                    fontFamily: AppConstants.manrope,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  right: 0,
-                  child: InkWell(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: Container(
-                      height: 8.w,
-                      width: 8.w,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.close,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          alignment: Alignment.center,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          content: Stack(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(height: 1.h),
+                    Text(
+                      "Select File Type",
+                      style: TextStyle(
                         color: Colors.black,
+                        fontSize: 15.sp,
+                        fontFamily: AppConstants.manrope,
                       ),
                     ),
+                    SizedBox(height: 1.h),
+                    Divider(color: Colors.black),
+                    SizedBox(height: 1.h),
+                    SizedBox(
+                      width: 80.w,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              InkWell(
+                                onTap: () async {
+                                  final XFile? photo = await _picker.pickImage(
+                                    source: ImageSource.gallery,
+                                    imageQuality: 70,
+                                  );
+                                  if (photo != null) {
+                                    setState(() {
+                                      _pickedFile = File(photo.path);
+                                      type = 2;
+                                    });
+                                    Get.back();
+                                    sendMessage();
+                                  }
+                                },
+                                child: Container(
+                                  height: 13.w,
+                                  width: 13.w,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(80),
+                                    color: AppColors.maincolor,
+                                  ),
+                                  child: Icon(
+                                    Icons.photo,
+                                    size: 20.sp,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 0.5.h),
+                              Text(
+                                "Photo",
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 13.sp,
+                                  fontFamily: AppConstants.manrope,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              InkWell(
+                                onTap: () async {
+                                  final XFile? video = await _picker.pickVideo(
+                                    source: ImageSource.gallery,
+                                    maxDuration: Duration(minutes: 5),
+                                  );
+                                  if (video != null) {
+                                    setState(() {
+                                      _pickedFile = File(video.path);
+                                      type = 3;
+                                    });
+                                    Get.back();
+                                    sendMessage();
+                                  }
+                                },
+                                child: Container(
+                                  height: 13.w,
+                                  width: 13.w,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(80),
+                                    color: AppColors.maincolor,
+                                  ),
+                                  child: Icon(
+                                    CupertinoIcons.videocam_circle_fill,
+                                    color: Colors.white,
+                                    size: 20.sp,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 0.5.h),
+                              Text(
+                                "Video",
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 13.sp,
+                                  fontFamily: AppConstants.manrope,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              InkWell(
+                                onTap: () async {
+                                  FilePickerResult? result =
+                                      await FilePicker.platform.pickFiles();
+                                  if (result != null) {
+                                    setState(() {
+                                      _pickedFile = File(
+                                        result.files.single.path!,
+                                      );
+                                      type = 4;
+                                    });
+                                    Get.back();
+                                    sendMessage();
+                                  }
+                                },
+                                child: Container(
+                                  height: 13.w,
+                                  width: 13.w,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(80),
+                                    color: AppColors.maincolor,
+                                  ),
+                                  child: Icon(
+                                    Icons.file_present_outlined,
+                                    color: Colors.white,
+                                    size: 20.sp,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 0.5.h),
+                              Text(
+                                "File",
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 13.sp,
+                                  fontFamily: AppConstants.manrope,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                right: 0,
+                child: InkWell(
+                  onTap: () {
+                    Get.back();
+                  },
+                  child: Container(
+                    height: 8.w,
+                    width: 8.w,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.close, color: Colors.black),
                   ),
                 ),
-              ],
-            ),
-          );
-        });
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   getgrouplistdAp() {
@@ -905,19 +927,15 @@ class _GroupChatPageState extends State<GroupChatPage> {
     });
     checkInternet().then((internet) async {
       if (internet) {
-        MessageBoardProvider().getgrouplistapi(data).then((response) async {
+        MessageBoardProvider().getGroupApi(data).then((response) async {
           if (response.statusCode == 200) {
-            var responseData = json.decode(response.body);
-            getgrouplistmodel = GetGroupListModel.fromJson(responseData);
+            getgrouplistmodel = GetGroupListModel.fromJson(response.data);
             setState(() {});
             isSending = false;
-            print("list done");
           } else if (response.statusCode == 429) {
             isSending = false;
-            print("Too many requests");
           } else {
             isSending = false;
-            print("Internal Server Error");
           }
         });
       } else {

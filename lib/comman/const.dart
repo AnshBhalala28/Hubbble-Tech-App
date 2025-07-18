@@ -85,6 +85,8 @@ const String baseUrl = "https://portal.wavee.ai/api";
 const String jsonString = "assets/google_pay.json";
 
 class AppConstants {
+  static String BASEURL = "http://staging-portal.wavee.ai/api/";
+
   static const String path = "assets/Svg/";
   static const String manrope1 = "Manrope";
   static const String manrope = "AlbertSans";
@@ -123,7 +125,6 @@ ProfileModel? profileModel;
 ParcelShowCountModel? parcelShowCountModel;
 VisitorShowCountModel? visitorShowCountModel;
 BussinessLikeModel? bussinesslikemodel;
-
 LatestVisitorModal? latestVisitorModal;
 ChatShowCountModal? chatShowCountModal;
 MessageBoardModal? messageBoardModal;
@@ -154,12 +155,10 @@ AddGroupMemberModel? addgroupMemberModel;
 DeleteGroupModel? deletegroupModel;
 RemoveFriendModel? removefriendModel;
 UserPersonalInfoModel? userpersonalInfoModel;
-
 SendMsgModel? sendmsgModel;
 GetMsgModel? getmsgModel;
 CreateFriendModel? createfriendModel;
 GetFriendListModel? getfriendListModel;
-
 ChatbotDataModal? chatbotDataModal;
 SendChatModal? sendChatModal;
 AmenitiesModel? amenitiesModel;
@@ -191,10 +190,9 @@ ServiceDetailsModel? servicedetailsmodel;
 ServiceOrderDetail? serviceOrderDetail;
 ServiceViewModel? serviceViewModel;
 ServiceBookingModel? serviceBookingModel;
-
-Localpost_model? localpost_model;
-Localpost_comments_Model? localpost_comments_Model;
-Add_Post_Model? add_Post_Model;
+Localpost_model? localPostModel;
+Localpost_comments_Model? localpostCommentsModel;
+Add_Post_Model? addPostModel;
 CategoryModal? categoryModal;
 CategoryDetailModal? categoryDetailModal;
 OrdersendMessageModel? ordersendmessagemodel;

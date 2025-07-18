@@ -36,16 +36,14 @@ import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
 import '../../../comman/custom_batan.dart';
 import '../../../comman/input_decoration.dart';
-import '../../Add to Cart/model/add_to_cart_model.dart';
-import '../../Add to Cart/provider/add_to_cart_provider.dart';
+
 import '../../Booking/View/service_booking_screen.dart';
 import '../../Message_board/Model/Add_Post_Model.dart';
 import '../../Message_board/Provider/messsage_board_provider.dart';
 import '../../NotiFicationPage/Model/Notification_Model.dart';
-import '../../NotiFicationPage/View/notification_page.dart';
 import '../../ViewProfile/Model/profile_model.dart';
 import '../../ViewProfile/Provider/profile_provider.dart';
-import '../../Visitor/Model/latest_visitor_modal/latest_visitor_modal.dart';
+// import '../../Visitor/Model/latest_visitor_modal/latest_visitor_modal.dart';
 import '../Model/chat_show_count_modal.dart';
 import '../Model/message_board_modal.dart';
 
@@ -81,445 +79,438 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       isLoading = true;
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final screenSize = MediaQuery.of(context).size;
-      setState(() {
-        _cartButtonPosition = Offset(
-          screenSize.width - 70,
-          (screenSize.height / 2) - 28,
-        );
-      });
-    });
-    getnotificationCount();
 
+    getnotificationCount();
     ParcelShowCount();
     VisitorShowCount();
     ChatShowCount();
-    LatestVisitorApi();
     MessageBoardApi();
     GetProfile();
-    GetCartDetailApi();
-
-    print('Login modal ${loginModel?.data?.user?.name?.firstName ?? ""}');
   }
 
-  Offset _cartButtonPosition = Offset.zero;
-
-  @override
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _scaffoldKey_home =
         GlobalKey<ScaffoldState>();
     return Scaffold(
       bottomNavigationBar: Bottom_bar(selected: 1),
-      body: isLoading
-          ? Loader()
-          : Stack(
-              children: [
-                Positioned(
-                  top: 8.h,
-                  bottom: 10,
-                  right: 0,
-                  left: 0.w,
-                  child: Column(
-                    children: [
-                      Center(
-                        child: Container(
-                          height: 222,
-                          width: 222,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(
-                                  "assets/images/homescreen_map1.png"),
-                              fit: BoxFit.cover,
+      body:
+          isLoading
+              ? Loader()
+              : Stack(
+                children: [
+                  Positioned(
+                    top: 8.h,
+                    bottom: 10,
+                    right: 0,
+                    left: 0.w,
+                    child: Column(
+                      children: [
+                        Center(
+                          child: Container(
+                            height: 222,
+                            width: 222,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  "assets/images/homescreen_map1.png",
+                                ),
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        "Wavee Ai",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 22.sp,
-                          fontFamily: AppConstants.manrope,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 2.h,
-                      ),
-                      Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Stack(
-                                children: [
-                                  Material(
-                                    elevation: 2,
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: InkWell(
-                                      onTap: () {
-                                        Get.to(
-                                          ChatScreen(
-                                            selected: 3,
-                                          ),
-                                        );
-                                      },
-                                      child: Container(
-                                        height: 17.h,
-                                        width: 28.w,
-                                        decoration: BoxDecoration(
-                                          color: AppColors.blackColor,
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              height: 7.h,
-                                              width: 15.w,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                color: AppColors.white,
-                                              ),
-                                              child: Center(
-                                                child: SvgPicture.asset(
-                                                  AppConstants.chat,
-                                                  height: 4.5.h,
-                                                  width: 4.5.h,
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(height: 1.h),
-                                            Text(
-                                              "Chat",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                                color: AppColors.white,
-                                                fontSize: 18.sp,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    right: 5,
-                                    top: 0.3.h,
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      height: 7.w,
-                                      width: 7.w,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.white,
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: Text(
-                                        "$chatCount",
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          color: AppColors.black,
-                                          fontFamily: AppConstants.manrope,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Stack(
-                                children: [
-                                  Material(
-                                    elevation: 2,
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: InkWell(
-                                      onTap: () {
-                                        Get.to(VisitorScreen(
-                                          latestVisitor: "lestesh_visitor",
-                                        ));
-                                      },
-                                      child: Container(
-                                        height: 17.h,
-                                        width: 28.w,
-                                        decoration: BoxDecoration(
-                                          color: AppColors.blackColor,
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              height: 7.h,
-                                              width: 15.w,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                color: AppColors.white,
-                                              ),
-                                              child: Center(
-                                                child: SvgPicture.asset(
-                                                  AppConstants.visitor,
-                                                  height: 4.5.h,
-                                                  width: 4.5.h,
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(height: 1.h),
-                                            Text(
-                                              "Visitors",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                                color: AppColors.white,
-                                                fontSize: 18.sp,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    right: 5,
-                                    top: 0.3.h,
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      height: 7.w,
-                                      width: 7.w,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.white,
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: Text(
-                                        "$visitorCount",
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          color: AppColors.black,
-                                          fontFamily: AppConstants.manrope,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Stack(
-                                children: [
-                                  Material(
-                                    elevation: 2,
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: InkWell(
-                                      onTap: () {
-                                        Get.to(ParcelScreen());
-                                      },
-                                      child: Container(
-                                        height: 17.h,
-                                        width: 28.w,
-                                        decoration: BoxDecoration(
-                                          color: AppColors.blackColor,
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              height: 7.h,
-                                              width: 15.w,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                color: AppColors.white,
-                                              ),
-                                              child: Center(
-                                                child: SvgPicture.asset(
-                                                  AppConstants.parcel,
-                                                  height: 4.5.h,
-                                                  width: 4.5.h,
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(height: 1.h),
-                                            Text(
-                                              "Parcels",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                                color: AppColors.white,
-                                                fontSize: 18.sp,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    right: 5,
-                                    top: 0.3.h,
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      height: 7.w,
-                                      width: 7.w,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.white,
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: Text(
-                                        "$parcelCount",
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          color: AppColors.black,
-                                          fontFamily: AppConstants.manrope,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                Positioned(
-                  top: 11.h,
-                  left: 0,
-                  right: 0,
-                  bottom: 0.h,
-                  child: DraggableScrollableSheet(
-                    initialChildSize: 0.32,
-                    minChildSize: 0.30,
-                    builder: (context, scrollController) {
-                      return Container(
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(45),
-                            topLeft: Radius.circular(45),
+                        SizedBox(height: 10),
+                        Text(
+                          "Wavee Ai",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 22.sp,
+                            fontFamily: AppConstants.manrope,
                           ),
-                          color: Colors.white,
                         ),
-                        child: SingleChildScrollView(
-                          controller: scrollController,
-                          physics: BouncingScrollPhysics(),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                height: 45.h,
-                                width: double.infinity,
-                                decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(45),
-                                    topLeft: Radius.circular(45),
-                                    bottomLeft: Radius.circular(45),
-                                    bottomRight: Radius.circular(45),
-                                  ),
-                                  color: AppColors.bottomSheetBG,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                        SizedBox(height: 2.h),
+                        Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Stack(
                                   children: [
-                                    Center(
-                                      child: Container(
-                                        height: 1.h,
-                                        width: 20.w,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xf0D9D9D9),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
+                                    Material(
+                                      elevation: 2,
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: InkWell(
+                                        onTap: () {
+                                          Get.to(ChatScreen(selected: 3));
+                                        },
+                                        child: Container(
+                                          height: 17.h,
+                                          width: 28.w,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.blackColor,
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                height: 7.h,
+                                                width: 15.w,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  color: AppColors.white,
+                                                ),
+                                                child: Center(
+                                                  child: SvgPicture.asset(
+                                                    AppConstants.chat,
+                                                    height: 4.5.h,
+                                                    width: 4.5.h,
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(height: 1.h),
+                                              Text(
+                                                "Chat",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                      AppConstants.manrope,
+                                                  color: AppColors.white,
+                                                  fontSize: 18.sp,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ).paddingOnly(top: 2.h, bottom: 2.h),
+                                      ),
                                     ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "Message Board",
+                                    Positioned(
+                                      right: 5,
+                                      top: 0.3.h,
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        height: 7.w,
+                                        width: 7.w,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          "$chatCount",
                                           style: TextStyle(
+                                            fontSize: 15.sp,
                                             color: AppColors.black,
                                             fontFamily: AppConstants.manrope,
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 20.sp,
                                           ),
                                         ),
-                                        Spacer(),
-                                        // Stack(
-                                        //   clipBehavior: Clip.none,
-                                        //   children: [
-                                        //     InkWell(
-                                        //       onTap: () {
-                                        //         Get.to(NotificationPage());
-                                        //       },
-                                        //       child: Icon(
-                                        //         Icons
-                                        //             .notifications_none_outlined,
-                                        //         color: AppColors.blackColor,
-                                        //         size: 22.sp,
-                                        //       ),
-                                        //     ),
-                                        //     Positioned(
-                                        //       right: -5,
-                                        //       top: -3,
-                                        //       child: Container(
-                                        //         padding: EdgeInsets.all(4),
-                                        //         decoration: BoxDecoration(
-                                        //           color: AppColors.borderColor,
-                                        //           shape: BoxShape.circle,
-                                        //         ),
-                                        //         constraints: BoxConstraints(
-                                        //           minWidth: 18,
-                                        //           minHeight: 18,
-                                        //         ),
-                                        //         child: Center(
-                                        //           child: Text(
-                                        //             notificationCount
-                                        //                     .toString() ??
-                                        //                 "0",
-                                        //             style: TextStyle(
-                                        //               color: Colors.black,
-                                        //               fontSize: 12.sp,
-                                        //               fontFamily:
-                                        //                   AppConstants.manrope,
-                                        //               fontWeight:
-                                        //                   FontWeight.bold,
-                                        //             ),
-                                        //           ),
-                                        //         ),
-                                        //       ),
-                                        //     ),
-                                        //   ],
-                                        // ),
-                                      ],
-                                    ).paddingOnly(bottom: 1.h),
-                                    messageBoardModal?.data != null &&
-                                            messageBoardModal!.data!.isNotEmpty
-                                        ? Container(
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Stack(
+                                  children: [
+                                    Material(
+                                      elevation: 2,
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: InkWell(
+                                        onTap: () {
+                                          Get.to(VisitorScreen());
+                                        },
+                                        child: Container(
+                                          height: 17.h,
+                                          width: 28.w,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.blackColor,
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                height: 7.h,
+                                                width: 15.w,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  color: AppColors.white,
+                                                ),
+                                                child: Center(
+                                                  child: SvgPicture.asset(
+                                                    AppConstants.visitor,
+                                                    height: 4.5.h,
+                                                    width: 4.5.h,
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(height: 1.h),
+                                              Text(
+                                                "Visitors",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                      AppConstants.manrope,
+                                                  color: AppColors.white,
+                                                  fontSize: 18.sp,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      right: 5,
+                                      top: 0.3.h,
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        height: 7.w,
+                                        width: 7.w,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          "$visitorCount",
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            color: AppColors.black,
+                                            fontFamily: AppConstants.manrope,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Stack(
+                                  children: [
+                                    Material(
+                                      elevation: 2,
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: InkWell(
+                                        onTap: () {
+                                          Get.to(ParcelScreen());
+                                        },
+                                        child: Container(
+                                          height: 17.h,
+                                          width: 28.w,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.blackColor,
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                height: 7.h,
+                                                width: 15.w,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  color: AppColors.white,
+                                                ),
+                                                child: Center(
+                                                  child: SvgPicture.asset(
+                                                    AppConstants.parcel,
+                                                    height: 4.5.h,
+                                                    width: 4.5.h,
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(height: 1.h),
+                                              Text(
+                                                "Parcels",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                      AppConstants.manrope,
+                                                  color: AppColors.white,
+                                                  fontSize: 18.sp,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      right: 5,
+                                      top: 0.3.h,
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        height: 7.w,
+                                        width: 7.w,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          "$parcelCount",
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            color: AppColors.black,
+                                            fontFamily: AppConstants.manrope,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    top: 11.h,
+                    left: 0,
+                    right: 0,
+                    bottom: 0.h,
+                    child: DraggableScrollableSheet(
+                      initialChildSize: 0.32,
+                      minChildSize: 0.30,
+                      builder: (context, scrollController) {
+                        return Container(
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(45),
+                              topLeft: Radius.circular(45),
+                            ),
+                            color: Colors.white,
+                          ),
+                          child: SingleChildScrollView(
+                            controller: scrollController,
+                            physics: BouncingScrollPhysics(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: 45.h,
+                                  width: double.infinity,
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(45),
+                                      topLeft: Radius.circular(45),
+                                      bottomLeft: Radius.circular(45),
+                                      bottomRight: Radius.circular(45),
+                                    ),
+                                    color: AppColors.bottomSheetBG,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Center(
+                                        child: Container(
+                                          height: 1.h,
+                                          width: 20.w,
+                                          decoration: BoxDecoration(
+                                            color: Color(0xf0D9D9D9),
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                          ),
+                                        ).paddingOnly(top: 2.h, bottom: 2.h),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "Message Board",
+                                            style: TextStyle(
+                                              color: AppColors.black,
+                                              fontFamily: AppConstants.manrope,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20.sp,
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          // Stack(
+                                          //   clipBehavior: Clip.none,
+                                          //   children: [
+                                          //     InkWell(
+                                          //       onTap: () {
+                                          //         Get.to(NotificationPage());
+                                          //       },
+                                          //       child: Icon(
+                                          //         Icons
+                                          //             .notifications_none_outlined,
+                                          //         color: AppColors.blackColor,
+                                          //         size: 22.sp,
+                                          //       ),
+                                          //     ),
+                                          //     Positioned(
+                                          //       right: -5,
+                                          //       top: -3,
+                                          //       child: Container(
+                                          //         padding: EdgeInsets.all(4),
+                                          //         decoration: BoxDecoration(
+                                          //           color: AppColors.borderColor,
+                                          //           shape: BoxShape.circle,
+                                          //         ),
+                                          //         constraints: BoxConstraints(
+                                          //           minWidth: 18,
+                                          //           minHeight: 18,
+                                          //         ),
+                                          //         child: Center(
+                                          //           child: Text(
+                                          //             notificationCount
+                                          //                     .toString() ??
+                                          //                 "0",
+                                          //             style: TextStyle(
+                                          //               color: Colors.black,
+                                          //               fontSize: 12.sp,
+                                          //               fontFamily:
+                                          //                   AppConstants.manrope,
+                                          //               fontWeight:
+                                          //                   FontWeight.bold,
+                                          //             ),
+                                          //           ),
+                                          //         ),
+                                          //       ),
+                                          //     ),
+                                          //   ],
+                                          // ),
+                                        ],
+                                      ).paddingOnly(bottom: 1.h),
+                                      messageBoardModal?.data != null &&
+                                              messageBoardModal!
+                                                  .data!
+                                                  .isNotEmpty
+                                          ? Container(
                                             height: 28.h,
                                             decoration: BoxDecoration(
-                                                color: AppColors.offWhite,
-                                                borderRadius:
-                                                    BorderRadius.circular(15)),
+                                              color: AppColors.offWhite,
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                            ),
                                             child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
+                                              padding: const EdgeInsets.all(
+                                                8.0,
+                                              ),
                                               child: Column(
                                                 children: [
                                                   Row(
@@ -527,48 +518,52 @@ class _HomePageState extends State<HomePage> {
                                                       Text(
                                                         "Message Board",
                                                         style: TextStyle(
-                                                            fontSize: 18.sp,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manrope),
+                                                          fontSize: 18.sp,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          fontFamily:
+                                                              AppConstants
+                                                                  .manrope,
+                                                        ),
                                                       ),
                                                       Spacer(),
                                                       InkWell(
                                                         onTap: () {
                                                           addpostsheet(
-                                                              context,
-                                                              loginModel?.data
-                                                                      ?.user?.id
-                                                                      .toString() ??
-                                                                  "");
+                                                            context,
+                                                            loginModel
+                                                                    ?.data
+                                                                    ?.user
+                                                                    ?.id
+                                                                    .toString() ??
+                                                                "",
+                                                          );
                                                         },
                                                         child: Container(
                                                           height: 4.h,
                                                           width: 40.w,
-                                                          decoration:
-                                                              BoxDecoration(
+                                                          decoration: BoxDecoration(
                                                             borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15),
+                                                                BorderRadius.circular(
+                                                                  15,
+                                                                ),
                                                             border: Border.all(
-                                                              color: AppColors
-                                                                  .bottomSheetBG,
+                                                              color:
+                                                                  AppColors
+                                                                      .bottomSheetBG,
                                                               width: 1,
                                                             ),
                                                           ),
                                                           child: Padding(
                                                             padding:
-                                                                const EdgeInsets
-                                                                    .all(4.0),
+                                                                const EdgeInsets.all(
+                                                                  4.0,
+                                                                ),
                                                             child: Row(
                                                               children: [
                                                                 Text(
                                                                   "Post New Message",
-                                                                  style:
-                                                                      TextStyle(
+                                                                  style: TextStyle(
                                                                     fontSize:
                                                                         15.sp,
                                                                     fontWeight:
@@ -583,8 +578,9 @@ class _HomePageState extends State<HomePage> {
                                                                   Icons
                                                                       .add_circle_outline_outlined,
                                                                   size: 19.sp,
-                                                                  color: Colors
-                                                                      .black,
+                                                                  color:
+                                                                      Colors
+                                                                          .black,
                                                                 ),
                                                               ],
                                                             ),
@@ -597,16 +593,19 @@ class _HomePageState extends State<HomePage> {
                                                     height: 20.5.h,
                                                     width: 75.w,
                                                     decoration: BoxDecoration(
-                                                      color: AppColors
-                                                          .bottomSheetBG,
+                                                      color:
+                                                          AppColors
+                                                              .bottomSheetBG,
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                              15),
+                                                            15,
+                                                          ),
                                                     ),
                                                     child: Padding(
                                                       padding:
                                                           const EdgeInsets.all(
-                                                              12.0),
+                                                            12.0,
+                                                          ),
                                                       child: Column(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
@@ -615,44 +614,53 @@ class _HomePageState extends State<HomePage> {
                                                           Row(
                                                             children: [
                                                               CachedNetworkImage(
-                                                                  imageUrl: messageBoardModal
-                                                                          ?.data?[
-                                                                              0]
-                                                                          .user
-                                                                          ?.conciergeImage ??
-                                                                      "",
-                                                                  imageBuilder:
-                                                                      (context,
-                                                                              imageProvider) =>
-                                                                          Container(
-                                                                            width:
-                                                                                40,
-                                                                            height:
-                                                                                40,
-                                                                            decoration:
-                                                                                BoxDecoration(
-                                                                              shape: BoxShape.circle,
-                                                                              image: DecorationImage(
-                                                                                image: imageProvider,
-                                                                                fit: BoxFit.cover,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                  placeholder: (context,
-                                                                          url) =>
-                                                                      CircularProgressIndicator(),
-                                                                  errorWidget: (context,
-                                                                          url,
-                                                                          error) =>
-                                                                      Icon(Icons
-                                                                          .error)),
+                                                                imageUrl:
+                                                                    messageBoardModal
+                                                                        ?.data?[0]
+                                                                        .user
+                                                                        ?.conciergeImage ??
+                                                                    "",
+                                                                imageBuilder:
+                                                                    (
+                                                                      context,
+                                                                      imageProvider,
+                                                                    ) => Container(
+                                                                      width: 40,
+                                                                      height:
+                                                                          40,
+                                                                      decoration: BoxDecoration(
+                                                                        shape:
+                                                                            BoxShape.circle,
+                                                                        image: DecorationImage(
+                                                                          image:
+                                                                              imageProvider,
+                                                                          fit:
+                                                                              BoxFit.cover,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                placeholder:
+                                                                    (
+                                                                      context,
+                                                                      url,
+                                                                    ) =>
+                                                                        CircularProgressIndicator(),
+                                                                errorWidget:
+                                                                    (
+                                                                      context,
+                                                                      url,
+                                                                      error,
+                                                                    ) => Icon(
+                                                                      Icons
+                                                                          .error,
+                                                                    ),
+                                                              ),
                                                               SizedBox(
                                                                 width: 2.w,
                                                               ),
                                                               Text(
                                                                 "${messageBoardModal?.data?[0].user?.firstName ?? ""} ${messageBoardModal?.data?[0].user?.lastName ?? ""}",
-                                                                style:
-                                                                    TextStyle(
+                                                                style: TextStyle(
                                                                   fontFamily:
                                                                       AppConstants
                                                                           .manrope,
@@ -668,12 +676,12 @@ class _HomePageState extends State<HomePage> {
                                                               ),
                                                               Text(
                                                                 "•${formatPostDate(messageBoardModal?.data?[0].createdAt)}",
-                                                                style:
-                                                                    TextStyle(
+                                                                style: TextStyle(
                                                                   fontSize:
                                                                       14.sp,
-                                                                  color: Colors
-                                                                      .grey,
+                                                                  color:
+                                                                      Colors
+                                                                          .grey,
                                                                   fontFamily:
                                                                       AppConstants
                                                                           .manrope,
@@ -721,7 +729,7 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                             ),
                                           ).paddingOnly(bottom: 1.h)
-                                        : Center(
+                                          : Center(
                                             child: Text(
                                               "No messages found.",
                                               style: TextStyle(
@@ -732,295 +740,297 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                             ),
                                           ).paddingOnly(
-                                            top: 15.h, bottom: 10.h),
-                                    InkWell(
-                                      onTap: () {
-                                        Get.to(() => Messageboard());
-                                      },
-                                      child: Center(
-                                        child: Container(
-                                          height: 4.h,
-                                          width: 45.w,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            border: Border.all(
-                                              color: AppColors.borderColor,
-                                              width: 1,
-                                            ),
+                                            top: 15.h,
+                                            bottom: 10.h,
                                           ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Row(
-                                              children: [
-                                                SvgPicture.asset(
-                                                  AppConstants.messageBoard,
-                                                  width: 20,
-                                                  height: 20,
-                                                ).paddingOnly(
-                                                    left: 9.w, right: 2.w),
-                                                Text(
-                                                  "View All",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontFamily:
-                                                        AppConstants.manrope,
+                                      InkWell(
+                                        onTap: () {
+                                          Get.to(() => Messageboard());
+                                        },
+                                        child: Center(
+                                          child: Container(
+                                            height: 4.h,
+                                            width: 45.w,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              border: Border.all(
+                                                color: AppColors.borderColor,
+                                                width: 1,
+                                              ),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(
+                                                4.0,
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  SvgPicture.asset(
+                                                    AppConstants.messageBoard,
+                                                    width: 20,
+                                                    height: 20,
+                                                  ).paddingOnly(
+                                                    left: 9.w,
+                                                    right: 2.w,
                                                   ),
-                                                ),
-                                              ],
+                                                  Text(
+                                                    "View All",
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ).paddingOnly(bottom: 1.h),
+                                        ).paddingOnly(bottom: 1.h),
+                                      ),
+                                    ],
+                                  ).paddingOnly(left: 5.w, right: 5.w),
+                                ),
+                                Text(
+                                  "My Home",
+                                  style: TextStyle(
+                                    color: AppColors.black,
+                                    fontFamily: AppConstants.manrope,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.sp,
+                                  ),
+                                ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
+                                Container(
+                                  height: 0.6.h,
+                                  width: 18.w,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.blackColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ).paddingOnly(left: 5.w, right: 5.w),
+                                Text(
+                                  "Explore your building, submit maintenance requests and make bookings.",
+                                  style: TextStyle(
+                                    color: AppColors.black,
+                                    fontFamily: AppConstants.AlbertSansLight,
+                                    fontWeight: FontWeight.w200,
+                                    fontSize: 16.sp,
+                                  ),
+                                ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: homeCard(
+                                        iconName: AppConstants.building,
+                                        name: "Building",
+                                        onTap: () {
+                                          Get.to(MyBuilding_Screen());
+                                        },
+                                      ),
+                                    ),
+                                    SizedBox(width: 5.w),
+                                    Expanded(
+                                      child: homeCard(
+                                        iconName: AppConstants.booking,
+                                        name: "My Bookings",
+                                        onTap: () {
+                                          Get.to(BookingScreen());
+                                        },
+                                      ),
                                     ),
                                   ],
+                                ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: homeCard(
+                                        iconName: AppConstants.amenities,
+                                        name: "Amenities",
+                                        onTap: () {
+                                          Get.to(BookAmenities_Screen());
+                                        },
+                                      ),
+                                    ),
+                                    SizedBox(width: 5.w),
+                                    Expanded(
+                                      child: homeCard(
+                                        iconName: AppConstants.maintance,
+                                        name: "Maintenance",
+                                        onTap: () {
+                                          Get.to(MaintenanceScreen());
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
+                                Container(
+                                  height: 0.1.h,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Color(0xf0e3e3e3),
+                                  ),
+                                ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
+                                Text(
+                                  "Business Overview",
+                                  style: TextStyle(
+                                    color: AppColors.black,
+                                    fontFamily: AppConstants.manrope,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.sp,
+                                  ),
+                                ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
+                                Container(
+                                  height: 0.6.h,
+                                  width: 18.w,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.blackColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                 ).paddingOnly(left: 5.w, right: 5.w),
-                              ),
-                              Text(
-                                "My Home",
-                                style: TextStyle(
-                                  color: AppColors.black,
-                                  fontFamily: AppConstants.manrope,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20.sp,
-                                ),
-                              ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
-                              Container(
-                                height: 0.6.h,
-                                width: 18.w,
-                                decoration: BoxDecoration(
-                                  color: AppColors.blackColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ).paddingOnly(left: 5.w, right: 5.w),
-                              Text(
-                                "Explore your building, submit maintenance requests and make bookings.",
-                                style: TextStyle(
-                                  color: AppColors.black,
-                                  fontFamily: AppConstants.AlbertSansLight,
-                                  fontWeight: FontWeight.w200,
-                                  fontSize: 16.sp,
-                                ),
-                              ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: homeCard(
-                                      iconName: AppConstants.building,
-                                      name: "Building",
-                                      onTap: () {
-                                        Get.to(MyBuilding_Screen());
-                                      },
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: homeCard(
+                                        iconName: AppConstants.myOrder,
+                                        name: "My Orders",
+                                        onTap: () {
+                                          Get.to(Order_Screen());
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 5.w,
-                                  ),
-                                  Expanded(
-                                    child: homeCard(
-                                      iconName: AppConstants.booking,
-                                      name: "My Bookings",
-                                      onTap: () {
-                                        Get.to(BookingScreen());
-                                      },
+                                    SizedBox(width: 5.w),
+                                    Expanded(
+                                      child: homeCard(
+                                        iconName: AppConstants.maintance,
+                                        name: "My Service Bookings",
+                                        onTap: () {
+                                          Get.to(ServiceBookingScreen());
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: homeCard(
-                                      iconName: AppConstants.amenities,
-                                      name: "Amenities",
-                                      onTap: () {
-                                        Get.to(BookAmenities_Screen());
-                                      },
+                                  ],
+                                ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: homeCard(
+                                        iconName: AppConstants.shopping,
+                                        name: "Shopping",
+                                        onTap: () {
+                                          Get.to(CommunityScreen());
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 5.w,
-                                  ),
-                                  Expanded(
-                                    child: homeCard(
-                                      iconName: AppConstants.maintance,
-                                      name: "Maintenance",
-                                      onTap: () {
-                                        Get.to(MaintenanceScreen());
-                                      },
+                                    SizedBox(width: 5.w),
+                                    Expanded(
+                                      child: homeCard(
+                                        iconName: AppConstants.events,
+                                        name: "Events",
+                                        onTap: () {
+                                          Get.to(EventScreen());
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
-                              Container(
-                                height: 0.1.h,
-                                decoration: BoxDecoration(
+                                  ],
+                                ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
+                                Container(
+                                  height: 0.1.h,
+                                  decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
-                                    color: Color(0xf0e3e3e3)),
-                              ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
-                              Text(
-                                "Business Overview",
-                                style: TextStyle(
-                                  color: AppColors.black,
-                                  fontFamily: AppConstants.manrope,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20.sp,
-                                ),
-                              ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
-                              Container(
-                                height: 0.6.h,
-                                width: 18.w,
-                                decoration: BoxDecoration(
-                                  color: AppColors.blackColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ).paddingOnly(left: 5.w, right: 5.w),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: homeCard(
-                                      iconName: AppConstants.myOrder,
-                                      name: "My Orders",
-                                      onTap: () {
-                                        Get.to(Order_Screen());
-                                      },
+                                    color: Color(0xf0e3e3e3),
+                                  ),
+                                ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
+                                Text(
+                                  "Information",
+                                  style: TextStyle(
+                                    color: AppColors.black,
+                                    fontFamily: AppConstants.manrope,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.sp,
+                                  ),
+                                ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
+                                Container(
+                                  height: 0.6.h,
+                                  width: 18.w,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.blackColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ).paddingOnly(left: 5.w, right: 5.w),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: HomeProfileCard(
+                                        iconName: AppConstants.profile,
+                                        name: "Profile",
+                                        onTap: () {
+                                          Get.to(
+                                            ViewProfile(
+                                              id:
+                                                  loginModel?.data?.user?.id ??
+                                                  0,
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 5.w,
-                                  ),
-                                  Expanded(
-                                    child: homeCard(
-                                      iconName: AppConstants.maintance,
-                                      name: "My Service Bookings",
-                                      onTap: () {
-                                        Get.to(ServiceBookingScreen());
-                                      },
+                                    SizedBox(width: 5.w),
+                                    Expanded(
+                                      child: HomeProfileCard(
+                                        iconName: AppConstants.settings,
+                                        name: "Settings",
+                                        onTap: () {
+                                          Get.to(
+                                            ViewProfile(
+                                              id:
+                                                  loginModel?.data?.user?.id ??
+                                                  0,
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: homeCard(
-                                      iconName: AppConstants.shopping,
-                                      name: "Shopping",
-                                      onTap: () {
-                                        Get.to(CommunityScreen());
-                                      },
+                                  ],
+                                ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: HomeProfileCard(
+                                        iconName: AppConstants.Privacy,
+                                        name: "Privacy Policy",
+                                        onTap: () {
+                                          launchPrivacyPolicyUrl();
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 5.w,
-                                  ),
-                                  Expanded(
-                                    child: homeCard(
-                                      iconName: AppConstants.events,
-                                      name: "Events",
-                                      onTap: () {
-                                        Get.to(EventScreen());
-                                      },
+                                    SizedBox(width: 5.w),
+                                    Expanded(
+                                      child: HomeProfileCard(
+                                        iconName: AppConstants.terms,
+                                        name: "Terms & Conditions",
+                                        onTap: () {
+                                          launchTermsUrl();
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
-                              Container(
-                                height: 0.1.h,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: Color(0xf0e3e3e3)),
-                              ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
-                              Text(
-                                "Information",
-                                style: TextStyle(
-                                  color: AppColors.black,
-                                  fontFamily: AppConstants.manrope,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20.sp,
-                                ),
-                              ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
-                              Container(
-                                height: 0.6.h,
-                                width: 18.w,
-                                decoration: BoxDecoration(
-                                  color: AppColors.blackColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ).paddingOnly(left: 5.w, right: 5.w),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: HomeProfileCard(
-                                      iconName: AppConstants.profile,
-                                      name: "Profile",
-                                      onTap: () {
-                                        Get.to(ViewProfile(
-                                          id: loginModel?.data?.user?.id ?? 0,
-                                        ));
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 5.w,
-                                  ),
-                                  Expanded(
-                                    child: HomeProfileCard(
-                                      iconName: AppConstants.settings,
-                                      name: "Settings",
-                                      onTap: () {
-                                        Get.to(ViewProfile(
-                                          id: loginModel?.data?.user?.id ?? 0,
-                                        ));
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: HomeProfileCard(
-                                      iconName: AppConstants.Privacy,
-                                      name: "Privacy Policy",
-                                      onTap: () {
-                                        launchPrivacyPolicyUrl();
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 5.w,
-                                  ),
-                                  Expanded(
-                                    child: HomeProfileCard(
-                                      iconName: AppConstants.terms,
-                                      name: "Terms & Conditions",
-                                      onTap: () {
-                                        launchTermsUrl();
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
-                              SizedBox(height: 3.h,),
-
-                            ],
+                                  ],
+                                ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
+                                SizedBox(height: 3.h),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                if (isSending)
-                  Container(
-                    color: Colors.black.withOpacity(0.3),
-                    child: Center(
-                      child: Loader(),
+                        );
+                      },
                     ),
                   ),
-              ],
-            ),
+                  if (isSending)
+                    Container(
+                      color: Colors.black.withOpacity(0.3),
+                      child: Center(child: Loader()),
+                    ),
+                ],
+              ),
     );
   }
 
@@ -1096,11 +1106,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  Icon(
-                    Icons.arrow_forward,
-                    size: 20.sp,
-                    color: Colors.black,
-                  ),
+                  Icon(Icons.arrow_forward, size: 20.sp, color: Colors.black),
                 ],
               ),
             ],
@@ -1164,42 +1170,12 @@ class _HomePageState extends State<HomePage> {
 
   int cartCount = cartDetailsModel?.data?.length ?? 0;
 
-  Future<void> GetCartDetailApi() async {
-    checkInternet().then((internet) async {
-      if (internet) {
-        CartProvider()
-            .GetCartDetailsApi(
-          loginModel?.data?.user?.id.toString() ?? "",
-        )
-            .then((response) async {
-          cartDetailsModel =
-              CartDetailsModel.fromJson(jsonDecode(response.body));
-          if (response.statusCode == 200) {
-            print("Response: ${response.body}");
-
-            setState(() {
-              isLoading = false;
-              cartCount = cartDetailsModel?.data?.length ?? 0;
-            });
-          } else {
-            setState(() {
-              isLoading = false;
-            });
-            log("Error");
-          }
-        });
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
-
-  Widget _buildIconTile(String title, IconData icon, VoidCallback onTap,
-      {int notificationCount = 0}) {
+  Widget _buildIconTile(
+    String title,
+    IconData icon,
+    VoidCallback onTap, {
+    int notificationCount = 0,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -1214,11 +1190,7 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(
-                  icon,
-                  color: AppColors.maincolor,
-                  size: 27.sp,
-                ),
+                child: Icon(icon, color: AppColors.maincolor, size: 27.sp),
               ),
               Positioned(
                 top: -5,
@@ -1259,8 +1231,10 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildPlaceholderBox(
-      {required String title, required Function() onTap}) {
+  Widget _buildPlaceholderBox({
+    required String title,
+    required Function() onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -1277,9 +1251,10 @@ class _HomePageState extends State<HomePage> {
             Text(
               title,
               style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: AppConstants.manrope),
+                fontSize: 16.sp,
+                fontWeight: FontWeight.bold,
+                fontFamily: AppConstants.manrope,
+              ),
             ),
             Container(
               height: 4.h,
@@ -1300,8 +1275,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildNotification(IconData icon, VoidCallback onTap,
-      {int notificationCount = 0}) {
+  Widget _buildNotification(
+    IconData icon,
+    VoidCallback onTap, {
+    int notificationCount = 0,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -1313,14 +1291,8 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Container(
                   child: Padding(
-                    padding: EdgeInsets.only(
-                      top: 1.5.h,
-                    ),
-                    child: Icon(
-                      icon,
-                      color: AppColors.black,
-                      size: 23.sp,
-                    ),
+                    padding: EdgeInsets.only(top: 1.5.h),
+                    child: Icon(icon, color: AppColors.black, size: 23.sp),
                   ),
                 ),
                 Positioned(
@@ -1360,268 +1332,17 @@ class _HomePageState extends State<HomePage> {
     return DateFormat('yyyy-MM-dd hh:mm a').format(parsedDate);
   }
 
-  Widget _buildVisitorCard() {
-    return isLoading
-        ? Center(
-            child: CircularProgressIndicator(
-              color: AppColors.white,
-            ),
-          )
-        : latestVisitorModal?.data == null || latestVisitorModal!.data!.isEmpty
-            ? SizedBox(
-                child: Center(
-                  child: Text(
-                    "No Visitors Available",
-                    style: TextStyle(
-                      fontSize: 17.sp,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.white,
-                      fontFamily: AppConstants.manrope,
-                    ),
-                  ).paddingOnly(bottom: 6.h, top: 5.h),
-                ),
-              )
-            : SizedBox(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.zero,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: (latestVisitorModal?.data?.length ?? 0) > 2
-                      ? 2
-                      : latestVisitorModal?.data?.length ?? 0,
-                  itemBuilder: (context, index) {
-                    var visitor = latestVisitorModal?.data?[index];
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 1.h),
-                      width: double.infinity,
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            visitor?.visitorName?.capitalizeFirst ?? "",
-                            style: TextStyle(
-                              fontSize: 17.sp,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: AppConstants.manrope,
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              Icon(Icons.phone, color: AppColors.maincolor),
-                              SizedBox(width: 2.w),
-                              Text(
-                                visitor?.visitorPhone ?? "",
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontFamily: AppConstants.manrope,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Spacer(),
-                              Icon(Icons.timer,
-                                      color: AppColors.maincolor, size: 15.sp)
-                                  .paddingOnly(right: 1.w),
-                              Text(
-                                "${visitor?.checkInDate ?? ""} ${visitor?.checkInTime ?? ""}",
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: Colors.grey,
-                                  fontFamily: AppConstants.manrope,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              );
-  }
-
-  Widget _buildMessageCard() {
-    if (isLoading) {
-      return Center(
-        child: CircularProgressIndicator(
-          color: AppColors.white,
-        ),
-      );
-    }
-
-    if (messageBoardModal?.data == null || messageBoardModal!.data!.isEmpty) {
-      return Container(
-        margin: EdgeInsets.only(top: 4.h),
-        child: Center(
-          child: Text(
-            "No Messages Available",
-            style: TextStyle(
-              fontSize: 17.sp,
-              fontFamily: AppConstants.manrope,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      );
-    }
-
-    return SizedBox(
-      height: 18.5.h,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: (messageBoardModal?.data?.length ?? 0) > 2
-            ? 2
-            : messageBoardModal?.data?.length ?? 0,
-        padding: EdgeInsets.zero,
-        itemBuilder: (context, index) {
-          var message = messageBoardModal?.data?[index];
-          int totalMessages = messageBoardModal?.data?.length ?? 0;
-          return Container(
-            margin: EdgeInsets.only(right: 2.w),
-            padding: EdgeInsets.all(12),
-            width: (totalMessages == 1) ? 92.w : 85.w,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(15),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 5,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: (message?.file?.isNotEmpty == true)
-                      ? (message!.file![0].toLowerCase().endsWith('.pdf')
-                          ? GestureDetector(
-                              onTap: () async {
-                                final url = message!.file![0];
-                                if (await canLaunchUrl(Uri.parse(url))) {
-                                  await launchUrl(Uri.parse(url),
-                                      mode: LaunchMode.externalApplication);
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text('Could not open PDF')),
-                                  );
-                                }
-                              },
-                              child: Container(
-                                width: 20.w,
-                                height: 20.h,
-                                color: Colors.grey.shade300,
-                                child: Center(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(Icons.picture_as_pdf,
-                                          color: Colors.red, size: 24.sp),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                          : CachedNetworkImage(
-                              imageUrl: message!.file![0],
-                              fit: BoxFit.cover,
-                              width: 20.w,
-                              height: 20.h,
-                              progressIndicatorBuilder:
-                                  (context, url, progress) => Center(
-                                child: CircularProgressIndicator(
-                                  color: AppColors.maincolor,
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => SizedBox(
-                                width: 20.w,
-                                height: 20.h,
-                              ),
-                            ))
-                      : SizedBox(
-                          width: 0.w,
-                          height: 0.h,
-                        ),
-                ),
-                SizedBox(width: 3.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        message?.user != null
-                            ? "${message!.user!.firstName ?? 'No Name'} ${message!.user!.lastName ?? ''}"
-                            : "Unknown User",
-                        style: TextStyle(
-                          fontSize: 17.sp,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: AppConstants.manrope,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(height: 0.5.h),
-                      Text(
-                        "${message?.text ?? ''}",
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontFamily: AppConstants.manrope,
-                          fontWeight: FontWeight.normal,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      SizedBox(height: 0.5.h),
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: Text(
-                          formatDateTime(message?.createdAt ?? ''),
-                          style: TextStyle(
-                            fontSize: 15.sp,
-                            color: AppColors.black,
-                            fontFamily: AppConstants.manrope,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   void ParcelShowCount() {
     final Map<String, String> data = {};
     data["user_id"] = loginModel?.data?.user?.id.toString() ?? "";
     data["type"] = "count";
-
-    log("Delete account : $data");
-    log("login Id is ${loginModel?.data?.user?.id}");
-
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await HomeProvider().ParcerShowCount(data);
-          parcelShowCountModel =
-              ParcelShowCountModel.fromJson(jsonDecode(response.body));
-
+          var response = await HomeProvider().parcelShowCountApi(data);
+          parcelShowCountModel = ParcelShowCountModel.fromJson(response.data);
           if (response.statusCode == 200 &&
               parcelShowCountModel?.status == 200) {
-            log("${response.body}");
-
             setState(() {
               parcelCount = parcelShowCountModel?.data ?? 0;
               isLoading = false;
@@ -1630,7 +1351,7 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               isLoading = false;
             });
-            print(response.body);
+            print(response.data);
           }
         } catch (e) {
           setState(() {
@@ -1650,19 +1371,14 @@ class _HomePageState extends State<HomePage> {
     final Map<String, String> data = {};
     data["user_id"] = loginModel?.data?.user?.id.toString() ?? "";
     data["count"] = "visitor";
-
-    log("Visitor Data jay ce  $data");
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await HomeProvider().VisitorShowCount(data);
-          visitorShowCountModel =
-              VisitorShowCountModel.fromJson(jsonDecode(response.body));
+          var response = await HomeProvider().visitorShowCountApi(data);
+          visitorShowCountModel = VisitorShowCountModel.fromJson(response.data);
 
           if (response.statusCode == 200 &&
               visitorShowCountModel?.status == 200) {
-            log("Responce Data ${response.body}");
-
             setState(() {
               visitorCount = visitorShowCountModel?.data ?? 0;
               isLoading = false;
@@ -1671,7 +1387,7 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               isLoading = false;
             });
-            print(response.body);
+            print(response.data);
           }
         } catch (e) {
           if (mounted) {
@@ -1698,12 +1414,11 @@ class _HomePageState extends State<HomePage> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await HomeProvider().ChatShowCount(data);
-          chatShowCountModal =
-              ChatShowCountModal.fromJson(jsonDecode(response.body));
+          var response = await HomeProvider().chatCountApi(data);
+          chatShowCountModal = ChatShowCountModal.fromJson(response.data);
 
           if (response.statusCode == 200 && chatShowCountModal?.status == 200) {
-            log("Responce Data ${response.body}");
+            log("Responce Data ${response.data}");
 
             setState(() {
               chatCount = chatShowCountModal?.data ?? 0;
@@ -1714,7 +1429,7 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               isLoading = false;
             });
-            print(response.body);
+            print(response.data);
           }
         } catch (e) {
           if (mounted)
@@ -1731,63 +1446,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void LatestVisitorApi() async {
-    final Map<String, String> data = {};
-    data["user_id"] = loginModel?.data?.user?.id.toString() ?? "";
-    data["lestesh_visitor"] = "lestesh_visitor";
-
-    log("Latest Visitor data send $data");
-
-    bool internet = await checkInternet();
-    if (!internet) {
-      setState(() {
-        isLoading = false;
-      });
-      log("❌ No Internet Connection");
-      buildErrorDialog(context, 'Error', "Internet Required");
-      return;
-    }
-
-    try {
-      var response = await HomeProvider().LatestVisitor(data);
-
-      if (response.statusCode == 200) {
-        latestVisitorModal =
-            LatestVisitorModal.fromJson(jsonDecode(response.body));
-        log("✅ Latest visitor data received: ${response.body}");
-        if (mounted) {
-          setState(() {
-            isLoading = false;
-          });
-        }
-      } else {
-        log("❌ Failed response error ave che: ${response.statusCode}");
-        log("❌ Response body: ${response.body}");
-        if (mounted) {
-          setState(() {
-            isLoading = false;
-          });
-        }
-
-        if (response.statusCode == 422) {
-          buildErrorDialog(
-              context, 'Error', "Invalid Data Sent. Please Check Inputs.");
-        }
-      }
-    } catch (e, stackTrace) {
-      log("❌ Exception occurred: $e");
-      log("❌ StackTrace: $stackTrace");
-
-      setState(() {
-        isLoading = false;
-      });
-
-      if (e.toString().contains("Failed to connect")) {
-        log("❌ Server connection issue detected.");
-      }
-    }
-  }
-
   MessageBoardApi() {
     final Map<String, String> data = {};
     data["user_id"] = loginModel?.data?.user?.id.toString() ?? "";
@@ -1795,12 +1453,11 @@ class _HomePageState extends State<HomePage> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await HomeProvider().MessageBoardApi(data);
-          messageBoardModal =
-              MessageBoardModal.fromJson(jsonDecode(response.body));
+          var response = await HomeProvider().messageBoardApi(data);
+          messageBoardModal = MessageBoardModal.fromJson(response.data);
 
           if (response.statusCode == 200 && messageBoardModal?.status == 200) {
-            log("message board api data ave cje${response.body}");
+            log("message board api data ave cje${response.data}");
 
             setState(() {
               isLoading = false;
@@ -1809,7 +1466,7 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               isLoading = false;
             });
-            print(response.body);
+            print(response.data);
             log("Error ");
           }
         } catch (e) {
@@ -1830,17 +1487,14 @@ class _HomePageState extends State<HomePage> {
 
   void GetProfile() {
     final Map<String, String> data = {
-      'id': loginModel?.data?.user?.id.toString() ?? ''
+      'id': loginModel?.data?.user?.id.toString() ?? '',
     };
     print("RegisterApi : ${data}");
     checkInternet().then((internet) async {
       if (internet) {
-        ProfileProvider().ProfileApi(data).then((response) async {
-          profileModel = ProfileModel.fromJson(jsonDecode(response.body));
-          if (response.statusCode == 200 && profileModel?.status == 200) {
-            print("adfdsfsdf${response.body}");
-            print(
-                "1111111111>>>>>>>>>>>>.${profileModel?.data?.user?.profile}");
+        ProfileProvider().profileApi(data).then((response) async {
+          profileModel = ProfileModel.fromJson(response.data);
+          if (response.statusCode == 200) {
             if (mounted) {
               setState(() {
                 isLoading = false;
@@ -1867,14 +1521,14 @@ class _HomePageState extends State<HomePage> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response = await NotificationProvider()
-              .NotificationApi((loginModel?.data?.user?.id).toString());
+          final response = await NotificationProvider().notificationApi(
+            (loginModel?.data?.user?.id).toString(),
+          );
           print("login user id : ${(loginModel?.data?.user?.id).toString()}");
 
           if (response.statusCode == 200) {
-            notificationmodel =
-                NotificationModell.fromJson(json.decode(response.body));
-            print("Notification get: ${response.body}");
+            notificationmodel = NotificationModell.fromJson(response.data);
+
             setState(() {
               notificationCount = notificationmodel?.data?.totalCount ?? 0;
               isLoading = false;
@@ -1882,7 +1536,6 @@ class _HomePageState extends State<HomePage> {
             print("notificationCount : ${notificationCount}");
           } else {
             log("Failed response error ave che: ${response.statusCode}");
-            log("Response body: ${response.body}");
           }
         } catch (e) {
           log("Exception occurred: $e");
@@ -1915,12 +1568,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void addpostsheet(
-    BuildContext parentContext,
-    String userid,
-  ) {
-    bool _imagesValid = true;
-
+  void addpostsheet(BuildContext parentContext, String userid) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -2057,8 +1705,9 @@ class _HomePageState extends State<HomePage> {
                                     margin: const EdgeInsets.all(6),
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                          color: Colors.grey.shade400,
-                                          width: 1),
+                                        color: Colors.grey.shade400,
+                                        width: 1,
+                                      ),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: ClipRRect(
@@ -2086,8 +1735,11 @@ class _HomePageState extends State<HomePage> {
                                           shape: BoxShape.circle,
                                         ),
                                         padding: const EdgeInsets.all(4),
-                                        child: const Icon(Icons.close,
-                                            color: Colors.white, size: 16),
+                                        child: const Icon(
+                                          Icons.close,
+                                          color: Colors.white,
+                                          size: 16,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -2115,10 +1767,11 @@ class _HomePageState extends State<HomePage> {
                             child: Text(
                               "Add Post",
                               style: TextStyle(
-                                  fontSize: 17.sp,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.normal,
-                                  fontFamily: AppConstants.manrope),
+                                fontSize: 17.sp,
+                                color: Colors.white,
+                                fontWeight: FontWeight.normal,
+                                fontFamily: AppConstants.manrope,
+                              ),
                             ),
                           ),
                         ),
@@ -2141,39 +1794,26 @@ class _HomePageState extends State<HomePage> {
         'description': _descController.text.trim(),
         'title': _title.text.trim(),
       };
-
-      print("Post data: $data");
-
       setState(() {
         isSending = true;
       });
-
       checkInternet().then((internet) async {
         if (internet) {
           MessageBoardProvider()
-              .addpostapWithImages(
-            bodyData: data,
-            images: _images,
-          )
+              .addPostApiWithImages(bodyData: data, images: _images)
               .then((response) async {
-            if (response.statusCode == 200) {
-              var responseData = json.decode(response.body);
-              add_Post_Model = Add_Post_Model.fromJson(responseData);
-              print("Post upload successful");
-
-              _descController.clear();
-              _images = [];
-            } else if (response.statusCode == 429) {
-              print("Too many requests");
-            } else {
-              print("Internal Server Error");
-            }
-            if (mounted) {
-              setState(() {
-                isSending = false;
+                if (response.statusCode == 200) {
+                  addPostModel = Add_Post_Model.fromJson(response.data);
+                  _descController.clear();
+                  _images = [];
+                } else if (response.statusCode == 429) {
+                } else {}
+                if (mounted) {
+                  setState(() {
+                    isSending = false;
+                  });
+                }
               });
-            }
-          });
         } else {
           setState(() {
             isSending = false;

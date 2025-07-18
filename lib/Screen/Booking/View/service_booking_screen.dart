@@ -29,11 +29,7 @@ class ServiceBookingScreen extends StatefulWidget {
 }
 
 class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
-  List<String> categories = [
-    'All',
-    'Pending Approval',
-    'Booking Confirmed',
-  ];
+  List<String> categories = ['All', 'Pending Approval', 'Booking Confirmed'];
   int selectedCategory = 0;
   bool isLoading = false;
   final GlobalKey<ScaffoldState> serviceBookingkey = GlobalKey<ScaffoldState>();
@@ -54,9 +50,7 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
       drawer: SideMenu(),
       body: Column(
         children: [
-          SizedBox(
-            height: 4.h,
-          ),
+          SizedBox(height: 4.h),
           TitleBar(
             back: () {
               Get.back();
@@ -66,9 +60,7 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
               serviceBookingkey.currentState?.openDrawer();
             },
           ),
-          SizedBox(
-            height: 2.h,
-          ),
+          SizedBox(height: 2.h),
           SizedBox(
             height: 5.h,
             child: ListView.builder(
@@ -87,14 +79,17 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
                   },
                   child: Container(
                     height: 6.h,
-                    padding:
-                        EdgeInsets.symmetric(vertical: 1.h, horizontal: 7.w),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 1.h,
+                      horizontal: 7.w,
+                    ),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       border: Border.all(width: 0.5, color: Colors.grey),
-                      color: selectedCategory == index
-                          ? AppColors.maincolor
-                          : Colors.white,
+                      color:
+                          selectedCategory == index
+                              ? AppColors.maincolor
+                              : Colors.white,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     margin: EdgeInsets.symmetric(horizontal: 2.w),
@@ -102,9 +97,10 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
                       categories[index],
                       style: TextStyle(
                         fontSize: 15.sp,
-                        color: selectedCategory == index
-                            ? Colors.white
-                            : Colors.black,
+                        color:
+                            selectedCategory == index
+                                ? Colors.white
+                                : Colors.black,
                         fontFamily: AppConstants.manrope,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1,
@@ -118,172 +114,171 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
           isLoading
               ? Loader().paddingOnly(top: 30.h)
               : serviceBookingModel?.data?.length == 0 ||
-                      serviceBookingModel?.data?.length == null
-                  ? Center(
-                      child: Text(
-                        "No Service Booking Available",
-                        style: TextStyle(
-                          fontSize: 17.sp,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.black,
-                          fontFamily: AppConstants.manrope,
+                  serviceBookingModel?.data?.length == null
+              ? Center(
+                child: Text(
+                  "No Service Booking Available",
+                  style: TextStyle(
+                    fontSize: 17.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.black,
+                    fontFamily: AppConstants.manrope,
+                  ),
+                ).paddingOnly(top: 30.h),
+              )
+              : Expanded(
+                child: ListView.builder(
+                  itemCount: serviceBookingModel?.data?.length ?? 0,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        showMaintenanceDetailBottomSheet(
+                          context,
+                          serviceBookingModel?.data?[index].description ?? "",
+                          serviceBookingModel?.data?[index].status ?? "",
+                          serviceBookingModel?.data?[index].title ?? "",
+                          serviceBookingModel?.data?[index].price ?? "",
+                          serviceBookingModel?.data?[index].bookingDatetime ??
+                              "",
+                          imageUrl:
+                              serviceBookingModel?.data?[index].images?[0],
+                        );
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 2.h),
+                        padding: EdgeInsets.all(2.h),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 5,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
                         ),
-                      ).paddingOnly(top: 30.h),
-                    )
-                  : Expanded(
-                      child: ListView.builder(
-                        itemCount: serviceBookingModel?.data?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              showMaintenanceDetailBottomSheet(
-                                context,
-                                serviceBookingModel?.data?[index].description ??
-                                    "",
-                                serviceBookingModel?.data?[index].status ?? "",
-                                serviceBookingModel?.data?[index].title ?? "",
-                                serviceBookingModel?.data?[index].price ?? "",
-                                serviceBookingModel
-                                        ?.data?[index].bookingDatetime ??
-                                    "",
-                                imageUrl: serviceBookingModel
-                                    ?.data?[index].images?[0],
-                              );
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(bottom: 2.h),
-                              padding: EdgeInsets.all(2.h),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 5,
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        serviceBookingModel
-                                                    ?.data?[index].status ==
-                                                'Booking Confirmed'
-                                            ? Icons.check_circle
-                                            : Icons.pending_rounded,
-                                        color: serviceBookingModel
-                                                    ?.data?[index].status ==
-                                                'Booking Confirmed'
-                                            ? Colors.green
-                                            : Colors.orange,
-                                      ),
-                                      SizedBox(width: 2.w),
-                                      Text(
-                                        serviceBookingModel?.data?[index].status
-                                                ?.toString()
-                                                .capitalizeFirst ??
-                                            "",
-                                        style: TextStyle(
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: getStatusColor(
-                                              serviceBookingModel
-                                                      ?.data?[index].status
-                                                      ?.toString() ??
-                                                  ""),
-                                          fontFamily: AppConstants.manrope,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 1.h),
-                                  Text(
-                                    serviceBookingModel?.data?[index].title ??
-                                        "",
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: AppConstants.manrope,
-                                    ),
-                                  ),
-                                  SizedBox(height: 1.h),
-                                  ReadMoreText(
-                                    "${serviceBookingModel?.data?[index].description == null || serviceBookingModel?.data?[index].description == "" ? "N/A" : "${serviceBookingModel?.data?[index].description}"}",
-                                    trimLines: 2,
-                                    trimLength: 100,
-                                    colorClickableText: Colors.blue,
-                                    trimMode: TrimMode.Length,
-                                    trimCollapsedText: ' Show more',
-                                    trimExpandedText: ' Show less',
-                                    moreStyle: TextStyle(
-                                        fontSize: 15.sp,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
-                                        letterSpacing: 1,
-                                        color: AppColors.maincolor),
-                                    lessStyle: TextStyle(
-                                        fontSize: 15.sp,
-                                        fontFamily: AppConstants.manrope,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 1,
-                                        color: AppColors.maincolor),
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      color: Colors.grey.shade500,
-                                      fontWeight: FontWeight.normal,
-                                      fontFamily: AppConstants.manrope,
-                                    ),
-                                  ),
-                                  SizedBox(height: 1.h),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "£${serviceBookingModel?.data?[index].totalPrice ?? "0.00"}",
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: AppConstants.manrope,
-                                        ),
-                                      ),
-                                      serviceBookingModel?.data?[index]
-                                                      .bookingDatetime ==
-                                                  null ||
-                                              serviceBookingModel
-                                                      ?.data?[index]
-                                                      .bookingDatetime
-                                                      ?.length ==
-                                                  0
-                                          ? SizedBox()
-                                          : Text(
-                                              formatDate(serviceBookingModel
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  serviceBookingModel?.data?[index].status ==
+                                          'Booking Confirmed'
+                                      ? Icons.check_circle
+                                      : Icons.pending_rounded,
+                                  color:
+                                      serviceBookingModel
                                                   ?.data?[index]
-                                                  .bookingDatetime),
-                                              style: TextStyle(
-                                                fontSize: 14.sp,
-                                                color: Colors.grey[600],
-                                                fontWeight: FontWeight.w500,
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                              ),
-                                            ),
-                                    ],
+                                                  .status ==
+                                              'Booking Confirmed'
+                                          ? Colors.green
+                                          : Colors.orange,
+                                ),
+                                SizedBox(width: 2.w),
+                                Text(
+                                  serviceBookingModel?.data?[index].status
+                                          ?.toString()
+                                          .capitalizeFirst ??
+                                      "",
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: getStatusColor(
+                                      serviceBookingModel?.data?[index].status
+                                              ?.toString() ??
+                                          "",
+                                    ),
+                                    fontFamily: AppConstants.manrope,
                                   ),
-                                ],
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 1.h),
+                            Text(
+                              serviceBookingModel?.data?[index].title ?? "",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: AppConstants.manrope,
                               ),
                             ),
-                          );
-                        },
+                            SizedBox(height: 1.h),
+                            ReadMoreText(
+                              "${serviceBookingModel?.data?[index].description == null || serviceBookingModel?.data?[index].description == "" ? "N/A" : "${serviceBookingModel?.data?[index].description}"}",
+                              trimLines: 2,
+                              trimLength: 100,
+                              colorClickableText: Colors.blue,
+                              trimMode: TrimMode.Length,
+                              trimCollapsedText: ' Show more',
+                              trimExpandedText: ' Show less',
+                              moreStyle: TextStyle(
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: AppConstants.manrope,
+                                letterSpacing: 1,
+                                color: AppColors.maincolor,
+                              ),
+                              lessStyle: TextStyle(
+                                fontSize: 15.sp,
+                                fontFamily: AppConstants.manrope,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1,
+                                color: AppColors.maincolor,
+                              ),
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                color: Colors.grey.shade500,
+                                fontWeight: FontWeight.normal,
+                                fontFamily: AppConstants.manrope,
+                              ),
+                            ),
+                            SizedBox(height: 1.h),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "£${serviceBookingModel?.data?[index].totalPrice ?? "0.00"}",
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
+                                serviceBookingModel
+                                                ?.data?[index]
+                                                .bookingDatetime ==
+                                            null ||
+                                        serviceBookingModel
+                                                ?.data?[index]
+                                                .bookingDatetime
+                                                ?.length ==
+                                            0
+                                    ? SizedBox()
+                                    : Text(
+                                      formatDate(
+                                        serviceBookingModel
+                                            ?.data?[index]
+                                            .bookingDatetime,
+                                      ),
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        color: Colors.grey[600],
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: AppConstants.manrope,
+                                      ),
+                                    ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-          SizedBox(
-            height: 9.h,
-          ),
+                    );
+                  },
+                ),
+              ),
+          SizedBox(height: 9.h),
         ],
       ).paddingSymmetric(horizontal: 3.w),
       // floatingActionButton: isLoading
@@ -314,13 +309,14 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
   }
 
   void showMaintenanceDetailBottomSheet(
-      BuildContext context,
-      String description,
-      String type,
-      String subject,
-      String note,
-      String created,
-      {String? imageUrl}) {
+    BuildContext context,
+    String description,
+    String type,
+    String subject,
+    String note,
+    String created, {
+    String? imageUrl,
+  }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -359,12 +355,12 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
                       height: 200,
                       width: double.infinity,
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                      errorWidget: (context, url, error) => Image(
-                        image: AssetImage(image),
-                      ),
+                      placeholder:
+                          (context, url) =>
+                              Center(child: CircularProgressIndicator()),
+                      errorWidget:
+                          (context, url, error) =>
+                              Image(image: AssetImage(image)),
                     ),
                   ),
                 if (imageUrl != null) SizedBox(height: 16),
@@ -402,17 +398,19 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
                         trimCollapsedText: ' Show more',
                         trimExpandedText: ' Show less',
                         moreStyle: TextStyle(
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: AppConstants.manrope,
-                            letterSpacing: 1,
-                            color: AppColors.maincolor),
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: AppConstants.manrope,
+                          letterSpacing: 1,
+                          color: AppColors.maincolor,
+                        ),
                         lessStyle: TextStyle(
-                            fontSize: 15.sp,
-                            fontFamily: AppConstants.manrope,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1,
-                            color: AppColors.maincolor),
+                          fontSize: 15.sp,
+                          fontFamily: AppConstants.manrope,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1,
+                          color: AppColors.maincolor,
+                        ),
                         style: TextStyle(
                           fontSize: 16.sp,
                           color: Colors.black,
@@ -424,8 +422,11 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
                   ],
                 ),
                 _detailRow("Price", "£${note ?? "-"}"),
-                _detailRow("Status", type.toString().capitalizeFirst ?? "",
-                    color: getStatusColor(type)),
+                _detailRow(
+                  "Status",
+                  type.toString().capitalizeFirst ?? "",
+                  color: getStatusColor(type),
+                ),
                 created == null || created.isEmpty
                     ? SizedBox()
                     : _detailRow("Booked", formatDate(created)),
@@ -488,8 +489,8 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
     return status == "pending" || status == "Pending"
         ? Colors.yellow.shade800
         : status == "booking confirmed" || status == "Booking Confirmed"
-            ? Colors.green
-            : Colors.black;
+        ? Colors.green
+        : Colors.black;
   }
 
   String getStatusFromTab(int index) {
@@ -507,14 +508,12 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await AmenitiesProvider().ServiceBookingApi(
+          var response = await AmenitiesProvider().serviceBookingApi(
             loginModel?.data?.user?.id.toString() ?? '',
             getStatusFromTab(selectedCategory),
           );
-          serviceBookingModel =
-              ServiceBookingModel.fromJson(jsonDecode(response.body));
+          serviceBookingModel = ServiceBookingModel.fromJson(response.data);
           if (response.statusCode == 200) {
-            log("API Response: ${response.body}");
             setState(() {
               aneminitiesDataModel = aneminitiesDataModel;
               isLoading = false;

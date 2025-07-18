@@ -1,96 +1,157 @@
-import 'dart:developer';
-import 'dart:io';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
+import 'package:wavee/comman/apiConfig.dart';
+import 'package:wavee/comman/apiEndpoint.dart';
+import 'package:wavee/comman/responses.dart';
+import 'package:wavee/comman/store_local.dart';
 
-import '../../../../comman/const.dart';
+// class OrderProvider extends ChangeNotifier {
+//   // Future<http.Response> OrderListApi(String userID, status, type) async {
+//   //   String url = '$baseUrl/myOrders?user_id=$userID&status=$status&type=$type';
+//   //   print("Request URL: $url");
+//   //   try {
+//   //     final response = await http
+//   //         .get(Uri.parse(url))
+//   //         .timeout(
+//   //           const Duration(seconds: 60),
+//   //           onTimeout: () {
+//   //             throw const SocketException('Request timed out');
+//   //           },
+//   //         );
+//   //     if (response.statusCode == 200) {
+//   //       log("Successful response: ${response.body}");
+//   //       return response;
+//   //     } else {
+//   //       log("Failed response: ${response.statusCode}");
+//   //       throw Exception("Failed to connect to the server");
+//   //     }
+//   //   } on SocketException catch (e) {
+//   //     throw Exception('No Internet connection: $e');
+//   //   } catch (e) {
+//   //     throw Exception('An error occurred: $e');
+//   //   }
+//   // }
+
+//   // Future<http.Response> OrderDetailApi(
+//   //   String userID,
+//   //   orderid,
+//   //   orderProductID,
+//   // ) async {
+//   //   String url =
+//   //       '$baseUrl/orderDetails?user_id=$userID&order_id=$orderid&order_product_id=$orderProductID';
+//   //   print("Request URL: $url");
+//   //   try {
+//   //     final response = await http
+//   //         .get(Uri.parse(url))
+//   //         .timeout(
+//   //           const Duration(seconds: 60),
+//   //           onTimeout: () {
+//   //             throw const SocketException('Request timed out');
+//   //           },
+//   //         );
+//   //     if (response.statusCode == 200) {
+//   //       log("Successful response: ${response.body}");
+//   //       return response;
+//   //     } else {
+//   //       log("Failed response: ${response.statusCode}");
+//   //       throw Exception("Failed to connect to the server");
+//   //     }
+//   //   } on SocketException catch (e) {
+//   //     throw Exception('No Internet connection: $e');
+//   //   } catch (e) {
+//   //     throw Exception('An error occurred: $e');
+//   //   }
+//   // }
+
+//   Future<http.Response> CancleOrder(Map<String, String> bodyData) async {
+//     String url = '$baseUrl/cancelOrder';
+//     print("Request URL: $url");
+//     try {
+//       final response = await http
+//           .post(Uri.parse(url), body: bodyData)
+//           .timeout(
+//             const Duration(seconds: 60),
+//             onTimeout: () {
+//               throw const SocketException('Request timed out');
+//             },
+//           );
+//       if (response.statusCode == 200) {
+//         log("Successful response: ${response.body}");
+//         return response;
+//       } else {
+//         log("Failed response: ${response.statusCode}");
+//         throw Exception("Failed to connect to the server");
+//       }
+//     } on SocketException catch (e) {
+//       throw Exception('No Internet connection: $e');
+//     } catch (e) {
+//       throw Exception('An error occurred: $e');
+//     }
+//   }
+// }
 
 class OrderProvider extends ChangeNotifier {
-  Future<http.Response> OrderListApi(String userID, status, type) async {
-    String url = '$baseUrl/myOrders?user_id=$userID&status=$status&type=$type';
-    print("Request URL: $url");
+  Future<Response> orderListApi(String userID, status, type) async {
     try {
-      final response = await http
-          .get(
-        Uri.parse(url),
-      )
-          .timeout(
-        const Duration(seconds: 60),
-        onTimeout: () {
-          throw const SocketException('Request timed out');
-        },
-      );
-      if (response.statusCode == 200) {
-        log("Successful response: ${response.body}");
-        return response;
-      } else {
-        log("Failed response: ${response.statusCode}");
-        throw Exception("Failed to connect to the server");
+      String? token = await SaveDataLocal.getToken();
+      if (token != null && token.isNotEmpty) {
+        Map<String, String> headers = {'X-Auth-Token': '$token'};
       }
-    } on SocketException catch (e) {
-      throw Exception('No Internet connection: $e');
-    } catch (e) {
-      throw Exception('An error occurred: $e');
+
+      final dio = await DioHelper.getDio();
+      final response = await dio.get(
+        ApiEndpoint.myOrder,
+        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        queryParameters: {'user_id': userID, 'status': status, 'type': type},
+      );
+      print("Login Success: ${response.data}");
+      return response;
+    } on DioException catch (e) {
+      throw Exception(handleDioError(e));
     }
   }
 
-  Future<http.Response> OrderDetailApi(
-      String userID, orderid, orderProductID) async {
-    String url =
-        '$baseUrl/orderDetails?user_id=$userID&order_id=$orderid&order_product_id=$orderProductID';
-    print("Request URL: $url");
+  Future<Response> orderDetailApi(
+    String userID,
+    orderid,
+    orderProductID,
+  ) async {
     try {
-      final response = await http
-          .get(
-        Uri.parse(url),
-      )
-          .timeout(
-        const Duration(seconds: 60),
-        onTimeout: () {
-          throw const SocketException('Request timed out');
+      String? token = await SaveDataLocal.getToken();
+      if (token != null && token.isNotEmpty) {
+        Map<String, String> headers = {'X-Auth-Token': '$token'};
+      }
+
+      final dio = await DioHelper.getDio();
+      final response = await dio.get(
+        ApiEndpoint.myOrder,
+        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        queryParameters: {
+          'user_id': userID,
+          'order_id': orderid,
+          'order_product_id': orderProductID,
         },
       );
-      if (response.statusCode == 200) {
-        log("Successful response: ${response.body}");
-        return response;
-      } else {
-        log("Failed response: ${response.statusCode}");
-        throw Exception("Failed to connect to the server");
-      }
-    } on SocketException catch (e) {
-      throw Exception('No Internet connection: $e');
-    } catch (e) {
-      throw Exception('An error occurred: $e');
+      print("Login Success: ${response.data}");
+      return response;
+    } on DioException catch (e) {
+      throw Exception(handleDioError(e));
     }
   }
 
-  Future<http.Response> CancleOrder(Map<String, String> bodyData) async {
-    String url = '$baseUrl/cancelOrder';
-    print("Request URL: $url");
+  Future<Response> cancleOrderApi(Map<String, String> bodyData) async {
     try {
-      final response = await http
-          .post(
-        Uri.parse(url),
-        body: bodyData,
-      )
-          .timeout(
-        const Duration(seconds: 60),
-        onTimeout: () {
-          throw const SocketException('Request timed out');
-        },
+      String? token = await SaveDataLocal.getToken();
+      final dio = await DioHelper.getDio();
+      final response = await dio.post(
+        ApiEndpoint.cancleOrder,
+        data: bodyData,
+        options: Options(headers: {'X-Auth-Token': token ?? ''}),
       );
-      if (response.statusCode == 200) {
-        log("Successful response: ${response.body}");
-        return response;
-      } else {
-        log("Failed response: ${response.statusCode}");
-        throw Exception("Failed to connect to the server");
-      }
-    } on SocketException catch (e) {
-      throw Exception('No Internet connection: $e');
-    } catch (e) {
-      throw Exception('An error occurred: $e');
+
+      return response;
+    } on DioException catch (e) {
+      throw Exception(handleDioError(e));
     }
   }
 }

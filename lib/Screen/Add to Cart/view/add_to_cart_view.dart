@@ -28,8 +28,12 @@ class AddToCartView extends StatefulWidget {
   int? selected;
   final bool fromBottomBar;
 
-  AddToCartView(
-      {super.key, this.type, this.selected, this.fromBottomBar = false});
+  AddToCartView({
+    super.key,
+    this.type,
+    this.selected,
+    this.fromBottomBar = false,
+  });
 
   @override
   State<AddToCartView> createState() => _AddToCartViewState();
@@ -62,9 +66,7 @@ class _AddToCartViewState extends State<AddToCartView> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              height: 5.h,
-            ),
+            SizedBox(height: 5.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 2.w),
               child: TitleBar(
@@ -85,18 +87,18 @@ class _AddToCartViewState extends State<AddToCartView> {
                 },
               ),
             ),
-            SizedBox(
-              height: 5.h,
-            ),
+            SizedBox(height: 5.h),
             Container(
               padding: EdgeInsets.symmetric(vertical: 2.h),
               height: 90.h,
               decoration: BoxDecoration(
-                  border: Border.all(color: Color(0xffdedfe5), width: 1),
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(45),
-                      topRight: Radius.circular(45))),
+                border: Border.all(color: Color(0xffdedfe5), width: 1),
+                color: AppColors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(45),
+                  topRight: Radius.circular(45),
+                ),
+              ),
               child: Stack(
                 children: [
                   Padding(
@@ -104,486 +106,501 @@ class _AddToCartViewState extends State<AddToCartView> {
                     child: Column(
                       children: [
                         isLoading
-                            ? Expanded(
-                                child: Center(child: Loader()),
-                              )
+                            ? Expanded(child: Center(child: Loader()))
                             : cartDetailsModel?.data?.length == null ||
-                                    cartDetailsModel?.data?.length == 0
-                                ? Expanded(
-                                    child: SingleChildScrollView(
-                                      physics: BouncingScrollPhysics(),
-                                      child: Padding(
-                                        padding: EdgeInsets.only(top: 20.h),
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              width: 25.w,
-                                              height: 25.w,
-                                              decoration: BoxDecoration(
-                                                color: Color(0xFFF0F0F0),
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: Icon(
-                                                Icons.shopping_basket_outlined,
-                                                size: 12.w,
-                                                color: Colors.grey[400],
-                                              ),
-                                            ),
-                                            SizedBox(height: 3.h),
-                                            Text(
-                                              "Your basket is empty",
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                                fontSize: 20.sp,
-                                                fontWeight: FontWeight.w600,
-                                                color: Color(0xFF2E3333),
-                                              ),
-                                            ),
-                                            SizedBox(height: 1.h),
-                                            Text(
-                                              "Add items to get started",
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                                fontSize: 14.sp,
-                                                color: Colors.grey[600],
-                                              ),
-                                            ),
-                                            SizedBox(height: 4.h),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                batan(
-                                                  title: "Explore Community",
-                                                  route: () {
-                                                    Get.to(() =>
-                                                        CommunityScreen());
-                                                  },
-                                                  color: AppColors.maincolor,
-                                                  fontcolor: Colors.white,
-                                                  height: 5.h,
-                                                  fontsize: 16.sp,
-                                                  radius: 12.0,
-                                                  width: 43.5.w,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                                SizedBox(width: 4.w),
-                                                batan(
-                                                  title: "View Orders",
-                                                  route: () {
-                                                    Get.to(
-                                                        () => Order_Screen());
-                                                  },
-                                                  color: AppColors.maincolor,
-                                                  fontcolor: Colors.white,
-                                                  height: 5.h,
-                                                  fontsize: 16.sp,
-                                                  radius: 12.0,
-                                                  width: 40.w,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 5.h),
-                                          ],
+                                cartDetailsModel?.data?.length == 0
+                            ? Expanded(
+                              child: SingleChildScrollView(
+                                physics: BouncingScrollPhysics(),
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 20.h),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: 25.w,
+                                        height: 25.w,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFFF0F0F0),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          Icons.shopping_basket_outlined,
+                                          size: 12.w,
+                                          color: Colors.grey[400],
                                         ),
                                       ),
-                                    ),
-                                  )
-                                : Expanded(
-                                    child: SingleChildScrollView(
+                                      SizedBox(height: 3.h),
+                                      Text(
+                                        "Your basket is empty",
+                                        style: TextStyle(
+                                          fontFamily: AppConstants.manrope,
+                                          fontSize: 20.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFF2E3333),
+                                        ),
+                                      ),
+                                      SizedBox(height: 1.h),
+                                      Text(
+                                        "Add items to get started",
+                                        style: TextStyle(
+                                          fontFamily: AppConstants.manrope,
+                                          fontSize: 14.sp,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                      SizedBox(height: 4.h),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          batan(
+                                            title: "Explore Community",
+                                            route: () {
+                                              Get.to(() => CommunityScreen());
+                                            },
+                                            color: AppColors.maincolor,
+                                            fontcolor: Colors.white,
+                                            height: 5.h,
+                                            fontsize: 16.sp,
+                                            radius: 12.0,
+                                            width: 43.5.w,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          SizedBox(width: 4.w),
+                                          batan(
+                                            title: "View Orders",
+                                            route: () {
+                                              Get.to(() => Order_Screen());
+                                            },
+                                            color: AppColors.maincolor,
+                                            fontcolor: Colors.white,
+                                            height: 5.h,
+                                            fontsize: 16.sp,
+                                            radius: 12.0,
+                                            width: 40.w,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 5.h),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                            : Expanded(
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.all(2.w),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(12),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(
+                                              0.05,
+                                            ),
+                                            blurRadius: 10,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
                                       child: Column(
                                         children: [
-                                          Container(
-                                            margin: EdgeInsets.all(2.w),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black
-                                                      .withOpacity(0.05),
-                                                  blurRadius: 10,
-                                                  offset: Offset(0, 2),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "My Cart",
+                                                style: TextStyle(
+                                                  fontSize: 22.sp,
+                                                  color: Colors.black,
+                                                  fontFamily:
+                                                      AppConstants.manrope,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
-                                              ],
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      "My Cart",
-                                                      style: TextStyle(
-                                                        fontSize: 22.sp,
-                                                        color: Colors.black,
-                                                        fontFamily: AppConstants
-                                                            .manrope,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ],
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 1.h),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                width: 12.w,
+                                                height: 1.h,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: Colors.black,
                                                 ),
-                                                SizedBox(
-                                                  height: 1.h,
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 0.5.h),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "Items (${cartDetailsModel?.data?.length})",
+                                                style: TextStyle(
+                                                  fontSize: 18.sp,
+                                                  color: Color(0xFF969696),
+                                                  fontFamily:
+                                                      AppConstants.manrope,
+                                                  fontWeight: FontWeight.w600,
                                                 ),
-                                                Row(
-                                                  children: [
-                                                    Container(
-                                                      width: 12.w,
-                                                      height: 1.h,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          color: Colors.black),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: 0.5.h,
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      "Items (${cartDetailsModel?.data?.length})",
-                                                      style: TextStyle(
-                                                        fontSize: 18.sp,
-                                                        color:
-                                                            Color(0xFF969696),
-                                                        fontFamily: AppConstants
-                                                            .manrope,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: 1.h,
-                                                ),
-                                                ListView.separated(
-                                                  padding: EdgeInsets.zero,
-                                                  shrinkWrap: true,
-                                                  physics:
-                                                      NeverScrollableScrollPhysics(),
-                                                  itemCount: cartDetailsModel
-                                                          ?.data?.length ??
-                                                      0,
-                                                  separatorBuilder:
-                                                      (context, index) =>
-                                                          Container(
-                                                    height: 1,
-                                                    color: Color(0xFFF5F5F5),
-                                                    margin:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 4.w),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 1.h),
+                                          ListView.separated(
+                                            padding: EdgeInsets.zero,
+                                            shrinkWrap: true,
+                                            physics:
+                                                NeverScrollableScrollPhysics(),
+                                            itemCount:
+                                                cartDetailsModel
+                                                    ?.data
+                                                    ?.length ??
+                                                0,
+                                            separatorBuilder:
+                                                (context, index) => Container(
+                                                  height: 1,
+                                                  color: Color(0xFFF5F5F5),
+                                                  margin: EdgeInsets.symmetric(
+                                                    horizontal: 4.w,
                                                   ),
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    final item =
-                                                        cartDetailsModel!
-                                                            .data![index];
-                                                    if (item.itemDetails ==
-                                                        null) {
-                                                      return const SizedBox();
-                                                    }
-                                                    final product =
-                                                        item.itemDetails!;
+                                                ),
+                                            itemBuilder: (context, index) {
+                                              final item =
+                                                  cartDetailsModel!
+                                                      .data![index];
+                                              if (item.itemDetails == null) {
+                                                return const SizedBox();
+                                              }
+                                              final product = item.itemDetails!;
 
-                                                    return Container(
-                                                      margin:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 0.5.h),
-                                                      alignment:
-                                                          Alignment.center,
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 2.w,
-                                                              vertical: 1.h),
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20),
-                                                        color: Colors.white,
-                                                        border: Border.all(
-                                                            color: Color(
-                                                                0xFF969696),
-                                                            width: 1),
+                                              return Container(
+                                                margin: EdgeInsets.symmetric(
+                                                  vertical: 0.5.h,
+                                                ),
+                                                alignment: Alignment.center,
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 2.w,
+                                                  vertical: 1.h,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color: Colors.white,
+                                                  border: Border.all(
+                                                    color: Color(0xFF969696),
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
+                                                      child: Container(
+                                                        width: 18.w,
+                                                        height: 18.w,
+                                                        decoration: BoxDecoration(
+                                                          color: Color(
+                                                            0xFFF8F8F8,
+                                                          ),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                8,
+                                                              ),
+                                                        ),
+                                                        child: CachedNetworkImage(
+                                                          imageUrl:
+                                                              (product.image !=
+                                                                          null &&
+                                                                      product
+                                                                          .image!
+                                                                          .isNotEmpty)
+                                                                  ? product
+                                                                      .image!
+                                                                  : (product.images !=
+                                                                          null &&
+                                                                      product
+                                                                          .images!
+                                                                          .isNotEmpty)
+                                                                  ? product
+                                                                      .images!
+                                                                      .first
+                                                                  : "",
+                                                          fit: BoxFit.cover,
+                                                          placeholder:
+                                                              (
+                                                                context,
+                                                                url,
+                                                              ) => Container(
+                                                                child: Center(
+                                                                  child: CircularProgressIndicator(
+                                                                    color:
+                                                                        AppColors
+                                                                            .maincolor,
+                                                                    strokeWidth:
+                                                                        2,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                          errorWidget:
+                                                              (
+                                                                context,
+                                                                url,
+                                                                error,
+                                                              ) => Container(
+                                                                child: Icon(
+                                                                  Icons
+                                                                      .image_outlined,
+                                                                  color:
+                                                                      Colors
+                                                                          .grey[400],
+                                                                  size: 8.w,
+                                                                ),
+                                                              ),
+                                                        ),
                                                       ),
-                                                      child: Row(
+                                                    ),
+                                                    SizedBox(width: 3.w),
+                                                    Expanded(
+                                                      child: Column(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
                                                                 .start,
                                                         children: [
-                                                          ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        8),
-                                                            child: Container(
-                                                              width: 18.w,
-                                                              height: 18.w,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: Color(
-                                                                    0xFFF8F8F8),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            8),
-                                                              ),
-                                                              child:
-                                                                  CachedNetworkImage(
-                                                                imageUrl: (product.image !=
-                                                                            null &&
-                                                                        product
-                                                                            .image!
-                                                                            .isNotEmpty)
-                                                                    ? product
-                                                                        .image!
-                                                                    : (product.images !=
-                                                                                null &&
-                                                                            product
-                                                                                .images!.isNotEmpty)
-                                                                        ? product
-                                                                            .images!
-                                                                            .first
-                                                                        : "",
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                                placeholder:
-                                                                    (context,
-                                                                            url) =>
-                                                                        Container(
-                                                                  child: Center(
-                                                                    child:
-                                                                        CircularProgressIndicator(
-                                                                      color: AppColors
-                                                                          .maincolor,
-                                                                      strokeWidth:
-                                                                          2,
+                                                          Row(
+                                                            children: [
+                                                              Expanded(
+                                                                child: Text(
+                                                                  product.name ??
+                                                                      "",
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        16.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    fontFamily:
+                                                                        AppConstants
+                                                                            .manrope,
+                                                                    color: Color(
+                                                                      0xFF2E3333,
                                                                     ),
                                                                   ),
                                                                 ),
-                                                                errorWidget: (context,
-                                                                        url,
-                                                                        error) =>
-                                                                    Container(
+                                                              ),
+                                                              GestureDetector(
+                                                                onTap: () {
+                                                                  RemoveFromCartApi(
+                                                                    item.productId ??
+                                                                        0,
+                                                                    item.type ??
+                                                                        "product",
+                                                                  );
+                                                                },
+                                                                child: Container(
+                                                                  padding:
+                                                                      EdgeInsets.all(
+                                                                        1.w,
+                                                                      ),
+                                                                  decoration: BoxDecoration(
+                                                                    color: Color(
+                                                                      0xFFF5F5F5,
+                                                                    ),
+                                                                    shape:
+                                                                        BoxShape
+                                                                            .circle,
+                                                                  ),
                                                                   child: Icon(
                                                                     Icons
-                                                                        .image_outlined,
-                                                                    color: Colors
-                                                                            .grey[
-                                                                        400],
-                                                                    size: 8.w,
+                                                                        .delete,
+                                                                    color:
+                                                                        Colors
+                                                                            .black,
+                                                                    size: 18.sp,
                                                                   ),
                                                                 ),
                                                               ),
-                                                            ),
+                                                            ],
                                                           ),
-                                                          SizedBox(width: 3.w),
-                                                          Expanded(
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Row(
-                                                                  children: [
-                                                                    Expanded(
-                                                                      child:
-                                                                          Text(
-                                                                        product.name ??
-                                                                            "",
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              16.sp,
-                                                                          fontWeight:
-                                                                              FontWeight.w600,
-                                                                          fontFamily:
-                                                                              AppConstants.manrope,
-                                                                          color:
-                                                                              Color(0xFF2E3333),
-                                                                        ),
-                                                                      ),
+                                                          Row(
+                                                            children: [
+                                                              Text(
+                                                                "£${product.offerPrice ?? product.price}",
+                                                                style: TextStyle(
+                                                                  fontSize:
+                                                                      17.sp,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w700,
+                                                                  fontFamily:
+                                                                      AppConstants
+                                                                          .manrope,
+                                                                  color:
+                                                                      AppColors
+                                                                          .maincolor,
+                                                                ),
+                                                              ),
+                                                              Spacer(),
+                                                              Container(
+                                                                padding:
+                                                                    EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          2.w,
+                                                                      vertical:
+                                                                          0.5.h,
                                                                     ),
-                                                                    GestureDetector(
-                                                                      onTap:
-                                                                          () {
-                                                                        RemoveFromCartApi(
+                                                                decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        10,
+                                                                      ),
+                                                                  border: Border.all(
+                                                                    color: Color(
+                                                                      0xff969696,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                child: Row(
+                                                                  children: [
+                                                                    InkWell(
+                                                                      onTap: () {
+                                                                        if (item.quantity! >
+                                                                            1) {
+                                                                          setState(() {
+                                                                            item.quantity =
+                                                                                item.quantity! -
+                                                                                1;
+                                                                          });
+                                                                          updateQuantityApi(
+                                                                            item.productId!,
+                                                                            item.quantity!,
+                                                                            item.type ??
+                                                                                "",
+                                                                          );
+                                                                        } else if (item.quantity ==
+                                                                            1) {
+                                                                          RemoveFromCartApi(
                                                                             item.productId ??
                                                                                 0,
                                                                             item.type ??
-                                                                                "product");
+                                                                                "product",
+                                                                          );
+                                                                        }
                                                                       },
-                                                                      child:
-                                                                          Container(
-                                                                        padding:
-                                                                            EdgeInsets.all(1.w),
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          color:
-                                                                              Color(0xFFF5F5F5),
-                                                                          shape:
-                                                                              BoxShape.circle,
-                                                                        ),
-                                                                        child:
-                                                                            Icon(
-                                                                          Icons
-                                                                              .delete,
+                                                                      child: Text(
+                                                                        "-",
+                                                                        style: TextStyle(
+                                                                          fontSize:
+                                                                              17.sp,
                                                                           color:
                                                                               Colors.black,
-                                                                          size:
-                                                                              18.sp,
+                                                                          fontFamily:
+                                                                              AppConstants.manrope,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                  ],
-                                                                ),
-                                                                Row(
-                                                                  children: [
+                                                                    SizedBox(
+                                                                      width:
+                                                                          2.w,
+                                                                    ),
                                                                     Text(
-                                                                      "£${product.offerPrice ?? product.price}",
-                                                                      style:
-                                                                          TextStyle(
+                                                                      "${item.quantity}",
+                                                                      style: TextStyle(
                                                                         fontSize:
                                                                             17.sp,
-                                                                        fontWeight:
-                                                                            FontWeight.w700,
+                                                                        color:
+                                                                            Colors.black,
                                                                         fontFamily:
                                                                             AppConstants.manrope,
-                                                                        color: AppColors
-                                                                            .maincolor,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
                                                                       ),
                                                                     ),
-                                                                    Spacer(),
-                                                                    Container(
-                                                                      padding: EdgeInsets.symmetric(
-                                                                          horizontal: 2
-                                                                              .w,
-                                                                          vertical:
-                                                                              0.5.h),
-                                                                      decoration: BoxDecoration(
-                                                                          borderRadius: BorderRadius.circular(10),
-                                                                          border: Border.all(
-                                                                            color:
-                                                                                Color(0xff969696),
-                                                                          )),
-                                                                      child:
-                                                                          Row(
-                                                                        children: [
-                                                                          InkWell(
-                                                                            onTap:
-                                                                                () {
-                                                                              if (item.quantity! > 1) {
-                                                                                setState(() {
-                                                                                  item.quantity = item.quantity! - 1;
-                                                                                });
-                                                                                updateQuantityApi(item.productId!, item.quantity!, item.type ?? "");
-                                                                              } else if (item.quantity == 1) {
-                                                                                RemoveFromCartApi(item.productId ?? 0, item.type ?? "product");
-                                                                              }
-                                                                            },
-                                                                            child:
-                                                                                Text(
-                                                                              "-",
-                                                                              style: TextStyle(
-                                                                                fontSize: 17.sp,
-                                                                                color: Colors.black,
-                                                                                fontFamily: AppConstants.manrope,
-                                                                                fontWeight: FontWeight.bold,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          SizedBox(
-                                                                            width:
-                                                                                2.w,
-                                                                          ),
-                                                                          Text(
-                                                                            "${item.quantity}",
-                                                                            style:
-                                                                                TextStyle(
-                                                                              fontSize: 17.sp,
-                                                                              color: Colors.black,
-                                                                              fontFamily: AppConstants.manrope,
-                                                                              fontWeight: FontWeight.bold,
-                                                                            ),
-                                                                          ),
-                                                                          SizedBox(
-                                                                            width:
-                                                                                2.w,
-                                                                          ),
-                                                                          InkWell(
-                                                                            onTap:
-                                                                                () {
-                                                                              if (item.quantity! < 10) {
-                                                                                setState(() {
-                                                                                  item.quantity = item.quantity! + 1;
-                                                                                });
-                                                                                updateQuantityApi(
-                                                                                  item.productId!,
-                                                                                  item.quantity!,
-                                                                                  item.type ?? "",
-                                                                                );
-                                                                              }
-                                                                            },
-                                                                            child:
-                                                                                Icon(
-                                                                              Icons.add,
-                                                                              color: Colors.black,
-                                                                              size: 16.sp,
-                                                                            ),
-                                                                          ),
-                                                                        ],
+                                                                    SizedBox(
+                                                                      width:
+                                                                          2.w,
+                                                                    ),
+                                                                    InkWell(
+                                                                      onTap: () {
+                                                                        if (item.quantity! <
+                                                                            10) {
+                                                                          setState(() {
+                                                                            item.quantity =
+                                                                                item.quantity! +
+                                                                                1;
+                                                                          });
+                                                                          updateQuantityApi(
+                                                                            item.productId!,
+                                                                            item.quantity!,
+                                                                            item.type ??
+                                                                                "",
+                                                                          );
+                                                                        }
+                                                                      },
+                                                                      child: Icon(
+                                                                        Icons
+                                                                            .add,
+                                                                        color:
+                                                                            Colors.black,
+                                                                        size:
+                                                                            16.sp,
                                                                       ),
                                                                     ),
                                                                   ],
                                                                 ),
-                                                              ],
-                                                            ),
+                                                              ),
+                                                            ],
                                                           ),
                                                         ],
                                                       ),
-                                                    );
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          cartDetailsModel?.data?[0].type ==
-                                                  "product"
-                                              ? Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 12),
-                                                      child: Text(
-                                                        "People also added",
-                                                        style: TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                        ),
-                                                      ),
                                                     ),
-                                                    _buildSuggestedList(),
                                                   ],
-                                                )
-                                              : SizedBox.shrink(),
-                                          SizedBox(height: 50.h),
+                                                ),
+                                              );
+                                            },
+                                          ),
                                         ],
                                       ),
                                     ),
-                                  ),
+                                    cartDetailsModel?.data?[0].type == "product"
+                                        ? Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 12,
+                                              ),
+                                              child: Text(
+                                                "People also added",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                            _buildSuggestedList(),
+                                          ],
+                                        )
+                                        : SizedBox.shrink(),
+                                    SizedBox(height: 50.h),
+                                  ],
+                                ),
+                              ),
+                            ),
                         SizedBox(height: 10.h),
                       ],
                     ),
@@ -591,144 +608,148 @@ class _AddToCartViewState extends State<AddToCartView> {
                   isLoading
                       ? Container()
                       : (cartDetailsModel?.data?.isEmpty ?? true)
-                          ? Container()
-                          : Positioned(
-                              top: 10.h,
-                              left: 0,
-                              right: 0,
-                              bottom: 0.h,
-                              child: DraggableScrollableSheet(
-                                initialChildSize: 0.65,
-                                minChildSize: 0.60,
-                                builder: (context, scrollController) {
-                                  return Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 3.w, vertical: 1.h),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(45),
-                                        topLeft: Radius.circular(45),
-                                      ),
-                                      border: Border.all(
-                                          color: Color(0xffc7c7c7), width: 1),
-                                      color: Color(0xfff2f2f2),
-                                    ),
-                                    child: SingleChildScrollView(
-                                      controller: scrollController,
-                                      physics: BouncingScrollPhysics(),
-                                      child: Column(
-                                        children: [
-                                          cartDetailsModel?.data?.length ==
-                                                      "" ||
-                                                  cartDetailsModel
-                                                          ?.data?.length ==
-                                                      null
-                                              ? Container()
-                                              : _buildSectionCard(
-                                                  title: "Order Summary",
-                                                  icon: Icons.receipt,
-                                                  child: Column(
-                                                    children: [
-                                                      cartDetailsModel?.data
-                                                                      ?.length ==
-                                                                  "" ||
-                                                              cartDetailsModel
-                                                                      ?.data
-                                                                      ?.length ==
-                                                                  null
-                                                          ? Container()
-                                                          : cartDetailsModel
-                                                                      ?.data?[0]
-                                                                      .type ==
-                                                                  "product"
-                                                              ? _buildSummaryRow(
-                                                                  "Subtotal",
-                                                                  getSubtotal())
-                                                              : _buildSummaryRow(
-                                                                  "Subtotal",
-                                                                  getSubtotal1()),
-                                                      cartDetailsModel?.data?[0]
-                                                                      .type ==
-                                                                  "product" &&
-                                                              cartDetailsModel
-                                                                      ?.data?[0]
-                                                                      .loyaltyDetails
-                                                                      ?.willGetLoyaltyDiscountOnCurrentOrder ==
-                                                                  true
-                                                          ? _buildSummaryRow(
-                                                              "Loyalty Discount (-${getLoyaltyDiscountPercentage().toStringAsFixed(0)}%)",
-                                                              getLoyaltyDiscountAmount(),
-                                                              isDiscount: true)
-                                                          : SizedBox(),
-                                                      Divider(
-                                                          height: 3.h,
-                                                          thickness: 1),
-                                                      cartDetailsModel?.data?[0]
-                                                                  .type ==
-                                                              "product"
-                                                          ? _buildSummaryRow(
-                                                              "Total",
-                                                              getFinalTotal(),
-                                                              isTotal: true)
-                                                          : _buildSummaryRow(
-                                                              "Total",
-                                                              getSubtotal1(),
-                                                              isTotal: true),
-                                                    ],
-                                                  ),
-                                                ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
+                      ? Container()
+                      : Positioned(
+                        top: 10.h,
+                        left: 0,
+                        right: 0,
+                        bottom: 0.h,
+                        child: DraggableScrollableSheet(
+                          initialChildSize: 0.65,
+                          minChildSize: 0.60,
+                          builder: (context, scrollController) {
+                            return Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 3.w,
+                                vertical: 1.h,
                               ),
-                            ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(45),
+                                  topLeft: Radius.circular(45),
+                                ),
+                                border: Border.all(
+                                  color: Color(0xffc7c7c7),
+                                  width: 1,
+                                ),
+                                color: Color(0xfff2f2f2),
+                              ),
+                              child: SingleChildScrollView(
+                                controller: scrollController,
+                                physics: BouncingScrollPhysics(),
+                                child: Column(
+                                  children: [
+                                    cartDetailsModel?.data?.length == "" ||
+                                            cartDetailsModel?.data?.length ==
+                                                null
+                                        ? Container()
+                                        : _buildSectionCard(
+                                          title: "Order Summary",
+                                          icon: Icons.receipt,
+                                          child: Column(
+                                            children: [
+                                              cartDetailsModel?.data?.length ==
+                                                          "" ||
+                                                      cartDetailsModel
+                                                              ?.data
+                                                              ?.length ==
+                                                          null
+                                                  ? Container()
+                                                  : cartDetailsModel
+                                                          ?.data?[0]
+                                                          .type ==
+                                                      "product"
+                                                  ? _buildSummaryRow(
+                                                    "Subtotal",
+                                                    getSubtotal(),
+                                                  )
+                                                  : _buildSummaryRow(
+                                                    "Subtotal",
+                                                    getSubtotal1(),
+                                                  ),
+                                              cartDetailsModel?.data?[0].type ==
+                                                          "product" &&
+                                                      cartDetailsModel
+                                                              ?.data?[0]
+                                                              .loyaltyDetails
+                                                              ?.willGetLoyaltyDiscountOnCurrentOrder ==
+                                                          true
+                                                  ? _buildSummaryRow(
+                                                    "Loyalty Discount (-${getLoyaltyDiscountPercentage().toStringAsFixed(0)}%)",
+                                                    getLoyaltyDiscountAmount(),
+                                                    isDiscount: true,
+                                                  )
+                                                  : SizedBox(),
+                                              Divider(
+                                                height: 3.h,
+                                                thickness: 1,
+                                              ),
+                                              cartDetailsModel?.data?[0].type ==
+                                                      "product"
+                                                  ? _buildSummaryRow(
+                                                    "Total",
+                                                    getFinalTotal(),
+                                                    isTotal: true,
+                                                  )
+                                                  : _buildSummaryRow(
+                                                    "Total",
+                                                    getSubtotal1(),
+                                                    isTotal: true,
+                                                  ),
+                                            ],
+                                          ),
+                                        ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                   if (isUpdateQuantity)
                     Container(
                       color: Colors.black.withOpacity(0.3),
-                      child: Center(
-                        child: Loader(),
-                      ),
+                      child: Center(child: Loader()),
                     ),
                   isLoading
                       ? Container()
                       : cartDetailsModel?.data?.length == 0 ||
-                              cartDetailsModel?.data?.length == null
-                          ? Container()
-                          : Positioned(
-                              top: 60.h,
-                              left: 35.w,
-                              child: InkWell(
-                                onTap: _handleCheckoutTap,
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 7.w, vertical: 1.h),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color: Colors.white,
-                                      border:
-                                          Border.all(color: Color(0xffd9d9d9))),
-                                  child: Text(
-                                    "Checkout",
-                                    style: TextStyle(
-                                      fontSize: 18.sp,
-                                      color: Colors.black,
-                                      fontFamily: AppConstants.manrope,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              )),
+                          cartDetailsModel?.data?.length == null
+                      ? Container()
+                      : Positioned(
+                        top: 60.h,
+                        left: 35.w,
+                        child: InkWell(
+                          onTap: _handleCheckoutTap,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 7.w,
+                              vertical: 1.h,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: Colors.white,
+                              border: Border.all(color: Color(0xffd9d9d9)),
+                            ),
+                            child: Text(
+                              "Checkout",
+                              style: TextStyle(
+                                fontSize: 18.sp,
+                                color: Colors.black,
+                                fontFamily: AppConstants.manrope,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                 ],
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: Bottom_bar(
-        selected: 4,
-      ),
+      bottomNavigationBar: Bottom_bar(selected: 4),
     );
   }
 
@@ -747,15 +768,12 @@ class _AddToCartViewState extends State<AddToCartView> {
       if (internet) {
         ProductProvider().AddToCart(data).then((response) async {
           if (response.statusCode == 200) {
-            print("adfdsfsdf${response.body}");
             await GetCartDetailApi();
             setState(() {
               isUpdateQuantity = false;
               isAddtoCart = false;
             });
-            Get.to(() => AddToCartView(
-                  type: "product",
-                ));
+            Get.to(() => AddToCartView(type: "product"));
           } else {
             setState(() {
               isUpdateQuantity = false;
@@ -806,10 +824,7 @@ class _AddToCartViewState extends State<AddToCartView> {
           ],
         ),
         Divider(height: 3.h, thickness: 1),
-        Padding(
-          padding: EdgeInsets.all(4.w),
-          child: child,
-        ),
+        Padding(padding: EdgeInsets.all(4.w), child: child),
       ],
     );
   }
@@ -828,19 +843,25 @@ class _AddToCartViewState extends State<AddToCartView> {
               fontFamily: AppConstants.manrope,
             ),
           ),
-          Text("£${amount}",
-              style: TextStyle(
-                fontSize: isTotal ? 18.sp : 17.sp,
-                fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-                fontFamily: AppConstants.manrope,
-              )),
+          Text(
+            "£${amount}",
+            style: TextStyle(
+              fontSize: isTotal ? 18.sp : 17.sp,
+              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+              fontFamily: AppConstants.manrope,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildSummaryRow(String title, double amount,
-      {bool isTotal = false, bool isDiscount = false}) {
+  Widget _buildSummaryRow(
+    String title,
+    double amount, {
+    bool isTotal = false,
+    bool isDiscount = false,
+  }) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 0.5.h),
       child: Row(
@@ -852,9 +873,10 @@ class _AddToCartViewState extends State<AddToCartView> {
               fontSize: isTotal ? 18.sp : 16.5.sp,
               fontWeight: FontWeight.bold,
               fontFamily: AppConstants.manrope,
-              color: isDiscount
-                  ? Colors.green[700]
-                  : (isTotal ? Colors.black : Colors.grey[800]),
+              color:
+                  isDiscount
+                      ? Colors.green[700]
+                      : (isTotal ? Colors.black : Colors.grey[800]),
             ),
           ),
           Text(
@@ -865,9 +887,10 @@ class _AddToCartViewState extends State<AddToCartView> {
               fontSize: isTotal ? 18.sp : 16.5.sp,
               fontWeight: FontWeight.bold,
               fontFamily: AppConstants.manrope,
-              color: isDiscount
-                  ? Colors.green[700]
-                  : (isTotal ? AppColors.maincolor : Colors.black),
+              color:
+                  isDiscount
+                      ? Colors.green[700]
+                      : (isTotal ? AppColors.maincolor : Colors.black),
             ),
           ),
         ],
@@ -878,8 +901,10 @@ class _AddToCartViewState extends State<AddToCartView> {
   double getSubtotal() {
     double total = 0.0;
     cartDetailsModel?.data?.forEach((item) {
-      double price = double.tryParse(
-              item.itemDetails?.offerPrice ?? item.itemDetails?.price ?? '0') ??
+      double price =
+          double.tryParse(
+            item.itemDetails?.offerPrice ?? item.itemDetails?.price ?? '0',
+          ) ??
           0;
       total += price * (item.quantity ?? 1);
     });
@@ -889,8 +914,10 @@ class _AddToCartViewState extends State<AddToCartView> {
   double getSubtotal1() {
     double total = 0.0;
     cartDetailsModel?.data?.forEach((item) {
-      double price = double.tryParse(
-              item.itemDetails?.offerPrice ?? item.itemDetails?.price ?? '0') ??
+      double price =
+          double.tryParse(
+            item.itemDetails?.offerPrice ?? item.itemDetails?.price ?? '0',
+          ) ??
           0;
       total += price * (item.quantity ?? 1);
     });
@@ -901,29 +928,20 @@ class _AddToCartViewState extends State<AddToCartView> {
     checkInternet().then((internet) {
       if (internet) {
         CartProvider()
-            .GetCartDetailsApi(
-          loginModel?.data?.user?.id.toString() ?? "",
-        )
+            .cartDetailApi(loginModel?.data?.user?.id.toString() ?? "")
             .then((response) {
-          cartDetailsModel =
-              CartDetailsModel.fromJson(jsonDecode(response.body));
-          if (response.statusCode == 200) {
-            print("adfdsfsdf${response.body}");
-            print(
-                "data length =====>>>>>>>>>>>${cartDetailsModel?.data?.length}");
-            print(
-                "1111111111>>>>>>>>>>>>.${profileModel?.data?.user?.profile}");
-
-            setState(() {
-              isLoading = false;
+              cartDetailsModel = CartDetailsModel.fromJson(response.data);
+              if (response.statusCode == 200) {
+                setState(() {
+                  isLoading = false;
+                });
+              } else {
+                setState(() {
+                  isLoading = false;
+                });
+                log("Error");
+              }
             });
-          } else {
-            setState(() {
-              isLoading = false;
-            });
-            log("Error");
-          }
-        });
       } else {
         setState(() {
           isLoading = false;
@@ -934,7 +952,7 @@ class _AddToCartViewState extends State<AddToCartView> {
     });
   }
 
-  void updateQuantityApi(int productId, int quantity, type) {
+  updateQuantityApi(int productId, int quantity, type) {
     final Map<String, String> data = {
       "user_id": loginModel?.data?.user?.id.toString() ?? "",
       "product_id": productId.toString(),
@@ -944,13 +962,11 @@ class _AddToCartViewState extends State<AddToCartView> {
     setState(() {
       isUpdateQuantity = true;
     });
-    log("Sending quantity update: $data");
 
     checkInternet().then((internet) async {
       if (internet) {
-        CartProvider().UpdateCartQuantity(data).then((response) async {
+        CartProvider().updateCartQuantityApi(data).then((response) async {
           if (response.statusCode == 200) {
-            log("Quantity updated successfully: ${response.body}");
             setState(() {
               isUpdateQuantity = false;
             });
@@ -958,7 +974,6 @@ class _AddToCartViewState extends State<AddToCartView> {
             setState(() {
               isUpdateQuantity = false;
             });
-            log("Error updating quantity");
           }
         });
       } else {
@@ -970,7 +985,7 @@ class _AddToCartViewState extends State<AddToCartView> {
     });
   }
 
-  void RemoveFromCartApi(int productId, String type) {
+  RemoveFromCartApi(int productId, String type) {
     setState(() {
       isUpdateQuantity = true;
     });
@@ -985,9 +1000,8 @@ class _AddToCartViewState extends State<AddToCartView> {
 
     checkInternet().then((internet) async {
       if (internet) {
-        CartProvider().RemoveFromCartApi(data).then((response) async {
+        CartProvider().removeCartApi(data).then((response) async {
           if (response.statusCode == 200) {
-            log("Item removed successfully: ${response.body}");
             setState(() {
               isUpdateQuantity = false;
             });
@@ -1015,7 +1029,7 @@ class _AddToCartViewState extends State<AddToCartView> {
     }
     String discountStr =
         checkoutTotal?.data?.first.loyaltyDetails?.loyaltyDiscountPercentage ??
-            "0";
+        "0";
     return double.tryParse(discountStr) ?? 0.0;
   }
 
@@ -1038,11 +1052,13 @@ class _AddToCartViewState extends State<AddToCartView> {
   }
 
   Widget _buildSuggestedList() {
-    final List<BusinessProducts> allProducts = (cartDetailsModel?.data
-                ?.expand((item) => item.itemDetails?.businessProducts ?? []) ??
-            [])
-        .whereType<BusinessProducts>()
-        .toList();
+    final List<BusinessProducts> allProducts =
+        (cartDetailsModel?.data?.expand(
+                  (item) => item.itemDetails?.businessProducts ?? [],
+                ) ??
+                [])
+            .whereType<BusinessProducts>()
+            .toList();
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8),
       height: 10.h,
@@ -1074,28 +1090,28 @@ class _AddToCartViewState extends State<AddToCartView> {
                             (product.image != null && product.image!.isNotEmpty)
                                 ? product.image!
                                 : (product.images != null &&
-                                        product.images!.isNotEmpty)
-                                    ? product.images!.first
-                                    : "",
+                                    product.images!.isNotEmpty)
+                                ? product.images!.first
+                                : "",
                         fit: BoxFit.cover,
                         width: 14.w,
                         height: 14.w,
-                        placeholder: (context, url) => Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.maincolor,
-                            strokeWidth: 2,
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Icon(
-                          Icons.image_outlined,
-                          color: Colors.grey[400],
-                          size: 30,
-                        ),
+                        placeholder:
+                            (context, url) => Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.maincolor,
+                                strokeWidth: 2,
+                              ),
+                            ),
+                        errorWidget:
+                            (context, url, error) => Icon(
+                              Icons.image_outlined,
+                              color: Colors.grey[400],
+                              size: 30,
+                            ),
                       ),
                     ),
-                    SizedBox(
-                      width: 2.w,
-                    ),
+                    SizedBox(width: 2.w),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1113,80 +1129,80 @@ class _AddToCartViewState extends State<AddToCartView> {
                                 product!.offerPrice != "0.00" &&
                                 product.offerPrice != product.price)
                             ? Row(
-                                children: [
-                                  Text(
-                                    "£${product.price}",
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.normal,
-                                      fontFamily: AppConstants.manrope,
-                                      color: Colors.grey,
-                                      decoration: TextDecoration.lineThrough,
-                                      decorationColor: AppColors.maincolor,
-                                    ),
+                              children: [
+                                Text(
+                                  "£${product.price}",
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.normal,
+                                    fontFamily: AppConstants.manrope,
+                                    color: Colors.grey,
+                                    decoration: TextDecoration.lineThrough,
+                                    decorationColor: AppColors.maincolor,
                                   ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    "£${product.offerPrice}",
-                                    style: TextStyle(
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: AppConstants.manrope,
+                                ),
+                                SizedBox(width: 5),
+                                Text(
+                                  "£${product.offerPrice}",
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manrope,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(width: 4.w),
+                                InkWell(
+                                  onTap: () {
+                                    AddCartProductApi(
+                                      product?.id.toString() ?? "",
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
                                       color: Colors.black,
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 4.w,
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      AddCartProductApi(
-                                          product?.id.toString() ?? "");
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(3),
-                                          color: Colors.black),
-                                      child: Icon(
-                                        Icons.add,
-                                        size: 17.sp,
-                                        color: AppColors.white,
-                                      ),
+                                    child: Icon(
+                                      Icons.add,
+                                      size: 17.sp,
+                                      color: AppColors.white,
                                     ),
                                   ),
-                                ],
-                              )
+                                ),
+                              ],
+                            )
                             : Row(
-                                children: [
-                                  Text(
-                                    "£${product?.price ?? ""}",
-                                    style: TextStyle(
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: AppConstants.manrope,
+                              children: [
+                                Text(
+                                  "£${product?.price ?? ""}",
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manrope,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    AddCartProductApi(
+                                      product?.id.toString() ?? "",
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
                                       color: Colors.black,
                                     ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      AddCartProductApi(
-                                          product?.id.toString() ?? "");
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: Colors.black),
-                                      child: Icon(
-                                        Icons.add,
-                                        size: 17.sp,
-                                        color: AppColors.white,
-                                      ),
+                                    child: Icon(
+                                      Icons.add,
+                                      size: 17.sp,
+                                      color: AppColors.white,
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
+                            ),
                       ],
                     ),
                   ],
@@ -1200,393 +1216,456 @@ class _AddToCartViewState extends State<AddToCartView> {
   }
 
   void _showFancyAnythingElseSheet() {
-    final List<BusinessProducts> suggestedProducts = (cartDetailsModel?.data
-                ?.expand((item) => item.itemDetails?.businessProducts ?? []) ??
-            [])
-        .whereType<BusinessProducts>()
-        .toList();
+    final List<BusinessProducts> suggestedProducts =
+        (cartDetailsModel?.data?.expand(
+                  (item) => item.itemDetails?.businessProducts ?? [],
+                ) ??
+                [])
+            .whereType<BusinessProducts>()
+            .toList();
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.85,
-        minChildSize: 0.4,
-        maxChildSize: 0.95,
-        expand: false,
-        builder: (_, controller) => Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            // com.wavee.comunity
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                  bottom: 10.h,
-                  left: 4.w,
-                  right: 4.w,
-                ),
-                child: ListView(
-                  controller: controller,
-                  physics: BouncingScrollPhysics(),
-                  children: [
-                    Center(
-                      child: Container(
-                        margin: EdgeInsets.only(top: 1.h, bottom: 2.h),
-                        width: 10.w,
-                        height: 0.5.h,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
+      builder:
+          (context) => DraggableScrollableSheet(
+            initialChildSize: 0.85,
+            minChildSize: 0.4,
+            maxChildSize: 0.95,
+            expand: false,
+            builder:
+                (_, controller) => Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    // com.wavee.comunity
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Fancy anything else?",
-                          style: TextStyle(
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.w700,
-                            fontFamily: AppConstants.manrope,
-                            color: Color(0xFF2E3333),
-                          ),
+                  ),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 10.h,
+                          left: 4.w,
+                          right: 4.w,
                         ),
-                        GestureDetector(
-                          onTap: () => Navigator.pop(context),
-                          child: Icon(
-                            Icons.close,
-                            size: 24.sp,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 2.h),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Your regulars",
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: AppConstants.manrope,
-                            color: Color(0xFF2E3333),
-                          ),
-                        ),
-                        SizedBox(height: 0.5.h),
-                        Text(
-                          "Forgotten anything from your regular items?",
-                          style: TextStyle(
-                            fontSize: 15.sp,
-                            color: Colors.grey[600],
-                            fontFamily: AppConstants.manrope,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 2.h),
-                    if (suggestedProducts.isEmpty)
-                      Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 4.h),
-                          child: Text(
-                            "No suggested items available",
-                            style: TextStyle(
-                                fontSize: 14.sp, color: Colors.grey[500]),
-                          ),
-                        ),
-                      )
-                    else
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: suggestedProducts.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio: 0.48,
-                          crossAxisSpacing: 3.w,
-                          mainAxisSpacing: 2.h,
-                        ),
-                        itemBuilder: (context, index) {
-                          final product = suggestedProducts[index];
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                  color: Color(0xFFE5E5E5), width: 1),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(12)),
-                                      child: CachedNetworkImage(
-                                        imageUrl: (product.image != null &&
-                                                product.image!.isNotEmpty)
-                                            ? product.image!
-                                            : (product.images != null &&
-                                                    product.images!.isNotEmpty)
-                                                ? product.images!.first
-                                                : "",
-                                        fit: BoxFit.cover,
-                                        height: 14.h,
-                                        width: double.infinity,
-                                        placeholder: (context, url) =>
-                                            Container(
-                                          color: Color(0xFFF8F8F8),
-                                          child: Center(
-                                            child: CircularProgressIndicator(
-                                              color: AppColors.maincolor,
-                                              strokeWidth: 2,
-                                            ),
-                                          ),
-                                        ),
-                                        errorWidget: (context, url, error) =>
-                                            Container(
-                                          color: Color(0xFFF8F8F8),
-                                          height: 14.h,
-                                          child: Icon(
-                                            Icons.image_outlined,
-                                            color: Colors.grey[400],
-                                            size: 6.w,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      bottom: -12,
-                                      right: 4,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          AddCartProductApi(
-                                              product.id.toString());
-                                          Get.back();
-                                        },
-                                        child: Container(
-                                          width: 11.w,
-                                          height: 11.w,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.circle,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black
-                                                    .withOpacity(0.15),
-                                                blurRadius: 6,
-                                                spreadRadius: 2,
-                                                offset: Offset(0, 2),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Icon(
-                                            Icons.add,
-                                            size: 22.sp,
-                                            color: AppColors.maincolor,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                        child: ListView(
+                          controller: controller,
+                          physics: BouncingScrollPhysics(),
+                          children: [
+                            Center(
+                              child: Container(
+                                margin: EdgeInsets.only(top: 1.h, bottom: 2.h),
+                                width: 10.w,
+                                height: 0.5.h,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.all(4.w),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          product.name ?? "",
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 15.sp,
-                                            fontWeight: FontWeight.w600,
-                                            fontFamily: AppConstants.manrope,
-                                            color: Color(0xFF2E3333),
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 0.w),
-                                          child: (product?.offerPrice != null &&
-                                                  product!.offerPrice !=
-                                                      "0.00" &&
-                                                  product.offerPrice !=
-                                                      product.price)
-                                              ? FittedBox(
-                                                  fit: BoxFit.scaleDown,
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Row(
-                                                    children: [
-                                                      Text(
-                                                        "£${product.price}",
-                                                        style: TextStyle(
-                                                          fontSize: 13.sp,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                          fontFamily:
-                                                              AppConstants
-                                                                  .manrope,
-                                                          color: Colors.grey,
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .lineThrough,
-                                                          decorationColor:
-                                                              AppColors
-                                                                  .maincolor,
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 5),
-                                                      Text(
-                                                        "£${product.offerPrice}",
-                                                        style: TextStyle(
-                                                          fontSize: 14.sp,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontFamily:
-                                                              AppConstants
-                                                                  .manrope,
-                                                          color: Colors.black,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                              : Text(
-                                                  "£${product?.price ?? ""}",
-                                                  style: TextStyle(
-                                                    fontSize: 14.sp,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily:
-                                                        AppConstants.manrope,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                        ),
-                                      ],
-                                    ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Fancy anything else?",
+                                  style: TextStyle(
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: AppConstants.manrope,
+                                    color: Color(0xFF2E3333),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () => Navigator.pop(context),
+                                  child: Icon(
+                                    Icons.close,
+                                    size: 24.sp,
+                                    color: Colors.grey[600],
                                   ),
                                 ),
                               ],
                             ),
-                          );
-                        },
-                      ),
-                    SizedBox(height: 20.h),
-                  ],
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  padding: EdgeInsets.all(4.w),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 10,
-                        offset: Offset(0, -2),
-                      )
-                    ],
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
-                  ),
-                  child: Column(
-                    children: [
-                      (cartDetailsModel?.data?[0].type == "product" &&
-                              cartDetailsModel?.data?[0].loyaltyDetails
-                                      ?.loyaltyOrderThreshold !=
-                                  null &&
-                              cartDetailsModel?.data?[0].loyaltyDetails
-                                      ?.loyaltyDiscountPercentage !=
-                                  null)
-                          ? Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 4.w, vertical: 1.8.h),
-                              margin: EdgeInsets.only(bottom: 2.h),
-                              decoration: BoxDecoration(
-                                color: AppColors.maincolor.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      "You're getting closer to an exclusive reward! Complete ${cartDetailsModel?.data?[0].loyaltyDetails?.loyaltyOrderThreshold} more orders to unlock a ${cartDetailsModel?.data?[0].loyaltyDetails?.loyaltyDiscountPercentage?.replaceAll(RegExp(r'\\.0+\$'), '')}% discount on your next purchase.",
-                                      style: TextStyle(
-                                        fontSize: 14.sp,
-                                        color: Color(0xFF3C1361),
-                                        fontFamily: AppConstants.manrope,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                            SizedBox(height: 2.h),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Your regulars",
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: AppConstants.manrope,
+                                    color: Color(0xFF2E3333),
+                                  ),
+                                ),
+                                SizedBox(height: 0.5.h),
+                                Text(
+                                  "Forgotten anything from your regular items?",
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    color: Colors.grey[600],
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 2.h),
+                            if (suggestedProducts.isEmpty)
+                              Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 4.h),
+                                  child: Text(
+                                    "No suggested items available",
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      color: Colors.grey[500],
                                     ),
                                   ),
-                                  Container(
-                                    width: 28,
-                                    height: 28,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.maincolor,
-                                      shape: BoxShape.circle,
+                                ),
+                              )
+                            else
+                              GridView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: suggestedProducts.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,
+                                      childAspectRatio: 0.48,
+                                      crossAxisSpacing: 3.w,
+                                      mainAxisSpacing: 2.h,
                                     ),
-                                    child: Icon(
-                                      Icons.card_giftcard,
-                                      size: 16,
+                                itemBuilder: (context, index) {
+                                  final product = suggestedProducts[index];
+                                  return Container(
+                                    decoration: BoxDecoration(
                                       color: Colors.white,
+                                      border: Border.all(
+                                        color: Color(0xFFE5E5E5),
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Stack(
+                                          clipBehavior: Clip.none,
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                    top: Radius.circular(12),
+                                                  ),
+                                              child: CachedNetworkImage(
+                                                imageUrl:
+                                                    (product.image != null &&
+                                                            product
+                                                                .image!
+                                                                .isNotEmpty)
+                                                        ? product.image!
+                                                        : (product.images !=
+                                                                null &&
+                                                            product
+                                                                .images!
+                                                                .isNotEmpty)
+                                                        ? product.images!.first
+                                                        : "",
+                                                fit: BoxFit.cover,
+                                                height: 14.h,
+                                                width: double.infinity,
+                                                placeholder:
+                                                    (context, url) => Container(
+                                                      color: Color(0xFFF8F8F8),
+                                                      child: Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                              color:
+                                                                  AppColors
+                                                                      .maincolor,
+                                                              strokeWidth: 2,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                errorWidget:
+                                                    (
+                                                      context,
+                                                      url,
+                                                      error,
+                                                    ) => Container(
+                                                      color: Color(0xFFF8F8F8),
+                                                      height: 14.h,
+                                                      child: Icon(
+                                                        Icons.image_outlined,
+                                                        color: Colors.grey[400],
+                                                        size: 6.w,
+                                                      ),
+                                                    ),
+                                              ),
+                                            ),
+                                            Positioned(
+                                              bottom: -12,
+                                              right: 4,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  AddCartProductApi(
+                                                    product.id.toString(),
+                                                  );
+                                                  Get.back();
+                                                },
+                                                child: Container(
+                                                  width: 11.w,
+                                                  height: 11.w,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    shape: BoxShape.circle,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.black
+                                                            .withOpacity(0.15),
+                                                        blurRadius: 6,
+                                                        spreadRadius: 2,
+                                                        offset: Offset(0, 2),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.add,
+                                                    size: 22.sp,
+                                                    color: AppColors.maincolor,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: EdgeInsets.all(4.w),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  product.name ?? "",
+                                                  maxLines: 3,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    fontSize: 15.sp,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontFamily:
+                                                        AppConstants.manrope,
+                                                    color: Color(0xFF2E3333),
+                                                  ),
+                                                ),
+                                                Spacer(),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 0.w,
+                                                  ),
+                                                  child:
+                                                      (product?.offerPrice !=
+                                                                  null &&
+                                                              product!.offerPrice !=
+                                                                  "0.00" &&
+                                                              product.offerPrice !=
+                                                                  product.price)
+                                                          ? FittedBox(
+                                                            fit:
+                                                                BoxFit
+                                                                    .scaleDown,
+                                                            alignment:
+                                                                Alignment
+                                                                    .centerLeft,
+                                                            child: Row(
+                                                              children: [
+                                                                Text(
+                                                                  "£${product.price}",
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        13.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                    fontFamily:
+                                                                        AppConstants
+                                                                            .manrope,
+                                                                    color:
+                                                                        Colors
+                                                                            .grey,
+                                                                    decoration:
+                                                                        TextDecoration
+                                                                            .lineThrough,
+                                                                    decorationColor:
+                                                                        AppColors
+                                                                            .maincolor,
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 5,
+                                                                ),
+                                                                Text(
+                                                                  "£${product.offerPrice}",
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        14.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontFamily:
+                                                                        AppConstants
+                                                                            .manrope,
+                                                                    color:
+                                                                        Colors
+                                                                            .black,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          )
+                                                          : Text(
+                                                            "£${product?.price ?? ""}",
+                                                            style: TextStyle(
+                                                              fontSize: 14.sp,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manrope,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            SizedBox(height: 20.h),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          padding: EdgeInsets.all(4.w),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 10,
+                                offset: Offset(0, -2),
+                              ),
+                            ],
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              (cartDetailsModel?.data?[0].type == "product" &&
+                                      cartDetailsModel
+                                              ?.data?[0]
+                                              .loyaltyDetails
+                                              ?.loyaltyOrderThreshold !=
+                                          null &&
+                                      cartDetailsModel
+                                              ?.data?[0]
+                                              .loyaltyDetails
+                                              ?.loyaltyDiscountPercentage !=
+                                          null)
+                                  ? Container(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 4.w,
+                                      vertical: 1.8.h,
+                                    ),
+                                    margin: EdgeInsets.only(bottom: 2.h),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.maincolor.withOpacity(
+                                        0.1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            "You're getting closer to an exclusive reward! Complete ${cartDetailsModel?.data?[0].loyaltyDetails?.loyaltyOrderThreshold} more orders to unlock a ${cartDetailsModel?.data?[0].loyaltyDetails?.loyaltyDiscountPercentage?.replaceAll(RegExp(r'\\.0+\$'), '')}% discount on your next purchase.",
+                                            style: TextStyle(
+                                              fontSize: 14.sp,
+                                              color: Color(0xFF3C1361),
+                                              fontFamily: AppConstants.manrope,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: 28,
+                                          height: 28,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.maincolor,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Icon(
+                                            Icons.card_giftcard,
+                                            size: 16,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   )
-                                ],
-                              ),
-                            )
-                          : SizedBox(),
-                      GestureDetector(
-                        onTap: () {
-                          Get.back();
-                          _navigateToCheckout();
-                        },
-                        child: Container(
-                          height: 6.h,
-                          decoration: BoxDecoration(
-                            color: AppColors.maincolor,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.shopping_cart_checkout,
-                                color: Colors.white,
-                                size: 20.sp,
-                              ),
-                              SizedBox(width: 3.w),
-                              Text(
-                                "Checkout",
-                                style: TextStyle(
-                                  fontSize: 18.sp,
-                                  color: Colors.white,
-                                  fontFamily: AppConstants.manrope,
-                                  fontWeight: FontWeight.w600,
+                                  : SizedBox(),
+                              GestureDetector(
+                                onTap: () {
+                                  Get.back();
+                                  _navigateToCheckout();
+                                },
+                                child: Container(
+                                  height: 6.h,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.maincolor,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.shopping_cart_checkout,
+                                        color: Colors.white,
+                                        size: 20.sp,
+                                      ),
+                                      SizedBox(width: 3.w),
+                                      Text(
+                                        "Checkout",
+                                        style: TextStyle(
+                                          fontSize: 18.sp,
+                                          color: Colors.white,
+                                          fontFamily: AppConstants.manrope,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      SizedBox(width: 2.w),
+                                    ],
+                                  ),
                                 ),
                               ),
-                              SizedBox(width: 2.w),
                             ],
                           ),
                         ),
@@ -1594,11 +1673,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                     ],
                   ),
                 ),
-              ),
-            ],
           ),
-        ),
-      ),
     );
   }
 
@@ -1618,9 +1693,11 @@ class _AddToCartViewState extends State<AddToCartView> {
   }
 
   void _navigateToCheckout() {
-    Get.to(BuyProductView(
-      bunessid: cartDetailsModel?.data?[0].itemDetails?.businessId.toString(),
-      type: cartDetailsModel?.data?.first.type,
-    ));
+    Get.to(
+      BuyProductView(
+        bunessid: cartDetailsModel?.data?[0].itemDetails?.businessId.toString(),
+        type: cartDetailsModel?.data?.first.type,
+      ),
+    );
   }
 }

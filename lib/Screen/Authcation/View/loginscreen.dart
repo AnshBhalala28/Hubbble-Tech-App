@@ -375,11 +375,11 @@ class _LoginScreenState extends State<LoginScreen> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await AuthProvider().LoginApi(data);
+          var response = await AuthProvider().loginApi(data);
           log("✅ Response status: ${response.statusCode}");
-          log("📦 Response body: ${response.body}");
+          log("📦 Response body: ${response.data}");
 
-          loginModel = LoginModel.fromJson(jsonDecode(response.body));
+          loginModel = LoginModel.fromJson(response.data);
 
           if (response.statusCode == 200 && loginModel?.status == 200) {
             if (loginModel?.data?.user?.role == 4) {

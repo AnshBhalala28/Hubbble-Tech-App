@@ -73,9 +73,7 @@ class _AppUserFriendProfileScreenState
               children: [
                 Container(
                   width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                  ),
+                  decoration: BoxDecoration(color: Colors.white),
                   child: Column(
                     children: [
                       SizedBox(height: 2.h),
@@ -83,22 +81,33 @@ class _AppUserFriendProfileScreenState
                         padding: EdgeInsets.all(3),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border:
-                              Border.all(color: Colors.blue.shade100, width: 2),
+                          border: Border.all(
+                            color: Colors.blue.shade100,
+                            width: 2,
+                          ),
                         ),
                         child: CircleAvatar(
                           radius: 35.sp,
                           backgroundColor: Colors.grey.shade200,
-                          backgroundImage: (residentappuserprofileModel
-                                          ?.data?.user?.profile !=
-                                      null &&
-                                  residentappuserprofileModel!
-                                      .data!.user!.profile!.isNotEmpty)
-                              ? CachedNetworkImageProvider(
-                                  residentappuserprofileModel!
-                                      .data!.user!.profile!)
-                              : const AssetImage("assets/images/bg.jpg")
-                                  as ImageProvider<Object>,
+                          backgroundImage:
+                              (residentappuserprofileModel
+                                              ?.data
+                                              ?.user
+                                              ?.profile !=
+                                          null &&
+                                      residentappuserprofileModel!
+                                          .data!
+                                          .user!
+                                          .profile!
+                                          .isNotEmpty)
+                                  ? CachedNetworkImageProvider(
+                                    residentappuserprofileModel!
+                                        .data!
+                                        .user!
+                                        .profile!,
+                                  )
+                                  : const AssetImage("assets/images/bg.jpg")
+                                      as ImageProvider<Object>,
                         ),
                       ),
                       SizedBox(height: 2.h),
@@ -139,23 +148,31 @@ class _AppUserFriendProfileScreenState
                           ),
                         ),
                         Divider(),
-                        buildProfileDetailItem(Icons.email_outlined, "Email",
-                            residentappuserprofileModel?.data?.user?.email),
                         buildProfileDetailItem(
-                            Icons.phone_outlined,
-                            "Phone",
-                            (residentappuserprofileModel?.data?.user?.mobileNo)
-                                .toString()),
+                          Icons.email_outlined,
+                          "Email",
+                          residentappuserprofileModel?.data?.user?.email,
+                        ),
                         buildProfileDetailItem(
-                            Icons.calendar_today_outlined,
-                            "Date of Birth",
-                            residentappuserprofileModel
-                                ?.data?.user?.dateOfBirth),
+                          Icons.phone_outlined,
+                          "Phone",
+                          (residentappuserprofileModel?.data?.user?.mobileNo)
+                              .toString(),
+                        ),
                         buildProfileDetailItem(
-                            Icons.location_on_outlined,
-                            "Address",
-                            residentappuserprofileModel
-                                ?.data?.user?.address?.address),
+                          Icons.calendar_today_outlined,
+                          "Date of Birth",
+                          residentappuserprofileModel?.data?.user?.dateOfBirth,
+                        ),
+                        buildProfileDetailItem(
+                          Icons.location_on_outlined,
+                          "Address",
+                          residentappuserprofileModel
+                              ?.data
+                              ?.user
+                              ?.address
+                              ?.address,
+                        ),
                         SizedBox(height: 2.h),
                       ],
                     ),
@@ -224,9 +241,7 @@ class _AppUserFriendProfileScreenState
                 Text(
                   "Are you sure you want to delete this Friend?",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                  ),
+                  style: TextStyle(fontSize: 14.sp),
                 ),
                 SizedBox(height: 20),
                 Divider(thickness: 1),
@@ -287,11 +302,7 @@ class _AppUserFriendProfileScreenState
               color: Colors.blue.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(
-              icon,
-              color: Colors.blue.shade700,
-              size: 17.sp,
-            ),
+            child: Icon(icon, color: Colors.blue.shade700, size: 17.sp),
           ),
           SizedBox(width: 4.w),
           Expanded(
@@ -332,12 +343,14 @@ class _AppUserFriendProfileScreenState
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response =
-              await MessageProvider().removefriend((widget.id).toString());
+          final response = await MessageProvider().removefriend(
+            (widget.id).toString(),
+          );
 
           if (response.statusCode == 200) {
-            removefriendModel =
-                RemoveFriendModel.fromJson(json.decode(response.body));
+            removefriendModel = RemoveFriendModel.fromJson(
+              json.decode(response.body),
+            );
 
             setState(() {
               isSending = false;
@@ -353,10 +366,10 @@ class _AppUserFriendProfileScreenState
               ),
             );
 
-            Get.to(Messageboard(), arguments: {
-              "selectedCategory": 1,
-              "selectedLocalSubCategory": 1,
-            });
+            Get.to(
+              Messageboard(),
+              arguments: {"selectedCategory": 1, "selectedLocalSubCategory": 1},
+            );
           } else {
             setState(() {
               isSending = false;
@@ -386,19 +399,17 @@ class _AppUserFriendProfileScreenState
     setState(() {
       isSending = true;
     });
-    final Map<String, String> data = {
-      'id': (widget.id).toString(),
-    };
+    final Map<String, String> data = {'id': (widget.id).toString()};
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response =
-              await MessageBoardProvider().AppFrienduserpersonalinfo(data);
+          final response = await MessageBoardProvider()
+              .appFriendUserPersonalInfoApi(data);
           if (response.statusCode == 200) {
             residentappuserprofileModel = ResidentAppUserprofileModel.fromJson(
-                json.decode(response.body));
-            print("Datafriend na  ave che  : ${response.body}");
-            print("Datafriend na ave che id : ${widget.id}");
+              response.data,
+            );
+
             setState(() {
               isSending = false;
             });

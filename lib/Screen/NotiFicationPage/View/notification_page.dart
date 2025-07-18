@@ -71,11 +71,7 @@ class _NotificationPageState extends State<NotificationPage> {
             SizedBox(height: 3.h),
             Expanded(
               child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _buildNotificationList(),
-                  ],
-                ),
+                child: Column(children: [_buildNotificationList()]),
               ),
             ),
             if (notifications != null && notifications!.length! > 5)
@@ -132,9 +128,10 @@ class _NotificationPageState extends State<NotificationPage> {
       shrinkWrap: true,
       padding: EdgeInsets.zero,
       physics: NeverScrollableScrollPhysics(),
-      itemCount: (notificationmodel?.data?.notifications?.length ?? 0) > 5
-          ? 5
-          : notificationmodel?.data?.notifications?.length ?? 0,
+      itemCount:
+          (notificationmodel?.data?.notifications?.length ?? 0) > 5
+              ? 5
+              : notificationmodel?.data?.notifications?.length ?? 0,
       itemBuilder: (context, index) {
         var notification = notificationmodel?.data?.notifications?[index];
 
@@ -161,7 +158,9 @@ class _NotificationPageState extends State<NotificationPage> {
                         .trim();
                 if (notification?.conciergeProfile?.conciergeImage != null &&
                     notification!
-                        .conciergeProfile!.conciergeImage!.isNotEmpty) {
+                        .conciergeProfile!
+                        .conciergeImage!
+                        .isNotEmpty) {
                   profileImage =
                       notification.conciergeProfile!.conciergeImage!.first;
                 }
@@ -172,19 +171,23 @@ class _NotificationPageState extends State<NotificationPage> {
                 log("Business Chat: $chatName");
               }
 
-              Get.to(() => MessageScreen(
-                    chatName: chatName,
-                    conciergeID: notification?.chatCreateId.toString() ?? "",
-                    type: chatType,
-                    image: profileImage,
-                  ));
+              Get.to(
+                () => MessageScreen(
+                  chatName: chatName,
+                  conciergeID: notification?.chatCreateId.toString() ?? "",
+                  type: chatType,
+                  image: profileImage,
+                ),
+              );
             } else if (type == "visitor") {
               Get.to(() => VisitorScreen());
             } else if (type == "order") {
-              Get.to(() => Orderdetail_Screen(
-                    orderid: notification?.msgTo ?? "",
-                    orderProductID: notification?.chatCreateId.toString() ?? "",
-                  ));
+              Get.to(
+                () => Orderdetail_Screen(
+                  orderid: notification?.msgTo ?? "",
+                  orderProductID: notification?.chatCreateId.toString() ?? "",
+                ),
+              );
             } else {
               log("Unknown notification type: $type");
             }
@@ -202,7 +205,7 @@ class _NotificationPageState extends State<NotificationPage> {
                   color: Colors.black12,
                   blurRadius: 6,
                   spreadRadius: 2,
-                )
+                ),
               ],
             ),
             child: Row(
@@ -211,8 +214,11 @@ class _NotificationPageState extends State<NotificationPage> {
                 CircleAvatar(
                   backgroundColor: AppColors.maincolor,
                   radius: 6.w,
-                  child:
-                      Icon(Icons.notifications, color: Colors.white, size: 5.w),
+                  child: Icon(
+                    Icons.notifications,
+                    color: Colors.white,
+                    size: 5.w,
+                  ),
                 ),
                 SizedBox(width: 4.w),
                 Expanded(
@@ -246,7 +252,8 @@ class _NotificationPageState extends State<NotificationPage> {
                             SizedBox(width: 1.w),
                             Text(
                               formatDateTime(
-                                  notification?.notificationDate ?? "No Date"),
+                                notification?.notificationDate ?? "No Date",
+                              ),
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 color: Colors.grey.shade500,
@@ -278,18 +285,17 @@ class _NotificationPageState extends State<NotificationPage> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response = await NotificationProvider()
-              .NotificationApi((loginModel?.data?.user?.id).toString());
+          final response = await NotificationProvider().notificationApi(
+            (loginModel?.data?.user?.id).toString(),
+          );
           print(
-              "login user id newwwww: ${(loginModel?.data?.user?.id).toString()}");
+            "login user id newwwww: ${(loginModel?.data?.user?.id).toString()}",
+          );
           EasyLoading.dismiss();
           if (response.statusCode == 200) {
-            notificationmodel =
-                NotificationModell.fromJson(json.decode(response.body));
-            print("Notification get: ${response.body}");
+            notificationmodel = NotificationModell.fromJson(response.data);
           } else {
             log(" Failed response error ave che: ${response.statusCode}");
-            log(" Response body: ${response.body}");
           }
         } catch (e, stackTrace) {
           log("Exception occurred: $e");
@@ -306,19 +312,19 @@ class _NotificationPageState extends State<NotificationPage> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response =
-              await NotificationProvider().ReadNotificationApi(notificationId);
+          final response = await NotificationProvider().notificationReadApi(
+            notificationId,
+          );
           print("Reading Notification ID: ${notificationId}");
           EasyLoading.dismiss();
           if (response.statusCode == 200) {
-            notificationreadModel =
-                NotificationReadModel.fromJson(json.decode(response.body));
-            print("Read Notification get: ${response.body}");
+            notificationreadModel = NotificationReadModel.fromJson(
+              response.data,
+            );
 
             getnotificationCount();
           } else {
             log(" Failed response error ave che: ${response.statusCode}");
-            log(" Response body: ${response.body}");
           }
         } catch (e, stackTrace) {
           log("Exception occurred: $e");
@@ -335,14 +341,14 @@ class _NotificationPageState extends State<NotificationPage> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response = await NotificationProvider()
-              .NotificationApi((loginModel?.data?.user?.id).toString());
+          final response = await NotificationProvider().notificationApi(
+            (loginModel?.data?.user?.id).toString(),
+          );
           print("login user id : ${(loginModel?.data?.user?.id).toString()}");
 
           if (response.statusCode == 200) {
-            notificationmodel =
-                NotificationModell.fromJson(json.decode(response.body));
-            print("Notification get: ${response.body}");
+            notificationmodel = NotificationModell.fromJson(response.data);
+
             setState(() {
               notificationCount = notificationmodel?.data?.totalCount ?? 0;
               isLoading = false;
@@ -350,7 +356,6 @@ class _NotificationPageState extends State<NotificationPage> {
             print("notificationCount : ${notificationCount}");
           } else {
             log(" Failed response error ave che: ${response.statusCode}");
-            log(" Response body: ${response.body}");
           }
         } catch (e) {
           log("Exception occurred: $e");

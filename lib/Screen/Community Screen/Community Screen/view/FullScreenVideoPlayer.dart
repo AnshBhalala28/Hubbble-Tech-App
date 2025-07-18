@@ -133,15 +133,16 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                 width: 100.w,
                 height: 100.h,
                 child: Center(
-                  child: controller.value.aspectRatio > 0
-                      ? Transform.scale(
-                          scale: _calculateScale(context),
-                          child: AspectRatio(
-                            aspectRatio: controller.value.aspectRatio,
-                            child: VideoPlayer(controller),
-                          ),
-                        )
-                      : VideoPlayer(controller),
+                  child:
+                      controller.value.aspectRatio > 0
+                          ? Transform.scale(
+                            scale: _calculateScale(context),
+                            child: AspectRatio(
+                              aspectRatio: controller.value.aspectRatio,
+                              child: VideoPlayer(controller),
+                            ),
+                          )
+                          : VideoPlayer(controller),
                 ),
               )
             else
@@ -217,10 +218,9 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
     print("request parameter : $data");
     checkInternet().then((internet) async {
       if (internet) {
-        CommunityProvider().postlikeapi(data).then((response) async {
+        CommunityProvider().postLikeApi(data).then((response) async {
           if (response.statusCode == 200) {
-            var responseData = json.decode(response.body);
-            postlikemodel = PostLikeModel.fromJson(responseData);
+            postlikemodel = PostLikeModel.fromJson(response.data);
 
             setState(() {
               isLiked = !isLiked;
@@ -264,10 +264,9 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
     print("request post time parameter : $data");
     checkInternet().then((internet) async {
       if (internet) {
-        CommunityProvider().postDwellTime(data).then((response) async {
+        CommunityProvider().recoedDwellApi(data).then((response) async {
           if (response.statusCode == 200) {
-            var responseData = json.decode(response.body);
-            dwelltimemodel = DwellTimeModel.fromJson(responseData);
+            dwelltimemodel = DwellTimeModel.fromJson(response.data);
           } else if (response.statusCode == 429) {
             setState(() {
               isLikeInProgress = false;
@@ -297,10 +296,9 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
     print("request view parameter : $data");
     checkInternet().then((internet) async {
       if (internet) {
-        CommunityProvider().PostAsViewedApi(data).then((response) async {
+        CommunityProvider().postMarkViewApi(data).then((response) async {
           if (response.statusCode == 200) {
-            var responseData = json.decode(response.body);
-            postasviewedmodel = PostAsViewedModel.fromJson(responseData);
+            postasviewedmodel = PostAsViewedModel.fromJson(response.data);
             print("View done");
           } else if (response.statusCode == 429) {
             print("Too many requests");

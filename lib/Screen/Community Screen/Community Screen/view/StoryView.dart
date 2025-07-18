@@ -53,8 +53,10 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
 
     _getCurrentLocation();
 
-    _animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 5));
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 5),
+    );
 
     _animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed && !isPaused) {}
@@ -142,21 +144,26 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
     }
 
     Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+      desiredAccuracy: LocationAccuracy.high,
+    );
 
     setState(() {
       appLat = position.latitude.toString();
       appLon = position.longitude.toString();
       getCityName(
-          double.parse(appLat.toString()), double.parse(appLon.toString()));
+        double.parse(appLat.toString()),
+        double.parse(appLon.toString()),
+      );
       print("Latitude: ${position.latitude}, Longitude: ${position.longitude}");
     });
   }
 
   Future<void> getCityName(double latitude, double longitude) async {
     try {
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(latitude, longitude);
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        latitude,
+        longitude,
+      );
 
       if (placemarks.isNotEmpty) {
         setState(() {
@@ -191,9 +198,7 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
     if (isLoading && stories.isEmpty) {
       return const Scaffold(
         backgroundColor: Colors.black,
-        body: Center(
-          child: CircularProgressIndicator(color: Colors.white),
-        ),
+        body: Center(child: CircularProgressIndicator(color: Colors.white)),
       );
     }
 
@@ -201,28 +206,31 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
       return const Scaffold(
         backgroundColor: Colors.black,
         body: Center(
-          child: Text('No Stories Available',
-              style: TextStyle(color: Colors.white)),
+          child: Text(
+            'No Stories Available',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       );
     }
 
-    final storyItems = stories.map((story) {
-      if (story.type == "image") {
-        return StoryItem.pageImage(
-          url: story.file!,
-          controller: _storyController,
-          duration: const Duration(seconds: 5),
-          imageFit: BoxFit.cover,
-        );
-      } else {
-        return StoryItem.pageVideo(
-          story.file!,
-          controller: _storyController,
-          duration: const Duration(seconds: 10),
-        );
-      }
-    }).toList();
+    final storyItems =
+        stories.map((story) {
+          if (story.type == "image") {
+            return StoryItem.pageImage(
+              url: story.file!,
+              controller: _storyController,
+              duration: const Duration(seconds: 5),
+              imageFit: BoxFit.cover,
+            );
+          } else {
+            return StoryItem.pageVideo(
+              story.file!,
+              controller: _storyController,
+              duration: const Duration(seconds: 10),
+            );
+          }
+        }).toList();
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -279,12 +287,14 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
             right: 20,
             child: GestureDetector(
               onTap: () {
-                Get.to(MessageScreen(
-                  type: "business",
-                  chatName: stroymodel?.data?.owner?.name ?? "N/A",
-                  conciergeID: (stroymodel?.data?.owner?.userId).toString(),
-                  image: stroymodel?.data?.owner?.logo ?? "",
-                ));
+                Get.to(
+                  MessageScreen(
+                    type: "business",
+                    chatName: stroymodel?.data?.owner?.name ?? "N/A",
+                    conciergeID: (stroymodel?.data?.owner?.userId).toString(),
+                    image: stroymodel?.data?.owner?.logo ?? "",
+                  ),
+                );
               },
               child: Container(
                 padding: const EdgeInsets.all(10),
@@ -318,11 +328,10 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
 
     try {
       final loginId = (loginModel?.data?.user?.id).toString();
-      final response = await CommunityProvider().stroyapi(loginId, id);
+      final response = await CommunityProvider().storyViewApi(loginId, id);
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        stroymodel = StroyModel.fromJson(data);
+        stroymodel = StroyModel.fromJson(response.data);
 
         final posts = stroymodel?.data?.featuredPosts ?? [];
         setState(() {
@@ -358,10 +367,9 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
 
     checkInternet().then((internet) async {
       if (internet) {
-        CommunityProvider().postlikeapi(data).then((response) async {
+        CommunityProvider().postLikeApi(data).then((response) async {
           if (response.statusCode == 200) {
-            var responseData = json.decode(response.body);
-            postlikemodel = PostLikeModel.fromJson(responseData);
+            postlikemodel = PostLikeModel.fromJson(response.data);
 
             setState(() {
               isLiked = !isLiked;
@@ -370,9 +378,11 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
 
             _saveLikeStatus(isLiked);
 
-            print(isLiked
-                ? "Image liked successfully"
-                : "Image unliked successfully");
+            print(
+              isLiked
+                  ? "Image liked successfully"
+                  : "Image unliked successfully",
+            );
           } else if (response.statusCode == 429) {
             setState(() => isLikeInProgress = false);
             print("Too many requests");
@@ -426,15 +436,17 @@ class _StoryProgressIndicatorState extends State<StoryProgressIndicator> {
 
     if (widget.isActive) {
       return AnimatedBuilder(
-        animation: widget.videoController != null
-            ? widget.videoController!
-            : widget.animationController!,
+        animation:
+            widget.videoController != null
+                ? widget.videoController!
+                : widget.animationController!,
         builder: (context, child) {
           double progress = 0.0;
 
           if (widget.videoController != null &&
               widget.videoController!.value.isInitialized) {
-            progress = widget.videoController!.value.position.inMilliseconds /
+            progress =
+                widget.videoController!.value.position.inMilliseconds /
                 widget.videoController!.value.duration.inMilliseconds;
           } else {
             progress = widget.animationController!.value;

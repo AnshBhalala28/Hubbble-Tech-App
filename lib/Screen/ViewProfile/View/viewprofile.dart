@@ -57,11 +57,10 @@ class _ViewProfileState extends State<ViewProfile> {
 
     checkInternet().then((internet) async {
       if (internet) {
-        ProfileProvider().ProfileApi(data).then((response) async {
+        ProfileProvider().profileApi(data).then((response) async {
           if (response.statusCode == 200) {
             setState(() {
-              var profileModel =
-                  ProfileModel.fromJson(jsonDecode(response.body));
+              var profileModel = ProfileModel.fromJson(response.data);
               if (profileModel.status == 200) {
                 var user = profileModel.data?.user;
                 if (user != null) {
@@ -138,34 +137,35 @@ class _ViewProfileState extends State<ViewProfile> {
                     radius: 35.sp,
                     backgroundColor: Colors.grey.shade300,
                     child: ClipOval(
-                        child: CachedNetworkImage(
-                      imageUrl: profileImage,
-                      width: 70.sp,
-                      height: 70.sp,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            AppColors.maincolor,
-                          ),
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Image.asset(
-                        "assets/images/waveeLogoShort.png",
+                      child: CachedNetworkImage(
+                        imageUrl: profileImage,
                         width: 70.sp,
                         height: 70.sp,
                         fit: BoxFit.cover,
+                        placeholder:
+                            (context, url) => Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  AppColors.maincolor,
+                                ),
+                              ),
+                            ),
+                        errorWidget:
+                            (context, url, error) => Image.asset(
+                              "assets/images/waveeLogoShort.png",
+                              width: 70.sp,
+                              height: 70.sp,
+                              fit: BoxFit.cover,
+                            ),
                       ),
-                    )),
+                    ),
                   ),
                 ],
               ),
               SizedBox(height: 4.h),
               InkWell(
                 onTap: () {
-                  Get.to(Myprofile_Screen(
-                    id: loginModel?.data?.user?.id,
-                  ));
+                  Get.to(Myprofile_Screen(id: loginModel?.data?.user?.id));
                 },
                 child: Container(
                   width: 55.w,
@@ -189,26 +189,21 @@ class _ViewProfileState extends State<ViewProfile> {
               SizedBox(height: 3.h),
               SizedBox(height: 2.h),
               menuItem(
-                  Icons.home,
-                  "My Home",
-                  "Details about your home",
-                  context,
-                  MyHome_Screen(
-                    id: loginModel?.data?.user?.id,
-                  )),
+                Icons.home,
+                "My Home",
+                "Details about your home",
+                context,
+                MyHome_Screen(id: loginModel?.data?.user?.id),
+              ),
               SizedBox(height: 10),
               menuItem(
                 Icons.apartment,
                 "My Building",
                 "Details about your building",
                 context,
-                MyBuilding_Screen(
-                  id: loginModel?.data?.user?.id,
-                ),
+                MyBuilding_Screen(id: loginModel?.data?.user?.id),
               ),
-              SizedBox(
-                height: 2.h,
-              ),
+              SizedBox(height: 2.h),
               batan(
                 title: "Logout",
                 route: () {
@@ -259,65 +254,60 @@ class _ViewProfileState extends State<ViewProfile> {
                                   SizedBox(height: 2.h),
                                   isLoading
                                       ? Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 2.h),
-                                    child:
-                                    CircularProgressIndicator(
-                                      color: AppColors.maincolor,
-                                    ),
-                                  )
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 2.h,
+                                        ),
+                                        child: CircularProgressIndicator(
+                                          color: AppColors.maincolor,
+                                        ),
+                                      )
                                       : Row(
-                                    children: [
-                                      Expanded(
-                                        child: Material(
-                                          elevation: 2,
-                                          borderRadius:
-                                          BorderRadius.circular(
-                                              12),
-                                          child: batan(
-                                            title: "No",
-                                            route: () {
-                                              Navigator.of(context)
-                                                  .pop();
-                                            },
-                                            color: AppColors.white,
-                                            fontcolor: Colors.black,
-                                            height: 5.h,
-                                            width: 20.w,
-                                            fontsize: 16.sp,
-                                            radius: 12.0,
+                                        children: [
+                                          Expanded(
+                                            child: Material(
+                                              elevation: 2,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              child: batan(
+                                                title: "No",
+                                                route: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                color: AppColors.white,
+                                                fontcolor: Colors.black,
+                                                height: 5.h,
+                                                width: 20.w,
+                                                fontsize: 16.sp,
+                                                radius: 12.0,
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                      SizedBox(width: 2.w),
-                                      Expanded(
-                                        child: Material(
-                                          elevation: 2,
-                                          borderRadius:
-                                          BorderRadius.circular(
-                                              12),
-                                          child: batan(
-                                            title: "Yes",
-                                            width: 20.w,
-                                            route: () async {
-                                              await SaveDataLocal
-                                                  .clearUserData();
-                                              Get.offAll(() =>
-                                                  LoginScreen());
-                                              Logout();
-
-                                            },
-                                            color:
-                                            AppColors.maincolor,
-                                            fontcolor: Colors.white,
-                                            height: 5.h,
-                                            fontsize: 16.sp,
-                                            radius: 12.0,
+                                          SizedBox(width: 2.w),
+                                          Expanded(
+                                            child: Material(
+                                              elevation: 2,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              child: batan(
+                                                title: "Yes",
+                                                width: 20.w,
+                                                route: () async {
+                                                  await SaveDataLocal.clearUserData();
+                                                  Get.offAll(
+                                                    () => LoginScreen(),
+                                                  );
+                                                  Logout();
+                                                },
+                                                color: AppColors.maincolor,
+                                                fontcolor: Colors.white,
+                                                height: 5.h,
+                                                fontsize: 16.sp,
+                                                radius: 12.0,
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
                                   SizedBox(height: 1.h),
                                 ],
                               ),
@@ -334,7 +324,7 @@ class _ViewProfileState extends State<ViewProfile> {
                 width: 40.w,
                 fontsize: 18.sp,
                 radius: 12.0,
-              )
+              ),
             ],
           ),
         ),
@@ -342,8 +332,13 @@ class _ViewProfileState extends State<ViewProfile> {
     );
   }
 
-  Widget menuItem(IconData icon, String title, String description,
-      BuildContext context, Widget screen) {
+  Widget menuItem(
+    IconData icon,
+    String title,
+    String description,
+    BuildContext context,
+    Widget screen,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -352,16 +347,22 @@ class _ViewProfileState extends State<ViewProfile> {
       ),
       child: ListTile(
         leading: Icon(icon, color: AppColors.maincolor, size: 30),
-        title: Text(title,
-            style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                fontFamily: AppConstants.manrope)),
-        subtitle: Text(description,
-            style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-                fontFamily: AppConstants.manrope)),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            fontFamily: AppConstants.manrope,
+          ),
+        ),
+        subtitle: Text(
+          description,
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey,
+            fontFamily: AppConstants.manrope,
+          ),
+        ),
         trailing: Icon(Icons.arrow_forward_ios, size: 18, color: Colors.grey),
         onTap: () {
           Get.to(screen);
@@ -374,9 +375,12 @@ class _ViewProfileState extends State<ViewProfile> {
     if (Platform.isAndroid) {
       var status = await Permission.storage.request();
       if (!status.isGranted) {
-        Get.snackbar("Permission Denied",
-            "Please enable storage permission from settings",
-            backgroundColor: Colors.red, colorText: Colors.white);
+        Get.snackbar(
+          "Permission Denied",
+          "Please enable storage permission from settings",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
         return;
       }
     }
@@ -385,8 +389,9 @@ class _ViewProfileState extends State<ViewProfile> {
       isLoading = true;
     });
 
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
 
     if (pickedFile != null) {
       setState(() {
@@ -402,7 +407,7 @@ class _ViewProfileState extends State<ViewProfile> {
 
   void toggleEdit() {
     if (isEditing) {
-      EditProfile();
+      // EditProfile();
     } else {
       setState(() {
         isEditing = true;
@@ -410,87 +415,89 @@ class _ViewProfileState extends State<ViewProfile> {
     }
   }
 
-  void EditProfile() {
-    List<String> addressParts = fullAddressController.text.trim().split(",");
-    String address = addressParts.isNotEmpty ? addressParts[0] : "";
-    String city = addressParts.length > 1 ? addressParts[1].trim() : "";
-    String country = addressParts.length > 2 ? addressParts[2].trim() : "";
-    final Map<String, String> data = {
-      'update_id': profileModel?.data?.id.toString() ?? '',
-      'apartment_number': "15",
-      "member_type": "tenant",
-      'gender': genderController.text.trim(),
-      'frist_name': nameController.text.trim().split(" ").first,
-      'last_name': nameController.text.trim().split(" ").last,
-      'contact_no': phoneController.text.trim(),
-      'address': address,
-      'city': city,
-      'country': country,
-      'zip_code': zipCodeController.text.trim(),
-    };
-    log(" Sending datashwoewe$data");
-    checkInternet().then((internet) async {
-      if (internet) {
-        ProfileProvider()
-            .ProfileEdit(data, selectedImage)
-            .then((response) async {
-          if (response.statusCode == 200) {
-            var profileModel = ProfileModel.fromJson(jsonDecode(response.body));
-
-            if (profileModel.status == 200) {
-              log("Profile Updated: ${response.body}");
-              Get.snackbar("Success", "Profile updated successfully",
-                  backgroundColor: AppColors.maincolor,
-                  colorText: Colors.white);
-
-              setState(() {
-                isEditing = false;
-              });
-              Future.delayed(Duration(microseconds: 100), () {
-                Get.offAll(HomePage(
-                  userName: "",
-                ));
-              });
-            } else {
-              Get.snackbar("Error", "Failed to update profile",
-                  backgroundColor: Colors.red, colorText: Colors.white);
-            }
-          } else {
-            Get.snackbar("Error", "Server error, please try again",
-                backgroundColor: Colors.red, colorText: Colors.white);
-          }
-        });
-      } else {
-        Get.snackbar("Error", "Internet Required",
-            backgroundColor: Colors.red, colorText: Colors.white);
-      }
-    });
-  }
-
+  // void EditProfile() {
+  //   List<String> addressParts = fullAddressController.text.trim().split(",");
+  //   String address = addressParts.isNotEmpty ? addressParts[0] : "";
+  //   String city = addressParts.length > 1 ? addressParts[1].trim() : "";
+  //   String country = addressParts.length > 2 ? addressParts[2].trim() : "";
+  //   final Map<String, String> data = {
+  //     'update_id': profileModel?.data?.id.toString() ?? '',
+  //     'apartment_number': "15",
+  //     "member_type": "tenant",
+  //     'gender': genderController.text.trim(),
+  //     'frist_name': nameController.text.trim().split(" ").first,
+  //     'last_name': nameController.text.trim().split(" ").last,
+  //     'contact_no': phoneController.text.trim(),
+  //     'address': address,
+  //     'city': city,
+  //     'country': country,
+  //     'zip_code': zipCodeController.text.trim(),
+  //   };
+  //   checkInternet().then((internet) async {
+  //     if (internet) {
+  //       ProfileProvider().ProfileEdit(data, selectedImage).then((
+  //         response,
+  //       ) async {
+  //         if (response.statusCode == 200) {
+  //           var profileModel = ProfileModel.fromJson(jsonDecode(response.body));
+  //           if (profileModel.status == 200) {
+  //             log("Profile Updated: ${response.body}");
+  //             Get.snackbar(
+  //               "Success",
+  //               "Profile updated successfully",
+  //               backgroundColor: AppColors.maincolor,
+  //               colorText: Colors.white,
+  //             );
+  //             setState(() {
+  //               isEditing = false;
+  //             });
+  //             Future.delayed(Duration(microseconds: 100), () {
+  //               Get.offAll(HomePage(userName: ""));
+  //             });
+  //           } else {
+  //             Get.snackbar(
+  //               "Error",
+  //               "Failed to update profile",
+  //               backgroundColor: Colors.red,
+  //               colorText: Colors.white,
+  //             );
+  //           }
+  //         } else {
+  //           Get.snackbar(
+  //             "Error",
+  //             "Server error, please try again",
+  //             backgroundColor: Colors.red,
+  //             colorText: Colors.white,
+  //           );
+  //         }
+  //       });
+  //     } else {
+  //       Get.snackbar(
+  //         "Error",
+  //         "Internet Required",
+  //         backgroundColor: Colors.red,
+  //         colorText: Colors.white,
+  //       );
+  //     }
+  //   });
+  // }
 
   void Logout() {
     final Map<String, String> data = {};
     data["user_id"] = loginModel?.data?.user?.id.toString() ?? "";
-
-
-    log("Logout Data $data");
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await AuthProvider().Logout(data);
-
-          if (response.statusCode == 200 ) {
-            log("Sucess Logout  ${response.body}");
-
+          var response = await AuthProvider().logoutApi(data);
+          if (response.statusCode == 200) {
             setState(() {
-
               isLoading = false;
             });
           } else {
             setState(() {
               isLoading = false;
             });
-            print(response.body);
+            print(response.data);
           }
         } catch (e) {
           if (mounted) {
@@ -507,5 +514,4 @@ class _ViewProfileState extends State<ViewProfile> {
       }
     });
   }
-
 }

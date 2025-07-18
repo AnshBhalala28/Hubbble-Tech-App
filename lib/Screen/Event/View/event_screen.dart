@@ -149,10 +149,7 @@ class _EventScreenState extends State<EventScreen> {
               SizedBox(height: 4.h),
               TitleBar(
                 back: () {
-                  Get.to(HomePage(
-                    selected: 1,
-                    userName: '',
-                  ));
+                  Get.to(HomePage(selected: 1, userName: ''));
                 },
                 title: 'Events',
                 drawerCallback: () {
@@ -174,7 +171,9 @@ class _EventScreenState extends State<EventScreen> {
                       child: DropdownButton(
                         icon: Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 2.w, vertical: 1.h),
+                            horizontal: 2.w,
+                            vertical: 1.h,
+                          ),
                           child: Icon(
                             CupertinoIcons.chevron_down,
                             size: 16.sp,
@@ -191,9 +190,10 @@ class _EventScreenState extends State<EventScreen> {
                             child: Text(
                               "This Week",
                               style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: AppConstants.manrope,
-                                  fontSize: 16.sp),
+                                color: Colors.black,
+                                fontFamily: AppConstants.manrope,
+                                fontSize: 16.sp,
+                              ),
                             ),
                           ),
                           DropdownMenuItem(
@@ -201,9 +201,10 @@ class _EventScreenState extends State<EventScreen> {
                             child: Text(
                               "This Month",
                               style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: AppConstants.manrope,
-                                  fontSize: 16.sp),
+                                color: Colors.black,
+                                fontFamily: AppConstants.manrope,
+                                fontSize: 16.sp,
+                              ),
                             ),
                           ),
                           DropdownMenuItem(
@@ -211,9 +212,10 @@ class _EventScreenState extends State<EventScreen> {
                             child: Text(
                               "This Year",
                               style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: AppConstants.manrope,
-                                  fontSize: 16.sp),
+                                color: Colors.black,
+                                fontFamily: AppConstants.manrope,
+                                fontSize: 16.sp,
+                              ),
                             ),
                           ),
                         ],
@@ -234,336 +236,414 @@ class _EventScreenState extends State<EventScreen> {
               SizedBox(height: 2.h),
               isLoading
                   ? SizedBox(
-                      height: 65.h,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                            color: AppColors.maincolor),
+                    height: 65.h,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.maincolor,
                       ),
-                    )
+                    ),
+                  )
                   : Column(
-                      children: [
-                        selectedValue == "days"
-                            ? _buildWeekView()
-                            : selectedValue == "month"
-                                ? _buildMonthView()
-                                : _buildYearView(),
-                        const SizedBox(height: 20),
-                        event_list_Model?.data?.length == 0 ||
-                                event_list_Model?.data?.length == null
-                            ? Container(
-                                height: selectedValue == "month" ? 65.h : 20.h,
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "No Events Available",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontFamily: AppConstants.manrope,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 17.sp,
-                                  ),
-                                ),
-                              )
-                            : ListView.builder(
-                                padding: EdgeInsets.zero,
-                                shrinkWrap: true,
-                                scrollDirection: Axis.vertical,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: event_list_Model?.data?.length ?? 0,
-                                itemBuilder: (context, index) {
-                                  String eventId = event_list_Model
-                                          ?.data?[index]?.id
-                                          ?.toString() ??
-                                      "";
-                                  bool isRequestSent =
-                                      sentEventIds.contains(eventId);
-                                  bool isLoading = false;
-                                  return StatefulBuilder(
-                                    builder: (context, setState) {
-                                      return GestureDetector(
-                                        onTap: () {},
-                                        child: Container(
-                                          margin: EdgeInsets.symmetric(
-                                              vertical: 10),
-                                          padding: EdgeInsets.all(16),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                    children: [
+                      selectedValue == "days"
+                          ? _buildWeekView()
+                          : selectedValue == "month"
+                          ? _buildMonthView()
+                          : _buildYearView(),
+                      const SizedBox(height: 20),
+                      event_list_Model?.data?.length == 0 ||
+                              event_list_Model?.data?.length == null
+                          ? Container(
+                            height: selectedValue == "month" ? 65.h : 20.h,
+                            alignment: Alignment.center,
+                            child: Text(
+                              "No Events Available",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontFamily: AppConstants.manrope,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17.sp,
+                              ),
+                            ),
+                          )
+                          : ListView.builder(
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: event_list_Model?.data?.length ?? 0,
+                            itemBuilder: (context, index) {
+                              String eventId =
+                                  event_list_Model?.data?[index]?.id
+                                      ?.toString() ??
+                                  "";
+                              bool isRequestSent = sentEventIds.contains(
+                                eventId,
+                              );
+                              bool isLoading = false;
+                              return StatefulBuilder(
+                                builder: (context, setState) {
+                                  return GestureDetector(
+                                    onTap: () {},
+                                    child: Container(
+                                      margin: EdgeInsets.symmetric(
+                                        vertical: 10,
+                                      ),
+                                      padding: EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
                                             children: [
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    formatDate(event_list_Model
-                                                        ?.data?[index]
-                                                        .eventDate),
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontFamily:
-                                                          AppConstants.manrope,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 15.sp,
-                                                    ),
+                                              Text(
+                                                formatDate(
+                                                  event_list_Model
+                                                      ?.data?[index]
+                                                      .eventDate,
+                                                ),
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontFamily:
+                                                      AppConstants.manrope,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15.sp,
+                                                ),
+                                              ),
+                                              Spacer(),
+                                              if (isLoading)
+                                                CircularProgressIndicator()
+                                              else if (event_list_Model
+                                                      ?.data?[index]
+                                                      ?.requestEvent
+                                                      ?.toLowerCase() ==
+                                                  "pending")
+                                                Text(
+                                                  "Requested",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.orange,
                                                   ),
-                                                  Spacer(),
-                                                  if (isLoading)
-                                                    CircularProgressIndicator()
-                                                  else if (event_list_Model
-                                                          ?.data?[index]
-                                                          ?.requestEvent
-                                                          ?.toLowerCase() ==
-                                                      "pending")
-                                                    Text(
-                                                      "Requested",
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.orange,
-                                                      ),
-                                                    ),
-                                                  if (!isRequestSent &&
-                                                      (event_list_Model
-                                                                  ?.data?[index]
-                                                                  ?.requestEvent ==
-                                                              null ||
-                                                          event_list_Model!
-                                                              .data![index]
-                                                              .requestEvent!
-                                                              .isEmpty))
-                                                    InkWell(
-                                                      onTap: () {
-                                                        requestController
-                                                            .clear();
-                                                        showDialog(
-                                                          context: context,
-                                                          builder: (BuildContext
-                                                              context) {
-                                                            return StatefulBuilder(
-                                                              builder: (context,
-                                                                  setDialogState) {
-                                                                return Dialog(
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .white,
-                                                                  shape:
-                                                                      RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            16),
-                                                                  ),
-                                                                  child:
-                                                                      Padding(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .all(
-                                                                            10),
-                                                                    child: Form(
-                                                                      key:
-                                                                          _formKey,
-                                                                      autovalidateMode:
-                                                                          AutovalidateMode
-                                                                              .onUserInteraction,
-                                                                      child:
-                                                                          Column(
-                                                                        mainAxisSize:
-                                                                            MainAxisSize.min,
+                                                ),
+                                              if (!isRequestSent &&
+                                                  (event_list_Model
+                                                              ?.data?[index]
+                                                              ?.requestEvent ==
+                                                          null ||
+                                                      event_list_Model!
+                                                          .data![index]
+                                                          .requestEvent!
+                                                          .isEmpty))
+                                                InkWell(
+                                                  onTap: () {
+                                                    requestController.clear();
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (
+                                                        BuildContext context,
+                                                      ) {
+                                                        return StatefulBuilder(
+                                                          builder: (
+                                                            context,
+                                                            setDialogState,
+                                                          ) {
+                                                            return Dialog(
+                                                              backgroundColor:
+                                                                  Colors.white,
+                                                              shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      16,
+                                                                    ),
+                                                              ),
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets.all(
+                                                                      10,
+                                                                    ),
+                                                                child: Form(
+                                                                  key: _formKey,
+                                                                  autovalidateMode:
+                                                                      AutovalidateMode
+                                                                          .onUserInteraction,
+                                                                  child: Column(
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .min,
+                                                                    children: [
+                                                                      Row(
                                                                         children: [
-                                                                          Row(
-                                                                            children: [
-                                                                              SizedBox(
-                                                                                width: 15.w,
-                                                                              ),
-                                                                              Text(
-                                                                                "${profileModel?.data?.user?.name?.firstName?.capitalizeFirst ?? ""} ${profileModel?.data?.user?.name?.lastName?.capitalizeFirst ?? ""}",
-                                                                                style: TextStyle(
-                                                                                  color: Colors.black,
-                                                                                  fontSize: 20.sp,
-                                                                                  fontFamily: AppConstants.manrope,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                ),
-                                                                              ),
-                                                                              Spacer(),
-                                                                              CloseButton(),
-                                                                            ],
-                                                                          ),
-                                                                          SizedBox(
-                                                                              height: 8),
-
-                                                                          /// Event Title
-                                                                          Text(
-                                                                            event_list_Model?.data?[index]?.title ??
-                                                                                "N/A",
-                                                                            style:
-                                                                                TextStyle(
-                                                                              fontFamily: AppConstants.manrope,
-                                                                              fontSize: 16,
-                                                                              fontWeight: FontWeight.bold,
-                                                                              color: Colors.black38,
-                                                                            ),
-                                                                          ),
-                                                                          SizedBox(
-                                                                              height: 5),
-
-                                                                          /// Event Time
-                                                                          Text(
-                                                                            event_list_Model?.data?[index]?.eventDate != null
-                                                                                ? DateFormat.jm().format(DateTime.parse(event_list_Model!.data![index]!.eventDate!))
-                                                                                : "N/A",
-                                                                            style:
-                                                                                TextStyle(
-                                                                              fontFamily: AppConstants.manrope,
-                                                                              fontSize: 16,
-                                                                              fontWeight: FontWeight.bold,
-                                                                              color: Colors.black38,
-                                                                            ),
-                                                                          ),
-                                                                          SizedBox(
-                                                                              height: 12),
-
-                                                                          /// Request Text Field
-                                                                          TextFormField(
-                                                                            controller:
-                                                                                requestController,
-                                                                            maxLines:
-                                                                                3,
-                                                                            decoration:
-                                                                                InputDecoration(
-                                                                              hintText: "Enter your request...",
-                                                                              filled: true,
-                                                                              fillColor: Colors.white,
-                                                                              border: OutlineInputBorder(
-                                                                                borderRadius: BorderRadius.circular(10),
-                                                                                borderSide: BorderSide(color: Colors.black26),
-                                                                              ),
-                                                                              enabledBorder: OutlineInputBorder(
-                                                                                borderRadius: BorderRadius.circular(10),
-                                                                                borderSide: BorderSide(color: Colors.black26),
-                                                                              ),
-                                                                              focusedBorder: OutlineInputBorder(
-                                                                                borderRadius: BorderRadius.circular(10),
-                                                                                borderSide: BorderSide(color: Colors.blue),
-                                                                              ),
-                                                                              errorBorder: OutlineInputBorder(
-                                                                                borderRadius: BorderRadius.circular(10),
-                                                                                borderSide: BorderSide(color: Colors.red),
-                                                                              ),
-                                                                              focusedErrorBorder: OutlineInputBorder(
-                                                                                borderRadius: BorderRadius.circular(10),
-                                                                                borderSide: BorderSide(color: Colors.red),
-                                                                              ),
-                                                                            ),
-                                                                            style:
-                                                                                TextStyle(color: Colors.black),
-                                                                            validator:
-                                                                                (value) {
-                                                                              if (value == null || value.trim().isEmpty) {
-                                                                                return "Please enter your request";
-                                                                              }
-                                                                              return null;
-                                                                            },
-                                                                          ),
-                                                                          SizedBox(
-                                                                              height: 20),
-
-                                                                          /// Submit Button
                                                                           SizedBox(
                                                                             width:
-                                                                                double.infinity,
-                                                                            child:
-                                                                                batan(
-                                                                              title: "Send Request",
-                                                                              route: () async {
-                                                                                if (_formKey.currentState!.validate()) {
-                                                                                  setDialogState(() => isLoading = true);
-                                                                                  setState(() {
-                                                                                    event_list_Model!.data![index].requestEvent = "pending";
-                                                                                  });
-                                                                                  await sendlistap(eventId);
-                                                                                  setDialogState(() => isLoading = false);
-                                                                                  Get.back();
-                                                                                }
-                                                                              },
-                                                                              radius: 4.0.w,
-                                                                              color: AppColors.maincolor,
-                                                                              fontcolor: AppColors.white,
-                                                                              height: 6.h,
-                                                                              width: 72.w,
-                                                                              fontsize: 19.sp,
+                                                                                15.w,
+                                                                          ),
+                                                                          Text(
+                                                                            "${profileModel?.data?.user?.name?.firstName?.capitalizeFirst ?? ""} ${profileModel?.data?.user?.name?.lastName?.capitalizeFirst ?? ""}",
+                                                                            style: TextStyle(
+                                                                              color:
+                                                                                  Colors.black,
+                                                                              fontSize:
+                                                                                  20.sp,
+                                                                              fontFamily:
+                                                                                  AppConstants.manrope,
+                                                                              fontWeight:
+                                                                                  FontWeight.bold,
                                                                             ),
                                                                           ),
+                                                                          Spacer(),
+                                                                          CloseButton(),
                                                                         ],
                                                                       ),
-                                                                    ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            8,
+                                                                      ),
+
+                                                                      /// Event Title
+                                                                      Text(
+                                                                        event_list_Model?.data?[index]?.title ??
+                                                                            "N/A",
+                                                                        style: TextStyle(
+                                                                          fontFamily:
+                                                                              AppConstants.manrope,
+                                                                          fontSize:
+                                                                              16,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                          color:
+                                                                              Colors.black38,
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            5,
+                                                                      ),
+
+                                                                      /// Event Time
+                                                                      Text(
+                                                                        event_list_Model?.data?[index]?.eventDate !=
+                                                                                null
+                                                                            ? DateFormat.jm().format(
+                                                                              DateTime.parse(
+                                                                                event_list_Model!.data![index]!.eventDate!,
+                                                                              ),
+                                                                            )
+                                                                            : "N/A",
+                                                                        style: TextStyle(
+                                                                          fontFamily:
+                                                                              AppConstants.manrope,
+                                                                          fontSize:
+                                                                              16,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                          color:
+                                                                              Colors.black38,
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            12,
+                                                                      ),
+
+                                                                      /// Request Text Field
+                                                                      TextFormField(
+                                                                        controller:
+                                                                            requestController,
+                                                                        maxLines:
+                                                                            3,
+                                                                        decoration: InputDecoration(
+                                                                          hintText:
+                                                                              "Enter your request...",
+                                                                          filled:
+                                                                              true,
+                                                                          fillColor:
+                                                                              Colors.white,
+                                                                          border: OutlineInputBorder(
+                                                                            borderRadius: BorderRadius.circular(
+                                                                              10,
+                                                                            ),
+                                                                            borderSide: BorderSide(
+                                                                              color:
+                                                                                  Colors.black26,
+                                                                            ),
+                                                                          ),
+                                                                          enabledBorder: OutlineInputBorder(
+                                                                            borderRadius: BorderRadius.circular(
+                                                                              10,
+                                                                            ),
+                                                                            borderSide: BorderSide(
+                                                                              color:
+                                                                                  Colors.black26,
+                                                                            ),
+                                                                          ),
+                                                                          focusedBorder: OutlineInputBorder(
+                                                                            borderRadius: BorderRadius.circular(
+                                                                              10,
+                                                                            ),
+                                                                            borderSide: BorderSide(
+                                                                              color:
+                                                                                  Colors.blue,
+                                                                            ),
+                                                                          ),
+                                                                          errorBorder: OutlineInputBorder(
+                                                                            borderRadius: BorderRadius.circular(
+                                                                              10,
+                                                                            ),
+                                                                            borderSide: BorderSide(
+                                                                              color:
+                                                                                  Colors.red,
+                                                                            ),
+                                                                          ),
+                                                                          focusedErrorBorder: OutlineInputBorder(
+                                                                            borderRadius: BorderRadius.circular(
+                                                                              10,
+                                                                            ),
+                                                                            borderSide: BorderSide(
+                                                                              color:
+                                                                                  Colors.red,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        style: TextStyle(
+                                                                          color:
+                                                                              Colors.black,
+                                                                        ),
+                                                                        validator: (
+                                                                          value,
+                                                                        ) {
+                                                                          if (value ==
+                                                                                  null ||
+                                                                              value.trim().isEmpty) {
+                                                                            return "Please enter your request";
+                                                                          }
+                                                                          return null;
+                                                                        },
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            20,
+                                                                      ),
+
+                                                                      /// Submit Button
+                                                                      SizedBox(
+                                                                        width:
+                                                                            double.infinity,
+                                                                        child: batan(
+                                                                          title:
+                                                                              "Send Request",
+                                                                          route: () async {
+                                                                            if (_formKey.currentState!.validate()) {
+                                                                              setDialogState(
+                                                                                () =>
+                                                                                    isLoading =
+                                                                                        true,
+                                                                              );
+                                                                              setState(
+                                                                                () {
+                                                                                  event_list_Model!.data![index].requestEvent = "pending";
+                                                                                },
+                                                                              );
+                                                                              await sendlistap(
+                                                                                eventId,
+                                                                              );
+                                                                              setDialogState(
+                                                                                () =>
+                                                                                    isLoading =
+                                                                                        false,
+                                                                              );
+                                                                              Get.back();
+                                                                            }
+                                                                          },
+                                                                          radius:
+                                                                              4.0.w,
+                                                                          color:
+                                                                              AppColors.maincolor,
+                                                                          fontcolor:
+                                                                              AppColors.white,
+                                                                          height:
+                                                                              6.h,
+                                                                          width:
+                                                                              72.w,
+                                                                          fontsize:
+                                                                              19.sp,
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                                   ),
-                                                                );
-                                                              },
+                                                                ),
+                                                              ),
                                                             );
                                                           },
                                                         );
                                                       },
-                                                      child: isLoading
+                                                    );
+                                                  },
+                                                  child:
+                                                      isLoading
                                                           ? CircularProgressIndicator(
-                                                              color:
-                                                                  Colors.blue)
+                                                            color: Colors.blue,
+                                                          )
                                                           : Icon(
-                                                              Icons.more_vert,
-                                                              color:
-                                                                  Colors.black),
-                                                    ),
-                                                ],
-                                              ),
-                                              SizedBox(height: 1.h),
-                                              Text(
-                                                event_list_Model
-                                                        ?.data?[index]?.title ??
-                                                    "N/A",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 16.5.sp,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily:
-                                                      AppConstants.manrope,
+                                                            Icons.more_vert,
+                                                            color: Colors.black,
+                                                          ),
                                                 ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 1.h),
+                                          Text(
+                                            event_list_Model
+                                                    ?.data?[index]
+                                                    ?.title ??
+                                                "N/A",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16.5.sp,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: AppConstants.manrope,
+                                            ),
+                                          ),
+                                          SizedBox(height: 1.h),
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.location_on,
+                                                color: Colors.black,
+                                                size: 18.sp,
                                               ),
-                                              SizedBox(height: 1.h),
-                                              Row(
-                                                children: [
-                                                  Icon(Icons.location_on,
-                                                      color: Colors.black,
-                                                      size: 18.sp),
-                                                  SizedBox(width: 5),
-                                                  Expanded(
-                                                    child: Text(
-                                                      event_list_Model
-                                                              ?.data?[index]
-                                                              ?.location ??
-                                                          "N/A",
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 15.sp,
-                                                        fontFamily: AppConstants
-                                                            .manrope,
-                                                      ),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
+                                              SizedBox(width: 5),
+                                              Expanded(
+                                                child: Text(
+                                                  event_list_Model
+                                                          ?.data?[index]
+                                                          ?.location ??
+                                                      "N/A",
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 15.sp,
+                                                    fontFamily:
+                                                        AppConstants.manrope,
                                                   ),
-                                                ],
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
                                               ),
                                             ],
                                           ),
-                                        ),
-                                      );
-                                    },
+                                        ],
+                                      ),
+                                    ),
                                   );
                                 },
-                              ),
-                      ],
-                    ),
+                              );
+                            },
+                          ),
+                    ],
+                  ),
             ],
           ),
         ),
@@ -602,29 +682,31 @@ class _EventScreenState extends State<EventScreen> {
 
     checkInternet().then((internet) async {
       if (internet) {
-        EventProvider().sendeventapi(data).then((response) async {
-          sendeventModel = SendeventModel.fromJson(json.decode(response.body));
+        EventProvider()
+            .sendeventapi(data)
+            .then((response) async {
+              sendeventModel = SendeventModel.fromJson(response.data);
 
-          if (response.statusCode == 200 || sendeventModel?.data == 200) {
-            log("Response body avve che che ==>> ${response.body}");
-            projectlistap();
-          } else if (response.statusCode == 422) {
-            load = false;
-          } else {
-            EasyLoading.showError("Internal Server Error");
-          }
+              if (response.statusCode == 200 || sendeventModel?.data == 200) {
+                projectlistap();
+              } else if (response.statusCode == 422) {
+                load = false;
+              } else {
+                EasyLoading.showError("Internal Server Error");
+              }
 
-          setState(() {
-            isLoading = false;
-          });
-          return false;
-        }).catchError((error) {
-          setState(() {
-            isLoading = false;
-          });
-          EasyLoading.showError("Request Failed");
-          return false;
-        });
+              setState(() {
+                isLoading = false;
+              });
+              return false;
+            })
+            .catchError((error) {
+              setState(() {
+                isLoading = false;
+              });
+              EasyLoading.showError("Request Failed");
+              return false;
+            });
       } else {
         setState(() {
           isLoading = false;
@@ -642,15 +724,15 @@ class _EventScreenState extends State<EventScreen> {
     checkInternet().then((internet) async {
       if (internet) {
         EventProvider().eventapi(data).then((response) async {
-          eventlistModel = EventlistModel.fromJson(json.decode(response.body));
+          eventlistModel = EventlistModel.fromJson(response.data);
 
           if (response.statusCode == 200) {
-            log("Response body avve che che ==>> ${response.body}");
-            var jsonData = jsonDecode(response.body);
+            var jsonData = response.data;
 
-            List<DateTime> dates = jsonData['data'].map<DateTime>((project) {
-              return DateTime.parse(project['event_date'].split('T')[0]);
-            }).toList();
+            List<DateTime> dates =
+                jsonData['data'].map<DateTime>((project) {
+                  return DateTime.parse(project['event_date'].split('T')[0]);
+                }).toList();
 
             setState(() {
               projectDates = dates;
@@ -687,10 +769,8 @@ class _EventScreenState extends State<EventScreen> {
     checkInternet().then((internet) async {
       if (internet) {
         EventProvider().eventapi(data).then((response) async {
-          event_list_Model =
-              EventlistModel.fromJson(json.decode(response.body));
+          event_list_Model = EventlistModel.fromJson(response.data);
           if (response.statusCode == 200) {
-            log("Response body avve che che dasdad==>> ${response.body}");
             setState(() {
               isLoading = false;
               load = false;
@@ -816,14 +896,22 @@ class _EventScreenState extends State<EventScreen> {
           color: AppColors.maincolor,
           shape: BoxShape.circle,
         ),
-        selectedTextStyle:
-            TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
-        todayTextStyle:
-            TextStyle(color: Colors.black, fontFamily: AppConstants.manrope),
-        defaultTextStyle:
-            TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
-        weekendTextStyle:
-            TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
+        selectedTextStyle: TextStyle(
+          color: Colors.white,
+          fontFamily: AppConstants.manrope,
+        ),
+        todayTextStyle: TextStyle(
+          color: Colors.black,
+          fontFamily: AppConstants.manrope,
+        ),
+        defaultTextStyle: TextStyle(
+          color: Colors.white,
+          fontFamily: AppConstants.manrope,
+        ),
+        weekendTextStyle: TextStyle(
+          color: Colors.white,
+          fontFamily: AppConstants.manrope,
+        ),
       ),
       selectedDayPredicate: (day) {
         return isSameDay(selectedDay, day);
@@ -843,23 +931,25 @@ class _EventScreenState extends State<EventScreen> {
           bool isPast = normalizedDay.isBefore(todayOnly);
 
           return GestureDetector(
-            onTap: isPast
-                ? null
-                : () {
-                    setState(() {
-                      selectedDay = day;
-                      selectedDate = DateFormat('yyyy-MM-dd').format(day);
-                      load = true;
-                    });
-                    projectlistap();
-                  },
+            onTap:
+                isPast
+                    ? null
+                    : () {
+                      setState(() {
+                        selectedDay = day;
+                        selectedDate = DateFormat('yyyy-MM-dd').format(day);
+                        load = true;
+                      });
+                      projectlistap();
+                    },
             child: Container(
               margin: EdgeInsets.all(6.0),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: isHighlighted
-                    ? AppColors.maincolor
-                    : isPast
+                color:
+                    isHighlighted
+                        ? AppColors.maincolor
+                        : isPast
                         ? Colors.grey.shade300
                         : AppColors.white,
                 shape: BoxShape.circle,
@@ -867,9 +957,10 @@ class _EventScreenState extends State<EventScreen> {
               child: Text(
                 '${day.day}',
                 style: TextStyle(
-                  color: isHighlighted
-                      ? AppColors.white
-                      : isPast
+                  color:
+                      isHighlighted
+                          ? AppColors.white
+                          : isPast
                           ? Colors.black
                           : AppColors.black,
                   fontWeight: FontWeight.bold,
@@ -972,23 +1063,25 @@ class _EventScreenState extends State<EventScreen> {
           bool isPast = day.isBefore(todayOnly);
 
           return GestureDetector(
-            onTap: isPast
-                ? null
-                : () {
-                    setState(() {
-                      selectedYear = day;
-                      selectedDate = DateFormat('yyyy-MM-dd').format(day);
-                      load = true;
-                    });
-                    projectlistap();
-                  },
+            onTap:
+                isPast
+                    ? null
+                    : () {
+                      setState(() {
+                        selectedYear = day;
+                        selectedDate = DateFormat('yyyy-MM-dd').format(day);
+                        load = true;
+                      });
+                      projectlistap();
+                    },
             child: Container(
               margin: EdgeInsets.all(6.0),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: isMonthDate
-                    ? AppColors.maincolor
-                    : isPast
+                color:
+                    isMonthDate
+                        ? AppColors.maincolor
+                        : isPast
                         ? Colors.grey.shade300
                         : AppColors.white,
                 shape: BoxShape.circle,
@@ -996,9 +1089,10 @@ class _EventScreenState extends State<EventScreen> {
               child: Text(
                 '${day.day}',
                 style: TextStyle(
-                  color: isMonthDate
-                      ? AppColors.maincolor
-                      : isPast
+                  color:
+                      isMonthDate
+                          ? AppColors.maincolor
+                          : isPast
                           ? Colors.grey.shade300
                           : AppColors.black,
                   fontFamily: AppConstants.manrope,

@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_this, unnecessary_new
+
 class SearchProductModel {
   int? status;
   String? message;
@@ -40,18 +42,19 @@ class Data {
   String? createdAt;
   String? updatedAt;
 
-  Data(
-      {this.id,
-      this.name,
-      this.price,
-      this.offerPrice,
-      this.description,
-      this.features,
-      this.images,
-      this.image,
-      this.status,
-      this.createdAt,
-      this.updatedAt});
+  Data({
+    this.id,
+    this.name,
+    this.price,
+    this.offerPrice,
+    this.description,
+    this.features,
+    this.images,
+    this.image,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -59,8 +62,15 @@ class Data {
     price = json['price'];
     offerPrice = json['offer_price'];
     description = json['description'];
-    features = json['features'].cast<String>();
-    images = json['images'].cast<String>();
+    features =
+        json['features'] is List
+            ? List<String>.from(json['features'])
+            : (json['features'] != null ? [json['features']] : []);
+    images =
+        json['images'] is List
+            ? List<String>.from(json['images'])
+            : (json['images'] != null ? [json['images']] : []);
+
     image = json['image'];
     status = json['status'];
     createdAt = json['created_at'];

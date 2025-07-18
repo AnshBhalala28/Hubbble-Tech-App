@@ -65,9 +65,7 @@ class _AllNotificationPageState extends State<AllNotificationPage> {
               },
             ),
             SizedBox(height: 3.h),
-            Expanded(
-              child: _buildNotificationList(),
-            ),
+            Expanded(child: _buildNotificationList()),
           ],
         ),
       ),
@@ -78,146 +76,156 @@ class _AllNotificationPageState extends State<AllNotificationPage> {
     return notificationmodel?.data == null ||
             notificationmodel!.data!.notifications!.isEmpty
         ? Center(
-            child: Text(
-              "No Notifications Available",
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-                fontFamily: AppConstants.manrope,
-              ),
-            ).paddingOnly(bottom: 6.h, top: 5.h),
-          )
+          child: Text(
+            "No Notifications Available",
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+              fontFamily: AppConstants.manrope,
+            ),
+          ).paddingOnly(bottom: 6.h, top: 5.h),
+        )
         : ListView.builder(
-            padding: EdgeInsets.zero,
-            itemCount: (notificationmodel?.data?.notifications?.length ?? 0),
-            itemBuilder: (context, index) {
-              var notification = notificationmodel?.data?.notifications?[index];
-              return GestureDetector(
-                onTap: () {
-                  String? type = notification?.type;
-                  log("Notification Type: $type");
+          padding: EdgeInsets.zero,
+          itemCount: (notificationmodel?.data?.notifications?.length ?? 0),
+          itemBuilder: (context, index) {
+            var notification = notificationmodel?.data?.notifications?[index];
+            return GestureDetector(
+              onTap: () {
+                String? type = notification?.type;
+                log("Notification Type: $type");
 
-                  if (type == "messageboard") {
-                    Get.to(() => Messageboard());
-                  } else if (type == "parcel") {
-                    Get.to(() => ParcelScreen());
-                  } else if (type == "chat") {
-                    String chatName = "";
-                    String profileImage = "";
-                    String chatType = notification?.msgTo ?? "";
+                if (type == "messageboard") {
+                  Get.to(() => Messageboard());
+                } else if (type == "parcel") {
+                  Get.to(() => ParcelScreen());
+                } else if (type == "chat") {
+                  String chatName = "";
+                  String profileImage = "";
+                  String chatType = notification?.msgTo ?? "";
 
-                    if (notification?.conciergeProfile != null) {
-                      chatName =
-                          "${notification?.conciergeProfile?.firstName ?? ''} ${notification?.conciergeProfile?.lastName ?? ''}"
-                              .trim();
-                      if (notification?.conciergeProfile?.conciergeImage !=
-                              null &&
-                          notification!
-                              .conciergeProfile!.conciergeImage!.isNotEmpty) {
-                        profileImage = notification
-                            .conciergeProfile!.conciergeImage!.first;
-                      }
-                      log("Concierge Chat: $chatName");
-                    } else if (notification?.businessProfile != null) {
-                      chatName = notification?.businessProfile?.name ?? '';
+                  if (notification?.conciergeProfile != null) {
+                    chatName =
+                        "${notification?.conciergeProfile?.firstName ?? ''} ${notification?.conciergeProfile?.lastName ?? ''}"
+                            .trim();
+                    if (notification?.conciergeProfile?.conciergeImage !=
+                            null &&
+                        notification!
+                            .conciergeProfile!
+                            .conciergeImage!
+                            .isNotEmpty) {
                       profileImage =
-                          notification?.businessProfile?.profile ?? '';
-                      log("Business Chat: $chatName");
+                          notification.conciergeProfile!.conciergeImage!.first;
                     }
-
-                    Get.to(() => MessageScreen(
-                          chatName: chatName,
-                          conciergeID:
-                              notification?.chatCreateId.toString() ?? "",
-                          type: chatType,
-                          image: profileImage,
-                        ));
-                  } else if (type == "visitor") {
-                    Get.to(() => VisitorScreen());
-                  } else if (type == "order") {
-                    Get.to(() => Orderdetail_Screen(
-                          orderid: notification?.msgTo ?? "",
-                          orderProductID:
-                              notification?.chatCreateId.toString() ?? "",
-                        ));
-                  } else {
-                    log("Unknown notification type: $type");
+                    log("Concierge Chat: $chatName");
+                  } else if (notification?.businessProfile != null) {
+                    chatName = notification?.businessProfile?.name ?? '';
+                    profileImage = notification?.businessProfile?.profile ?? '';
+                    log("Business Chat: $chatName");
                   }
 
-                  Readnotification();
-                },
-                child: Container(
-                  height: 15.h,
-                  margin: EdgeInsets.only(bottom: 1.h),
-                  width: double.infinity,
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: AppColors.maincolor,
-                        radius: 6.w,
-                        child: Icon(Icons.notifications,
-                            color: Colors.white, size: 5.w),
-                      ),
-                      SizedBox(width: 4.w),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              notification?.type?.capitalizeFirst ?? "No Type",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17.sp,
-                                fontFamily: AppConstants.manrope,
-                              ),
-                            ),
-                            SizedBox(height: 0.5.h),
-                            Text(
-                              notification?.data?.capitalizeFirst ??
-                                  "No Message",
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: Colors.grey.shade700,
-                                fontFamily: AppConstants.manrope,
-                              ),
-                            ),
-                            SizedBox(height: 0.5.h),
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Icon(Icons.timer,
-                                      color: Colors.grey, size: 15.sp),
-                                  SizedBox(width: 1.w),
-                                  Text(
-                                    formatDateTime(
-                                        notification?.notificationDate ?? ''),
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      color: Colors.grey.shade500,
-                                      fontFamily: AppConstants.manrope,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                  Get.to(
+                    () => MessageScreen(
+                      chatName: chatName,
+                      conciergeID: notification?.chatCreateId.toString() ?? "",
+                      type: chatType,
+                      image: profileImage,
+                    ),
+                  );
+                } else if (type == "visitor") {
+                  Get.to(() => VisitorScreen());
+                } else if (type == "order") {
+                  Get.to(
+                    () => Orderdetail_Screen(
+                      orderid: notification?.msgTo ?? "",
+                      orderProductID:
+                          notification?.chatCreateId.toString() ?? "",
+                    ),
+                  );
+                } else {
+                  log("Unknown notification type: $type");
+                }
+
+                Readnotification();
+              },
+              child: Container(
+                height: 15.h,
+                margin: EdgeInsets.only(bottom: 1.h),
+                width: double.infinity,
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
                 ),
-              );
-            },
-          );
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: AppColors.maincolor,
+                      radius: 6.w,
+                      child: Icon(
+                        Icons.notifications,
+                        color: Colors.white,
+                        size: 5.w,
+                      ),
+                    ),
+                    SizedBox(width: 4.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            notification?.type?.capitalizeFirst ?? "No Type",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17.sp,
+                              fontFamily: AppConstants.manrope,
+                            ),
+                          ),
+                          SizedBox(height: 0.5.h),
+                          Text(
+                            notification?.data?.capitalizeFirst ?? "No Message",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colors.grey.shade700,
+                              fontFamily: AppConstants.manrope,
+                            ),
+                          ),
+                          SizedBox(height: 0.5.h),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Icon(
+                                  Icons.timer,
+                                  color: Colors.grey,
+                                  size: 15.sp,
+                                ),
+                                SizedBox(width: 1.w),
+                                Text(
+                                  formatDateTime(
+                                    notification?.notificationDate ?? '',
+                                  ),
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: Colors.grey.shade500,
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
   }
 
   String formatDateTime(String? createdAt) {
@@ -230,13 +238,13 @@ class _AllNotificationPageState extends State<AllNotificationPage> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response = await NotificationProvider()
-              .NotificationApi((loginModel?.data?.user?.id).toString());
+          final response = await NotificationProvider().notificationApi(
+            (loginModel?.data?.user?.id).toString(),
+          );
           EasyLoading.dismiss();
           if (response.statusCode == 200) {
             setState(() {
-              notificationmodel =
-                  NotificationModell.fromJson(json.decode(response.body));
+              notificationmodel = NotificationModell.fromJson(response.data);
             });
           } else {
             log(" Failed response error: ${response.statusCode}");
@@ -255,18 +263,19 @@ class _AllNotificationPageState extends State<AllNotificationPage> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response = await NotificationProvider().ReadNotificationApi(
-              (notificationmodel?.data?.notifications?[0].id).toString());
+          final response = await NotificationProvider().notificationReadApi(
+            (notificationmodel?.data?.notifications?[0].id).toString(),
+          );
           print(
-              "Get Notification user id all page : ${(notificationmodel?.data?.notifications?[0].id).toString()}");
+            "Get Notification user id all page : ${(notificationmodel?.data?.notifications?[0].id).toString()}",
+          );
           EasyLoading.dismiss();
           if (response.statusCode == 200) {
-            notificationreadModel =
-                NotificationReadModel.fromJson(json.decode(response.body));
-            print("Read Notification get: ${response.body}");
+            notificationreadModel = NotificationReadModel.fromJson(
+              response.data,
+            );
           } else {
             log(" Failed response error ave che: ${response.statusCode}");
-            log(" Response body: ${response.body}");
           }
         } catch (e, stackTrace) {
           log("Exception occurred: $e");

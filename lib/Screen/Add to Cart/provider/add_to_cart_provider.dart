@@ -1,92 +1,147 @@
-import 'dart:developer';
-import 'dart:io';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
-
-import '../../../../comman/const.dart';
+import 'package:wavee/comman/apiConfig.dart';
+import 'package:wavee/comman/apiEndpoint.dart';
+import 'package:wavee/comman/responses.dart';
+import 'package:wavee/comman/store_local.dart';
 
 class CartProvider extends ChangeNotifier {
-  Future<http.Response> GetCartDetailsApi(String UserId) async {
-    String url = '${baseUrl}/getCart?user_id=$UserId';
-    print("Business Profile Url : $url");
+  Future<Response> cartDetailApi(id) async {
     try {
-      final response = await http.get(Uri.parse(url)).timeout(
-        const Duration(seconds: 60),
-        onTimeout: () {
-          throw SocketException('Request timed out');
-        },
-      );
-      if (response.statusCode == 200) {
-        print("Successful response: ${response.body}");
-        log("lat");
-        return response;
-      } else {
-        print("Failed response: ${response.statusCode}");
-        throw Exception("Failed to connect to the server");
+      String? token = await SaveDataLocal.getToken();
+      if (token != null && token.isNotEmpty) {
+        Map<String, String> headers = {'X-Auth-Token': '$token'};
       }
-    } on SocketException catch (e) {
-      throw Exception('No Internet connection: $e');
-    } catch (e) {
-      throw Exception('An error occurred: $e');
+
+      final dio = await DioHelper.getDio();
+      final response = await dio.get(
+        ApiEndpoint.cartDetail,
+        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        queryParameters: {'user_id': id},
+      );
+      print("Login Success: ${response.data}");
+      return response;
+    } on DioException catch (e) {
+      throw Exception(handleDioError(e));
     }
   }
 
-  Future<http.Response> UpdateCartQuantity(Map<String, String> bodyData) async {
-    const url = '$baseUrl/updateCartQuantity';
-    print("Request URL: $url");
+  Future<Response> updateCartQuantityApi(Map<String, String> bodyData) async {
     try {
-      final response = await http
-          .post(
-        Uri.parse(url),
-        body: bodyData,
-      )
-          .timeout(
-        const Duration(seconds: 60),
-        onTimeout: () {
-          throw const SocketException('Request timed out');
-        },
-      );
-      if (response.statusCode == 200) {
-        log("Successful response: ${response.body}");
-        return response;
-      } else {
-        log("Failed response: ${response.statusCode}");
-        throw Exception("Failed to connect to the server");
+      final dio = await DioHelper.getDio();
+      String? token = await SaveDataLocal.getToken();
+      if (token != null && token.isNotEmpty) {
+        Map<String, String> headers = {'X-Auth-Token': '$token'};
       }
-    } on SocketException catch (e) {
-      throw Exception('No Internet connection: $e');
-    } catch (e) {
-      throw Exception('An error occurred: $e');
+
+      final response = await dio.post(
+        ApiEndpoint.updateCartQuantity,
+        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        data: bodyData,
+      );
+
+      return response;
+    } on DioException catch (e) {
+      throw Exception(handleDioError(e));
     }
   }
 
-  Future<http.Response> RemoveFromCartApi(Map<String, String> bodyData) async {
-    const url = '$baseUrl/removeFromCart';
-    print("Request URL: $url");
+  Future<Response> removeCartApi(Map<String, String> bodyData) async {
     try {
-      final response = await http
-          .post(
-        Uri.parse(url),
-        body: bodyData,
-      )
-          .timeout(
-        const Duration(seconds: 60),
-        onTimeout: () {
-          throw const SocketException('Request timed out');
-        },
-      );
-      if (response.statusCode == 200) {
-        log("Successful response: ${response.body}");
-        return response;
-      } else {
-        log("Failed response: ${response.statusCode}");
-        throw Exception("Failed to connect to the server");
+      final dio = await DioHelper.getDio();
+      String? token = await SaveDataLocal.getToken();
+      if (token != null && token.isNotEmpty) {
+        Map<String, String> headers = {'X-Auth-Token': '$token'};
       }
-    } on SocketException catch (e) {
-      throw Exception('No Internet connection: $e');
-    } catch (e) {
-      throw Exception('An error occurred: $e');
+
+      final response = await dio.post(
+        ApiEndpoint.removeFromCart,
+        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        data: bodyData,
+      );
+
+      return response;
+    } on DioException catch (e) {
+      throw Exception(handleDioError(e));
     }
   }
 }
+
+// class CartProvider extends ChangeNotifier {
+//   Future<http.Response> GetCartDetailsApi(String UserId) async {
+//     String url = '${baseUrl}/getCart?user_id=$UserId';
+//     print("Business Profile Url : $url");
+//     try {
+//       final response = await http
+//           .get(Uri.parse(url))
+//           .timeout(
+//             const Duration(seconds: 60),
+//             onTimeout: () {
+//               throw SocketException('Request timed out');
+//             },
+//           );
+//       if (response.statusCode == 200) {
+//         print("Successful response: ${response.body}");
+//         log("lat");
+//         return response;
+//       } else {
+//         print("Failed response: ${response.statusCode}");
+//         throw Exception("Failed to connect to the server");
+//       }
+//     } on SocketException catch (e) {
+//       throw Exception('No Internet connection: $e');
+//     } catch (e) {
+//       throw Exception('An error occurred: $e');
+//     }
+//   }
+//   Future<http.Response> UpdateCartQuantity(Map<String, String> bodyData) async {
+//     const url = '$baseUrl/updateCartQuantity';
+//     print("Request URL: $url");
+//     try {
+//       final response = await http
+//           .post(Uri.parse(url), body: bodyData)
+//           .timeout(
+//             const Duration(seconds: 60),
+//             onTimeout: () {
+//               throw const SocketException('Request timed out');
+//             },
+//           );
+//       if (response.statusCode == 200) {
+//         log("Successful response: ${response.body}");
+//         return response;
+//       } else {
+//         log("Failed response: ${response.statusCode}");
+//         throw Exception("Failed to connect to the server");
+//       }
+//     } on SocketException catch (e) {
+//       throw Exception('No Internet connection: $e');
+//     } catch (e) {
+//       throw Exception('An error occurred: $e');
+//     }
+//   }
+//   Future<http.Response> RemoveFromCartApi(Map<String, String> bodyData) async {
+//     const url = '$baseUrl/removeFromCart';
+//     print("Request URL: $url");
+//     try {
+//       final response = await http
+//           .post(Uri.parse(url), body: bodyData)
+//           .timeout(
+//             const Duration(seconds: 60),
+//             onTimeout: () {
+//               throw const SocketException('Request timed out');
+//             },
+//           );
+//       if (response.statusCode == 200) {
+//         log("Successful response: ${response.body}");
+//         return response;
+//       } else {
+//         log("Failed response: ${response.statusCode}");
+//         throw Exception("Failed to connect to the server");
+//       }
+//     } on SocketException catch (e) {
+//       throw Exception('No Internet connection: $e');
+//     } catch (e) {
+//       throw Exception('An error occurred: $e');
+//     }
+//   }
+// }

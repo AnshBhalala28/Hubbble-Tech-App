@@ -23,7 +23,6 @@ import 'package:wavee/comman/custom_button.dart';
 import 'package:wavee/comman/error_dialog.dart';
 import 'package:wavee/comman/store_local.dart';
 
-
 import '../Screen/Authcation/Model/DeleteAccountModel.dart';
 import '../Screen/Authcation/Provider/authcation_provider.dart';
 import '../Screen/Booking/View/book_amenities.dart';
@@ -94,9 +93,7 @@ class _SideMenuState extends State<SideMenu> {
         height: MediaQuery.of(context).size.height,
         child: ListView(
           children: [
-            SizedBox(
-              height: 0.5.h,
-            ),
+            SizedBox(height: 0.5.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -116,18 +113,19 @@ class _SideMenuState extends State<SideMenu> {
                         child: CachedNetworkImage(
                           fit: BoxFit.cover,
                           imageUrl: profileModel?.data?.user?.profile ?? '',
-                          placeholder: (context, url) =>
-                              Center(child: CircularProgressIndicator()),
-                          errorWidget: (context, url, error) => CircleAvatar(
-                            backgroundImage:
-                                AssetImage("assets/images/waveeLogoShort.png"),
-                          ),
+                          placeholder:
+                              (context, url) =>
+                                  Center(child: CircularProgressIndicator()),
+                          errorWidget:
+                              (context, url, error) => CircleAvatar(
+                                backgroundImage: AssetImage(
+                                  "assets/images/waveeLogoShort.png",
+                                ),
+                              ),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 1.h,
-                    ),
+                    SizedBox(height: 1.h),
                     GestureDetector(
                       onTap: () {},
                       child: Text(
@@ -145,9 +143,7 @@ class _SideMenuState extends State<SideMenu> {
                 ),
               ],
             ),
-            SizedBox(
-              height: 0.5.h,
-            ),
+            SizedBox(height: 0.5.h),
             Divider(),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
@@ -171,9 +167,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Parcel',
                                   style: TextStyle(
@@ -193,9 +187,7 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {
                           Get.to(VisitorScreen());
@@ -210,9 +202,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Visitors',
                                   style: TextStyle(
@@ -232,9 +222,7 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {
                           Get.to(MaintenanceScreen());
@@ -244,11 +232,12 @@ class _SideMenuState extends State<SideMenu> {
                           children: [
                             Row(
                               children: [
-                                Icon(FontAwesomeIcons.toolbox,
-                                    color: Colors.black, size: 20.sp),
-                                SizedBox(
-                                  width: 4.w,
+                                Icon(
+                                  FontAwesomeIcons.toolbox,
+                                  color: Colors.black,
+                                  size: 20.sp,
                                 ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Maintenance',
                                   style: TextStyle(
@@ -268,14 +257,10 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {
-                          Get.to(Messageboard(
-                            selected: 4,
-                          ));
+                          Get.to(Messageboard(selected: 4));
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -287,9 +272,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Message Board',
                                   style: TextStyle(
@@ -309,9 +292,7 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {
                           Get.back();
@@ -327,9 +308,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Friends',
                                   style: TextStyle(
@@ -349,9 +328,7 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {
                           Get.back();
@@ -367,9 +344,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Groups',
                                   style: TextStyle(
@@ -389,9 +364,7 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {
                           Get.to(BookAmenities_Screen());
@@ -406,9 +379,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Amenities',
                                   style: TextStyle(
@@ -428,9 +399,7 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {
                           Get.to(BookingScreen());
@@ -445,9 +414,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Amenities Booking',
                                   style: TextStyle(
@@ -475,10 +442,7 @@ class _SideMenuState extends State<SideMenu> {
                     children: [
                       InkWell(
                         onTap: () {
-                          Get.to(ChatScreen(
-                            selected: 2,
-                            selectedIndex: 0,
-                          ));
+                          Get.to(ChatScreen(selected: 2, selectedIndex: 0));
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -490,9 +454,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Concierge',
                                   style: TextStyle(
@@ -512,15 +474,10 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {
-                          Get.to(ChatScreen(
-                            selected: 2,
-                            selectedIndex: 1,
-                          ));
+                          Get.to(ChatScreen(selected: 2, selectedIndex: 1));
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -532,9 +489,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Businesses',
                                   style: TextStyle(
@@ -554,9 +509,7 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {
                           // Get.to(() => const ChatBotScreen());
@@ -571,9 +524,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Wave Ai Concierge',
                                   style: TextStyle(
@@ -614,9 +565,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 SizedBox(
                                   width: 50.w,
                                   child: Text(
@@ -639,9 +588,7 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {
                           Get.to(FavouriteBusinessesPage());
@@ -656,9 +603,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Favourites',
                                   style: TextStyle(
@@ -678,9 +623,7 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {
                           Get.back();
@@ -696,9 +639,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Events',
                                   style: TextStyle(
@@ -718,9 +659,7 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {
                           Get.back();
@@ -736,9 +675,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Services Booking',
                                   style: TextStyle(
@@ -758,9 +695,7 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {
                           Get.back();
@@ -776,9 +711,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Events Booking',
                                   style: TextStyle(
@@ -806,21 +739,21 @@ class _SideMenuState extends State<SideMenu> {
                     children: [
                       InkWell(
                         onTap: () {
-                          Get.to(AddToCartView(
-                            selected: 4,
-                            fromBottomBar: true,
-                          ));
+                          Get.to(
+                            AddToCartView(selected: 4, fromBottomBar: true),
+                          );
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               children: [
-                                Icon(FontAwesomeIcons.bagShopping,
-                                    color: Colors.black, size: 20.sp),
-                                SizedBox(
-                                  width: 4.w,
+                                Icon(
+                                  FontAwesomeIcons.bagShopping,
+                                  color: Colors.black,
+                                  size: 20.sp,
                                 ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'My Cart',
                                   style: TextStyle(
@@ -840,25 +773,22 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {
-                          Get.to(Order_Screen(
-                            selected: 5,
-                          ));
+                          Get.to(Order_Screen(selected: 5));
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               children: [
-                                Icon(FontAwesomeIcons.toolbox,
-                                    color: Colors.black, size: 20.sp),
-                                SizedBox(
-                                  width: 4.w,
+                                Icon(
+                                  FontAwesomeIcons.toolbox,
+                                  color: Colors.black,
+                                  size: 20.sp,
                                 ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'My Order',
                                   style: TextStyle(
@@ -886,9 +816,7 @@ class _SideMenuState extends State<SideMenu> {
                     children: [
                       InkWell(
                         onTap: () {
-                          Get.to(ViewProfile(
-                            id: loginModel?.data?.user?.id,
-                          ));
+                          Get.to(ViewProfile(id: loginModel?.data?.user?.id));
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -900,9 +828,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'My Profile',
                                   style: TextStyle(
@@ -922,9 +848,7 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {
                           launchPrivacyPolicyUrl();
@@ -934,11 +858,12 @@ class _SideMenuState extends State<SideMenu> {
                           children: [
                             Row(
                               children: [
-                                Icon(FontAwesomeIcons.toolbox,
-                                    color: Colors.black, size: 20.sp),
-                                SizedBox(
-                                  width: 4.w,
+                                Icon(
+                                  FontAwesomeIcons.toolbox,
+                                  color: Colors.black,
+                                  size: 20.sp,
                                 ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Privacy Policy',
                                   style: TextStyle(
@@ -958,9 +883,7 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {
                           launchTermsUrl();
@@ -970,11 +893,12 @@ class _SideMenuState extends State<SideMenu> {
                           children: [
                             Row(
                               children: [
-                                Icon(FontAwesomeIcons.toolbox,
-                                    color: Colors.black, size: 20.sp),
-                                SizedBox(
-                                  width: 4.w,
+                                Icon(
+                                  FontAwesomeIcons.toolbox,
+                                  color: Colors.black,
+                                  size: 20.sp,
                                 ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Terms & Conditions',
                                   style: TextStyle(
@@ -994,9 +918,7 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {
                           showDialog(
@@ -1046,78 +968,79 @@ class _SideMenuState extends State<SideMenu> {
                                           SizedBox(height: 2.h),
                                           isLoading
                                               ? Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 2.h),
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    color: AppColors.maincolor,
-                                                  ),
-                                                )
-                                              : Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Material(
-                                                        elevation: 2,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(12),
-                                                        child: batan(
-                                                          title: "No",
-                                                          route: () {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          },
-                                                          color:
-                                                              AppColors.white,
-                                                          fontcolor:
-                                                              Colors.black,
-                                                          height: 5.h,
-                                                          fontsize: 16.sp,
-                                                          radius: 12.0,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 2.w),
-                                                    Expanded(
-                                                      child: Material(
-                                                        elevation: 2,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(12),
-                                                        child: batan(
-                                                          title: "Yes",
-                                                          route: () async {
-                                                            setState(() {
-                                                              isLoading = true;
-                                                            });
-
-                                                            await DeleteAccount1();
-
-                                                            if (Navigator
-                                                                .canPop(
-                                                                    context)) {
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                            }
-
-                                                            setState(() {
-                                                              isLoading = false;
-                                                            });
-                                                          },
-                                                          color: AppColors
-                                                              .maincolor,
-                                                          fontcolor:
-                                                              Colors.white,
-                                                          height: 5.h,
-                                                          fontsize: 16.sp,
-                                                          radius: 12.0,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
+                                                padding: EdgeInsets.symmetric(
+                                                  vertical: 2.h,
                                                 ),
+                                                child:
+                                                    CircularProgressIndicator(
+                                                      color:
+                                                          AppColors.maincolor,
+                                                    ),
+                                              )
+                                              : Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Material(
+                                                      elevation: 2,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            12,
+                                                          ),
+                                                      child: batan(
+                                                        title: "No",
+                                                        route: () {
+                                                          Navigator.of(
+                                                            context,
+                                                          ).pop();
+                                                        },
+                                                        color: AppColors.white,
+                                                        fontcolor: Colors.black,
+                                                        height: 5.h,
+                                                        fontsize: 16.sp,
+                                                        radius: 12.0,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 2.w),
+                                                  Expanded(
+                                                    child: Material(
+                                                      elevation: 2,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            12,
+                                                          ),
+                                                      child: batan(
+                                                        title: "Yes",
+                                                        route: () async {
+                                                          setState(() {
+                                                            isLoading = true;
+                                                          });
+
+                                                          await DeleteAccount1();
+
+                                                          if (Navigator.canPop(
+                                                            context,
+                                                          )) {
+                                                            Navigator.of(
+                                                              context,
+                                                            ).pop();
+                                                          }
+
+                                                          setState(() {
+                                                            isLoading = false;
+                                                          });
+                                                        },
+                                                        color:
+                                                            AppColors.maincolor,
+                                                        fontcolor: Colors.white,
+                                                        height: 5.h,
+                                                        fontsize: 16.sp,
+                                                        radius: 12.0,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                           SizedBox(height: 1.h),
                                         ],
                                       ),
@@ -1138,9 +1061,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Delete Account',
                                   style: TextStyle(
@@ -1160,9 +1081,7 @@ class _SideMenuState extends State<SideMenu> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
+                      SizedBox(height: 1.5.h),
                       InkWell(
                         onTap: () {},
                         child: Row(
@@ -1175,9 +1094,7 @@ class _SideMenuState extends State<SideMenu> {
                                   color: Colors.black,
                                   size: 20.sp,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'Core Capabilities',
                                   style: TextStyle(
@@ -1199,9 +1116,7 @@ class _SideMenuState extends State<SideMenu> {
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 1.5.h,
-                  ),
+                  SizedBox(height: 1.5.h),
                   Container(
                     width: double.infinity,
                     height: 5.h,
@@ -1254,61 +1169,64 @@ class _SideMenuState extends State<SideMenu> {
                                         SizedBox(height: 2.h),
                                         isLoading
                                             ? Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 2.h),
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  color: AppColors.maincolor,
-                                                ),
-                                              )
-                                            : Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Material(
-                                                      elevation: 2,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
-                                                      child: batan(
-                                                        title: "No",
-                                                        route: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                        color: AppColors.white,
-                                                        fontcolor: Colors.black,
-                                                        height: 5.h,
-                                                        fontsize: 16.sp,
-                                                        radius: 12.0,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 2.w),
-                                                  Expanded(
-                                                    child: Material(
-                                                      elevation: 2,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
-                                                      child: batan(
-                                                        title: "Yes",
-                                                        route: () async {
-                                                          await SaveDataLocal
-                                                              .clearUserData();
-                                                          Get.offAll(() =>
-                                                              LoginScreen());
-                                                        },
-                                                        color:
-                                                            AppColors.maincolor,
-                                                        fontcolor: Colors.white,
-                                                        height: 5.h,
-                                                        fontsize: 16.sp,
-                                                        radius: 12.0,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 2.h,
                                               ),
+                                              child: CircularProgressIndicator(
+                                                color: AppColors.maincolor,
+                                              ),
+                                            )
+                                            : Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Material(
+                                                    elevation: 2,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
+                                                    child: batan(
+                                                      title: "No",
+                                                      route: () {
+                                                        Navigator.of(
+                                                          context,
+                                                        ).pop();
+                                                      },
+                                                      color: AppColors.white,
+                                                      fontcolor: Colors.black,
+                                                      height: 5.h,
+                                                      fontsize: 16.sp,
+                                                      radius: 12.0,
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 2.w),
+                                                Expanded(
+                                                  child: Material(
+                                                    elevation: 2,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
+                                                    child: batan(
+                                                      title: "Yes",
+                                                      route: () async {
+                                                        await SaveDataLocal.clearUserData();
+                                                        Get.offAll(
+                                                          () => LoginScreen(),
+                                                        );
+                                                      },
+                                                      color:
+                                                          AppColors.maincolor,
+                                                      fontcolor: Colors.white,
+                                                      height: 5.h,
+                                                      fontsize: 16.sp,
+                                                      radius: 12.0,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                         SizedBox(height: 1.h),
                                       ],
                                     ),
@@ -1330,9 +1248,10 @@ class _SideMenuState extends State<SideMenu> {
                       child: Text(
                         "Log out",
                         style: TextStyle(
-                            fontFamily: AppConstants.manrope,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold),
+                          fontFamily: AppConstants.manrope,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
@@ -1349,19 +1268,20 @@ class _SideMenuState extends State<SideMenu> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await AuthProvider()
-              .DeleteAccount(loginModel?.data?.user?.id.toString() ?? "");
+          var response = await AuthProvider().deleteAccApi(
+            loginModel?.data?.user?.id.toString() ?? "",
+          );
           print(response);
-          deleteAccountModel =
-              DeleteAccountModel.fromJson(jsonDecode(response.body));
+          deleteAccountModel = DeleteAccountModel.fromJson(response.data);
           if (response.statusCode == 200) {
             showSnackBar(
-                title: "Delete",
-                message: "Delete Account successfully.",
-                backgoundColor: AppColors.white,
-                ColorText: AppColors.maincolor,
-                IconColor: AppColors.white,
-                IconName: Icons.check_circle);
+              title: "Delete",
+              message: "Delete Account successfully.",
+              backgoundColor: AppColors.white,
+              ColorText: AppColors.maincolor,
+              IconColor: AppColors.white,
+              IconName: Icons.check_circle,
+            );
 
             SaveDataLocal.clearUserData();
             setState(() {
@@ -1373,12 +1293,13 @@ class _SideMenuState extends State<SideMenu> {
               isLoading = false;
             });
             showSnackBar(
-                title: "Error",
-                message: "${deleteAccountModel?.message}",
-                backgoundColor: Colors.red.shade400,
-                ColorText: Colors.white,
-                IconColor: Colors.white);
-            print("Geeting Error api mathi ${response.body}");
+              title: "Error",
+              message: "${deleteAccountModel?.message}",
+              backgoundColor: Colors.red.shade400,
+              ColorText: Colors.white,
+              IconColor: Colors.white,
+            );
+            print("Geeting Error api mathi ${response.data}");
           }
         } catch (e, stackTrace) {
           if (mounted) {
@@ -1390,11 +1311,12 @@ class _SideMenuState extends State<SideMenu> {
           log("Geeting Error strace ni error $stackTrace");
 
           showSnackBar(
-              title: "Error",
-              message: "${e}",
-              backgoundColor: Colors.red.shade400,
-              ColorText: Colors.white,
-              IconColor: Colors.white);
+            title: "Error",
+            message: "${e}",
+            backgoundColor: Colors.red.shade400,
+            ColorText: Colors.white,
+            IconColor: Colors.white,
+          );
         }
       } else {
         setState(() {
@@ -1405,21 +1327,15 @@ class _SideMenuState extends State<SideMenu> {
     });
   }
 
-  void GetProfile() {
+  GetProfile() {
     final Map<String, String> data = {
-      'id': loginModel?.data?.user?.id.toString() ?? ''
+      'id': loginModel?.data?.user?.id.toString() ?? '',
     };
-    print("RegisterApi : ${data}");
-
     checkInternet().then((internet) async {
       if (internet) {
-        ProfileProvider().ProfileApi(data).then((response) async {
-          profileModel = ProfileModel.fromJson(jsonDecode(response.body));
+        ProfileProvider().profileApi(data).then((response) async {
+          profileModel = ProfileModel.fromJson(response.data);
           if (response.statusCode == 200 && profileModel?.status == 200) {
-            print("adfdsfsdf${response.body}");
-            print(
-                "1111111111>>>>>>>>>>>>.${profileModel?.data?.user?.profile}");
-
             if (mounted) {
               setState(() {
                 isLoading = false;
@@ -1429,7 +1345,6 @@ class _SideMenuState extends State<SideMenu> {
             setState(() {
               isLoading = false;
             });
-            log("Error");
           }
         });
       } else {

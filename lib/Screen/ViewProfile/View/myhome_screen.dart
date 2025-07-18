@@ -75,267 +75,290 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
       body: Stack(
         children: [
           isLoading
-              ? Center(
-                  child: Loader(),
-                )
+              ? Center(child: Loader())
               : Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.h),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        SizedBox(height: 2.h),
-                        TitleBar(
-                          back: () {
-                            Get.back();
-                          },
-                          title: "My Home",
-                          drawerCallback: () =>
-                              Myhome.currentState?.openDrawer(),
-                        ),
-                        SizedBox(height: 3.h),
-                        profileField("Property Address", fullAddressController,
-                            Icons.location_on, false),
-                        profileField(
-                          "Key Waivers",
-                          KeyWaiversController,
-                          Icons.vpn_key,
-                          true,
-                        ),
-                        SizedBox(height: 0.5.h),
-                        profileModel?.data?.unit?.documentsFiles?.length ==
-                                    null ||
-                                profileModel
-                                        ?.data?.unit?.documentsFiles?.length ==
-                                    0
-                            ? SizedBox()
-                            : Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Text(
-                                      "Apartment Documents",
-                                      style: TextStyle(
-                                        fontFamily: AppConstants.manrope,
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.h),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 2.h),
+                      TitleBar(
+                        back: () {
+                          Get.back();
+                        },
+                        title: "My Home",
+                        drawerCallback: () => Myhome.currentState?.openDrawer(),
+                      ),
+                      SizedBox(height: 3.h),
+                      profileField(
+                        "Property Address",
+                        fullAddressController,
+                        Icons.location_on,
+                        false,
+                      ),
+                      profileField(
+                        "Key Waivers",
+                        KeyWaiversController,
+                        Icons.vpn_key,
+                        true,
+                      ),
+                      SizedBox(height: 0.5.h),
+                      profileModel?.data?.unit?.documentsFiles?.length ==
+                                  null ||
+                              profileModel
+                                      ?.data
+                                      ?.unit
+                                      ?.documentsFiles
+                                      ?.length ==
+                                  0
+                          ? SizedBox()
+                          : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  "Apartment Documents",
+                                  style: TextStyle(
+                                    fontFamily: AppConstants.manrope,
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  SizedBox(height: 2.h),
-                                  GridView.builder(
-                                    shrinkWrap: true,
-                                    padding: EdgeInsets.zero,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                ),
+                              ),
+                              SizedBox(height: 2.h),
+                              GridView.builder(
+                                shrinkWrap: true,
+                                padding: EdgeInsets.zero,
+                                physics: NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 3,
                                       crossAxisSpacing: 10,
                                       mainAxisSpacing: 15,
                                       childAspectRatio: 0.8,
                                     ),
-                                    itemCount: profileModel?.data?.unit
-                                            ?.documentsFiles?.length ??
-                                        0,
-                                    itemBuilder: (context, index) {
-                                      final documentUrl = profileModel!
-                                          .data!.unit!.documentsFiles![index];
-                                      final labels = profileModel!
-                                          .data!.unit!.documentsFilesLabel;
+                                itemCount:
+                                    profileModel
+                                        ?.data
+                                        ?.unit
+                                        ?.documentsFiles
+                                        ?.length ??
+                                    0,
+                                itemBuilder: (context, index) {
+                                  final documentUrl =
+                                      profileModel!
+                                          .data!
+                                          .unit!
+                                          .documentsFiles![index];
+                                  final labels =
+                                      profileModel!
+                                          .data!
+                                          .unit!
+                                          .documentsFilesLabel;
 
-                                      String label = (labels != null &&
-                                              index < labels.length)
+                                  String label =
+                                      (labels != null && index < labels.length)
                                           ? labels[index]
                                           : 'Document ${index + 1}';
 
-                                      String finalLabel = label.isNotEmpty
+                                  String finalLabel =
+                                      label.isNotEmpty
                                           ? label[0].toUpperCase() +
                                               label.substring(1)
                                           : 'Document ${index + 1}';
 
-                                      return GestureDetector(
-                                        onTap: () {
-                                          if (documentUrl.isNotEmpty) {
-                                            Get.to(PdfView(link: documentUrl));
-                                          }
-                                        },
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              height: 7.h,
-                                              width: 15.w,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                border: Border.all(
-                                                    width: 1,
-                                                    color: AppColors.maincolor),
-                                              ),
-                                              child: Icon(
-                                                Icons.picture_as_pdf,
-                                                color: AppColors.maincolor,
-                                                size: 30.sp,
-                                              ),
-                                            ),
-                                            SizedBox(height: 8),
-                                            Expanded(
-                                              child: Text(
-                                                finalLabel,
-                                                textAlign: TextAlign.center,
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 2,
-                                                style:
-                                                    TextStyle(fontSize: 15.sp),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
+                                  return GestureDetector(
+                                    onTap: () {
+                                      if (documentUrl.isNotEmpty) {
+                                        Get.to(PdfView(link: documentUrl));
+                                      }
                                     },
-                                  ),
-
-                                ],
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 7.h,
+                                          width: 15.w,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            border: Border.all(
+                                              width: 1,
+                                              color: AppColors.maincolor,
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            Icons.picture_as_pdf,
+                                            color: AppColors.maincolor,
+                                            size: 30.sp,
+                                          ),
+                                        ),
+                                        SizedBox(height: 8),
+                                        Expanded(
+                                          child: Text(
+                                            finalLabel,
+                                            textAlign: TextAlign.center,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 2,
+                                            style: TextStyle(fontSize: 15.sp),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
                               ),
+                            ],
+                          ),
 
-                        profileModel
-                            ?.data
-                            ?.buildingDocument?.documentsFiles?.length ==
-                            null ||
-                            profileModel
-                                ?.data
-                                ?.buildingDocument?.documentsFiles?.length ==
-                                0
-                            ? SizedBox()
-                            : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Building Documents",
-                                style: TextStyle(
-                                  fontFamily: AppConstants.manrope,
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.bold,
+                      profileModel
+                                      ?.data
+                                      ?.buildingDocument
+                                      ?.documentsFiles
+                                      ?.length ==
+                                  null ||
+                              profileModel
+                                      ?.data
+                                      ?.buildingDocument
+                                      ?.documentsFiles
+                                      ?.length ==
+                                  0
+                          ? SizedBox()
+                          : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  "Building Documents",
+                                  style: TextStyle(
+                                    fontFamily: AppConstants.manrope,
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(height: 2.h),
-                            GridView.builder(
-                              shrinkWrap: true,
-                              padding: EdgeInsets.zero,
-                              physics: NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 15,
-                                childAspectRatio: 0.8,
-                              ),
-                              itemCount: profileModel
-                                  ?.data
-                                  ?.buildingDocument
-                                  ?.documentsFiles
-                                  ?.length ??
-                                  0,
-                              itemBuilder: (context, index) {
-                                final documentUrl = profileModel!
-                                    .data!
-                                    .buildingDocument!
-                                    .documentsFiles![index];
-                                final labels = profileModel!
-                                    .data!
-                                    .buildingDocument!
-                                    .documentsFilesLabel;
+                              SizedBox(height: 2.h),
+                              GridView.builder(
+                                shrinkWrap: true,
+                                padding: EdgeInsets.zero,
+                                physics: NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,
+                                      crossAxisSpacing: 10,
+                                      mainAxisSpacing: 15,
+                                      childAspectRatio: 0.8,
+                                    ),
+                                itemCount:
+                                    profileModel
+                                        ?.data
+                                        ?.buildingDocument
+                                        ?.documentsFiles
+                                        ?.length ??
+                                    0,
+                                itemBuilder: (context, index) {
+                                  final documentUrl =
+                                      profileModel!
+                                          .data!
+                                          .buildingDocument!
+                                          .documentsFiles![index];
+                                  final labels =
+                                      profileModel!
+                                          .data!
+                                          .buildingDocument!
+                                          .documentsFilesLabel;
 
-                                if (documentUrl == null ||
-                                    documentUrl.isEmpty)
-                                  return SizedBox();
+                                  if (documentUrl == null ||
+                                      documentUrl.isEmpty)
+                                    return SizedBox();
 
-                                String label = (labels != null &&
-                                    index < labels.length)
-                                    ? labels[index]
-                                    : 'Document ${index + 1}';
+                                  String label =
+                                      (labels != null && index < labels.length)
+                                          ? labels[index]
+                                          : 'Document ${index + 1}';
 
-                                String finalLabel = label.isNotEmpty
-                                    ? label[0].toUpperCase() +
-                                    label.substring(1)
-                                    : 'Document ${index + 1}';
+                                  String finalLabel =
+                                      label.isNotEmpty
+                                          ? label[0].toUpperCase() +
+                                              label.substring(1)
+                                          : 'Document ${index + 1}';
 
-                                return GestureDetector(
-                                  onTap: () {
-                                    Get.to(PdfView(link: documentUrl));
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Container(
-
-                                        height: 7.h,
-                                        width: 15.w,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(10),
-                                          border: Border.all(
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Get.to(PdfView(link: documentUrl));
+                                    },
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 7.h,
+                                          width: 15.w,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            border: Border.all(
                                               width: 1,
-                                              color: AppColors.maincolor),
+                                              color: AppColors.maincolor,
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            Icons.picture_as_pdf,
+                                            color: AppColors.maincolor,
+                                            size: 30.sp,
+                                          ),
                                         ),
-                                        child: Icon(
-                                          Icons.picture_as_pdf,
-                                          color: AppColors.maincolor,
-                                          size: 30.sp,
+                                        SizedBox(height: 8),
+                                        Expanded(
+                                          child: Text(
+                                            finalLabel,
+                                            textAlign: TextAlign.center,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 2,
+                                            style: TextStyle(fontSize: 15.sp),
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(height: 8),
-                                      Expanded(
-                                        child: Text(
-                                          finalLabel,
-                                          textAlign: TextAlign.center,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                          style:
-                                          TextStyle(fontSize: 15.sp),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-
-
-                          ],
-                        ),
-                        batan(
-                          title: "Save Home",
-                          route: () {
-                            EditProfile();
-                          },
-                          color: AppColors.maincolor,
-                          fontcolor: Colors.white,
-                          height: 5.5.h,
-                          fontsize: 17.sp,
-                          radius: 12.0,
-                        ),
-                      ],
-                    ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                      batan(
+                        title: "Save Home",
+                        route: () {
+                          EditProfile();
+                        },
+                        color: AppColors.maincolor,
+                        fontcolor: Colors.white,
+                        height: 5.5.h,
+                        fontsize: 17.sp,
+                        radius: 12.0,
+                      ),
+                    ],
                   ),
                 ),
+              ),
           if (isEditing)
             Container(
               color: Colors.black.withOpacity(0.3),
-              child: Center(
-                child: Loader(),
-              ),
+              child: Center(child: Loader()),
             ),
         ],
       ),
     );
   }
 
-  Widget profileField(String label, TextEditingController controller,
-      IconData icon, bool isEditable,
-      {TextInputType keyboardType = TextInputType.text,
-      List<TextInputFormatter>? inputFormatters}) {
+  Widget profileField(
+    String label,
+    TextEditingController controller,
+    IconData icon,
+    bool isEditable, {
+    TextInputType keyboardType = TextInputType.text,
+    List<TextInputFormatter>? inputFormatters,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -357,9 +380,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
           textCapitalization: TextCapitalization.words,
           keyboardType: keyboardType,
           inputFormatters: inputFormatters,
-          decoration: inputDecoration(
-            hintText: label,
-          ).copyWith(
+          decoration: inputDecoration(hintText: label).copyWith(
             prefixIcon: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Icon(icon, size: 20.sp, color: AppColors.maincolor),
@@ -382,8 +403,12 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
 
     checkInternet().then((internet) async {
       if (!internet) {
-        Get.snackbar("Error", "Internet Required",
-            backgroundColor: Colors.red, colorText: Colors.white);
+        Get.snackbar(
+          "Error",
+          "Internet Required",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
         return;
       }
 
@@ -392,40 +417,58 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
       });
 
       try {
-        final response =
-            await ProfileProvider().ProfileEdit(data, selectedImage);
+        final response = await ProfileProvider().updateProfile(data);
 
         log("Response Status Code: ${response.statusCode}");
-        log("Response Body: ${response.body}");
+        log("Response Body: ${response.data}");
 
         if (response.statusCode == 200) {
-          var profileModel = ProfileModel.fromJson(jsonDecode(response.body));
+          var profileModel = ProfileModel.fromJson(response.data);
 
           if (profileModel.status == 200) {
             log("Profile Updated Successfully");
 
-            Get.snackbar("Success", "Home Updated Successfully",
-                backgroundColor: AppColors.maincolor, colorText: Colors.white);
+            Get.snackbar(
+              "Success",
+              "Home Updated Successfully",
+              backgroundColor: AppColors.maincolor,
+              colorText: Colors.white,
+            );
 
             Future.delayed(Duration(seconds: 1), () {
               Get.offAll(HomePage(userName: ""));
             });
           } else {
             Get.snackbar(
-                "Error", "Failed to update profile: ${profileModel.message}",
-                backgroundColor: Colors.red, colorText: Colors.white);
+              "Error",
+              "Failed to update profile: ${profileModel.message}",
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+            );
           }
         } else if (response.statusCode == 422) {
-          Get.snackbar("Error", "Validation Error: ${response.body}",
-              backgroundColor: Colors.orange, colorText: Colors.white);
+          Get.snackbar(
+            "Error",
+            "Validation Error: ${response.data['message']}",
+            backgroundColor: Colors.orange,
+            colorText: Colors.white,
+          );
         } else {
-          Get.snackbar("Error", "Server error, please try again",
-              backgroundColor: Colors.red, colorText: Colors.white);
+          Get.snackbar(
+            "Error",
+            "Server error, please try again",
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
         }
       } catch (e, straceTrace) {
         log("Exception error : $e, $straceTrace");
-        Get.snackbar("Error", "An error occurred: $e",
-            backgroundColor: Colors.red, colorText: Colors.white);
+        Get.snackbar(
+          "Error",
+          "An error occurred: $e",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
       } finally {
         setState(() {
           isEditing = false;
@@ -439,12 +482,11 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
     log('DATA$data');
     checkInternet().then((internet) async {
       if (internet) {
-        ProfileProvider().ProfileApi(data).then((response) async {
+        ProfileProvider().profileApi(data).then((response) async {
           if (response.statusCode == 200) {
             setState(() {
-              var profileModel = ProfileModel.fromJson(jsonDecode(response.body));
+              var profileModel = ProfileModel.fromJson(response.data);
               if (profileModel.status == 200) {
-                log("sadfsafds${response.body}");
                 var user = profileModel.data?.user;
                 var unit = profileModel.data?.unit;
 
@@ -453,7 +495,9 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
 
                   /// Function to check valid string (not null, not empty, not "N/A")
                   bool isValid(String? value) {
-                    return value != null && value.trim().isNotEmpty && value != "N/A";
+                    return value != null &&
+                        value.trim().isNotEmpty &&
+                        value != "N/A";
                   }
 
                   /// Build Address Parts
@@ -480,7 +524,8 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
 
                   fullAddressController.text = addressParts.join(', ');
 
-                  KeyWaiversController.text = isValid(unit?.keyWaiver) ? unit!.keyWaiver! : "";
+                  KeyWaiversController.text =
+                      isValid(unit?.keyWaiver) ? unit!.keyWaiver! : "";
 
                   propertydetailsController.text = [
                     if (isValid(unit?.blockNumber)) unit!.blockNumber!,

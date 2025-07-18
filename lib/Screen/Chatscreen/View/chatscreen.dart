@@ -34,12 +34,8 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final List<Map<String, dynamic>> categories = [
-    {
-      "title": "Concierge",
-    },
-    {
-      "title": "Business",
-    },
+    {"title": "Concierge"},
+    {"title": "Business"},
   ];
 
   String AppLat = '';
@@ -85,13 +81,15 @@ class _ChatScreenState extends State<ChatScreen> {
     }
 
     Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+      desiredAccuracy: LocationAccuracy.high,
+    );
     if (mounted) {
       setState(() {
         AppLat = position.latitude.toString();
         AppLon = position.longitude.toString();
         print(
-            "Latitude: ${position.latitude}, Longitude: ${position.longitude}");
+          "Latitude: ${position.latitude}, Longitude: ${position.longitude}",
+        );
       });
     }
   }
@@ -104,8 +102,11 @@ class _ChatScreenState extends State<ChatScreen> {
 
       DateTime today = DateTime(now.year, now.month, now.day);
       DateTime yesterday = today.subtract(const Duration(days: 1));
-      DateTime dateToCompare =
-          DateTime(parsedDate.year, parsedDate.month, parsedDate.day);
+      DateTime dateToCompare = DateTime(
+        parsedDate.year,
+        parsedDate.month,
+        parsedDate.day,
+      );
 
       if (dateToCompare == today) {
         return "Today";
@@ -137,8 +138,11 @@ class _ChatScreenState extends State<ChatScreen> {
       } else {
         DateTime today = DateTime(now.year, now.month, now.day);
         DateTime yesterday = today.subtract(const Duration(days: 1));
-        DateTime dateToCompare =
-            DateTime(parsedDate.year, parsedDate.month, parsedDate.day);
+        DateTime dateToCompare = DateTime(
+          parsedDate.year,
+          parsedDate.month,
+          parsedDate.day,
+        );
 
         if (dateToCompare == today) {
           return "Today at ${DateFormat('hh:mm a').format(parsedDate)}";
@@ -178,10 +182,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   String selectedValue = 'Concierge';
 
-  final List<String> options = [
-    'Concierge',
-    'Businesses',
-  ];
+  final List<String> options = ['Concierge', 'Businesses'];
 
   @override
   Widget build(BuildContext context) {
@@ -232,31 +233,37 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: DropdownButton<String>(
                           value: selectedValue,
                           isExpanded: true,
-                          icon: Icon(Icons.keyboard_arrow_down_rounded,
-                              color: Colors.grey),
+                          icon: Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            color: Colors.grey,
+                          ),
                           style: TextStyle(
                             fontFamily: AppConstants.manrope,
                             fontSize: 12.sp,
                             color: Colors.black,
                           ),
-                          items: options.map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 1.2.h),
-                                child: Text(
-                                  value,
-                                  style: TextStyle(
-                                    fontSize: 17.sp,
-                                    color: value == 'Select option'
-                                        ? Colors.grey
-                                        : Colors.black,
-                                    fontFamily: AppConstants.manrope,
+                          items:
+                              options.map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 1.2.h,
+                                    ),
+                                    child: Text(
+                                      value,
+                                      style: TextStyle(
+                                        fontSize: 17.sp,
+                                        color:
+                                            value == 'Select option'
+                                                ? Colors.grey
+                                                : Colors.black,
+                                        fontFamily: AppConstants.manrope,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                                );
+                              }).toList(),
                           onChanged: (newValue) {
                             setState(() {
                               selectedValue = newValue!;
@@ -281,106 +288,117 @@ class _ChatScreenState extends State<ChatScreen> {
                   chatStories?.data?.length == 0
                       ? SizedBox()
                       : Text(
-                          "Business Spotlight",
-                          style: TextStyle(
-                            fontSize: 20.sp,
-                            fontFamily: AppConstants.manrope,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        "Business Spotlight",
+                        style: TextStyle(
+                          fontSize: 20.sp,
+                          fontFamily: AppConstants.manrope,
+                          fontWeight: FontWeight.bold,
                         ),
+                      ),
                   chatStories?.data?.length == 0
-                      ? SizedBox():   SizedBox(height: 1.h),
+                      ? SizedBox()
+                      : SizedBox(height: 1.h),
                   chatStories?.data?.length == 0
                       ? SizedBox()
                       : SizedBox(
-                          height: 17.h,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            shrinkWrap: true,
-                            physics: ClampingScrollPhysics(),
-                            itemCount: chatStories?.data?.length,
-                            itemBuilder: (context, index) {
-                              final item = chatStories?.data?[index];
-                              return item?.posts?.isEmpty == true
-                                  ? Container()
-                                  : InkWell(
-                                      onTap: () {
-                                        if (item?.posts?.isNotEmpty == true) {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) => StoryViewerScreen(
-                                                userId: chatStories
-                                                        ?.data?[index].id ??
+                        height: 17.h,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          physics: ClampingScrollPhysics(),
+                          itemCount: chatStories?.data?.length,
+                          itemBuilder: (context, index) {
+                            final item = chatStories?.data?[index];
+                            return item?.posts?.isEmpty == true
+                                ? Container()
+                                : InkWell(
+                                  onTap: () {
+                                    if (item?.posts?.isNotEmpty == true) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (_) => StoryViewerScreen(
+                                                userId:
+                                                    chatStories
+                                                        ?.data?[index]
+                                                        .id ??
                                                     0,
                                               ),
-                                            ),
-                                          );
-                                        }
-                                      },
-                                      child: Container(
-                                        width: 23.w,
-                                        margin: EdgeInsets.only(right: 4.w),
-                                        child: Column(
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              child: CachedNetworkImage(
-                                                imageUrl: item?.logo ?? '',
-                                                height: 9.h,
-                                                width: 9.h,
-                                                fit: BoxFit.cover,
-                                                placeholder: (context, url) =>
-                                                    Center(
-                                                        child:
-                                                            CircularProgressIndicator(
-                                                  color: AppColors.blackColor,
-                                                )),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        Image.asset(
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: Container(
+                                    width: 23.w,
+                                    margin: EdgeInsets.only(right: 4.w),
+                                    child: Column(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                          child: CachedNetworkImage(
+                                            imageUrl: item?.logo ?? '',
+                                            height: 9.h,
+                                            width: 9.h,
+                                            fit: BoxFit.cover,
+                                            placeholder:
+                                                (context, url) => Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                        color:
+                                                            AppColors
+                                                                .blackColor,
+                                                      ),
+                                                ),
+                                            errorWidget:
+                                                (
+                                                  context,
+                                                  url,
+                                                  error,
+                                                ) => Image.asset(
                                                   'assets/images/waveeLogoShort.png',
                                                   height: 9.h,
                                                   width: 9.h,
                                                   fit: BoxFit.cover,
                                                 ),
-                                              ),
-                                            ),
-                                            SizedBox(height: 1.h),
-                                            Text(
-                                              item?.businessName ?? '',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontSize: 15.sp,
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                              ),
-                                            ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
-                                    );
-                            },
-                          ),
+                                        SizedBox(height: 1.h),
+                                        Text(
+                                          item?.businessName ?? '',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontFamily: AppConstants.manrope,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                          },
                         ),
+                      ),
                   chatStories?.data?.length == 0
-                      ? SizedBox():        SizedBox(height: 1.h),
+                      ? SizedBox()
+                      : SizedBox(height: 1.h),
                   chatStories?.data?.length == 0
-                      ? SizedBox():       Container(
-                    height: 0.14,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: AppColors.batanColor,
-                    ),
-                  ),
+                      ? SizedBox()
+                      : Container(
+                        height: 0.14,
+                        width: double.infinity,
+                        decoration: BoxDecoration(color: AppColors.batanColor),
+                      ),
                   SizedBox(height: 2.h),
                   if (chatModel?.data?.businessUsers == null ||
                       chatModel?.data?.businessUsers == "" ||
                       chatModel?.data?.businessUsers == 0)
                     Center(
-                      child:
-                          CircularProgressIndicator(color: AppColors.maincolor),
+                      child: CircularProgressIndicator(
+                        color: AppColors.maincolor,
+                      ),
                     ).paddingOnly(bottom: 2.h)
                   else ...[
                     Builder(
@@ -388,16 +406,19 @@ class _ChatScreenState extends State<ChatScreen> {
                         List businessUsersList =
                             chatModel?.data?.businessUsers ?? [];
 
-                        List filteredList = businessUsersList.where((user) {
-                          String businessName =
-                              user.business?.businessName?.toLowerCase() ?? "";
-                          String lastMessage =
-                              user.lastMessage?.toLowerCase() ?? "";
-                          String searchQueryLower = searchQuery.toLowerCase();
-                          return searchQuery.isEmpty ||
-                              businessName.contains(searchQueryLower) ||
-                              lastMessage.contains(searchQueryLower);
-                        }).toList();
+                        List filteredList =
+                            businessUsersList.where((user) {
+                              String businessName =
+                                  user.business?.businessName?.toLowerCase() ??
+                                  "";
+                              String lastMessage =
+                                  user.lastMessage?.toLowerCase() ?? "";
+                              String searchQueryLower =
+                                  searchQuery.toLowerCase();
+                              return searchQuery.isEmpty ||
+                                  businessName.contains(searchQueryLower) ||
+                                  lastMessage.contains(searchQueryLower);
+                            }).toList();
 
                         if (filteredList.isEmpty) {
                           return Center(
@@ -421,7 +442,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   var user = filteredList[i];
                                   String displayName =
                                       user.business?.businessName ??
-                                          "Unknown Business";
+                                      "Unknown Business";
                                   return InkWell(
                                     onTap: () {
                                       Get.to(
@@ -434,22 +455,30 @@ class _ChatScreenState extends State<ChatScreen> {
                                               user.business?.chatStatus ?? 0,
                                         ),
                                       );
-                                      log("Tapped Business User ID: ${user.id.toString() ?? ''}");
-                                      log("Tapped Business User ID ${user.business?.chatStatus ?? 0}");
+                                      log(
+                                        "Tapped Business User ID: ${user.id.toString() ?? ''}",
+                                      );
+                                      log(
+                                        "Tapped Business User ID ${user.business?.chatStatus ?? 0}",
+                                      );
                                       ChatApi();
                                     },
                                     child: Stack(
                                       children: [
                                         Container(
-                                          margin:
-                                              EdgeInsets.only(bottom: 1.5.h),
+                                          margin: EdgeInsets.only(
+                                            bottom: 1.5.h,
+                                          ),
                                           padding: EdgeInsets.all(2.w),
                                           decoration: BoxDecoration(
                                             color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(20),
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
                                             border: Border.all(
-                                                color: Colors.grey, width: 0.5),
+                                              color: Colors.grey,
+                                              width: 0.5,
+                                            ),
                                             boxShadow: [
                                               BoxShadow(
                                                 color: Colors.black12,
@@ -466,23 +495,30 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 borderRadius:
                                                     BorderRadius.circular(30),
                                                 child: CachedNetworkImage(
-                                                  imageUrl: user.business?.logo
+                                                  imageUrl:
+                                                      user.business?.logo
                                                           ?.toString() ??
                                                       "",
-                                                  placeholder: (context, url) =>
-                                                      CircleAvatar(
-                                                    radius: 24,
-                                                    backgroundColor:
-                                                        Colors.grey.shade300,
-                                                  ),
+                                                  placeholder:
+                                                      (context, url) =>
+                                                          CircleAvatar(
+                                                            radius: 24,
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .grey
+                                                                    .shade300,
+                                                          ),
                                                   errorWidget:
-                                                      (context, url, error) =>
-                                                          Image.asset(
-                                                    'assets/images/appLogo.png',
-                                                    height: 9.h,
-                                                    width: 9.h,
-                                                    fit: BoxFit.cover,
-                                                  ),
+                                                      (
+                                                        context,
+                                                        url,
+                                                        error,
+                                                      ) => Image.asset(
+                                                        'assets/images/appLogo.png',
+                                                        height: 9.h,
+                                                        width: 9.h,
+                                                        fit: BoxFit.cover,
+                                                      ),
                                                   width: 60,
                                                   height: 60,
                                                   fit: BoxFit.cover,
@@ -500,8 +536,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                           Container(
                                                             width: 10,
                                                             height: 10,
-                                                            decoration:
-                                                                BoxDecoration(
+                                                            decoration: BoxDecoration(
                                                               color:
                                                                   user.isOnline ==
                                                                           "online"
@@ -509,51 +544,51 @@ class _ChatScreenState extends State<ChatScreen> {
                                                                           .green
                                                                       : Colors
                                                                           .red,
-                                                              shape: BoxShape
-                                                                  .circle,
+                                                              shape:
+                                                                  BoxShape
+                                                                      .circle,
                                                               border: Border.all(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  width: 1.5),
+                                                                color:
+                                                                    Colors
+                                                                        .white,
+                                                                width: 1.5,
+                                                              ),
                                                             ),
                                                           ),
-                                                          SizedBox(
-                                                            width: 1.w,
-                                                          ),
+                                                          SizedBox(width: 1.w),
                                                           user.isOnline ==
                                                                   "online"
                                                               ? Text(
-                                                                  user.isOnline ??
-                                                                      "Offline",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        14.sp,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    fontFamily:
-                                                                        AppConstants
-                                                                            .manrope,
-                                                                  ),
-                                                                )
-                                                              : Text(
-                                                                  formatLastOnline(user
-                                                                          ?.lastOnlineAt
-                                                                          .toString() ??
-                                                                      ""),
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        14.sp,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    fontFamily:
-                                                                        AppConstants
-                                                                            .manrope,
-                                                                  ),
+                                                                user.isOnline ??
+                                                                    "Offline",
+                                                                style: TextStyle(
+                                                                  fontSize:
+                                                                      14.sp,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontFamily:
+                                                                      AppConstants
+                                                                          .manrope,
                                                                 ),
+                                                              )
+                                                              : Text(
+                                                                formatLastOnline(
+                                                                  user?.lastOnlineAt
+                                                                          .toString() ??
+                                                                      "",
+                                                                ),
+                                                                style: TextStyle(
+                                                                  fontSize:
+                                                                      14.sp,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontFamily:
+                                                                      AppConstants
+                                                                          .manrope,
+                                                                ),
+                                                              ),
                                                         ],
                                                       ),
                                                     ],
@@ -561,13 +596,13 @@ class _ChatScreenState extends State<ChatScreen> {
                                                   Text(
                                                     displayName,
                                                     style: TextStyle(
-                                                        fontSize: 16.sp,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontFamily: AppConstants
-                                                            .manrope,
-                                                        color:
-                                                            Color(0XFF000000)),
+                                                      fontSize: 16.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                      color: Color(0XFF000000),
+                                                    ),
                                                   ),
                                                   SizedBox(height: 0.5.h),
                                                   SizedBox(
@@ -580,8 +615,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                                       style: TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold,
-                                                        fontFamily: AppConstants
-                                                            .manrope,
+                                                        fontFamily:
+                                                            AppConstants
+                                                                .manrope,
                                                         color: Colors.grey,
                                                         fontSize: 15.sp,
                                                       ),
@@ -601,24 +637,25 @@ class _ChatScreenState extends State<ChatScreen> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    _formatTime(user
-                                                            ?.lastOnlineAt
-                                                            .toString() ??
-                                                        ""),
+                                                    _formatTime(
+                                                      user?.lastOnlineAt
+                                                              .toString() ??
+                                                          "",
+                                                    ),
                                                     style: TextStyle(
-                                                        fontSize: 15.sp,
-                                                        color:
-                                                            Color(0xFF000000),
-                                                        fontFamily: AppConstants
-                                                            .manrope,
-                                                        fontWeight:
-                                                            FontWeight.normal),
+                                                      fontSize: 15.sp,
+                                                      color: Color(0xFF000000),
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                    ),
                                                   ),
                                                   Icon(
                                                     Icons
                                                         .arrow_forward_ios_rounded,
                                                     size: 15.sp,
-                                                  )
+                                                  ),
                                                 ],
                                               ),
                                               if (user.unreadCount != 0)
@@ -631,8 +668,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                                       user.unreadCount
                                                           .toString(),
                                                       style: TextStyle(
-                                                        fontFamily: AppConstants
-                                                            .manrope,
+                                                        fontFamily:
+                                                            AppConstants
+                                                                .manrope,
                                                         fontSize: 14.sp,
                                                         color: Colors.white,
                                                         fontWeight:
@@ -643,7 +681,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 ),
                                             ],
                                           ),
-                                        )
+                                        ),
                                       ],
                                     ),
                                   );
@@ -658,348 +696,371 @@ class _ChatScreenState extends State<ChatScreen> {
                 if (selectedValue != "Businesses") ...[
                   Container(
                     padding: EdgeInsets.zero,
-                    child: isLoading
-                        ? Container(
-                            margin: EdgeInsets.only(top: 20.h),
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.maincolor,
-                              ),
-                            ),
-                          )
-                        : chatModel?.data?.concierges?.isEmpty ?? true
+                    child:
+                        isLoading
                             ? Container(
-                                child: Center(
-                                  child: Text(
-                                    "No Concierges Available",
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey,
-                                      fontFamily: AppConstants.manrope,
-                                    ),
+                              margin: EdgeInsets.only(top: 20.h),
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: AppColors.maincolor,
+                                ),
+                              ),
+                            )
+                            : chatModel?.data?.concierges?.isEmpty ?? true
+                            ? Container(
+                              child: Center(
+                                child: Text(
+                                  "No Concierges Available",
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                    fontFamily: AppConstants.manrope,
                                   ),
                                 ),
-                              )
+                              ),
+                            )
                             : Builder(
-                                builder: (context) {
-                                  List conciergeList =
-                                      chatModel?.data?.concierges ?? [];
+                              builder: (context) {
+                                List conciergeList =
+                                    chatModel?.data?.concierges ?? [];
 
-                                  List filteredList =
-                                      conciergeList.where((concierge) {
-                                    return searchQuery.isEmpty ||
-                                        (concierge.firstName
-                                                ?.toLowerCase()
-                                                .contains(searchQuery
-                                                    .toLowerCase()) ??
-                                            false) ||
-                                        (concierge.lastName
-                                                ?.toLowerCase()
-                                                .contains(searchQuery
-                                                    .toLowerCase()) ??
-                                            false);
-                                  }).toList();
+                                List filteredList =
+                                    conciergeList.where((concierge) {
+                                      return searchQuery.isEmpty ||
+                                          (concierge.firstName
+                                                  ?.toLowerCase()
+                                                  .contains(
+                                                    searchQuery.toLowerCase(),
+                                                  ) ??
+                                              false) ||
+                                          (concierge.lastName
+                                                  ?.toLowerCase()
+                                                  .contains(
+                                                    searchQuery.toLowerCase(),
+                                                  ) ??
+                                              false);
+                                    }).toList();
 
-                                  if (filteredList.isEmpty) {
-                                    return Center(
-                                      child: Text(
-                                        "No Concierge found",
-                                        style: TextStyle(
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.grey,
-                                          fontFamily: AppConstants.manrope,
-                                        ),
+                                if (filteredList.isEmpty) {
+                                  return Center(
+                                    child: Text(
+                                      "No Concierge found",
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey,
+                                        fontFamily: AppConstants.manrope,
                                       ),
-                                    ).paddingOnly(top: 20.h);
-                                  }
+                                    ),
+                                  ).paddingOnly(top: 20.h);
+                                }
 
-                                  return ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    padding: EdgeInsets.zero,
-                                    itemCount: filteredList.length,
-                                    itemBuilder: (context, index) {
-                                      var concierge = filteredList[index];
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  padding: EdgeInsets.zero,
+                                  itemCount: filteredList.length,
+                                  itemBuilder: (context, index) {
+                                    var concierge = filteredList[index];
 
-                                      return GestureDetector(
-                                        onTap: () {
-                                          Get.to(
-                                            MessageScreen(
-                                              chatName:
-                                                  "${concierge.firstName ?? ''} ${concierge.lastName ?? ''}",
-                                              image: concierge.conciergeImage,
-                                              conciergeID:
-                                                  concierge.id.toString() ?? '',
-                                              type: "concierge",
-                                              address: concierge.address ??
-                                                  'Not Available',
-                                              phone: concierge.phoneNumber ??
-                                                  'Not Available',
-                                              dob: concierge.dateOfBirth ??
-                                                  'Not Available',
-                                              email: concierge.email ??
-                                                  'Not Available',
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Get.to(
+                                          MessageScreen(
+                                            chatName:
+                                                "${concierge.firstName ?? ''} ${concierge.lastName ?? ''}",
+                                            image: concierge.conciergeImage,
+                                            conciergeID:
+                                                concierge.id.toString() ?? '',
+                                            type: "concierge",
+                                            address:
+                                                concierge.address ??
+                                                'Not Available',
+                                            phone:
+                                                concierge.phoneNumber ??
+                                                'Not Available',
+                                            dob:
+                                                concierge.dateOfBirth ??
+                                                'Not Available',
+                                            email:
+                                                concierge.email ??
+                                                'Not Available',
+                                          ),
+                                        );
+                                        log(
+                                          "Tapped Concierge ID: ${concierge.id.toString() ?? ''}",
+                                        );
+                                        ChatApi();
+                                      },
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(
+                                              bottom: 1.5.h,
                                             ),
-                                          );
-                                          log("Tapped Concierge ID: ${concierge.id.toString() ?? ''}");
-                                          ChatApi();
-                                        },
-                                        child: Stack(
-                                          children: [
-                                            Container(
-                                              margin: EdgeInsets.only(
-                                                  bottom: 1.5.h),
-                                              padding: EdgeInsets.all(2.w),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                border: Border.all(
-                                                    color: Colors.grey,
-                                                    width: 0.5),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.black12,
-                                                    blurRadius: 4,
-                                                    offset: Offset(0, 2),
-                                                  ),
-                                                ],
+                                            padding: EdgeInsets.all(2.w),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              border: Border.all(
+                                                color: Colors.grey,
+                                                width: 0.5,
                                               ),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            30),
-                                                    child: CachedNetworkImage(
-                                                      imageUrl: concierge
-                                                              .conciergeImage
-                                                              ?.toString() ??
-                                                          "",
-                                                      placeholder:
-                                                          (context, url) =>
-                                                              CircleAvatar(
-                                                        radius: 24,
-                                                        backgroundColor: Colors
-                                                            .grey.shade300,
-                                                      ),
-                                                      errorWidget: (context,
-                                                              url, error) =>
-                                                          Image.asset(
-                                                        'assets/images/appLogo.png',
-                                                        height: 9.h,
-                                                        width: 9.h,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                      width: 60,
-                                                      height: 60,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 3.w),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      //  Row(
-                                                      //   children: [
-                                                      //     Container(
-                                                      //       width: 10,
-                                                      //       height: 10,
-                                                      //       decoration: BoxDecoration(
-                                                      //         color: concierge?.livestatus == "Active" ? Colors.green : Colors.red,
-                                                      //         shape: BoxShape.circle,
-                                                      //         border: Border.all(color: Colors.white, width: 1.5),
-                                                      //       ),
-                                                      //     ),
-                                                      //     SizedBox(width: 1.w),
-                                                      //     Text(
-                                                      //       concierge?.livestatus == "Active" ? "Online" : "Offline",
-                                                      //       style: TextStyle(
-                                                      //         fontSize: 14.sp,
-                                                      //         fontWeight: FontWeight.bold,
-                                                      //         fontFamily: AppConstants.manrope,
-                                                      //       ),
-                                                      //     ),
-                                                      //   ],
-                                                      // ),
-                                                      Row(
-                                                        children: [
-                                                          Row(
-                                                            children: [
-                                                              Container(
-                                                                width: 10,
-                                                                height: 10,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color: concierge
-                                                                              .livestatus ==
-                                                                          "Active"
-                                                                      ? Colors
-                                                                          .green
-                                                                      : Colors
-                                                                          .red,
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                  border: Border.all(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      width:
-                                                                          1.5),
-                                                                ),
-                                                              ),
-                                                              SizedBox(
-                                                                width: 1.w,
-                                                              ),
-                                                              concierge.livestatus ==
-                                                                      "Active"
-                                                                  ? Text(
-                                                                      // user.isOnline ??
-                                                                      //     "Offline",
-                                                                      concierge.livestatus ==
-                                                                              "Active"
-                                                                          ? "Online"
-                                                                          : "Offline",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            14.sp,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                        fontFamily:
-                                                                            AppConstants.manrope,
-                                                                      ),
-                                                                    )
-                                                                  : Text(
-                                                                      formatLastOnline(
-                                                                          concierge?.lastMessageTime.toString() ??
-                                                                              ""),
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            14.sp,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                        fontFamily:
-                                                                            AppConstants.manrope,
-                                                                      ),
-                                                                    ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-
-                                                      Text(
-                                                        "${concierge.firstName ?? ""} ${concierge.lastName ?? ""}",
-                                                        style: TextStyle(
-                                                            fontSize: 16.sp,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manrope,
-                                                            color: Color(
-                                                                0XFF000000)),
-                                                      ),
-                                                      SizedBox(height: 0.5.h),
-                                                      SizedBox(
-                                                        width: 60.w,
-                                                        child: Text(
-                                                          concierge
-                                                                  .lastMessage ??
-                                                              'No message available',
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manrope,
-                                                            color: Colors.grey,
-                                                            fontSize: 15.sp,
-                                                          ),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black12,
+                                                  blurRadius: 4,
+                                                  offset: Offset(0, 2),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl:
+                                                        concierge.conciergeImage
+                                                            ?.toString() ??
+                                                        "",
+                                                    placeholder:
+                                                        (context, url) =>
+                                                            CircleAvatar(
+                                                              radius: 24,
+                                                              backgroundColor:
+                                                                  Colors
+                                                                      .grey
+                                                                      .shade300,
+                                                            ),
+                                                    errorWidget:
+                                                        (
+                                                          context,
+                                                          url,
+                                                          error,
+                                                        ) => Image.asset(
+                                                          'assets/images/appLogo.png',
+                                                          height: 9.h,
+                                                          width: 9.h,
+                                                          fit: BoxFit.cover,
                                                         ),
-                                                      ),
-                                                    ],
+                                                    width: 60,
+                                                    height: 60,
+                                                    fit: BoxFit.cover,
                                                   ),
-                                                  SizedBox(width: 2.w),
-                                                ],
-                                              ),
-                                            ),
-                                            Positioned(
-                                              right: 2.w,
-                                              top: 1.5.h,
-                                              child: Column(
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        _formatTime(concierge
-                                                            .lastMessageTime),
-                                                        style: TextStyle(
-                                                            fontSize: 15.sp,
-                                                            color: Color(
-                                                                0xFF000000),
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manrope,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .normal),
-                                                      ),
-                                                      Icon(
-                                                        Icons
-                                                            .arrow_forward_ios_rounded,
-                                                        size: 15.sp,
-                                                      )
-                                                    ],
-                                                  ),
-                                                  concierge.unreadCount == 0
-                                                      ? Container(
-                                                          height: 1, width: 1)
-                                                      : CircleAvatar(
-                                                          radius: 13,
-                                                          backgroundColor:
-                                                              AppColors
-                                                                  .maincolor,
-                                                          child: ClipOval(
-                                                            child: Center(
-                                                              child: Text(
-                                                                concierge
-                                                                    .unreadCount
-                                                                    .toString(),
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontFamily:
-                                                                      AppConstants
-                                                                          .manrope,
-                                                                  fontSize:
-                                                                      15.sp,
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
+                                                ),
+                                                SizedBox(width: 3.w),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    //  Row(
+                                                    //   children: [
+                                                    //     Container(
+                                                    //       width: 10,
+                                                    //       height: 10,
+                                                    //       decoration: BoxDecoration(
+                                                    //         color: concierge?.livestatus == "Active" ? Colors.green : Colors.red,
+                                                    //         shape: BoxShape.circle,
+                                                    //         border: Border.all(color: Colors.white, width: 1.5),
+                                                    //       ),
+                                                    //     ),
+                                                    //     SizedBox(width: 1.w),
+                                                    //     Text(
+                                                    //       concierge?.livestatus == "Active" ? "Online" : "Offline",
+                                                    //       style: TextStyle(
+                                                    //         fontSize: 14.sp,
+                                                    //         fontWeight: FontWeight.bold,
+                                                    //         fontFamily: AppConstants.manrope,
+                                                    //       ),
+                                                    //     ),
+                                                    //   ],
+                                                    // ),
+                                                    Row(
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              width: 10,
+                                                              height: 10,
+                                                              decoration: BoxDecoration(
+                                                                color:
+                                                                    concierge.livestatus ==
+                                                                            "Active"
+                                                                        ? Colors
+                                                                            .green
+                                                                        : Colors
+                                                                            .red,
+                                                                shape:
+                                                                    BoxShape
+                                                                        .circle,
+                                                                border: Border.all(
+                                                                  color:
+                                                                      Colors
+                                                                          .white,
+                                                                  width: 1.5,
                                                                 ),
                                                               ),
                                                             ),
+                                                            SizedBox(
+                                                              width: 1.w,
+                                                            ),
+                                                            concierge.livestatus ==
+                                                                    "Active"
+                                                                ? Text(
+                                                                  // user.isOnline ??
+                                                                  //     "Offline",
+                                                                  concierge.livestatus ==
+                                                                          "Active"
+                                                                      ? "Online"
+                                                                      : "Offline",
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        14.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontFamily:
+                                                                        AppConstants
+                                                                            .manrope,
+                                                                  ),
+                                                                )
+                                                                : Text(
+                                                                  formatLastOnline(
+                                                                    concierge
+                                                                            ?.lastMessageTime
+                                                                            .toString() ??
+                                                                        "",
+                                                                  ),
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        14.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontFamily:
+                                                                        AppConstants
+                                                                            .manrope,
+                                                                  ),
+                                                                ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+
+                                                    Text(
+                                                      "${concierge.firstName ?? ""} ${concierge.lastName ?? ""}",
+                                                      style: TextStyle(
+                                                        fontSize: 16.sp,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontFamily:
+                                                            AppConstants
+                                                                .manrope,
+                                                        color: Color(
+                                                          0XFF000000,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 0.5.h),
+                                                    SizedBox(
+                                                      width: 60.w,
+                                                      child: Text(
+                                                        concierge.lastMessage ??
+                                                            'No message available',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontFamily:
+                                                              AppConstants
+                                                                  .manrope,
+                                                          color: Colors.grey,
+                                                          fontSize: 15.sp,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(width: 2.w),
+                                              ],
+                                            ),
+                                          ),
+                                          Positioned(
+                                            right: 2.w,
+                                            top: 1.5.h,
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      _formatTime(
+                                                        concierge
+                                                            .lastMessageTime,
+                                                      ),
+                                                      style: TextStyle(
+                                                        fontSize: 15.sp,
+                                                        color: Color(
+                                                          0xFF000000,
+                                                        ),
+                                                        fontFamily:
+                                                            AppConstants
+                                                                .manrope,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                      ),
+                                                    ),
+                                                    Icon(
+                                                      Icons
+                                                          .arrow_forward_ios_rounded,
+                                                      size: 15.sp,
+                                                    ),
+                                                  ],
+                                                ),
+                                                concierge.unreadCount == 0
+                                                    ? Container(
+                                                      height: 1,
+                                                      width: 1,
+                                                    )
+                                                    : CircleAvatar(
+                                                      radius: 13,
+                                                      backgroundColor:
+                                                          AppColors.maincolor,
+                                                      child: ClipOval(
+                                                        child: Center(
+                                                          child: Text(
+                                                            concierge
+                                                                .unreadCount
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manrope,
+                                                              fontSize: 15.sp,
+                                                              color:
+                                                                  Colors.white,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
                                                           ),
                                                         ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ).marginOnly(bottom: 1.h),
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                  )
+                                                      ),
+                                                    ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ).marginOnly(bottom: 1.h),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                  ),
                 ],
               ],
             ),
@@ -1011,18 +1072,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void GetProfile() {
     final Map<String, String> data = {
-      'id': loginModel?.data?.user?.id.toString() ?? ''
+      'id': loginModel?.data?.user?.id.toString() ?? '',
     };
     print("RegisterApi : ${data}");
     checkInternet().then((internet) async {
       if (internet) {
-        ProfileProvider().ProfileApi(data).then((response) async {
-          profileModel = ProfileModel.fromJson(jsonDecode(response.body));
+        ProfileProvider().profileApi(data).then((response) async {
+          profileModel = ProfileModel.fromJson(response.data);
           if (response.statusCode == 200 && profileModel?.status == 200) {
-            print("adfdsfsdf${response.body}");
-            print(
-                "1111111111>>>>>>>>>>>>  ${profileModel?.data?.user?.profile}");
-
             setState(() {
               isLoading = false;
             });
@@ -1030,7 +1087,6 @@ class _ChatScreenState extends State<ChatScreen> {
             setState(() {
               isLoading = false;
             });
-            log("Error");
           }
         });
       } else {
@@ -1047,22 +1103,23 @@ class _ChatScreenState extends State<ChatScreen> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response = await ChatProvider()
-              .ChatApi(loginModel?.data?.user?.id, AppLon, AppLat);
+          final response = await ChatProvider().chatApi(
+            loginModel?.data?.user?.id.toString() ?? "",
+            AppLon,
+            AppLat,
+          );
 
           if (mounted) {
             setState(() {
-              chatModel = ChatModel.fromJson(jsonDecode(response.body));
+              chatModel = ChatModel.fromJson(response.data);
               isLoading = false;
             });
           }
 
           if (response.statusCode == 200) {
-            print("API Response: ${response.body}");
             print("User Profile: ${profileModel?.data?.user?.profile}");
           } else {
             log("Error with status code: ${response.statusCode}");
-            log("Response body: ${response.body}");
           }
         } catch (e) {
           if (mounted) {
@@ -1100,10 +1157,9 @@ class _ChatScreenState extends State<ChatScreen> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await ChatProvider().ChatStoryApi(data);
-          chatStories = ChatStoryModal.fromJson(jsonDecode(response.body));
-          if (response.statusCode == 200 && chatStories?.status == 200) {
-            log("API Response: ${response.body}");
+          var response = await ChatProvider().chatStoryApi(data);
+          chatStories = ChatStoryModal.fromJson(response.data);
+          if (response.statusCode == 200) {
             setState(() {
               isLoading = false;
             });
@@ -1114,10 +1170,11 @@ class _ChatScreenState extends State<ChatScreen> {
           }
         } catch (e, stackTrace) {
           log("Geeting Error ${stackTrace}");
-          if(mounted){
-          setState(() {
-            isLoading = false;
-          });}
+          if (mounted) {
+            setState(() {
+              isLoading = false;
+            });
+          }
         }
       } else {
         setState(() {

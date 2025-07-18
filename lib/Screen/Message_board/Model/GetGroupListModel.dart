@@ -169,7 +169,7 @@ class Users {
   int? mobileNo;
   String? gender;
   String? dateOfBirth;
-  String? address;
+  Address? address;
   String? psLatitude;
   String? psLongitude;
   String? fcmToken;
@@ -211,7 +211,8 @@ class Users {
     mobileNo = json['mobile_no'];
     gender = json['gender'];
     dateOfBirth = json['date_of_birth'];
-    address = json['address'];
+    address =
+    json['address'] != null ? new Address.fromJson(json['address']) : null;
     psLatitude = json['ps_latitude'];
     psLongitude = json['ps_longitude'];
     fcmToken = json['fcm_token'];
@@ -234,7 +235,9 @@ class Users {
     data['mobile_no'] = this.mobileNo;
     data['gender'] = this.gender;
     data['date_of_birth'] = this.dateOfBirth;
-    data['address'] = this.address;
+    if (this.address != null) {
+      data['address'] = this.address!.toJson();
+    }
     data['ps_latitude'] = this.psLatitude;
     data['ps_longitude'] = this.psLongitude;
     data['fcm_token'] = this.fcmToken;
@@ -244,6 +247,30 @@ class Users {
     data['profile'] = this.profile;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
+    return data;
+  }
+}
+class Address {
+  String? address;
+  String? city;
+  String? country;
+  String? zipCode;
+
+  Address({this.address, this.city, this.country, this.zipCode});
+
+  Address.fromJson(Map<String, dynamic> json) {
+    address = json['address'];
+    city = json['city'];
+    country = json['country'];
+    zipCode = json['zip_code'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['address'] = this.address;
+    data['city'] = this.city;
+    data['country'] = this.country;
+    data['zip_code'] = this.zipCode;
     return data;
   }
 }

@@ -37,7 +37,7 @@ class BusinessDetailScreen extends StatefulWidget {
   final BusnessViewModal? busnessviewmodal;
 
   const BusinessDetailScreen({Key? key, required this.busnessviewmodal})
-      : super(key: key);
+    : super(key: key);
 
   @override
   _BusinessDetailScreenState createState() => _BusinessDetailScreenState();
@@ -128,8 +128,10 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
 
   Future<void> getCityName(double latitude, double longitude) async {
     try {
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(latitude, longitude);
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        latitude,
+        longitude,
+      );
 
       if (placemarks.isNotEmpty) {
         setState(() {
@@ -141,12 +143,14 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
         setState(() {
           isSending = false;
         });
-        print(""
-            ""
-            ""
-            ""
-            ""
-            " $city");
+        print(
+          ""
+          ""
+          ""
+          ""
+          ""
+          " $city",
+        );
       }
     } catch (e) {
       print("Error: $e");
@@ -210,18 +214,23 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                     children: [
                                       CircleAvatar(
                                         radius: 40,
-                                        backgroundImage: (busnessviewmodal
-                                                    ?.data
-                                                    ?.business
-                                                    ?.logo
-                                                    ?.isNotEmpty ??
-                                                false)
-                                            ? CachedNetworkImageProvider(
-                                                busnessviewmodal!
-                                                    .data!.business!.logo!)
-                                            : AssetImage(
-                                                    "assets/images/waveeLogoShort.png")
-                                                as ImageProvider,
+                                        backgroundImage:
+                                            (busnessviewmodal
+                                                        ?.data
+                                                        ?.business
+                                                        ?.logo
+                                                        ?.isNotEmpty ??
+                                                    false)
+                                                ? CachedNetworkImageProvider(
+                                                  busnessviewmodal!
+                                                      .data!
+                                                      .business!
+                                                      .logo!,
+                                                )
+                                                : AssetImage(
+                                                      "assets/images/waveeLogoShort.png",
+                                                    )
+                                                    as ImageProvider,
                                       ).paddingOnly(right: 2.5.w, top: 1.h),
                                       Expanded(
                                         child: Column(
@@ -231,7 +240,9 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              busnessviewmodal?.data?.business
+                                              busnessviewmodal
+                                                      ?.data
+                                                      ?.business
                                                       ?.businessName ??
                                                   "N/A",
                                               style: TextStyle(
@@ -251,8 +262,11 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                               ),
                                             ),
                                             SizedBox(height: 0.5.h),
-                                            busnessviewmodal?.data?.business
-                                                            ?.user?.address ==
+                                            busnessviewmodal
+                                                            ?.data
+                                                            ?.business
+                                                            ?.user
+                                                            ?.address ==
                                                         null ||
                                                     busnessviewmodal
                                                             ?.data
@@ -268,28 +282,28 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                                         ""
                                                 ? Container()
                                                 : Text(
-                                                    busnessviewmodal
-                                                                    ?.data
-                                                                    ?.business
-                                                                    ?.user
-                                                                    ?.address
-                                                                    ?.city !=
-                                                                null &&
-                                                            busnessviewmodal
-                                                                    ?.data
-                                                                    ?.business
-                                                                    ?.user
-                                                                    ?.address
-                                                                    ?.country !=
-                                                                null
-                                                        ? "${busnessviewmodal?.data?.business?.user?.address?.city}, ${busnessviewmodal?.data?.business?.user?.address?.country}"
-                                                        : "N/A",
-                                                    style: TextStyle(
-                                                      fontSize: 15.sp,
-                                                      fontFamily:
-                                                          AppConstants.manrope,
-                                                    ),
+                                                  busnessviewmodal
+                                                                  ?.data
+                                                                  ?.business
+                                                                  ?.user
+                                                                  ?.address
+                                                                  ?.city !=
+                                                              null &&
+                                                          busnessviewmodal
+                                                                  ?.data
+                                                                  ?.business
+                                                                  ?.user
+                                                                  ?.address
+                                                                  ?.country !=
+                                                              null
+                                                      ? "${busnessviewmodal?.data?.business?.user?.address?.city}, ${busnessviewmodal?.data?.business?.user?.address?.country}"
+                                                      : "N/A",
+                                                  style: TextStyle(
+                                                    fontSize: 15.sp,
+                                                    fontFamily:
+                                                        AppConstants.manrope,
                                                   ),
+                                                ),
                                           ],
                                         ),
                                       ),
@@ -301,24 +315,28 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: [
-                                        for (int i = 0;
-                                            i <
-                                                (busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.tags
-                                                        ?.length ??
-                                                    0);
-                                            i++) ...[
+                                        for (
+                                          int i = 0;
+                                          i <
+                                              (busnessviewmodal
+                                                      ?.data
+                                                      ?.business
+                                                      ?.tags
+                                                      ?.length ??
+                                                  0);
+                                          i++
+                                        ) ...[
                                           Container(
                                             padding: EdgeInsets.symmetric(
-                                                horizontal: 2.w,
-                                                vertical: 0.5.h),
+                                              horizontal: 2.w,
+                                              vertical: 0.5.h,
+                                            ),
                                             decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(15),
                                               border: Border.all(
-                                                  color: Colors.grey.shade200),
+                                                color: Colors.grey.shade200,
+                                              ),
                                             ),
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,
@@ -363,7 +381,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                             ),
                                           ),
                                           SizedBox(width: 2.w),
-                                        ]
+                                        ],
                                       ],
                                     ).paddingOnly(left: 2.w, bottom: 1.h),
                                   ),
@@ -390,7 +408,9 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                     height: 4.5.h,
                                     width: 27.w,
                                     padding: EdgeInsets.symmetric(
-                                        horizontal: 5, vertical: 5),
+                                      horizontal: 5,
+                                      vertical: 5,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: Colors.grey.shade300,
                                       borderRadius: BorderRadius.circular(20),
@@ -421,7 +441,9 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                   height: 4.5.h,
                                   width: 27.w,
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 5),
+                                    horizontal: 12,
+                                    vertical: 5,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.grey.shade300,
                                     borderRadius: BorderRadius.circular(20),
@@ -435,15 +457,21 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                     onPressed: () {
                                       if (busnessviewmodal?.data?.business !=
                                           null) {
-                                        AppLat = busnessviewmodal!
-                                            .data!.business!.latitude
-                                            .toString();
-                                        AppLon = busnessviewmodal!
-                                            .data!.business!.longitude
-                                            .toString();
-                                        selectedUserId = busnessviewmodal!
-                                            .data!.business!.id
-                                            .toString();
+                                        AppLat =
+                                            busnessviewmodal!
+                                                .data!
+                                                .business!
+                                                .latitude
+                                                .toString();
+                                        AppLon =
+                                            busnessviewmodal!
+                                                .data!
+                                                .business!
+                                                .longitude
+                                                .toString();
+                                        selectedUserId =
+                                            busnessviewmodal!.data!.business!.id
+                                                .toString();
 
                                         Navigator.pop(context);
                                         moveToLocation();
@@ -462,7 +490,9 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                   height: 4.5.h,
                                   width: 27.w,
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 5),
+                                    horizontal: 12,
+                                    vertical: 5,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.grey.shade300,
                                     borderRadius: BorderRadius.circular(20),
@@ -475,23 +505,38 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                     ),
                                     onPressed: () {
                                       print(
-                                          'Hello Id ${busnessviewmodal?.data?.business?.user?.id}');
+                                        'Hello Id ${busnessviewmodal?.data?.business?.user?.id}',
+                                      );
                                       print(
-                                          'Mine Id ${loginModel?.data?.user?.id}');
+                                        'Mine Id ${loginModel?.data?.user?.id}',
+                                      );
                                       print(
-                                          'Image is ${busnessviewmodal?.data?.business?.logo}');
-                                      Get.to(MessageScreen(
-                                        type: "business",
-                                        chatName: busnessviewmodal?.data
-                                                ?.business?.businessName ??
-                                            "N/A",
-                                        conciergeID: (busnessviewmodal
-                                                ?.data?.business?.user?.id)
-                                            .toString(),
-                                        image: busnessviewmodal
-                                                ?.data?.business?.logo ??
-                                            "",
-                                      ));
+                                        'Image is ${busnessviewmodal?.data?.business?.logo}',
+                                      );
+                                      Get.to(
+                                        MessageScreen(
+                                          type: "business",
+                                          chatName:
+                                              busnessviewmodal
+                                                  ?.data
+                                                  ?.business
+                                                  ?.businessName ??
+                                              "N/A",
+                                          conciergeID:
+                                              (busnessviewmodal
+                                                      ?.data
+                                                      ?.business
+                                                      ?.user
+                                                      ?.id)
+                                                  .toString(),
+                                          image:
+                                              busnessviewmodal
+                                                  ?.data
+                                                  ?.business
+                                                  ?.logo ??
+                                              "",
+                                        ),
+                                      );
                                     },
                                     padding: EdgeInsets.zero,
                                     constraints: BoxConstraints(),
@@ -520,14 +565,16 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                       .isNotEmpty) ...[
                                     SizedBox(height: 1.h),
                                     buildMediaListView(
-                                        busnessviewmodal?.data?.posts ?? []),
+                                      busnessviewmodal?.data?.posts ?? [],
+                                    ),
                                   ],
                                   if ((busnessviewmodal?.data?.events ?? [])
                                       .isNotEmpty) ...[
                                     SizedBox(height: 2.h),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 16.0),
+                                        horizontal: 16.0,
+                                      ),
                                       child: Text(
                                         "Events",
                                         style: TextStyle(
@@ -541,13 +588,15 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                     buildEventListView(),
                                   ],
                                   if ((busnessviewmodal
-                                              ?.data?.offerPromotions ??
+                                              ?.data
+                                              ?.offerPromotions ??
                                           [])
                                       .isNotEmpty) ...[
                                     SizedBox(height: 2.h),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 16.0),
+                                        horizontal: 16.0,
+                                      ),
                                       child: Text(
                                         "Offers & Promotions",
                                         style: TextStyle(
@@ -569,7 +618,8 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                           [],
                                       busnessviewmodal?.data?.offerPromotions
                                               ?.map(
-                                                  (e) => e.title ?? "No Title")
+                                                (e) => e.title ?? "No Title",
+                                              )
                                               .toList() ??
                                           [],
                                     ),
@@ -579,7 +629,8 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                     SizedBox(height: 2.h),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 16.0),
+                                        horizontal: 16.0,
+                                      ),
                                       child: Text(
                                         "Services",
                                         style: TextStyle(
@@ -591,7 +642,8 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                     ),
                                     SizedBox(height: 1.h),
                                     buildServiceListView(
-                                        busnessviewmodal?.data?.services ?? []),
+                                      busnessviewmodal?.data?.services ?? [],
+                                    ),
                                   ],
                                 ],
                               ).paddingSymmetric(horizontal: 0),
@@ -604,7 +656,9 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                  color: Colors.grey.shade300, width: 1),
+                                color: Colors.grey.shade300,
+                                width: 1,
+                              ),
                             ),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -619,24 +673,35 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                 buildListTile(
                                   icon: Icons.phone,
                                   title: "Phone",
-                                  subtitle: busnessviewmodal?.data?.business
-                                                  ?.user?.mobileNo ==
-                                              null ||
-                                          busnessviewmodal?.data?.business?.user
-                                                  ?.mobileNo ==
-                                              ""
-                                      ? "N/A"
-                                      : (busnessviewmodal
-                                              ?.data?.business?.user?.mobileNo)
-                                          .toString(),
+                                  subtitle:
+                                      busnessviewmodal
+                                                      ?.data
+                                                      ?.business
+                                                      ?.user
+                                                      ?.mobileNo ==
+                                                  null ||
+                                              busnessviewmodal
+                                                      ?.data
+                                                      ?.business
+                                                      ?.user
+                                                      ?.mobileNo ==
+                                                  ""
+                                          ? "N/A"
+                                          : (busnessviewmodal
+                                                  ?.data
+                                                  ?.business
+                                                  ?.user
+                                                  ?.mobileNo)
+                                              .toString(),
                                 ),
                               ],
                             ),
                           ).paddingSymmetric(horizontal: 16),
                           SizedBox(height: 2.h),
                           Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
                             child: Text(
                               "You May Also Like",
                               style: TextStyle(
@@ -650,18 +715,25 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                           SizedBox(height: 1.h),
                           Column(
                             children: [
-                              for (int i = 0;
-                                  i <
-                                          (busnessviewmodal?.data
-                                                  ?.nearbyBusinesses?.length ??
-                                              0) &&
-                                      i < 5;
-                                  i++) ...[
+                              for (
+                                int i = 0;
+                                i <
+                                        (busnessviewmodal
+                                                ?.data
+                                                ?.nearbyBusinesses
+                                                ?.length ??
+                                            0) &&
+                                    i < 5;
+                                i++
+                              ) ...[
                                 InkWell(
                                   onTap: () async {
-                                    final businessId = busnessviewmodal
-                                        ?.data?.nearbyBusinesses?[i].id
-                                        ?.toString();
+                                    final businessId =
+                                        busnessviewmodal
+                                            ?.data
+                                            ?.nearbyBusinesses?[i]
+                                            .id
+                                            ?.toString();
                                     if (businessId != null) {
                                       await BussinessViewProfile(businessId);
                                     }
@@ -669,7 +741,9 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                   child: Container(
                                     width: 110.w,
                                     margin: EdgeInsets.symmetric(
-                                        vertical: 4, horizontal: 16),
+                                      vertical: 4,
+                                      horizontal: 16,
+                                    ),
                                     padding: EdgeInsets.all(12),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
@@ -689,13 +763,15 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                         InkWell(
                                           onTap: () {
                                             print(
-                                                "Business ID: ${busnessviewmodal?.data?.nearbyBusinesses?[i].id}");
+                                              "Business ID: ${busnessviewmodal?.data?.nearbyBusinesses?[i].id}",
+                                            );
                                             BussinessViewProfile(
-                                                (busnessviewmodal
-                                                        ?.data
-                                                        ?.nearbyBusinesses?[i]
-                                                        .id)
-                                                    .toString());
+                                              (busnessviewmodal
+                                                      ?.data
+                                                      ?.nearbyBusinesses?[i]
+                                                      .id)
+                                                  .toString(),
+                                            );
                                           },
                                           child: CircleAvatar(
                                             radius: 20,
@@ -717,8 +793,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                               Text(
                                                 busnessviewmodal
                                                             ?.data
-                                                            ?.nearbyBusinesses?[
-                                                                i]
+                                                            ?.nearbyBusinesses?[i]
                                                             .businessName
                                                             ?.isNotEmpty ==
                                                         true
@@ -728,16 +803,18 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                                         .businessName!
                                                     : "N/A",
                                                 style: TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily:
-                                                        AppConstants.manrope),
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily:
+                                                      AppConstants.manrope,
+                                                ),
                                               ),
                                               SizedBox(height: 4),
                                               Container(
                                                 width: double.infinity,
                                                 padding: EdgeInsets.symmetric(
-                                                    horizontal: 2.w),
+                                                  horizontal: 2.w,
+                                                ),
                                                 decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(10),
@@ -745,8 +822,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                                 child: ReadMoreText(
                                                   busnessviewmodal
                                                               ?.data
-                                                              ?.nearbyBusinesses?[
-                                                                  i]
+                                                              ?.nearbyBusinesses?[i]
                                                               .description
                                                               ?.isNotEmpty ==
                                                           true
@@ -764,23 +840,21 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                                   trimExpandedText:
                                                       ' Show less',
                                                   moreStyle: TextStyle(
-                                                      fontSize: 15.sp,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontFamily:
-                                                          AppConstants.manrope,
-                                                      letterSpacing: 1,
-                                                      color:
-                                                          AppColors.maincolor),
+                                                    fontSize: 15.sp,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily:
+                                                        AppConstants.manrope,
+                                                    letterSpacing: 1,
+                                                    color: AppColors.maincolor,
+                                                  ),
                                                   lessStyle: TextStyle(
-                                                      fontSize: 15.sp,
-                                                      fontFamily:
-                                                          AppConstants.manrope,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      letterSpacing: 1,
-                                                      color:
-                                                          AppColors.maincolor),
+                                                    fontSize: 15.sp,
+                                                    fontFamily:
+                                                        AppConstants.manrope,
+                                                    fontWeight: FontWeight.bold,
+                                                    letterSpacing: 1,
+                                                    color: AppColors.maincolor,
+                                                  ),
                                                   style: TextStyle(
                                                     fontSize: 16.sp,
                                                     color: Colors.grey.shade500,
@@ -802,26 +876,28 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                                         fontWeight:
                                                             FontWeight.bold,
                                                         fontSize: 14,
-                                                        fontFamily: AppConstants
-                                                            .manrope,
+                                                        fontFamily:
+                                                            AppConstants
+                                                                .manrope,
                                                       ),
                                                     ),
                                                     TextSpan(
-                                                      text: (busnessviewmodal
-                                                                  ?.data
-                                                                  ?.nearbyBusinesses?[
-                                                                      i]
-                                                                  .distance !=
-                                                              null)
-                                                          ? "${busnessviewmodal!.data!.nearbyBusinesses![i].distance!.toStringAsFixed(2)} mi"
-                                                          : "N/A",
+                                                      text:
+                                                          (busnessviewmodal
+                                                                      ?.data
+                                                                      ?.nearbyBusinesses?[i]
+                                                                      .distance !=
+                                                                  null)
+                                                              ? "${busnessviewmodal!.data!.nearbyBusinesses![i].distance!.toStringAsFixed(2)} mi"
+                                                              : "N/A",
                                                       style: TextStyle(
                                                         color: Colors.green,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                         fontSize: 14.sp,
-                                                        fontFamily: AppConstants
-                                                            .manrope,
+                                                        fontFamily:
+                                                            AppConstants
+                                                                .manrope,
                                                       ),
                                                     ),
                                                   ],
@@ -834,7 +910,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                     ),
                                   ),
                                 ),
-                              ]
+                              ],
                             ],
                           ),
                           SizedBox(height: 20),
@@ -868,15 +944,14 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
       return;
     }
 
-    final response = await CommunityProvider().projectlistapi(
-      (loginModel?.data?.user?.id).toString(),
+    final response = await CommunityProvider().businessProfileViewApi(
       id,
       AppLat,
       AppLon,
     );
 
     if (response.statusCode == 200) {
-      final newModal = BusnessViewModal.fromJson(json.decode(response.body));
+      final newModal = BusnessViewModal.fromJson(response.data);
 
       print("check navigate");
 
@@ -906,36 +981,37 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
 
     checkInternet().then((internet) async {
       if (internet) {
-        CommunityProvider().IsLikeApi(data).then((response) async {
-          if (response.statusCode == 200) {
-            bussinesslikemodel =
-                BussinessLikeModel.fromJson(json.decode(response.body));
-            print("Done Like Message");
-            print("Response: ${response.body}");
+        CommunityProvider()
+            .businessLikeApi(data)
+            .then((response) async {
+              if (response.statusCode == 200) {
+                bussinesslikemodel = BussinessLikeModel.fromJson(response.data);
 
-            setState(() {
-              isSending = true;
+                setState(() {
+                  isSending = true;
+                });
+
+                final String businessId =
+                    (busnessviewmodal?.data?.business?.id).toString();
+                Get.back();
+                await Future.delayed(Duration(milliseconds: 100));
+                BussinessViewProfile(businessId);
+              } else if (response.statusCode == 429) {
+                setState(() {
+                  isSending = true;
+                });
+              } else {
+                print(
+                  "Internal Server Error - Status Code: ${response.statusCode}",
+                );
+
+                EasyLoading.showError("Internal Server Error");
+              }
+            })
+            .catchError((error, stackTrace) {
+              print(" Error in like API: $error");
+              print(" Stack Trace: $stackTrace");
             });
-
-            final String businessId =
-                (busnessviewmodal?.data?.business?.id).toString();
-            Get.back();
-            await Future.delayed(Duration(milliseconds: 100));
-            BussinessViewProfile(businessId);
-          } else if (response.statusCode == 429) {
-            setState(() {
-              isSending = true;
-            });
-          } else {
-            print(
-                "Internal Server Error - Status Code: ${response.statusCode}");
-
-            EasyLoading.showError("Internal Server Error");
-          }
-        }).catchError((error, stackTrace) {
-          print(" Error in like API: $error");
-          print(" Stack Trace: $stackTrace");
-        });
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
       }
@@ -951,11 +1027,11 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
     print("request offres promotion view parameter : $data");
     checkInternet().then((internet) async {
       if (internet) {
-        CommunityProvider().OfferPromoAsViewed(data).then((response) async {
+        CommunityProvider().markOfferPromoApi(data).then((response) async {
           if (response.statusCode == 200) {
-            var responseData = json.decode(response.body);
-            offerpromoAsviewedmodel =
-                OfferPromoAsViewedModel.fromJson(responseData);
+            offerpromoAsviewedmodel = OfferPromoAsViewedModel.fromJson(
+              response.data,
+            );
             print("View done");
           } else if (response.statusCode == 429) {
             print("Too many requests");
@@ -969,10 +1045,11 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
     });
   }
 
-  Widget buildListTile(
-      {required IconData icon,
-      required String title,
-      required String subtitle}) {
+  Widget buildListTile({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+  }) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
       child: Row(
@@ -987,17 +1064,19 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                 Text(
                   title,
                   style: TextStyle(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: AppConstants.manrope),
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: AppConstants.manrope,
+                  ),
                 ),
                 SizedBox(height: 0.5.h),
                 Text(
                   subtitle,
                   style: TextStyle(
-                      fontSize: 15.sp,
-                      color: Colors.black87,
-                      fontFamily: AppConstants.manrope),
+                    fontSize: 15.sp,
+                    color: Colors.black87,
+                    fontFamily: AppConstants.manrope,
+                  ),
                 ),
               ],
             ),
@@ -1033,35 +1112,43 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: item.type == 'video'
-                      ? VideoWidget(
-                          videoUrl: item.file ?? '',
-                          play: isInView,
-                          postId: item.id ?? 0,
-                        )
-                      : GestureDetector(
-                          onTap: () {
-                            print("Image tapped: ${item.file}");
-                            Get.to(() => FullScreenImageView(
+                  child:
+                      item.type == 'video'
+                          ? VideoWidget(
+                            videoUrl: item.file ?? '',
+                            play: isInView,
+                            postId: item.id ?? 0,
+                          )
+                          : GestureDetector(
+                            onTap: () {
+                              print("Image tapped: ${item.file}");
+                              Get.to(
+                                () => FullScreenImageView(
                                   imageUrl: item.file ?? '',
                                   postId: item.id ?? 0,
-                                ));
-                          },
-                          child: item.file == null || item.file!.isEmpty
-                              ? Center(child: CircularProgressIndicator())
-                              : CachedNetworkImage(
-                                  imageUrl: item.file!,
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  placeholder: (context, url) => Center(
-                                      child: CircularProgressIndicator()),
-                                  errorWidget: (context, url, error) => Icon(
-                                      Icons.broken_image,
-                                      size: 40,
-                                      color: Colors.grey),
                                 ),
-                        ),
+                              );
+                            },
+                            child:
+                                item.file == null || item.file!.isEmpty
+                                    ? Center(child: CircularProgressIndicator())
+                                    : CachedNetworkImage(
+                                      imageUrl: item.file!,
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      placeholder:
+                                          (context, url) => Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                      errorWidget:
+                                          (context, url, error) => Icon(
+                                            Icons.broken_image,
+                                            size: 40,
+                                            color: Colors.grey,
+                                          ),
+                                    ),
+                          ),
                 ),
               );
             },
@@ -1088,304 +1175,355 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
           bool isRequestSent = sentEventIds.contains(eventId);
           bool isLoading = false;
 
-          return StatefulBuilder(builder: (context, setState) {
-            void showRequestDialog() {
-              if (busnessviewmodal?.data?.events?[index]?.requestEvent
-                      ?.toLowerCase() ==
-                  "pending") {
-                return;
-              }
+          return StatefulBuilder(
+            builder: (context, setState) {
+              void showRequestDialog() {
+                if (busnessviewmodal?.data?.events?[index]?.requestEvent
+                        ?.toLowerCase() ==
+                    "pending") {
+                  return;
+                }
 
-              requestController.clear();
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return StatefulBuilder(
-                    builder: (context, setDialogState) {
-                      return Dialog(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
+                requestController.clear();
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return StatefulBuilder(
+                      builder: (context, setDialogState) {
+                        return Dialog(
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
-                          child: Form(
-                            key: _formKey,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Stack(
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.center,
-                                      child: Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 10),
-                                        child: Text(
-                                          "${profileModel?.data?.user?.name?.firstName.toString().capitalizeFirst ?? ""} "
-                                          "${profileModel?.data?.user?.name?.lastName.toString().capitalizeFirst ?? ""}",
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 18.sp,
-                                            fontFamily: AppConstants.manrope,
-                                            fontWeight: FontWeight.bold,
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Form(
+                              key: _formKey,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Stack(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 10,
                                           ),
-                                          textAlign: TextAlign.center,
+                                          child: Text(
+                                            "${profileModel?.data?.user?.name?.firstName.toString().capitalizeFirst ?? ""} "
+                                            "${profileModel?.data?.user?.name?.lastName.toString().capitalizeFirst ?? ""}",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 18.sp,
+                                              fontFamily: AppConstants.manrope,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.topRight,
-                                      child: CloseButton(),
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  busnessviewmodal
-                                          ?.data?.events?[index]?.title ??
-                                      "N/A",
-                                  style: TextStyle(
-                                    fontFamily: AppConstants.manrope,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black38,
+                                      Align(
+                                        alignment: Alignment.topRight,
+                                        child: CloseButton(),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  busnessviewmodal?.data?.events?[index]
-                                              ?.eventDate !=
-                                          null
-                                      ? DateFormat.jm().format(DateTime.parse(
-                                          busnessviewmodal!.data!
-                                              .events![index]!.eventDate!))
-                                      : "N/A",
-                                  style: TextStyle(
-                                    fontFamily: AppConstants.manrope,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black38,
+                                  Text(
+                                    busnessviewmodal
+                                            ?.data
+                                            ?.events?[index]
+                                            ?.title ??
+                                        "N/A",
+                                    style: TextStyle(
+                                      fontFamily: AppConstants.manrope,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black38,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(height: 12),
-                                TextFormField(
-                                  controller: requestController,
-                                  maxLines: 3,
-                                  decoration: InputDecoration(
-                                    hintText: "Enter your request...",
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide:
-                                          BorderSide(color: Colors.black26),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide:
-                                          BorderSide(color: Colors.black26),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide:
-                                          BorderSide(color: Colors.blue),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(color: Colors.red),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(color: Colors.red),
-                                    ),
-                                    fillColor: Colors.white,
-                                    filled: true,
-                                  ),
-                                  style: TextStyle(color: Colors.black),
-                                  validator: (value) {
-                                    if (value == null || value.trim().isEmpty) {
-                                      return "Please enter your request";
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                SizedBox(height: 20),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    batan(
-                                      title: "Send Request",
-                                      route: () async {
-                                        if (_formKey.currentState!.validate()) {
-                                          setDialogState(() {
-                                            isLoading = true;
-                                          });
-                                          setState(() {
+                                  SizedBox(height: 10),
+                                  Text(
+                                    busnessviewmodal
+                                                ?.data
+                                                ?.events?[index]
+                                                ?.eventDate !=
+                                            null
+                                        ? DateFormat.jm().format(
+                                          DateTime.parse(
                                             busnessviewmodal!
                                                 .data!
-                                                .events![index]
-                                                .requestEvent = "pending";
-                                          });
-                                          await sendlistap(eventId);
-                                          setDialogState(() {
-                                            isLoading = false;
-                                          });
-                                          Get.back();
-                                        }
-                                      },
-                                      radius: 4.0.w,
-                                      color: AppColors.maincolor,
-                                      fontcolor: AppColors.white,
-                                      height: 5.h,
-                                      width: 72.w,
-                                      fontsize: 17.sp,
+                                                .events![index]!
+                                                .eventDate!,
+                                          ),
+                                        )
+                                        : "N/A",
+                                    style: TextStyle(
+                                      fontFamily: AppConstants.manrope,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black38,
                                     ),
-                                  ],
-                                ),
-                              ],
+                                  ),
+                                  SizedBox(height: 12),
+                                  TextFormField(
+                                    controller: requestController,
+                                    maxLines: 3,
+                                    decoration: InputDecoration(
+                                      hintText: "Enter your request...",
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.black26,
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.black26,
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.blue,
+                                        ),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                    ),
+                                    style: TextStyle(color: Colors.black),
+                                    validator: (value) {
+                                      if (value == null ||
+                                          value.trim().isEmpty) {
+                                        return "Please enter your request";
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  SizedBox(height: 20),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      batan(
+                                        title: "Send Request",
+                                        route: () async {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            setDialogState(() {
+                                              isLoading = true;
+                                            });
+                                            setState(() {
+                                              busnessviewmodal!
+                                                  .data!
+                                                  .events![index]
+                                                  .requestEvent = "pending";
+                                            });
+                                            await sendlistap(eventId);
+                                            setDialogState(() {
+                                              isLoading = false;
+                                            });
+                                            Get.back();
+                                          }
+                                        },
+                                        radius: 4.0.w,
+                                        color: AppColors.maincolor,
+                                        fontcolor: AppColors.white,
+                                        height: 5.h,
+                                        width: 72.w,
+                                        fontsize: 17.sp,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  );
-                },
-              );
-            }
-
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: ListTile(
-                  onTap: () {
-                    showRequestDialog();
+                        );
+                      },
+                    );
                   },
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  leading: Container(
-                    width: 15.w,
-                    height: 7.h,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: busnessviewmodal
-                                  ?.data?.events?[index].attachment !=
-                              null
-                          ? CachedNetworkImage(
-                              imageUrl: busnessviewmodal!
-                                  .data!.events![index].attachment!,
-                              placeholder: (context, url) => Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                              errorWidget: (context, url, error) => Image.asset(
-                                "assets/images/waveeLogoShort.png",
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                height: double.infinity,
-                              ),
-                              fit: BoxFit.cover,
-                            )
-                          : Image.asset(
-                              "assets/images/waveeLogoShort.png",
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: double.infinity,
-                            ),
-                    ),
+                );
+              }
+
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade300),
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  title: Text(
-                    busnessviewmodal?.data?.events?[index].title ?? "No Title",
-                    style: TextStyle(
+                  child: ListTile(
+                    onTap: () {
+                      showRequestDialog();
+                    },
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    leading: Container(
+                      width: 15.w,
+                      height: 7.h,
+                      decoration: BoxDecoration(shape: BoxShape.circle),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child:
+                            busnessviewmodal?.data?.events?[index].attachment !=
+                                    null
+                                ? CachedNetworkImage(
+                                  imageUrl:
+                                      busnessviewmodal!
+                                          .data!
+                                          .events![index]
+                                          .attachment!,
+                                  placeholder:
+                                      (context, url) => Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                  errorWidget:
+                                      (context, url, error) => Image.asset(
+                                        "assets/images/waveeLogoShort.png",
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                      ),
+                                  fit: BoxFit.cover,
+                                )
+                                : Image.asset(
+                                  "assets/images/waveeLogoShort.png",
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                ),
+                      ),
+                    ),
+                    title: Text(
+                      busnessviewmodal?.data?.events?[index].title ??
+                          "No Title",
+                      style: TextStyle(
                         fontSize: 15.sp,
                         fontWeight: FontWeight.bold,
-                        fontFamily: AppConstants.manrope),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Icon(Icons.location_on,
-                              color: Colors.red, size: 16.sp),
-                          SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              "${busnessviewmodal?.data?.events?[index].location ?? 'No Location'}",
-                              style: TextStyle(
+                        fontFamily: AppConstants.manrope,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.location_on,
+                              color: Colors.red,
+                              size: 16.sp,
+                            ),
+                            SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                "${busnessviewmodal?.data?.events?[index].location ?? 'No Location'}",
+                                style: TextStyle(
                                   fontSize: 14.sp,
                                   color: Colors.grey[600],
-                                  fontFamily: AppConstants.manrope),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                                  fontFamily: AppConstants.manrope,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Icon(Icons.access_time,
-                              color: Colors.blue, size: 16.sp),
-                          SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              (String? eventDate) {
-                                if (eventDate == null || eventDate.isEmpty)
-                                  return "N/A";
-                                DateTime parsedDate = DateTime.parse(eventDate);
-                                return DateFormat('yyyy-MM-dd hh:mm a')
-                                    .format(parsedDate);
-                              }(busnessviewmodal
-                                      ?.data?.events?[index].eventDate ??
-                                  ""),
-                              style: TextStyle(
-                                  fontSize: 12.sp, color: Colors.grey[700]),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  trailing: isLoading
-                      ? CircularProgressIndicator(color: Colors.blue)
-                      : InkWell(
-                          onTap: () {
-                            showRequestDialog();
-                          },
-                          child: busnessviewmodal
-                                      ?.data?.events?[index]?.requestEvent
-                                      ?.toLowerCase() ==
-                                  "pending"
-                              ? Text(
-                                  "Requested",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.orange,
-                                  ),
-                                )
-                              : Icon(Icons.arrow_forward_ios,
-                                  size: 16, color: Colors.black54),
+                          ],
                         ),
+                        SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.access_time,
+                              color: Colors.blue,
+                              size: 16.sp,
+                            ),
+                            SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                (String? eventDate) {
+                                  if (eventDate == null || eventDate.isEmpty)
+                                    return "N/A";
+                                  DateTime parsedDate = DateTime.parse(
+                                    eventDate,
+                                  );
+                                  return DateFormat(
+                                    'yyyy-MM-dd hh:mm a',
+                                  ).format(parsedDate);
+                                }(
+                                  busnessviewmodal
+                                          ?.data
+                                          ?.events?[index]
+                                          .eventDate ??
+                                      "",
+                                ),
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: Colors.grey[700],
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    trailing:
+                        isLoading
+                            ? CircularProgressIndicator(color: Colors.blue)
+                            : InkWell(
+                              onTap: () {
+                                showRequestDialog();
+                              },
+                              child:
+                                  busnessviewmodal
+                                              ?.data
+                                              ?.events?[index]
+                                              ?.requestEvent
+                                              ?.toLowerCase() ==
+                                          "pending"
+                                      ? Text(
+                                        "Requested",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.orange,
+                                        ),
+                                      )
+                                      : Icon(
+                                        Icons.arrow_forward_ios,
+                                        size: 16,
+                                        color: Colors.black54,
+                                      ),
+                            ),
+                  ),
                 ),
-              ),
-            );
-          });
+              );
+            },
+          );
         }),
       ],
     );
@@ -1403,28 +1541,30 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
 
     checkInternet().then((internet) async {
       if (internet) {
-        EventProvider().sendeventapi(data).then((response) async {
-          sendeventModel = SendeventModel.fromJson(json.decode(response.body));
+        EventProvider()
+            .sendeventapi(data)
+            .then((response) async {
+              sendeventModel = SendeventModel.fromJson(response.data);
 
-          if (response.statusCode == 200 || sendeventModel?.data == 200) {
-            print("Response body avve che che ==>> ${response.body}");
-          } else if (response.statusCode == 422) {
-            load = false;
-          } else {
-            EasyLoading.showError("Internal Server Error");
-          }
+              if (response.statusCode == 200 || sendeventModel?.data == 200) {
+              } else if (response.statusCode == 422) {
+                load = false;
+              } else {
+                EasyLoading.showError("Internal Server Error");
+              }
 
-          setState(() {
-            isLoading = false;
-          });
-          return false;
-        }).catchError((error) {
-          setState(() {
-            isLoading = false;
-          });
-          EasyLoading.showError("Request Failed");
-          return false;
-        });
+              setState(() {
+                isLoading = false;
+              });
+              return false;
+            })
+            .catchError((error) {
+              setState(() {
+                isLoading = false;
+              });
+              EasyLoading.showError("Request Failed");
+              return false;
+            });
       } else {
         setState(() {
           isLoading = false;
@@ -1436,7 +1576,10 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
   }
 
   Widget buildListView(
-      List<String?> items, List<String?> links, List<String?> titles) {
+    List<String?> items,
+    List<String?> links,
+    List<String?> titles,
+  ) {
     if (busnessviewmodal?.data?.offerPromotions == null ||
         busnessviewmodal!.data!.offerPromotions!.isEmpty) {}
 
@@ -1480,8 +1623,10 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                     print("Opening URL: $linkUrl");
 
                     if (await canLaunchUrl(uri)) {
-                      await launchUrl(uri,
-                          mode: LaunchMode.externalApplication);
+                      await launchUrl(
+                        uri,
+                        mode: LaunchMode.externalApplication,
+                      );
                     } else {
                       print("Error: Could not launch $linkUrl");
                     }
@@ -1489,8 +1634,10 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                     print("Error: Invalid URL");
                   }
                 },
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
                 leading: Container(
                   width: 15.w,
                   height: 7.h,
@@ -1508,10 +1655,13 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                     borderRadius: BorderRadius.circular(30),
                     child: CachedNetworkImage(
                       imageUrl: items[index] ?? '',
-                      placeholder: (context, url) =>
-                          Center(child: CircularProgressIndicator()),
-                      errorWidget: (context, url, error) => Image.network(
-                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdQLwDqDwd2JfzifvfBTFT8I7iKFFevcedYg&s"),
+                      placeholder:
+                          (context, url) =>
+                              Center(child: CircularProgressIndicator()),
+                      errorWidget:
+                          (context, url, error) => Image.network(
+                            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdQLwDqDwd2JfzifvfBTFT8I7iKFFevcedYg&s",
+                          ),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -1519,17 +1669,14 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                 title: Text(
                   titles[index] ?? "No Title",
                   style: TextStyle(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: AppConstants.manrope),
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: AppConstants.manrope,
+                  ),
                 ),
                 subtitle: Row(
                   children: [
-                    Icon(
-                      Icons.link,
-                      size: 16.sp,
-                      color: Colors.blue,
-                    ),
+                    Icon(Icons.link, size: 16.sp, color: Colors.blue),
                     SizedBox(width: 4),
                     Expanded(
                       child: Text(
@@ -1540,9 +1687,10 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                           fontFamily: AppConstants.manrope,
                           fontSize: 14.sp,
                           color: Colors.blue,
-                          decoration: linkUrl != null && linkUrl.isNotEmpty
-                              ? TextDecoration.underline
-                              : TextDecoration.none,
+                          decoration:
+                              linkUrl != null && linkUrl.isNotEmpty
+                                  ? TextDecoration.underline
+                                  : TextDecoration.none,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -1550,8 +1698,11 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                     ),
                   ],
                 ),
-                trailing: Icon(Icons.arrow_forward_ios,
-                    size: 16, color: Colors.black54),
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: Colors.black54,
+                ),
               ),
             ),
           );
@@ -1584,38 +1735,44 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
               child: ListTile(
                 onTap: () {
                   print(
-                      "service Detail ID Ave che che : ${services?[index].id ?? ''}");
+                    "service Detail ID Ave che che : ${services?[index].id ?? ''}",
+                  );
                   print(
-                      "service Detail ID Ave che che : ${busnessviewmodal?.data?.business?.id.toString()}");
-                  Get.to(() => ServiceDetailsPage(
-                        serviceID: services?[index].id.toString() ?? "",
-                        businessID:
-                            busnessviewmodal?.data?.business?.id.toString() ??
-                                "",
-                      ));
+                    "service Detail ID Ave che che : ${busnessviewmodal?.data?.business?.id.toString()}",
+                  );
+                  Get.to(
+                    () => ServiceDetailsPage(
+                      serviceID: services?[index].id.toString() ?? "",
+                      businessID:
+                          busnessviewmodal?.data?.business?.id.toString() ?? "",
+                    ),
+                  );
                 },
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
                 leading: Container(
                   width: 15.w,
                   height: 7.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
+                  decoration: BoxDecoration(shape: BoxShape.circle),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(30),
                     child: CachedNetworkImage(
-                      imageUrl: imageUrl.isNotEmpty
-                          ? imageUrl
-                          : 'https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL3BsYXlcLzBiN2Y0ZTliLWY1OWMtNDAyNC05ZjA2LWIzZGMxMjg1MGFiNy0xOTIwLTEwODAuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0=',
+                      imageUrl:
+                          imageUrl.isNotEmpty
+                              ? imageUrl
+                              : 'https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL3BsYXlcLzBiN2Y0ZTliLWY1OWMtNDAyNC05ZjA2LWIzZGMxMjg1MGFiNy0xOTIwLTEwODAuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0=',
                       fit: BoxFit.cover,
-                      placeholder: (context, url) =>
-                          Center(child: CircularProgressIndicator()),
-                      errorWidget: (context, url, error) => Icon(
-                        Icons.home_repair_service,
-                        color: Colors.grey,
-                        size: 8.w,
-                      ),
+                      placeholder:
+                          (context, url) =>
+                              Center(child: CircularProgressIndicator()),
+                      errorWidget:
+                          (context, url, error) => Icon(
+                            Icons.home_repair_service,
+                            color: Colors.grey,
+                            size: 8.w,
+                          ),
                     ),
                   ),
                 ),
@@ -1661,8 +1818,11 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                     SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(Icons.event_available,
-                            color: Colors.blue, size: 16.sp),
+                        Icon(
+                          Icons.event_available,
+                          color: Colors.blue,
+                          size: 16.sp,
+                        ),
                         SizedBox(width: 4),
                         Expanded(
                           child: Text(
@@ -1680,8 +1840,11 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                     ),
                   ],
                 ),
-                trailing: Icon(Icons.arrow_forward_ios,
-                    size: 16, color: Colors.black54),
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: Colors.black54,
+                ),
               ),
             ),
           );
@@ -1713,42 +1876,51 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
               ),
               child: ListTile(
                 onTap: () {
-                  Get.to(() => ProductDetailPage(
-                        productID: product.id.toString() ?? "",
-                        type: "product",
-                      ));
+                  Get.to(
+                    () => ProductDetailPage(
+                      productID: product.id.toString() ?? "",
+                      type: "product",
+                    ),
+                  );
                 },
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: (product.image != null && product.image!.isNotEmpty)
-                      ? CachedNetworkImage(
-                          imageUrl: product.image!,
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
+                  child:
+                      (product.image != null && product.image!.isNotEmpty)
+                          ? CachedNetworkImage(
+                            imageUrl: product.image!,
                             width: 60,
                             height: 60,
-                            color: Colors.grey[300],
-                            child: const Center(
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
-                          ),
-                          errorWidget: (context, url, error) => Image.asset(
+                            fit: BoxFit.cover,
+                            placeholder:
+                                (context, url) => Container(
+                                  width: 60,
+                                  height: 60,
+                                  color: Colors.grey[300],
+                                  child: const Center(
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                ),
+                            errorWidget:
+                                (context, url, error) => Image.asset(
+                                  'assets/images/waveeLogoShort.png',
+                                  width: 60,
+                                  height: 60,
+                                  fit: BoxFit.cover,
+                                ),
+                          )
+                          : Image.asset(
                             'assets/images/waveeLogoShort.png',
                             width: 60,
                             height: 60,
                             fit: BoxFit.cover,
                           ),
-                        )
-                      : Image.asset(
-                          'assets/images/waveeLogoShort.png',
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.cover,
-                        ),
                 ),
                 title: Text(
                   product.name ?? '',
@@ -1781,12 +1953,14 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                           "£${product.price}",
                           style: TextStyle(
                             fontSize: 15.sp,
-                            color: product.offerPrice != null
-                                ? Colors.grey
-                                : Colors.black,
-                            decoration: product.offerPrice != null
-                                ? TextDecoration.lineThrough
-                                : TextDecoration.none,
+                            color:
+                                product.offerPrice != null
+                                    ? Colors.grey
+                                    : Colors.black,
+                            decoration:
+                                product.offerPrice != null
+                                    ? TextDecoration.lineThrough
+                                    : TextDecoration.none,
                             fontFamily: AppConstants.manrope,
                           ),
                         ),
@@ -1798,12 +1972,17 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                          fontSize: 15.sp, fontFamily: AppConstants.manrope),
+                        fontSize: 15.sp,
+                        fontFamily: AppConstants.manrope,
+                      ),
                     ),
                   ],
                 ),
-                trailing: Icon(Icons.arrow_forward_ios,
-                    size: 16, color: Colors.black54),
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: Colors.black54,
+                ),
               ),
             ),
           );

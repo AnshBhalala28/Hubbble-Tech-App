@@ -28,8 +28,12 @@ class CategoryScreen extends StatefulWidget {
   String? businessID;
   String? CategoryName;
 
-  CategoryScreen(
-      {super.key, this.categoryID, this.businessID, this.CategoryName});
+  CategoryScreen({
+    super.key,
+    this.categoryID,
+    this.businessID,
+    this.CategoryName,
+  });
 
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();
@@ -56,467 +60,506 @@ class _CategoryScreenState extends State<CategoryScreen> {
     return Scaffold(
       key: categoryScreen,
       drawer: SideMenu(),
-      body: isLoading
-          ? Loader()
-          : Stack(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 4.h,
-                    ),
-                    TitleBar(
-                      title: "Category",
-                      drawerCallback: () {
-                        categoryScreen.currentState?.openDrawer();
-                      },
-                    ),
-                    SizedBox(
-                      height: 3.h,
-                    ),
-                    Text(
-                      "Products for '${widget.CategoryName}'",
-                      style: TextStyle(
-                        fontFamily: AppConstants.manrope,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
+      body:
+          isLoading
+              ? Loader()
+              : Stack(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 4.h),
+                      TitleBar(
+                        title: "Category",
+                        drawerCallback: () {
+                          categoryScreen.currentState?.openDrawer();
+                        },
                       ),
-                    ),
-                    SizedBox(
-                      child: GridView.builder(
-                        itemCount: categoryDetailModal?.data?.length ?? 0,
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio: 0.50,
-                          crossAxisSpacing: 3.w,
-                          mainAxisSpacing: 2.h,
+                      SizedBox(height: 3.h),
+                      Text(
+                        "Products for '${widget.CategoryName}'",
+                        style: TextStyle(
+                          fontFamily: AppConstants.manrope,
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
                         ),
-                        itemBuilder: (context, index) {
-                          final product = categoryDetailModal?.data?[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Get.to(ProductDetailPage(
-                                type: "product",
-                                productID: product?.id.toString() ?? "",
-                              ));
-                            },
-                            child: product == null
-                                ? Center(
-                                    child: Text(
-                                      "No Product Available",
-                                      style: TextStyle(
-                                        fontSize: 14.sp,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
-                                    ),
-                                  )
-                                : Material(
-                                    elevation: 2,
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Container(
-                                      decoration: BoxDecoration(
+                      ),
+                      SizedBox(
+                        child: GridView.builder(
+                          itemCount: categoryDetailModal?.data?.length ?? 0,
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                childAspectRatio: 0.50,
+                                crossAxisSpacing: 3.w,
+                                mainAxisSpacing: 2.h,
+                              ),
+                          itemBuilder: (context, index) {
+                            final product = categoryDetailModal?.data?[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Get.to(
+                                  ProductDetailPage(
+                                    type: "product",
+                                    productID: product?.id.toString() ?? "",
+                                  ),
+                                );
+                              },
+                              child:
+                                  product == null
+                                      ? Center(
+                                        child: Text(
+                                          "No Product Available",
+                                          style: TextStyle(
+                                            fontSize: 14.sp,
+                                            fontFamily: AppConstants.manrope,
+                                          ),
+                                        ),
+                                      )
+                                      : Material(
+                                        elevation: 2,
                                         borderRadius: BorderRadius.circular(12),
-                                        color: Colors.white,
-                                      ),
-                                      child: Stack(
-                                        clipBehavior: Clip.none,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                            color: Colors.white,
+                                          ),
+                                          child: Stack(
+                                            clipBehavior: Clip.none,
                                             children: [
-                                              ClipRRect(
-                                                borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(12),
-                                                  topRight: Radius.circular(12),
-                                                ),
-                                                child: CachedNetworkImage(
-                                                  imageUrl: product.image
-                                                          ?.toString() ??
-                                                      "",
-                                                  height: 15.h,
-                                                  width: double.infinity,
-                                                  fit: BoxFit.cover,
-                                                  placeholder: (context, url) =>
-                                                      const Center(
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                      color:
-                                                          AppColors.maincolor,
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                12,
+                                                              ),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                12,
+                                                              ),
+                                                        ),
+                                                    child: CachedNetworkImage(
+                                                      imageUrl:
+                                                          product.image
+                                                              ?.toString() ??
+                                                          "",
+                                                      height: 15.h,
+                                                      width: double.infinity,
+                                                      fit: BoxFit.cover,
+                                                      placeholder:
+                                                          (
+                                                            context,
+                                                            url,
+                                                          ) => const Center(
+                                                            child: CircularProgressIndicator(
+                                                              color:
+                                                                  AppColors
+                                                                      .maincolor,
+                                                            ),
+                                                          ),
+                                                      errorWidget:
+                                                          (
+                                                            context,
+                                                            url,
+                                                            error,
+                                                          ) => Image.asset(
+                                                            "assets/images/waveeLogoShort.png",
+                                                            height: 15.h,
+                                                            width:
+                                                                double.infinity,
+                                                            fit: BoxFit.cover,
+                                                          ),
                                                     ),
                                                   ),
-                                                  errorWidget:
-                                                      (context, url, error) =>
-                                                          Image.asset(
-                                                    "assets/images/waveeLogoShort.png",
-                                                    height: 15.h,
-                                                    width: double.infinity,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(height: 1.5.h),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 2.w),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        product.name ??
-                                                            "Product Name",
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: TextStyle(
-                                                          fontSize: 16.sp,
-                                                          fontWeight:
-                                                              FontWeight.w700,
-                                                          fontFamily:
-                                                              AppConstants
-                                                                  .manrope,
-                                                          color: Colors.black,
-                                                        ),
-                                                      ),
-                                                      Spacer(),
-                                                      Padding(
-                                                        padding: EdgeInsets
-                                                            .symmetric(
-                                                                horizontal:
-                                                                    0.5.w),
-                                                        child: (product?.offerPrice !=
-                                                                    null &&
-                                                                product!.offerPrice !=
-                                                                    "0.00" &&
-                                                                product.offerPrice !=
-                                                                    product
-                                                                        .price)
-                                                            ? Row(
-                                                                children: [
-                                                                  Text(
-                                                                    "£${product.price}",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          13.sp,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .normal,
-                                                                      fontFamily:
-                                                                          AppConstants
-                                                                              .manrope,
-                                                                      color: Colors
-                                                                          .grey,
-                                                                      decoration:
-                                                                          TextDecoration
-                                                                              .lineThrough,
-                                                                      decorationColor:
-                                                                          AppColors
-                                                                              .maincolor,
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                      width: 5),
-                                                                  Text(
-                                                                    "£${product.offerPrice}",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          14.sp,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      fontFamily:
-                                                                          AppConstants
-                                                                              .manrope,
-                                                                      color: Colors
-                                                                          .black,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              )
-                                                            : Text(
-                                                                "£${product?.price ?? ""}",
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize:
-                                                                      14.sp,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontFamily:
-                                                                      AppConstants
-                                                                          .manrope,
-                                                                  color: Colors
-                                                                      .black,
+                                                  SizedBox(height: 1.5.h),
+                                                  Expanded(
+                                                    child: Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                            horizontal: 2.w,
+                                                          ),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            product.name ??
+                                                                "Product Name",
+                                                            maxLines: 2,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: TextStyle(
+                                                              fontSize: 16.sp,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manrope,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
+                                                          Spacer(),
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.symmetric(
+                                                                  horizontal:
+                                                                      0.5.w,
                                                                 ),
-                                                              ),
-                                                      ),
-                                                      Padding(
-                                                        padding: EdgeInsets
-                                                            .symmetric(
-                                                                horizontal:
-                                                                    0.5.w),
-                                                        child: product?.quantity ==
-                                                                    0 ||
+                                                            child:
+                                                                (product?.offerPrice !=
+                                                                            null &&
+                                                                        product!.offerPrice !=
+                                                                            "0.00" &&
+                                                                        product.offerPrice !=
+                                                                            product.price)
+                                                                    ? Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          "£${product.price}",
+                                                                          style: TextStyle(
+                                                                            fontSize:
+                                                                                13.sp,
+                                                                            fontWeight:
+                                                                                FontWeight.normal,
+                                                                            fontFamily:
+                                                                                AppConstants.manrope,
+                                                                            color:
+                                                                                Colors.grey,
+                                                                            decoration:
+                                                                                TextDecoration.lineThrough,
+                                                                            decorationColor:
+                                                                                AppColors.maincolor,
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          width:
+                                                                              5,
+                                                                        ),
+                                                                        Text(
+                                                                          "£${product.offerPrice}",
+                                                                          style: TextStyle(
+                                                                            fontSize:
+                                                                                14.sp,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            fontFamily:
+                                                                                AppConstants.manrope,
+                                                                            color:
+                                                                                Colors.black,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    )
+                                                                    : Text(
+                                                                      "£${product?.price ?? ""}",
+                                                                      style: TextStyle(
+                                                                        fontSize:
+                                                                            14.sp,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                        fontFamily:
+                                                                            AppConstants.manrope,
+                                                                        color:
+                                                                            Colors.black,
+                                                                      ),
+                                                                    ),
+                                                          ),
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.symmetric(
+                                                                  horizontal:
+                                                                      0.5.w,
+                                                                ),
+                                                            child:
                                                                 product?.quantity ==
-                                                                    null
-                                                            ? Text(
-                                                                "Out of Stock",
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize:
-                                                                      14.sp,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontFamily:
-                                                                      AppConstants
-                                                                          .manrope,
-                                                                  color: Colors
-                                                                      .red,
-                                                                ),
-                                                              )
-                                                            : SizedBox(),
+                                                                            0 ||
+                                                                        product?.quantity ==
+                                                                            null
+                                                                    ? Text(
+                                                                      "Out of Stock",
+                                                                      style: TextStyle(
+                                                                        fontSize:
+                                                                            14.sp,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                        fontFamily:
+                                                                            AppConstants.manrope,
+                                                                        color:
+                                                                            Colors.red,
+                                                                      ),
+                                                                    )
+                                                                    : SizedBox(),
+                                                          ),
+                                                          SizedBox(height: 3.h),
+                                                        ],
                                                       ),
-                                                      SizedBox(height: 3.h),
-                                                    ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Positioned(
+                                                top: 12.h,
+                                                right: 2,
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    bool isBlocked =
+                                                        product?.quantity ==
+                                                            0 ||
+                                                        product?.quantity ==
+                                                            null;
+                                                    int? productStatus =
+                                                        busnessviewmodal
+                                                            ?.data
+                                                            ?.business
+                                                            ?.productStatus;
+                                                    log(
+                                                      "dsadsadsdadasd$productStatus",
+                                                    );
+
+                                                    if (productStatus == 0) {
+                                                      showOnlineOrderDisabledDialog(
+                                                        context: context,
+                                                        businessName:
+                                                            busnessviewmodal
+                                                                ?.data
+                                                                ?.business
+                                                                ?.businessName ??
+                                                            "",
+                                                        isProduct: true,
+                                                      );
+                                                      return;
+                                                    }
+
+                                                    if (isBlocked) {
+                                                      ScaffoldMessenger.of(
+                                                        context,
+                                                      ).showSnackBar(
+                                                        SnackBar(
+                                                          content: Text(
+                                                            'Product is out of stock.',
+                                                          ),
+                                                          backgroundColor:
+                                                              Colors.red,
+                                                        ),
+                                                      );
+                                                      return;
+                                                    }
+
+                                                    if (cartDetailsModel
+                                                                ?.data !=
+                                                            null &&
+                                                        cartDetailsModel!
+                                                            .data!
+                                                            .isNotEmpty) {
+                                                      if (cartDetailsModel!
+                                                              .data![0]
+                                                              .type ==
+                                                          "service") {
+                                                        ShowAddCart(
+                                                          context: context,
+                                                          businessName:
+                                                              busnessviewmodal
+                                                                  ?.data
+                                                                  ?.business
+                                                                  ?.businessName ??
+                                                              "",
+                                                          isProduct: false,
+                                                          onContinue: () async {
+                                                            for (
+                                                              int i = 0;
+                                                              i <
+                                                                  cartDetailsModel!
+                                                                      .data!
+                                                                      .length;
+                                                              i++
+                                                            ) {
+                                                              final itemId =
+                                                                  cartDetailsModel!
+                                                                      .data![i]
+                                                                      .itemDetails
+                                                                      ?.id;
+                                                              if (itemId !=
+                                                                  null) {
+                                                                await RemoveFromCartApi(
+                                                                  itemId,
+                                                                  "service",
+                                                                );
+                                                              }
+                                                            }
+                                                            AddCartProductApi(
+                                                              product?.id
+                                                                      .toString() ??
+                                                                  "",
+                                                            );
+                                                          },
+                                                        );
+                                                      } else if (cartDetailsModel!
+                                                              .data![0]
+                                                              .itemDetails
+                                                              ?.businessId ==
+                                                          productViewModel
+                                                              ?.data
+                                                              ?.businessId) {
+                                                        AddCartProductApi(
+                                                          product?.id
+                                                                  .toString() ??
+                                                              "",
+                                                        );
+                                                      } else {
+                                                        ShowAddCart(
+                                                          context: context,
+                                                          businessName:
+                                                              busnessviewmodal
+                                                                  ?.data
+                                                                  ?.business
+                                                                  ?.businessName ??
+                                                              "",
+                                                          isProduct: false,
+                                                          onContinue: () async {
+                                                            for (
+                                                              int i = 0;
+                                                              i <
+                                                                  cartDetailsModel!
+                                                                      .data!
+                                                                      .length;
+                                                              i++
+                                                            ) {
+                                                              final itemId =
+                                                                  cartDetailsModel!
+                                                                      .data![i]
+                                                                      .itemDetails
+                                                                      ?.id;
+                                                              final type =
+                                                                  cartDetailsModel!
+                                                                      .data![i]
+                                                                      .itemDetails
+                                                                      ?.type;
+
+                                                              if (itemId !=
+                                                                  null) {
+                                                                await RemoveFromCartApi(
+                                                                  itemId,
+                                                                  type.toString(),
+                                                                );
+                                                              }
+                                                            }
+                                                            AddCartProductApi(
+                                                              product?.id
+                                                                      .toString() ??
+                                                                  "",
+                                                            );
+                                                          },
+                                                        );
+                                                      }
+                                                    } else {
+                                                      AddCartProductApi(
+                                                        product?.id
+                                                                .toString() ??
+                                                            "",
+                                                      );
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    width: 10.w,
+                                                    height: 10.w,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      shape: BoxShape.circle,
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.black26,
+                                                          blurRadius: 4,
+                                                          offset: Offset(0, 2),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    child: Icon(
+                                                      product?.quantity == 0 ||
+                                                              product?.quantity ==
+                                                                  null
+                                                          ? Icons.block
+                                                          : Icons.add,
+                                                      size: 22.sp,
+                                                      color:
+                                                          product?.quantity ==
+                                                                      0 ||
+                                                                  product?.quantity ==
+                                                                      null
+                                                              ? AppColors
+                                                                  .redColor
+                                                              : AppColors
+                                                                  .maincolor,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                             ],
                                           ),
-                                          Positioned(
-                                            top: 12.h,
-                                            right: 2,
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                bool isBlocked =
-                                                    product?.quantity == 0 ||
-                                                        product?.quantity ==
-                                                            null;
-                                                int? productStatus =
-                                                    busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.productStatus;
-                                                log("dsadsadsdadasd$productStatus");
-
-                                                if (productStatus == 0) {
-                                                  showOnlineOrderDisabledDialog(
-                                                    context: context,
-                                                    businessName:
-                                                        busnessviewmodal
-                                                                ?.data
-                                                                ?.business
-                                                                ?.businessName ??
-                                                            "",
-                                                    isProduct: true,
-                                                  );
-                                                  return;
-                                                }
-
-                                                if (isBlocked) {
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                      content: Text(
-                                                          'Product is out of stock.'),
-                                                      backgroundColor:
-                                                          Colors.red,
-                                                    ),
-                                                  );
-                                                  return;
-                                                }
-
-                                                if (cartDetailsModel?.data !=
-                                                        null &&
-                                                    cartDetailsModel!
-                                                        .data!.isNotEmpty) {
-                                                  if (cartDetailsModel!
-                                                          .data![0].type ==
-                                                      "service") {
-                                                    ShowAddCart(
-                                                      context: context,
-                                                      businessName:
-                                                          busnessviewmodal
-                                                                  ?.data
-                                                                  ?.business
-                                                                  ?.businessName ??
-                                                              "",
-                                                      isProduct: false,
-                                                      onContinue: () async {
-                                                        for (int i = 0;
-                                                            i <
-                                                                cartDetailsModel!
-                                                                    .data!
-                                                                    .length;
-                                                            i++) {
-                                                          final itemId =
-                                                              cartDetailsModel!
-                                                                  .data![i]
-                                                                  .itemDetails
-                                                                  ?.id;
-                                                          if (itemId != null) {
-                                                            await RemoveFromCartApi(
-                                                              itemId,
-                                                              "service",
-                                                            );
-                                                          }
-                                                        }
-                                                        AddCartProductApi(product
-                                                                ?.id
-                                                                .toString() ??
-                                                            "");
-                                                      },
-                                                    );
-                                                  } else if (cartDetailsModel!
-                                                          .data![0]
-                                                          .itemDetails
-                                                          ?.businessId ==
-                                                      productViewModel
-                                                          ?.data?.businessId) {
-                                                    AddCartProductApi(product
-                                                            ?.id
-                                                            .toString() ??
-                                                        "");
-                                                  } else {
-                                                    ShowAddCart(
-                                                        context: context,
-                                                        businessName:
-                                                            busnessviewmodal
-                                                                    ?.data
-                                                                    ?.business
-                                                                    ?.businessName ??
-                                                                "",
-                                                        isProduct: false,
-                                                        onContinue: () async {
-                                                          for (int i = 0;
-                                                              i <
-                                                                  cartDetailsModel!
-                                                                      .data!
-                                                                      .length;
-                                                              i++) {
-                                                            final itemId =
-                                                                cartDetailsModel!
-                                                                    .data![i]
-                                                                    .itemDetails
-                                                                    ?.id;
-                                                            final type =
-                                                                cartDetailsModel!
-                                                                    .data![i]
-                                                                    .itemDetails
-                                                                    ?.type;
-
-                                                            if (itemId !=
-                                                                null) {
-                                                              await RemoveFromCartApi(
-                                                                itemId,
-                                                                type.toString(),
-                                                              );
-                                                            }
-                                                          }
-                                                          AddCartProductApi(product
-                                                                  ?.id
-                                                                  .toString() ??
-                                                              "");
-                                                        });
-                                                  }
-                                                } else {
-                                                  AddCartProductApi(
-                                                      product?.id.toString() ??
-                                                          "");
-                                                }
-                                              },
-                                              child: Container(
-                                                width: 10.w,
-                                                height: 10.w,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  shape: BoxShape.circle,
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black26,
-                                                      blurRadius: 4,
-                                                      offset: Offset(0, 2),
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: Icon(
-                                                  product?.quantity == 0 ||
-                                                          product?.quantity ==
-                                                              null
-                                                      ? Icons.block
-                                                      : Icons.add,
-                                                  size: 22.sp,
-                                                  color: product?.quantity ==
-                                                              0 ||
-                                                          product?.quantity ==
-                                                              null
-                                                      ? AppColors.redColor
-                                                      : AppColors.maincolor,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
-                                  ),
+                            );
+                          },
+                        ).paddingOnly(left: 2.w, right: 2.w),
+                      ),
+                    ],
+                  ).paddingOnly(left: 4.w, right: 4.w),
+                  Positioned(
+                    bottom: 10,
+                    left: 16,
+                    right: 16,
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 5.h,
+                      child: batan(
+                        title: "View Basket",
+                        route: () {
+                          Get.to(
+                            AddToCartView(
+                              type: 'product',
+                              fromBottomBar: false,
+                            ),
                           );
                         },
-                      ).paddingOnly(left: 2.w, right: 2.w),
-                    )
-                  ],
-                ).paddingOnly(left: 4.w, right: 4.w),
-                Positioned(
-                  bottom: 10,
-                  left: 16,
-                  right: 16,
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 5.h,
-                    child: batan(
-                      title: "View Basket",
-                      route: () {
-                        Get.to(AddToCartView(
-                          type: 'product',
-                          fromBottomBar: false,
-                        ));
-                      },
-                      color: AppColors.maincolor,
-                      fontcolor: AppColors.white,
-                      height: 5.h,
-                      width: double.infinity,
-                      fontsize: 18.sp,
-                      radius: 12.0,
-                      iconData: Icons.shopping_cart_checkout,
+                        color: AppColors.maincolor,
+                        fontcolor: AppColors.white,
+                        height: 5.h,
+                        width: double.infinity,
+                        fontsize: 18.sp,
+                        radius: 12.0,
+                        iconData: Icons.shopping_cart_checkout,
+                      ),
                     ),
                   ),
-                ),
-                if (isAddtoCart)
-                  Container(
-                    color: Colors.black.withOpacity(0.3),
-                    child: Center(
-                      child: Loader(),
+                  if (isAddtoCart)
+                    Container(
+                      color: Colors.black.withOpacity(0.3),
+                      child: Center(child: Loader()),
                     ),
-                  ),
-              ],
-            ),
+                ],
+              ),
     );
   }
 
   double getSubtotal() {
     double total = 0.0;
     cartDetailsModel?.data?.forEach((item) {
-      double price = double.tryParse(
-              item.itemDetails?.offerPrice ?? item.itemDetails?.price ?? '0') ??
+      double price =
+          double.tryParse(
+            item.itemDetails?.offerPrice ?? item.itemDetails?.price ?? '0',
+          ) ??
           0;
       total += price * (item.quantity ?? 1);
     });
@@ -527,28 +570,26 @@ class _CategoryScreenState extends State<CategoryScreen> {
     checkInternet().then((internet) async {
       if (internet) {
         CommunityDetailProvider()
-            .CategoryDetailApi(
-                widget.businessID.toString(), widget.categoryID.toString())
+            .categoryDetailApi(
+              widget.businessID.toString(),
+              widget.categoryID.toString(),
+            )
             .then((response) async {
-          categoryDetailModal =
-              CategoryDetailModal.fromJson(json.decode(response.body));
-          if (response.statusCode == 200) {
-            print("done LIst");
-
-            setState(() {
-              isLoading = false;
+              categoryDetailModal = CategoryDetailModal.fromJson(response.data);
+              if (response.statusCode == 200) {
+                setState(() {
+                  isLoading = false;
+                });
+              } else if (response.statusCode == 422) {
+                setState(() {
+                  isLoading = false;
+                });
+              } else {
+                setState(() {
+                  isLoading = false;
+                });
+              }
             });
-            log(" ${response.body}");
-          } else if (response.statusCode == 422) {
-            setState(() {
-              isLoading = false;
-            });
-          } else {
-            setState(() {
-              isLoading = false;
-            });
-          }
-        });
       } else {
         setState(() {
           isLoading = false;
@@ -572,15 +613,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
       if (internet) {
         ProductProvider().AddToCart(data).then((response) async {
           if (response.statusCode == 200) {
-            print("adfdsfsdf${response.body}");
-
             setState(() {
               isAddtoCart = false;
             });
-            Get.to(() => AddToCartView(
-                  type: "product",
-                  fromBottomBar: false,
-                ));
+            Get.to(() => AddToCartView(type: "product", fromBottomBar: false));
           } else {
             setState(() {
               isAddtoCart = false;
@@ -602,27 +638,20 @@ class _CategoryScreenState extends State<CategoryScreen> {
     checkInternet().then((internet) async {
       if (internet) {
         CartProvider()
-            .GetCartDetailsApi(
-          loginModel?.data?.user?.id.toString() ?? "",
-        )
+            .cartDetailApi(loginModel?.data?.user?.id.toString() ?? "")
             .then((response) async {
-          cartDetailsModel =
-              CartDetailsModel.fromJson(jsonDecode(response.body));
-          if (response.statusCode == 200) {
-            print("adfdsfsdfasdfsadd${response.body}");
-            print(
-                "1111111111>>>>>>>>>>>>.${profileModel?.data?.user?.profile}");
-
-            setState(() {
-              isLoading = false;
+              cartDetailsModel = CartDetailsModel.fromJson(response.data);
+              if (response.statusCode == 200) {
+                setState(() {
+                  isLoading = false;
+                });
+              } else {
+                setState(() {
+                  isLoading = false;
+                });
+                log("Error");
+              }
             });
-          } else {
-            setState(() {
-              isLoading = false;
-            });
-            log("Error");
-          }
-        });
       } else {
         setState(() {
           isLoading = false;
@@ -633,10 +662,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     });
   }
 
-  RemoveFromCartApi(
-    int productId,
-    String type,
-  ) {
+  RemoveFromCartApi(int productId, String type) {
     setState(() {
       isAddtoCart = true;
     });
@@ -651,9 +677,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
     checkInternet().then((internet) async {
       if (internet) {
-        CartProvider().RemoveFromCartApi(data).then((response) async {
+        CartProvider().removeCartApi(data).then((response) async {
           if (response.statusCode == 200) {
-            log("Item removed successfully: ${response.body}");
+            log("Item removed successfully: ${response.data}");
             setState(() {
               isAddtoCart = false;
             });

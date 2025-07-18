@@ -60,9 +60,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
           SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(
-                  height: 4.h,
-                ),
+                SizedBox(height: 4.h),
                 TitleBar(
                   back: () {
                     Get.back();
@@ -72,9 +70,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                     maintanceKey.currentState?.openDrawer();
                   },
                 ),
-                SizedBox(
-                  height: 2.h,
-                ),
+                SizedBox(height: 2.h),
                 SizedBox(
                   height: 5.5.h,
                   child: ListView.builder(
@@ -94,13 +90,16 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                         child: Container(
                           height: 6.h,
                           padding: EdgeInsets.symmetric(
-                              vertical: 1.h, horizontal: 5.w),
+                            vertical: 1.h,
+                            horizontal: 5.w,
+                          ),
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             border: Border.all(width: 0.5, color: Colors.grey),
-                            color: selectedCategory == index
-                                ? AppColors.maincolor
-                                : Colors.white,
+                            color:
+                                selectedCategory == index
+                                    ? AppColors.maincolor
+                                    : Colors.white,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           margin: EdgeInsets.symmetric(horizontal: 1.2.w),
@@ -108,9 +107,10 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                             categories[index],
                             style: TextStyle(
                               fontSize: 16.sp,
-                              color: selectedCategory == index
-                                  ? Colors.white
-                                  : Colors.black,
+                              color:
+                                  selectedCategory == index
+                                      ? Colors.white
+                                      : Colors.black,
                               fontFamily: AppConstants.manrope,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1,
@@ -121,226 +121,210 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                     },
                   ),
                 ),
-                SizedBox(
-                  height: 2.h,
-                ),
+                SizedBox(height: 2.h),
                 isLoading
                     ? Loader().paddingOnly(top: 20.h)
-                    : maintenanceModel?.data?.length == null ||
-                            maintenanceModel?.data?.length == 0
-                        ? Center(
-                            child: Text(
-                              "No Maintenance Avaiable",
-                              style: TextStyle(
-                                fontSize: 17.sp,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.black,
-                                fontFamily: AppConstants.manrope,
-                              ),
-                            ).paddingOnly(top: 30.h),
-                          )
-                        : SizedBox(
-                            child: Column(
-                              children: [
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.vertical,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  padding: EdgeInsets.zero,
-                                  itemCount:
-                                      maintenanceModel?.data?.length ?? 0,
-                                  itemBuilder: (context, index) {
-                                    var booking =
-                                        maintenanceModel?.data?[index];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        MaintenanceDetailApi(
-                                            booking?.id.toString() ?? "");
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  Colors.grey.withOpacity(0.2),
-                                              spreadRadius: 2,
-                                              blurRadius: 5,
-                                              offset: Offset(0, 3),
-                                            ),
-                                          ],
-                                        ),
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 1.w, vertical: 1.h),
-                                        padding: const EdgeInsets.all(12),
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                    : maintenanceModel?.data?.data?.length == null ||
+                        maintenanceModel?.data?.data?.length == 0
+                    ? Center(
+                      child: Text(
+                        "No Maintenance Avaiable",
+                        style: TextStyle(
+                          fontSize: 17.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.black,
+                          fontFamily: AppConstants.manrope,
+                        ),
+                      ).paddingOnly(top: 30.h),
+                    )
+                    : SizedBox(
+                      child: Column(
+                        children: [
+                          ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: EdgeInsets.zero,
+                            itemCount:
+                                maintenanceModel?.data?.data?.length ?? 0,
+                            itemBuilder: (context, index) {
+                              var booking =
+                                  maintenanceModel?.data?.data?[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  MaintenanceDetailApi(
+                                    booking?.id.toString() ?? "",
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.2),
+                                        spreadRadius: 2,
+                                        blurRadius: 5,
+                                        offset: Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: 1.w,
+                                    vertical: 1.h,
+                                  ),
+                                  padding: const EdgeInsets.all(12),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(width: 2.h),
+                                      Expanded(
+                                        child: Stack(
                                           children: [
-                                            SizedBox(width: 2.h),
-                                            Expanded(
-                                              child: Stack(
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
-                                                  Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          formatDate(booking
-                                                                  ?.createdAt ??
-                                                              ""),
-                                                          style: TextStyle(
-                                                            fontSize: 13,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            color:
-                                                                Colors.black54,
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 4),
-                                                        Text(
-                                                          booking?.subject ??
-                                                              '',
-                                                          style: TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manrope,
-                                                            color:
-                                                                Colors.black87,
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 4),
-                                                      ],
+                                                  Text(
+                                                    formatDate(
+                                                      booking?.createdAt ?? "",
+                                                    ),
+                                                    style: TextStyle(
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.black54,
                                                     ),
                                                   ),
-                                                  Align(
-                                                    alignment:
-                                                        Alignment.topRight,
-                                                    child: Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        Container(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  horizontal:
-                                                                      10,
-                                                                  vertical: 4),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: getStatusColor(
-                                                                booking?.status ??
-                                                                    ''),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10),
-                                                          ),
-                                                          child: Text(
-                                                            booking?.status
-                                                                    .toString()
-                                                                    .capitalizeFirst ??
-                                                                "",
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 13,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color:
-                                                                  Colors.white,
-                                                              fontFamily:
-                                                                  AppConstants
-                                                                      .manrope,
-                                                            ),
-                                                          ),
+                                                  SizedBox(height: 4),
+                                                  Text(
+                                                    booking?.subject ?? '',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                      color: Colors.black87,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 4),
+                                                ],
+                                              ),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.topRight,
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Container(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 4,
                                                         ),
-                                                      ],
+                                                    decoration: BoxDecoration(
+                                                      color: getStatusColor(
+                                                        booking?.status ?? '',
+                                                      ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            10,
+                                                          ),
+                                                    ),
+                                                    child: Text(
+                                                      booking?.status
+                                                              .toString()
+                                                              .capitalizeFirst ??
+                                                          "",
+                                                      style: const TextStyle(
+                                                        fontSize: 13,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white,
+                                                        fontFamily:
+                                                            AppConstants
+                                                                .manrope,
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
                                               ),
-                                            )
+                                            ),
                                           ],
                                         ),
                                       ),
-                                    );
-                                  },
+                                    ],
+                                  ),
                                 ),
-                                SizedBox(
-                                  height: 10.h,
-                                )
-                              ],
-                            ),
-                          )
+                              );
+                            },
+                          ),
+                          SizedBox(height: 10.h),
+                        ],
+                      ),
+                    ),
               ],
             ).paddingSymmetric(horizontal: 3.w),
           ),
           if (isDetailLoading)
             Container(
               color: Colors.black.withOpacity(0.3),
-              child: Center(
-                child: Loader(),
-              ),
+              child: Center(child: Loader()),
             ),
         ],
       ),
-      floatingActionButton: isLoading
-          ? Container()
-          : Row(
-              children: [
-                Spacer(),
-                FloatingActionButton.extended(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(900)),
-                  backgroundColor: Colors.white,
-                  onPressed: () {
-                    showAddRequestBottomSheet(context);
-                  },
-                  label: SizedBox(
-                    width: 44.w,
-                    child: Text(
-                      "Add Maintenance Request ",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
+      floatingActionButton:
+          isLoading
+              ? Container()
+              : Row(
+                children: [
+                  Spacer(),
+                  FloatingActionButton.extended(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(900),
+                    ),
+                    backgroundColor: Colors.white,
+                    onPressed: () {
+                      showAddRequestBottomSheet(context);
+                    },
+                    label: SizedBox(
+                      width: 44.w,
+                      child: Text(
+                        "Add Maintenance Request ",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w600,
                           fontSize: 15.sp,
-                          fontFamily: AppConstants.manrope),
+                          fontFamily: AppConstants.manrope,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 2.w,
-                ),
-                // FloatingActionButton.extended(
-                //   shape: RoundedRectangleBorder(
-                //       borderRadius: BorderRadius.circular(900)),
-                //   backgroundColor: Colors.white,
-                //   onPressed: () {
-                //     Get.to(() => const ChatBotScreen());
-                //   },
-                //   icon: Icon(CupertinoIcons.chat_bubble_2, color: Colors.black),
-                //   label: Text(
-                //     "Ai Concierge",
-                //     style: TextStyle(
-                //         color: Colors.black,
-                //         fontWeight: FontWeight.w600,
-                //         fontSize: 15.sp,
-                //         fontFamily: AppConstants.manrope),
-                //   ),
-                // ),
-              ],
-            ),
+                  SizedBox(width: 2.w),
+                  // FloatingActionButton.extended(
+                  //   shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(900)),
+                  //   backgroundColor: Colors.white,
+                  //   onPressed: () {
+                  //     Get.to(() => const ChatBotScreen());
+                  //   },
+                  //   icon: Icon(CupertinoIcons.chat_bubble_2, color: Colors.black),
+                  //   label: Text(
+                  //     "Ai Concierge",
+                  //     style: TextStyle(
+                  //         color: Colors.black,
+                  //         fontWeight: FontWeight.w600,
+                  //         fontSize: 15.sp,
+                  //         fontFamily: AppConstants.manrope),
+                  //   ),
+                  // ),
+                ],
+              ),
     );
   }
 
@@ -348,12 +332,12 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
     return status == "pending" || status == "Pending"
         ? Colors.yellow.shade800
         : status == "Approved" || status == "approved"
-            ? Colors.green
-            : status == "completed" || status == "Completed"
-                ? Colors.blue
-                : status == "rejected"
-                    ? Colors.orange
-                    : Colors.black;
+        ? Colors.green
+        : status == "completed" || status == "Completed"
+        ? Colors.blue
+        : status == "rejected"
+        ? Colors.orange
+        : Colors.black;
   }
 
   String getStatusFromTab(int index) {
@@ -474,29 +458,28 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                       SizedBox(height: 2.h),
                       isLoading
                           ? const CircularProgressIndicator(
-                              color: AppColors.maincolor,
-                            )
+                            color: AppColors.maincolor,
+                          )
                           : batan(
-                              title: "Submit",
-                              route: () {
-                                bool isValid =
-                                    _formKey.currentState!.validate();
+                            title: "Submit",
+                            route: () {
+                              bool isValid = _formKey.currentState!.validate();
 
-                                if (isValid) {
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  AddMaintenance();
-                                  Navigator.of(context).pop();
-                                }
-                              },
-                              color: AppColors.maincolor,
-                              fontcolor: Colors.white,
-                              height: 5.5.h,
-                              width: double.infinity,
-                              fontsize: 16.sp,
-                              radius: 20.0,
-                            ),
+                              if (isValid) {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                AddMaintenance();
+                                Navigator.of(context).pop();
+                              }
+                            },
+                            color: AppColors.maincolor,
+                            fontcolor: Colors.white,
+                            height: 5.5.h,
+                            width: double.infinity,
+                            fontsize: 16.sp,
+                            radius: 20.0,
+                          ),
                       SizedBox(height: 5.h),
                     ],
                   ),
@@ -518,11 +501,11 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
     print("RegisterApi : ${data}");
     checkInternet().then((internet) async {
       if (internet) {
-        MaintenanceProvider()
-            .AddMaintenanceRequest(data)
-            .then((response) async {
+        MaintenanceProvider().addMaintanceRequestApi(data).then((
+          response,
+        ) async {
           if (response.statusCode == 200) {
-            print("1111111111>>>>>>>>>>>>.${response.body}");
+            print("1111111111>>>>>>>>>>>>.${response.data}");
             AllMaintenanceApi();
             setState(() {
               isLoading = false;
@@ -561,11 +544,10 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
 
     checkInternet().then((internet) async {
       if (internet) {
-        MaintenanceProvider()
-            .AddMaintenanceRequest(data)
-            .then((response) async {
+        MaintenanceProvider().addMaintanceRequestApi(data).then((
+          response,
+        ) async {
           if (response.statusCode == 200) {
-            print("✅ Add Response: ${response.body}");
             AllMaintenanceApi();
             setState(() {
               subjectController.clear();
@@ -602,13 +584,10 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
 
     checkInternet().then((internet) async {
       if (internet) {
-        MaintenanceProvider().AllMaintenanceStaus(data).then((response) async {
-          maintenanceModel =
-              MaintenanceModel.fromJson(jsonDecode(response.body));
+        MaintenanceProvider().getMaintanceApi(data).then((response) async {
+          maintenanceModel = MaintenanceModel.fromJson(response.data);
 
           if (response.statusCode == 200) {
-            print("✅ Response: ${response.body}");
-
             if (mounted) {
               setState(() {
                 isLoading = false;
@@ -644,12 +623,12 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
 
     checkInternet().then((internet) async {
       if (internet) {
-        MaintenanceProvider().AllMaintenanceStaus(data).then((response) async {
-          maintenanceDetailModel =
-              MaintenanceDetailModel.fromJson(jsonDecode(response.body));
+        MaintenanceProvider().getMaintanceApi(data).then((response) async {
+          maintenanceDetailModel = MaintenanceDetailModel.fromJson(
+            response.data,
+          );
 
           if (response.statusCode == 200) {
-            print("✅ Response: ${response.body}");
             showMaintenanceDetailBottomSheet(context, maintenanceDetailModel!);
             if (mounted) {
               setState(() {
@@ -700,11 +679,10 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
     }
 
     try {
-      var response = await MaintenanceProvider().AllMaintenanceStaus(data);
+      var response = await MaintenanceProvider().getMaintanceApi(data);
 
       if (response.statusCode == 200) {
-        maintenanceDetailModel =
-            MaintenanceDetailModel.fromJson(jsonDecode(response.body));
+        maintenanceDetailModel = MaintenanceDetailModel.fromJson(response.data);
 
         if (mounted) {
           setState(() {
@@ -732,7 +710,9 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
   }
 
   void showMaintenanceDetailBottomSheet(
-      BuildContext context, MaintenanceDetailModel detail) {
+    BuildContext context,
+    MaintenanceDetailModel detail,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -782,7 +762,8 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                 "Created",
                 detail.data?.createdAt != null
                     ? DateFormat('dd MMM yyyy, hh:mm a').format(
-                        DateTime.parse(detail.data?.createdAt.toString() ?? ""))
+                      DateTime.parse(detail.data?.createdAt.toString() ?? ""),
+                    )
                     : "-",
               ),
               SizedBox(height: 24),

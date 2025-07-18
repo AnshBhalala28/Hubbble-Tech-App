@@ -95,8 +95,11 @@ class _Form_ScreenState extends State<Form_Screen> {
     });
     focusedMonth = DateTime.now();
     selectedMonthIndex = focusedMonth.month - 1;
-    calendar1SelectedDate =
-        DateTime(focusedMonth.year, focusedMonth.month, focusedMonth.day);
+    calendar1SelectedDate = DateTime(
+      focusedMonth.year,
+      focusedMonth.month,
+      focusedMonth.day,
+    );
 
     _generateDatesBasedOnSelection();
     AmenitiesApi(date: '');
@@ -119,30 +122,35 @@ class _Form_ScreenState extends State<Form_Screen> {
   ];
 
   int calendar1SelectedMonthIndex = DateTime.now().month - 1;
-  DateTime calendar1FocusedMonth =
-      DateTime(DateTime.now().year, DateTime.now().month, 1);
+  DateTime calendar1FocusedMonth = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    1,
+  );
   DateTime? calendar1SelectedDate;
   String calendar1SelectedDateStr = '';
   bool calendar1Loading = false;
 
   @override
   Widget build(BuildContext context) {
-    final selectedAmenity = amenitiesModel?.data?.first;
+    final selectedAmenity = amenitiesModel?.data1?.data?.first;
     DateTime now = DateTime.now();
     DateTime firstDay = DateTime(now.year, now.month, 1);
     DateTime lastDay = DateTime(now.year, now.month + 1, 0);
     DateTime requestedDay = getRequestedDate() ?? now;
-    DateTime focusedDay = requestedDay.isBefore(firstDay)
-        ? firstDay
-        : requestedDay.isAfter(lastDay)
+    DateTime focusedDay =
+        requestedDay.isBefore(firstDay)
+            ? firstDay
+            : requestedDay.isAfter(lastDay)
             ? lastDay
             : requestedDay;
-    final String? selectedOperatingHours = calendar1SelectedDate != null
-        ? getOperatingHours(
-            calendar1SelectedDate!,
-            selectedAmenity?.operatingHours,
-          )
-        : null;
+    final String? selectedOperatingHours =
+        calendar1SelectedDate != null
+            ? getOperatingHours(
+              calendar1SelectedDate!,
+              selectedAmenity?.operatingHours,
+            )
+            : null;
     return WillPopScope(
       onWillPop: () async {
         if (showBookingDetails) {
@@ -154,1113 +162,1102 @@ class _Form_ScreenState extends State<Form_Screen> {
         return true;
       },
       child: Scaffold(
-          drawer: SideMenu(),
-          key: _scaffoldKeyForm,
-          backgroundColor: AppColors.bgcolor,
-          body: Stack(
-            children: [
-              isLoading
-                  ? Loader()
-                  : SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 4.h,
-                          ),
-                          TitleBar(
-                            back: () {
-                              widget.isPage == true
-                                  ? Get.to(BookingScreen())
-                                  : Get.to(BookAmenities_Screen());
-                            },
-                            title: amenitiesModel?.data?[0].name ?? "",
-                            drawerCallback: () {
-                              _scaffoldKeyForm.currentState?.openDrawer();
-                            },
-                          ),
-                          SizedBox(
-                            height: 2.h,
-                          ),
-                          SizedBox(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              padding: EdgeInsets.zero,
-                              itemCount: amenitiesModel?.data?.length ?? 0,
-                              itemBuilder: (context, index) {
-                                final booking = amenitiesModel?.data?[index];
-                                final imageList = booking?.imageUrl ?? [];
+        drawer: SideMenu(),
+        key: _scaffoldKeyForm,
+        backgroundColor: AppColors.bgcolor,
+        body: Stack(
+          children: [
+            isLoading
+                ? Loader()
+                : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 4.h),
+                      TitleBar(
+                        back: () {
+                          widget.isPage == true
+                              ? Get.to(BookingScreen())
+                              : Get.to(BookAmenities_Screen());
+                        },
+                        title: amenitiesModel?.data1?.data?[0].name ?? "",
+                        drawerCallback: () {
+                          _scaffoldKeyForm.currentState?.openDrawer();
+                        },
+                      ),
+                      SizedBox(height: 2.h),
+                      SizedBox(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          padding: EdgeInsets.zero,
+                          itemCount: amenitiesModel?.data1?.data?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            final booking = amenitiesModel?.data1?.data?[index];
+                            final imageList = booking?.imageUrl ?? [];
 
-                                int currentIndex = 0;
+                            int currentIndex = 0;
 
-                                return StatefulBuilder(
-                                  builder: (context, setState) {
-                                    return Padding(
-                                      padding: EdgeInsets.only(bottom: 2.h),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          imageList.length == 0
-                                              ? Container(
-                                                  height: 25.h,
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
-                                                      image: DecorationImage(
-                                                        image: AssetImage(
-                                                          "assets/images/waveeLogoShort.png",
-                                                        ),
-                                                        fit: BoxFit.cover,
-                                                      )),
-                                                )
-                                              : Container(
-                                                  height: 25.h,
-                                                  width: double.infinity,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                  ),
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                    child: CarouselSlider(
-                                                      options: CarouselOptions(
-                                                        autoPlay: true,
-                                                        viewportFraction: 1.0,
-                                                        enlargeCenterPage:
-                                                            false,
-                                                        height: 25.h,
-                                                        onPageChanged:
-                                                            (index, reason) {
-                                                          setState(() {
-                                                            currentIndex =
-                                                                index;
-                                                          });
-                                                        },
-                                                      ),
-                                                      items:
-                                                          imageList.map((url) {
-                                                        return Stack(
-                                                          fit: StackFit.expand,
-                                                          children: [
-                                                            CachedNetworkImage(
-                                                              imageUrl: url,
-                                                              fit: BoxFit.cover,
-                                                              placeholder:
-                                                                  (context,
-                                                                          url) =>
-                                                                      Center(
-                                                                child:
-                                                                    CircularProgressIndicator(),
-                                                              ),
-                                                              errorWidget:
-                                                                  (context, url,
-                                                                          error) =>
-                                                                      Center(
-                                                                child: Icon(
-                                                                    Icons.error,
-                                                                    color: Colors
-                                                                        .red),
-                                                              ),
-                                                            ).marginOnly(
-                                                                right: 0.5.w),
-                                                            Container(
-                                                              decoration:
-                                                                  const BoxDecoration(
-                                                                gradient:
-                                                                    LinearGradient(
-                                                                  begin: Alignment
-                                                                      .bottomCenter,
-                                                                  end: Alignment
-                                                                      .topCenter,
-                                                                  colors: [
-                                                                    Colors
-                                                                        .black45,
-                                                                    Colors
-                                                                        .transparent,
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              margin: EdgeInsets
-                                                                  .only(
-                                                                      right:
-                                                                          1.w),
-                                                            ),
-                                                          ],
-                                                        );
-                                                      }).toList(),
-                                                    ),
-                                                  ),
-                                                ),
-                                          SizedBox(height: 1.h),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: List.generate(
-                                                imageList.length, (dotIndex) {
-                                              return AnimatedContainer(
-                                                duration:
-                                                    Duration(milliseconds: 300),
-                                                margin: EdgeInsets.symmetric(
-                                                    horizontal: 4),
-                                                width: currentIndex == dotIndex
-                                                    ? 10
-                                                    : 6,
-                                                height: currentIndex == dotIndex
-                                                    ? 10
-                                                    : 6,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color:
-                                                      currentIndex == dotIndex
-                                                          ? AppColors.maincolor
-                                                          : Colors.grey,
-                                                ),
-                                              );
-                                            }),
-                                          ),
-                                          SizedBox(height: 1.h),
-                                          Text(
-                                            booking?.name ?? '',
-                                            style: TextStyle(
-                                              color: AppColors.black,
-                                              fontFamily: AppConstants.manrope,
-                                              fontSize: 18.sp,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 2.h,
-                                          ),
-                                          Container(
-                                            width: 92.w,
+                            return StatefulBuilder(
+                              builder: (context, setState) {
+                                return Padding(
+                                  padding: EdgeInsets.only(bottom: 2.h),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      imageList.length == 0
+                                          ? Container(
+                                            height: 25.h,
                                             decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(10),
+                                                  BorderRadius.circular(12),
+                                              image: DecorationImage(
+                                                image: AssetImage(
+                                                  "assets/images/waveeLogoShort.png",
+                                                ),
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
-                                            child: ReadMoreText(
-                                              "${booking?.description == null || booking?.description == "" ? "N/A" : "${booking?.description.toString().capitalize}"}",
-                                              trimLines: 4,
-                                              trimLength: 145,
-                                              colorClickableText: Colors.blue,
-                                              trimMode: TrimMode.Length,
-                                              trimCollapsedText: ' Show more',
-                                              trimExpandedText: ' Show less',
-                                              moreStyle: TextStyle(
-                                                  fontSize: 15.sp,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                  letterSpacing: 1,
-                                                  color: AppColors.maincolor),
-                                              lessStyle: TextStyle(
-                                                  fontSize: 15.sp,
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                  fontWeight: FontWeight.bold,
-                                                  letterSpacing: 1,
-                                                  color: AppColors.maincolor),
-                                              style: TextStyle(
-                                                fontSize: 16.sp,
-                                                color: Colors.grey.shade500,
-                                                fontWeight: FontWeight.normal,
-                                                fontFamily:
-                                                    AppConstants.manrope,
+                                          )
+                                          : Container(
+                                            height: 25.h,
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              child: CarouselSlider(
+                                                options: CarouselOptions(
+                                                  autoPlay: true,
+                                                  viewportFraction: 1.0,
+                                                  enlargeCenterPage: false,
+                                                  height: 25.h,
+                                                  onPageChanged: (
+                                                    index,
+                                                    reason,
+                                                  ) {
+                                                    setState(() {
+                                                      currentIndex = index;
+                                                    });
+                                                  },
+                                                ),
+                                                items:
+                                                    imageList.map((url) {
+                                                      return Stack(
+                                                        fit: StackFit.expand,
+                                                        children: [
+                                                          CachedNetworkImage(
+                                                            imageUrl: url,
+                                                            fit: BoxFit.cover,
+                                                            placeholder:
+                                                                (
+                                                                  context,
+                                                                  url,
+                                                                ) => Center(
+                                                                  child:
+                                                                      CircularProgressIndicator(),
+                                                                ),
+                                                            errorWidget:
+                                                                (
+                                                                  context,
+                                                                  url,
+                                                                  error,
+                                                                ) => Center(
+                                                                  child: Icon(
+                                                                    Icons.error,
+                                                                    color:
+                                                                        Colors
+                                                                            .red,
+                                                                  ),
+                                                                ),
+                                                          ).marginOnly(
+                                                            right: 0.5.w,
+                                                          ),
+                                                          Container(
+                                                            decoration: const BoxDecoration(
+                                                              gradient: LinearGradient(
+                                                                begin:
+                                                                    Alignment
+                                                                        .bottomCenter,
+                                                                end:
+                                                                    Alignment
+                                                                        .topCenter,
+                                                                colors: [
+                                                                  Colors
+                                                                      .black45,
+                                                                  Colors
+                                                                      .transparent,
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                  right: 1.w,
+                                                                ),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    }).toList(),
                                               ),
                                             ),
                                           ),
-                                          SizedBox(
-                                            height: 2.h,
+                                      SizedBox(height: 1.h),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: List.generate(
+                                          imageList.length,
+                                          (dotIndex) {
+                                            return AnimatedContainer(
+                                              duration: Duration(
+                                                milliseconds: 300,
+                                              ),
+                                              margin: EdgeInsets.symmetric(
+                                                horizontal: 4,
+                                              ),
+                                              width:
+                                                  currentIndex == dotIndex
+                                                      ? 10
+                                                      : 6,
+                                              height:
+                                                  currentIndex == dotIndex
+                                                      ? 10
+                                                      : 6,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    currentIndex == dotIndex
+                                                        ? AppColors.maincolor
+                                                        : Colors.grey,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(height: 1.h),
+                                      Text(
+                                        booking?.name ?? '',
+                                        style: TextStyle(
+                                          color: AppColors.black,
+                                          fontFamily: AppConstants.manrope,
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 2.h),
+                                      Container(
+                                        width: 92.w,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
                                           ),
-                                          SingleChildScrollView(
-                                            scrollDirection: Axis.horizontal,
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 3.w,
-                                                      vertical: 1.h),
-                                                  margin: EdgeInsets.only(
-                                                      right: 2.w),
-                                                  decoration: BoxDecoration(
-                                                    color: booking?.status ==
-                                                            "active"
+                                        ),
+                                        child: ReadMoreText(
+                                          "${booking?.description == null || booking?.description == "" ? "N/A" : "${booking?.description.toString().capitalize}"}",
+                                          trimLines: 4,
+                                          trimLength: 145,
+                                          colorClickableText: Colors.blue,
+                                          trimMode: TrimMode.Length,
+                                          trimCollapsedText: ' Show more',
+                                          trimExpandedText: ' Show less',
+                                          moreStyle: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: AppConstants.manrope,
+                                            letterSpacing: 1,
+                                            color: AppColors.maincolor,
+                                          ),
+                                          lessStyle: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontFamily: AppConstants.manrope,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 1,
+                                            color: AppColors.maincolor,
+                                          ),
+                                          style: TextStyle(
+                                            fontSize: 16.sp,
+                                            color: Colors.grey.shade500,
+                                            fontWeight: FontWeight.normal,
+                                            fontFamily: AppConstants.manrope,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 2.h),
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 3.w,
+                                                vertical: 1.h,
+                                              ),
+                                              margin: EdgeInsets.only(
+                                                right: 2.w,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    booking?.status == "active"
                                                         ? Colors.white
                                                         : booking?.status ==
-                                                                "inactive"
-                                                            ? Colors.red
-                                                            : Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(
+                                                            "inactive"
+                                                        ? Colors.red
+                                                        : Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    booking?.status == "active"
+                                                        ? Icons.check_circle
+                                                        : booking?.status ==
+                                                            "inactive"
+                                                        ? Icons.cancel
+                                                        : null,
+                                                    size: 18.sp,
+                                                    color:
                                                         booking?.status ==
-                                                                "active"
-                                                            ? Icons.check_circle
-                                                            : booking?.status ==
-                                                                    "inactive"
-                                                                ? Icons.cancel
-                                                                : null,
-                                                        size: 18.sp,
-                                                        color: booking
-                                                                    ?.status ==
                                                                 "active"
                                                             ? AppColors
                                                                 .maincolor
                                                             : booking?.status ==
-                                                                    "inactive"
-                                                                ? Colors.white
-                                                                : Colors.white,
-                                                      ),
-                                                      SizedBox(width: 2.w),
-                                                      Text(
-                                                        "Status: ${booking?.status.toString().capitalizeFirst ?? ''}",
-                                                        style: TextStyle(
-                                                          fontSize: 15.sp,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: booking
-                                                                      ?.status ==
+                                                                "inactive"
+                                                            ? Colors.white
+                                                            : Colors.white,
+                                                  ),
+                                                  SizedBox(width: 2.w),
+                                                  Text(
+                                                    "Status: ${booking?.status.toString().capitalizeFirst ?? ''}",
+                                                    style: TextStyle(
+                                                      fontSize: 15.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color:
+                                                          booking?.status ==
                                                                   "active"
                                                               ? Colors.black
-                                                              : booking?.status ==
-                                                                      "inactive"
-                                                                  ? Colors.white
-                                                                  : Colors
-                                                                      .white,
-                                                          fontFamily:
-                                                              AppConstants
-                                                                  .manrope,
-                                                        ),
-                                                      ),
-                                                    ],
+                                                              : booking
+                                                                      ?.status ==
+                                                                  "inactive"
+                                                              ? Colors.white
+                                                              : Colors.white,
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                    ),
                                                   ),
-                                                ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 3.w,
+                                                vertical: 1.h,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.book,
+                                                    size: 18.sp,
+                                                    color: AppColors.maincolor,
+                                                  ),
+                                                  SizedBox(width: 2.w),
+                                                  Text(
+                                                    "Max Booking per Day: ${booking?.maxBookingPerDay}",
+                                                    style: TextStyle(
+                                                      fontSize: 15.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black,
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: 1.h),
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              width: 47.w,
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 3.w,
+                                                vertical: 1.h,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.timer,
+                                                    size: 18.sp,
+                                                    color: AppColors.maincolor,
+                                                  ),
+                                                  SizedBox(width: 2.w),
+                                                  Text(
+                                                    "Duration Time: ${_formatDuration(booking?.durationOptions)}",
+                                                    style: TextStyle(
+                                                      fontSize: 15.sp,
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(width: 1.h),
+                                            Container(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 3.w,
+                                                vertical: 1.h,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.today,
+                                                    size: 18.sp,
+                                                    color: AppColors.maincolor,
+                                                  ),
+                                                  SizedBox(width: 2.w),
+                                                  Text(
+                                                    "Capacity: ${booking?.capacity ?? ''}",
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                      fontSize: 15.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: 2.h),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          if (!showBookingDetails) ...[
+                                            Row(
+                                              children: [
                                                 Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 3.w,
-                                                      vertical: 1.h),
+                                                  width: 150,
+                                                  height: 4.5.h,
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 8,
+                                                      ),
                                                   decoration: BoxDecoration(
                                                     color: Colors.white,
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            12),
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(Icons.book,
-                                                          size: 18.sp,
-                                                          color: AppColors
-                                                              .maincolor),
-                                                      SizedBox(width: 2.w),
-                                                      Text(
-                                                        "Max Booking per Day: ${booking?.maxBookingPerDay}",
-                                                        style: TextStyle(
-                                                          fontSize: 15.sp,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors.black,
-                                                          fontFamily:
-                                                              AppConstants
-                                                                  .manrope,
+                                                          12,
                                                         ),
-                                                      ),
-                                                    ],
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 1.h,
-                                          ),
-                                          SingleChildScrollView(
-                                            scrollDirection: Axis.horizontal,
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  width: 47.w,
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 3.w,
-                                                      vertical: 1.h),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(12),
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(Icons.timer,
-                                                          size: 18.sp,
-                                                          color: AppColors
-                                                              .maincolor),
-                                                      SizedBox(width: 2.w),
-                                                      Text(
-                                                        "Duration Time: ${_formatDuration(booking?.durationOptions)}",
-                                                        style: TextStyle(
-                                                          fontSize: 15.sp,
-                                                          fontFamily: AppConstants
-                                                              .manrope,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors.black,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 1.h,
-                                                ),
-                                                Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 3.w,
-                                                      vertical: 1.h),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(12),
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(Icons.today,
-                                                          size: 18.sp,
-                                                          color: AppColors
-                                                              .maincolor),
-                                                      SizedBox(width: 2.w),
-                                                      Text(
-                                                        "Capacity: ${booking?.capacity ?? ''}",
-                                                        style: TextStyle(
-                                                          fontFamily: AppConstants
-                                                              .manrope,
-                                                          fontSize: 15.sp,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors.black,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 2.h,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              if (!showBookingDetails) ...[
-                                                Row(
-                                                  children: [
-                                                    Container(
-                                                      width: 150,
-                                                      height: 4.5.h,
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 8),
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(12),
-                                                      ),
-                                                      child:
-                                                          DropdownButtonHideUnderline(
-                                                        child:
-                                                            DropdownButton<int>(
-                                                          padding:
-                                                              EdgeInsets.zero,
-                                                          value:
-                                                              calendar1SelectedMonthIndex,
-                                                          items: List.generate(
-                                                            calendar1Months
-                                                                .length,
-                                                            (index) =>
-                                                                DropdownMenuItem(
-                                                              value: index,
-                                                              child: Center(
-                                                                child: Text(
-                                                                  calendar1Months[
-                                                                      index],
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontFamily:
-                                                                        AppConstants
-                                                                            .manrope,
-                                                                    color: AppColors
+                                                  child: DropdownButtonHideUnderline(
+                                                    child: DropdownButton<int>(
+                                                      padding: EdgeInsets.zero,
+                                                      value:
+                                                          calendar1SelectedMonthIndex,
+                                                      items: List.generate(
+                                                        calendar1Months.length,
+                                                        (
+                                                          index,
+                                                        ) => DropdownMenuItem(
+                                                          value: index,
+                                                          child: Center(
+                                                            child: Text(
+                                                              calendar1Months[index],
+                                                              style: TextStyle(
+                                                                fontFamily:
+                                                                    AppConstants
+                                                                        .manrope,
+                                                                color:
+                                                                    AppColors
                                                                         .black,
-                                                                  ),
-                                                                ),
                                                               ),
                                                             ),
                                                           ),
-                                                          onChanged:
-                                                              widget.status ==
-                                                                      null
-                                                                  ? (value) {
-                                                                      if (value !=
-                                                                          null) {
-                                                                        setState(
-                                                                            () {
-                                                                          calendar1SelectedMonthIndex =
-                                                                              value;
-                                                                          calendar1FocusedMonth = DateTime(
-                                                                              calendar1FocusedMonth.year,
-                                                                              value + 1,
-                                                                              1);
-                                                                          calendar1SelectedDate =
-                                                                              null;
-                                                                        });
-                                                                      }
-                                                                    }
-                                                                  : null,
                                                         ),
                                                       ),
+                                                      onChanged:
+                                                          widget.status == null
+                                                              ? (value) {
+                                                                if (value !=
+                                                                    null) {
+                                                                  setState(() {
+                                                                    calendar1SelectedMonthIndex =
+                                                                        value;
+                                                                    calendar1FocusedMonth = DateTime(
+                                                                      calendar1FocusedMonth
+                                                                          .year,
+                                                                      value + 1,
+                                                                      1,
+                                                                    );
+                                                                    calendar1SelectedDate =
+                                                                        null;
+                                                                  });
+                                                                }
+                                                              }
+                                                              : null,
                                                     ),
-                                                    const Spacer(),
-                                                    const Icon(
-                                                      Icons.calendar_month,
-                                                      color:
-                                                          AppColors.maincolor,
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
-                                                SizedBox(height: 2.h),
-                                                widget.status == null
-                                                    ? _buildCalendar1View()
-                                                    : TableCalendar(
-                                                        firstDay: firstDay,
-                                                        lastDay: lastDay,
-                                                        focusedDay: focusedDay,
-                                                        calendarFormat:
-                                                            CalendarFormat
-                                                                .month,
-                                                        headerVisible: false,
-                                                        daysOfWeekStyle:
-                                                            const DaysOfWeekStyle(
-                                                          weekdayStyle:
-                                                              TextStyle(
-                                                            color: Colors.black,
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manrope,
-                                                            fontSize: 13.5,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .normal,
-                                                          ),
-                                                          weekendStyle:
-                                                              TextStyle(
-                                                            color: Colors.black,
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manrope,
-                                                            fontSize: 13.5,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .normal,
-                                                          ),
+                                                const Spacer(),
+                                                const Icon(
+                                                  Icons.calendar_month,
+                                                  color: AppColors.maincolor,
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 2.h),
+                                            widget.status == null
+                                                ? _buildCalendar1View()
+                                                : TableCalendar(
+                                                  firstDay: firstDay,
+                                                  lastDay: lastDay,
+                                                  focusedDay: focusedDay,
+                                                  calendarFormat:
+                                                      CalendarFormat.month,
+                                                  headerVisible: false,
+                                                  daysOfWeekStyle:
+                                                      const DaysOfWeekStyle(
+                                                        weekdayStyle: TextStyle(
+                                                          color: Colors.black,
+                                                          fontFamily:
+                                                              AppConstants
+                                                                  .manrope,
+                                                          fontSize: 13.5,
+                                                          fontWeight:
+                                                              FontWeight.normal,
                                                         ),
-                                                        calendarStyle:
-                                                            const CalendarStyle(
-                                                          todayDecoration:
-                                                              BoxDecoration(
-                                                            color: Colors.grey,
-                                                            shape:
-                                                                BoxShape.circle,
-                                                          ),
-                                                          selectedDecoration:
-                                                              BoxDecoration(
-                                                            color: AppColors
-                                                                .maincolor,
-                                                            shape:
-                                                                BoxShape.circle,
-                                                          ),
-                                                          selectedTextStyle:
-                                                              TextStyle(
-                                                                  color: Colors
+                                                        weekendStyle: TextStyle(
+                                                          color: Colors.black,
+                                                          fontFamily:
+                                                              AppConstants
+                                                                  .manrope,
+                                                          fontSize: 13.5,
+                                                          fontWeight:
+                                                              FontWeight.normal,
+                                                        ),
+                                                      ),
+                                                  calendarStyle:
+                                                      const CalendarStyle(
+                                                        todayDecoration:
+                                                            BoxDecoration(
+                                                              color:
+                                                                  Colors.grey,
+                                                              shape:
+                                                                  BoxShape
+                                                                      .circle,
+                                                            ),
+                                                        selectedDecoration:
+                                                            BoxDecoration(
+                                                              color:
+                                                                  AppColors
+                                                                      .maincolor,
+                                                              shape:
+                                                                  BoxShape
+                                                                      .circle,
+                                                            ),
+                                                        selectedTextStyle:
+                                                            TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manrope,
+                                                            ),
+                                                        todayTextStyle:
+                                                            TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manrope,
+                                                            ),
+                                                        defaultTextStyle:
+                                                            TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manrope,
+                                                            ),
+                                                        weekendTextStyle:
+                                                            TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manrope,
+                                                            ),
+                                                      ),
+                                                  selectedDayPredicate: (day) {
+                                                    return isSameDay(
+                                                      getRequestedDate(),
+                                                      day,
+                                                    );
+                                                  },
+                                                  calendarBuilders: CalendarBuilders(
+                                                    defaultBuilder: (
+                                                      context,
+                                                      day,
+                                                      _,
+                                                    ) {
+                                                      bool isSelected =
+                                                          isSameDay(
+                                                            getRequestedDate(),
+                                                            day,
+                                                          );
+                                                      return Container(
+                                                        margin:
+                                                            const EdgeInsets.all(
+                                                              6.0,
+                                                            ),
+                                                        alignment:
+                                                            Alignment.center,
+                                                        decoration: BoxDecoration(
+                                                          color:
+                                                              isSelected
+                                                                  ? AppColors
+                                                                      .maincolor
+                                                                  : Colors
                                                                       .white,
-                                                                  fontFamily:
-                                                                      AppConstants
-                                                                          .manrope),
-                                                          todayTextStyle: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontFamily:
-                                                                  AppConstants
-                                                                      .manrope),
-                                                          defaultTextStyle: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontFamily:
-                                                                  AppConstants
-                                                                      .manrope),
-                                                          weekendTextStyle: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontFamily:
-                                                                  AppConstants
-                                                                      .manrope),
+                                                          shape:
+                                                              BoxShape.circle,
                                                         ),
-                                                        selectedDayPredicate:
-                                                            (day) {
-                                                          return isSameDay(
-                                                              getRequestedDate(),
-                                                              day);
-                                                        },
-                                                        calendarBuilders:
-                                                            CalendarBuilders(
-                                                          defaultBuilder:
-                                                              (context, day,
-                                                                  _) {
-                                                            bool isSelected =
-                                                                isSameDay(
-                                                                    getRequestedDate(),
-                                                                    day);
-                                                            return Container(
-                                                              margin:
-                                                                  const EdgeInsets
-                                                                      .all(6.0),
-                                                              alignment:
-                                                                  Alignment
-                                                                      .center,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: isSelected
-                                                                    ? AppColors
-                                                                        .maincolor
+                                                        child: Text(
+                                                          '${day.day}',
+                                                          style: TextStyle(
+                                                            color:
+                                                                isSelected
+                                                                    ? Colors
+                                                                        .white
                                                                     : Colors
-                                                                        .white,
-                                                                shape: BoxShape
-                                                                    .circle,
-                                                              ),
-                                                              child: Text(
-                                                                '${day.day}',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: isSelected
-                                                                      ? Colors
-                                                                          .white
-                                                                      : Colors
-                                                                          .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontFamily:
-                                                                      AppConstants
-                                                                          .manrope,
-                                                                ),
-                                                              ),
-                                                            );
-                                                          },
+                                                                        .black,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontFamily:
+                                                                AppConstants
+                                                                    .manrope,
+                                                          ),
                                                         ),
-                                                      ),
-                                                SizedBox(
-                                                  height: 2.h,
+                                                      );
+                                                    },
+                                                  ),
                                                 ),
-                                                widget.requestedDate != null
-                                                    ? Text(
-                                                        widget.requestedDate
-                                                                .toString() ??
-                                                            "",
-                                                        style: TextStyle(
-                                                          letterSpacing: 1,
-                                                          fontSize: 16.sp,
-                                                          color: AppColors
-                                                              .maincolor,
-                                                          fontFamily:
-                                                              AppConstants
-                                                                  .manrope,
-                                                        ),
+                                            SizedBox(height: 2.h),
+                                            widget.requestedDate != null
+                                                ? Text(
+                                                  widget.requestedDate
+                                                          .toString() ??
+                                                      "",
+                                                  style: TextStyle(
+                                                    letterSpacing: 1,
+                                                    fontSize: 16.sp,
+                                                    color: AppColors.maincolor,
+                                                    fontFamily:
+                                                        AppConstants.manrope,
+                                                  ),
+                                                )
+                                                : Text(
+                                                  calendar1SelectedDate != null
+                                                      ? getOperatingHours(
+                                                        calendar1SelectedDate!,
+                                                        selectedAmenity
+                                                            ?.operatingHours,
                                                       )
-                                                    : Text(
-                                                        calendar1SelectedDate !=
-                                                                null
-                                                            ? getOperatingHours(
-                                                                calendar1SelectedDate!,
-                                                                selectedAmenity
-                                                                    ?.operatingHours,
-                                                              )
-                                                            : "Select a date",
-                                                        style: TextStyle(
-                                                          letterSpacing: 1,
-                                                          fontSize: 16.sp,
-                                                          color: AppColors
-                                                              .maincolor,
-                                                          fontFamily:
-                                                              AppConstants
-                                                                  .manrope,
+                                                      : "Select a date",
+                                                  style: TextStyle(
+                                                    letterSpacing: 1,
+                                                    fontSize: 16.sp,
+                                                    color: AppColors.maincolor,
+                                                    fontFamily:
+                                                        AppConstants.manrope,
+                                                  ),
+                                                ),
+                                            SingleChildScrollView(
+                                              scrollDirection: Axis.horizontal,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  Material(
+                                                    color: Colors.transparent,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
                                                         ),
+                                                    child: Container(
+                                                      height: 5.h,
+                                                      width: 12.h,
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            AppColors.maincolor,
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              12,
+                                                            ),
                                                       ),
-                                                SingleChildScrollView(
-                                                  scrollDirection: Axis.horizontal,
-                                                  child: Row(
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 6),
+                                                  buildSlotBox(
+                                                    label: 'Total',
+                                                    value:
+                                                        amenitiesModel
+                                                            ?.data1
+                                                            ?.data?[0]
+                                                            .totalBookingSlots
+                                                            .toString() ??
+                                                        "0",
+                                                    color: Colors.blue,
+                                                  ),
+                                                  SizedBox(width: 6),
+                                                  buildSlotBox(
+                                                    label: 'Booked',
+                                                    value:
+                                                        amenitiesModel
+                                                            ?.data1
+                                                            ?.data?[0]
+                                                            .bookedSlots
+                                                            .toString() ??
+                                                        "0",
+                                                    color: Colors.red,
+                                                  ),
+                                                  SizedBox(width: 6),
+                                                  buildSlotBox(
+                                                    label: 'Available',
+                                                    value:
+                                                        amenitiesModel
+                                                            ?.data1
+                                                            ?.data?[0]
+                                                            .availableSlots
+                                                            .toString() ??
+                                                        "0",
+                                                    color: Colors.green,
+                                                  ),
+                                                  SizedBox(width: 6),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(height: 2.h),
+                                          ],
+                                          if (showBookingDetails) ...[
+                                            SizedBox(height: 2.h),
+                                            Container(
+                                              height: 25.h,
+                                              padding: EdgeInsets.all(16),
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "${aneminitiesDataModel?.data1?.data?[0].name}",
+                                                    style: TextStyle(
+                                                      fontSize: 17.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 3.h),
+                                                  Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
                                                             .spaceAround,
                                                     children: [
-                                                      Material(
-                                                        color: Colors.transparent,
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                                12),
-                                                        child: Container(
-                                                          height: 5.h,
-                                                          width: 12.h,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: AppColors
-                                                                .maincolor,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(12),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 6),
-                                                      buildSlotBox(
-                                                        label: 'Total',
-                                                        value: amenitiesModel
-                                                                ?.data?[0]
-                                                                .totalBookingSlots
-                                                                .toString() ??
-                                                            "0",
-                                                        color: Colors.blue,
-                                                      ),
-                                                      SizedBox(width: 6),
-                                                      buildSlotBox(
-                                                        label: 'Booked',
-                                                        value: amenitiesModel
-                                                                ?.data?[0]
-                                                                .bookedSlots
-                                                                .toString() ??
-                                                            "0",
-                                                        color: Colors.red,
-                                                      ),
-                                                      SizedBox(width: 6),
-                                                      buildSlotBox(
-                                                        label: 'Available',
-                                                        value: amenitiesModel
-                                                                ?.data?[0]
-                                                                .availableSlots
-                                                                .toString() ??
-                                                            "0",
-                                                        color: Colors.green,
-                                                      ),
-                                                      SizedBox(width: 6),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 2.h,
-                                                ),
-                                              ],
-                                              if (showBookingDetails) ...[
-                                                SizedBox(height: 2.h),
-                                                Container(
-                                                  height: 25.h,
-                                                  padding: EdgeInsets.all(16),
-                                                  width: double.infinity,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                  ),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        "${aneminitiesDataModel?.data?[0].name}",
-                                                        style: TextStyle(
-                                                          fontSize: 17.sp,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontFamily:
-                                                              AppConstants
-                                                                  .manrope,
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 3.h,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceAround,
+                                                      Column(
                                                         children: [
-                                                          Column(
-                                                            children: [
-                                                              Icon(
-                                                                Icons
-                                                                    .calendar_month,
-                                                                size: 22.sp,
-                                                                color: AppColors
+                                                          Icon(
+                                                            Icons
+                                                                .calendar_month,
+                                                            size: 22.sp,
+                                                            color:
+                                                                AppColors
                                                                     .maincolor,
-                                                              ),
-                                                              Text(
-                                                                calendar1SelectedDate !=
-                                                                        null
-                                                                    ? DateFormat(
-                                                                            'EEE, d MMM')
-                                                                        .format(
-                                                                            calendar1SelectedDate!)
-                                                                    : "",
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize:
-                                                                      15.sp,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontFamily:
-                                                                      AppConstants
-                                                                          .manrope,
-                                                                ),
-                                                              ),
-                                                            ],
                                                           ),
-                                                          Column(
-                                                            children: [
-                                                              Icon(
-                                                                Icons.timer,
-                                                                size: 22.sp,
-                                                                color: AppColors
-                                                                    .maincolor,
-                                                              ),
-                                                              Text(
-                                                                "${getOperatingHours(
+                                                          Text(
+                                                            calendar1SelectedDate !=
+                                                                    null
+                                                                ? DateFormat(
+                                                                  'EEE, d MMM',
+                                                                ).format(
                                                                   calendar1SelectedDate!,
-                                                                  selectedAmenity
-                                                                      ?.operatingHours,
-                                                                )}",
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontSize:
-                                                                      15.sp,
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontFamily:
-                                                                      AppConstants
-                                                                          .manrope,
-                                                                ),
-                                                              ),
-                                                            ],
+                                                                )
+                                                                : "",
+                                                            style: TextStyle(
+                                                              fontSize: 15.sp,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manrope,
+                                                            ),
                                                           ),
-                                                          Column(
-                                                            children: [
-                                                              Icon(
-                                                                Icons
-                                                                    .confirmation_num,
-                                                                size: 22.sp,
-                                                                color: AppColors
-                                                                    .maincolor,
-                                                              ),
-                                                              Text(
-                                                                "Free",
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontSize:
-                                                                      15.sp,
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontFamily:
-                                                                      AppConstants
-                                                                          .manrope,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          )
                                                         ],
                                                       ),
-                                                      Spacer(),
-                                                      isGlobalLoading
-                                                          ? Container(
-                                                              height: 5.h,
-                                                              alignment:
-                                                                  Alignment
-                                                                      .center,
-                                                              width: double
-                                                                  .infinity,
-                                                              child:
-                                                                  CircularProgressIndicator(
-                                                                color: AppColors
+                                                      Column(
+                                                        children: [
+                                                          Icon(
+                                                            Icons.timer,
+                                                            size: 22.sp,
+                                                            color:
+                                                                AppColors
                                                                     .maincolor,
+                                                          ),
+                                                          Text(
+                                                            "${getOperatingHours(calendar1SelectedDate!, selectedAmenity?.operatingHours)}",
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 15.sp,
+                                                              color:
+                                                                  Colors.black,
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manrope,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Column(
+                                                        children: [
+                                                          Icon(
+                                                            Icons
+                                                                .confirmation_num,
+                                                            size: 22.sp,
+                                                            color:
+                                                                AppColors
+                                                                    .maincolor,
+                                                          ),
+                                                          Text(
+                                                            "Free",
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 15.sp,
+                                                              color:
+                                                                  Colors.black,
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manrope,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Spacer(),
+                                                  isGlobalLoading
+                                                      ? Container(
+                                                        height: 5.h,
+                                                        alignment:
+                                                            Alignment.center,
+                                                        width: double.infinity,
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                              color:
+                                                                  AppColors
+                                                                      .maincolor,
+                                                            ),
+                                                      )
+                                                      : GestureDetector(
+                                                        onTap: () {
+                                                          AddBookingApi(
+                                                            getOperatingHours(
+                                                              calendar1SelectedDate!,
+                                                              selectedAmenity
+                                                                  ?.operatingHours,
+                                                            ),
+                                                            calendar1SelectedDateStr,
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                          height: 6.h,
+                                                          alignment:
+                                                              Alignment.center,
+                                                          width:
+                                                              double.infinity,
+                                                          decoration: BoxDecoration(
+                                                            color:
+                                                                AppColors
+                                                                    .maincolor,
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  12,
+                                                                ),
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Text(
+                                                                "Book Now",
+                                                                style: TextStyle(
+                                                                  fontSize:
+                                                                      18.sp,
+                                                                  color:
+                                                                      AppColors
+                                                                          .white,
+                                                                  fontFamily:
+                                                                      AppConstants
+                                                                          .manrope,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .normal,
+                                                                ),
                                                               ),
-                                                            )
-                                                          : GestureDetector(
-                                                              onTap: () {
-                                                                AddBookingApi(
-                                                                  getOperatingHours(
-                                                                    calendar1SelectedDate!,
-                                                                    selectedAmenity
-                                                                        ?.operatingHours,
-                                                                  ),
-                                                                  calendar1SelectedDateStr,
-                                                                );
-                                                              },
-                                                              child: Container(
-                                                                height: 6.h,
+                                                              SizedBox(
+                                                                width: 3.w,
+                                                              ),
+                                                              Container(
+                                                                height: 5.h,
+                                                                width: 4.h,
                                                                 alignment:
                                                                     Alignment
                                                                         .center,
-                                                                width: double
-                                                                    .infinity,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color: AppColors
-                                                                      .maincolor,
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              12),
+                                                                decoration: BoxDecoration(
+                                                                  shape:
+                                                                      BoxShape
+                                                                          .circle,
+                                                                  border: Border.all(
+                                                                    color:
+                                                                        AppColors
+                                                                            .white,
+                                                                  ),
                                                                 ),
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
+                                                                child: Stack(
+                                                                  alignment:
+                                                                      Alignment
                                                                           .center,
                                                                   children: [
-                                                                    Text(
-                                                                      "Book Now",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            18.sp,
-                                                                        color: AppColors
-                                                                            .white,
-                                                                        fontFamily:
-                                                                            AppConstants.manrope,
-                                                                        fontWeight:
-                                                                            FontWeight.normal,
+                                                                    Transform.translate(
+                                                                      offset:
+                                                                          Offset(
+                                                                            -4,
+                                                                            0,
+                                                                          ),
+                                                                      child: Icon(
+                                                                        Icons
+                                                                            .arrow_forward_ios,
+                                                                        color:
+                                                                            Colors.white,
+                                                                        size:
+                                                                            14.sp,
                                                                       ),
                                                                     ),
-                                                                    SizedBox(
-                                                                        width: 3
-                                                                            .w),
-                                                                    Container(
-                                                                      height:
-                                                                          5.h,
-                                                                      width:
-                                                                          4.h,
-                                                                      alignment:
-                                                                          Alignment
-                                                                              .center,
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                        shape: BoxShape
-                                                                            .circle,
-                                                                        border:
-                                                                            Border.all(
-                                                                          color:
-                                                                              AppColors.white,
-                                                                        ),
-                                                                      ),
-                                                                      child:
-                                                                          Stack(
-                                                                        alignment:
-                                                                            Alignment.center,
-                                                                        children: [
-                                                                          Transform
-                                                                              .translate(
-                                                                            offset:
-                                                                                Offset(-4, 0),
-                                                                            child: Icon(Icons.arrow_forward_ios,
-                                                                                color: Colors.white,
-                                                                                size: 14.sp),
+                                                                    Transform.translate(
+                                                                      offset:
+                                                                          Offset(
+                                                                            4,
+                                                                            0,
                                                                           ),
-                                                                          Transform
-                                                                              .translate(
-                                                                            offset:
-                                                                                Offset(4, 0),
-                                                                            child: Icon(Icons.arrow_forward_ios,
-                                                                                color: Colors.white,
-                                                                                size: 14.sp),
-                                                                          ),
-                                                                        ],
+                                                                      child: Icon(
+                                                                        Icons
+                                                                            .arrow_forward_ios,
+                                                                        color:
+                                                                            Colors.white,
+                                                                        size:
+                                                                            14.sp,
                                                                       ),
-                                                                    )
+                                                                    ),
                                                                   ],
                                                                 ),
                                                               ),
-                                                            )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ],
-                                          ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ],
                                       ),
-                                    );
-                                  },
+                                    ],
+                                  ),
                                 );
                               },
-                            ),
-                          ),
-                          isLoading
-                              ? CircularProgressIndicator()
-                              : widget.status != null
-                                  ? buildStatusContainer(
-                                      widget.status ?? "",
-                                      widget.EventName.toString() ?? "",
-                                      widget.bookingId ?? "",
-                                      rsvp: widget.rsvp,
-                                      isAttended: widget.attend,
-                                    )
-                                  : !showBookingDetails
-                                      ? GestureDetector(
-                                          onTap: () {
-                                            if (calendar1SelectedDate == null) {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                const SnackBar(
-                                                  duration: Duration(
-                                                      milliseconds: 800),
-                                                  content: Text(
-                                                      "Please select a date before booking."),
-                                                ),
-                                              );
-                                              return;
-                                            }
+                            );
+                          },
+                        ),
+                      ),
+                      isLoading
+                          ? CircularProgressIndicator()
+                          : widget.status != null
+                          ? buildStatusContainer(
+                            widget.status ?? "",
+                            widget.EventName.toString() ?? "",
+                            widget.bookingId ?? "",
+                            rsvp: widget.rsvp,
+                            isAttended: widget.attend,
+                          )
+                          : !showBookingDetails
+                          ? GestureDetector(
+                            onTap: () {
+                              if (calendar1SelectedDate == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    duration: Duration(milliseconds: 800),
+                                    content: Text(
+                                      "Please select a date before booking.",
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
 
-                                            if (selectedOperatingHours ==
-                                                "Closed") {
-
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                const SnackBar(
-                                                  duration: Duration(
-                                                      milliseconds: 800),
-                                                  content: Text(
-                                                      "Selected date is closed. Please choose another."),
-                                                ),
-                                              );
-                                              return;
-                                            }
-                                            if (amenitiesModel?.data?[0].status=="inactive"
-                                            ) {
-
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                const SnackBar(
-                                                  duration: Duration(
-                                                      milliseconds: 800),
-                                                  content: Text(
-                                                      "Selected amenities status was inactive"),
-                                                ),
-                                              );
-                                              return;
-                                            }
-                                            setState(() {
-                                              showBookingDetails = true;
-                                            });
-                                            log("selectedCalendarDate: $calendar1SelectedDate");
-                                          },
-                                          child: Container(
-                                            height: 6.h,
-                                            alignment: Alignment.center,
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              color: (calendar1SelectedDate !=
-                                                          null &&
-                                                      selectedOperatingHours !=
-                                                          "Closed")
-                                                  ? AppColors.maincolor
-                                                  : AppColors.maincolor,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  "Book Now",
-                                                  style: TextStyle(
-                                                    fontSize: 18.sp,
-                                                    color: AppColors.white,
-                                                    fontFamily:
-                                                        AppConstants.manrope,
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                  ),
-                                                ),
-                                                SizedBox(width: 3.w),
-                                                Container(
-                                                  height: 5.h,
-                                                  width: 4.h,
-                                                  alignment: Alignment.center,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    border: Border.all(
-                                                      color: AppColors.white,
-                                                    ),
-                                                  ),
-                                                  child: Stack(
-                                                    alignment: Alignment.center,
-                                                    children: [
-                                                      Transform.translate(
-                                                        offset: Offset(-4, 0),
-                                                        child: Icon(
-                                                            Icons
-                                                                .arrow_forward_ios,
-                                                            color: Colors.white,
-                                                            size: 14.sp),
-                                                      ),
-                                                      Transform.translate(
-                                                        offset: Offset(4, 0),
-                                                        child: Icon(
-                                                            Icons
-                                                                .arrow_forward_ios,
-                                                            color: Colors.white,
-                                                            size: 14.sp),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
-                                            ),
+                              if (selectedOperatingHours == "Closed") {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    duration: Duration(milliseconds: 800),
+                                    content: Text(
+                                      "Selected date is closed. Please choose another.",
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+                              if (amenitiesModel?.data1?.data?[0].status ==
+                                  "inactive") {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    duration: Duration(milliseconds: 800),
+                                    content: Text(
+                                      "Selected amenities status was inactive",
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+                              setState(() {
+                                showBookingDetails = true;
+                              });
+                              log(
+                                "selectedCalendarDate: $calendar1SelectedDate",
+                              );
+                            },
+                            child: Container(
+                              height: 6.h,
+                              alignment: Alignment.center,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color:
+                                    (calendar1SelectedDate != null &&
+                                            selectedOperatingHours != "Closed")
+                                        ? AppColors.maincolor
+                                        : AppColors.maincolor,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Book Now",
+                                    style: TextStyle(
+                                      fontSize: 18.sp,
+                                      color: AppColors.white,
+                                      fontFamily: AppConstants.manrope,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                  SizedBox(width: 3.w),
+                                  Container(
+                                    height: 5.h,
+                                    width: 4.h,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: AppColors.white,
+                                      ),
+                                    ),
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Transform.translate(
+                                          offset: Offset(-4, 0),
+                                          child: Icon(
+                                            Icons.arrow_forward_ios,
+                                            color: Colors.white,
+                                            size: 14.sp,
                                           ),
-                                        )
-                                      : SizedBox(),
-                          SizedBox(
-                            height: 5.h,
-                          ),
-                        ],
-                      ).paddingSymmetric(horizontal: 3.w),
-                    ),
-              if (isRsvpLoading)
-                Container(
-                  color: Colors.black.withOpacity(0.3),
-                  child: Center(
-                    child: Loader(),
-                  ),
+                                        ),
+                                        Transform.translate(
+                                          offset: Offset(4, 0),
+                                          child: Icon(
+                                            Icons.arrow_forward_ios,
+                                            color: Colors.white,
+                                            size: 14.sp,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                          : SizedBox(),
+                      SizedBox(height: 5.h),
+                    ],
+                  ).paddingSymmetric(horizontal: 3.w),
                 ),
-            ],
-          )),
+            if (isRsvpLoading)
+              Container(
+                color: Colors.black.withOpacity(0.3),
+                child: Center(child: Loader()),
+              ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -1353,7 +1350,7 @@ class _Form_ScreenState extends State<Form_Screen> {
         selectedDayHours = hours.saturday;
         break;
       case DateTime.sunday:
-        selectedDayHours = hours.sunday;
+        selectedDayHours = hours.saturday;
         break;
     }
 
@@ -1379,8 +1376,10 @@ class _Form_ScreenState extends State<Form_Screen> {
     }
   }
 
-  bool _canShowAttendButton(String? eventDateStr,
-      {String? cutoff = "2025-04-21"}) {
+  bool _canShowAttendButton(
+    String? eventDateStr, {
+    String? cutoff = "2025-04-21",
+  }) {
     if (eventDateStr == null) return false;
 
     final parsedEventDate = DateTime.tryParse(eventDateStr);
@@ -1500,7 +1499,10 @@ class _Form_ScreenState extends State<Form_Screen> {
   }
 
   void showRSVPDialog(
-      BuildContext context, String eventName, String bookingID) {
+    BuildContext context,
+    String eventName,
+    String bookingID,
+  ) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -1642,14 +1644,19 @@ class _Form_ScreenState extends State<Form_Screen> {
   }
 
   void _showAttendConfirmationDialog(
-      BuildContext context, String eventName, bookingID, rsvp) {
+    BuildContext context,
+    String eventName,
+    bookingID,
+    rsvp,
+  ) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) {
         return Dialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           backgroundColor: Colors.white,
           insetPadding: EdgeInsets.symmetric(horizontal: 24),
           child: Padding(
@@ -1660,8 +1667,11 @@ class _Form_ScreenState extends State<Form_Screen> {
                 CircleAvatar(
                   backgroundColor: AppColors.maincolor.withOpacity(0.1),
                   radius: 32,
-                  child: Icon(Icons.how_to_reg,
-                      color: AppColors.maincolor, size: 36),
+                  child: Icon(
+                    Icons.how_to_reg,
+                    color: AppColors.maincolor,
+                    size: 36,
+                  ),
                 ),
                 SizedBox(height: 16),
                 Text(
@@ -1702,9 +1712,10 @@ class _Form_ScreenState extends State<Form_Screen> {
                         child: const Text(
                           "No",
                           style: TextStyle(
-                              fontFamily: AppConstants.manrope,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.black),
+                            fontFamily: AppConstants.manrope,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.black,
+                          ),
                         ),
                       ),
                     ),
@@ -1735,7 +1746,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),
@@ -1786,9 +1797,10 @@ class _Form_ScreenState extends State<Form_Screen> {
                           child: Text(
                             "Thank you!",
                             style: TextStyle(
-                                fontSize: 20.sp,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: AppConstants.manrope),
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: AppConstants.manrope,
+                            ),
                           ),
                         ),
                         SizedBox(height: 1.h),
@@ -1807,7 +1819,9 @@ class _Form_ScreenState extends State<Form_Screen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             _buildTicketInfo(
-                                Icons.calendar_today, calendar1SelectedDateStr),
+                              Icons.calendar_today,
+                              calendar1SelectedDateStr,
+                            ),
                             _buildTicketInfo(Icons.access_time, selectedTime),
                             _buildTicketInfo(Icons.bookmark_border, "Free"),
                           ],
@@ -1831,18 +1845,11 @@ class _Form_ScreenState extends State<Form_Screen> {
                           ),
                         ),
                         SizedBox(height: 1.h),
-                        SizedBox(
-                          height: 4.h,
-                        ),
+                        SizedBox(height: 4.h),
                         batan(
                           title: "Back to Home",
                           route: () {
-                            Get.to(
-                              HomePage(
-                                userName: "",
-                                selected: 1,
-                              ),
-                            );
+                            Get.to(HomePage(userName: "", selected: 1));
                           },
                           color: AppColors.maincolor,
                           fontcolor: Colors.white,
@@ -1859,11 +1866,7 @@ class _Form_ScreenState extends State<Form_Screen> {
               CircleAvatar(
                 radius: 40,
                 backgroundColor: AppColors.maincolor,
-                child: Icon(
-                  Icons.check,
-                  size: 25.sp,
-                  color: Colors.white,
-                ),
+                child: Icon(Icons.check, size: 25.sp, color: Colors.white),
               ),
             ],
           ),
@@ -1879,10 +1882,7 @@ class _Form_ScreenState extends State<Form_Screen> {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-          ),
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
         ),
       ],
     );
@@ -1943,13 +1943,20 @@ class _Form_ScreenState extends State<Form_Screen> {
     final DateTime todayOnly = DateTime(now.year, now.month, now.day);
 
     calendar1SelectedDate ??= todayOnly;
-    calendar1SelectedDateStr =
-        DateFormat('dd/MM/yyyy').format(calendar1SelectedDate!);
+    calendar1SelectedDateStr = DateFormat(
+      'dd/MM/yyyy',
+    ).format(calendar1SelectedDate!);
 
-    final DateTime calendar1FirstDay =
-        DateTime(calendar1FocusedMonth.year, calendar1FocusedMonth.month, 1);
+    final DateTime calendar1FirstDay = DateTime(
+      calendar1FocusedMonth.year,
+      calendar1FocusedMonth.month,
+      1,
+    );
     final DateTime calendar1LastDay = DateTime(
-        calendar1FocusedMonth.year, calendar1FocusedMonth.month + 1, 0);
+      calendar1FocusedMonth.year,
+      calendar1FocusedMonth.month + 1,
+      0,
+    );
 
     final DateTime calendar1FocusDay =
         calendar1SelectedDate!.isAfter(calendar1FirstDay) &&
@@ -1966,13 +1973,17 @@ class _Form_ScreenState extends State<Form_Screen> {
       selectedDayPredicate: (day) => isSameDay(calendar1SelectedDate, day),
       onDaySelected: (newSelectedDay, focusedDay) {
         final DateTime selectedOnly = DateTime(
-            newSelectedDay.year, newSelectedDay.month, newSelectedDay.day);
+          newSelectedDay.year,
+          newSelectedDay.month,
+          newSelectedDay.day,
+        );
         if (selectedOnly.isBefore(todayOnly)) return;
 
         setState(() {
           calendar1SelectedDate = newSelectedDay;
-          calendar1SelectedDateStr =
-              DateFormat('dd/MM/yyyy').format(newSelectedDay);
+          calendar1SelectedDateStr = DateFormat(
+            'dd/MM/yyyy',
+          ).format(newSelectedDay);
           calendar1Loading = true;
         });
       },
@@ -1985,20 +1996,32 @@ class _Form_ScreenState extends State<Form_Screen> {
           color: AppColors.maincolor,
           shape: BoxShape.circle,
         ),
-        selectedTextStyle:
-            TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
-        todayTextStyle:
-            TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
-        defaultTextStyle:
-            TextStyle(color: Colors.black, fontFamily: AppConstants.manrope),
-        weekendTextStyle:
-            TextStyle(color: Colors.black, fontFamily: AppConstants.manrope),
+        selectedTextStyle: TextStyle(
+          color: Colors.white,
+          fontFamily: AppConstants.manrope,
+        ),
+        todayTextStyle: TextStyle(
+          color: Colors.white,
+          fontFamily: AppConstants.manrope,
+        ),
+        defaultTextStyle: TextStyle(
+          color: Colors.black,
+          fontFamily: AppConstants.manrope,
+        ),
+        weekendTextStyle: TextStyle(
+          color: Colors.black,
+          fontFamily: AppConstants.manrope,
+        ),
       ),
       daysOfWeekStyle: const DaysOfWeekStyle(
-        weekdayStyle:
-            TextStyle(color: Colors.black, fontFamily: AppConstants.manrope),
-        weekendStyle:
-            TextStyle(color: Colors.black, fontFamily: AppConstants.manrope),
+        weekdayStyle: TextStyle(
+          color: Colors.black,
+          fontFamily: AppConstants.manrope,
+        ),
+        weekendStyle: TextStyle(
+          color: Colors.black,
+          fontFamily: AppConstants.manrope,
+        ),
       ),
       calendarBuilders: CalendarBuilders(
         defaultBuilder: (context, day, _) {
@@ -2007,31 +2030,36 @@ class _Form_ScreenState extends State<Form_Screen> {
           final bool isPastDate = dayOnly.isBefore(todayOnly);
 
           return GestureDetector(
-            onTap: isPastDate
-                ? null
-                : () async {
-                    setState(() {
-                      calendar1SelectedDate = day;
-                      calendar1SelectedDateStr =
-                          DateFormat('dd/MM/yyyy').format(day);
-                      calendar1Loading = true;
-                    });
+            onTap:
+                isPastDate
+                    ? null
+                    : () async {
+                      setState(() {
+                        calendar1SelectedDate = day;
+                        calendar1SelectedDateStr = DateFormat(
+                          'dd/MM/yyyy',
+                        ).format(day);
+                        calendar1Loading = true;
+                      });
 
-                    bool success =
-                        await AmenitiesApi(date: calendar1SelectedDateStr);
-
-                    setState(() {
-                      calendar1Loading = false;
-                    });
-
-                    if (!success) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text(
-                                "Something went wrong. Please try again.")),
+                      bool success = await AmenitiesApi(
+                        date: calendar1SelectedDateStr,
                       );
-                    }
-                  },
+
+                      setState(() {
+                        calendar1Loading = false;
+                      });
+
+                      if (!success) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Something went wrong. Please try again.",
+                            ),
+                          ),
+                        );
+                      }
+                    },
             child: Container(
               margin: const EdgeInsets.all(6.0),
               alignment: Alignment.center,
@@ -2042,9 +2070,10 @@ class _Form_ScreenState extends State<Form_Screen> {
               child: Text(
                 '${day.day}',
                 style: TextStyle(
-                  color: isPastDate
-                      ? Colors.grey
-                      : (isSelected ? Colors.white : Colors.black),
+                  color:
+                      isPastDate
+                          ? Colors.grey
+                          : (isSelected ? Colors.white : Colors.black),
                   fontWeight: FontWeight.bold,
                   fontFamily: AppConstants.manrope,
                 ),
@@ -2064,15 +2093,15 @@ class _Form_ScreenState extends State<Form_Screen> {
     }
 
     try {
-      var response = await AmenitiesProvider().AmenitiesApi(
+      var response = await AmenitiesProvider().amenitiesApi(
         loginModel?.data?.user?.id.toString() ?? '',
         widget.amenites_id ?? "",
         date,
       );
 
       if (response.statusCode == 200) {
-        amenitiesModel = AmenitiesModel.fromJson(jsonDecode(response.body));
-        log("API Response: ${response.body}");
+        amenitiesModel = AmenitiesModel.fromJson(response.data);
+        log("API Response: ${response.data}");
         setState(() {
           amenitiesModel = amenitiesModel;
           isLoading = false;
@@ -2114,11 +2143,9 @@ class _Form_ScreenState extends State<Form_Screen> {
     }
 
     try {
-      var response = await AmenitiesProvider().AddBooking(data);
+      var response = await AmenitiesProvider().addBookingApi(data);
 
       if (response.statusCode == 200) {
-        log("✅ Booking Success: ${response.body}");
-
         if (mounted) {
           setState(() {
             isGlobalLoading = false;
@@ -2126,11 +2153,12 @@ class _Form_ScreenState extends State<Form_Screen> {
         }
 
         showTornTicketDialog(
-            attendeeInitials: 'NP',
-            context: context,
-            location: aneminitiesDataModel?.data?[0].name ?? "",
-            selectedDate: selectedDate.toString(),
-            selectedTime: time);
+          attendeeInitials: 'NP',
+          context: context,
+          location: aneminitiesDataModel?.data1?.data?[0].name ?? "",
+          selectedDate: selectedDate.toString(),
+          selectedTime: time,
+        );
 
         return true;
       } else {
@@ -2174,25 +2202,19 @@ class _Form_ScreenState extends State<Form_Screen> {
     setState(() {
       isRsvpLoading = true;
     });
-    Map<String, String> data = {
-      "booking_id": bookingid,
-      "rsvp_status": rsvp,
-    };
+    Map<String, String> data = {"booking_id": bookingid, "rsvp_status": rsvp};
 
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await AmenitiesProvider().RSVPtoAmenityApi(data);
+          var response = await AmenitiesProvider().rsvpToAmenityApi(data);
           if (response.statusCode == 200) {
-            log("API Response: ${response.body}");
-
             if (mounted) {
               setState(() {
                 isRsvpLoading = false;
               });
             }
             Get.to(BookingScreen());
-            log("sucess response data avve che event booking no${response.body}");
           } else {
             setState(() {
               isRsvpLoading = false;
@@ -2216,7 +2238,10 @@ class _Form_ScreenState extends State<Form_Screen> {
   }
 
   Future<void> RSVPAmenityAttend(
-      String bookingid, String attended, String rsvp) async {
+    String bookingid,
+    String attended,
+    String rsvp,
+  ) async {
     setState(() {
       isRsvpLoading = true;
     });
@@ -2229,17 +2254,13 @@ class _Form_ScreenState extends State<Form_Screen> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await AmenitiesProvider().RSVPtoAmenityApi(data);
+          var response = await AmenitiesProvider().rsvpToAmenityApi(data);
           if (response.statusCode == 200) {
-            log("API Response: ${response.body}");
-
             if (mounted) {
               setState(() {
                 isRsvpLoading = false;
               });
             }
-
-            log("sucess response data avve che event booking no${response.body}");
           } else {
             setState(() {
               isRsvpLoading = false;

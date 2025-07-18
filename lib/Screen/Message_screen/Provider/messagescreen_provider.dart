@@ -10,8 +10,12 @@ import '../../../comman/const.dart';
 import '../../../comman/responses.dart';
 
 class MessageProvider extends ChangeNotifier {
-  Future<http.Response> MessageApi(String user_id, String concierge_id,
-      String type, String orderproductid) async {
+  Future<http.Response> MessageApi(
+    String user_id,
+    String concierge_id,
+    String type,
+    String orderproductid,
+  ) async {
     final String url =
         '$baseUrl/get-chat/$user_id/$concierge_id?type=$type&order_product_id=$orderproductid';
 
@@ -21,15 +25,13 @@ class MessageProvider extends ChangeNotifier {
     print("user_id: $user_id");
     try {
       final response = await http
-          .get(
-        Uri.parse(url),
-      )
+          .get(Uri.parse(url))
           .timeout(
-        const Duration(seconds: 60),
-        onTimeout: () {
-          throw const SocketException('Request timed out');
-        },
-      );
+            const Duration(seconds: 60),
+            onTimeout: () {
+              throw const SocketException('Request timed out');
+            },
+          );
       if (response.statusCode == 200) {
         log("Successful response: ${response.body}");
         return response;
@@ -105,16 +107,13 @@ class MessageProvider extends ChangeNotifier {
     print("Request URL: $url");
     try {
       final response = await http
-          .post(
-        Uri.parse(url),
-        body: bodyData,
-      )
+          .post(Uri.parse(url), body: bodyData)
           .timeout(
-        const Duration(seconds: 60),
-        onTimeout: () {
-          throw const SocketException('Request timed out');
-        },
-      );
+            const Duration(seconds: 60),
+            onTimeout: () {
+              throw const SocketException('Request timed out');
+            },
+          );
       if (response.statusCode == 200) {
         log("Successful response: ${response.body}");
         return response;
@@ -129,109 +128,46 @@ class MessageProvider extends ChangeNotifier {
     }
   }
 
-  Future<http.Response> removefriend(
-    String ConId,
-  ) async {
+  Future<http.Response> removefriend(String ConId) async {
     String url = '${baseUrl}/remove-friends/$ConId';
     print("Delete group url${url}");
     print(url);
     var responseJson;
     final response = await http
-        .get(
-      Uri.parse(url),
-    )
+        .get(Uri.parse(url))
         .timeout(
-      const Duration(seconds: 60),
-      onTimeout: () {
-        throw const SocketException('Something went wrong');
-      },
-    );
+          const Duration(seconds: 60),
+          onTimeout: () {
+            throw const SocketException('Something went wrong');
+          },
+        );
     responseJson = responses(response);
     print(response.body);
     return responseJson;
   }
 
-  Future<http.Response> userpersonalinfo(
-    String ConId,
-  ) async {
+  Future<http.Response> userpersonalinfo(String ConId) async {
     String url = '${baseUrl}/concierge-friends-profile/$ConId';
     print("userpersonalinfo url${url}");
     print(url);
     var responseJson;
     final response = await http
-        .get(
-      Uri.parse(url),
-    )
+        .get(Uri.parse(url))
         .timeout(
-      const Duration(seconds: 60),
-      onTimeout: () {
-        throw const SocketException('Something went wrong');
-      },
-    );
+          const Duration(seconds: 60),
+          onTimeout: () {
+            throw const SocketException('Something went wrong');
+          },
+        );
     responseJson = responses(response);
     print(response.body);
     return responseJson;
   }
 
-  Future<http.Response> sendmessageorderapi1(
-      Map<String, String> bodyData) async {
-    const url = '$baseUrl/sendOrderChat';
-    print("Request URL: $url");
-
-    try {
-      final imageUploadRequest = http.MultipartRequest('POST', Uri.parse(url));
-
-      bodyData.forEach((key, value) {
-        if (key != 'files') {
-          imageUploadRequest.fields[key] = value;
-        }
-      });
-
-      if (bodyData['files']?.isNotEmpty ?? false) {
-        final String filePath = bodyData['files']!;
-
-        print('Uploading file: $filePath');
-
-        String fileExtension = filePath.split('.').last.toLowerCase();
-        MediaType mediaType;
-
-        switch (fileExtension) {
-          case "jpg":
-          case "jpeg":
-          case "png":
-            mediaType = MediaType('image', fileExtension);
-            break;
-          case "mp4":
-            mediaType = MediaType('video', 'mp4');
-            break;
-          case "pdf":
-            mediaType = MediaType('application', 'pdf');
-            break;
-          default:
-            throw Exception('Unsupported media type');
-        }
-
-        final file = await http.MultipartFile.fromPath(
-          'file',
-          filePath,
-          contentType: mediaType,
-        );
-        imageUploadRequest.files.add(file);
-      }
-
-      final streamResponse = await imageUploadRequest.send();
-      final response = await http.Response.fromStream(streamResponse);
-
-      return responses(response);
-    } on SocketException {
-      throw FetchDataException('No Internet connection');
-    } catch (e, stackTrace) {
-      throw Exception('Error: $e &&& \n strace error $stackTrace');
-    }
-  }
-
   Future<http.Response> sendmessageorderapi(
-      Map<String, String> data, File? file) async {
+    Map<String, String> data,
+    File? file,
+  ) async {
     var uri = Uri.parse("https://portal.wavee.ai/api/sendOrderChat");
     var request = http.MultipartRequest("POST", uri);
 

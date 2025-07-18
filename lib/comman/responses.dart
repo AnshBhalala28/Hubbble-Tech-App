@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:dio/dio.dart';
 import 'CustomExpection.dart';
 
 responses(http.Response response) {
@@ -37,3 +37,31 @@ responses(http.Response response) {
           'Error occurred while Communication with Server with StatusCode :${response.statusCode}');
   }
 }
+
+
+ handleDioError(DioException e) {
+  String message = "";
+
+  if (e.type == DioExceptionType.connectionTimeout ||
+      e.type == DioExceptionType.receiveTimeout ||
+      e.type == DioExceptionType.sendTimeout) {
+    message = "Request timed out. Please try again.";
+  } else if (e.type == DioExceptionType.badResponse) {
+    final statusCode = e.response?.statusCode ?? "Unknown";
+    message = "Server error (Status Code: $statusCode)";
+  } else if (e.type == DioExceptionType.unknown) {
+    message = "No internet connection.";
+  } else {
+    message = "Something went wrong.";
+  }
+  Get.snackbar(
+    "Error",
+    message,
+    snackPosition: SnackPosition.BOTTOM,
+    backgroundColor: Colors.red.withOpacity(0.1),
+    colorText: Colors.black,
+    margin: const EdgeInsets.all(12),
+    // duration: const Duration(seconds: 3),
+  );
+}
+

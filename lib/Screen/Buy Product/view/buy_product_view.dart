@@ -61,8 +61,10 @@ class _BuyProductViewState extends State<BuyProductView> {
       desiredAccuracy: LocationAccuracy.high,
     );
 
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      position.latitude,
+      position.longitude,
+    );
 
     String country = placemarks.first.country ?? "";
 
@@ -95,23 +97,14 @@ class _BuyProductViewState extends State<BuyProductView> {
     timeSlots = [];
 
     if (currentHour < 12) {
-      timeSlots.add({
-        'value': '10am-12pm',
-        'label': '10 AM - 12 PM',
-      });
+      timeSlots.add({'value': '10am-12pm', 'label': '10 AM - 12 PM'});
     }
 
     if (currentHour < 16) {
-      timeSlots.add({
-        'value': '1pm-4pm',
-        'label': '1 PM - 4 PM',
-      });
+      timeSlots.add({'value': '1pm-4pm', 'label': '1 PM - 4 PM'});
     }
     if (currentHour < 19) {
-      timeSlots.add({
-        'value': '5pm-7pm',
-        'label': '5 PM - 7 PM',
-      });
+      timeSlots.add({'value': '5pm-7pm', 'label': '5 PM - 7 PM'});
     }
 
     if (timeSlots.isNotEmpty) {
@@ -155,7 +148,8 @@ class _BuyProductViewState extends State<BuyProductView> {
     }
 
     Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+      desiredAccuracy: LocationAccuracy.high,
+    );
     if (mounted) {
       setState(() {
         AppLat = position.latitude.toString();
@@ -164,7 +158,8 @@ class _BuyProductViewState extends State<BuyProductView> {
         print("AppLat====>>>>${AppLon}");
         BussinessViewProfile(widget.bunessid ?? "");
         print(
-            "Latitude: ${position.latitude}, Longitude: ${position.longitude}");
+          "Latitude: ${position.latitude}, Longitude: ${position.longitude}",
+        );
       });
     }
   }
@@ -177,13 +172,15 @@ class _BuyProductViewState extends State<BuyProductView> {
     });
     GetCartDetailApi();
 
-    print("widget.bunessid ?? " "${widget.bunessid ?? ""}");
+    print(
+      "widget.bunessid ?? "
+      "${widget.bunessid ?? ""}",
+    );
     log("${widget.bunessid ?? ""}");
 
     initPickupSlots();
     _getCurrentLocation();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -197,9 +194,7 @@ class _BuyProductViewState extends State<BuyProductView> {
             padding: const EdgeInsets.all(5.0),
             child: Column(
               children: [
-                SizedBox(
-                  height: 4.h,
-                ),
+                SizedBox(height: 4.h),
                 TitleBar(
                   title: "Checkout",
                   drawerCallback: () {
@@ -209,163 +204,182 @@ class _BuyProductViewState extends State<BuyProductView> {
                 isLoading
                     ? Expanded(child: Center(child: Loader()))
                     : Expanded(
-                        child: SingleChildScrollView(
-                          padding: EdgeInsets.all(1.w),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: 1.h,
-                              ),
-                              Column(
-                                children: [
-                                  _buildInfoTile(
-                                    ontap: () {},
-                                    icon: Icons.storefront,
-                                    subtitle: busnessviewmodal
-                                            ?.data?.business?.businessName ??
-                                        "N/A",
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.all(1.w),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 1.h),
+                            Column(
+                              children: [
+                                _buildInfoTile(
+                                  ontap: () {},
+                                  icon: Icons.storefront,
+                                  subtitle:
+                                      busnessviewmodal
+                                          ?.data
+                                          ?.business
+                                          ?.businessName ??
+                                      "N/A",
+                                ),
+                                _buildInfoTile(
+                                  ontap: () {
+                                    final phone =
+                                        busnessviewmodal
+                                            ?.data
+                                            ?.business
+                                            ?.user
+                                            ?.mobileNo;
+                                    if (phone != null &&
+                                        phone.toString().isNotEmpty) {
+                                      final telUrl = Uri.parse(
+                                        "tel:${phone.toString()}",
+                                      );
+                                      launchUrl(
+                                        telUrl,
+                                        mode: LaunchMode.externalApplication,
+                                      );
+                                    }
+                                    ;
+                                  },
+                                  icon: Icons.phone,
+                                  subtitle:
+                                      busnessviewmodal
+                                          ?.data
+                                          ?.business
+                                          ?.user
+                                          ?.mobileNo
+                                          ?.toString() ??
+                                      "N/A",
+                                ),
+                                Container(
+                                  padding: EdgeInsets.all(3.w),
+                                  margin: EdgeInsets.only(top: 0.5.h),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue[50],
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                  _buildInfoTile(
-                                    ontap: () {
-                                      final phone = busnessviewmodal
-                                          ?.data?.business?.user?.mobileNo;
-                                      if (phone != null &&
-                                          phone.toString().isNotEmpty) {
-                                        final telUrl = Uri.parse(
-                                            "tel:${phone.toString()}");
-                                        launchUrl(telUrl,
-                                            mode:
-                                                LaunchMode.externalApplication);
-                                      }
-                                      ;
-                                    },
-                                    icon: Icons.phone,
-                                    subtitle: busnessviewmodal
-                                            ?.data?.business?.user?.mobileNo
-                                            ?.toString() ??
-                                        "N/A",
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.all(3.w),
-                                    margin: EdgeInsets.only(top: 0.5.h),
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue[50],
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                              padding: EdgeInsets.all(2.w),
-                                              decoration: BoxDecoration(
-                                                color: Colors.grey[100],
-                                              ),
-                                              child: Icon(Icons.map,
-                                                  color: Colors.grey[600],
-                                                  size: 20.sp),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.all(2.w),
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey[100],
                                             ),
-                                            SizedBox(width: 3.w),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "Business Location",
-                                                    style: TextStyle(
-                                                      fontSize: 14.sp,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.grey[600],
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 0.2.h),
-                                                  Text(
-                                                    (busnessviewmodal
-                                                                    ?.data
-                                                                    ?.business
-                                                                    ?.user
-                                                                    ?.address
-                                                                    ?.address ==
-                                                                null ||
-                                                            busnessviewmodal
-                                                                    ?.data
-                                                                    ?.business
-                                                                    ?.user
-                                                                    ?.address
-                                                                    ?.address ==
-                                                                "")
-                                                        ? "Location on map"
-                                                        : "${busnessviewmodal?.data?.business?.user?.address?.address}",
-                                                    style: TextStyle(
-                                                      fontSize: 12.sp,
-                                                      color: Colors.grey[600],
-                                                    ),
-                                                    maxLines: 2,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                  ),
-                                                ],
-                                              ),
+                                            child: Icon(
+                                              Icons.map,
+                                              color: Colors.grey[600],
+                                              size: 20.sp,
                                             ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 1.h),
-                                        Container(
-                                          height: 110,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
                                           ),
-                                          clipBehavior: Clip.antiAlias,
-                                          child: (busnessviewmodal
-                                                          ?.data
-                                                          ?.business
-                                                          ?.latitude !=
-                                                      null &&
-                                                  busnessviewmodal
-                                                          ?.data
-                                                          ?.business
-                                                          ?.longitude !=
-                                                      null)
-                                              ? GoogleMap(
+                                          SizedBox(width: 3.w),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Business Location",
+                                                  style: TextStyle(
+                                                    fontSize: 14.sp,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.grey[600],
+                                                  ),
+                                                ),
+                                                SizedBox(height: 0.2.h),
+                                                Text(
+                                                  (busnessviewmodal
+                                                                  ?.data
+                                                                  ?.business
+                                                                  ?.user
+                                                                  ?.address
+                                                                  ?.address ==
+                                                              null ||
+                                                          busnessviewmodal
+                                                                  ?.data
+                                                                  ?.business
+                                                                  ?.user
+                                                                  ?.address
+                                                                  ?.address ==
+                                                              "")
+                                                      ? "Location on map"
+                                                      : "${busnessviewmodal?.data?.business?.user?.address?.address}",
+                                                  style: TextStyle(
+                                                    fontSize: 12.sp,
+                                                    color: Colors.grey[600],
+                                                  ),
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 1.h),
+                                      Container(
+                                        height: 110,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        clipBehavior: Clip.antiAlias,
+                                        child:
+                                            (busnessviewmodal
+                                                            ?.data
+                                                            ?.business
+                                                            ?.latitude !=
+                                                        null &&
+                                                    busnessviewmodal
+                                                            ?.data
+                                                            ?.business
+                                                            ?.longitude !=
+                                                        null)
+                                                ? GoogleMap(
                                                   initialCameraPosition:
                                                       CameraPosition(
-                                                    target: LatLng(
-                                                      double.parse(
-                                                          busnessviewmodal!
-                                                              .data!
-                                                              .business!
-                                                              .latitude
-                                                              .toString()),
-                                                      double.parse(
-                                                          busnessviewmodal!
-                                                              .data!
-                                                              .business!
-                                                              .longitude
-                                                              .toString()),
-                                                    ),
-                                                    zoom: 15.0,
-                                                  ),
-                                                  markers: {
-                                                    Marker(
-                                                      markerId:
-                                                          MarkerId('business'),
-                                                      position: LatLng(
-                                                        double.parse(
+                                                        target: LatLng(
+                                                          double.parse(
                                                             busnessviewmodal!
                                                                 .data!
                                                                 .business!
                                                                 .latitude
-                                                                .toString()),
-                                                        double.parse(
+                                                                .toString(),
+                                                          ),
+                                                          double.parse(
                                                             busnessviewmodal!
                                                                 .data!
                                                                 .business!
                                                                 .longitude
-                                                                .toString()),
+                                                                .toString(),
+                                                          ),
+                                                        ),
+                                                        zoom: 15.0,
+                                                      ),
+                                                  markers: {
+                                                    Marker(
+                                                      markerId: MarkerId(
+                                                        'business',
+                                                      ),
+                                                      position: LatLng(
+                                                        double.parse(
+                                                          busnessviewmodal!
+                                                              .data!
+                                                              .business!
+                                                              .latitude
+                                                              .toString(),
+                                                        ),
+                                                        double.parse(
+                                                          busnessviewmodal!
+                                                              .data!
+                                                              .business!
+                                                              .longitude
+                                                              .toString(),
+                                                        ),
                                                       ),
                                                     ),
                                                   },
@@ -373,305 +387,327 @@ class _BuyProductViewState extends State<BuyProductView> {
                                                   scrollGesturesEnabled: true,
                                                   zoomGesturesEnabled: true,
                                                 )
-                                              : Container(
+                                                : Container(
                                                   color: Colors.grey[200],
                                                   child: Center(
                                                     child: Text(
-                                                        "Location not available"),
+                                                      "Location not available",
+                                                    ),
                                                   ),
                                                 ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                _buildSectionCard(
+                                  title: "Opening Hours",
+                                  icon: Icons.access_time,
+                                  child: Container(
+                                    padding: EdgeInsets.all(2.w),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[50],
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: Colors.grey.shade300,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: CustomExpansionTile(
+                                      fontSize: 16.sp,
+                                      title: _getCurrentDayStatus(),
+                                      leadingIcon: Icons.timer,
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 8,
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              _buildHoursRow(
+                                                "Monday",
+                                                busnessviewmodal
+                                                    ?.data
+                                                    ?.business
+                                                    ?.openingHours
+                                                    ?.monday,
+                                              ),
+                                              _buildHoursRow(
+                                                "Tuesday",
+                                                busnessviewmodal
+                                                    ?.data
+                                                    ?.business
+                                                    ?.openingHours
+                                                    ?.tuesday,
+                                              ),
+                                              _buildHoursRow(
+                                                "Wednesday",
+                                                busnessviewmodal
+                                                    ?.data
+                                                    ?.business
+                                                    ?.openingHours
+                                                    ?.wednesday,
+                                              ),
+                                              _buildHoursRow(
+                                                "Thursday",
+                                                busnessviewmodal
+                                                    ?.data
+                                                    ?.business
+                                                    ?.openingHours
+                                                    ?.thursday,
+                                              ),
+                                              _buildHoursRow(
+                                                "Friday",
+                                                busnessviewmodal
+                                                    ?.data
+                                                    ?.business
+                                                    ?.openingHours
+                                                    ?.friday,
+                                              ),
+                                              _buildHoursRow(
+                                                "Saturday",
+                                                busnessviewmodal
+                                                    ?.data
+                                                    ?.business
+                                                    ?.openingHours
+                                                    ?.saturday,
+                                              ),
+                                              _buildHoursRow(
+                                                "Sunday",
+                                                busnessviewmodal
+                                                    ?.data
+                                                    ?.business
+                                                    ?.openingHours
+                                                    ?.sunday,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  _buildSectionCard(
-                                    title: "Opening Hours",
-                                    icon: Icons.access_time,
-                                    child: Container(
-                                      padding: EdgeInsets.all(2.w),
-                                      decoration: BoxDecoration(
-                                        color:
-                                             Colors.grey[50],
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(
-                                          color:  Colors.grey.shade300,
-                                          width:  1,
-                                        ),
-                                      ),
-                                      child: CustomExpansionTile(
-                                        fontSize: 16.sp,
-                                        title: _getCurrentDayStatus(),
-                                        leadingIcon: Icons.timer,
-                                        children: [
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 16, vertical: 8),
-                                            child: Column(
-                                              children: [
-                                                _buildHoursRow(
-                                                    "Monday",
-                                                    busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.openingHours
-                                                        ?.monday),
-                                                _buildHoursRow(
-                                                    "Tuesday",
-                                                    busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.openingHours
-                                                        ?.tuesday),
-                                                _buildHoursRow(
-                                                    "Wednesday",
-                                                    busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.openingHours
-                                                        ?.wednesday),
-                                                _buildHoursRow(
-                                                    "Thursday",
-                                                    busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.openingHours
-                                                        ?.thursday),
-                                                _buildHoursRow(
-                                                    "Friday",
-                                                    busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.openingHours
-                                                        ?.friday),
-                                                _buildHoursRow(
-                                                    "Saturday",
-                                                    busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.openingHours
-                                                        ?.saturday),
-                                                _buildHoursRow(
-                                                    "Sunday",
-                                                    busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.openingHours
-                                                        ?.sunday),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                ),
+                              ],
+                            ),
+                            _buildSectionCard(
+                              title: "Payment Method",
+                              icon: Icons.payment,
+                              child: Column(
+                                children: [
+                                  _buildPaymentOption(
+                                    image:
+                                        "assets/images/stripe_pay_image2.png",
+                                    title: "Stripe",
+                                    subtitle: "Pay securely with Stripe",
+                                    value: "Stripe",
                                   ),
+                                  // Platform.isAndroid
+                                  //     ? GooglePayButton(
+                                  //         paymentConfiguration:
+                                  //             PaymentConfiguration
+                                  //                 .fromJsonString(
+                                  //                     defaultGooglePay),
+                                  //         paymentItems: [
+                                  //           PaymentItem(
+                                  //             label: 'Total',
+                                  //             amount:
+                                  //                 subtotal.toStringAsFixed(2),
+                                  //             status: PaymentItemStatus
+                                  //                 .final_price,
+                                  //           )
+                                  //         ],
+                                  //         onPressed: () {},
+                                  //         type: GooglePayButtonType.pay,
+                                  //         width: double.infinity,
+                                  //         margin: const EdgeInsets.only(
+                                  //             top: 15.0),
+                                  //         onPaymentResult: (result) {
+                                  //           debugPrint('🔔 Payment Success!');
+                                  //           debugPrint(
+                                  //               '💳 Card Description: ${result['paymentMethodData']['description']}');
+                                  //           debugPrint(
+                                  //               '📞 Phone: ${result['paymentMethodData']['info']['billingAddress']['phoneNumber']}');
+                                  //           debugPrint(
+                                  //               '🏠 Address: ${result['paymentMethodData']['info']['billingAddress']['address1']}');
+                                  //           debugPrint(
+                                  //               '🌍 Country: ${result['paymentMethodData']['info']['billingAddress']['countryCode']}');
+                                  //           debugPrint(
+                                  //               '🧾 Card Last 4 Digits: ${result['paymentMethodData']['info']['cardDetails']}');
+                                  //           debugPrint(
+                                  //               '📦 Token: ${result['paymentMethodData']['tokenizationData']['token']}');
+                                  //         },
+                                  //         loadingIndicator: const Center(
+                                  //           child: CircularProgressIndicator(
+                                  //             color: AppColors.white,
+                                  //           ),
+                                  //         ),
+                                  //       )
+                                  //     : ApplePayButton(
+                                  //         paymentConfiguration:
+                                  //             PaymentConfiguration
+                                  //                 .fromJsonString(
+                                  //                     defaultApplePay),
+                                  //         paymentItems: [
+                                  //           PaymentItem(
+                                  //             label: 'Item A',
+                                  //             amount:
+                                  //                 subtotal.toStringAsFixed(2),
+                                  //             status: PaymentItemStatus
+                                  //                 .final_price,
+                                  //           ),
+                                  //         ],
+                                  //         style: ApplePayButtonStyle.black,
+                                  //         width: double.infinity,
+                                  //         height: 50,
+                                  //         type: ApplePayButtonType.buy,
+                                  //         margin: const EdgeInsets.only(
+                                  //             top: 15.0),
+                                  //         onPaymentResult: (result) {
+                                  //           debugPrint(
+                                  //               'Payment Result $result');
+                                  //         },
+                                  //         loadingIndicator: const Center(
+                                  //           child:
+                                  //               CircularProgressIndicator(),
+                                  //         ),
+                                  //       ),
                                 ],
                               ),
-                              _buildSectionCard(
-                                title: "Payment Method",
-                                icon: Icons.payment,
-                                child: Column(
-                                  children: [
-                                    _buildPaymentOption(
-                                      image:
-                                          "assets/images/stripe_pay_image2.png",
-                                      title: "Stripe",
-                                      subtitle: "Pay securely with Stripe",
-                                      value: "Stripe",
+                            ),
+                            _buildSectionCard(
+                              title: "Order Summary",
+                              icon: Icons.receipt,
+                              child: Column(
+                                children: [
+                                  widget.type != 'service'
+                                      ? _buildSummaryRow(
+                                        "Subtotal",
+                                        getSubtotal(),
+                                      )
+                                      : _buildSummaryRow(
+                                        "Subtotal",
+                                        getSubtotal1(),
+                                      ),
+                                  cartDetailsModel?.data?[0].type ==
+                                              "product" &&
+                                          cartDetailsModel
+                                                  ?.data?[0]
+                                                  .loyaltyDetails
+                                                  ?.willGetLoyaltyDiscountOnCurrentOrder ==
+                                              true
+                                      ? _buildSummaryRow(
+                                        "Loyalty Discount (-${getLoyaltyDiscountPercentage().toStringAsFixed(0)}%)",
+                                        getLoyaltyDiscountAmount(),
+                                        isDiscount: true,
+                                      )
+                                      : SizedBox(),
+                                  Divider(height: 2.5.h, thickness: 1),
+                                  widget.type != 'service'
+                                      ? _buildSummaryRow(
+                                        "Total",
+                                        getFinalTotal(),
+                                        isTotal: true,
+                                      )
+                                      : _buildSummaryRow(
+                                        "Total",
+                                        getSubtotal1(),
+                                        isTotal: true,
+                                      ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 2.h),
+                            GestureDetector(
+                              onTap: () {
+                                if (selectedPayment == null ||
+                                    selectedPayment!.isEmpty) {
+                                  Get.snackbar(
+                                    "Payment Method Required",
+                                    "Please select a payment method before placing your order.",
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white,
+                                    margin: EdgeInsets.all(10),
+                                    snackPosition: SnackPosition.TOP,
+                                  );
+                                } else if (selectedPayment!.toLowerCase() ==
+                                    "stripe") {
+                                  CheckOutAPI(
+                                    selectedPickupTime,
+                                    selectedPayment!.toLowerCase(),
+                                  );
+                                } else {
+                                  Get.to(ThankYouPage());
+                                }
+                              },
+                              child: Container(
+                                height: 6.h,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      AppColors.maincolor,
+                                      AppColors.maincolor.withOpacity(0.8),
+                                    ],
+                                    begin: Alignment.centerLeft,
+                                    end: Alignment.centerRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.maincolor.withOpacity(
+                                        0.3,
+                                      ),
+                                      blurRadius: 8,
+                                      offset: Offset(0, 4),
                                     ),
-                                    // Platform.isAndroid
-                                    //     ? GooglePayButton(
-                                    //         paymentConfiguration:
-                                    //             PaymentConfiguration
-                                    //                 .fromJsonString(
-                                    //                     defaultGooglePay),
-                                    //         paymentItems: [
-                                    //           PaymentItem(
-                                    //             label: 'Total',
-                                    //             amount:
-                                    //                 subtotal.toStringAsFixed(2),
-                                    //             status: PaymentItemStatus
-                                    //                 .final_price,
-                                    //           )
-                                    //         ],
-                                    //         onPressed: () {},
-                                    //         type: GooglePayButtonType.pay,
-                                    //         width: double.infinity,
-                                    //         margin: const EdgeInsets.only(
-                                    //             top: 15.0),
-                                    //         onPaymentResult: (result) {
-                                    //           debugPrint('🔔 Payment Success!');
-                                    //           debugPrint(
-                                    //               '💳 Card Description: ${result['paymentMethodData']['description']}');
-                                    //           debugPrint(
-                                    //               '📞 Phone: ${result['paymentMethodData']['info']['billingAddress']['phoneNumber']}');
-                                    //           debugPrint(
-                                    //               '🏠 Address: ${result['paymentMethodData']['info']['billingAddress']['address1']}');
-                                    //           debugPrint(
-                                    //               '🌍 Country: ${result['paymentMethodData']['info']['billingAddress']['countryCode']}');
-                                    //           debugPrint(
-                                    //               '🧾 Card Last 4 Digits: ${result['paymentMethodData']['info']['cardDetails']}');
-                                    //           debugPrint(
-                                    //               '📦 Token: ${result['paymentMethodData']['tokenizationData']['token']}');
-                                    //         },
-                                    //         loadingIndicator: const Center(
-                                    //           child: CircularProgressIndicator(
-                                    //             color: AppColors.white,
-                                    //           ),
-                                    //         ),
-                                    //       )
-                                    //     : ApplePayButton(
-                                    //         paymentConfiguration:
-                                    //             PaymentConfiguration
-                                    //                 .fromJsonString(
-                                    //                     defaultApplePay),
-                                    //         paymentItems: [
-                                    //           PaymentItem(
-                                    //             label: 'Item A',
-                                    //             amount:
-                                    //                 subtotal.toStringAsFixed(2),
-                                    //             status: PaymentItemStatus
-                                    //                 .final_price,
-                                    //           ),
-                                    //         ],
-                                    //         style: ApplePayButtonStyle.black,
-                                    //         width: double.infinity,
-                                    //         height: 50,
-                                    //         type: ApplePayButtonType.buy,
-                                    //         margin: const EdgeInsets.only(
-                                    //             top: 15.0),
-                                    //         onPaymentResult: (result) {
-                                    //           debugPrint(
-                                    //               'Payment Result $result');
-                                    //         },
-                                    //         loadingIndicator: const Center(
-                                    //           child:
-                                    //               CircularProgressIndicator(),
-                                    //         ),
-                                    //       ),
+                                  ],
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.shopping_bag,
+                                      color: Colors.white,
+                                      size: 22.sp,
+                                    ),
+                                    SizedBox(width: 3.w),
+                                    Text(
+                                      "Click & Collect",
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        color: Colors.white,
+                                        fontFamily: AppConstants.manrope,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
-                              _buildSectionCard(
-                                title: "Order Summary",
-                                icon: Icons.receipt,
-                                child: Column(
-                                  children: [
-                                    widget.type != 'service'
-                                        ? _buildSummaryRow(
-                                            "Subtotal", getSubtotal())
-                                        : _buildSummaryRow(
-                                            "Subtotal", getSubtotal1()),
-                                    cartDetailsModel?.data?[0].type ==
-                                                "product" &&
-                                            cartDetailsModel
-                                                    ?.data?[0]
-                                                    .loyaltyDetails
-                                                    ?.willGetLoyaltyDiscountOnCurrentOrder ==
-                                                true
-                                        ? _buildSummaryRow(
-                                            "Loyalty Discount (-${getLoyaltyDiscountPercentage().toStringAsFixed(0)}%)",
-                                            getLoyaltyDiscountAmount(),
-                                            isDiscount: true)
-                                        : SizedBox(),
-                                    Divider(height: 2.5.h, thickness: 1),
-                                    widget.type != 'service'
-                                        ? _buildSummaryRow(
-                                            "Total", getFinalTotal(),
-                                            isTotal: true)
-                                        : _buildSummaryRow(
-                                            "Total", getSubtotal1(),
-                                            isTotal: true),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 2.h),
-                              GestureDetector(
-                                onTap: () {
-                                  if (selectedPayment == null ||
-                                      selectedPayment!.isEmpty) {
-                                    Get.snackbar(
-                                      "Payment Method Required",
-                                      "Please select a payment method before placing your order.",
-                                      backgroundColor: Colors.red,
-                                      colorText: Colors.white,
-                                      margin: EdgeInsets.all(10),
-                                      snackPosition: SnackPosition.TOP,
-                                    );
-                                  } else if (selectedPayment!.toLowerCase() ==
-                                      "stripe") {
-                                    CheckOutAPI(selectedPickupTime,
-                                        selectedPayment!.toLowerCase());
-                                  } else {
-                                    Get.to(ThankYouPage());
-                                  }
-                                },
-                                child: Container(
-                                  height: 6.h,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        AppColors.maincolor,
-                                        AppColors.maincolor.withOpacity(0.8)
-                                      ],
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
-                                    ),
-                                    borderRadius: BorderRadius.circular(16),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: AppColors.maincolor
-                                            .withOpacity(0.3),
-                                        blurRadius: 8,
-                                        offset: Offset(0, 4),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.shopping_bag,
-                                          color: Colors.white, size: 22.sp),
-                                      SizedBox(width: 3.w),
-                                      Text(
-                                        "Click & Collect",
-                                        style: TextStyle(
-                                          fontSize: 16.sp,
-                                          color: Colors.white,
-                                          fontFamily: AppConstants.manrope,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 1.h),
-                            ],
-                          ),
+                            ),
+                            SizedBox(height: 1.h),
+                          ],
                         ),
                       ),
+                    ),
               ],
             ),
           ),
           if (isCheckout)
             Container(
               color: Colors.black.withOpacity(0.3),
-              child: Center(
-                child: Loader(),
-              ),
+              child: Center(child: Loader()),
             ),
         ],
       ),
     );
   }
 
-
-
   double getSubtotal() {
     double total = 0.0;
     checkoutTotal?.data?.forEach((item) {
-      double price = double.tryParse(
-              item.itemDetails?.offerPrice ?? item.itemDetails?.price ?? '0') ??
+      double price =
+          double.tryParse(
+            item.itemDetails?.offerPrice ?? item.itemDetails?.price ?? '0',
+          ) ??
           0;
       total += price * (item.quantity ?? 1);
     });
@@ -681,14 +717,15 @@ class _BuyProductViewState extends State<BuyProductView> {
   double getSubtotal1() {
     double total = 0.0;
     checkoutTotal?.data?.forEach((item) {
-      double price = double.tryParse(
-              item.itemDetails?.offerPrice ?? item.itemDetails?.price ?? '0') ??
+      double price =
+          double.tryParse(
+            item.itemDetails?.offerPrice ?? item.itemDetails?.price ?? '0',
+          ) ??
           0;
       total += price * (item.quantity ?? 1);
     });
     return total;
   }
-
 
   Widget paymentOptionContainer({
     required String image,
@@ -716,12 +753,7 @@ class _BuyProductViewState extends State<BuyProductView> {
         ),
         child: Row(
           children: [
-            Image.asset(
-              image,
-              height: 5.h,
-              width: 15.w,
-              fit: BoxFit.contain,
-            ),
+            Image.asset(image, height: 5.h, width: 15.w, fit: BoxFit.contain),
             SizedBox(width: 4.w),
             Text(
               value,
@@ -775,15 +807,16 @@ class _BuyProductViewState extends State<BuyProductView> {
   }
 
   BoxDecoration boxDecoration() => BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              blurRadius: 4,
-              offset: Offset(0, 2))
-        ],
-      );
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(12),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.grey.withOpacity(0.1),
+        blurRadius: 4,
+        offset: Offset(0, 2),
+      ),
+    ],
+  );
 
   Widget summaryTile(String title, double amount, {bool isTotal = false}) {
     return Padding(
@@ -791,12 +824,14 @@ class _BuyProductViewState extends State<BuyProductView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title,
-              style: TextStyle(
-                fontSize: isTotal ? 18.sp : 17.sp,
-                fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-                fontFamily: AppConstants.manrope,
-              )),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: isTotal ? 18.sp : 17.sp,
+              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+              fontFamily: AppConstants.manrope,
+            ),
+          ),
           Text(
             "£${amount.toStringAsFixed(2)}",
             style: TextStyle(
@@ -817,16 +852,12 @@ class _BuyProductViewState extends State<BuyProductView> {
 
     checkInternet().then((internet) async {
       if (internet) {
-        CommunityProvider()
-            .projectlistapi(
-                (loginModel?.data?.user?.id).toString(), id, AppLat, AppLon)
-            .then((response) async {
-          busnessviewmodal =
-              BusnessViewModal.fromJson(json.decode(response.body));
+        CommunityProvider().businessProfileViewApi(id, AppLat, AppLon).then((
+          response,
+        ) async {
+          busnessviewmodal = BusnessViewModal.fromJson(response.data);
           if (response.statusCode == 200) {
             print("done LIst");
-            print("${busnessviewmodal?.data?.business?.businessName ?? ""}");
-            log(" ${response.body}");
 
             setState(() {
               isLoading = false;
@@ -858,26 +889,20 @@ class _BuyProductViewState extends State<BuyProductView> {
     checkInternet().then((internet) async {
       if (internet) {
         CartProvider()
-            .GetCartDetailsApi(
-          loginModel?.data?.user?.id.toString() ?? "",
-        )
+            .cartDetailApi(loginModel?.data?.user?.id.toString() ?? "")
             .then((response) async {
-          checkoutTotal = CartDetailsModel.fromJson(jsonDecode(response.body));
-          if (response.statusCode == 200) {
-            print("adfdsfsdf${response.body}");
-            print(
-                "1111111111>>>>>>>>>>>>.${profileModel?.data?.user?.profile}");
-
-            setState(() {
-              isLoading = false;
+              checkoutTotal = CartDetailsModel.fromJson(response.data);
+              if (response.statusCode == 200) {
+                setState(() {
+                  isLoading = false;
+                });
+              } else {
+                setState(() {
+                  isLoading = false;
+                });
+                log("Error");
+              }
             });
-          } else {
-            setState(() {
-              isLoading = false;
-            });
-            log("Error");
-          }
-        });
       } else {
         setState(() {
           isLoading = false;
@@ -903,17 +928,19 @@ class _BuyProductViewState extends State<BuyProductView> {
 
     checkInternet().then((internet) async {
       if (internet) {
-        CheckoutProvider().ProductCheckoutApi(data).then((response) async {
-          placeOrderModel = PlaceOrderModel.fromJson(jsonDecode(response.body));
+        CheckoutProvider().productCheckoutApi(data).then((response) async {
+          placeOrderModel = PlaceOrderModel.fromJson(response.data);
 
           if (response.statusCode == 200) {
-            log("Quantity updated successfully: ${response.body}");
             setState(() {
               isCheckout = false;
             });
-            log("Payment Link Ave che che ###${placeOrderModel?.data?.paymentUrl.toString()}");
+            log(
+              "Payment Link Ave che che ###${placeOrderModel?.data?.paymentUrl.toString()}",
+            );
             _openPaymentPage(
-                placeOrderModel?.data?.paymentUrl.toString() ?? "");
+              placeOrderModel?.data?.paymentUrl.toString() ?? "",
+            );
           } else {
             setState(() {
               isCheckout = false;
@@ -934,15 +961,10 @@ class _BuyProductViewState extends State<BuyProductView> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => StripeWebView(
-          title: 'Pay Online',
-          link: url,
-        ),
+        builder: (context) => StripeWebView(title: 'Pay Online', link: url),
       ),
     );
   }
-
-
 
   Widget _buildSectionCard({
     required String title,
@@ -990,10 +1012,7 @@ class _BuyProductViewState extends State<BuyProductView> {
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.all(4.w),
-            child: child,
-          ),
+          Padding(padding: EdgeInsets.all(4.w), child: child),
         ],
       ),
     );
@@ -1042,8 +1061,12 @@ class _BuyProductViewState extends State<BuyProductView> {
     );
   }
 
-  Widget _buildSummaryRow(String title, double amount,
-      {bool isTotal = false, bool isDiscount = false}) {
+  Widget _buildSummaryRow(
+    String title,
+    double amount, {
+    bool isTotal = false,
+    bool isDiscount = false,
+  }) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 0.5.h),
       child: Row(
@@ -1055,9 +1078,10 @@ class _BuyProductViewState extends State<BuyProductView> {
               fontSize: isTotal ? 17.sp : 17.sp,
               fontWeight: FontWeight.bold,
               fontFamily: AppConstants.manrope,
-              color: isDiscount
-                  ? Colors.green[700]
-                  : (isTotal ? Colors.black : Colors.black),
+              color:
+                  isDiscount
+                      ? Colors.green[700]
+                      : (isTotal ? Colors.black : Colors.black),
             ),
           ),
           Text(
@@ -1068,9 +1092,10 @@ class _BuyProductViewState extends State<BuyProductView> {
               fontSize: isTotal ? 18.sp : 17.sp,
               fontWeight: FontWeight.bold,
               fontFamily: AppConstants.manrope,
-              color: isDiscount
-                  ? Colors.green[700]
-                  : (isTotal ? AppColors.maincolor : Colors.black),
+              color:
+                  isDiscount
+                      ? Colors.green[700]
+                      : (isTotal ? AppColors.maincolor : Colors.black),
             ),
           ),
         ],
@@ -1095,9 +1120,10 @@ class _BuyProductViewState extends State<BuyProductView> {
       child: Container(
         padding: EdgeInsets.all(2.w),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.maincolor.withOpacity(0.1)
-              : Colors.grey[50],
+          color:
+              isSelected
+                  ? AppColors.maincolor.withOpacity(0.1)
+                  : Colors.grey[50],
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected ? AppColors.maincolor : Colors.grey[300]!,
@@ -1136,10 +1162,7 @@ class _BuyProductViewState extends State<BuyProductView> {
                   SizedBox(height: 0.5.h),
                   Text(
                     subtitle,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
                   ),
                 ],
               ),
@@ -1159,7 +1182,7 @@ class _BuyProductViewState extends State<BuyProductView> {
     }
     String discountStr =
         checkoutTotal?.data?.first.loyaltyDetails?.loyaltyDiscountPercentage ??
-            "0";
+        "0";
     return double.tryParse(discountStr) ?? 0.0;
   }
 
@@ -1206,12 +1229,13 @@ class _BuyProductViewState extends State<BuyProductView> {
 
     return Container(
       padding: EdgeInsets.symmetric(vertical: 6),
-      decoration: isToday
-          ? BoxDecoration(
-              color: AppColors.maincolor,
-              borderRadius: BorderRadius.circular(6),
-            )
-          : null,
+      decoration:
+          isToday
+              ? BoxDecoration(
+                color: AppColors.maincolor,
+                borderRadius: BorderRadius.circular(6),
+              )
+              : null,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: isToday ? 8 : 0),
         child: Row(
