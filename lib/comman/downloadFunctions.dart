@@ -47,11 +47,12 @@ Future<Directory?> getDownloadDirectory() async {
 }
 
 Future<void> downloadFile(
-    String url, BuildContext context, String filename, String extension) async {
+  String url,
+  BuildContext context,
+  String filename,
+  String extension,
+) async {
   try {
-    print('Url is : $url');
-    print('File is : $filename.$extension');
-
     bool permissionGranted = await requestStoragePermission();
 
     if (permissionGranted || Platform.isIOS) {
@@ -67,8 +68,9 @@ Future<void> downloadFile(
         appDir.createSync(recursive: true);
       }
 
-      String formattedTime =
-          DateFormat('yyyy-MM-dd-hh-mm-ss-a').format(DateTime.now());
+      String formattedTime = DateFormat(
+        'yyyy-MM-dd-hh-mm-ss-a',
+      ).format(DateTime.now());
       String filePath = '${appDir.path}/$filename-$formattedTime.$extension';
 
       ValueNotifier<double> downloadProgress = ValueNotifier(0.0);

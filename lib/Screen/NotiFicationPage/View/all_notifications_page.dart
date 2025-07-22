@@ -94,7 +94,6 @@ class _AllNotificationPageState extends State<AllNotificationPage> {
             return GestureDetector(
               onTap: () {
                 String? type = notification?.type;
-                log("Notification Type: $type");
 
                 if (type == "messageboard") {
                   Get.to(() => Messageboard());
@@ -118,11 +117,9 @@ class _AllNotificationPageState extends State<AllNotificationPage> {
                       profileImage =
                           notification.conciergeProfile!.conciergeImage!.first;
                     }
-                    log("Concierge Chat: $chatName");
                   } else if (notification?.businessProfile != null) {
                     chatName = notification?.businessProfile?.name ?? '';
                     profileImage = notification?.businessProfile?.profile ?? '';
-                    log("Business Chat: $chatName");
                   }
 
                   Get.to(
@@ -143,9 +140,7 @@ class _AllNotificationPageState extends State<AllNotificationPage> {
                           notification?.chatCreateId.toString() ?? "",
                     ),
                   );
-                } else {
-                  log("Unknown notification type: $type");
-                }
+                } else {}
 
                 Readnotification();
               },
@@ -246,12 +241,8 @@ class _AllNotificationPageState extends State<AllNotificationPage> {
             setState(() {
               notificationmodel = NotificationModell.fromJson(response.data);
             });
-          } else {
-            log(" Failed response error: ${response.statusCode}");
-          }
-        } catch (e) {
-          log("Exception occurred: $e");
-        }
+          } else {}
+        } catch (e) {}
       } else {
         EasyLoading.dismiss();
         buildErrorDialog(context, 'Error', "Internet Required");
@@ -274,13 +265,8 @@ class _AllNotificationPageState extends State<AllNotificationPage> {
             notificationreadModel = NotificationReadModel.fromJson(
               response.data,
             );
-          } else {
-            log(" Failed response error ave che: ${response.statusCode}");
-          }
-        } catch (e, stackTrace) {
-          log("Exception occurred: $e");
-          log("Exception occurred: $stackTrace");
-        }
+          } else {}
+        } catch (e, stackTrace) {}
       } else {
         EasyLoading.dismiss();
         buildErrorDialog(context, 'Error', "Internet Required");

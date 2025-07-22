@@ -16,12 +16,14 @@ class DioHelper {
     final HttpClient client = HttpClient(context: context);
     final adapter = DefaultHttpClientAdapter();
     adapter.onHttpClientCreate = (HttpClient _) => client;
-    _dio = Dio(BaseOptions(
-      baseUrl: ApiEndpoint.baseUrl,
-      connectTimeout: const Duration(seconds: 60),
-      receiveTimeout: const Duration(seconds: 60),
-      contentType: Headers.formUrlEncodedContentType,
-    ));
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: ApiEndpoint.baseUrl,
+        connectTimeout: const Duration(seconds: 60),
+        receiveTimeout: const Duration(seconds: 60),
+        contentType: Headers.formUrlEncodedContentType,
+      ),
+    );
     _dio!.httpClientAdapter = adapter;
     return _dio!;
   }

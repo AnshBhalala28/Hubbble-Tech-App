@@ -9,7 +9,7 @@
 // class CheckoutProvider extends ChangeNotifier {
 //   Future<http.Response> ProductCheckoutApi(Map<String, String> bodyData) async {
 //     const url = '$baseUrl/placeOrder';
-//     print("Request URL: $url");
+//
 //     try {
 //       final response = await http
 //           .post(

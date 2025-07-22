@@ -75,7 +75,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      print("📌 Location services are disabled.");
       setState(() {
         isLoading = false;
         isMapLoading = false;
@@ -87,7 +86,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        print("📌 Location permission denied.");
         setState(() {
           isLoading = false;
           isMapLoading = false;
@@ -97,7 +95,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      print("📌 Location permission permanently denied.");
       setState(() {
         isLoading = false;
         isMapLoading = false;
@@ -111,7 +108,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
 
     AppLat = position.latitude.toString();
     AppLon = position.longitude.toString();
-    print("Latitude Check again: $AppLat, Longitude Check: $AppLon");
 
     setState(() {
       isLocationFetched = true;
@@ -153,7 +149,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
         );
       }
     } catch (e) {
-      print("Error: $e");
       setState(() {
         isSending = false;
       });
@@ -400,9 +395,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                     if (busnessviewmodal?.data?.business?.id !=
                                         null) {
                                       await handleLikeTap();
-                                    } else {
-                                      print("Error: Business ID is null.");
-                                    }
+                                    } else {}
                                   },
                                   child: Container(
                                     height: 4.5.h,
@@ -475,9 +468,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
 
                                         Navigator.pop(context);
                                         moveToLocation();
-                                      } else {
-                                        print("Error: Business data is null");
-                                      }
+                                      } else {}
                                     },
                                     padding: EdgeInsets.zero,
                                     constraints: BoxConstraints(),
@@ -953,8 +944,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
     if (response.statusCode == 200) {
       final newModal = BusnessViewModal.fromJson(response.data);
 
-      print("check navigate");
-
       setState(() {
         isSending = false;
         widget.busnessviewmodal?.data = newModal.data;
@@ -973,7 +962,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
       'business_id': (busnessviewmodal?.data?.business?.id).toString(),
       'is_like': newLikeStatus,
     };
-    print("🟢 Request Parameter: $data");
 
     setState(() {
       isSending = true;
@@ -1008,10 +996,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                 EasyLoading.showError("Internal Server Error");
               }
             })
-            .catchError((error, stackTrace) {
-              print(" Error in like API: $error");
-              print(" Stack Trace: $stackTrace");
-            });
+            .catchError((error, stackTrace) {});
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
       }
@@ -1024,7 +1009,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
       'offerPromotion_id':
           (busnessviewmodal?.data?.offerPromotions?[0].id).toString(),
     };
-    print("request offres promotion view parameter : $data");
+
     checkInternet().then((internet) async {
       if (internet) {
         CommunityProvider().markOfferPromoApi(data).then((response) async {
@@ -1032,12 +1017,8 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
             offerpromoAsviewedmodel = OfferPromoAsViewedModel.fromJson(
               response.data,
             );
-            print("View done");
           } else if (response.statusCode == 429) {
-            print("Too many requests");
-          } else {
-            print("Internal Server Error");
-          }
+          } else {}
         });
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
@@ -1121,7 +1102,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                           )
                           : GestureDetector(
                             onTap: () {
-                              print("Image tapped: ${item.file}");
                               Get.to(
                                 () => FullScreenImageView(
                                   imageUrl: item.file ?? '',
@@ -1533,7 +1513,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
     final Map<String, String> data = {};
     data['user_id'] = loginModel?.data?.user?.id.toString() ?? "";
     data['event_id'] = selectedid ?? "";
-    print("send event data jai che$data");
 
     setState(() {
       isLoading = true;
@@ -1620,19 +1599,14 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                   OfferPromoAsViewedApi();
                   if (linkUrl != null && linkUrl.isNotEmpty) {
                     Uri uri = Uri.parse(linkUrl);
-                    print("Opening URL: $linkUrl");
 
                     if (await canLaunchUrl(uri)) {
                       await launchUrl(
                         uri,
                         mode: LaunchMode.externalApplication,
                       );
-                    } else {
-                      print("Error: Could not launch $linkUrl");
-                    }
-                  } else {
-                    print("Error: Invalid URL");
-                  }
+                    } else {}
+                  } else {}
                 },
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: 8,

@@ -1271,7 +1271,7 @@ class _SideMenuState extends State<SideMenu> {
           var response = await AuthProvider().deleteAccApi(
             loginModel?.data?.user?.id.toString() ?? "",
           );
-          print(response);
+
           deleteAccountModel = DeleteAccountModel.fromJson(response.data);
           if (response.statusCode == 200) {
             showSnackBar(
@@ -1299,7 +1299,6 @@ class _SideMenuState extends State<SideMenu> {
               ColorText: Colors.white,
               IconColor: Colors.white,
             );
-            print("Geeting Error api mathi ${response.data}");
           }
         } catch (e, stackTrace) {
           if (mounted) {
@@ -1307,8 +1306,6 @@ class _SideMenuState extends State<SideMenu> {
               isLoading = false;
             });
           }
-          log("Geeting Error $e");
-          log("Geeting Error strace ni error $stackTrace");
 
           showSnackBar(
             title: "Error",

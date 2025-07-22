@@ -522,7 +522,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                             ?.data
                                             ?.business
                                             ?.productStatus;
-                                    log("$productStatus");
 
                                     if (productStatus == 0) {
                                       showOnlineOrderDisabledDialog(
@@ -723,7 +722,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           featuresList = List<String>.from(productViewModel!.data!.features!);
         }
       } else {
-        print("❌ API Error: ${response.statusCode}");
         setState(() {
           isLoading = false;
         });
@@ -734,7 +732,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         );
       }
     } catch (e) {
-      print("❌ Exception: $e");
       setState(() {
         isLoading = false;
       });
@@ -752,7 +749,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       "rating": tempRating.toInt().toString(),
       "review": reviewController.text.trim(),
     };
-    log("Data Sending ${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         ProductProvider().addReviewApi(data).then((response) async {
@@ -766,7 +763,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             setState(() {
               isAddReviewLoading = false;
             });
-            log("Error");
           }
         });
       } else {
@@ -797,7 +793,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             setState(() {
               isAddReviewLoading = false;
             });
-            log("Error");
           }
         });
       } else {
@@ -825,7 +820,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 setState(() {
                   isLoading = false;
                 });
-                log("Error");
               }
             });
       } else {
@@ -913,7 +907,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       "type": "product",
       "qty": count.toString(),
     };
-    log("Data Sending${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         ProductProvider().AddToCart(data).then((response) async {
@@ -926,7 +920,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             setState(() {
               isAddReviewLoading = false;
             });
-            log("Error");
           }
         });
       } else {
@@ -948,7 +941,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       "id": widget.productID.toString(),
       "type": "product",
     };
-    log("DATA ${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         ProductProvider().AddToCart(data).then((response) async {
@@ -961,7 +954,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             setState(() {
               isAddReviewLoading = false;
             });
-            log("Error");
           }
         });
       } else {
@@ -1212,13 +1204,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       "type": type,
     };
 
-    log("Sending remove request: $data");
-
     checkInternet().then((internet) async {
       if (internet) {
         CartProvider().removeCartApi(data).then((response) async {
           if (response.statusCode == 200) {
-            log("Item removed successfully: ${response.data}");
             setState(() {
               isAddReviewLoading = false;
             });
@@ -1226,7 +1215,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             setState(() {
               isAddReviewLoading = false;
             });
-            log("Error removing item from cart");
           }
         });
       } else {

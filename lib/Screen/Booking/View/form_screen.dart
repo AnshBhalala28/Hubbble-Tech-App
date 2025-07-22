@@ -79,7 +79,6 @@ class _Form_ScreenState extends State<Form_Screen> {
     try {
       return DateFormat("yyyy-MM-dd hh:mm a").parse(widget.requestedDate!);
     } catch (e) {
-      print("Date parse error: $e");
       return null;
     }
   }
@@ -133,7 +132,7 @@ class _Form_ScreenState extends State<Form_Screen> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedAmenity = amenitiesModel?.data1?.data?.first;
+    final selectedAmenity = amenitiesModel?.data?.data?.first;
     DateTime now = DateTime.now();
     DateTime firstDay = DateTime(now.year, now.month, 1);
     DateTime lastDay = DateTime(now.year, now.month + 1, 0);
@@ -179,7 +178,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                               ? Get.to(BookingScreen())
                               : Get.to(BookAmenities_Screen());
                         },
-                        title: amenitiesModel?.data1?.data?[0].name ?? "",
+                        title: amenitiesModel?.data?.data?[0].name ?? "",
                         drawerCallback: () {
                           _scaffoldKeyForm.currentState?.openDrawer();
                         },
@@ -190,9 +189,9 @@ class _Form_ScreenState extends State<Form_Screen> {
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           padding: EdgeInsets.zero,
-                          itemCount: amenitiesModel?.data1?.data?.length ?? 0,
+                          itemCount: amenitiesModel?.data?.data?.length ?? 0,
                           itemBuilder: (context, index) {
-                            final booking = amenitiesModel?.data1?.data?[index];
+                            final booking = amenitiesModel?.data?.data?[index];
                             final imageList = booking?.imageUrl ?? [];
 
                             int currentIndex = 0;
@@ -837,7 +836,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                     label: 'Total',
                                                     value:
                                                         amenitiesModel
-                                                            ?.data1
+                                                            ?.data
                                                             ?.data?[0]
                                                             .totalBookingSlots
                                                             .toString() ??
@@ -849,7 +848,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                     label: 'Booked',
                                                     value:
                                                         amenitiesModel
-                                                            ?.data1
+                                                            ?.data
                                                             ?.data?[0]
                                                             .bookedSlots
                                                             .toString() ??
@@ -861,7 +860,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                     label: 'Available',
                                                     value:
                                                         amenitiesModel
-                                                            ?.data1
+                                                            ?.data
                                                             ?.data?[0]
                                                             .availableSlots
                                                             .toString() ??
@@ -890,7 +889,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    "${aneminitiesDataModel?.data1?.data?[0].name}",
+                                                    "${aneminitiesDataModel?.data?.data?[0].name}",
                                                     style: TextStyle(
                                                       fontSize: 17.sp,
                                                       fontWeight:
@@ -1164,7 +1163,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                 );
                                 return;
                               }
-                              if (amenitiesModel?.data1?.data?[0].status ==
+                              if (amenitiesModel?.data?.data?[0].status ==
                                   "inactive") {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -1564,7 +1563,6 @@ class _Form_ScreenState extends State<Form_Screen> {
                       child: ElevatedButton(
                         onPressed: () {
                           RSVPAmenityApi(bookingID, 'maybe');
-                          print("RSVP: Maybe");
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey[300],
@@ -1588,8 +1586,6 @@ class _Form_ScreenState extends State<Form_Screen> {
                       child: ElevatedButton(
                         onPressed: () {
                           RSVPAmenityApi(bookingID, 'decline');
-
-                          print("RSVP: Declined");
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red.shade100,
@@ -1613,8 +1609,6 @@ class _Form_ScreenState extends State<Form_Screen> {
                       child: ElevatedButton(
                         onPressed: () {
                           RSVPAmenityApi(bookingID, 'accept');
-
-                          print("RSVP: Accepted");
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.maincolor,
@@ -1700,7 +1694,6 @@ class _Form_ScreenState extends State<Form_Screen> {
                         onPressed: () {
                           Navigator.pop(context);
                           RSVPAmenityAttend(bookingID, "0", rsvp);
-                          print("User chose: No");
                         },
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(color: Colors.grey.shade400),
@@ -1725,8 +1718,6 @@ class _Form_ScreenState extends State<Form_Screen> {
                         onPressed: () {
                           Navigator.pop(context);
                           RSVPAmenityAttend(bookingID, "1", rsvp);
-
-                          print("User chose: Yes");
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.maincolor,
@@ -2101,7 +2092,7 @@ class _Form_ScreenState extends State<Form_Screen> {
 
       if (response.statusCode == 200) {
         amenitiesModel = AmenitiesModel.fromJson(response.data);
-        log("API Response: ${response.data}");
+
         setState(() {
           amenitiesModel = amenitiesModel;
           isLoading = false;
@@ -2116,7 +2107,6 @@ class _Form_ScreenState extends State<Form_Screen> {
         return false;
       }
     } catch (e, stackTrace) {
-      log("Geeting Error $stackTrace");
       setState(() {
         isLoading = false;
         load = false;
@@ -2132,7 +2122,6 @@ class _Form_ScreenState extends State<Form_Screen> {
       "date": date ?? "",
     };
 
-    log("📤 Booking Data: $data");
     setState(() {
       isGlobalLoading = true;
     });
@@ -2155,7 +2144,7 @@ class _Form_ScreenState extends State<Form_Screen> {
         showTornTicketDialog(
           attendeeInitials: 'NP',
           context: context,
-          location: aneminitiesDataModel?.data1?.data?[0].name ?? "",
+          location: aneminitiesDataModel?.data?.data?[0].name ?? "",
           selectedDate: selectedDate.toString(),
           selectedTime: time,
         );
@@ -2178,9 +2167,6 @@ class _Form_ScreenState extends State<Form_Screen> {
         return false;
       }
     } catch (e, stackTrace) {
-      log("❌ Booking Error: $e");
-      log("StackTrace: $stackTrace");
-
       if (mounted) {
         setState(() {
           isGlobalLoading = false;
@@ -2221,7 +2207,6 @@ class _Form_ScreenState extends State<Form_Screen> {
             });
           }
         } catch (e, stackTrace) {
-          log("Geeting Error $stackTrace");
           if (mounted) {
             setState(() {
               isRsvpLoading = false;
@@ -2267,7 +2252,6 @@ class _Form_ScreenState extends State<Form_Screen> {
             });
           }
         } catch (e, stackTrace) {
-          log("Geeting Error $stackTrace");
           if (mounted) {
             setState(() {
               isRsvpLoading = false;

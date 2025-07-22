@@ -524,7 +524,6 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
             });
           }
         } catch (e, stackTrace) {
-          log("Geeting Error $stackTrace");
           setState(() {
             isLoading = false;
           });

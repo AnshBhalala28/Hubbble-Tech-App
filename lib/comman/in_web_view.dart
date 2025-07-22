@@ -55,8 +55,6 @@ class _StripeWebViewState extends State<StripeWebView> {
                   _load = false;
                 });
 
-                log("Current URL app redirect: $url");
-
                 if (url.contains("payment-successful")) {
                   await Future.delayed(const Duration(seconds: 2));
                   if (mounted) {
@@ -137,8 +135,6 @@ class _StripeWebViewState extends State<StripeWebView> {
       "is_finalizing": "true",
     };
 
-    log("Checkout API data: $data");
-
     checkInternet().then((internet) async {
       if (internet) {
         CheckoutProvider().productCheckoutApi(data).then((response) async {
@@ -150,14 +146,12 @@ class _StripeWebViewState extends State<StripeWebView> {
                 isLoading = false;
               });
             }
-            log("Payment URL: ${placeOrderModel?.data?.paymentUrl.toString()}");
           } else {
             if (mounted) {
               setState(() {
                 isLoading = false;
               });
             }
-            log("Error during checkout");
           }
         });
       } else {

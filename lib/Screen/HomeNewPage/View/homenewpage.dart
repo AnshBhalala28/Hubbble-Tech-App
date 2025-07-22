@@ -20,6 +20,7 @@ import 'package:wavee/Screen/HomeNewPage/Model/parcel_show_count.dart';
 import 'package:wavee/Screen/HomeNewPage/Model/visitor_show_count_model.dart';
 import 'package:wavee/Screen/HomeNewPage/Provider/homescreen_provider.dart';
 import 'package:wavee/Screen/Manintenance/View/maintenance_view.dart';
+import 'package:wavee/Screen/Message_board/Model/Localpost_model.dart';
 import 'package:wavee/Screen/Message_board/View/messageboard.dart';
 import 'package:wavee/Screen/NotiFicationPage/Provider/notificationprovider.dart';
 import 'package:wavee/Screen/Oredrscreen/View/order_screen_view.dart';
@@ -85,6 +86,7 @@ class _HomePageState extends State<HomePage> {
     VisitorShowCount();
     ChatShowCount();
     MessageBoardApi();
+    localpostapi();
     GetProfile();
   }
 
@@ -516,7 +518,7 @@ class _HomePageState extends State<HomePage> {
                                                   Row(
                                                     children: [
                                                       Text(
-                                                        "Message Board",
+                                                        "Building Message Board",
                                                         style: TextStyle(
                                                           fontSize: 18.sp,
                                                           fontWeight:
@@ -526,67 +528,67 @@ class _HomePageState extends State<HomePage> {
                                                                   .manrope,
                                                         ),
                                                       ),
-                                                      Spacer(),
-                                                      InkWell(
-                                                        onTap: () {
-                                                          addpostsheet(
-                                                            context,
-                                                            loginModel
-                                                                    ?.data
-                                                                    ?.user
-                                                                    ?.id
-                                                                    .toString() ??
-                                                                "",
-                                                          );
-                                                        },
-                                                        child: Container(
-                                                          height: 4.h,
-                                                          width: 40.w,
-                                                          decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  15,
-                                                                ),
-                                                            border: Border.all(
-                                                              color:
-                                                                  AppColors
-                                                                      .bottomSheetBG,
-                                                              width: 1,
-                                                            ),
-                                                          ),
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets.all(
-                                                                  4.0,
-                                                                ),
-                                                            child: Row(
-                                                              children: [
-                                                                Text(
-                                                                  "Post New Message",
-                                                                  style: TextStyle(
-                                                                    fontSize:
-                                                                        15.sp,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    fontFamily:
-                                                                        AppConstants
-                                                                            .manrope,
-                                                                  ),
-                                                                ),
-                                                                Icon(
-                                                                  Icons
-                                                                      .add_circle_outline_outlined,
-                                                                  size: 19.sp,
-                                                                  color:
-                                                                      Colors
-                                                                          .black,
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
+                                                      // Spacer(),
+                                                      // InkWell(
+                                                      //   onTap: () {
+                                                      //     addpostsheet(
+                                                      //       context,
+                                                      //       loginModel
+                                                      //               ?.data
+                                                      //               ?.user
+                                                      //               ?.id
+                                                      //               .toString() ??
+                                                      //           "",
+                                                      //     );
+                                                      //   },
+                                                      //   child: Container(
+                                                      //     height: 4.h,
+                                                      //     width: 40.w,
+                                                      //     decoration: BoxDecoration(
+                                                      //       borderRadius:
+                                                      //           BorderRadius.circular(
+                                                      //             15,
+                                                      //           ),
+                                                      //       border: Border.all(
+                                                      //         color:
+                                                      //             AppColors
+                                                      //                 .bottomSheetBG,
+                                                      //         width: 1,
+                                                      //       ),
+                                                      //     ),
+                                                      //     child: Padding(
+                                                      //       padding:
+                                                      //           const EdgeInsets.all(
+                                                      //             4.0,
+                                                      //           ),
+                                                      //       child: Row(
+                                                      //         children: [
+                                                      //           Text(
+                                                      //             "Post New Message",
+                                                      //             style: TextStyle(
+                                                      //               fontSize:
+                                                      //                   15.sp,
+                                                      //               fontWeight:
+                                                      //                   FontWeight
+                                                      //                       .bold,
+                                                      //               fontFamily:
+                                                      //                   AppConstants
+                                                      //                       .manrope,
+                                                      //             ),
+                                                      //           ),
+                                                      //           Icon(
+                                                      //             Icons
+                                                      //                 .add_circle_outline_outlined,
+                                                      //             size: 19.sp,
+                                                      //             color:
+                                                      //                 Colors
+                                                      //                     .black,
+                                                      //           ),
+                                                      //         ],
+                                                      //       ),
+                                                      //     ),
+                                                      //   ),
+                                                      // ),
                                                     ],
                                                   ).paddingOnly(bottom: 1.h),
                                                   Container(
@@ -928,7 +930,14 @@ class _HomePageState extends State<HomePage> {
                                         iconName: AppConstants.events,
                                         name: "Events",
                                         onTap: () {
-                                          Get.to(EventScreen());
+                                          Get.to(
+                                            EventScreen(
+                                              userId:
+                                                  loginModel?.data?.user?.id
+                                                      .toString() ??
+                                                  "",
+                                            ),
+                                          );
                                         },
                                       ),
                                     ),
@@ -1351,7 +1360,6 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               isLoading = false;
             });
-            print(response.data);
           }
         } catch (e) {
           setState(() {
@@ -1387,7 +1395,6 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               isLoading = false;
             });
-            print(response.data);
           }
         } catch (e) {
           if (mounted) {
@@ -1410,7 +1417,6 @@ class _HomePageState extends State<HomePage> {
     data["sender_id"] = "1";
     data["receiver_id"] = loginModel?.data?.user?.id.toString() ?? "";
 
-    log("chat count data  $data");
     checkInternet().then((internet) async {
       if (internet) {
         try {
@@ -1418,18 +1424,14 @@ class _HomePageState extends State<HomePage> {
           chatShowCountModal = ChatShowCountModal.fromJson(response.data);
 
           if (response.statusCode == 200 && chatShowCountModal?.status == 200) {
-            log("Responce Data ${response.data}");
-
             setState(() {
               chatCount = chatShowCountModal?.data ?? 0;
               isLoading = false;
             });
-            log("Count${chatCount}");
           } else {
             setState(() {
               isLoading = false;
             });
-            print(response.data);
           }
         } catch (e) {
           if (mounted)
@@ -1449,7 +1451,7 @@ class _HomePageState extends State<HomePage> {
   MessageBoardApi() {
     final Map<String, String> data = {};
     data["user_id"] = loginModel?.data?.user?.id.toString() ?? "";
-    log("Data sending${loginModel?.data?.user?.id.toString() ?? ""}");
+
     checkInternet().then((internet) async {
       if (internet) {
         try {
@@ -1457,8 +1459,6 @@ class _HomePageState extends State<HomePage> {
           messageBoardModal = MessageBoardModal.fromJson(response.data);
 
           if (response.statusCode == 200 && messageBoardModal?.status == 200) {
-            log("message board api data ave cje${response.data}");
-
             setState(() {
               isLoading = false;
             });
@@ -1466,12 +1466,8 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               isLoading = false;
             });
-            print(response.data);
-            log("Error ");
           }
         } catch (e) {
-          log("Error $e");
-
           setState(() {
             isLoading = false;
           });
@@ -1489,7 +1485,7 @@ class _HomePageState extends State<HomePage> {
     final Map<String, String> data = {
       'id': loginModel?.data?.user?.id.toString() ?? '',
     };
-    print("RegisterApi : ${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         ProfileProvider().profileApi(data).then((response) async {
@@ -1504,7 +1500,6 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               isLoading = false;
             });
-            log("Error");
           }
         });
       } else {
@@ -1524,7 +1519,6 @@ class _HomePageState extends State<HomePage> {
           final response = await NotificationProvider().notificationApi(
             (loginModel?.data?.user?.id).toString(),
           );
-          print("login user id : ${(loginModel?.data?.user?.id).toString()}");
 
           if (response.statusCode == 200) {
             notificationmodel = NotificationModell.fromJson(response.data);
@@ -1533,13 +1527,8 @@ class _HomePageState extends State<HomePage> {
               notificationCount = notificationmodel?.data?.totalCount ?? 0;
               isLoading = false;
             });
-            print("notificationCount : ${notificationCount}");
-          } else {
-            log("Failed response error ave che: ${response.statusCode}");
-          }
-        } catch (e) {
-          log("Exception occurred: $e");
-        }
+          } else {}
+        } catch (e) {}
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
       }
@@ -1803,7 +1792,7 @@ class _HomePageState extends State<HomePage> {
               .addPostApiWithImages(bodyData: data, images: _images)
               .then((response) async {
                 if (response.statusCode == 200) {
-                  addPostModel = Add_Post_Model.fromJson(response.data);
+                  add_Post_Model = Add_Post_Model.fromJson(response.data);
                   _descController.clear();
                   _images = [];
                 } else if (response.statusCode == 429) {
@@ -1822,5 +1811,43 @@ class _HomePageState extends State<HomePage> {
         }
       });
     }
+  }
+
+  localpostapi() {
+    final Map<String, String> data = {
+      'residentType': "residents",
+      'user_id': loginModel?.data?.user?.id.toString() ?? '',
+    };
+
+    checkInternet().then((internet) async {
+      if (internet) {
+        try {
+          final response = await MessageBoardProvider().localPostApi(data);
+          if (response.statusCode == 200) {
+            localpost_model = Localpost_model.fromJson(response.data);
+
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
+          } else if (response.statusCode == 429 || response.statusCode == 500) {
+            setState(() {
+              isLoading = false;
+            });
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+          }
+        } catch (e, stackTrace) {
+          setState(() {
+            isLoading = false;
+          });
+        }
+      } else {
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
   }
 }

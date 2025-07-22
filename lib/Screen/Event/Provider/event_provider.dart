@@ -9,14 +9,14 @@ import '../../../comman/responses.dart';
 //     const url = '${baseUrl}/getEvents';
 //     LoginModel? userData = await SaveDataLocal.getDataFromLocal();
 //     String token = userData?.data?.token ?? '';
-//     print("my token :: ${token}");
+//
 //     if (token.isEmpty) {
 //       throw Exception('Token not found');
 //     }
 //     Map<String, String> headers = {
 //       'Authorization': 'Bearer $token',
 //     };
-//     print(url);
+//
 //     var responseJson;
 //     final response = await http
 //         .post(Uri.parse(url), body: bodyData, headers: headers)
@@ -27,21 +27,21 @@ import '../../../comman/responses.dart';
 //       },
 //     );
 //     responseJson = responses(response);
-//     print(response.body);
+//
 //     return responseJson;
 //   }
 //   Future<http.Response> sendeventapi(Map<String, String> bodyData) async {
 //     const url = '${baseUrl}/sendEventRequest';
 //     LoginModel? userData = await SaveDataLocal.getDataFromLocal();
 //     String token = userData?.data?.token ?? '';
-//     print("my token :: ${token}");
+//
 //     if (token.isEmpty) {
 //       throw Exception('Token not found');
 //     }
 //     Map<String, String> headers = {
 //       'Authorization': 'Bearer $token',
 //     };
-//     print(url);
+//
 //     var responseJson;
 //     final response = await http
 //         .post(Uri.parse(url), body: bodyData, headers: headers)
@@ -52,7 +52,7 @@ import '../../../comman/responses.dart';
 //       },
 //     );
 //     responseJson = responses(response);
-//     print(response.body);
+//
 //     return responseJson;
 //   }
 // }
@@ -60,7 +60,7 @@ class EventProvider extends ChangeNotifier {
   Future<Response> eventapi(Map<String, String> bodyData) async {
     // LoginModel? userData = await SaveDataLocal.getDataFromLocal();
     // String token = userData?.data?.token ?? '';
-    // print("my token :: $token");
+    //
     // if (token.isEmpty) {
     //   throw Exception('Token not found');
     // }
@@ -88,12 +88,12 @@ class EventProvider extends ChangeNotifier {
     // const url = '${baseUrl}/sendEventRequest';
     // LoginModel? userData = await SaveDataLocal.getDataFromLocal();
     // String token = userData?.data?.token ?? '';
-    // print("my token :: $token");
+    //
     // if (token.isEmpty) {
     //   throw Exception('Token not found');
     // }
     // Map<String, String> headers = {'Authorization': 'Bearer $token'};
-    // print(url);
+    //
     try {
       final dio = Dio();
       String? token = await SaveDataLocal.getToken();
@@ -102,7 +102,7 @@ class EventProvider extends ChangeNotifier {
         data: bodyData,
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
       );
-      print(response.data);
+
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));

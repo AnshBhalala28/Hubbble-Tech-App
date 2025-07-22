@@ -836,7 +836,6 @@ class _GroupProfileScreenState extends State<GroupProfileScreen> {
           setState(() {
             isLoading = false;
           });
-          print("error");
         }
       } else {
         setState(() {
@@ -853,8 +852,6 @@ class _GroupProfileScreenState extends State<GroupProfileScreen> {
       'group_id': widget.groupid,
       'status': "",
     };
-
-    print("group remove list parameter : $data");
 
     setState(() {
       isSending = true;
@@ -914,15 +911,12 @@ class _GroupProfileScreenState extends State<GroupProfileScreen> {
       'group_id': widget.groupid,
     };
 
-    print("add group member parameter : $data");
-
     checkInternet().then((internet) async {
       if (internet) {
         MessageBoardProvider().addGroupMemebrApi(data).then((response) async {
           if (response.statusCode == 200) {
             addgroupMemberModel = AddGroupMemberModel.fromJson(response.data);
           } else {
-            print("Failed to add $userId, code: ${response.statusCode}");
             Get.snackbar(
               'Sorry',
               'Faild to add member',
@@ -982,7 +976,6 @@ class _GroupProfileScreenState extends State<GroupProfileScreen> {
             isSending = false;
           });
 
-          print("error: ${e.toString()}");
           buildErrorDialog(context, 'Error', "Something went wrong");
         }
       } else {
@@ -999,7 +992,7 @@ class _GroupProfileScreenState extends State<GroupProfileScreen> {
     final Map<String, String> data = {
       'created_by': (loginModel?.data?.user?.id).toString(),
     };
-    print("group list parameter : $data");
+
     setState(() {
       isSending = true;
     });

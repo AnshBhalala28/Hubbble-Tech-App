@@ -115,12 +115,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       'email': emailController.text.trim(),
       // 'password': password.text.trim(),
     };
-    print("Request data: $data");
+
     checkInternet().then((internet) async {
       if (internet) {
         try {
           var response = await AuthProvider().forgetPasswordApi(data);
-          print("Response status: ${response.statusCode}");
+
           forgotpasswordmodel = Forgotpasswordmodel.fromJson(response.data);
           if (response.statusCode == 200 &&
               forgotpasswordmodel?.status == 200) {
@@ -165,7 +165,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             ColorText: Colors.white,
             IconColor: Colors.white,
           );
-          print("Error: $e");
         }
       } else {
         setState(() {

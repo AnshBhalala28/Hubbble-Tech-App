@@ -14,7 +14,7 @@ import 'package:wavee/comman/store_local.dart';
 // class MyRequestProvider extends ChangeNotifier {
 //   // Future<http.Response> GetMyRequest(String user_id) async {
 //   //   String url = '${baseUrl}/get_request_my?user_id=$user_id';
-//   //   print("Get conciergerlist Url : $url");
+//   //
 //   //   try {
 //   //     final response = await http
 //   //         .get(Uri.parse(url))
@@ -25,11 +25,11 @@ import 'package:wavee/comman/store_local.dart';
 //   //           },
 //   //         );
 //   //     if (response.statusCode == 200) {
-//   //       print("Successful response: ${response.body}");
+//   //
 //   //       log("lat");
 //   //       return response;
 //   //     } else {
-//   //       print("Failed response: ${response.statusCode}");
+//   //
 //   //       throw Exception("Failed to connect to the server");
 //   //     }
 //   //   } on SocketException catch (e) {
@@ -41,7 +41,7 @@ import 'package:wavee/comman/store_local.dart';
 
 //   // Future<http.Response> GetFriendRequest(String user_id) async {
 //   //   String url = '${baseUrl}/get_request_app?user_id=$user_id';
-//   //   print("Get conciergerlist Url : $url");
+//   //
 //   //   try {
 //   //     final response = await http
 //   //         .get(Uri.parse(url))
@@ -52,11 +52,11 @@ import 'package:wavee/comman/store_local.dart';
 //   //           },
 //   //         );
 //   //     if (response.statusCode == 200) {
-//   //       print("Successful response: ${response.body}");
+//   //
 //   //       log("lat");
 //   //       return response;
 //   //     } else {
-//   //       print("Failed response: ${response.statusCode}");
+//   //
 //   //       throw Exception("Failed to connect to the server");
 //   //     }
 //   //   } on SocketException catch (e) {
@@ -68,7 +68,7 @@ import 'package:wavee/comman/store_local.dart';
 
 //   // Future<http.Response> GetMyGroupApi(String user_id) async {
 //   //   String url = '${baseUrl}/resident_group_request?user_id=$user_id';
-//   //   print("Get conciergerlist Url : $url");
+//   //
 //   //   try {
 //   //     final response = await http
 //   //         .get(Uri.parse(url))
@@ -79,11 +79,11 @@ import 'package:wavee/comman/store_local.dart';
 //   //           },
 //   //         );
 //   //     if (response.statusCode == 200) {
-//   //       print("Successful response: ${response.body}");
+//   //
 //   //       log("lat");
 //   //       return response;
 //   //     } else {
-//   //       print("Failed response: ${response.statusCode}");
+//   //
 //   //       throw Exception("Failed to connect to the server");
 //   //     }
 //   //   } on SocketException catch (e) {
@@ -95,7 +95,7 @@ import 'package:wavee/comman/store_local.dart';
 
 //   // Future<http.Response> RequestActionApi(Map<String, String> bodyData) async {
 //   //   String url = '${baseUrl}/friends-request-action';
-//   //   print("Actioon Api  $url");
+//   //
 //   //   try {
 //   //     final response = await http
 //   //         .post(Uri.parse(url), body: bodyData)
@@ -106,11 +106,11 @@ import 'package:wavee/comman/store_local.dart';
 //   //           },
 //   //         );
 //   //     if (response.statusCode == 200) {
-//   //       print("Successful response: ${response.body}");
+//   //
 //   //       log("lat");
 //   //       return response;
 //   //     } else {
-//   //       print("Failed response: ${response.statusCode}");
+//   //
 //   //       throw Exception("Failed to connect to the server");
 //   //     }
 //   //   } on SocketException catch (e) {
@@ -124,7 +124,7 @@ import 'package:wavee/comman/store_local.dart';
 //     Map<String, String> bodyData,
 //   ) async {
 //     String url = '${baseUrl}/group-request-action';
-//     print("Actioon Api  $url");
+//
 //     try {
 //       final response = await http
 //           .post(Uri.parse(url), body: bodyData)
@@ -135,11 +135,11 @@ import 'package:wavee/comman/store_local.dart';
 //             },
 //           );
 //       if (response.statusCode == 200) {
-//         print("Successful response: ${response.body}");
+//
 //         log("lat");
 //         return response;
 //       } else {
-//         print("Failed response: ${response.statusCode}");
+//
 //         throw Exception("Failed to connect to the server");
 //       }
 //     } on SocketException catch (e) {
@@ -164,7 +164,7 @@ class MyRequestProvider extends ChangeNotifier {
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
         queryParameters: {'user_id': userId},
       );
-      print("Login Success: ${response.data}");
+
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
@@ -181,7 +181,7 @@ class MyRequestProvider extends ChangeNotifier {
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
         queryParameters: {'user_id': userId},
       );
-      print("Login Success: ${response.data}");
+
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));

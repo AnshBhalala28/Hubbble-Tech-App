@@ -54,7 +54,6 @@ class _ChatScreenState extends State<ChatScreen> {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       setState(() {
-        print("Location services are disabled.");
         isLoading = false;
       });
       return;
@@ -65,7 +64,6 @@ class _ChatScreenState extends State<ChatScreen> {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         setState(() {
-          print("Location permission denied.");
           isLoading = false;
         });
         return;
@@ -74,7 +72,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
     if (permission == LocationPermission.deniedForever) {
       setState(() {
-        print("Location permissions are permanently denied.");
         isLoading = false;
       });
       return;
@@ -168,7 +165,6 @@ class _ChatScreenState extends State<ChatScreen> {
     GetProfile();
 
     ChatApi();
-    log('loginModel?.data?.user?.id ${loginModel?.data?.user?.id}');
 
     _timer = Timer.periodic(const Duration(seconds: 2), (timer) {
       _getCurrentLocation().then((value) {
@@ -1074,7 +1070,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final Map<String, String> data = {
       'id': loginModel?.data?.user?.id.toString() ?? '',
     };
-    print("RegisterApi : ${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         ProfileProvider().profileApi(data).then((response) async {
@@ -1099,7 +1095,7 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
-  void ChatApi() {
+   ChatApi() {
     checkInternet().then((internet) async {
       if (internet) {
         try {
@@ -1117,17 +1113,13 @@ class _ChatScreenState extends State<ChatScreen> {
           }
 
           if (response.statusCode == 200) {
-            print("User Profile: ${profileModel?.data?.user?.profile}");
-          } else {
-            log("Error with status code: ${response.statusCode}");
-          }
+          } else {}
         } catch (e) {
           if (mounted) {
             setState(() {
               isLoading = false;
             });
           }
-          log("Exception: $e");
         }
       } else {
         if (mounted) {
@@ -1152,8 +1144,6 @@ class _ChatScreenState extends State<ChatScreen> {
       "longitude": AppLon,
     };
 
-    log("API Request: $data");
-
     checkInternet().then((internet) async {
       if (internet) {
         try {
@@ -1169,7 +1159,7 @@ class _ChatScreenState extends State<ChatScreen> {
             });
           }
         } catch (e, stackTrace) {
-          log("Geeting Error ${stackTrace}");
+          log("stackTracestackTracestackTracestackTrace$stackTrace");
           if (mounted) {
             setState(() {
               isLoading = false;

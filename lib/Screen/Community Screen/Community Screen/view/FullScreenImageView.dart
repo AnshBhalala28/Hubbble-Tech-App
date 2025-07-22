@@ -145,7 +145,6 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
       'type': 'post',
       'post_offer_promo_id': widget.postId.toString(),
     };
-    print("Image Like Request: $data");
 
     checkInternet().then((internet) async {
       if (internet) {
@@ -167,10 +166,8 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
             );
           } else if (response.statusCode == 429) {
             setState(() => isLikeInProgress = false);
-            print("Too many requests");
           } else {
             setState(() => isLikeInProgress = false);
-            print("Internal Server Error");
           }
         });
       } else {
@@ -186,7 +183,7 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
       'post_id': widget.postId.toString(),
       'dwell_time': secondsWatched.toString(),
     };
-    print("request post time parameter : $data");
+
     checkInternet().then((internet) async {
       if (internet) {
         CommunityProvider().recoedDwellApi(data).then((response) async {
@@ -196,12 +193,10 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
             setState(() {
               isLikeInProgress = false;
             });
-            print("Too many requests");
           } else {
             setState(() {
               isLikeInProgress = false;
             });
-            print("Internal Server Error");
           }
         });
       } else {
@@ -218,18 +213,14 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
       'user_id': (loginModel?.data?.user?.id).toString(),
       'post_id': widget.postId.toString(),
     };
-    print("request view parameter : $data");
+
     checkInternet().then((internet) async {
       if (internet) {
         CommunityProvider().postMarkViewApi(data).then((response) async {
           if (response.statusCode == 200) {
             postasviewedmodel = PostAsViewedModel.fromJson(response.data);
-            print("View done");
           } else if (response.statusCode == 429) {
-            print("Too many requests");
-          } else {
-            print("Internal Server Error");
-          }
+          } else {}
         });
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");

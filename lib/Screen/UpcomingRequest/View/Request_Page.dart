@@ -482,7 +482,6 @@ class _RequestPageState extends State<RequestPage> {
                 setState(() {
                   isLoading = false;
                 });
-                log("Error");
               }
             });
       } else {
@@ -510,7 +509,6 @@ class _RequestPageState extends State<RequestPage> {
                 setState(() {
                   isLoading = false;
                 });
-                log("Error");
               }
             });
       } else {
@@ -540,7 +538,6 @@ class _RequestPageState extends State<RequestPage> {
                 setState(() {
                   isLoading = false;
                 });
-                log("Error");
               }
             });
       } else {
@@ -558,7 +555,7 @@ class _RequestPageState extends State<RequestPage> {
       isAction = true;
     });
     final Map<String, String> data = {"id": id, "action_type": action};
-    log("Data Sending for actrion ${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         MyRequestProvider().myRequestActionApi(data).then((response) async {
@@ -572,7 +569,6 @@ class _RequestPageState extends State<RequestPage> {
             setState(() {
               isAction = false;
             });
-            log("Error");
           }
         });
       } else {
@@ -590,7 +586,7 @@ class _RequestPageState extends State<RequestPage> {
       isAction = true;
     });
     final Map<String, String> data = {"group_id": id, "action": action};
-    log("Data Sending for action${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         MyRequestProvider().myRequestGroupActionApi(data).then((
@@ -607,7 +603,6 @@ class _RequestPageState extends State<RequestPage> {
             setState(() {
               isAction = false;
             });
-            log("Error");
           }
         });
       } else {
@@ -624,7 +619,7 @@ class _RequestPageState extends State<RequestPage> {
     final Map<String, String> data = {
       'id': loginModel?.data?.user?.id.toString() ?? '',
     };
-    print("RegisterApi : ${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         ProfileProvider().profileApi(data).then((response) async {
@@ -637,7 +632,6 @@ class _RequestPageState extends State<RequestPage> {
             setState(() {
               isLoading = false;
             });
-            log("Error");
           }
         });
       } else {

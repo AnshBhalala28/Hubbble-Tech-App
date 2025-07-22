@@ -8,7 +8,7 @@ import 'package:wavee/comman/store_local.dart';
 // class VisitorProvider extends ChangeNotifier {
 //   Future<http.Response> VisitorApi(Map<String, String> bodyData) async {
 //     const url = '${baseUrl}/add-visitor';
-//     print("Request URL: $url");
+//
 //     try {
 //       final response = await http.post(Uri.parse(url), body: bodyData).timeout(
 //         const Duration(seconds: 60),
@@ -17,10 +17,10 @@ import 'package:wavee/comman/store_local.dart';
 //         },
 //       );
 //       if (response.statusCode == 200) {
-//         print("Successful response: ${response.body}");
+//
 //         return response;
 //       } else {
-//         print("Failed response: ${response.statusCode}");
+//
 //         throw Exception("Failed to connect to the server");
 //       }
 //     } on SocketException catch (e) {

@@ -212,15 +212,10 @@ class _CommunityScreenState extends State<CommunityScreen>
         mapController.animateCamera(
           CameraUpdate.newLatLngZoom(LatLng(latitude, longitude), 20.0),
         );
-        print("Moved to Location: Lat: $latitude, Lon: $longitude");
 
         _loadSelectedUserMarker();
-      } else {
-        print("Invalid stored location.");
-      }
-    } else {
-      print("AppLat or AppLon is empty.");
-    }
+      } else {}
+    } else {}
   }
 
   Future<void> _loadSelectedUserMarker() async {
@@ -561,7 +556,6 @@ class _CommunityScreenState extends State<CommunityScreen>
       );
       return BitmapDescriptor.fromBytes(markerIcon);
     } catch (e) {
-      print("Error Loading Marker Image: $e");
       return BitmapDescriptor.defaultMarker;
     }
   }
@@ -625,9 +619,7 @@ class _CommunityScreenState extends State<CommunityScreen>
         Paint(),
       );
       canvas.restore();
-    } catch (e) {
-      print("Error loading logo image: $e");
-    }
+    } catch (e) {}
 
     if (hasStory && storyPreviewUrl?.isNotEmpty == true) {
       paint.color = Colors.green;
@@ -683,9 +675,7 @@ class _CommunityScreenState extends State<CommunityScreen>
 
         paint.color = Colors.green;
         canvas.drawPath(trianglePath, paint);
-      } catch (e) {
-        print("Error loading story image: $e");
-      }
+      } catch (e) {}
     }
 
     final ui.Image img = await pictureRecorder.endRecording().toImage(
@@ -702,9 +692,7 @@ class _CommunityScreenState extends State<CommunityScreen>
   bool _showingStory = false;
 
   void _handleMarkerTap(Data1 user) {
-    print("Marker tapped for user ID: ${user.id}");
     bool hasStory = user.featuredPosts?.isNotEmpty == true;
-    print("hasStory status: ${hasStory}");
 
     if (hasStory) {
       if (_showingStory) {
@@ -731,13 +719,9 @@ class _CommunityScreenState extends State<CommunityScreen>
   void _showUserStory(int? userId) {
     if (userId == null) return;
 
-    print("Opening story for user ID: $userId");
-
     try {
-      print("print : ${userId}");
       Get.to(StoryViewerScreen(userId: userId));
     } catch (e) {
-      print("Error navigating to StoryViewerScreen: $e");
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Error opening story: $e')));
@@ -753,7 +737,6 @@ class _CommunityScreenState extends State<CommunityScreen>
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      print("📌 Location services are disabled.");
       _showPermissionDialog(
         context,
         title: "Location Services",
@@ -768,7 +751,6 @@ class _CommunityScreenState extends State<CommunityScreen>
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        print("📌 Location permission denied.");
         _showPermissionDialog(
           context,
           title: "Location Services",
@@ -782,7 +764,6 @@ class _CommunityScreenState extends State<CommunityScreen>
     }
 
     if (permission == LocationPermission.deniedForever) {
-      print("📌 Location permission permanently denied.");
       _showPermissionDialog(
         context,
         title: "Location Services",
@@ -801,7 +782,6 @@ class _CommunityScreenState extends State<CommunityScreen>
 
       AppLat = position.latitude.toString();
       AppLon = position.longitude.toString();
-      print("Latitude: $AppLat, Longitude: $AppLon");
 
       setState(() {
         isLocationFetched = true;
@@ -809,7 +789,6 @@ class _CommunityScreenState extends State<CommunityScreen>
 
       getCityName(position.latitude, position.longitude);
     } catch (e) {
-      print("📌 Error fetching location: $e");
       _showPermissionDialog(
         context,
         title: "Location Services",
@@ -964,7 +943,6 @@ class _CommunityScreenState extends State<CommunityScreen>
         });
       }
     } catch (e) {
-      print("Error: $e");
       setState(() {
         isLoading = false;
       });
@@ -990,10 +968,6 @@ class _CommunityScreenState extends State<CommunityScreen>
                         controller;
 
                     mapController.setMapStyle(_mapStyle);
-
-                    print("Google Map Controller Ready!");
-                    print("AppLat new check : $AppLat");
-                    print("AppLon new check: $AppLon");
                   },
                   onCameraIdle: _onCameraIdle,
                   myLocationButtonEnabled: false,
@@ -1134,8 +1108,6 @@ class _CommunityScreenState extends State<CommunityScreen>
                       SizedBox(width: 1.w),
                       GestureDetector(
                         onTap: () {
-                          print("isLocationFetched$isLocationFetched");
-
                           getlikeapi();
                         },
                         child: Container(
@@ -1223,8 +1195,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     "";
                                 String categoryImage =
                                     categoriesModel?.data?[i].img ?? "";
-                                print("categoryIdcategoryId : ${categoryId}");
-                                print("Selected Category Name: $categoryName");
+
                                 CategoriesProfileView(
                                   categoryId,
                                   categoryName,
@@ -3065,9 +3036,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     if (busnessviewmodal?.data?.business?.id !=
                                         null) {
                                       await handleLikeTap();
-                                    } else {
-                                      print("Error: Business ID is null.");
-                                    }
+                                    } else {}
                                   },
                                   child: Container(
                                     height: 4.5.h,
@@ -3140,9 +3109,7 @@ class _CommunityScreenState extends State<CommunityScreen>
 
                                         Get.back();
                                         moveToLocation();
-                                      } else {
-                                        print("Error: Business data is null");
-                                      }
+                                      } else {}
                                     },
                                     padding: EdgeInsets.zero,
                                     constraints: BoxConstraints(),
@@ -4307,7 +4274,6 @@ class _CommunityScreenState extends State<CommunityScreen>
       });
 
       DateTime startTime = DateTime.now();
-      print("⏳ API call started at: $startTime");
 
       final apiFuture = CommunityProvider().businessProfileApi(
         (loginModel?.data?.user?.id).toString(),
@@ -4321,12 +4287,10 @@ class _CommunityScreenState extends State<CommunityScreen>
 
       DateTime apiEndTime = DateTime.now();
       Duration apiDuration = apiEndTime.difference(startTime);
-      print("✅ API response received in: ${apiDuration.inSeconds} seconds");
 
       if (response.statusCode == 200) {
         businessprofileModel = BusinessProfileModel.fromJson(response.data);
       } else if (response.statusCode == 404) {
-        print("Business profile not found (404)");
       } else {
         buildErrorDialog(context, 'Error', "Something went wrong.");
       }
@@ -4334,14 +4298,10 @@ class _CommunityScreenState extends State<CommunityScreen>
       await markerFuture;
       DateTime markerEndTime = DateTime.now();
       Duration markerDuration = markerEndTime.difference(markerStartTime);
-      print("📍 Markers loaded in: ${markerDuration.inSeconds} seconds");
 
       DateTime endTime = DateTime.now();
       Duration totalTime = endTime.difference(startTime);
-      print("⏱️ Total loading time: ${totalTime.inSeconds} seconds");
     } catch (e, stackTrace) {
-      print("❌ Error fetching business profile: $e");
-      print("❌ Error fetching business profile: $stackTrace");
     } finally {
       if (mounted) {
         setState(() {
@@ -4364,8 +4324,6 @@ class _CommunityScreenState extends State<CommunityScreen>
         ) async {
           busnessviewmodal = BusnessViewModal.fromJson(response.data);
           if (response.statusCode == 200) {
-            print("done LIst");
-
             setState(() {
               isSending = false;
             });
@@ -4398,7 +4356,6 @@ class _CommunityScreenState extends State<CommunityScreen>
       'business_id': (busnessviewmodal?.data?.business?.id).toString(),
       'is_like': newLikeStatus,
     };
-    print("🟢 Request Parameter: $data");
 
     setState(() {
       isSending = true;
@@ -4434,10 +4391,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                 EasyLoading.showError("Internal Server Error");
               }
             })
-            .catchError((error, stackTrace) {
-              print(" Error in like API: $error");
-              print(" Stack Trace: $stackTrace");
-            });
+            .catchError((error, stackTrace) {});
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
       }
@@ -4457,7 +4411,6 @@ class _CommunityScreenState extends State<CommunityScreen>
     }
 
     await prefs.setStringList('likedBusinesses', likedBusinesses);
-    print("Saved liked businesses: $likedBusinesses");
   }
 
   Future<bool> getLikeStatus(String businessId) async {
@@ -4478,7 +4431,6 @@ class _CommunityScreenState extends State<CommunityScreen>
               businessprofileModel = businessprofileModel;
             });
 
-            print("done Search LIst");
             setState(() {
               isLoading = false;
             });
@@ -4613,8 +4565,6 @@ class _CommunityScreenState extends State<CommunityScreen>
               setState(() {
                 isSending = false;
               });
-
-              print("Error in unlike API: $error");
             });
       } else {
         EasyLoading.dismiss();
@@ -4631,7 +4581,6 @@ class _CommunityScreenState extends State<CommunityScreen>
           EasyLoading.dismiss();
           if (response.statusCode == 200) {
             categoriesModel = CategoriesModel.fromJson(response.data);
-            print("Get categories success : ${response.data}");
           }
         } catch (e) {
           EasyLoading.dismiss();
@@ -4660,8 +4609,6 @@ class _CommunityScreenState extends State<CommunityScreen>
             .then((response) async {
               viewcategoriesmodel = ViewCategoriesModel.fromJson(response.data);
               if (response.statusCode == 200) {
-                print("Fetch categories LIst");
-
                 setState(() {
                   isSending = false;
                 });
@@ -4696,7 +4643,7 @@ class _CommunityScreenState extends State<CommunityScreen>
       'offerPromotion_id':
           (busnessviewmodal?.data?.offerPromotions?[0].id).toString(),
     };
-    print("request offres promotion view parameter : $data");
+
     checkInternet().then((internet) async {
       if (internet) {
         CommunityProvider().markOfferPromoApi(data).then((response) async {
@@ -4704,12 +4651,8 @@ class _CommunityScreenState extends State<CommunityScreen>
             offerpromoAsviewedmodel = OfferPromoAsViewedModel.fromJson(
               response.data,
             );
-            print("View done");
           } else if (response.statusCode == 429) {
-            print("Too many requests");
-          } else {
-            print("Internal Server Error");
-          }
+          } else {}
         });
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
@@ -4721,7 +4664,6 @@ class _CommunityScreenState extends State<CommunityScreen>
     final Map<String, String> data = {};
     data['user_id'] = loginModel?.data?.user?.id.toString() ?? "";
     data['event_id'] = selectedid ?? "";
-    print("send event data jai che$data");
 
     setState(() {
       isLoading = true;
@@ -4808,19 +4750,14 @@ class _CommunityScreenState extends State<CommunityScreen>
                   OfferPromoAsViewedApi();
                   if (linkUrl != null && linkUrl.isNotEmpty) {
                     Uri uri = Uri.parse(linkUrl);
-                    print("Opening URL: $linkUrl");
 
                     if (await canLaunchUrl(uri)) {
                       await launchUrl(
                         uri,
                         mode: LaunchMode.externalApplication,
                       );
-                    } else {
-                      print("Error: Could not launch $linkUrl");
-                    }
-                  } else {
-                    print("Error: Invalid URL");
-                  }
+                    } else {}
+                  } else {}
                 },
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: 8,
@@ -4935,7 +4872,6 @@ class _CommunityScreenState extends State<CommunityScreen>
                           )
                           : GestureDetector(
                             onTap: () {
-                              print("Image tapped: ${item.file}");
                               Get.to(
                                 () => FullScreenImageView(
                                   imageUrl: item.file ?? '',

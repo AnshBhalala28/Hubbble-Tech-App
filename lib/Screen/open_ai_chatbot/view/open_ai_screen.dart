@@ -61,9 +61,7 @@ class _ChatBotScreenState extends State<ChatBotScreen>
         state == AppLifecycleState.paused) {
       clearChatBotData();
       chatBotReceiveDataApi();
-    } else {
-      log("Chat Bot data not clear");
-    }
+    } else {}
   }
 
   @override
@@ -103,7 +101,7 @@ class _ChatBotScreenState extends State<ChatBotScreen>
                 fontSize: 18.sp,
                 fontFamily: AppConstants.manrope,
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -112,101 +110,100 @@ class _ChatBotScreenState extends State<ChatBotScreen>
         child: Column(
           children: [
             Expanded(
-              child: isLoading
-                  ? Center(child: Loader())
-                  : chatbotDataModal?.conversations?.isEmpty ?? true
+              child:
+                  isLoading
+                      ? Center(child: Loader())
+                      : chatbotDataModal?.conversations?.isEmpty ?? true
                       ? Center(
-                          child: Text(
-                            'What can i help you?',
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              color: Colors.black,
-                              fontFamily: AppConstants.manrope,
-                            ),
+                        child: Text(
+                          'What can i help you?',
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            color: Colors.black,
+                            fontFamily: AppConstants.manrope,
                           ),
-                        )
-                      : ListView.builder(
-                          controller: _scrollController,
-                          padding: EdgeInsets.symmetric(vertical: 1.h),
-                          itemCount: chatbotDataModal!.conversations!.length,
-                          itemBuilder: (context, index) {
-                            final message =
-                                chatbotDataModal!.conversations![index];
-
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (message.userMessage != null)
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.topRight,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                Container(
-                                                  margin: EdgeInsets.symmetric(
-                                                      horizontal: 1.h,
-                                                      vertical: 1.5.w),
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 1.h,
-                                                      vertical: 3.w),
-                                                  width: 65.w,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                    color: Colors.blueAccent,
-                                                  ),
-                                                  child: Text(
-                                                    message!.userMessage!,
-                                                    style: TextStyle(
-                                                      fontSize: 16.sp,
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      letterSpacing: 1.5,
-                                                      fontFamily:
-                                                          AppConstants.manrope,
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                if (message.aiReply != null)
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: AIReplyWidget(
-                                            aiReply: message!.aiReply!),
-                                      ),
-                                    ],
-                                  )
-                              ],
-                            );
-                          },
                         ),
+                      )
+                      : ListView.builder(
+                        controller: _scrollController,
+                        padding: EdgeInsets.symmetric(vertical: 1.h),
+                        itemCount: chatbotDataModal!.conversations!.length,
+                        itemBuilder: (context, index) {
+                          final message =
+                              chatbotDataModal!.conversations![index];
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (message.userMessage != null)
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.topRight,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Container(
+                                                margin: EdgeInsets.symmetric(
+                                                  horizontal: 1.h,
+                                                  vertical: 1.5.w,
+                                                ),
+                                                alignment: Alignment.centerLeft,
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 1.h,
+                                                  vertical: 3.w,
+                                                ),
+                                                width: 65.w,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  color: Colors.blueAccent,
+                                                ),
+                                                child: Text(
+                                                  message!.userMessage!,
+                                                  style: TextStyle(
+                                                    fontSize: 16.sp,
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    letterSpacing: 1.5,
+                                                    fontFamily:
+                                                        AppConstants.manrope,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              if (message.aiReply != null)
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: AIReplyWidget(
+                                        aiReply: message!.aiReply!,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          );
+                        },
+                      ),
             ),
             SafeArea(
               child: Container(
@@ -218,10 +215,12 @@ class _ChatBotScreenState extends State<ChatBotScreen>
                       child: TextFormField(
                         controller: _msg,
                         style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: AppConstants.manrope),
-                        decoration:
-                            inputDecoration(hintText: "Type a message..."),
+                          color: Colors.black,
+                          fontFamily: AppConstants.manrope,
+                        ),
+                        decoration: inputDecoration(
+                          hintText: "Type a message...",
+                        ),
                       ),
                     ),
                     SizedBox(width: 2.w),
@@ -229,9 +228,10 @@ class _ChatBotScreenState extends State<ChatBotScreen>
                       onTap: () {
                         if (_msg.text.trim().isEmpty) {
                           Fluttertoast.showToast(
-                              msg: "Please Ask Something",
-                              backgroundColor: Colors.white,
-                              textColor: Colors.black);
+                            msg: "Please Ask Something",
+                            backgroundColor: Colors.white,
+                            textColor: Colors.black,
+                          );
                           return;
                         }
 
@@ -256,11 +256,8 @@ class _ChatBotScreenState extends State<ChatBotScreen>
           ],
         ),
       ),
-      floatingActionButton: isSending
-          ? Container(
-              child: Center(child: Loader()),
-            )
-          : null,
+      floatingActionButton:
+          isSending ? Container(child: Center(child: Loader())) : null,
     );
   }
 
@@ -271,7 +268,6 @@ class _ChatBotScreenState extends State<ChatBotScreen>
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       setState(() {
-        print("Location services are disabled.");
         isLoading = false;
         isSending = false;
       });
@@ -283,7 +279,6 @@ class _ChatBotScreenState extends State<ChatBotScreen>
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         setState(() {
-          print("Location permission denied.");
           isLoading = false;
           isSending = false;
         });
@@ -293,7 +288,6 @@ class _ChatBotScreenState extends State<ChatBotScreen>
 
     if (permission == LocationPermission.deniedForever) {
       setState(() {
-        print("Location permissions are permanently denied.");
         isLoading = false;
         isSending = false;
       });
@@ -301,13 +295,15 @@ class _ChatBotScreenState extends State<ChatBotScreen>
     }
 
     Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+      desiredAccuracy: LocationAccuracy.high,
+    );
     if (mounted) {
       setState(() {
         AppLat = position.latitude.toString();
         AppLon = position.longitude.toString();
         print(
-            "AI Lat : ${position.latitude},AI Longitude: ${position.longitude}");
+          "AI Lat : ${position.latitude},AI Longitude: ${position.longitude}",
+        );
       });
     }
   }
@@ -337,7 +333,7 @@ class _ChatBotScreenState extends State<ChatBotScreen>
       "longitude": AppLon ?? "0.0",
       "latitude": AppLat ?? "0.0",
     };
-    print('data sending send ni api ma $data');
+
     checkInternet().then((internet) async {
       if (internet) {
         ChatBotAiProvider().chatbotDataApi(data).then((response) async {
@@ -372,7 +368,7 @@ class _ChatBotScreenState extends State<ChatBotScreen>
     Map<String, String> data = {
       "user_id": loginModel?.data?.user?.id.toString() ?? '',
     };
-    print('data sending send ni api ma $data');
+
     checkInternet().then((internet) async {
       if (internet) {
         ChatBotAiProvider().clearChatBotData(data).then((response) async {
@@ -403,26 +399,25 @@ class _ChatBotScreenState extends State<ChatBotScreen>
         ChatBotAiProvider()
             .chatBotReceiveData(loginModel?.data?.user?.id.toString() ?? '')
             .then((response) async {
-          chatbotDataModal =
-              ChatbotDataModal.fromJson(json.decode(response.body));
-          if (response.statusCode == 200) {
-            if (mounted) {
-              setState(() {
-                isLoading = false;
-              });
-            }
+              chatbotDataModal = ChatbotDataModal.fromJson(
+                json.decode(response.body),
+              );
+              if (response.statusCode == 200) {
+                if (mounted) {
+                  setState(() {
+                    isLoading = false;
+                  });
+                }
 
-            _scrollToBottom();
-
-            print("${response.body}");
-          } else if (response.statusCode == 422) {
-            setState(() {
-              isLoading = false;
+                _scrollToBottom();
+              } else if (response.statusCode == 422) {
+                setState(() {
+                  isLoading = false;
+                });
+              } else {
+                EasyLoading.showError("Internal Server Error");
+              }
             });
-          } else {
-            EasyLoading.showError("Internal Server Error");
-          }
-        });
       } else {
         setState(() {
           isLoading = false;
@@ -448,12 +443,14 @@ class _AIReplyWidgetState extends State<AIReplyWidget> {
   @override
   Widget build(BuildContext context) {
     const int charLimit = 300;
-    final mediaUrlRegex =
-        RegExp(r'(https?:\/\/[^\s]+(?:\.jpg|\.jpeg|\.png|\.mp4|\.jfif))');
-    final List<String> mediaUrls = mediaUrlRegex
-        .allMatches(widget.aiReply)
-        .map((match) => match.group(0)!)
-        .toList();
+    final mediaUrlRegex = RegExp(
+      r'(https?:\/\/[^\s]+(?:\.jpg|\.jpeg|\.png|\.mp4|\.jfif))',
+    );
+    final List<String> mediaUrls =
+        mediaUrlRegex
+            .allMatches(widget.aiReply)
+            .map((match) => match.group(0)!)
+            .toList();
 
     List<String> lines = widget.aiReply.split('\n');
 
@@ -462,9 +459,10 @@ class _AIReplyWidgetState extends State<AIReplyWidget> {
 
     String cleanedText = cleanedLines.join('\n');
     final bool shouldTrim = cleanedText.length > charLimit;
-    final String visibleText = shouldTrim && !_isExpanded
-        ? cleanedText.substring(0, charLimit) + "..."
-        : cleanedText;
+    final String visibleText =
+        shouldTrim && !_isExpanded
+            ? cleanedText.substring(0, charLimit) + "..."
+            : cleanedText;
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
@@ -512,9 +510,10 @@ class _AIReplyWidgetState extends State<AIReplyWidget> {
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
                           return Center(
-                              child: CircularProgressIndicator(
-                            color: AppColors.maincolor,
-                          ));
+                            child: CircularProgressIndicator(
+                              color: AppColors.maincolor,
+                            ),
+                          );
                         },
                       ),
                     )
@@ -590,35 +589,32 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   Widget build(BuildContext context) {
     return _controller.value.isInitialized
         ? AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: Stack(
-              children: [
-                VideoPlayer(_controller),
-                Positioned(
-                  bottom: 10,
-                  left: 10,
-                  child: IconButton(
-                    icon: Icon(
-                      _controller.value.isPlaying
-                          ? Icons.pause
-                          : Icons.play_arrow,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _controller.value.isPlaying
-                            ? _controller.pause()
-                            : _controller.play();
-                      });
-                    },
+          aspectRatio: _controller.value.aspectRatio,
+          child: Stack(
+            children: [
+              VideoPlayer(_controller),
+              Positioned(
+                bottom: 10,
+                left: 10,
+                child: IconButton(
+                  icon: Icon(
+                    _controller.value.isPlaying
+                        ? Icons.pause
+                        : Icons.play_arrow,
+                    color: Colors.white,
                   ),
-                )
-              ],
-            ),
-          )
-        : Center(
-            child: CircularProgressIndicator(
-            color: AppColors.maincolor,
-          ));
+                  onPressed: () {
+                    setState(() {
+                      _controller.value.isPlaying
+                          ? _controller.pause()
+                          : _controller.play();
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        )
+        : Center(child: CircularProgressIndicator(color: AppColors.maincolor));
   }
 }

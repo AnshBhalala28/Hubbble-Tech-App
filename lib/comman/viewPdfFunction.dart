@@ -27,7 +27,7 @@ class _PdfViewState extends State<PdfView> {
   @override
   void initState() {
     super.initState();
-    print('Link Is : ${widget.link}');
+  
   }
 
   @override
@@ -114,7 +114,7 @@ class _PdfViewState extends State<PdfView> {
           );
         }
       } catch (e) {
-        print('Error: Invalid URL format');
+    
         Fluttertoast.showToast(
           msg: 'Invalid PDF URL',
           toastLength: Toast.LENGTH_SHORT,

@@ -10,7 +10,7 @@ import '../../../comman/responses.dart';
 // class HomeProvider extends ChangeNotifier {
 //   Future<http.Response> ParcerShowCount(Map<String, String> bodyData) async {
 //     const url = '$baseUrl/get-parcel-data';
-//     print("Request URL: $url");
+//
 //     try {
 //       final response = await http
 //           .post(
@@ -39,7 +39,7 @@ import '../../../comman/responses.dart';
 //
 //   Future<http.Response> VisitorShowCount(Map<String, String> bodyData) async {
 //     const url = '$baseUrl/view-visitor';
-//     print("Request URL: $url");
+//
 //     try {
 //       final response = await http
 //           .post(
@@ -97,7 +97,7 @@ import '../../../comman/responses.dart';
 //
 //   Future<http.Response> ChatShowCount(Map<String, String> bodyData) async {
 //     String url = '${baseUrl}/get-total-new-messages';
-//     print("Business Profile Url : $url");
+//
 //     try {
 //       final response = await http.post(Uri.parse(url), body: bodyData).timeout(
 //         const Duration(seconds: 60),
@@ -106,10 +106,10 @@ import '../../../comman/responses.dart';
 //         },
 //       );
 //       if (response.statusCode == 200) {
-//         print("Successful response: ${response.body}");
+//
 //         return response;
 //       } else {
-//         print("Failed response: ${response.statusCode}");
+//
 //         throw Exception("Failed to connect to the server");
 //       }
 //     } on SocketException catch (e) {
@@ -121,7 +121,7 @@ import '../../../comman/responses.dart';
 //
 //   Future<http.Response> MessageBoardApi(Map<String, String> bodyData) async {
 //     const url = '$baseUrl/message-board';
-//     print("Request URL: $url");
+//
 //     try {
 //       final response = await http
 //           .post(
@@ -174,7 +174,7 @@ class HomeProvider extends ChangeNotifier {
       if (token != null && token.isNotEmpty) {
         Map<String, String> headers = {'X-Auth-Token': '$token'};
       }
-      log("Auth T");
+
       final dio = await DioHelper.getDio();
       final response = await dio.post(
         ApiEndpoint.visitor,
@@ -217,7 +217,7 @@ class HomeProvider extends ChangeNotifier {
         data: bodyData,
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
       );
-      print("Login Success: ${response.data}");
+
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));

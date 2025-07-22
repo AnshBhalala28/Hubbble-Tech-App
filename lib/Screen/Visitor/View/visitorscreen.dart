@@ -39,7 +39,6 @@ class _VisitorScreenState extends State<VisitorScreen> {
     setState(() {
       isLoading = true;
       latestVisitorModal = null;
-      log("aamaro mofr3erewr${latestVisitorModal}");
     });
     LatestVisitorApi();
   }

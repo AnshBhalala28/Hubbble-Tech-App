@@ -5,6 +5,17 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+import java.util.Properties
+
+// Load API key from local.properties
+val localProperties = Properties().apply {
+    val localFile = rootProject.file("local.properties")
+    if (localFile.exists()) {
+        localFile.inputStream().use { load(it) }
+    }
+}
+val googleMapsApiKey = localProperties.getProperty("GOOGLE_MAPS_API_KEY") ?: ""
+
 android {
     namespace = "com.wavee.community"
     compileSdk = 35
@@ -16,6 +27,7 @@ android {
         targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        resValue("string", "google_maps_api_key", googleMapsApiKey)
     }
 
     compileOptions {
@@ -31,7 +43,7 @@ android {
         create("release") {
             keyAlias = "waveeai"
             keyPassword = "123456"
-            storeFile = File("D:\\wavee.ai_version_3.29.3\\android\\waveeai.jks")
+            storeFile = file("D:\\wavee.ai_version_3.29.3\\android\\waveeai.jks")
             storePassword = "123456"
         }
     }
@@ -43,7 +55,6 @@ android {
             isShrinkResources = false
         }
     }
-
 }
 
 flutter {

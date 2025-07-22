@@ -7,7 +7,7 @@ import '../../../comman/responses.dart';
 // class AuthProvider extends ChangeNotifier {
 //   Future<http.Response> LoginApi(Map<String, String> bodyData) async {
 //     const url = '${baseUrl}/login';
-//     print("Request URL: $url");
+//
 //     try {
 //       final response = await http
 //           .post(Uri.parse(url), body: bodyData)
@@ -18,10 +18,10 @@ import '../../../comman/responses.dart';
 //             },
 //           );
 //       if (response.statusCode == 200) {
-//         print("Successful response: ${response.body}");
+//
 //         return response;
 //       } else {
-//         print("Failed response: ${response.statusCode}");
+//
 //         throw Exception("Failed to connect to the server");
 //       }
 //     } on SocketException catch (e) {
@@ -33,7 +33,7 @@ import '../../../comman/responses.dart';
 //
 //   Future<http.Response> ForgotApi(Map<String, String> bodyData) async {
 //     const url = '${baseUrl}/forget-password';
-//     print("Request URL: $url");
+//
 //     try {
 //       final response = await http
 //           .post(Uri.parse(url), body: bodyData)
@@ -44,10 +44,10 @@ import '../../../comman/responses.dart';
 //             },
 //           );
 //       if (response.statusCode == 200) {
-//         print("Successful response: ${response.body}");
+//
 //         return response;
 //       } else {
-//         print("Failed response: ${response.statusCode}");
+//
 //         throw Exception("Failed to connect to the server");
 //       }
 //     } on SocketException catch (e) {
@@ -59,7 +59,7 @@ import '../../../comman/responses.dart';
 //
 //   Future<http.Response> DeleteAccount(String id) async {
 //     final url = '${baseUrl}/delete-resident-app?id=$id';
-//     print("Request URL: $url");
+//
 //
 //     try {
 //       final response = await http
@@ -71,8 +71,8 @@ import '../../../comman/responses.dart';
 //             },
 //           );
 //
-//       print("Server Response Code: ${response.statusCode}");
-//       print("Server Response Body: ${response.body}");
+//
+//
 //
 //       if (response.statusCode == 200) {
 //         return response;
@@ -90,7 +90,7 @@ import '../../../comman/responses.dart';
 //
 //   Future<http.Response> Logout(Map<String, String> bodyData) async {
 //     const url = '${baseUrl}/api-logout';
-//     print("Request URL: $url");
+//
 //     try {
 //       final response = await http
 //           .post(Uri.parse(url), body: bodyData)
@@ -101,10 +101,10 @@ import '../../../comman/responses.dart';
 //             },
 //           );
 //       if (response.statusCode == 200) {
-//         print("Successful response: ${response.body}");
+//
 //         return response;
 //       } else {
-//         print("Failed response: ${response.statusCode}");
+//
 //         throw Exception("Failed to connect to the server");
 //       }
 //     } on SocketException catch (e) {
@@ -133,7 +133,7 @@ class AuthProvider extends ChangeNotifier {
         ApiEndpoint.forgetPassword,
         data: bodyData,
       );
-      print("Login Success: ${response.data}");
+
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
@@ -147,7 +147,7 @@ class AuthProvider extends ChangeNotifier {
         ApiEndpoint.deleteAccount,
         queryParameters: {'id': id},
       );
-      print("Login Success: ${response.data}");
+
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
@@ -158,7 +158,7 @@ class AuthProvider extends ChangeNotifier {
     try {
       final dio = await DioHelper.getDio();
       final response = await dio.post(ApiEndpoint.logout, data: bodyData);
-      print("Login Success: ${response.data}");
+
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));

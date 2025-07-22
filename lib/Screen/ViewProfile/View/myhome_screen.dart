@@ -399,8 +399,6 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
       "apartment_number": profileModel?.data?.unitsId.toString() ?? '',
     };
 
-    log("DaRequest ta: $data");
-
     checkInternet().then((internet) async {
       if (!internet) {
         Get.snackbar(
@@ -419,15 +417,10 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
       try {
         final response = await ProfileProvider().updateProfile(data);
 
-        log("Response Status Code: ${response.statusCode}");
-        log("Response Body: ${response.data}");
-
         if (response.statusCode == 200) {
           var profileModel = ProfileModel.fromJson(response.data);
 
           if (profileModel.status == 200) {
-            log("Profile Updated Successfully");
-
             Get.snackbar(
               "Success",
               "Home Updated Successfully",
@@ -462,7 +455,6 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
           );
         }
       } catch (e, straceTrace) {
-        log("Exception error : $e, $straceTrace");
         Get.snackbar(
           "Error",
           "An error occurred: $e",
@@ -479,7 +471,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
 
   void GetProfile() {
     final Map<String, String> data = {'id': widget.id.toString()};
-    log('DATA$data');
+
     checkInternet().then((internet) async {
       if (internet) {
         ProfileProvider().profileApi(data).then((response) async {

@@ -17,7 +17,7 @@ class CommunityDetailProvider extends ChangeNotifier {
         "${ApiEndpoint.productCategoryBusiness}${loginModel?.data?.user?.id.toString()}/$businessID/$categoryID",
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
       );
-      print("Login Success: ${response.data}");
+
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
@@ -32,7 +32,7 @@ class CommunityDetailProvider extends ChangeNotifier {
         "${ApiEndpoint.getProductCategory}$businessID",
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
       );
-      print("Login Success: ${response.data}");
+
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
@@ -56,7 +56,7 @@ class CommunityDetailProvider extends ChangeNotifier {
           'search_term': searchTerm,
         },
       );
-      print("Login Success: ${response.data}");
+
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
@@ -69,7 +69,7 @@ class CommunityDetailProvider extends ChangeNotifier {
 //   Future<http.Response> CategoryDetailApi(String businessID, categoryID) async {
 //     String url =
 //         '${baseUrl}/getProductsByCategoryForBusiness/${loginModel?.data?.user?.id.toString()}/$businessID/$categoryID';
-//     print("Business Profile Url : $url");
+//     
 //     try {
 //       final response = await http
 //           .get(Uri.parse(url))
@@ -80,11 +80,11 @@ class CommunityDetailProvider extends ChangeNotifier {
 //             },
 //           );
 //       if (response.statusCode == 200) {
-//         print("Successful response: ${response.body}");
+//         
 //         log("lat");
 //         return response;
 //       } else {
-//         print("Failed response: ${response.statusCode}");
+//         
 //         throw Exception("Failed to connect to the server");
 //       }
 //     } on SocketException catch (e) {
@@ -95,7 +95,7 @@ class CommunityDetailProvider extends ChangeNotifier {
 //   }
 //   Future<http.Response> CategoryViewApi(String businessID) async {
 //     String url = '${baseUrl}/getBusinessProductCategories/$businessID';
-//     print("Business Profile Url shu ave che  : $url");
+//     
 //     try {
 //       final response = await http
 //           .get(Uri.parse(url))
@@ -106,11 +106,11 @@ class CommunityDetailProvider extends ChangeNotifier {
 //             },
 //           );
 //       if (response.statusCode == 200) {
-//         print("Successful response: ${response.body}");
+//         
 //         log("lat");
 //         return response;
 //       } else {
-//         print("Failed response: ${response.statusCode}");
+//         
 //         throw Exception("Failed to connect to the server");
 //       }
 //     } on SocketException catch (e) {
@@ -126,7 +126,7 @@ class CommunityDetailProvider extends ChangeNotifier {
 //   ) async {
 //     String url =
 //         '${baseUrl}/searchBusinessProducts?user_id=$userId&business_id=$businessID&search_term=$search_term';
-//     print("Business Profile Url : $url");
+//     
 //     try {
 //       final response = await http
 //           .get(Uri.parse(url))
@@ -137,11 +137,11 @@ class CommunityDetailProvider extends ChangeNotifier {
 //             },
 //           );
 //       if (response.statusCode == 200) {
-//         print("Successful response: ${response.body}");
+//         
 //         log("lat");
 //         return response;
 //       } else {
-//         print("Failed response: ${response.statusCode}");
+//         
 //         throw Exception("Failed to connect to the server");
 //       }
 //     } on SocketException catch (e) {

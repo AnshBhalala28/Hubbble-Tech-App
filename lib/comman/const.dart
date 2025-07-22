@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names, constant_identifier_names
+
 import 'package:wavee/Screen/Authcation/Model/DeleteAccountModel.dart';
 import 'package:wavee/Screen/Authcation/Model/forgotPasswordModel.dart';
 import 'package:wavee/Screen/Authcation/Model/login_model.dart';
@@ -190,9 +192,9 @@ ServiceDetailsModel? servicedetailsmodel;
 ServiceOrderDetail? serviceOrderDetail;
 ServiceViewModel? serviceViewModel;
 ServiceBookingModel? serviceBookingModel;
-Localpost_model? localPostModel;
+Localpost_model? localpost_model;
 Localpost_comments_Model? localpostCommentsModel;
-Add_Post_Model? addPostModel;
+Add_Post_Model? add_Post_Model;
 CategoryModal? categoryModal;
 CategoryDetailModal? categoryDetailModal;
 OrdersendMessageModel? ordersendmessagemodel;

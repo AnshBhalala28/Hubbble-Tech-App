@@ -1,16 +1,8 @@
-import 'dart:developer';
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
-
 import '../../../comman/apiConfig.dart';
 import '../../../comman/apiEndpoint.dart';
-import '../../../comman/const.dart';
 import '../../../comman/responses.dart';
 import 'package:wavee/comman/store_local.dart';
 
@@ -18,15 +10,12 @@ import 'package:wavee/comman/store_local.dart';
 //   Future<http.Response> ProfileEdit(
 //       Map<String, String> bodyData, File? imageFile) async {
 //     const url = '${baseUrl}/update-app-resident';
-//     print("Request URL: $url");
-
+//
 //     try {
 //       var request = http.MultipartRequest('POST', Uri.parse(url));
-
 //       bodyData.forEach((key, value) {
 //         request.fields[key] = value;
 //       });
-
 //       if (imageFile != null) {
 //         request.files.add(await http.MultipartFile.fromPath(
 //           'member_image[0]',
@@ -36,15 +25,13 @@ import 'package:wavee/comman/store_local.dart';
 //         log("image file path jay che ${imageFile.path}");
 //         log("image file path jay che ${imageFile}");
 //       }
-
 //       var streamedResponse = await request.send();
 //       var response = await http.Response.fromStream(streamedResponse);
-
 //       if (response.statusCode == 200) {
-//         print("Successful response: ${response.body}");
+//
 //         return response;
 //       } else {
-//         print("Failed response: ${response.statusCode}");
+//
 //         throw Exception("Failed to connect to the server");
 //       }
 //     } on SocketException catch (e) {
@@ -94,12 +81,12 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
-  MediaType? _getMediaType(String path) {
-    final mimeType = lookupMimeType(path);
-    if (mimeType != null) {
-      final parts = mimeType.split('/');
-      return MediaType(parts[0], parts[1]);
-    }
-    return null;
-  }
+  // MediaType? _getMediaType(String path) {
+  //   final mimeType = lookupMimeType(path);
+  //   if (mimeType != null) {
+  //     final parts = mimeType.split('/');
+  //     return MediaType(parts[0], parts[1]);
+  //   }
+  //   return null;
+  // }
 }

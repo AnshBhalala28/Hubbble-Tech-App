@@ -13,7 +13,7 @@ import 'package:wavee/comman/store_local.dart';
 //   // ) async {
 //   //   String url =
 //   //       '${baseUrl}/getProductDetails?user_id=$UserId&id=$productid&type=$type';
-//   //   print("Product Detail Url : $url");
+//   //
 //   //   try {
 //   //     final response = await http
 //   //         .get(Uri.parse(url))
@@ -24,11 +24,11 @@ import 'package:wavee/comman/store_local.dart';
 //   //           },
 //   //         );
 //   //     if (response.statusCode == 200) {
-//   //       print("Successful response: ${response.body}");
+//   //
 //   //       log("lat");
 //   //       return response;
 //   //     } else {
-//   //       print("Failed response: ${response.statusCode}");
+//   //
 //   //       throw Exception("Failed to connect to the server");
 //   //     }
 //   //   } on SocketException catch (e) {
@@ -39,7 +39,7 @@ import 'package:wavee/comman/store_local.dart';
 //   // }
 //   // Future<http.Response> AddReviewApi(Map<String, String> bodyData) async {
 //   //   const url = '$baseUrl/add-review';
-//   //   print("Request URL: $url");
+//   //
 //   //   try {
 //   //     final response = await http
 //   //         .post(Uri.parse(url), body: bodyData)
@@ -64,7 +64,7 @@ import 'package:wavee/comman/store_local.dart';
 //   // }
 //   // Future<http.Response> ShowAllReviewApi(String productid) async {
 //   //   String url = '${baseUrl}/show-reviews?product_id=$productid';
-//   //   print("Business Profile Url : $url");
+//   //
 //   //   try {
 //   //     final response = await http
 //   //         .get(Uri.parse(url))
@@ -75,11 +75,11 @@ import 'package:wavee/comman/store_local.dart';
 //   //           },
 //   //         );
 //   //     if (response.statusCode == 200) {
-//   //       print("Successful response: ${response.body}");
+//   //
 //   //       log("lat");
 //   //       return response;
 //   //     } else {
-//   //       print("Failed response: ${response.statusCode}");
+//   //
 //   //       throw Exception("Failed to connect to the server");
 //   //     }
 //   //   } on SocketException catch (e) {
@@ -90,7 +90,7 @@ import 'package:wavee/comman/store_local.dart';
 //   // }
 //   Future<http.Response> AddToCart(Map<String, String> bodyData) async {
 //     const url = '$baseUrl/addToCart';
-//     print("Request URL: $url");
+//
 //     try {
 //       final response = await http
 //           .post(Uri.parse(url), body: bodyData)
@@ -133,7 +133,7 @@ class ProductProvider extends ChangeNotifier {
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
         queryParameters: {'user_id': UserId, "id": productid, 'type': type},
       );
-      print("Login Success: ${response.data}");
+
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
@@ -169,7 +169,7 @@ class ProductProvider extends ChangeNotifier {
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
         queryParameters: {"product_id": productid},
       );
-      print("Login Success: ${response.data}");
+
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));

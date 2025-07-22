@@ -62,8 +62,6 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
       if (status == AnimationStatus.completed && !isPaused) {}
     });
 
-    print("getid: ${widget.userId.toString()}");
-
     _fetchUserStories(widget.userId.toString());
     _loadLikeStatus(currentIndex);
   }
@@ -117,7 +115,6 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       setState(() {
-        print("Location services are disabled.");
         isLoading = false;
       });
       return;
@@ -128,7 +125,6 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         setState(() {
-          print("Location permission denied.");
           isLoading = false;
         });
         return;
@@ -137,7 +133,6 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
 
     if (permission == LocationPermission.deniedForever) {
       setState(() {
-        print("Location permissions are permanently denied.");
         isLoading = false;
       });
       return;
@@ -154,7 +149,6 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
         double.parse(appLat.toString()),
         double.parse(appLon.toString()),
       );
-      print("Latitude: ${position.latitude}, Longitude: ${position.longitude}");
     });
   }
 
@@ -169,10 +163,8 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
         setState(() {
           city = placemarks[0].locality;
         });
-        print("City Name: $city");
       }
     } catch (e) {
-      print("Error getting city name: $e");
       setState(() {
         isLoading = false;
       });
@@ -363,7 +355,6 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
       'post_offer_promo_id':
           (stroymodel?.data?.featuredPosts?[currentIndex].id).toString(),
     };
-    print("Image Like Request: $data");
 
     checkInternet().then((internet) async {
       if (internet) {
@@ -385,10 +376,8 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
             );
           } else if (response.statusCode == 429) {
             setState(() => isLikeInProgress = false);
-            print("Too many requests");
           } else {
             setState(() => isLikeInProgress = false);
-            print("Internal Server Error");
           }
         });
       } else {

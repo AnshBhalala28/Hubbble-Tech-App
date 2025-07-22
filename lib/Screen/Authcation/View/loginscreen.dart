@@ -135,7 +135,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           setState(() {
                             _obscurePassword = !_obscurePassword;
-                            log(_obscurePassword.toString());
                           });
                         },
                         icon:
@@ -348,7 +347,6 @@ class _LoginScreenState extends State<LoginScreen> {
     String? fcmToken = await FirebaseMessaging.instance.getToken();
 
     if (fcmToken == null) {
-      log("❌ FCM Token not available");
       showSnackBar(
         title: "FCM Error",
         message: "Unable to fetch FCM token",
@@ -361,8 +359,6 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    log("🔥 FCM TOKEN: $fcmToken");
-
     final Map<String, String> data = {
       'email': email.text.trim(),
       'password': password.text.trim(),
@@ -370,14 +366,10 @@ class _LoginScreenState extends State<LoginScreen> {
       "fcm_token": fcmToken,
     };
 
-    log("🔁 Request data sending: $data");
-
     checkInternet().then((internet) async {
       if (internet) {
         try {
           var response = await AuthProvider().loginApi(data);
-          log("✅ Response status: ${response.statusCode}");
-          log("📦 Response body: ${response.data}");
 
           loginModel = LoginModel.fromJson(response.data);
 
@@ -405,10 +397,10 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           } else {
             throw Exception(
-                "Failed to login with status code: ${response.statusCode}");
+              "Failed to login with status code: ${response.statusCode}",
+            );
           }
         } catch (e) {
-          log("❌ Exception in Login: $e");
           showSnackBar(
             title: "Error",
             message: "Something went wrong during login",
@@ -428,5 +420,4 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     });
   }
-
 }

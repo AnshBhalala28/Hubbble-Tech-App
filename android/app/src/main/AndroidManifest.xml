@@ -17,9 +17,13 @@
         android:requestLegacyExternalStorage="true"> <!-- Legacy storage support -->
 
         <!-- Google Maps API Key -->
+        <!-- <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDkTKndT7jGcmnVYK1xgPL3drb7oqAQAAY" /> -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDkTKndT7jGcmnVYK1xgPL3drb7oqAQAAY" />
+            android:value="@string/google_maps_api_key" />
+
 
         <activity
             android:name=".MainActivity"

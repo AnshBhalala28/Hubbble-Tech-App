@@ -497,7 +497,6 @@ class _ViewProfileState extends State<ViewProfile> {
             setState(() {
               isLoading = false;
             });
-            print(response.data);
           }
         } catch (e) {
           if (mounted) {

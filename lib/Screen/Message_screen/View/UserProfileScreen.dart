@@ -69,9 +69,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               children: [
                 Container(
                   width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                  ),
+                  decoration: BoxDecoration(color: Colors.white),
                   child: Column(
                     children: [
                       SizedBox(height: 2.h),
@@ -79,21 +77,28 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         padding: EdgeInsets.all(3),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border:
-                              Border.all(color: Colors.blue.shade100, width: 2),
+                          border: Border.all(
+                            color: Colors.blue.shade100,
+                            width: 2,
+                          ),
                         ),
                         child: CircleAvatar(
                           radius: 35.sp,
                           backgroundColor: Colors.grey.shade200,
-                          backgroundImage: (userpersonalInfoModel
-                                          ?.data?.conciergeImage !=
-                                      null &&
-                                  userpersonalInfoModel!
-                                      .data!.conciergeImage!.isNotEmpty)
-                              ? CachedNetworkImageProvider(
-                                  userpersonalInfoModel!.data!.conciergeImage!)
-                              : const AssetImage("assets/images/bg.jpg")
-                                  as ImageProvider<Object>,
+                          backgroundImage:
+                              (userpersonalInfoModel?.data?.conciergeImage !=
+                                          null &&
+                                      userpersonalInfoModel!
+                                          .data!
+                                          .conciergeImage!
+                                          .isNotEmpty)
+                                  ? CachedNetworkImageProvider(
+                                    userpersonalInfoModel!
+                                        .data!
+                                        .conciergeImage!,
+                                  )
+                                  : const AssetImage("assets/images/bg.jpg")
+                                      as ImageProvider<Object>,
                         ),
                       ),
                       SizedBox(height: 2.h),
@@ -134,16 +139,26 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                         ),
                         Divider(),
-                        buildProfileDetailItem(Icons.email_outlined, "Email",
-                            userpersonalInfoModel?.data?.email),
-                        buildProfileDetailItem(Icons.phone_outlined, "Phone",
-                            userpersonalInfoModel?.data?.phoneNumber),
                         buildProfileDetailItem(
-                            Icons.calendar_today_outlined,
-                            "Date of Birth",
-                            userpersonalInfoModel?.data?.dateOfBirth),
-                        buildProfileDetailItem(Icons.person, "Gender",
-                            userpersonalInfoModel?.data?.gender),
+                          Icons.email_outlined,
+                          "Email",
+                          userpersonalInfoModel?.data?.email,
+                        ),
+                        buildProfileDetailItem(
+                          Icons.phone_outlined,
+                          "Phone",
+                          userpersonalInfoModel?.data?.phoneNumber,
+                        ),
+                        buildProfileDetailItem(
+                          Icons.calendar_today_outlined,
+                          "Date of Birth",
+                          userpersonalInfoModel?.data?.dateOfBirth,
+                        ),
+                        buildProfileDetailItem(
+                          Icons.person,
+                          "Gender",
+                          userpersonalInfoModel?.data?.gender,
+                        ),
                         SizedBox(height: 2.h),
                       ],
                     ),
@@ -175,6 +190,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       ),
     );
   }
+
   final String supportUrl = "https://www.wavee.ai/help-center";
 
   void showBlockUserDialog(BuildContext context, String supportUrl) {
@@ -225,63 +241,71 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     SizedBox(height: 2.h),
                     isLoading
                         ? Padding(
-                      padding: EdgeInsets.symmetric(vertical: 2.h),
-                      child: CircularProgressIndicator(
-                        color: AppColors.maincolor,
-                      ),
-                    )
+                          padding: EdgeInsets.symmetric(vertical: 2.h),
+                          child: CircularProgressIndicator(
+                            color: AppColors.maincolor,
+                          ),
+                        )
                         : Row(
-                      children: [
-                        Expanded(
-                          child: Material(
-                            elevation: 2,
-                            borderRadius: BorderRadius.circular(12),
-                            child: batan(
-                              title: "No",
-                              width: 30.w,
-                              route: () {
-                                Navigator.of(context).pop();
-                              },
-                              color: AppColors.white,
-                              fontcolor: Colors.black,
-                              height: 5.h,
-                              fontsize: 16.sp,
-                              radius: 12.0,
+                          children: [
+                            Expanded(
+                              child: Material(
+                                elevation: 2,
+                                borderRadius: BorderRadius.circular(12),
+                                child: batan(
+                                  title: "No",
+                                  width: 30.w,
+                                  route: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  color: AppColors.white,
+                                  fontcolor: Colors.black,
+                                  height: 5.h,
+                                  fontsize: 16.sp,
+                                  radius: 12.0,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        SizedBox(width: 2.w),
-                        Expanded(
-                          child: Material(
-                            elevation: 2,
-                            borderRadius: BorderRadius.circular(12),
-                            child: batan(
-                              title: "Yes",
-                              route: () async {
-                                setState(() => isLoading = true);
+                            SizedBox(width: 2.w),
+                            Expanded(
+                              child: Material(
+                                elevation: 2,
+                                borderRadius: BorderRadius.circular(12),
+                                child: batan(
+                                  title: "Yes",
+                                  route: () async {
+                                    setState(() => isLoading = true);
 
-                                final Uri url = Uri.parse(supportUrl);
-                                if (await canLaunchUrl(url)) {
-                                  await launchUrl(url, mode: LaunchMode.externalApplication);
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("Could not launch URL")),
-                                  );
-                                }
+                                    final Uri url = Uri.parse(supportUrl);
+                                    if (await canLaunchUrl(url)) {
+                                      await launchUrl(
+                                        url,
+                                        mode: LaunchMode.externalApplication,
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        const SnackBar(
+                                          content: Text("Could not launch URL"),
+                                        ),
+                                      );
+                                    }
 
-                                setState(() => isLoading = false);
-                                Navigator.of(context).pop();
-                              },
-                              color: AppColors.maincolor,
-                              fontcolor: Colors.white,
-                              height: 5.h,
-                              fontsize: 16.sp,
-                              radius: 12.0, width: 30.w,
+                                    setState(() => isLoading = false);
+                                    Navigator.of(context).pop();
+                                  },
+                                  color: AppColors.maincolor,
+                                  fontcolor: Colors.white,
+                                  height: 5.h,
+                                  fontsize: 16.sp,
+                                  radius: 12.0,
+                                  width: 30.w,
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
                     SizedBox(height: 1.h),
                   ],
                 ),
@@ -325,9 +349,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 Text(
                   "Are you sure you want to delete this Friend?",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                  ),
+                  style: TextStyle(fontSize: 14.sp),
                 ),
                 SizedBox(height: 20),
                 Divider(thickness: 1),
@@ -387,11 +409,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               color: Colors.blue.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(
-              icon,
-              color: Colors.blue.shade700,
-              size: 17.sp,
-            ),
+            child: Icon(icon, color: Colors.blue.shade700, size: 17.sp),
           ),
           SizedBox(width: 4.w),
           Expanded(
@@ -431,13 +449,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response =
-              await MessageProvider().userpersonalinfo((widget.id).toString());
+          final response = await MessageProvider().userpersonalinfo(
+            (widget.id).toString(),
+          );
           if (response.statusCode == 200) {
-            userpersonalInfoModel =
-                UserPersonalInfoModel.fromJson(json.decode(response.body));
-            print("${response.body}");
-            print("${widget.id}");
+            userpersonalInfoModel = UserPersonalInfoModel.fromJson(
+              json.decode(response.body),
+            );
+
             setState(() {
               isSending = false;
             });
@@ -452,7 +471,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           setState(() {
             isSending = false;
           });
-          print("error: ${e.toString()}");
+
           buildErrorDialog(context, 'Error', "Something went wrong");
         }
       } else {

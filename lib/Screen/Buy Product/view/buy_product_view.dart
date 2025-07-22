@@ -121,7 +121,6 @@ class _BuyProductViewState extends State<BuyProductView> {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       setState(() {
-        print("Location services are disabled.");
         isLoading = false;
       });
       return;
@@ -132,7 +131,6 @@ class _BuyProductViewState extends State<BuyProductView> {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         setState(() {
-          print("Location permission denied.");
           isLoading = false;
         });
         return;
@@ -141,7 +139,6 @@ class _BuyProductViewState extends State<BuyProductView> {
 
     if (permission == LocationPermission.deniedForever) {
       setState(() {
-        print("Location permissions are permanently denied.");
         isLoading = false;
       });
       return;
@@ -154,8 +151,7 @@ class _BuyProductViewState extends State<BuyProductView> {
       setState(() {
         AppLat = position.latitude.toString();
         AppLon = position.longitude.toString();
-        print("AppLat====>>>>${AppLat}");
-        print("AppLat====>>>>${AppLon}");
+
         BussinessViewProfile(widget.bunessid ?? "");
         print(
           "Latitude: ${position.latitude}, Longitude: ${position.longitude}",
@@ -176,7 +172,6 @@ class _BuyProductViewState extends State<BuyProductView> {
       "widget.bunessid ?? "
       "${widget.bunessid ?? ""}",
     );
-    log("${widget.bunessid ?? ""}");
 
     initPickupSlots();
     _getCurrentLocation();
@@ -522,7 +517,7 @@ class _BuyProductViewState extends State<BuyProductView> {
                                   //         margin: const EdgeInsets.only(
                                   //             top: 15.0),
                                   //         onPaymentResult: (result) {
-                                  //           debugPrint('🔔 Payment Success!');
+                                  //           debug
                                   //           debugPrint(
                                   //               '💳 Card Description: ${result['paymentMethodData']['description']}');
                                   //           debugPrint(
@@ -857,20 +852,14 @@ class _BuyProductViewState extends State<BuyProductView> {
         ) async {
           busnessviewmodal = BusnessViewModal.fromJson(response.data);
           if (response.statusCode == 200) {
-            print("done LIst");
-
             setState(() {
               isLoading = false;
             });
           } else if (response.statusCode == 422) {
-            log("Error ");
-
             setState(() {
               isLoading = false;
             });
           } else {
-            log("Error for else ");
-
             setState(() {
               isLoading = false;
             });
@@ -900,7 +889,6 @@ class _BuyProductViewState extends State<BuyProductView> {
                 setState(() {
                   isLoading = false;
                 });
-                log("Error");
               }
             });
       } else {
@@ -924,8 +912,6 @@ class _BuyProductViewState extends State<BuyProductView> {
       "payment_gateway": apiValue,
     };
 
-    log("Sending quantity update: $data");
-
     checkInternet().then((internet) async {
       if (internet) {
         CheckoutProvider().productCheckoutApi(data).then((response) async {
@@ -945,7 +931,6 @@ class _BuyProductViewState extends State<BuyProductView> {
             setState(() {
               isCheckout = false;
             });
-            log("Error updating quantity");
           }
         });
       } else {

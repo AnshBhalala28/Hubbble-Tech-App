@@ -236,7 +236,6 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                       subject: "Share Business",
                                     );
                                   } catch (e) {
-                                    log("Error sharing image: $e");
                                     Get.snackbar(
                                       "Error",
                                       "Could not share business details.",
@@ -403,8 +402,6 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                           CategoryName: selectedOption,
                                         ),
                                       );
-                                      print("Selected Name: $selectedOption");
-                                      print("Selected ID: $selectedCategoryId");
                                     });
                                   },
                                 ),
@@ -1212,8 +1209,6 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
             .then((response) async {
               busnessviewmodal = BusnessViewModal.fromJson(response.data);
               if (response.statusCode == 200) {
-                print("done LIst");
-
                 setState(() {
                   isLoading = false;
                 });
@@ -1245,7 +1240,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
       "id": productID.toString(),
       "type": "product",
     };
-    log("DATA SENDING ${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         ProductProvider().AddToCart(data).then((response) async {
@@ -1258,7 +1253,6 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
             setState(() {
               isAddtoCart = false;
             });
-            log("Error");
           }
         });
       } else {
@@ -1283,7 +1277,6 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
             .then((response) async {
               categoryModal = CategoryModal.fromJson(response.data);
               if (response.statusCode == 200) {
-                print("done LIst");
                 if (categoryModal?.data != null) {
                   for (int i = 0; i < categoryModal!.data!.length; i++) {
                     final name = categoryModal?.data![i].name;
@@ -1332,8 +1325,6 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
         CommunityProvider().businessLikeApi(data).then((response) async {
           bussinesslikemodel = BussinessLikeModel.fromJson(response.data);
           if (response.statusCode == 200) {
-            print("done LIst");
-
             setState(() {
               isAddtoCart = false;
             });
@@ -1368,13 +1359,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
       "type": type,
     };
 
-    log("Sending remove request: $data");
-
     checkInternet().then((internet) async {
       if (internet) {
         CartProvider().removeCartApi(data).then((response) async {
           if (response.statusCode == 200) {
-            log("Item removed successfully: ${response.data}");
             setState(() {
               isAddtoCart = false;
             });
@@ -1382,7 +1370,6 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
             setState(() {
               isAddtoCart = false;
             });
-            log("Error removing item from cart");
           }
         });
       } else {

@@ -19,7 +19,7 @@ class CartProvider extends ChangeNotifier {
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
         queryParameters: {'user_id': id},
       );
-      print("Login Success: ${response.data}");
+
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
@@ -70,7 +70,7 @@ class CartProvider extends ChangeNotifier {
 // class CartProvider extends ChangeNotifier {
 //   Future<http.Response> GetCartDetailsApi(String UserId) async {
 //     String url = '${baseUrl}/getCart?user_id=$UserId';
-//     print("Business Profile Url : $url");
+//     
 //     try {
 //       final response = await http
 //           .get(Uri.parse(url))
@@ -81,11 +81,11 @@ class CartProvider extends ChangeNotifier {
 //             },
 //           );
 //       if (response.statusCode == 200) {
-//         print("Successful response: ${response.body}");
+//         
 //         log("lat");
 //         return response;
 //       } else {
-//         print("Failed response: ${response.statusCode}");
+//         
 //         throw Exception("Failed to connect to the server");
 //       }
 //     } on SocketException catch (e) {
@@ -96,7 +96,7 @@ class CartProvider extends ChangeNotifier {
 //   }
 //   Future<http.Response> UpdateCartQuantity(Map<String, String> bodyData) async {
 //     const url = '$baseUrl/updateCartQuantity';
-//     print("Request URL: $url");
+//     
 //     try {
 //       final response = await http
 //           .post(Uri.parse(url), body: bodyData)
@@ -121,7 +121,7 @@ class CartProvider extends ChangeNotifier {
 //   }
 //   Future<http.Response> RemoveFromCartApi(Map<String, String> bodyData) async {
 //     const url = '$baseUrl/removeFromCart';
-//     print("Request URL: $url");
+//     
 //     try {
 //       final response = await http
 //           .post(Uri.parse(url), body: bodyData)

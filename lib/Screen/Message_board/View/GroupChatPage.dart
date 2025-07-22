@@ -144,9 +144,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
               } else {}
             }
           }
-        } catch (e) {
-          log("Error checking messages: $e");
-        }
+        } catch (e) {}
       }
     });
   }
@@ -190,7 +188,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
           setState(() {
             isLoading = false;
           });
-          log("Error loading messages: $e");
         }
       } else {
         setState(() {
@@ -304,9 +301,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
                               final bool isCurrentUser =
                                   senderId == loggedInUserId;
 
-                              log("------ Message $index ------");
-                              log("Login ID: $loggedInUserId");
-                              log("Sender ID: $senderId");
                               log(
                                 "isCurrentUser: ${isCurrentUser ? 'true' : 'false'}",
                               );
@@ -690,8 +684,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
       data["files"] = currentFile.path;
     }
 
-    print("Sending message data: $data");
-
     try {
       final internet = await checkInternet();
       if (!internet) {
@@ -712,8 +704,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
         _loadMessages();
       } else {}
     } catch (e, stackTrace) {
-      print("Error sending message: $e");
-      print("StackTrace: $stackTrace");
     } finally {
       setState(() {
         isSending = false;
@@ -921,7 +911,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
     final Map<String, String> data = {
       'created_by': (loginModel?.data?.user?.id).toString(),
     };
-    print("group list parameter : $data");
+
     setState(() {
       isSending = true;
     });

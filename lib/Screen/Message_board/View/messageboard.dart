@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use, use_build_context_synchronously
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
@@ -15,6 +13,8 @@ import 'package:readmore/readmore.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wavee/Screen/ViewProfile/Model/profile_model.dart';
@@ -31,7 +31,6 @@ import '../../../comman/loader.dart';
 import '../../../comman/viewPdfFunction.dart';
 import '../../HomeNewPage/Model/message_board_modal.dart';
 import '../../HomeNewPage/Provider/homescreen_provider.dart';
-import '../../Message_screen/View/messageScreen.dart';
 import '../Model/Add_Post_Model.dart';
 import '../Model/ChatUserListModel.dart';
 import '../Model/CreateFriendModel.dart';
@@ -40,12 +39,10 @@ import '../Model/GetFriendListModel.dart';
 import '../Model/GetGroupListModel.dart';
 import '../Model/GetPostCommentsModel.dart';
 import '../Model/GetRequestModel.dart';
-import '../Model/Localpost_comments_Model.dart';
 import '../Model/Localpost_model.dart';
 import '../Model/PostLikeModel.dart';
 import '../Model/SendPostCommentsModel.dart';
 import '../Provider/messsage_board_provider.dart';
-import 'GroupChatPage.dart';
 
 class Messageboard extends StatefulWidget {
   int? selected;
@@ -84,44 +81,45 @@ class _MessageboardState extends State<Messageboard> {
   int selectedCategory = 0;
   final TextEditingController groupNameController = TextEditingController();
   List<String> selectedMembers = [];
-
   io.File? selectedImage;
   String? imagePath;
-
   bool isLoadingList = false;
   bool isSending = false;
+  bool isSending1 = false;
   bool isSendingComment = false;
-
   bool isLikeInProgress = false;
   bool isLikeInProgressLocal = false;
-
   List<bool> isLikedList = [];
   List<bool> isLikedListLocal = [];
   List<bool> isLikeInProgressList = [];
   List<bool> isLikeInProgressListLocal = [];
   ScrollController _scrollController = ScrollController();
-
   String get currentUserId => loginModel?.data?.user?.id.toString() ?? '';
-
   List<String> localSubCategories = ['Group', 'Friends'];
   int selectedLocalSubCategory = 0;
-
   List<dynamic> pendingRequests = [];
   List<String> pendingFriendRequests = [];
-
   String currentPostId = '';
-
   String formatPostDate(String? createdAt) {
     if (createdAt == null) return "";
+    tz.initializeTimeZones();
+    final ukTimeZone = tz.getLocation('Europe/London');
+    final utcDate = DateTime.parse(createdAt);
+    final postDateUk = tz.TZDateTime.from(utcDate, ukTimeZone);
+    final nowUk = tz.TZDateTime.now(ukTimeZone);
+    final postDateDay = DateTime(
+      postDateUk.year,
+      postDateUk.month,
+      postDateUk.day,
+    );
+    final nowDay = DateTime(nowUk.year, nowUk.month, nowUk.day);
 
-    final postDate = DateTime.parse(createdAt);
-    final now = DateTime.now();
-    final difference = now.difference(postDate).inDays;
+    final difference = nowDay.difference(postDateDay).inDays;
 
     if (difference == 0) {
       return "Today";
     } else if (difference == 1) {
-      return "1 day ago";
+      return "Yesterday";
     } else {
       return "$difference days ago";
     }
@@ -144,9 +142,9 @@ class _MessageboardState extends State<Messageboard> {
       getfriendlistdAp();
     });
     loadGroups();
-    Future.delayed(Duration(seconds: 2), () {
-      _loadAllLikes();
+    Future.delayed(Duration(milliseconds: 100), () {
       _loadAllLikesLocal();
+      _loadAllLikes();
     });
 
     initPendingRequests();
@@ -158,15 +156,6 @@ class _MessageboardState extends State<Messageboard> {
       setState(() {
         isLoading = false;
       });
-    }
-  }
-
-  String _formatTime(String dateTimeString) {
-    try {
-      DateTime dateTime = DateTime.parse(dateTimeString);
-      return DateFormat('HH:mm').format(dateTime);
-    } catch (e) {
-      return '';
     }
   }
 
@@ -203,9 +192,7 @@ class _MessageboardState extends State<Messageboard> {
           }
         }
       }
-    } catch (e) {
-      print("Error loading likes: $e");
-    }
+    } catch (e) {}
   }
 
   Future<void> _loadAllLikesLocal() async {
@@ -213,25 +200,23 @@ class _MessageboardState extends State<Messageboard> {
       final prefs = await SharedPreferences.getInstance();
       final userId = loginModel?.data?.user?.id.toString() ?? '';
 
-      final totalPosts = localPostModel?.data?.data?.length ?? 0;
+      final totalPosts = localpost_model?.data?.data?.length ?? 0;
 
       isLikedListLocal = List.generate(totalPosts, (index) => false);
       isLikeInProgressListLocal = List.generate(totalPosts, (index) => false);
 
       for (int i = 0; i < totalPosts; i++) {
         if (i < isLikedListLocal.length &&
-            localPostModel?.data?.data!.length != null &&
-            i < localPostModel!.data!.data!.length) {
-          final postId = localPostModel?.data?.data?[i].id.toString();
+            localpost_model?.data?.data?.length != null &&
+            i < localpost_model!.data!.data!.length) {
+          final postId = localpost_model?.data?.data?[i].id.toString();
           if (postId != null) {
             final key = 'image_like_${postId}_$userId';
             isLikedListLocal[i] = prefs.getBool(key) ?? false;
           }
         }
       }
-    } catch (e) {
-      print("Error loading likes: $e");
-    }
+    } catch (e) {}
   }
 
   Future<void> _saveLikeStatus(int index, bool liked) async {
@@ -244,7 +229,7 @@ class _MessageboardState extends State<Messageboard> {
   Future<void> _saveLikeStatusLocal(int index, bool liked) async {
     final prefs = await SharedPreferences.getInstance();
     final userId = loginModel?.data?.user?.id.toString() ?? '';
-    final key = 'image_like_${localPostModel?.data?.data?[index].id}_$userId';
+    final key = 'image_like_${localpost_model?.data?.data?[index].id}_$userId';
     await prefs.setBool(key, liked);
   }
 
@@ -295,13 +280,11 @@ class _MessageboardState extends State<Messageboard> {
     final prefs = await SharedPreferences.getInstance();
     final storedRequests = prefs.getStringList('pendingFriendRequests') ?? [];
     pendingFriendRequests = storedRequests;
-    print("Loaded ${pendingFriendRequests.length} pending friend requests");
   }
 
   Future<void> savePendingRequests() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList('pendingFriendRequests', pendingFriendRequests);
-    print("Saved ${pendingFriendRequests.length} pending friend requests");
   }
 
   Future<void> checkAcceptedRequests(List<dynamic> friendsList) async {
@@ -327,6 +310,9 @@ class _MessageboardState extends State<Messageboard> {
     }
   }
 
+  Offset _cartButtonPosition = Offset.zero;
+  int cartCount = cartDetailsModel?.data?.length ?? 0;
+
   bool isDetailLoading = false;
 
   @override
@@ -335,6 +321,7 @@ class _MessageboardState extends State<Messageboard> {
         GlobalKey<ScaffoldState>();
 
     return Scaffold(
+      backgroundColor: AppColors.white,
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -394,6 +381,9 @@ class _MessageboardState extends State<Messageboard> {
                             ),
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<String>(
+                                dropdownColor: AppColors.white,
+                                borderRadius: BorderRadius.circular(10),
+
                                 hint: Text(
                                   "Select option",
                                   style: TextStyle(
@@ -406,7 +396,7 @@ class _MessageboardState extends State<Messageboard> {
                                 value: selectedOption,
                                 icon: Icon(Icons.keyboard_arrow_down),
                                 items:
-                                    ['My Building', 'Local', 'Friends', 'Group']
+                                    ['My Building', 'Local']
                                         .map(
                                           (option) => DropdownMenuItem(
                                             value: option,
@@ -428,7 +418,6 @@ class _MessageboardState extends State<Messageboard> {
                                 onChanged: (value) {
                                   setState(() {
                                     selectedOption = value!;
-                                    print("SElected${selectedOption}");
                                   });
                                 },
                               ),
@@ -529,1460 +518,920 @@ class _MessageboardState extends State<Messageboard> {
                                               ],
                                             ),
                                           )
-                                          : selectedOption == "Friends"
-                                          ? InkWell(
-                                            onTap: () async {
-                                              await listconciergerapi();
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  List<Map<String, dynamic>>
-                                                  selectedFriends = [];
-                                                  String friendSelectionError =
-                                                      "";
-                                                  final ScrollController
-                                                  dialogScrollController =
-                                                      ScrollController();
-                                                  final ScrollController
-                                                  listScrollController =
-                                                      ScrollController();
+                                          : SizedBox(),
 
-                                                  final TextEditingController
-                                                  searchController =
-                                                      TextEditingController();
-                                                  String searchQuery = "";
+                                  //  selectedOption == "Friends"
+                                  //     ? InkWell(
+                                  //         onTap: () async {
+                                  //           await listconciergerapi();
+                                  //           showDialog(
+                                  //             context: context,
+                                  //             builder: (context) {
+                                  //               List<
+                                  //                       Map<String,
+                                  //                           dynamic>>
+                                  //                   selectedFriends =
+                                  //                   [];
+                                  //               String
+                                  //                   friendSelectionError =
+                                  //                   "";
+                                  //               final ScrollController
+                                  //                   dialogScrollController =
+                                  //                   ScrollController();
+                                  //               final ScrollController
+                                  //                   listScrollController =
+                                  //                   ScrollController();
 
-                                                  return StatefulBuilder(
-                                                    builder: (
-                                                      context,
-                                                      setState,
-                                                    ) {
-                                                      List<dynamic>
-                                                      filteredFriends =
-                                                          chatuserlistmodel?.data?.where((
-                                                            user,
-                                                          ) {
-                                                            final String
-                                                            fullName =
-                                                                "${user.user?.firstName ?? ''} ${user.user?.lastName ?? ''}"
-                                                                    .toLowerCase();
-                                                            return fullName
-                                                                .contains(
-                                                                  searchQuery
-                                                                      .toLowerCase(),
-                                                                );
-                                                          })?.toList() ??
-                                                          [];
+                                  //               final TextEditingController
+                                  //                   searchController =
+                                  //                   TextEditingController();
+                                  //               String
+                                  //                   searchQuery =
+                                  //                   "";
+                                  //               return StatefulBuilder(
+                                  //                 builder: (context,
+                                  //                     setState) {
+                                  //                   List<dynamic>
+                                  //                       filteredFriends =
+                                  //                       chatuserlistmodel
+                                  //                               ?.data
+                                  //                               ?.where((user) {
+                                  //                             final String
+                                  //                                 fullName =
+                                  //                                 "${user.user?.firstName ?? ''} ${user.user?.lastName ?? ''}".toLowerCase();
+                                  //                             return fullName.contains(searchQuery.toLowerCase());
+                                  //                           })?.toList() ??
+                                  //                           [];
+                                  //                   return Dialog(
+                                  //                     shape:
+                                  //                         RoundedRectangleBorder(
+                                  //                       borderRadius:
+                                  //                           BorderRadius.circular(
+                                  //                               20),
+                                  //                     ),
+                                  //                     insetPadding: EdgeInsets.symmetric(
+                                  //                         horizontal:
+                                  //                             12,
+                                  //                         vertical:
+                                  //                             16),
+                                  //                     child:
+                                  //                         Container(
+                                  //                       constraints:
+                                  //                           BoxConstraints(
+                                  //                         maxHeight:
+                                  //                             MediaQuery.of(context).size.height *
+                                  //                                 0.8,
+                                  //                       ),
+                                  //                       padding: EdgeInsets.symmetric(
+                                  //                           horizontal:
+                                  //                               16,
+                                  //                           vertical:
+                                  //                               16),
+                                  //                       decoration:
+                                  //                           BoxDecoration(
+                                  //                         borderRadius:
+                                  //                             BorderRadius.circular(20),
+                                  //                         color: Colors
+                                  //                             .white,
+                                  //                       ),
+                                  //                       child:
+                                  //                           SingleChildScrollView(
+                                  //                         keyboardDismissBehavior:
+                                  //                             ScrollViewKeyboardDismissBehavior.onDrag,
+                                  //                         controller:
+                                  //                             dialogScrollController,
+                                  //                         child:
+                                  //                             Column(
+                                  //                           mainAxisSize:
+                                  //                               MainAxisSize.min,
+                                  //                           children: [
+                                  //                             Row(
+                                  //                               mainAxisAlignment: MainAxisAlignment.center,
+                                  //                               children: [
+                                  //                                 Icon(Icons.person_add_alt_1, color: AppColors.maincolor, size: 24),
+                                  //                                 SizedBox(width: 2.w),
+                                  //                                 Text(
+                                  //                                   'Add New Friend',
+                                  //                                   style: TextStyle(
+                                  //                                     color: Colors.black,
+                                  //                                     fontSize: 18.sp,
+                                  //                                     fontWeight: FontWeight.w700,
+                                  //                                     fontFamily: AppConstants.manrope,
+                                  //                                   ),
+                                  //                                 ),
+                                  //                               ],
+                                  //                             ),
+                                  //                             SizedBox(height: 1.5.h),
+                                  //                             Container(
+                                  //                               decoration: BoxDecoration(
+                                  //                                 color: Colors.grey.shade100,
+                                  //                                 borderRadius: BorderRadius.circular(10),
+                                  //                               ),
+                                  //                               child: TextField(
+                                  //                                 controller: searchController,
+                                  //                                 onChanged: (value) {
+                                  //                                   setState(() {
+                                  //                                     searchQuery = value;
+                                  //                                   });
+                                  //                                 },
+                                  //                                 decoration: InputDecoration(
+                                  //                                   hintText: 'Search friends',
+                                  //                                   prefixIcon: Icon(Icons.search, color: Colors.grey.shade600),
+                                  //                                   border: InputBorder.none,
+                                  //                                   contentPadding: EdgeInsets.symmetric(vertical: 12),
+                                  //                                 ),
+                                  //                                 style: TextStyle(
+                                  //                                   fontSize: 14.sp,
+                                  //                                   fontFamily: AppConstants.manrope,
+                                  //                                 ),
+                                  //                               ),
+                                  //                             ),
+                                  //                             SizedBox(height: 1.h),
+                                  //                             Row(
+                                  //                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  //                               children: [
+                                  //                                 Text(
+                                  //                                   'Select Friends',
+                                  //                                   style: TextStyle(
+                                  //                                     fontSize: 16.sp,
+                                  //                                     fontWeight: FontWeight.w600,
+                                  //                                     fontFamily: AppConstants.manrope,
+                                  //                                   ),
+                                  //                                 ),
+                                  //                                 Text(
+                                  //                                   '${selectedFriends.length} selected',
+                                  //                                   style: TextStyle(
+                                  //                                     fontSize: 14.sp,
+                                  //                                     fontWeight: FontWeight.w500,
+                                  //                                     fontFamily: AppConstants.manrope,
+                                  //                                     color: AppColors.maincolor,
+                                  //                                   ),
+                                  //                                 ),
+                                  //                               ],
+                                  //                             ),
+                                  //                             SizedBox(height: 0.8.h),
+                                  //                             Container(
+                                  //                               height: 32.h,
+                                  //                               decoration: BoxDecoration(
+                                  //                                 color: Colors.white,
+                                  //                                 borderRadius: BorderRadius.circular(12),
+                                  //                               ),
+                                  //                               child: Scrollbar(
+                                  //                                 thumbVisibility: true,
+                                  //                                 controller: listScrollController,
+                                  //                                 radius: Radius.circular(8),
+                                  //                                 thickness: 4,
+                                  //                                 child: filteredFriends.isEmpty
+                                  //                                     ? Center(
+                                  //                                         child: Text(
+                                  //                                           searchQuery.isEmpty ? "No users available" : "No matching friends found",
+                                  //                                           style: TextStyle(
+                                  //                                             fontSize: 14.sp,
+                                  //                                             fontFamily: AppConstants.manrope,
+                                  //                                             color: Colors.grey.shade600,
+                                  //                                           ),
+                                  //                                         ),
+                                  //                                       )
+                                  //                                     : ListView.separated(
+                                  //                                         controller: listScrollController,
+                                  //                                         padding: EdgeInsets.zero,
+                                  //                                         itemCount: filteredFriends.length,
+                                  //                                         separatorBuilder: (_, __) => Divider(height: 1, thickness: 0.5, color: Colors.grey.shade200),
+                                  //                                         itemBuilder: (context, index) {
+                                  //                                           final userData = filteredFriends[index];
+                                  //                                           final userId = userData.user?.id.toString();
+                                  //                                           final requestStatus = userData.requestStatuses ?? [];
+                                  //                                           final lowerCaseStatuses = requestStatus.map((status) => status.toLowerCase()).toList();
+                                  //                                           final friendData = {
+                                  //                                             'id': userId,
+                                  //                                             'name': "${userData.user?.firstName ?? ''} ${userData.user?.lastName ?? ''}",
+                                  //                                             'image': userData.user?.profile ?? '',
+                                  //                                           };
+                                  //                                           bool isPending = lowerCaseStatuses.contains("pending");
+                                  //                                           bool isAccepted = lowerCaseStatuses.contains("accepted");
+                                  //                                           bool isCancelled = lowerCaseStatuses.contains("cancel") || lowerCaseStatuses.contains("cancelled") || lowerCaseStatuses.contains("canceled");
+                                  //                                           bool canSelect = requestStatus.isEmpty;
+                                  //                                           bool isSelected = selectedFriends.any((element) => element['id'] == friendData['id']);
+                                  //                                           return ListTile(
+                                  //                                             contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  //                                             onTap: () {
+                                  //                                               if (canSelect) {
+                                  //                                                 setState(() {
+                                  //                                                   if (isSelected) {
+                                  //                                                     selectedFriends.removeWhere((element) => element['id'] == friendData['id']);
+                                  //                                                   } else {
+                                  //                                                     selectedFriends.add(friendData);
+                                  //                                                   }
+                                  //                                                   friendSelectionError = "";
+                                  //                                                 });
+                                  //                                               }
+                                  //                                             },
+                                  //                                             leading: CircleAvatar(
+                                  //                                               radius: 20,
+                                  //                                               backgroundColor: Colors.grey.shade200,
+                                  //                                               child: ClipOval(
+                                  //                                                 child: CachedNetworkImage(
+                                  //                                                   imageUrl: userData.user?.profile ?? "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
+                                  //                                                   placeholder: (context, url) => Image.asset(
+                                  //                                                     'assets/images/person.jpg',
+                                  //                                                     fit: BoxFit.cover,
+                                  //                                                   ),
+                                  //                                                   errorWidget: (context, url, error) => Image.asset(
+                                  //                                                     'assets/images/person.jpg',
+                                  //                                                     fit: BoxFit.cover,
+                                  //                                                   ),
+                                  //                                                   width: 40,
+                                  //                                                   height: 40,
+                                  //                                                   fit: BoxFit.cover,
+                                  //                                                 ),
+                                  //                                               ),
+                                  //                                             ),
+                                  //                                             title: Text(
+                                  //                                               "${userData.user?.firstName ?? ''} ${userData.user?.lastName ?? ''}",
+                                  //                                               style: TextStyle(
+                                  //                                                 fontFamily: AppConstants.manrope,
+                                  //                                                 fontWeight: FontWeight.w500,
+                                  //                                                 fontSize: 14.sp,
+                                  //                                                 color: isPending
+                                  //                                                     ? AppColors.maincolor
+                                  //                                                     : isAccepted
+                                  //                                                         ? Colors.green
+                                  //                                                         : isCancelled
+                                  //                                                             ? Colors.red
+                                  //                                                             : null,
+                                  //                                               ),
+                                  //                                             ),
+                                  //                                             subtitle: requestStatus.isNotEmpty
+                                  //                                                 ? Text(
+                                  //                                                     isPending
+                                  //                                                         ? "Request Pending"
+                                  //                                                         : isAccepted
+                                  //                                                             ? "Friend"
+                                  //                                                             : isCancelled
+                                  //                                                                 ? "Cancelled"
+                                  //                                                                 : "",
+                                  //                                                     style: TextStyle(
+                                  //                                                       fontFamily: AppConstants.manrope,
+                                  //                                                       fontSize: 12.sp,
+                                  //                                                       color: isPending
+                                  //                                                           ? Colors.orange
+                                  //                                                           : isAccepted
+                                  //                                                               ? Colors.green
+                                  //                                                               : isCancelled
+                                  //                                                                   ? Colors.red
+                                  //                                                                   : Colors.grey,
+                                  //                                                       fontStyle: FontStyle.italic,
+                                  //                                                     ),
+                                  //                                                   )
+                                  //                                                 : Text(
+                                  //                                                     "New User",
+                                  //                                                     style: TextStyle(
+                                  //                                                       fontFamily: AppConstants.manrope,
+                                  //                                                       fontSize: 12.sp,
+                                  //                                                       color: Colors.grey,
+                                  //                                                       fontStyle: FontStyle.italic,
+                                  //                                                     ),
+                                  //                                                   ),
+                                  //                                             trailing: Checkbox(
+                                  //                                               value: isSelected || isPending || isAccepted,
+                                  //                                               onChanged: canSelect
+                                  //                                                   ? (value) {
+                                  //                                                       setState(() {
+                                  //                                                         if (value == true) {
+                                  //                                                           if (!isSelected) {
+                                  //                                                             selectedFriends.add(friendData);
+                                  //                                                           }
+                                  //                                                         } else {
+                                  //                                                           selectedFriends.removeWhere((element) => element['id'] == friendData['id']);
+                                  //                                                         }
+                                  //                                                         friendSelectionError = "";
+                                  //                                                       });
+                                  //                                                     }
+                                  //                                                   : null,
+                                  //                                               activeColor: isPending
+                                  //                                                   ? Colors.orange
+                                  //                                                   : isAccepted
+                                  //                                                       ? Colors.green
+                                  //                                                       : AppColors.maincolor,
+                                  //                                               checkColor: Colors.white,
+                                  //                                               fillColor: !canSelect
+                                  //                                                   ? MaterialStateProperty.resolveWith((states) => isPending
+                                  //                                                       ? Colors.orange.shade400
+                                  //                                                       : isAccepted
+                                  //                                                           ? Colors.green.shade400
+                                  //                                                           : isCancelled
+                                  //                                                               ? Colors.grey.shade400
+                                  //                                                               : Colors.grey.shade400)
+                                  //                                                   : null,
+                                  //                                             ),
+                                  //                                             tileColor: (isSelected || !canSelect)
+                                  //                                                 ? (isPending
+                                  //                                                     ? Colors.orange.withOpacity(0.05)
+                                  //                                                     : isAccepted
+                                  //                                                         ? Colors.green.withOpacity(0.05)
+                                  //                                                         : isCancelled
+                                  //                                                             ? Colors.red.withOpacity(0.05)
+                                  //                                                             : Colors.blue.withOpacity(0.05))
+                                  //                                                 : null,
+                                  //                                             selected: isSelected || !canSelect,
+                                  //                                             dense: true,
+                                  //                                           );
+                                  //                                         },
+                                  //                                       ),
+                                  //                               ),
+                                  //                             ),
+                                  //                             if (friendSelectionError.isNotEmpty)
+                                  //                               Padding(
+                                  //                                 padding: EdgeInsets.only(top: 4, left: 4),
+                                  //                                 child: Align(
+                                  //                                   alignment: Alignment.center,
+                                  //                                   child: Text(
+                                  //                                     friendSelectionError,
+                                  //                                     style: TextStyle(
+                                  //                                       color: Colors.red,
+                                  //                                       fontSize: 16.sp,
+                                  //                                       fontFamily: AppConstants.manrope,
+                                  //                                     ),
+                                  //                                   ),
+                                  //                                 ),
+                                  //                               ),
+                                  //                             SizedBox(height: 2.h),
+                                  //                             Row(
+                                  //                               mainAxisAlignment: MainAxisAlignment.end,
+                                  //                               children: [
+                                  //                                 batan(
+                                  //                                   title: "Cancel",
+                                  //                                   route: () => Get.back(),
+                                  //                                   radius: 3.0.w,
+                                  //                                   color: AppColors.maincolor,
+                                  //                                   fontcolor: Colors.white,
+                                  //                                   height: 4.5.h,
+                                  //                                   width: 41.w,
+                                  //                                   fontsize: 15.5.sp,
+                                  //                                 ),
+                                  //                                 SizedBox(width: 3.w),
+                                  //                                 batan(
+                                  //                                   title: "Add Friends",
+                                  //                                   route: () async {
+                                  //                                     if (selectedFriends.isEmpty) {
+                                  //                                       setState(() {
+                                  //                                         friendSelectionError = "Please select at least one friend";
+                                  //                                       });
+                                  //                                       return;
+                                  //                                     }
 
-                                                      return Dialog(
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                20,
-                                                              ),
-                                                        ),
-                                                        insetPadding:
-                                                            EdgeInsets.symmetric(
-                                                              horizontal: 12,
-                                                              vertical: 16,
-                                                            ),
-                                                        child: Container(
-                                                          constraints:
-                                                              BoxConstraints(
-                                                                maxHeight:
-                                                                    MediaQuery.of(
-                                                                      context,
-                                                                    ).size.height *
-                                                                    0.8,
-                                                              ),
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 16,
-                                                                vertical: 16,
-                                                              ),
-                                                          decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  20,
-                                                                ),
-                                                            color: Colors.white,
-                                                          ),
-                                                          child: SingleChildScrollView(
-                                                            keyboardDismissBehavior:
-                                                                ScrollViewKeyboardDismissBehavior
-                                                                    .onDrag,
-                                                            controller:
-                                                                dialogScrollController,
-                                                            child: Column(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              children: [
-                                                                Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Icon(
-                                                                      Icons
-                                                                          .person_add_alt_1,
-                                                                      color:
-                                                                          AppColors
-                                                                              .maincolor,
-                                                                      size: 24,
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width:
-                                                                          2.w,
-                                                                    ),
-                                                                    Text(
-                                                                      'Add New Friend',
-                                                                      style: TextStyle(
-                                                                        color:
-                                                                            Colors.black,
-                                                                        fontSize:
-                                                                            18.sp,
-                                                                        fontWeight:
-                                                                            FontWeight.w700,
-                                                                        fontFamily:
-                                                                            AppConstants.manrope,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 1.5.h,
-                                                                ),
-                                                                Container(
-                                                                  decoration: BoxDecoration(
-                                                                    color:
-                                                                        Colors
-                                                                            .grey
-                                                                            .shade100,
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                          10,
-                                                                        ),
-                                                                  ),
-                                                                  child: TextField(
-                                                                    controller:
-                                                                        searchController,
-                                                                    onChanged: (
-                                                                      value,
-                                                                    ) {
-                                                                      setState(() {
-                                                                        searchQuery =
-                                                                            value;
-                                                                      });
-                                                                    },
-                                                                    decoration: InputDecoration(
-                                                                      hintText:
-                                                                          'Search friends',
-                                                                      prefixIcon: Icon(
-                                                                        Icons
-                                                                            .search,
-                                                                        color:
-                                                                            Colors.grey.shade600,
-                                                                      ),
-                                                                      border:
-                                                                          InputBorder
-                                                                              .none,
-                                                                      contentPadding: EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            12,
-                                                                      ),
-                                                                    ),
-                                                                    style: TextStyle(
-                                                                      fontSize:
-                                                                          14.sp,
-                                                                      fontFamily:
-                                                                          AppConstants
-                                                                              .manrope,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 1.h,
-                                                                ),
-                                                                Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .spaceBetween,
-                                                                  children: [
-                                                                    Text(
-                                                                      'Select Friends',
-                                                                      style: TextStyle(
-                                                                        fontSize:
-                                                                            16.sp,
-                                                                        fontWeight:
-                                                                            FontWeight.w600,
-                                                                        fontFamily:
-                                                                            AppConstants.manrope,
-                                                                      ),
-                                                                    ),
-                                                                    Text(
-                                                                      '${selectedFriends.length} selected',
-                                                                      style: TextStyle(
-                                                                        fontSize:
-                                                                            14.sp,
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                        fontFamily:
-                                                                            AppConstants.manrope,
-                                                                        color:
-                                                                            AppColors.maincolor,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 0.8.h,
-                                                                ),
-                                                                Container(
-                                                                  height: 32.h,
-                                                                  decoration: BoxDecoration(
-                                                                    color:
-                                                                        Colors
-                                                                            .white,
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                          12,
-                                                                        ),
-                                                                  ),
-                                                                  child: Scrollbar(
-                                                                    thumbVisibility:
-                                                                        true,
-                                                                    controller:
-                                                                        listScrollController,
-                                                                    radius:
-                                                                        Radius.circular(
-                                                                          8,
-                                                                        ),
-                                                                    thickness:
-                                                                        4,
-                                                                    child:
-                                                                        filteredFriends.isEmpty
-                                                                            ? Center(
-                                                                              child: Text(
-                                                                                searchQuery.isEmpty
-                                                                                    ? "No users available"
-                                                                                    : "No matching friends found",
-                                                                                style: TextStyle(
-                                                                                  fontSize:
-                                                                                      14.sp,
-                                                                                  fontFamily:
-                                                                                      AppConstants.manrope,
-                                                                                  color:
-                                                                                      Colors.grey.shade600,
-                                                                                ),
-                                                                              ),
-                                                                            )
-                                                                            : ListView.separated(
-                                                                              controller:
-                                                                                  listScrollController,
-                                                                              padding:
-                                                                                  EdgeInsets.zero,
-                                                                              itemCount:
-                                                                                  filteredFriends.length,
-                                                                              separatorBuilder:
-                                                                                  (
-                                                                                    _,
-                                                                                    __,
-                                                                                  ) => Divider(
-                                                                                    height:
-                                                                                        1,
-                                                                                    thickness:
-                                                                                        0.5,
-                                                                                    color:
-                                                                                        Colors.grey.shade200,
-                                                                                  ),
-                                                                              itemBuilder: (
-                                                                                context,
-                                                                                index,
-                                                                              ) {
-                                                                                final userData =
-                                                                                    filteredFriends[index];
-                                                                                final userId =
-                                                                                    userData.user?.id.toString();
-                                                                                final requestStatus =
-                                                                                    userData.requestStatuses ??
-                                                                                    [];
+                                  //                                     for (var friend in selectedFriends) {
+                                  //                                       await makefriendapi(friend['id']);
+                                  //
+                                  //                                     }
 
-                                                                                final lowerCaseStatuses =
-                                                                                    requestStatus
-                                                                                        .map(
-                                                                                          (
-                                                                                            status,
-                                                                                          ) =>
-                                                                                              status.toLowerCase(),
-                                                                                        )
-                                                                                        .toList();
+                                  //                                     await listconciergerapi();
 
-                                                                                final friendData = {
-                                                                                  'id':
-                                                                                      userId,
-                                                                                  'name':
-                                                                                      "${userData.user?.firstName ?? ''} ${userData.user?.lastName ?? ''}",
-                                                                                  'image':
-                                                                                      userData.user?.profile ??
-                                                                                      '',
-                                                                                };
+                                  //                                     Get.back();
+                                  //                                     Get.snackbar(
+                                  //                                       'Friend Request Sent',
+                                  //                                       'Friend requests sent to ${selectedFriends.length} friends',
+                                  //                                       backgroundColor: Colors.green.withOpacity(0.7),
+                                  //                                       colorText: Colors.white,
+                                  //                                       snackPosition: SnackPosition.BOTTOM,
+                                  //                                     );
+                                  //                                   },
+                                  //                                   radius: 3.0.w,
+                                  //                                   color: AppColors.maincolor,
+                                  //                                   fontcolor: Colors.white,
+                                  //                                   height: 4.5.h,
+                                  //                                   width: 39.w,
+                                  //                                   fontsize: 16.sp,
+                                  //                                 ),
+                                  //                               ],
+                                  //                             ),
+                                  //                           ],
+                                  //                         ),
+                                  //                       ),
+                                  //                     ),
+                                  //                   );
+                                  //                 },
+                                  //               );
+                                  //             },
+                                  //           );
+                                  //           print(
+                                  //               "New Friend Pressed");
+                                  //         },
+                                  //         child: Row(
+                                  //           children: [
+                                  //             Text(
+                                  //               "New Friend",
+                                  //               style: TextStyle(
+                                  //                 fontFamily:
+                                  //                     AppConstants
+                                  //                         .manrope,
+                                  //                 fontSize: 16.sp,
+                                  //                 fontWeight:
+                                  //                     FontWeight
+                                  //                         .bold,
+                                  //                 color:
+                                  //                     Colors.grey,
+                                  //               ),
+                                  //             ),
+                                  //             SizedBox(
+                                  //                 width: 2.w),
+                                  //             Icon(
+                                  //                 Icons
+                                  //                     .add_circle_outline_rounded,
+                                  //                 color: Colors
+                                  //                     .grey),
+                                  //           ],
+                                  //         ),
+                                  //       )
+                                  //     : InkWell(
+                                  //         onTap: () {
+                                  //           showDialog(
+                                  //             context: context,
+                                  //             builder: (context) {
+                                  //               String
+                                  //                   groupNameError =
+                                  //                   "";
+                                  //               String
+                                  //                   memberSelectionError =
+                                  //                   "";
+                                  //               final ScrollController
+                                  //                   dialogScrollController =
+                                  //                   ScrollController();
+                                  //               final ScrollController
+                                  //                   listScrollController =
+                                  //                   ScrollController();
 
-                                                                                bool
-                                                                                isPending = lowerCaseStatuses.contains(
-                                                                                  "pending",
-                                                                                );
-                                                                                bool
-                                                                                isAccepted = lowerCaseStatuses.contains(
-                                                                                  "accepted",
-                                                                                );
-                                                                                bool
-                                                                                isCancelled =
-                                                                                    lowerCaseStatuses.contains(
-                                                                                      "cancel",
-                                                                                    ) ||
-                                                                                    lowerCaseStatuses.contains(
-                                                                                      "cancelled",
-                                                                                    ) ||
-                                                                                    lowerCaseStatuses.contains(
-                                                                                      "canceled",
-                                                                                    );
-                                                                                bool
-                                                                                canSelect =
-                                                                                    requestStatus.isEmpty;
+                                  //               final TextEditingController
+                                  //                   searchController =
+                                  //                   TextEditingController();
+                                  //               String
+                                  //                   searchQuery =
+                                  //                   "";
 
-                                                                                bool
-                                                                                isSelected = selectedFriends.any(
-                                                                                  (
-                                                                                    element,
-                                                                                  ) =>
-                                                                                      element['id'] ==
-                                                                                      friendData['id'],
-                                                                                );
+                                  //               return StatefulBuilder(
+                                  //                 builder: (context,
+                                  //                     setState) {
+                                  //                   List<dynamic>
+                                  //                       filteredUsers =
+                                  //                       chatuserlistmodel
+                                  //                               ?.data
+                                  //                               ?.where((user) {
+                                  //                             final String
+                                  //                                 fullName =
+                                  //                                 "${user.user?.firstName ?? ''} ${user.user?.lastName ?? ''}".toLowerCase();
+                                  //                             return fullName.contains(searchQuery.toLowerCase());
+                                  //                           })?.toList() ??
+                                  //                           [];
 
-                                                                                return ListTile(
-                                                                                  contentPadding: EdgeInsets.symmetric(
-                                                                                    horizontal:
-                                                                                        8,
-                                                                                    vertical:
-                                                                                        2,
-                                                                                  ),
-                                                                                  onTap: () {
-                                                                                    if (canSelect) {
-                                                                                      setState(
-                                                                                        () {
-                                                                                          if (isSelected) {
-                                                                                            selectedFriends.removeWhere(
-                                                                                              (
-                                                                                                element,
-                                                                                              ) =>
-                                                                                                  element['id'] ==
-                                                                                                  friendData['id'],
-                                                                                            );
-                                                                                          } else {
-                                                                                            selectedFriends.add(
-                                                                                              friendData,
-                                                                                            );
-                                                                                          }
-                                                                                          friendSelectionError =
-                                                                                              "";
-                                                                                        },
-                                                                                      );
-                                                                                    }
-                                                                                  },
-                                                                                  leading: CircleAvatar(
-                                                                                    radius:
-                                                                                        20,
-                                                                                    backgroundColor:
-                                                                                        Colors.grey.shade200,
-                                                                                    child: ClipOval(
-                                                                                      child: CachedNetworkImage(
-                                                                                        imageUrl:
-                                                                                            userData.user?.profile ??
-                                                                                            "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
-                                                                                        placeholder:
-                                                                                            (
-                                                                                              context,
-                                                                                              url,
-                                                                                            ) => Image.asset(
-                                                                                              'assets/images/person.jpg',
-                                                                                              fit:
-                                                                                                  BoxFit.cover,
-                                                                                            ),
-                                                                                        errorWidget:
-                                                                                            (
-                                                                                              context,
-                                                                                              url,
-                                                                                              error,
-                                                                                            ) => Image.asset(
-                                                                                              'assets/images/person.jpg',
-                                                                                              fit:
-                                                                                                  BoxFit.cover,
-                                                                                            ),
-                                                                                        width:
-                                                                                            40,
-                                                                                        height:
-                                                                                            40,
-                                                                                        fit:
-                                                                                            BoxFit.cover,
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  title: Text(
-                                                                                    "${userData.user?.firstName ?? ''} ${userData.user?.lastName ?? ''}",
-                                                                                    style: TextStyle(
-                                                                                      fontFamily:
-                                                                                          AppConstants.manrope,
-                                                                                      fontWeight:
-                                                                                          FontWeight.w500,
-                                                                                      fontSize:
-                                                                                          14.sp,
-                                                                                      color:
-                                                                                          isPending
-                                                                                              ? AppColors.maincolor
-                                                                                              : isAccepted
-                                                                                              ? Colors.green
-                                                                                              : isCancelled
-                                                                                              ? Colors.red
-                                                                                              : null,
-                                                                                    ),
-                                                                                  ),
-                                                                                  subtitle:
-                                                                                      requestStatus.isNotEmpty
-                                                                                          ? Text(
-                                                                                            isPending
-                                                                                                ? "Request Pending"
-                                                                                                : isAccepted
-                                                                                                ? "Friend"
-                                                                                                : isCancelled
-                                                                                                ? "Cancelled"
-                                                                                                : "",
-                                                                                            style: TextStyle(
-                                                                                              fontFamily:
-                                                                                                  AppConstants.manrope,
-                                                                                              fontSize:
-                                                                                                  12.sp,
-                                                                                              color:
-                                                                                                  isPending
-                                                                                                      ? Colors.orange
-                                                                                                      : isAccepted
-                                                                                                      ? Colors.green
-                                                                                                      : isCancelled
-                                                                                                      ? Colors.red
-                                                                                                      : Colors.grey,
-                                                                                              fontStyle:
-                                                                                                  FontStyle.italic,
-                                                                                            ),
-                                                                                          )
-                                                                                          : Text(
-                                                                                            "New User",
-                                                                                            style: TextStyle(
-                                                                                              fontFamily:
-                                                                                                  AppConstants.manrope,
-                                                                                              fontSize:
-                                                                                                  12.sp,
-                                                                                              color:
-                                                                                                  Colors.grey,
-                                                                                              fontStyle:
-                                                                                                  FontStyle.italic,
-                                                                                            ),
-                                                                                          ),
-                                                                                  trailing: Checkbox(
-                                                                                    value:
-                                                                                        isSelected ||
-                                                                                        isPending ||
-                                                                                        isAccepted,
-                                                                                    onChanged:
-                                                                                        canSelect
-                                                                                            ? (
-                                                                                              value,
-                                                                                            ) {
-                                                                                              setState(
-                                                                                                () {
-                                                                                                  if (value ==
-                                                                                                      true) {
-                                                                                                    if (!isSelected) {
-                                                                                                      selectedFriends.add(
-                                                                                                        friendData,
-                                                                                                      );
-                                                                                                    }
-                                                                                                  } else {
-                                                                                                    selectedFriends.removeWhere(
-                                                                                                      (
-                                                                                                        element,
-                                                                                                      ) =>
-                                                                                                          element['id'] ==
-                                                                                                          friendData['id'],
-                                                                                                    );
-                                                                                                  }
-                                                                                                  friendSelectionError =
-                                                                                                      "";
-                                                                                                },
-                                                                                              );
-                                                                                            }
-                                                                                            : null,
-                                                                                    activeColor:
-                                                                                        isPending
-                                                                                            ? Colors.orange
-                                                                                            : isAccepted
-                                                                                            ? Colors.green
-                                                                                            : AppColors.maincolor,
-                                                                                    checkColor:
-                                                                                        Colors.white,
-                                                                                    fillColor:
-                                                                                        !canSelect
-                                                                                            ? MaterialStateProperty.resolveWith(
-                                                                                              (
-                                                                                                states,
-                                                                                              ) =>
-                                                                                                  isPending
-                                                                                                      ? Colors.orange.shade400
-                                                                                                      : isAccepted
-                                                                                                      ? Colors.green.shade400
-                                                                                                      : isCancelled
-                                                                                                      ? Colors.grey.shade400
-                                                                                                      : Colors.grey.shade400,
-                                                                                            )
-                                                                                            : null,
-                                                                                  ),
-                                                                                  tileColor:
-                                                                                      (isSelected ||
-                                                                                              !canSelect)
-                                                                                          ? (isPending
-                                                                                              ? Colors.orange.withOpacity(
-                                                                                                0.05,
-                                                                                              )
-                                                                                              : isAccepted
-                                                                                              ? Colors.green.withOpacity(
-                                                                                                0.05,
-                                                                                              )
-                                                                                              : isCancelled
-                                                                                              ? Colors.red.withOpacity(
-                                                                                                0.05,
-                                                                                              )
-                                                                                              : Colors.blue.withOpacity(
-                                                                                                0.05,
-                                                                                              ))
-                                                                                          : null,
-                                                                                  selected:
-                                                                                      isSelected ||
-                                                                                      !canSelect,
-                                                                                  dense:
-                                                                                      true,
-                                                                                );
-                                                                              },
-                                                                            ),
-                                                                  ),
-                                                                ),
-                                                                if (friendSelectionError
-                                                                    .isNotEmpty)
-                                                                  Padding(
-                                                                    padding:
-                                                                        EdgeInsets.only(
-                                                                          top:
-                                                                              4,
-                                                                          left:
-                                                                              4,
-                                                                        ),
-                                                                    child: Align(
-                                                                      alignment:
-                                                                          Alignment
-                                                                              .center,
-                                                                      child: Text(
-                                                                        friendSelectionError,
-                                                                        style: TextStyle(
-                                                                          color:
-                                                                              Colors.red,
-                                                                          fontSize:
-                                                                              16.sp,
-                                                                          fontFamily:
-                                                                              AppConstants.manrope,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                SizedBox(
-                                                                  height: 2.h,
-                                                                ),
-                                                                Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .end,
-                                                                  children: [
-                                                                    batan(
-                                                                      title:
-                                                                          "Cancel",
-                                                                      route:
-                                                                          () =>
-                                                                              Get.back(),
-                                                                      radius:
-                                                                          3.0.w,
-                                                                      color:
-                                                                          AppColors
-                                                                              .maincolor,
-                                                                      fontcolor:
-                                                                          Colors
-                                                                              .white,
-                                                                      height:
-                                                                          4.5.h,
-                                                                      width:
-                                                                          41.w,
-                                                                      fontsize:
-                                                                          15.5.sp,
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width:
-                                                                          3.w,
-                                                                    ),
-                                                                    batan(
-                                                                      title:
-                                                                          "Add Friends",
-                                                                      route: () async {
-                                                                        if (selectedFriends
-                                                                            .isEmpty) {
-                                                                          setState(() {
-                                                                            friendSelectionError =
-                                                                                "Please select at least one friend";
-                                                                          });
-                                                                          return;
-                                                                        }
+                                  //                   Future<void>
+                                  //                       pickImageFromGallery() async {
+                                  //                     try {
+                                  //                       final ImagePicker
+                                  //                           _picker =
+                                  //                           ImagePicker();
+                                  //                       final XFile?
+                                  //                           image =
+                                  //                           await _picker
+                                  //                               .pickImage(
+                                  //                         source:
+                                  //                             ImageSource.gallery,
+                                  //                         imageQuality:
+                                  //                             70,
+                                  //                       );
 
-                                                                        for (var friend
-                                                                            in selectedFriends) {
-                                                                          await makefriendapi(
-                                                                            friend['id'],
-                                                                          );
-                                                                          print(
-                                                                            "receiver frd list id : ${friend['id']}",
-                                                                          );
-                                                                        }
+                                  //                       if (image !=
+                                  //                           null) {
+                                  //                         setState(
+                                  //                             () {
+                                  //                           selectedImage =
+                                  //                               io.File(image.path);
+                                  //                           imagePath =
+                                  //                               image.path;
+                                  //                           print(
+                                  //                               "Selected image path: ${image.path}");
+                                  //                         });
+                                  //                       }
+                                  //                     } catch (e) {
+                                  //                       print(
+                                  //                           "Error picking image: $e");
+                                  //                     }
+                                  //                   }
 
-                                                                        await listconciergerapi();
+                                  //                   return Dialog(
+                                  //                     shape:
+                                  //                         RoundedRectangleBorder(
+                                  //                       borderRadius:
+                                  //                           BorderRadius.circular(
+                                  //                               20),
+                                  //                     ),
+                                  //                     insetPadding: EdgeInsets.symmetric(
+                                  //                         horizontal:
+                                  //                             12,
+                                  //                         vertical:
+                                  //                             16),
+                                  //                     child:
+                                  //                         Container(
+                                  //                       constraints:
+                                  //                           BoxConstraints(
+                                  //                         maxHeight:
+                                  //                             MediaQuery.of(context).size.height *
+                                  //                                 0.8,
+                                  //                       ),
+                                  //                       padding: EdgeInsets.symmetric(
+                                  //                           horizontal:
+                                  //                               16,
+                                  //                           vertical:
+                                  //                               16),
+                                  //                       decoration:
+                                  //                           BoxDecoration(
+                                  //                         borderRadius:
+                                  //                             BorderRadius.circular(20),
+                                  //                         color: Colors
+                                  //                             .white,
+                                  //                       ),
+                                  //                       child:
+                                  //                           SingleChildScrollView(
+                                  //                         keyboardDismissBehavior:
+                                  //                             ScrollViewKeyboardDismissBehavior.onDrag,
+                                  //                         controller:
+                                  //                             dialogScrollController,
+                                  //                         child:
+                                  //                             Column(
+                                  //                           mainAxisSize:
+                                  //                               MainAxisSize.min,
+                                  //                           children: [
+                                  //                             Row(
+                                  //                               mainAxisAlignment: MainAxisAlignment.center,
+                                  //                               children: [
+                                  //                                 Icon(Icons.group_add, color: AppColors.maincolor, size: 24),
+                                  //                                 SizedBox(width: 2.w),
+                                  //                                 Text(
+                                  //                                   'Create New Group',
+                                  //                                   style: TextStyle(
+                                  //                                     color: Colors.black,
+                                  //                                     fontSize: 18.sp,
+                                  //                                     fontWeight: FontWeight.w700,
+                                  //                                     fontFamily: AppConstants.manrope,
+                                  //                                   ),
+                                  //                                 ),
+                                  //                               ],
+                                  //                             ),
+                                  //                             SizedBox(height: 1.5.h),
+                                  //                             Align(
+                                  //                               alignment: Alignment.centerLeft,
+                                  //                               child: Text(
+                                  //                                 'Group Name',
+                                  //                                 style: TextStyle(
+                                  //                                   fontSize: 16.sp,
+                                  //                                   fontWeight: FontWeight.w600,
+                                  //                                   fontFamily: AppConstants.manrope,
+                                  //                                 ),
+                                  //                               ),
+                                  //                             ),
+                                  //                             SizedBox(height: 0.8.h),
+                                  //                             Row(
+                                  //                               crossAxisAlignment: CrossAxisAlignment.center,
+                                  //                               children: [
+                                  //                                 Container(
+                                  //                                   width: 40,
+                                  //                                   height: 40,
+                                  //                                   decoration: BoxDecoration(
+                                  //                                     shape: BoxShape.circle,
+                                  //                                     color: Colors.grey.shade50,
+                                  //                                   ),
+                                  //                                   child: InkWell(
+                                  //                                     onTap: pickImageFromGallery,
+                                  //                                     child: selectedImage != null
+                                  //                                         ? ClipRRect(
+                                  //                                             borderRadius: BorderRadius.circular(20),
+                                  //                                             child: Image.file(
+                                  //                                               selectedImage!,
+                                  //                                               width: 40,
+                                  //                                               height: 40,
+                                  //                                               fit: BoxFit.cover,
+                                  //                                             ),
+                                  //                                           )
+                                  //                                         : Center(
+                                  //                                             child: Icon(
+                                  //                                               Icons.camera_alt_outlined,
+                                  //                                               color: Colors.black54,
+                                  //                                               size: 20,
+                                  //                                             ),
+                                  //                                           ),
+                                  //                                   ),
+                                  //                                 ),
+                                  //                                 SizedBox(width: 3.w),
+                                  //                                 Expanded(
+                                  //                                   child: Column(
+                                  //                                     crossAxisAlignment: CrossAxisAlignment.start,
+                                  //                                     children: [
+                                  //                                       SizedBox(
+                                  //                                         height: 4.5.h,
+                                  //                                         child: TextField(
+                                  //                                           controller: groupNameController,
+                                  //                                           decoration: InputDecoration(
+                                  //                                             hintText: 'Enter group name',
+                                  //                                             hintStyle: TextStyle(
+                                  //                                               color: Colors.grey.shade400,
+                                  //                                               fontFamily: AppConstants.manrope,
+                                  //                                               fontSize: 14.sp,
+                                  //                                             ),
+                                  //                                             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  //                                             filled: true,
+                                  //                                             fillColor: Colors.grey.shade50,
+                                  //                                             border: OutlineInputBorder(
+                                  //                                               borderRadius: BorderRadius.circular(10),
+                                  //                                               borderSide: BorderSide(color: Colors.grey.shade300),
+                                  //                                             ),
+                                  //                                             focusedBorder: OutlineInputBorder(
+                                  //                                               borderRadius: BorderRadius.circular(10),
+                                  //                                               borderSide: BorderSide(color: AppColors.maincolor, width: 1.2),
+                                  //                                             ),
+                                  //                                             errorBorder: OutlineInputBorder(
+                                  //                                               borderRadius: BorderRadius.circular(10),
+                                  //                                               borderSide: BorderSide(color: Colors.red, width: 1.2),
+                                  //                                             ),
+                                  //                                           ),
+                                  //                                           style: TextStyle(
+                                  //                                             fontSize: 14.sp,
+                                  //                                             fontFamily: AppConstants.manrope,
+                                  //                                           ),
+                                  //                                           onChanged: (value) {
+                                  //                                             setState(() {
+                                  //                                               groupNameError = "";
+                                  //                                             });
+                                  //                                           },
+                                  //                                         ),
+                                  //                                       ),
+                                  //                                       if (groupNameError.isNotEmpty)
+                                  //                                         Padding(
+                                  //                                           padding: EdgeInsets.only(top: 4, left: 4),
+                                  //                                           child: Text(
+                                  //                                             groupNameError,
+                                  //                                             style: TextStyle(
+                                  //                                               color: Colors.red,
+                                  //                                               fontSize: 12.sp,
+                                  //                                               fontFamily: AppConstants.manrope,
+                                  //                                             ),
+                                  //                                           ),
+                                  //                                         ),
+                                  //                                     ],
+                                  //                                   ),
+                                  //                                 ),
+                                  //                               ],
+                                  //                             ),
+                                  //                             Divider(
+                                  //                               height: 20,
+                                  //                               thickness: 1,
+                                  //                               color: Colors.grey.shade400,
+                                  //                             ),
+                                  //                             Container(
+                                  //                               decoration: BoxDecoration(
+                                  //                                 color: Colors.grey.shade100,
+                                  //                                 borderRadius: BorderRadius.circular(10),
+                                  //                               ),
+                                  //                               child: TextField(
+                                  //                                 controller: searchController,
+                                  //                                 onChanged: (value) {
+                                  //                                   setState(() {
+                                  //                                     searchQuery = value;
+                                  //                                   });
+                                  //                                 },
+                                  //                                 decoration: InputDecoration(
+                                  //                                   hintText: 'Search members',
+                                  //                                   prefixIcon: Icon(Icons.search, color: Colors.grey.shade600),
+                                  //                                   border: InputBorder.none,
+                                  //                                   contentPadding: EdgeInsets.symmetric(vertical: 12),
+                                  //                                 ),
+                                  //                                 style: TextStyle(
+                                  //                                   fontSize: 14.sp,
+                                  //                                   fontFamily: AppConstants.manrope,
+                                  //                                 ),
+                                  //                               ),
+                                  //                             ),
+                                  //                             SizedBox(height: 1.h),
+                                  //                             Row(
+                                  //                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  //                               children: [
+                                  //                                 Text(
+                                  //                                   'Select Members',
+                                  //                                   style: TextStyle(
+                                  //                                     fontSize: 16.sp,
+                                  //                                     fontWeight: FontWeight.w600,
+                                  //                                     fontFamily: AppConstants.manrope,
+                                  //                                   ),
+                                  //                                 ),
+                                  //                                 Text(
+                                  //                                   '${selectedMembers.length} selected',
+                                  //                                   style: TextStyle(
+                                  //                                     fontSize: 14.sp,
+                                  //                                     fontWeight: FontWeight.w500,
+                                  //                                     fontFamily: AppConstants.manrope,
+                                  //                                     color: AppColors.maincolor,
+                                  //                                   ),
+                                  //                                 ),
+                                  //                               ],
+                                  //                             ),
+                                  //                             SizedBox(height: 0.8.h),
+                                  //                             Container(
+                                  //                               height: 32.h,
+                                  //                               decoration: BoxDecoration(
+                                  //                                 color: Colors.white,
+                                  //                                 borderRadius: BorderRadius.circular(12),
+                                  //                               ),
+                                  //                               child: Scrollbar(
+                                  //                                 thumbVisibility: true,
+                                  //                                 controller: listScrollController,
+                                  //                                 radius: Radius.circular(8),
+                                  //                                 thickness: 4,
+                                  //                                 child: filteredUsers.isEmpty
+                                  //                                     ? Center(
+                                  //                                         child: Text(
+                                  //                                           searchQuery.isEmpty ? "No users available" : "No matching members found",
+                                  //                                           style: TextStyle(
+                                  //                                             fontSize: 14.sp,
+                                  //                                             fontFamily: AppConstants.manrope,
+                                  //                                             color: Colors.grey.shade600,
+                                  //                                           ),
+                                  //                                         ),
+                                  //                                       )
+                                  //                                     : ListView.separated(
+                                  //                                         controller: listScrollController,
+                                  //                                         padding: EdgeInsets.zero,
+                                  //                                         itemCount: filteredUsers.length,
+                                  //                                         separatorBuilder: (_, __) => Divider(height: 1, thickness: 0.5, color: Colors.grey.shade200),
+                                  //                                         itemBuilder: (context, index) {
+                                  //                                           final user = filteredUsers[index];
+                                  //                                           final memberId = user?.userId.toString() ?? "";
+                                  //                                           final isSelected = selectedMembers.contains(memberId);
 
-                                                                        Get.back();
-                                                                        Get.snackbar(
-                                                                          'Friend Request Sent',
-                                                                          'Friend requests sent to ${selectedFriends.length} friends',
-                                                                          backgroundColor: Colors.green.withOpacity(
-                                                                            0.7,
-                                                                          ),
-                                                                          colorText:
-                                                                              Colors.white,
-                                                                          snackPosition:
-                                                                              SnackPosition.BOTTOM,
-                                                                        );
-                                                                      },
-                                                                      radius:
-                                                                          3.0.w,
-                                                                      color:
-                                                                          AppColors
-                                                                              .maincolor,
-                                                                      fontcolor:
-                                                                          Colors
-                                                                              .white,
-                                                                      height:
-                                                                          4.5.h,
-                                                                      width:
-                                                                          39.w,
-                                                                      fontsize:
-                                                                          16.sp,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                              );
-                                              print("New Friend Pressed");
-                                            },
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  "New Friend",
-                                                  style: TextStyle(
-                                                    fontFamily:
-                                                        AppConstants.manrope,
-                                                    fontSize: 16.sp,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                                SizedBox(width: 2.w),
-                                                Icon(
-                                                  Icons
-                                                      .add_circle_outline_rounded,
-                                                  color: Colors.grey,
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                          : InkWell(
-                                            onTap: () {
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  String groupNameError = "";
-                                                  String memberSelectionError =
-                                                      "";
-                                                  final ScrollController
-                                                  dialogScrollController =
-                                                      ScrollController();
-                                                  final ScrollController
-                                                  listScrollController =
-                                                      ScrollController();
+                                  //                                           return ListTile(
+                                  //                                             contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  //                                             leading: CircleAvatar(
+                                  //                                               radius: 20,
+                                  //                                               backgroundColor: Colors.grey.shade200,
+                                  //                                               child: ClipOval(
+                                  //                                                 child: CachedNetworkImage(
+                                  //                                                   imageUrl: user?.user?.profile ?? "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
+                                  //                                                   placeholder: (context, url) => Image.asset(
+                                  //                                                     'assets/images/person.jpg',
+                                  //                                                     fit: BoxFit.cover,
+                                  //                                                   ),
+                                  //                                                   errorWidget: (context, url, error) => Image.asset(
+                                  //                                                     'assets/images/person.jpg',
+                                  //                                                     fit: BoxFit.cover,
+                                  //                                                   ),
+                                  //                                                   width: 40,
+                                  //                                                   height: 40,
+                                  //                                                   fit: BoxFit.cover,
+                                  //                                                 ),
+                                  //                                               ),
+                                  //                                             ),
+                                  //                                             title: Text(
+                                  //                                               "${user?.user?.firstName ?? ""} ${user?.user?.lastName ?? "NA"}",
+                                  //                                               style: TextStyle(
+                                  //                                                 fontFamily: AppConstants.manrope,
+                                  //                                                 fontWeight: FontWeight.w500,
+                                  //                                                 fontSize: 14.sp,
+                                  //                                               ),
+                                  //                                             ),
+                                  //                                             trailing: Checkbox(
+                                  //                                               value: isSelected,
+                                  //                                               onChanged: (selected) {
+                                  //                                                 setState(() {
+                                  //                                                   if (selected == true) {
+                                  //                                                     selectedMembers.add(memberId);
+                                  //                                                   } else {
+                                  //                                                     selectedMembers.remove(memberId);
+                                  //                                                   }
+                                  //                                                   memberSelectionError = "";
+                                  //                                                 });
+                                  //                                               },
+                                  //                                               activeColor: AppColors.maincolor,
+                                  //                                             ),
+                                  //                                             tileColor: isSelected ? Colors.blue.withOpacity(0.1) : null,
+                                  //                                             selected: isSelected,
+                                  //                                             dense: true,
+                                  //                                             onTap: () {
+                                  //                                               setState(() {
+                                  //                                                 if (isSelected) {
+                                  //                                                   selectedMembers.remove(memberId);
+                                  //                                                 } else {
+                                  //                                                   selectedMembers.add(memberId);
+                                  //                                                 }
+                                  //                                                 memberSelectionError = "";
+                                  //                                               });
+                                  //                                             },
+                                  //                                           );
+                                  //                                         },
+                                  //                                       ),
+                                  //                               ),
+                                  //                             ),
+                                  //                             if (memberSelectionError.isNotEmpty)
+                                  //                               Padding(
+                                  //                                 padding: EdgeInsets.only(top: 4, left: 4),
+                                  //                                 child: Align(
+                                  //                                   alignment: Alignment.center,
+                                  //                                   child: Text(
+                                  //                                     memberSelectionError,
+                                  //                                     style: TextStyle(
+                                  //                                       color: Colors.red,
+                                  //                                       fontSize: 14.sp,
+                                  //                                       fontFamily: AppConstants.manrope,
+                                  //                                     ),
+                                  //                                   ),
+                                  //                                 ),
+                                  //                               ),
+                                  //                             SizedBox(height: 2.h),
+                                  //                             Row(
+                                  //                               mainAxisAlignment: MainAxisAlignment.end,
+                                  //                               children: [
+                                  //                                 batan(
+                                  //                                   title: "Cancel",
+                                  //                                   route: () {
+                                  //                                     groupNameController.clear();
+                                  //                                     selectedMembers.clear();
+                                  //                                     selectedImage = null;
+                                  //                                     imagePath = '';
+                                  //                                     Get.back();
+                                  //                                   },
+                                  //                                   radius: 3.0.w,
+                                  //                                   color: AppColors.maincolor,
+                                  //                                   fontcolor: Colors.white,
+                                  //                                   height: 4.5.h,
+                                  //                                   width: 41.w,
+                                  //                                   fontsize: 15.5.sp,
+                                  //                                 ),
+                                  //                                 SizedBox(width: 3.w),
+                                  //                                 batan(
+                                  //                                   title: "Create Group",
+                                  //                                   route: () {
+                                  //                                     if (groupNameController.text.trim().isEmpty) {
+                                  //                                       setState(() {
+                                  //                                         groupNameError = "Please enter group name";
+                                  //                                         memberSelectionError = "";
+                                  //                                       });
+                                  //                                       return;
+                                  //                                     }
 
-                                                  final TextEditingController
-                                                  searchController =
-                                                      TextEditingController();
-                                                  String searchQuery = "";
+                                  //                                     if (selectedMembers.isEmpty) {
+                                  //                                       setState(() {
+                                  //                                         memberSelectionError = "Please select at least one member";
+                                  //                                         groupNameError = "";
+                                  //                                       });
+                                  //                                       return;
+                                  //                                     }
 
-                                                  return StatefulBuilder(
-                                                    builder: (
-                                                      context,
-                                                      setState,
-                                                    ) {
-                                                      List<dynamic>
-                                                      filteredUsers =
-                                                          chatuserlistmodel?.data?.where((
-                                                            user,
-                                                          ) {
-                                                            final String
-                                                            fullName =
-                                                                "${user.user?.firstName ?? ''} ${user.user?.lastName ?? ''}"
-                                                                    .toLowerCase();
-                                                            return fullName
-                                                                .contains(
-                                                                  searchQuery
-                                                                      .toLowerCase(),
-                                                                );
-                                                          })?.toList() ??
-                                                          [];
-
-                                                      Future<void>
-                                                      pickImageFromGallery() async {
-                                                        try {
-                                                          final ImagePicker
-                                                          _picker =
-                                                              ImagePicker();
-                                                          final XFile?
-                                                          image = await _picker
-                                                              .pickImage(
-                                                                source:
-                                                                    ImageSource
-                                                                        .gallery,
-                                                                imageQuality:
-                                                                    70,
-                                                              );
-
-                                                          if (image != null) {
-                                                            setState(() {
-                                                              selectedImage =
-                                                                  io.File(
-                                                                    image.path,
-                                                                  );
-                                                              imagePath =
-                                                                  image.path;
-                                                              print(
-                                                                "Selected image path: ${image.path}",
-                                                              );
-                                                            });
-                                                          }
-                                                        } catch (e) {
-                                                          print(
-                                                            "Error picking image: $e",
-                                                          );
-                                                        }
-                                                      }
-
-                                                      return Dialog(
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                20,
-                                                              ),
-                                                        ),
-                                                        insetPadding:
-                                                            EdgeInsets.symmetric(
-                                                              horizontal: 12,
-                                                              vertical: 16,
-                                                            ),
-                                                        child: Container(
-                                                          constraints:
-                                                              BoxConstraints(
-                                                                maxHeight:
-                                                                    MediaQuery.of(
-                                                                      context,
-                                                                    ).size.height *
-                                                                    0.8,
-                                                              ),
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 16,
-                                                                vertical: 16,
-                                                              ),
-                                                          decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  20,
-                                                                ),
-                                                            color: Colors.white,
-                                                          ),
-                                                          child: SingleChildScrollView(
-                                                            keyboardDismissBehavior:
-                                                                ScrollViewKeyboardDismissBehavior
-                                                                    .onDrag,
-                                                            controller:
-                                                                dialogScrollController,
-                                                            child: Column(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              children: [
-                                                                Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Icon(
-                                                                      Icons
-                                                                          .group_add,
-                                                                      color:
-                                                                          AppColors
-                                                                              .maincolor,
-                                                                      size: 24,
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width:
-                                                                          2.w,
-                                                                    ),
-                                                                    Text(
-                                                                      'Create New Group',
-                                                                      style: TextStyle(
-                                                                        color:
-                                                                            Colors.black,
-                                                                        fontSize:
-                                                                            18.sp,
-                                                                        fontWeight:
-                                                                            FontWeight.w700,
-                                                                        fontFamily:
-                                                                            AppConstants.manrope,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 1.5.h,
-                                                                ),
-                                                                Align(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .centerLeft,
-                                                                  child: Text(
-                                                                    'Group Name',
-                                                                    style: TextStyle(
-                                                                      fontSize:
-                                                                          16.sp,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w600,
-                                                                      fontFamily:
-                                                                          AppConstants
-                                                                              .manrope,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 0.8.h,
-                                                                ),
-                                                                Row(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Container(
-                                                                      width: 40,
-                                                                      height:
-                                                                          40,
-                                                                      decoration: BoxDecoration(
-                                                                        shape:
-                                                                            BoxShape.circle,
-                                                                        color:
-                                                                            Colors.grey.shade50,
-                                                                      ),
-                                                                      child: InkWell(
-                                                                        onTap:
-                                                                            pickImageFromGallery,
-                                                                        child:
-                                                                            selectedImage !=
-                                                                                    null
-                                                                                ? ClipRRect(
-                                                                                  borderRadius: BorderRadius.circular(
-                                                                                    20,
-                                                                                  ),
-                                                                                  child: Image.file(
-                                                                                    selectedImage!,
-                                                                                    width:
-                                                                                        40,
-                                                                                    height:
-                                                                                        40,
-                                                                                    fit:
-                                                                                        BoxFit.cover,
-                                                                                  ),
-                                                                                )
-                                                                                : Center(
-                                                                                  child: Icon(
-                                                                                    Icons.camera_alt_outlined,
-                                                                                    color:
-                                                                                        Colors.black54,
-                                                                                    size:
-                                                                                        20,
-                                                                                  ),
-                                                                                ),
-                                                                      ),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width:
-                                                                          3.w,
-                                                                    ),
-                                                                    Expanded(
-                                                                      child: Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.start,
-                                                                        children: [
-                                                                          SizedBox(
-                                                                            height:
-                                                                                4.5.h,
-                                                                            child: TextField(
-                                                                              controller:
-                                                                                  groupNameController,
-                                                                              decoration: InputDecoration(
-                                                                                hintText:
-                                                                                    'Enter group name',
-                                                                                hintStyle: TextStyle(
-                                                                                  color:
-                                                                                      Colors.grey.shade400,
-                                                                                  fontFamily:
-                                                                                      AppConstants.manrope,
-                                                                                  fontSize:
-                                                                                      14.sp,
-                                                                                ),
-                                                                                contentPadding: EdgeInsets.symmetric(
-                                                                                  horizontal:
-                                                                                      12,
-                                                                                  vertical:
-                                                                                      8,
-                                                                                ),
-                                                                                filled:
-                                                                                    true,
-                                                                                fillColor:
-                                                                                    Colors.grey.shade50,
-                                                                                border: OutlineInputBorder(
-                                                                                  borderRadius: BorderRadius.circular(
-                                                                                    10,
-                                                                                  ),
-                                                                                  borderSide: BorderSide(
-                                                                                    color:
-                                                                                        Colors.grey.shade300,
-                                                                                  ),
-                                                                                ),
-                                                                                focusedBorder: OutlineInputBorder(
-                                                                                  borderRadius: BorderRadius.circular(
-                                                                                    10,
-                                                                                  ),
-                                                                                  borderSide: BorderSide(
-                                                                                    color:
-                                                                                        AppColors.maincolor,
-                                                                                    width:
-                                                                                        1.2,
-                                                                                  ),
-                                                                                ),
-                                                                                errorBorder: OutlineInputBorder(
-                                                                                  borderRadius: BorderRadius.circular(
-                                                                                    10,
-                                                                                  ),
-                                                                                  borderSide: BorderSide(
-                                                                                    color:
-                                                                                        Colors.red,
-                                                                                    width:
-                                                                                        1.2,
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                              style: TextStyle(
-                                                                                fontSize:
-                                                                                    14.sp,
-                                                                                fontFamily:
-                                                                                    AppConstants.manrope,
-                                                                              ),
-                                                                              onChanged: (
-                                                                                value,
-                                                                              ) {
-                                                                                setState(
-                                                                                  () {
-                                                                                    groupNameError =
-                                                                                        "";
-                                                                                  },
-                                                                                );
-                                                                              },
-                                                                            ),
-                                                                          ),
-                                                                          if (groupNameError
-                                                                              .isNotEmpty)
-                                                                            Padding(
-                                                                              padding: EdgeInsets.only(
-                                                                                top:
-                                                                                    4,
-                                                                                left:
-                                                                                    4,
-                                                                              ),
-                                                                              child: Text(
-                                                                                groupNameError,
-                                                                                style: TextStyle(
-                                                                                  color:
-                                                                                      Colors.red,
-                                                                                  fontSize:
-                                                                                      12.sp,
-                                                                                  fontFamily:
-                                                                                      AppConstants.manrope,
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                Divider(
-                                                                  height: 20,
-                                                                  thickness: 1,
-                                                                  color:
-                                                                      Colors
-                                                                          .grey
-                                                                          .shade400,
-                                                                ),
-                                                                Container(
-                                                                  decoration: BoxDecoration(
-                                                                    color:
-                                                                        Colors
-                                                                            .grey
-                                                                            .shade100,
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                          10,
-                                                                        ),
-                                                                  ),
-                                                                  child: TextField(
-                                                                    controller:
-                                                                        searchController,
-                                                                    onChanged: (
-                                                                      value,
-                                                                    ) {
-                                                                      setState(() {
-                                                                        searchQuery =
-                                                                            value;
-                                                                      });
-                                                                    },
-                                                                    decoration: InputDecoration(
-                                                                      hintText:
-                                                                          'Search members',
-                                                                      prefixIcon: Icon(
-                                                                        Icons
-                                                                            .search,
-                                                                        color:
-                                                                            Colors.grey.shade600,
-                                                                      ),
-                                                                      border:
-                                                                          InputBorder
-                                                                              .none,
-                                                                      contentPadding: EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            12,
-                                                                      ),
-                                                                    ),
-                                                                    style: TextStyle(
-                                                                      fontSize:
-                                                                          14.sp,
-                                                                      fontFamily:
-                                                                          AppConstants
-                                                                              .manrope,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 1.h,
-                                                                ),
-                                                                Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .spaceBetween,
-                                                                  children: [
-                                                                    Text(
-                                                                      'Select Members',
-                                                                      style: TextStyle(
-                                                                        fontSize:
-                                                                            16.sp,
-                                                                        fontWeight:
-                                                                            FontWeight.w600,
-                                                                        fontFamily:
-                                                                            AppConstants.manrope,
-                                                                      ),
-                                                                    ),
-                                                                    Text(
-                                                                      '${selectedMembers.length} selected',
-                                                                      style: TextStyle(
-                                                                        fontSize:
-                                                                            14.sp,
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                        fontFamily:
-                                                                            AppConstants.manrope,
-                                                                        color:
-                                                                            AppColors.maincolor,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 0.8.h,
-                                                                ),
-                                                                Container(
-                                                                  height: 32.h,
-                                                                  decoration: BoxDecoration(
-                                                                    color:
-                                                                        Colors
-                                                                            .white,
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                          12,
-                                                                        ),
-                                                                  ),
-                                                                  child: Scrollbar(
-                                                                    thumbVisibility:
-                                                                        true,
-                                                                    controller:
-                                                                        listScrollController,
-                                                                    radius:
-                                                                        Radius.circular(
-                                                                          8,
-                                                                        ),
-                                                                    thickness:
-                                                                        4,
-                                                                    child:
-                                                                        filteredUsers.isEmpty
-                                                                            ? Center(
-                                                                              child: Text(
-                                                                                searchQuery.isEmpty
-                                                                                    ? "No users available"
-                                                                                    : "No matching members found",
-                                                                                style: TextStyle(
-                                                                                  fontSize:
-                                                                                      14.sp,
-                                                                                  fontFamily:
-                                                                                      AppConstants.manrope,
-                                                                                  color:
-                                                                                      Colors.grey.shade600,
-                                                                                ),
-                                                                              ),
-                                                                            )
-                                                                            : ListView.separated(
-                                                                              controller:
-                                                                                  listScrollController,
-                                                                              padding:
-                                                                                  EdgeInsets.zero,
-                                                                              itemCount:
-                                                                                  filteredUsers.length,
-                                                                              separatorBuilder:
-                                                                                  (
-                                                                                    _,
-                                                                                    __,
-                                                                                  ) => Divider(
-                                                                                    height:
-                                                                                        1,
-                                                                                    thickness:
-                                                                                        0.5,
-                                                                                    color:
-                                                                                        Colors.grey.shade200,
-                                                                                  ),
-                                                                              itemBuilder: (
-                                                                                context,
-                                                                                index,
-                                                                              ) {
-                                                                                final user =
-                                                                                    filteredUsers[index];
-                                                                                final memberId =
-                                                                                    user?.userId.toString() ??
-                                                                                    "";
-                                                                                final isSelected = selectedMembers.contains(
-                                                                                  memberId,
-                                                                                );
-
-                                                                                return ListTile(
-                                                                                  contentPadding: EdgeInsets.symmetric(
-                                                                                    horizontal:
-                                                                                        8,
-                                                                                    vertical:
-                                                                                        2,
-                                                                                  ),
-                                                                                  leading: CircleAvatar(
-                                                                                    radius:
-                                                                                        20,
-                                                                                    backgroundColor:
-                                                                                        Colors.grey.shade200,
-                                                                                    child: ClipOval(
-                                                                                      child: CachedNetworkImage(
-                                                                                        imageUrl:
-                                                                                            user?.user?.profile ??
-                                                                                            "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
-                                                                                        placeholder:
-                                                                                            (
-                                                                                              context,
-                                                                                              url,
-                                                                                            ) => Image.asset(
-                                                                                              'assets/images/person.jpg',
-                                                                                              fit:
-                                                                                                  BoxFit.cover,
-                                                                                            ),
-                                                                                        errorWidget:
-                                                                                            (
-                                                                                              context,
-                                                                                              url,
-                                                                                              error,
-                                                                                            ) => Image.asset(
-                                                                                              'assets/images/person.jpg',
-                                                                                              fit:
-                                                                                                  BoxFit.cover,
-                                                                                            ),
-                                                                                        width:
-                                                                                            40,
-                                                                                        height:
-                                                                                            40,
-                                                                                        fit:
-                                                                                            BoxFit.cover,
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  title: Text(
-                                                                                    "${user?.user?.firstName ?? ""} ${user?.user?.lastName ?? "NA"}",
-                                                                                    style: TextStyle(
-                                                                                      fontFamily:
-                                                                                          AppConstants.manrope,
-                                                                                      fontWeight:
-                                                                                          FontWeight.w500,
-                                                                                      fontSize:
-                                                                                          14.sp,
-                                                                                    ),
-                                                                                  ),
-                                                                                  trailing: Checkbox(
-                                                                                    value:
-                                                                                        isSelected,
-                                                                                    onChanged: (
-                                                                                      selected,
-                                                                                    ) {
-                                                                                      setState(
-                                                                                        () {
-                                                                                          if (selected ==
-                                                                                              true) {
-                                                                                            selectedMembers.add(
-                                                                                              memberId,
-                                                                                            );
-                                                                                          } else {
-                                                                                            selectedMembers.remove(
-                                                                                              memberId,
-                                                                                            );
-                                                                                          }
-                                                                                          memberSelectionError =
-                                                                                              "";
-                                                                                        },
-                                                                                      );
-                                                                                    },
-                                                                                    activeColor:
-                                                                                        AppColors.maincolor,
-                                                                                  ),
-                                                                                  tileColor:
-                                                                                      isSelected
-                                                                                          ? Colors.blue.withOpacity(
-                                                                                            0.1,
-                                                                                          )
-                                                                                          : null,
-                                                                                  selected:
-                                                                                      isSelected,
-                                                                                  dense:
-                                                                                      true,
-                                                                                  onTap: () {
-                                                                                    setState(
-                                                                                      () {
-                                                                                        if (isSelected) {
-                                                                                          selectedMembers.remove(
-                                                                                            memberId,
-                                                                                          );
-                                                                                        } else {
-                                                                                          selectedMembers.add(
-                                                                                            memberId,
-                                                                                          );
-                                                                                        }
-                                                                                        memberSelectionError =
-                                                                                            "";
-                                                                                      },
-                                                                                    );
-                                                                                  },
-                                                                                );
-                                                                              },
-                                                                            ),
-                                                                  ),
-                                                                ),
-                                                                if (memberSelectionError
-                                                                    .isNotEmpty)
-                                                                  Padding(
-                                                                    padding:
-                                                                        EdgeInsets.only(
-                                                                          top:
-                                                                              4,
-                                                                          left:
-                                                                              4,
-                                                                        ),
-                                                                    child: Align(
-                                                                      alignment:
-                                                                          Alignment
-                                                                              .center,
-                                                                      child: Text(
-                                                                        memberSelectionError,
-                                                                        style: TextStyle(
-                                                                          color:
-                                                                              Colors.red,
-                                                                          fontSize:
-                                                                              14.sp,
-                                                                          fontFamily:
-                                                                              AppConstants.manrope,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                SizedBox(
-                                                                  height: 2.h,
-                                                                ),
-                                                                Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .end,
-                                                                  children: [
-                                                                    batan(
-                                                                      title:
-                                                                          "Cancel",
-                                                                      route: () {
-                                                                        groupNameController
-                                                                            .clear();
-                                                                        selectedMembers
-                                                                            .clear();
-                                                                        selectedImage =
-                                                                            null;
-                                                                        imagePath =
-                                                                            '';
-                                                                        Get.back();
-                                                                      },
-                                                                      radius:
-                                                                          3.0.w,
-                                                                      color:
-                                                                          AppColors
-                                                                              .maincolor,
-                                                                      fontcolor:
-                                                                          Colors
-                                                                              .white,
-                                                                      height:
-                                                                          4.5.h,
-                                                                      width:
-                                                                          41.w,
-                                                                      fontsize:
-                                                                          15.5.sp,
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width:
-                                                                          3.w,
-                                                                    ),
-                                                                    batan(
-                                                                      title:
-                                                                          "Create Group",
-                                                                      route: () {
-                                                                        if (groupNameController
-                                                                            .text
-                                                                            .trim()
-                                                                            .isEmpty) {
-                                                                          setState(() {
-                                                                            groupNameError =
-                                                                                "Please enter group name";
-                                                                            memberSelectionError =
-                                                                                "";
-                                                                          });
-                                                                          return;
-                                                                        }
-
-                                                                        if (selectedMembers
-                                                                            .isEmpty) {
-                                                                          setState(() {
-                                                                            memberSelectionError =
-                                                                                "Please select at least one member";
-                                                                            groupNameError =
-                                                                                "";
-                                                                          });
-                                                                          return;
-                                                                        }
-
-                                                                        creategrouplistdAp();
-                                                                        Get.back();
-                                                                      },
-                                                                      radius:
-                                                                          3.0.w,
-                                                                      color:
-                                                                          AppColors
-                                                                              .maincolor,
-                                                                      fontcolor:
-                                                                          Colors
-                                                                              .white,
-                                                                      height:
-                                                                          4.5.h,
-                                                                      width:
-                                                                          39.w,
-                                                                      fontsize:
-                                                                          15.sp,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                              );
-                                              print("Create Group Pressed");
-                                            },
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  "Create Group",
-                                                  style: TextStyle(
-                                                    fontFamily:
-                                                        AppConstants.manrope,
-                                                    fontSize: 16.sp,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                                SizedBox(width: 2.w),
-                                                Icon(
-                                                  Icons
-                                                      .add_circle_outline_rounded,
-                                                  color: Colors.grey,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
+                                  //                                     creategrouplistdAp();
+                                  //                                     Get.back();
+                                  //                                   },
+                                  //                                   radius: 3.0.w,
+                                  //                                   color: AppColors.maincolor,
+                                  //                                   fontcolor: Colors.white,
+                                  //                                   height: 4.5.h,
+                                  //                                   width: 39.w,
+                                  //                                   fontsize: 15.sp,
+                                  //                                 ),
+                                  //                               ],
+                                  //                             ),
+                                  //                           ],
+                                  //                         ),
+                                  //                       ),
+                                  //                     ),
+                                  //                   );
+                                  //                 },
+                                  //               );
+                                  //             },
+                                  //           );
+                                  //           print(
+                                  //               "Create Group Pressed");
+                                  //         },
+                                  //         child: Row(
+                                  //           children: [
+                                  //             Text(
+                                  //               "Create Group",
+                                  //               style: TextStyle(
+                                  //                 fontFamily:
+                                  //                     AppConstants
+                                  //                         .manrope,
+                                  //                 fontSize: 16.sp,
+                                  //                 fontWeight:
+                                  //                     FontWeight
+                                  //                         .bold,
+                                  //                 color:
+                                  //                     Colors.grey,
+                                  //               ),
+                                  //             ),
+                                  //             SizedBox(
+                                  //                 width: 2.w),
+                                  //             Icon(
+                                  //                 Icons
+                                  //                     .add_circle_outline_rounded,
+                                  //                 color: Colors
+                                  //                     .grey),
+                                  //           ],
+                                  //         ),
+                                  //       ),
                                 ),
                               ),
                         ],
@@ -2421,11 +1870,10 @@ class _MessageboardState extends State<Messageboard> {
                                 ),
                               )
                               : Container(
-                                height: 65.h,
+                                height: 60.h,
                                 child: ListView.builder(
                                   padding: EdgeInsets.zero,
-                                  itemCount:
-                                      messageBoardModal?.data?.length ?? 0,
+                                  itemCount: messageBoardModal?.data?.length,
                                   itemBuilder: (context, index) {
                                     final post =
                                         messageBoardModal?.data?[index];
@@ -2478,7 +1926,7 @@ class _MessageboardState extends State<Messageboard> {
                                                                   .user
                                                                   ?.conciergeImage ==
                                                               null
-                                                          ? "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png"
+                                                          ? "https://portal.wavee.ai/public/desktop/front/company_logo/Screenshot+2025-06-07+at+11.07.09.png"
                                                           : messageBoardModal
                                                                   ?.data?[index]
                                                                   .user
@@ -2490,7 +1938,7 @@ class _MessageboardState extends State<Messageboard> {
                                               ),
                                               SizedBox(width: 2.w),
                                               Text(
-                                                "${messageBoardModal?.data?[0].user?.firstName ?? ""} ${messageBoardModal?.data?[0].user?.lastName ?? ""}",
+                                                "${messageBoardModal?.data?[index].user?.firstName ?? ""} ${messageBoardModal?.data?[index].user?.lastName ?? ""}",
                                                 style: TextStyle(
                                                   fontFamily:
                                                       AppConstants.manrope,
@@ -2500,7 +1948,7 @@ class _MessageboardState extends State<Messageboard> {
                                               ),
                                               SizedBox(width: 2.w),
                                               Text(
-                                                "•${formatPostDate(messageBoardModal?.data?[index].user?.createdAt)}",
+                                                "•${formatPostDate(messageBoardModal?.data?[index].createdAt)}",
                                                 style: TextStyle(
                                                   fontSize: 14.sp,
                                                   color: Colors.grey,
@@ -2579,35 +2027,42 @@ class _MessageboardState extends State<Messageboard> {
                                                             onTap: () async {
                                                               final url =
                                                                   post.file![0];
-                                                              if (await canLaunchUrl(
-                                                                Uri.parse(url),
-                                                              )) {
-                                                                Get.to(
-                                                                  PdfView(
-                                                                    link: url,
-                                                                  ),
-                                                                );
-                                                              } else {
-                                                                ScaffoldMessenger.of(
-                                                                  context,
-                                                                ).showSnackBar(
-                                                                  SnackBar(
-                                                                    content: Text(
-                                                                      "Cannot open PDF",
-                                                                    ),
-                                                                  ),
-                                                                );
-                                                              }
+                                                              final uri =
+                                                                  Uri.parse(
+                                                                    url,
+                                                                  );
+                                                              Get.to(
+                                                                PdfView(
+                                                                  link:
+                                                                      uri.toString(),
+                                                                ),
+                                                              );
+                                                              // if (await canLaunchUrl(uri)) {
+                                                              //   final launched = await launchUrl(
+                                                              //     uri,
+                                                              //     mode: LaunchMode.externalApplication,
+                                                              //   );
+                                                              //   if (!launched) {
+                                                              //     ScaffoldMessenger.of(context).showSnackBar(
+                                                              //       SnackBar(content: Text("Failed to open externally")),
+                                                              //     );
+                                                              //   }
+                                                              // } else {
+                                                              //   ScaffoldMessenger.of(context).showSnackBar(
+                                                              //     SnackBar(content: Text("Cannot open PDF")),
+                                                              //   );
+                                                              // }
                                                             },
+
                                                             child: Container(
                                                               width:
                                                                   double
                                                                       .infinity,
-                                                              height: 30.h,
+                                                              height: 8.h,
                                                               color:
                                                                   Colors
                                                                       .grey
-                                                                      .shade300,
+                                                                      .shade200,
                                                               child: Center(
                                                                 child: Row(
                                                                   mainAxisSize:
@@ -2621,7 +2076,7 @@ class _MessageboardState extends State<Messageboard> {
                                                                           Colors
                                                                               .red,
                                                                       size:
-                                                                          30.sp,
+                                                                          25.sp,
                                                                     ),
                                                                     SizedBox(
                                                                       width:
@@ -2632,6 +2087,8 @@ class _MessageboardState extends State<Messageboard> {
                                                                       style: TextStyle(
                                                                         fontSize:
                                                                             16.sp,
+                                                                        fontFamily:
+                                                                            AppConstants.manrope,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                       ),
@@ -2740,6 +2197,9 @@ class _MessageboardState extends State<Messageboard> {
                                                             isInProgress
                                                                 ? null
                                                                 : () {
+                                                                  print(
+                                                                    "like count${messageBoardModal?.data?[index].totalLikes}",
+                                                                  );
                                                                   if (index <
                                                                           isLikedList
                                                                               .length &&
@@ -2833,8 +2293,8 @@ class _MessageboardState extends State<Messageboard> {
                                 ),
                               )
                           : selectedOption == "Local"
-                          ? localPostModel?.data?.data?.length == null ||
-                                  localPostModel?.data?.data?.length == 0
+                          ? localpost_model?.data?.data?.length == null ||
+                                  localpost_model?.data?.data?.length == 0
                               ? Center(
                                 child: Container(
                                   height: 70.h,
@@ -2850,14 +2310,14 @@ class _MessageboardState extends State<Messageboard> {
                                 ),
                               )
                               : Container(
-                                height: 64.h,
+                                height: 60.h,
                                 child: ListView.builder(
                                   padding: EdgeInsets.zero,
                                   itemCount:
-                                      localPostModel?.data?.data?.length ?? 0,
+                                      localpost_model?.data?.data?.length,
                                   itemBuilder: (context, index) {
                                     final post =
-                                        localPostModel?.data?.data?[index];
+                                        localpost_model?.data?.data?[index];
                                     return Container(
                                       margin: EdgeInsets.symmetric(
                                         vertical: 0.5.h,
@@ -2901,21 +2361,33 @@ class _MessageboardState extends State<Messageboard> {
                                                     width: 1,
                                                   ),
                                                   image: DecorationImage(
-                                                    image: NetworkImage(
-                                                      localPostModel
-                                                              ?.data
-                                                              ?.data?[index]
-                                                              .users
-                                                              ?.first
-                                                              ?.profiles ??
-                                                          "",
-                                                    ),
+                                                    image:
+                                                        (localpost_model
+                                                                    ?.data
+                                                                    ?.data?[index]
+                                                                    .users?[0]
+                                                                    .profiles
+                                                                    ?.isNotEmpty ??
+                                                                false)
+                                                            ? CachedNetworkImageProvider(
+                                                              localpost_model!
+                                                                  .data!
+                                                                  .data![index]
+                                                                  .users![0]
+                                                                  .profiles!,
+                                                            )
+                                                            : const AssetImage(
+                                                                  'assets/images/waveeLogoShort.png',
+                                                                )
+                                                                as ImageProvider,
+                                                    fit: BoxFit.cover,
                                                   ),
                                                 ),
                                               ),
+
                                               SizedBox(width: 2.w),
                                               Text(
-                                                "${localPostModel?.data?.data?[index].users?[0].name ?? ""}",
+                                                "${localpost_model?.data?.data?[index].users?[0].name ?? ""}",
                                                 style: TextStyle(
                                                   fontFamily:
                                                       AppConstants.manrope,
@@ -2925,7 +2397,7 @@ class _MessageboardState extends State<Messageboard> {
                                               ),
                                               SizedBox(width: 2.w),
                                               Text(
-                                                "•${formatPostDate(localPostModel?.data?.data?[index].createdAt)}",
+                                                "•${formatPostDate(localpost_model?.data?.data?[index].createdAt)}",
                                                 style: TextStyle(
                                                   fontSize: 14.sp,
                                                   color: Colors.grey,
@@ -2948,7 +2420,6 @@ class _MessageboardState extends State<Messageboard> {
                                                           context,
                                                           post,
                                                         );
-                                                        print("Edit selected");
                                                       } else if (value ==
                                                           'delete') {
                                                         showCancelConfirmationDialog(
@@ -3026,7 +2497,7 @@ class _MessageboardState extends State<Messageboard> {
                                             ],
                                           ),
                                           Text(
-                                            "${localPostModel?.data?.data?[index].title ?? ""}",
+                                            "${localpost_model?.data?.data?[index].title ?? ""}",
                                             style: TextStyle(
                                               fontFamily: AppConstants.manrope,
                                               fontSize: 16.sp,
@@ -3035,7 +2506,7 @@ class _MessageboardState extends State<Messageboard> {
                                             ),
                                           ),
                                           ReadMoreText(
-                                            "${localPostModel?.data?.data?[index].text == null || localPostModel?.data?.data?[index].text == "" ? "N/A" : "${localPostModel?.data?.data?[index].text}"}",
+                                            "${localpost_model?.data?.data?[index].text == null || localpost_model?.data?.data?[index].text == "" ? "N/A" : "${localpost_model?.data?.data?[index].text}"}",
                                             trimLines: 4,
                                             trimLength: 146,
                                             colorClickableText: Colors.blue,
@@ -3186,7 +2657,7 @@ class _MessageboardState extends State<Messageboard> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    (localPostModel
+                                                    (localpost_model
                                                                 ?.data
                                                                 ?.data?[index]
                                                                 .totalComments)
@@ -3203,7 +2674,7 @@ class _MessageboardState extends State<Messageboard> {
                                                   ),
                                                   SizedBox(width: 2.w),
                                                   Text(
-                                                    (localPostModel
+                                                    (localpost_model
                                                                 ?.data
                                                                 ?.data?[index]
                                                                 .totalLikes)
@@ -3219,35 +2690,36 @@ class _MessageboardState extends State<Messageboard> {
                                                     ),
                                                   ),
                                                   SizedBox(width: 2.w),
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      try {
-                                                        final imageUrl =
-                                                            messageBoardModal
-                                                                ?.data?[index]
-                                                                ?.file
-                                                                .toString();
-                                                        final linkToShare =
-                                                            (imageUrl == null ||
-                                                                    imageUrl
-                                                                        .isEmpty)
-                                                                ? "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png"
-                                                                : imageUrl;
-                                                        shareConciergeImage(
-                                                          linkToShare,
-                                                        );
-                                                      } catch (e) {
-                                                        print(
-                                                          "Error sharing: $e",
-                                                        );
-                                                      }
-                                                    },
-                                                    child: Icon(
-                                                      Icons.share_outlined,
-                                                      size: 18.sp,
-                                                      color: Color(0XFF3E3E3E),
-                                                    ),
-                                                  ),
+                                                  // GestureDetector(
+                                                  //   onTap: () {
+                                                  //     try {
+                                                  //       final imageUrl =
+                                                  //           messageBoardModal
+                                                  //               ?.data?[
+                                                  //                   index]
+                                                  //               ?.file
+                                                  //               .toString();
+                                                  //       final linkToShare = (imageUrl ==
+                                                  //                   null ||
+                                                  //               imageUrl
+                                                  //                   .isEmpty)
+                                                  //           ? "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png"
+                                                  //           : imageUrl;
+                                                  //       shareConciergeImage(
+                                                  //           linkToShare);
+                                                  //     } catch (e) {
+                                                  //       print(
+                                                  //           "Error sharing: $e");
+                                                  //     }
+                                                  //   },
+                                                  //   child: Icon(
+                                                  //     Icons
+                                                  //         .share_outlined,
+                                                  //     size: 18.sp,
+                                                  //     color: Color(
+                                                  //         0XFF3E3E3E),
+                                                  //   ),
+                                                  // ),
                                                 ],
                                               ),
                                               Row(
@@ -3338,6 +2810,7 @@ class _MessageboardState extends State<Messageboard> {
                                                   InkWell(
                                                     onTap: () {
                                                       getComments1(
+                                                        context,
                                                         post?.id?.toString() ??
                                                             "",
                                                       );
@@ -3367,470 +2840,505 @@ class _MessageboardState extends State<Messageboard> {
                                   },
                                 ),
                               )
-                          : selectedOption == "Group"
-                          ? getgrouplistmodel?.data?.length == null ||
-                                  getgrouplistmodel?.data?.length == 0
-                              ? Center(
-                                child: Container(
-                                  height: 70.h,
-                                  child: Text(
-                                    "No Group available",
-                                    style: TextStyle(
-                                      fontSize: 17.sp,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.normal,
-                                      fontFamily: AppConstants.manrope,
-                                    ),
-                                  ),
-                                ),
-                              )
-                              : Container(
-                                height: 70.h,
-                                child: ListView.builder(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 2.w,
-                                    vertical: 1.h,
-                                  ),
-                                  itemCount:
-                                      getgrouplistmodel?.data?.length ?? 0,
-                                  itemBuilder: (context, index) {
-                                    final group =
-                                        getgrouplistmodel?.data?[index];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        Get.to(
-                                          () => GroupChatPage(
-                                            chatname: group?.name ?? '',
-                                            image: group?.images,
-                                            groupid: group?.id.toString() ?? '',
-                                            type: "residents",
-                                          ),
-                                        )?.then((value) {
-                                          if (value == 'refresh') {
-                                            GetMyJoinGroup();
-                                          }
-                                        });
-                                      },
-                                      child: Stack(
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                              bottom: 1.5.h,
-                                            ),
-                                            padding: EdgeInsets.all(2.w),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              border: Border.all(
-                                                color: Colors.grey,
-                                                width: 0.5,
-                                              ),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black12,
-                                                  blurRadius: 4,
-                                                  offset: Offset(0, 2),
-                                                ),
-                                              ],
-                                            ),
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Container(
-                                                  width: 17.w,
-                                                  height: 17.w,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    image: DecorationImage(
-                                                      image: CachedNetworkImageProvider(
-                                                        group?.images ??
-                                                            "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
-                                                      ),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(width: 3.w),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            Container(
-                                                              width: 10,
-                                                              height: 10,
-                                                              decoration: BoxDecoration(
-                                                                color:
-                                                                    Colors
-                                                                        .green,
-                                                                shape:
-                                                                    BoxShape
-                                                                        .circle,
-                                                                border: Border.all(
-                                                                  color:
-                                                                      Colors
-                                                                          .white,
-                                                                  width: 1.5,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              width: 1.w,
-                                                            ),
-                                                            Text(
-                                                              "Online",
-                                                              style: TextStyle(
-                                                                fontSize: 14.sp,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontFamily:
-                                                                    AppConstants
-                                                                        .manrope,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Text(
-                                                      group?.name ?? "N/A",
-                                                      style: TextStyle(
-                                                        fontSize: 16.sp,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                        color: Color(
-                                                          0XFF000000,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 0.5.h),
-                                                    Text(
-                                                      group
-                                                              ?.lastmessage
-                                                              ?.message
-                                                              ?.toString() ??
-                                                          "N/A",
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      maxLines: 1,
-                                                      style: TextStyle(
-                                                        fontSize: 13.sp,
-                                                        color: Color(
-                                                          0XFF000000,
-                                                        ),
-                                                        fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                        fontWeight:
-                                                            FontWeight.normal,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(width: 2.w),
-                                              ],
-                                            ),
-                                          ),
-                                          Positioned(
-                                            right: 2.w,
-                                            top: 1.5.h,
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  "Yesterday",
-                                                  style: TextStyle(
-                                                    fontSize: 15.sp,
-                                                    color: Color(0xFF000000),
-                                                    fontFamily:
-                                                        AppConstants.manrope,
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                  ),
-                                                ),
-                                                Icon(
-                                                  Icons
-                                                      .arrow_forward_ios_rounded,
-                                                  size: 15.sp,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              )
-                          : selectedOption == "Friends"
-                          ? getfriendListModel?.data?.length == null ||
-                                  getfriendListModel?.data?.length == 0
-                              ? Center(
-                                child: Container(
-                                  height: 70.h,
-                                  child: Text(
-                                    "No Friends available",
-                                    style: TextStyle(
-                                      fontSize: 17.sp,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.normal,
-                                      fontFamily: AppConstants.manrope,
-                                    ),
-                                  ),
-                                ),
-                              )
-                              : Container(
-                                height: 70.h,
-                                child: ListView.builder(
-                                  padding: EdgeInsets.zero,
-                                  itemCount:
-                                      getfriendListModel?.data?.length ?? 0,
-                                  itemBuilder: (context, index) {
-                                    final friend =
-                                        getfriendListModel?.data?[index];
-                                    String friendName =
-                                        (friend?.senderId.toString() ==
-                                                (loginModel?.data?.user?.id
-                                                        .toString() ??
-                                                    ""))
-                                            ? (friend?.receiverName
-                                                    ?.toString() ??
-                                                "")
-                                            : (friend?.senderName?.toString() ??
-                                                "");
+                          : SizedBox(),
+                      //  selectedOption == "Group"
+                      //     ? getgrouplistmodel?.data?.length == null ||
+                      //             getgrouplistmodel?.data?.length == 0
+                      //         ? Center(
+                      //             child: Container(
+                      //               height: 70.h,
+                      //               child: Text(
+                      //                 "No Group available",
+                      //                 style: TextStyle(
+                      //                   fontSize: 17.sp,
+                      //                   color: Colors.black,
+                      //                   fontWeight: FontWeight.normal,
+                      //                   fontFamily:
+                      //                       AppConstants.manrope,
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           )
+                      //         : Container(
+                      //             height: 70.h,
+                      //             child: ListView.builder(
+                      //               padding: EdgeInsets.symmetric(
+                      //                   horizontal: 2.w, vertical: 1.h),
+                      //               itemCount: getgrouplistmodel
+                      //                       ?.data?.length ??
+                      //                   0,
+                      //               itemBuilder: (context, index) {
+                      //                 final group = getgrouplistmodel
+                      //                     ?.data?[index];
+                      //                 return GestureDetector(
+                      //                   onTap: () {
+                      //                     Get.to(() => GroupChatPage(
+                      //                           chatname:
+                      //                               group?.name ?? '',
+                      //                           image: group?.images,
+                      //                           groupid: group?.id
+                      //                                   .toString() ??
+                      //                               '',
+                      //                           type: "residents",
+                      //                         ))?.then((value) {
+                      //                       if (value == 'refresh') {
+                      //                         GetMyJoinGroup();
+                      //                       }
+                      //                     });
+                      //                   },
+                      //                   child: Stack(
+                      //                     children: [
+                      //                       Container(
+                      //                         margin: EdgeInsets.only(
+                      //                             bottom: 1.5.h),
+                      //                         padding:
+                      //                             EdgeInsets.all(2.w),
+                      //                         decoration: BoxDecoration(
+                      //                           color: Colors.white,
+                      //                           borderRadius:
+                      //                               BorderRadius
+                      //                                   .circular(20),
+                      //                           border: Border.all(
+                      //                               color: Colors.grey,
+                      //                               width: 0.5),
+                      //                           boxShadow: [
+                      //                             BoxShadow(
+                      //                               color:
+                      //                                   Colors.black12,
+                      //                               blurRadius: 4,
+                      //                               offset:
+                      //                                   Offset(0, 2),
+                      //                             ),
+                      //                           ],
+                      //                         ),
+                      //                         child: Row(
+                      //                           crossAxisAlignment:
+                      //                               CrossAxisAlignment
+                      //                                   .center,
+                      //                           children: [
+                      //                             Container(
+                      //                               width: 17.w,
+                      //                               height: 17.w,
+                      //                               decoration:
+                      //                                   BoxDecoration(
+                      //                                 shape: BoxShape
+                      //                                     .circle,
+                      //                                 image:
+                      //                                     DecorationImage(
+                      //                                   image:
+                      //                                       CachedNetworkImageProvider(
+                      //                                     group?.images ??
+                      //                                         "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
+                      //                                   ),
+                      //                                   fit: BoxFit
+                      //                                       .cover,
+                      //                                 ),
+                      //                               ),
+                      //                             ),
+                      //                             SizedBox(width: 3.w),
+                      //                             Column(
+                      //                               crossAxisAlignment:
+                      //                                   CrossAxisAlignment
+                      //                                       .start,
+                      //                               children: [
+                      //                                 Row(
+                      //                                   children: [
+                      //                                     Row(
+                      //                                       children: [
+                      //                                         Container(
+                      //                                           width:
+                      //                                               10,
+                      //                                           height:
+                      //                                               10,
+                      //                                           decoration:
+                      //                                               BoxDecoration(
+                      //                                             color:
+                      //                                                 Colors.green,
+                      //                                             shape:
+                      //                                                 BoxShape.circle,
+                      //                                             border: Border.all(
+                      //                                                 color: Colors.white,
+                      //                                                 width: 1.5),
+                      //                                           ),
+                      //                                         ),
+                      //                                         SizedBox(
+                      //                                           width:
+                      //                                               1.w,
+                      //                                         ),
+                      //                                         Text(
+                      //                                           "Online",
+                      //                                           style:
+                      //                                               TextStyle(
+                      //                                             fontSize:
+                      //                                                 14.sp,
+                      //                                             fontWeight:
+                      //                                                 FontWeight.bold,
+                      //                                             fontFamily:
+                      //                                                 AppConstants.manrope,
+                      //                                           ),
+                      //                                         ),
+                      //                                       ],
+                      //                                     ),
+                      //                                   ],
+                      //                                 ),
+                      //                                 Text(
+                      //                                   group?.name ??
+                      //                                       "N/A",
+                      //                                   style: TextStyle(
+                      //                                       fontSize:
+                      //                                           16.sp,
+                      //                                       fontWeight:
+                      //                                           FontWeight
+                      //                                               .bold,
+                      //                                       fontFamily:
+                      //                                           AppConstants
+                      //                                               .manrope,
+                      //                                       color: Color(
+                      //                                           0XFF000000)),
+                      //                                 ),
+                      //                                 SizedBox(
+                      //                                     height:
+                      //                                         0.5.h),
+                      //                                 Text(
+                      //                                   group?.lastmessage
+                      //                                           ?.message
+                      //                                           ?.toString() ??
+                      //                                       "N/A",
+                      //                                   overflow:
+                      //                                       TextOverflow
+                      //                                           .ellipsis,
+                      //                                   maxLines: 1,
+                      //                                   style: TextStyle(
+                      //                                       fontSize:
+                      //                                           13.sp,
+                      //                                       color: Color(
+                      //                                           0XFF000000),
+                      //                                       fontFamily:
+                      //                                           AppConstants
+                      //                                               .manrope,
+                      //                                       fontWeight:
+                      //                                           FontWeight
+                      //                                               .normal),
+                      //                                 ),
+                      //                               ],
+                      //                             ),
+                      //                             SizedBox(width: 2.w),
+                      //                           ],
+                      //                         ),
+                      //                       ),
+                      //                       Positioned(
+                      //                         right: 2.w,
+                      //                         top: 1.5.h,
+                      //                         child: Row(
+                      //                           children: [
+                      //                             Text(
+                      //                               "Yesterday",
+                      //                               style: TextStyle(
+                      //                                   fontSize: 15.sp,
+                      //                                   color: Color(
+                      //                                       0xFF000000),
+                      //                                   fontFamily:
+                      //                                       AppConstants
+                      //                                           .manrope,
+                      //                                   fontWeight:
+                      //                                       FontWeight
+                      //                                           .normal),
+                      //                             ),
+                      //                             Icon(
+                      //                               Icons
+                      //                                   .arrow_forward_ios_rounded,
+                      //                               size: 15.sp,
+                      //                             )
+                      //                           ],
+                      //                         ),
+                      //                       )
+                      //                     ],
+                      //                   ),
+                      //                 );
+                      //               },
+                      //             ),
+                      //           )
+                      //     : selectedOption == "Friends"
+                      //         ? getfriendListModel?.data?.length ==
+                      //                     null ||
+                      //                 getfriendListModel
+                      //                         ?.data?.length ==
+                      //                     0
+                      //             ? Center(
+                      //                 child: Container(
+                      //                   height: 70.h,
+                      //                   child: Text(
+                      //                     "No Friends available",
+                      //                     style: TextStyle(
+                      //                       fontSize: 17.sp,
+                      //                       color: Colors.black,
+                      //                       fontWeight:
+                      //                           FontWeight.normal,
+                      //                       fontFamily:
+                      //                           AppConstants.manrope,
+                      //                     ),
+                      //                   ),
+                      //                 ),
+                      //               )
+                      //             : Container(
+                      //                 height: 70.h,
+                      //                 child: ListView.builder(
+                      //                   padding: EdgeInsets.zero,
+                      //                   itemCount: getfriendListModel
+                      //                           ?.data?.length ??
+                      //                       0,
+                      //                   itemBuilder: (context, index) {
+                      //                     final friend =
+                      //                         getfriendListModel
+                      //                             ?.data?[index];
+                      //                     String friendName = (friend
+                      //                                 ?.senderId
+                      //                                 .toString() ==
+                      //                             (loginModel?.data
+                      //                                     ?.user?.id
+                      //                                     .toString() ??
+                      //                                 ""))
+                      //                         ? (friend?.receiverName
+                      //                                 ?.toString() ??
+                      //                             "")
+                      //                         : (friend?.senderName
+                      //                                 ?.toString() ??
+                      //                             "");
 
-                                    String friendImage =
-                                        (friend?.senderId.toString() ==
-                                                (loginModel?.data?.user?.id
-                                                        .toString() ??
-                                                    ""))
-                                            ? (friend?.receiverImage
-                                                    ?.toString() ??
-                                                "")
-                                            : (friend?.senderImage
-                                                    ?.toString() ??
-                                                "");
+                      //                     String friendImage = (friend
+                      //                                 ?.senderId
+                      //                                 .toString() ==
+                      //                             (loginModel?.data
+                      //                                     ?.user?.id
+                      //                                     .toString() ??
+                      //                                 ""))
+                      //                         ? (friend?.receiverImage
+                      //                                 ?.toString() ??
+                      //                             "")
+                      //                         : (friend?.senderImage
+                      //                                 ?.toString() ??
+                      //                             "");
 
-                                    return Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 0.5.h,
-                                        horizontal: 1.w,
-                                      ),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          log(
-                                            "chat ni id jay che che che ${getfriendListModel?.data?[index].receiverId.toString() ?? ""}",
-                                          );
-                                          Get.to(
-                                            () => MessageScreen(
-                                              chatName: friendName ?? "",
-                                              conciergeID:
-                                                  getfriendListModel
-                                                      ?.data?[index]
-                                                      .receiverId
-                                                      .toString() ??
-                                                  "",
-                                              senderid:
-                                                  getfriendListModel
-                                                      ?.data?[index]
-                                                      .senderId
-                                                      .toString() ??
-                                                  "",
-                                              type: "residents",
-                                              image: friendImage ?? "",
-                                            ),
-                                          )?.then((value) {
-                                            if (value == 'refresh') {
-                                              getfriendlistdAp();
-                                            }
-                                          });
-                                        },
-                                        child: Stack(
-                                          children: [
-                                            Container(
-                                              margin: EdgeInsets.only(
-                                                bottom: 1.5.h,
-                                              ),
-                                              padding: EdgeInsets.all(2.w),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                border: Border.all(
-                                                  color: Colors.grey,
-                                                  width: 0.5,
-                                                ),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.black12,
-                                                    blurRadius: 4,
-                                                    offset: Offset(0, 2),
-                                                  ),
-                                                ],
-                                              ),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                    width: 17.w,
-                                                    height: 17.w,
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                        color: Colors.grey,
-                                                        width: 1,
-                                                      ),
-                                                      shape: BoxShape.circle,
-                                                      image: DecorationImage(
-                                                        image: CachedNetworkImageProvider(
-                                                          friendImage ??
-                                                              "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
-                                                        ),
-                                                        fit: BoxFit.fill,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 3.w),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          Row(
-                                                            children: [
-                                                              Container(
-                                                                width: 10,
-                                                                height: 10,
-                                                                decoration: BoxDecoration(
-                                                                  color:
-                                                                      Colors
-                                                                          .green,
-                                                                  shape:
-                                                                      BoxShape
-                                                                          .circle,
-                                                                  border: Border.all(
-                                                                    color:
-                                                                        Colors
-                                                                            .white,
-                                                                    width: 1.5,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              SizedBox(
-                                                                width: 1.w,
-                                                              ),
-                                                              Text(
-                                                                "Last Online 2 minutes ago",
-                                                                style: TextStyle(
-                                                                  fontSize:
-                                                                      14.sp,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .normal,
-                                                                  fontFamily:
-                                                                      AppConstants
-                                                                          .manrope,
-                                                                  color: Color(
-                                                                    0XFF000000,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Text(
-                                                        friendName ?? "N/A",
-                                                        style: TextStyle(
-                                                          fontSize: 16.sp,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontFamily:
-                                                              AppConstants
-                                                                  .manrope,
-                                                          color: Color(
-                                                            0XFF000000,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 0.5.h),
-                                                      Text(
-                                                        friend?.lastMessage ??
-                                                            'No Message available',
-                                                        overflow:
-                                                            TextOverflow
-                                                                .ellipsis,
-                                                        maxLines: 1,
-                                                        style: TextStyle(
-                                                          fontSize: 13.sp,
-                                                          color: Color(
-                                                            0XFF000000,
-                                                          ),
-                                                          fontFamily:
-                                                              AppConstants
-                                                                  .manrope,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(width: 2.w),
-                                                ],
-                                              ),
-                                            ),
-                                            Positioned(
-                                              right: 2.w,
-                                              top: 1.5.h,
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                    _formatTime(
-                                                      friend?.createdAt ??
-                                                          "00:00",
-                                                    ),
-                                                    style: TextStyle(
-                                                      fontSize: 15.sp,
-                                                      color: Color(0xFF000000),
-                                                      fontFamily:
-                                                          AppConstants.manrope,
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                    ),
-                                                  ),
-                                                  Icon(
-                                                    Icons
-                                                        .arrow_forward_ios_rounded,
-                                                    size: 15.sp,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              )
-                          : Container(),
+                      //                     return Padding(
+                      //                       padding:
+                      //                           EdgeInsets.symmetric(
+                      //                               vertical: 0.5.h,
+                      //                               horizontal: 1.w),
+                      //                       child: GestureDetector(
+                      //                         onTap: () {
+                      //                           log("chat ni id jay che che che ${getfriendListModel?.data?[index].receiverId.toString() ?? ""}");
+                      //                           Get.to(() =>
+                      //                               MessageScreen(
+                      //                                 chatName:
+                      //                                     friendName ??
+                      //                                         "",
+                      //                                 conciergeID: getfriendListModel
+                      //                                         ?.data?[
+                      //                                             index]
+                      //                                         .receiverId
+                      //                                         .toString() ??
+                      //                                     "",
+                      //                                 senderid: getfriendListModel
+                      //                                         ?.data?[
+                      //                                             index]
+                      //                                         .senderId
+                      //                                         .toString() ??
+                      //                                     "",
+                      //                                 type: "residents",
+                      //                                 image:
+                      //                                     friendImage ??
+                      //                                         "",
+                      //                               ))?.then((value) {
+                      //                             if (value ==
+                      //                                 'refresh') {
+                      //                               getfriendlistdAp();
+                      //                             }
+                      //                           });
+                      //                         },
+                      //                         child: Stack(
+                      //                           children: [
+                      //                             Container(
+                      //                               margin:
+                      //                                   EdgeInsets.only(
+                      //                                       bottom:
+                      //                                           1.5.h),
+                      //                               padding:
+                      //                                   EdgeInsets.all(
+                      //                                       2.w),
+                      //                               decoration:
+                      //                                   BoxDecoration(
+                      //                                 color:
+                      //                                     Colors.white,
+                      //                                 borderRadius:
+                      //                                     BorderRadius
+                      //                                         .circular(
+                      //                                             20),
+                      //                                 border: Border.all(
+                      //                                     color: Colors
+                      //                                         .grey,
+                      //                                     width: 0.5),
+                      //                                 boxShadow: [
+                      //                                   BoxShadow(
+                      //                                     color: Colors
+                      //                                         .black12,
+                      //                                     blurRadius: 4,
+                      //                                     offset:
+                      //                                         Offset(
+                      //                                             0, 2),
+                      //                                   ),
+                      //                                 ],
+                      //                               ),
+                      //                               child: Row(
+                      //                                 crossAxisAlignment:
+                      //                                     CrossAxisAlignment
+                      //                                         .center,
+                      //                                 children: [
+                      //                                   Container(
+                      //                                     width: 17.w,
+                      //                                     height: 17.w,
+                      //                                     decoration:
+                      //                                         BoxDecoration(
+                      //                                       border: Border.all(
+                      //                                           color: Colors
+                      //                                               .grey,
+                      //                                           width:
+                      //                                               1),
+                      //                                       shape: BoxShape
+                      //                                           .circle,
+                      //                                       image:
+                      //                                           DecorationImage(
+                      //                                         image:
+                      //                                             CachedNetworkImageProvider(
+                      //                                           friendImage ??
+                      //                                               "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
+                      //                                         ),
+                      //                                         fit: BoxFit
+                      //                                             .fill,
+                      //                                       ),
+                      //                                     ),
+                      //                                   ),
+                      //                                   SizedBox(
+                      //                                       width: 3.w),
+                      //                                   Column(
+                      //                                     crossAxisAlignment:
+                      //                                         CrossAxisAlignment
+                      //                                             .start,
+                      //                                     children: [
+                      //                                       Row(
+                      //                                         children: [
+                      //                                           Row(
+                      //                                             children: [
+                      //                                               Container(
+                      //                                                 width: 10,
+                      //                                                 height: 10,
+                      //                                                 decoration: BoxDecoration(
+                      //                                                   color: Colors.green,
+                      //                                                   shape: BoxShape.circle,
+                      //                                                   border: Border.all(color: Colors.white, width: 1.5),
+                      //                                                 ),
+                      //                                               ),
+                      //                                               SizedBox(
+                      //                                                 width: 1.w,
+                      //                                               ),
+                      //                                               Text(
+                      //                                                 "Last Online 2 minutes ago",
+                      //                                                 style: TextStyle(
+                      //                                                   fontSize: 14.sp,
+                      //                                                   fontWeight: FontWeight.normal,
+                      //                                                   fontFamily: AppConstants.manrope,
+                      //                                                   color: Color(0XFF000000),
+                      //                                                 ),
+                      //                                               ),
+                      //                                             ],
+                      //                                           ),
+                      //                                         ],
+                      //                                       ),
+                      //                                       Text(
+                      //                                         friendName ??
+                      //                                             "N/A",
+                      //                                         style: TextStyle(
+                      //                                             fontSize: 16
+                      //                                                 .sp,
+                      //                                             fontWeight: FontWeight
+                      //                                                 .bold,
+                      //                                             fontFamily: AppConstants
+                      //                                                 .manrope,
+                      //                                             color:
+                      //                                                 Color(0XFF000000)),
+                      //                                       ),
+                      //                                       SizedBox(
+                      //                                           height:
+                      //                                               0.5.h),
+                      //                                       Text(
+                      //                                         friend?.lastMessage ??
+                      //                                             'No Message available',
+                      //                                         overflow:
+                      //                                             TextOverflow
+                      //                                                 .ellipsis,
+                      //                                         maxLines:
+                      //                                             1,
+                      //                                         style: TextStyle(
+                      //                                             fontSize: 13
+                      //                                                 .sp,
+                      //                                             color: Color(
+                      //                                                 0XFF000000),
+                      //                                             fontFamily: AppConstants
+                      //                                                 .manrope,
+                      //                                             fontWeight:
+                      //                                                 FontWeight.normal),
+                      //                                       ),
+                      //                                     ],
+                      //                                   ),
+                      //                                   SizedBox(
+                      //                                       width: 2.w),
+                      //                                 ],
+                      //                               ),
+                      //                             ),
+                      //                             Positioned(
+                      //                               right: 2.w,
+                      //                               top: 1.5.h,
+                      //                               child: Row(
+                      //                                 children: [
+                      //                                   Text(
+                      //                                     _formatTime(friend
+                      //                                             ?.createdAt ??
+                      //                                         "00:00"),
+                      //                                     style: TextStyle(
+                      //                                         fontSize:
+                      //                                             15.sp,
+                      //                                         color: Color(
+                      //                                             0xFF000000),
+                      //                                         fontFamily:
+                      //                                             AppConstants
+                      //                                                 .manrope,
+                      //                                         fontWeight:
+                      //                                             FontWeight
+                      //                                                 .normal),
+                      //                                   ),
+                      //                                   Icon(
+                      //                                     Icons
+                      //                                         .arrow_forward_ios_rounded,
+                      //                                     size: 15.sp,
+                      //                                   )
+                      //                                 ],
+                      //                               ),
+                      //                             )
+                      //                           ],
+                      //                         ),
+                      //                       ),
+                      //                     );
+                      //                   },
+                      //                 ),
+                      //               )
+                      //         : Container(),
                     ],
                   ),
                 ),
+                SizedBox(height: 10.h),
               ],
             ),
           ),
-          if (isSending)
+          if (isSending1)
             Container(
               color: Colors.black.withOpacity(0.3),
               child: Center(child: Loader()),
@@ -3843,7 +3351,6 @@ class _MessageboardState extends State<Messageboard> {
 
   void shareConciergeImage(String? imageUrl) {
     if (imageUrl == null || imageUrl.isEmpty) {
-      print("No image URL to share.");
       return;
     }
 
@@ -3852,34 +3359,31 @@ class _MessageboardState extends State<Messageboard> {
         'Check out this concierge: $imageUrl',
         subject: "Check out this concierge's image!",
       );
-    } catch (e) {
-      print("Error sharing: $e");
-    }
+    } catch (e) {}
   }
 
   void MessageBoardApi() {
     final Map<String, String> data = {};
     data["user_id"] = loginModel?.data?.user?.id.toString() ?? "31";
+
     checkInternet().then((internet) async {
       if (internet) {
         try {
           var response = await HomeProvider().messageBoardApi(data);
+
           if (response.statusCode == 200) {
             try {
               messageBoardModal = MessageBoardModal.fromJson(response.data);
+
               setState(() {
                 isLoading = false;
               });
             } catch (e) {
-              log("❌ JSON parsing error: $e");
               setState(() {
                 isLoading = false;
               });
             }
           } else {
-            log("⚠️ API returned an error. Status: ${response.statusCode}");
-            log("❗ Error Body: ${response.data}");
-
             setState(() {
               isLoading = false;
             });
@@ -3891,9 +3395,6 @@ class _MessageboardState extends State<Messageboard> {
             );
           }
         } catch (e, stackTrace) {
-          log("💥 Exception occurred during API call: $e");
-          log("🔍 StackTrace: $stackTrace");
-
           setState(() {
             isLoading = false;
           });
@@ -3905,7 +3406,6 @@ class _MessageboardState extends State<Messageboard> {
           );
         }
       } else {
-        log("📴 No internet connection.");
         setState(() {
           isLoading = false;
         });
@@ -3923,7 +3423,7 @@ class _MessageboardState extends State<Messageboard> {
     final Map<String, String> data = {
       'id': loginModel?.data?.user?.id.toString() ?? '',
     };
-    print("RegisterApi : ${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         ProfileProvider().profileApi(data).then((response) async {
@@ -3936,7 +3436,6 @@ class _MessageboardState extends State<Messageboard> {
             setState(() {
               isLoading = false;
             });
-            log("Error");
           }
         });
       } else {
@@ -3966,6 +3465,7 @@ class _MessageboardState extends State<Messageboard> {
     bool isLoading = true;
     showModalBottomSheet(
       context: context,
+      backgroundColor: Colors.white,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -4010,6 +3510,7 @@ class _MessageboardState extends State<Messageboard> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
+                            fontFamily: AppConstants.manrope,
                           ),
                         ),
                         SizedBox(height: 12),
@@ -4044,11 +3545,29 @@ class _MessageboardState extends State<Messageboard> {
                                                       CircularProgressIndicator(
                                                         strokeWidth: 2,
                                                       ),
-                                              errorWidget:
-                                                  (context, url, error) => Icon(
-                                                    Icons.person,
-                                                    color: Colors.white,
+                                              errorWidget: (
+                                                context,
+                                                url,
+                                                error,
+                                              ) {
+                                                return Container(
+                                                  width: 40,
+                                                  height: 40,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                      color: Colors.black,
+                                                      width: 1,
+                                                    ),
+                                                    image: DecorationImage(
+                                                      image: AssetImage(
+                                                        "assets/images/waveeLogoShort.png",
+                                                      ),
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
+                                                );
+                                              },
                                             ),
                                           ),
                                         ),
@@ -4636,164 +4155,169 @@ class _MessageboardState extends State<Messageboard> {
     return null;
   }
 
-  void showCommentBottomSheetlocalpostcooments(
-    BuildContext context,
-    String postId,
-  ) {
-    bool isLoading = true;
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            TextEditingController _commentControllerlocalpost =
-                TextEditingController();
-            bool isSendingComment = false;
-
-            Future.delayed(Duration.zero, () {
-              if (isLoading) {
-                setModalState(() => isLoading = false);
-              }
-            });
-
-            return DraggableScrollableSheet(
-              expand: false,
-              initialChildSize: 0.7,
-              minChildSize: 0.5,
-              maxChildSize: 0.95,
-              builder: (context, scrollController) {
-                return Padding(
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom,
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 5,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade400,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        SizedBox(height: 12),
-                        Text(
-                          "Comments",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 12),
-                        Expanded(
-                          child:
-                              isLoading
-                                  ? Center(child: CircularProgressIndicator())
-                                  : localpostCommentsModel == null ||
-                                      localpostCommentsModel?.data == null ||
-                                      localpostCommentsModel!.data!.isEmpty
-                                  ? Center(child: Text("No comments found"))
-                                  : ListView.builder(
-                                    controller: scrollController,
-                                    itemCount:
-                                        localpostCommentsModel!.data!.length,
-                                    itemBuilder: (context, index) {
-                                      final comment =
-                                          localpostCommentsModel!.data![index];
-                                      return ListTile(
-                                        leading: CircleAvatar(
-                                          backgroundColor: Colors.grey.shade300,
-                                          backgroundImage: null,
-                                          child: ClipOval(
-                                            child: CachedNetworkImage(
-                                              imageUrl:
-                                                  comment.user?.profile ?? '',
-                                              width: 40,
-                                              height: 40,
-                                              fit: BoxFit.cover,
-                                              placeholder:
-                                                  (context, url) =>
-                                                      CircularProgressIndicator(
-                                                        strokeWidth: 2,
-                                                      ),
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      Image(
-                                                        image: AssetImage(
-                                                          image,
-                                                        ),
-                                                      ),
-                                            ),
-                                          ),
-                                        ),
-                                        title: Text(comment.user?.name ?? ''),
-                                        subtitle: Text(comment.comment ?? ''),
-                                      );
-                                    },
-                                  ),
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: _commentControllerlocalpost,
-                                decoration: InputDecoration(
-                                  hintText: "Write a comment...",
-                                  filled: true,
-                                  fillColor: Colors.grey.shade100,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                  contentPadding: EdgeInsets.symmetric(
-                                    vertical: 10,
-                                    horizontal: 16,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            isSendingComment
-                                ? SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                                : IconButton(
-                                  icon: Icon(Icons.send, color: Colors.blue),
-                                  onPressed: () async {
-                                    if (_commentControllerlocalpost.text
-                                        .trim()
-                                        .isEmpty)
-                                      return;
-
-                                    SendComment(
-                                      _commentControllerlocalpost.text,
-                                      postId,
-                                    );
-                                  },
-                                ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        );
-      },
-    );
-  }
+  // void showCommentBottomSheetlocalpostcooments(BuildContext context, String postId) {
+  //   bool isLoading = true;
+  //   showModalBottomSheet(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+  //     ),
+  //     builder: (context) {
+  //       return StatefulBuilder(
+  //         builder: (context, setModalState) {
+  //           TextEditingController _commentController = TextEditingController();
+  //           bool isSendingComment = false;
+  //
+  //           Future.delayed(Duration.zero, () {
+  //             if (isLoading) {
+  //               setModalState(() => isLoading = false);
+  //             }
+  //           });
+  //
+  //           return DraggableScrollableSheet(
+  //             expand: false,
+  //             initialChildSize: 0.7,
+  //             minChildSize: 0.5,
+  //             maxChildSize: 0.95,
+  //             builder: (context, scrollController) {
+  //               return Padding(
+  //                 padding: EdgeInsets.only(
+  //                   bottom: MediaQuery.of(context).viewInsets.bottom,
+  //                 ),
+  //                 child: Container(
+  //                   padding: EdgeInsets.all(16),
+  //                   child: Column(
+  //                     children: [
+  //                       Container(
+  //                         height: 5,
+  //                         width: 40,
+  //                         decoration: BoxDecoration(
+  //                           color: Colors.grey.shade400,
+  //                           borderRadius: BorderRadius.circular(10),
+  //                         ),
+  //                       ),
+  //                       SizedBox(height: 12),
+  //                       Text(
+  //                         "Comments",
+  //                         style: TextStyle(
+  //                           fontSize: 18,
+  //                           fontWeight: FontWeight.bold,
+  //                         ),
+  //                       ),
+  //                       SizedBox(height: 12),
+  //                       Expanded(
+  //                         child:
+  //                         isLoading
+  //                             ? Center(child: CircularProgressIndicator())
+  //                             : localpost_comments_Model == null ||
+  //                             localpost_comments_Model?.data == null ||
+  //                             localpost_comments_Model!.data!.isEmpty
+  //                             ? Center(child: Text("No comments found"))
+  //                             : ListView.builder(
+  //                           controller: scrollController,
+  //                           itemCount:
+  //                           localpost_comments_Model!.data!.length,
+  //                           itemBuilder: (context, index) {
+  //                             final comment =
+  //                             localpost_comments_Model!.data![index];
+  //                             return ListTile(
+  //                               leading: CircleAvatar(
+  //                                 backgroundColor: Colors.grey.shade300,
+  //                                 backgroundImage: null,
+  //                                 child: ClipOval(
+  //                                   child: CachedNetworkImage(
+  //                                     imageUrl:
+  //                                     comment.user?.profile ?? '',
+  //                                     width: 40,
+  //                                     height: 40,
+  //                                     fit: BoxFit.cover,
+  //                                     placeholder:
+  //                                         (context, url) =>
+  //                                         CircularProgressIndicator(
+  //                                           strokeWidth: 2,
+  //                                         ),
+  //                                     errorWidget:
+  //                                         (context, url, error) => Icon(
+  //                                       Icons.person,
+  //                                       color: Colors.black,
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                               title: Text(comment.user?.name ?? ''),
+  //                               subtitle: Text(comment.comment ?? ''),
+  //                             );
+  //                           },
+  //                         ),
+  //                       ),
+  //                       Row(
+  //                         children: [
+  //                           Expanded(
+  //                             child: TextField(
+  //                               controller: _commentController,
+  //                               decoration: InputDecoration(
+  //                                 hintText: "Write a comment...",
+  //                                 filled: true,
+  //                                 fillColor: Colors.grey.shade100,
+  //                                 border: OutlineInputBorder(
+  //                                   borderRadius: BorderRadius.circular(30),
+  //                                   borderSide: BorderSide(color: Colors.grey),
+  //                                 ),
+  //                                 contentPadding: EdgeInsets.symmetric(
+  //                                   vertical: 10,
+  //                                   horizontal: 16,
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           SizedBox(width: 8),
+  //                           isSendingComment
+  //                               ? SizedBox(
+  //                             width: 24,
+  //                             height: 24,
+  //                             child: CircularProgressIndicator(
+  //                               strokeWidth: 2,
+  //                             ),
+  //                           )
+  //                               : IconButton(
+  //                             icon: Icon(Icons.send, color: Colors.blue),
+  //                             onPressed: () async {
+  //                               if (_commentController.text.trim().isEmpty)
+  //                                 return;
+  //
+  //                               setModalState(
+  //                                     () => isSendingComment = true,
+  //                               );
+  //
+  //                               await sendComment(
+  //                                 context,
+  //                                 _commentController.text.trim(),
+  //                                 postId,
+  //                                     () {
+  //                                   _commentController.clear();
+  //                                   setModalState(() {});
+  //                                 },
+  //                               );
+  //
+  //                               setModalState(
+  //                                     () => isSendingComment = false,
+  //                               );
+  //                             },
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               );
+  //             },
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
   Future<void> listconciergerapi() async {
     await checkInternet().then((internet) async {
@@ -4810,9 +4334,7 @@ class _MessageboardState extends State<Messageboard> {
               user.requestStatuses ??= [];
             }
           }
-        } catch (e) {
-          print("Error fetching friend list: $e");
-        }
+        } catch (e) {}
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
       }
@@ -4823,7 +4345,7 @@ class _MessageboardState extends State<Messageboard> {
     final Map<String, String> data = {
       'user_id': (loginModel?.data?.user?.id).toString(),
     };
-    print("group list parameter : $data");
+
     setState(() {
       isSending = true;
     });
@@ -4832,6 +4354,7 @@ class _MessageboardState extends State<Messageboard> {
         MessageBoardProvider().getMyJoinGroupApi(data).then((response) async {
           if (response.statusCode == 200) {
             getgrouplistmodel = GetGroupListModel.fromJson(response.data);
+
             setState(() {
               isSending = false;
             });
@@ -4934,7 +4457,6 @@ class _MessageboardState extends State<Messageboard> {
       'residentType': "residents",
       'user_id': loginModel?.data?.user?.id.toString() ?? '',
     };
-    print("Local post data parameter: $data");
 
     setState(() {
       isSending = true;
@@ -4945,7 +4467,7 @@ class _MessageboardState extends State<Messageboard> {
         try {
           final response = await MessageBoardProvider().localPostApi(data);
           if (response.statusCode == 200) {
-            localPostModel = Localpost_model.fromJson(response.data);
+            localpost_model = Localpost_model.fromJson(response.data);
 
             if (mounted) {
               setState(() {
@@ -4956,19 +4478,15 @@ class _MessageboardState extends State<Messageboard> {
             setState(() {
               isSending = false;
             });
-            print("Too many requests or internal server error.");
           } else {
             setState(() {
               isSending = false;
             });
-            print("Unexpected error. Status code: ${response.statusCode}");
           }
         } catch (e, stackTrace) {
           setState(() {
             isSending = false;
           });
-          print("❌ Exception caught in localpostapi(): $e");
-          print("📌 StackTrace:\n$stackTrace");
         }
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
@@ -4981,7 +4499,6 @@ class _MessageboardState extends State<Messageboard> {
       'residentType': "residents",
       'user_id': loginModel?.data?.user?.id.toString() ?? '',
     };
-    print("Local post data parameter: $data");
 
     setState(() {
       isSending = true;
@@ -4992,9 +4509,9 @@ class _MessageboardState extends State<Messageboard> {
         try {
           final response = await MessageBoardProvider().localPostApi(data);
           if (response.statusCode == 200) {
-            localPostModel = Localpost_model.fromJson(response.data);
+            localpost_model = Localpost_model.fromJson(response.data);
             _descController.text =
-                localPostModel?.data?.data?[0].text.toString() ?? "";
+                localpost_model?.data?.data?[0].text.toString() ?? "";
 
             if (mounted) {
               setState(() {
@@ -5005,18 +4522,15 @@ class _MessageboardState extends State<Messageboard> {
             setState(() {
               isSending = false;
             });
-            print("Too many requests or internal server error.");
           } else {
             setState(() {
               isSending = false;
             });
-            print("Unexpected error. Status code: ${response.statusCode}");
           }
         } catch (e, stackTrace) {
           setState(() {
             isSending = false;
           });
-          print("📌 StackTrace:\n$stackTrace");
         }
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
@@ -5026,10 +4540,9 @@ class _MessageboardState extends State<Messageboard> {
 
   DeleteLocalPost(String id) {
     final Map<String, String> data = {'id': id};
-    print("Local post data parameter: $data");
 
     setState(() {
-      isSending = true;
+      isSending1 = true;
     });
 
     checkInternet().then((internet) async {
@@ -5039,38 +4552,26 @@ class _MessageboardState extends State<Messageboard> {
             data,
           );
           if (response.statusCode == 200) {
-            var responseData = json.decode(response.data);
-
-            log("local post data: ${responseData}");
             localpostapi();
 
             if (mounted) {
               setState(() {
-                isSending = false;
+                isSending1 = false;
               });
             }
           } else if (response.statusCode == 429 || response.statusCode == 500) {
             setState(() {
-              isSending = false;
+              isSending1 = false;
             });
           } else {
             setState(() {
-              isSending = false;
+              isSending1 = false;
             });
-            Get.snackbar(
-              'Error',
-              'Internal Server Error',
-              backgroundColor: Colors.red.withOpacity(0.7),
-              colorText: Colors.white,
-              snackPosition: SnackPosition.BOTTOM,
-            );
           }
         } catch (e, stackTrace) {
           setState(() {
-            isSending = false;
+            isSending1 = false;
           });
-          print("❌ Exception caught in localpostapi(): $e");
-          print("📌 StackTrace:\n$stackTrace");
         }
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
@@ -5085,7 +4586,6 @@ class _MessageboardState extends State<Messageboard> {
       'details': "",
     };
 
-    print("group list parameter : $data");
     checkInternet().then((internet) async {
       if (internet) {
         MessageBoardProvider()
@@ -5097,7 +4597,6 @@ class _MessageboardState extends State<Messageboard> {
             .then((response) async {
               if (response.statusCode == 200) {
                 creategroupmodel = CreateGroupModel.fromJson(response.data);
-                print("group check");
 
                 await refreshGroupList();
                 groupNameController.clear();
@@ -5108,8 +4607,6 @@ class _MessageboardState extends State<Messageboard> {
                   isLoading = false;
                 });
               } else if (response.statusCode == 422) {
-                print("Validation error");
-                print("Too many requests");
                 setState(() {
                   isLoading = false;
                 });
@@ -5117,7 +4614,6 @@ class _MessageboardState extends State<Messageboard> {
                 setState(() {
                   isLoading = false;
                 });
-                print("Internal Server Error");
               }
             });
       } else {
@@ -5131,8 +4627,6 @@ class _MessageboardState extends State<Messageboard> {
       'sender_id': (loginModel?.data?.user?.id).toString(),
       'receiver_id': receiverId.toString(),
     };
-
-    print("friend request parameter: $data");
 
     checkInternet().then((internet) async {
       if (internet) {
@@ -5159,9 +4653,7 @@ class _MessageboardState extends State<Messageboard> {
                 );
               }
             })
-            .catchError((error) {
-              print("API Error: $error");
-            });
+            .catchError((error) {});
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
       }
@@ -5172,7 +4664,7 @@ class _MessageboardState extends State<Messageboard> {
     final Map<String, String> data = {
       'user_id': (loginModel?.data?.user?.id).toString(),
     };
-    print("group list parameter : $data");
+
     setState(() {
       isSending = true;
     });
@@ -5218,7 +4710,6 @@ class _MessageboardState extends State<Messageboard> {
       'created_by': (loginModel?.data?.user?.id).toString(),
     };
 
-    print("Refreshing group list with parameters: $data");
     setState(() {
       isSending = true;
     });
@@ -5233,21 +4724,17 @@ class _MessageboardState extends State<Messageboard> {
           setState(() {
             isSending = false;
           });
-          setState(() {
-            print("Group list updated successfully");
-          });
+          setState(() {});
 
           return;
         } else if (response.statusCode == 429) {
           setState(() {
             isSending = false;
           });
-          print("Too many requests");
         } else {
           setState(() {
             isSending = false;
           });
-          print("Internal Server Error");
         }
       } else {
         setState(() {
@@ -5255,9 +4742,7 @@ class _MessageboardState extends State<Messageboard> {
         });
         buildErrorDialog(context, 'Error', "Internet Required");
       }
-    } catch (e) {
-      print("Error refreshing group list: $e");
-    }
+    } catch (e) {}
   }
 
   void postslikeap(int index, VoidCallback onComplete) {
@@ -5267,7 +4752,7 @@ class _MessageboardState extends State<Messageboard> {
       'post_id': messageBoardModal?.data?[index].id.toString() ?? "",
       "user_type": "4",
     };
-    print("post like na data : ${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         MessageBoardProvider().addLikeCommentApi(data).then((response) async {
@@ -5275,8 +4760,8 @@ class _MessageboardState extends State<Messageboard> {
             messageboardpostlikeModel = MessageboardpostLikeModel.fromJson(
               response.data,
             );
+            MessageBoardApi();
           }
-          MessageBoardApi();
           if (mounted) {
             onComplete();
           }
@@ -5290,12 +4775,12 @@ class _MessageboardState extends State<Messageboard> {
 
   void postslikelocalap(int index, VoidCallback onComplete) {
     final Map<String, String> data = {
-      'user_id': (loginModel?.data?.user?.id).toString(),
-      'type': 'post',
-      'post_offer_promo_id': (localPostModel?.data?.data?[index].id).toString(),
+      'user_post_id': (loginModel?.data?.user?.id).toString(),
+      'type': 'like',
+      'post_id': (localpost_model?.data?.data?[index].id).toString(),
+      // "user_type": "4",
     };
 
-    print("post like na data : ${data}");
     checkInternet().then((internet) async {
       if (internet) {
         MessageBoardProvider().addLikeCommentApi(data).then((response) async {
@@ -5305,6 +4790,7 @@ class _MessageboardState extends State<Messageboard> {
             );
           }
           onComplete();
+          localpostapi();
         });
       } else {
         onComplete();
@@ -5326,10 +4812,8 @@ class _MessageboardState extends State<Messageboard> {
         'title': _title.text.trim(),
       };
 
-      print("Post data: $data");
-
       setState(() {
-        isSending = true;
+        isSending1 = true;
       });
 
       checkInternet().then((internet) async {
@@ -5338,37 +4822,23 @@ class _MessageboardState extends State<Messageboard> {
               .addPostApiWithImages(bodyData: data, images: _images)
               .then((response) async {
                 if (response.statusCode == 200) {
-                  addPostModel = Add_Post_Model.fromJson(response.data);
+                  add_Post_Model = Add_Post_Model.fromJson(response.data);
 
                   localpostapi();
                   _descController.clear();
+                  _title.clear();
                   _images = [];
                 } else if (response.statusCode == 429) {
-                  Get.snackbar(
-                    'Error',
-                    'Too many requests',
-                    backgroundColor: Colors.red.withOpacity(0.7),
-                    colorText: Colors.white,
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
-                } else {
-                  Get.snackbar(
-                    'Error',
-                    'Internal Server Error',
-                    backgroundColor: Colors.red.withOpacity(0.7),
-                    colorText: Colors.white,
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
-                }
+                } else {}
                 if (mounted) {
                   setState(() {
-                    isSending = false;
+                    isSending1 = false;
                   });
                 }
               });
         } else {
           setState(() {
-            isSending = false;
+            isSending1 = false;
           });
           buildErrorDialog(context, 'Error', "Internet Required");
         }
@@ -5436,7 +4906,6 @@ class _MessageboardState extends State<Messageboard> {
   Future<void> getComments(BuildContext context, String postId) async {
     currentPostId = postId;
     final Map<String, String> data = {'post_id': postId};
-    print("comments list parameter : $data");
 
     bool internet = await checkInternet();
     if (!internet) {
@@ -5449,12 +4918,12 @@ class _MessageboardState extends State<Messageboard> {
 
       if (response.statusCode == 200) {
         getpostCommentsModel = GetPostCommentsModel.fromJson(response.data);
+        MessageBoardApi();
       } else {
         getpostCommentsModel = null;
       }
     } catch (e) {
       getpostCommentsModel = null;
-      print("Error fetching comments: $e");
     }
 
     if (context.mounted) {
@@ -5462,96 +4931,9 @@ class _MessageboardState extends State<Messageboard> {
     }
   }
 
-  getComments1(String postId) {
-    final Map<String, String> data = {'post_id': postId};
-    setState(() {
-      isSending = true;
-    });
-    print("RegisterApi : ${data}");
-    checkInternet().then((internet) async {
-      if (internet) {
-        MessageBoardProvider().getPostCommentApi(data).then((response) async {
-          localpostCommentsModel = Localpost_comments_Model.fromJson(
-            response.data,
-          );
-          if (response.statusCode == 200) {
-            showCommentBottomSheetlocalpostcooments(context, postId);
-
-            print(
-              "1111111111>>>>>>>>>>>>.${profileModel?.data?.user?.profile}",
-            );
-            if (mounted) {
-              setState(() {
-                isSending = false;
-              });
-            }
-          } else {
-            setState(() {
-              isSending = false;
-            });
-            log("Error");
-          }
-        });
-      } else {
-        setState(() {
-          isSending = false;
-        });
-
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
-
-  SendComment(String commentText, String postId) {
-    final Map<String, String> data = {
-      'user_post_id': (loginModel?.data?.user?.id).toString(),
-      'post_id': postId,
-      'type': "comment",
-      'comment': commentText,
-      'user_type': '4',
-    };
-    setState(() {
-      isSending = true;
-    });
-    print("RegisterApi : ${data}");
-    checkInternet().then((internet) async {
-      if (internet) {
-        MessageBoardProvider().addLikeCommentApi(data).then((response) async {
-          sendpostCommentsModel = SendPostCommentsModel.fromJson(response.data);
-          if (response.statusCode == 200) {
-            getComments1(postId);
-            if (mounted) {
-              setState(() {
-                isSending = false;
-              });
-            }
-          } else {
-            setState(() {
-              isSending = false;
-            });
-            Get.snackbar(
-              'Error',
-              'Internal Server Error',
-              backgroundColor: Colors.red.withOpacity(0.7),
-              colorText: Colors.white,
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          }
-        });
-      } else {
-        setState(() {
-          isSending = false;
-        });
-
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
-
-  Future<void> getCommentslocalpost(BuildContext context, String postId) async {
+  Future<void> getComments1(BuildContext context, String postId) async {
     currentPostId = postId;
     final Map<String, String> data = {'post_id': postId};
-    print("comments list parameter : $data");
 
     bool internet = await checkInternet();
     if (!internet) {
@@ -5563,18 +4945,96 @@ class _MessageboardState extends State<Messageboard> {
       final response = await MessageBoardProvider().getPostCommentApi(data);
 
       if (response.statusCode == 200) {
-        localpostCommentsModel = Localpost_comments_Model.fromJson(
-          response.data,
-        );
-      } else {}
+        getpostCommentsModel = GetPostCommentsModel.fromJson(response.data);
+        localpostapi();
+      } else {
+        getpostCommentsModel = null;
+      }
     } catch (e) {
-      print("Error fetching comments: $e");
+      getpostCommentsModel = null;
     }
 
     if (context.mounted) {
-      showCommentBottomSheetlocalpostcooments(context, postId);
+      showCommentBottomSheet(context, postId);
     }
   }
+
+  // SendComment(String commentText, String postId) {
+  //   final Map<String, String> data = {
+  //     'user_post_id': (loginModel?.data?.user?.id).toString(),
+  //     'post_id': postId,
+  //     'type': "comment",
+  //     'comment': commentText,
+  //     'user_type': '4',
+  //   };
+  //   setState(() {
+  //     isSending = true;
+  //   });
+  //
+  //   checkInternet().then((internet) async {
+  //     if (internet) {
+  //       MessageBoardProvider().sendcommentsapi(data).then((response) async {
+  //         sendpostCommentsModel = SendPostCommentsModel.fromJson(
+  //           json.decode(response.body),
+  //         );
+  //         if (response.statusCode == 200) {
+  //
+  //           getComments1(context, postId);
+  //
+  //           print(
+  //             "1111111111>>>>>>>>>>>>.${profileModel?.data?.user?.profile}",
+  //           );
+  //           if (mounted) {
+  //             setState(() {
+  //               isSending = false;
+  //             });
+  //           }
+  //         } else {
+  //           setState(() {
+  //             isSending = false;
+  //           });
+  //           log("Error");
+  //         }
+  //       });
+  //     } else {
+  //       setState(() {
+  //         isSending = false;
+  //       });
+  //
+  //       buildErrorDialog(context, 'Error', "Internet Required");
+  //     }
+  //   });
+  // }
+
+  // Future<void> getCommentslocalpost(BuildContext context, String postId) async {
+  //   currentPostId = postId;
+  //   final Map<String, String> data = {'post_id': postId};
+  //
+  //
+  //   bool internet = await checkInternet();
+  //   if (!internet) {
+  //     buildErrorDialog(context, 'Error', "Internet Required");
+  //     return;
+  //   }
+  //
+  //   try {
+  //     final response = await MessageBoardProvider().getcommentslocalpostap(
+  //       data,
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       localpost_comments_Model = Localpost_comments_Model.fromJson(
+  //         json.decode(response.body),
+  //       );
+  //     } else {}
+  //   } catch (e) {
+  //
+  //   }
+  //
+  //   if (context.mounted) {
+  //     showCommentBottomSheetlocalpostcooments(context, postId);
+  //   }
+  // }
 
   Future<void> sendComment(
     BuildContext context,
@@ -5590,8 +5050,6 @@ class _MessageboardState extends State<Messageboard> {
       'user_type': '4',
     };
 
-    print("sending comment parameter : $data");
-
     checkInternet().then((internet) async {
       if (internet) {
         try {
@@ -5603,19 +5061,17 @@ class _MessageboardState extends State<Messageboard> {
             );
 
             final refreshResponse = await MessageBoardProvider()
-                .getPostCommentApi({'post_id': postId});
+                .addLikeCommentApi({'post_id': postId});
             if (refreshResponse.statusCode == 200) {
               getpostCommentsModel = GetPostCommentsModel.fromJson(
                 refreshResponse.data,
               );
+              MessageBoardApi();
+              localpostapi();
               onSuccess();
             }
-          } else {
-            print("Failed to send comment: ${response.statusCode}");
-          }
-        } catch (e) {
-          print("Error sending comment: $e");
-        }
+          } else {}
+        } catch (e) {}
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
       }
@@ -5633,9 +5089,7 @@ class _MessageboardState extends State<Messageboard> {
           if (response.statusCode == 200) {
             getrequestModel = GetRequestModel.fromJson(response.data);
           }
-        } catch (e) {
-          print("error");
-        }
+        } catch (e) {}
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
       }

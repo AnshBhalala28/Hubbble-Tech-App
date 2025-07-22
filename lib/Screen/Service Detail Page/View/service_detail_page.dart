@@ -612,7 +612,6 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                 setState(() {
                   isLoading = false;
                 });
-                log("Error");
               }
             });
       } else {
@@ -636,13 +635,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       "type": type,
     };
 
-    log("Sending remove request: $data");
-
     checkInternet().then((internet) async {
       if (internet) {
         CartProvider().removeCartApi(data).then((response) async {
           if (response.statusCode == 200) {
-            log("Item removed successfully: ${response.data}");
             setState(() {
               isAddReviewLoading = false;
             });
@@ -650,7 +646,6 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
             setState(() {
               isAddReviewLoading = false;
             });
-            log("Error removing item from cart");
           }
         });
       } else {
@@ -702,7 +697,6 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           }
         });
       } else {
-        print("❌ API Error: ${response.statusCode}");
         setState(() {
           isLoading = false;
         });
@@ -713,7 +707,6 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         );
       }
     } catch (e) {
-      print("❌ Exception: $e");
       setState(() {
         isLoading = false;
       });
@@ -730,7 +723,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       "id": widget.serviceID.toString(),
       "type": "service",
     };
-    log("DATA SENDING ${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         ProductProvider().AddToCart(data).then((response) async {
@@ -743,7 +736,6 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
             setState(() {
               isAddReviewLoading = false;
             });
-            log("Error");
           }
         });
       } else {
@@ -765,7 +757,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       "id": widget.serviceID.toString(),
       "type": "service",
     };
-    log("DATA SENDING ${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         ProductProvider().AddToCart(data).then((response) async {
@@ -778,7 +770,6 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
             setState(() {
               isAddReviewLoading = false;
             });
-            log("Error");
           }
         });
       } else {

@@ -8,7 +8,7 @@ import '../../../comman/responses.dart';
 // class ParcelProvider extends ChangeNotifier {
 //   Future<http.Response> ParcelApi(Map<String, String> bodyData) async {
 //     const url = '${baseUrl}/get-parcel-data';
-//     print("Request URL: $url");
+//
 //     try {
 //       final response = await http.post(Uri.parse(url), body: bodyData).timeout(
 //         const Duration(seconds: 60),
@@ -17,10 +17,10 @@ import '../../../comman/responses.dart';
 //         },
 //       );
 //       if (response.statusCode == 200) {
-//         print("Successful response: ${response.body}");
+//
 //         return response;
 //       } else {
-//         print("Failed response: ${response.statusCode}");
+//
 //         throw Exception("Failed to connect to the server");
 //       }
 //     } on SocketException catch (e) {

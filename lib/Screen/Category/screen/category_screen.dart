@@ -608,7 +608,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       "id": productID.toString(),
       "type": "product",
     };
-    log(" ADD DATA ${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         ProductProvider().AddToCart(data).then((response) async {
@@ -621,7 +621,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
             setState(() {
               isAddtoCart = false;
             });
-            log("Error");
           }
         });
       } else {
@@ -649,7 +648,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 setState(() {
                   isLoading = false;
                 });
-                log("Error");
               }
             });
       } else {
@@ -673,13 +671,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
       "type": type,
     };
 
-    log("Sending remove request: $data");
-
     checkInternet().then((internet) async {
       if (internet) {
         CartProvider().removeCartApi(data).then((response) async {
           if (response.statusCode == 200) {
-            log("Item removed successfully: ${response.data}");
             setState(() {
               isAddtoCart = false;
             });
@@ -687,7 +682,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
             setState(() {
               isAddtoCart = false;
             });
-            log("Error removing item from cart");
           }
         });
       } else {

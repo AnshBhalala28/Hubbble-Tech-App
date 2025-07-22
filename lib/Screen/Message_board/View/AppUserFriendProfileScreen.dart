@@ -356,9 +356,6 @@ class _AppUserFriendProfileScreenState
               isSending = false;
             });
 
-            print("friend delete : ${response.body}");
-            print("friend delete id : ${widget.id}");
-
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text("Friend deleted successfully!"),
@@ -382,7 +379,6 @@ class _AppUserFriendProfileScreenState
             isSending = false;
           });
 
-          print("error: ${e.toString()}");
           buildErrorDialog(context, 'Error', "Something went wrong");
         }
       } else {
@@ -424,7 +420,7 @@ class _AppUserFriendProfileScreenState
           setState(() {
             isSending = false;
           });
-          print("error: ${e.toString()}");
+
           buildErrorDialog(context, 'Error', "Something went wrong");
         }
       } else {

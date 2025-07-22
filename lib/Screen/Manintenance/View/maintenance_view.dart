@@ -498,14 +498,13 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
       "subject": subjectController.text.trim(),
       "note": noteController.text.trim(),
     };
-    print("RegisterApi : ${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         MaintenanceProvider().addMaintanceRequestApi(data).then((
           response,
         ) async {
           if (response.statusCode == 200) {
-            print("1111111111>>>>>>>>>>>>.${response.data}");
             AllMaintenanceApi();
             setState(() {
               isLoading = false;
@@ -516,7 +515,6 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
             setState(() {
               isLoading = false;
             });
-            log("Error");
           }
         });
       } else {
@@ -535,8 +533,6 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
       "subject": subjectController.text.trim(),
       "note": noteController.text.trim(),
     };
-
-    print("RegisterApi : $data");
 
     setState(() {
       isLoading = true;
@@ -557,7 +553,6 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
             setState(() {
               isLoading = false;
             });
-            log("❌ Add Error: ${response.statusCode}");
           }
         });
       } else {
@@ -580,8 +575,6 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
       data['status'] = status;
     }
 
-    print("RegisterApi status data sending: $data");
-
     checkInternet().then((internet) async {
       if (internet) {
         MaintenanceProvider().getMaintanceApi(data).then((response) async {
@@ -599,7 +592,6 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                 isLoading = false;
               });
             }
-            log("❌ Error: ${response.statusCode}");
           }
         });
       } else {
@@ -618,8 +610,6 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
       'user_id': loginModel?.data?.user?.id.toString() ?? '',
       "id": detailId ?? "",
     };
-
-    print("RegisterApi status data sending: $data");
 
     checkInternet().then((internet) async {
       if (internet) {
@@ -641,7 +631,6 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                 isLoading = false;
               });
             }
-            log("❌ Error: ${response.statusCode}");
           }
         });
       } else {
@@ -665,8 +654,6 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
       'user_id': loginModel?.data?.user?.id.toString() ?? '',
       'id': detailId,
     };
-
-    print("📤 Detail API Request: $data");
 
     bool hasInternet = await checkInternet();
 
@@ -697,10 +684,8 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
             isDetailLoading = false;
           });
         }
-        log("❌ Server Error: ${response.statusCode}");
       }
     } catch (e) {
-      log("❌ Exception in API: $e");
       if (mounted) {
         setState(() {
           isDetailLoading = false;

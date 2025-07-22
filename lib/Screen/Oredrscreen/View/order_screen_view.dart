@@ -49,8 +49,7 @@ class _Order_ScreenState extends State<Order_Screen> {
     "Booking Confirmed",
     "Cancelled",
   ];
-  Offset _cartButtonPosition = Offset.zero;
-  int cartCount = cartDetailsModel?.data?.length ?? 0;
+
 
   @override
   void initState() {
@@ -60,6 +59,7 @@ class _Order_ScreenState extends State<Order_Screen> {
     });
 
     OrderListViewApi(selectedType);
+    OrderListViewApi1(selectedType);
   }
 
   String selectedType = "products";
@@ -219,7 +219,11 @@ class _Order_ScreenState extends State<Order_Screen> {
                                 selectedType = value;
                               });
                               print("Selected: $value");
-                              OrderListViewApi(selectedType.camelCase);
+                              OrderListViewApi(
+                                selectedType.toString().camelCase ?? "",
+                              );OrderListViewApi1(
+                                selectedType.toString().camelCase ?? "",
+                              );
                             },
                             color: Colors.white,
                             shape: RoundedRectangleBorder(
@@ -298,6 +302,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                     isLoading = true;
                                   });
                                   OrderListViewApi(selectedType);
+                                  OrderListViewApi1(selectedType);
                                 }
                               },
                               child: Container(
@@ -351,6 +356,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                     isLoading = true;
                                   });
                                   OrderListViewApi(selectedType);
+                                  OrderListViewApi1(selectedType);
                                 }
                               },
                               child: Container(
@@ -393,8 +399,12 @@ class _Order_ScreenState extends State<Order_Screen> {
                   SizedBox(height: 2.h),
                   isLoading
                       ? Loader().paddingOnly(top: 30.h)
-                      : (myOrderModel?.data?.isNotEmpty != true ||
-                          myOrderModel!.data![0].orderProducts?.isNotEmpty !=
+                      : (myOrderModel?.data?.data?.isNotEmpty != true ||
+                          myOrderModel!
+                                  .data!
+                                  .data![0]
+                                  .orderProducts
+                                  ?.isNotEmpty !=
                               true)
                       ? Text(
                         "No Orders Found",
@@ -404,10 +414,10 @@ class _Order_ScreenState extends State<Order_Screen> {
                           fontFamily: AppConstants.manrope,
                         ),
                       ).paddingOnly(top: 30.h)
-                      : myOrderModel!.data![0].orderProducts![0].type ==
+                      : myOrderModel!.data!.data![0].orderProducts![0].type ==
                           'service'
                       ? (serviceViewModel?.data == null ||
-                              serviceViewModel!.data!.isEmpty)
+                              serviceViewModel!.data!.data!.isEmpty)
                           ? Text(
                             "No Service Orders",
                             style: TextStyle(
@@ -423,7 +433,8 @@ class _Order_ScreenState extends State<Order_Screen> {
                               Container(
                                 child: ListView.builder(
                                   padding: const EdgeInsets.only(top: 8.0),
-                                  itemCount: myOrderModel?.data?.length ?? 0,
+                                  itemCount:
+                                      myOrderModel?.data?.data?.length ?? 0,
                                   shrinkWrap: true,
                                   physics: NeverScrollableScrollPhysics(),
                                   itemBuilder: (
@@ -431,7 +442,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                     int index,
                                   ) {
                                     final order =
-                                        serviceViewModel?.data?[index];
+                                        serviceViewModel?.data?.data?[index];
                                     final orderProduct =
                                         order?.orderProducts?.isNotEmpty == true
                                             ? order!.orderProducts!.first
@@ -666,11 +677,11 @@ class _Order_ScreenState extends State<Order_Screen> {
                           Container(
                             child: ListView.builder(
                               padding: const EdgeInsets.only(top: 8.0),
-                              itemCount: myOrderModel?.data?.length ?? 0,
+                              itemCount: myOrderModel?.data?.data?.length ?? 0,
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
                               itemBuilder: (BuildContext context, int index) {
-                                final order = myOrderModel?.data?[index];
+                                final order = myOrderModel?.data?.data?[index];
                                 final orderProduct =
                                     order?.orderProducts?.isNotEmpty == true
                                         ? order!.orderProducts!.first
@@ -891,7 +902,7 @@ class _Order_ScreenState extends State<Order_Screen> {
           ),
         ],
       ),
-      bottomNavigationBar: Bottom_bar(selected: 5),
+
     );
   }
 
@@ -971,7 +982,7 @@ class _Order_ScreenState extends State<Order_Screen> {
             )
             .then((response) async {
               myOrderModel = MyOrderModel.fromJson(response.data);
-              serviceViewModel = ServiceViewModel.fromJson(response.data);
+              // serviceViewModel = ServiceViewModel.fromJson(response.data);
               if (response.statusCode == 200) {
                 setState(() {
                   isLoading = false;
@@ -995,4 +1006,52 @@ class _Order_ScreenState extends State<Order_Screen> {
       }
     });
   }
+
+  OrderListViewApi1(type) {
+    String status =
+    selectedType == "services"
+        ? getStatusFromServiceTab(selectedCategory)
+        : getStatusFromTab(selectedCategory);
+    log("TYPE$type");
+    setState(() {
+      isLoading1 = true;
+    });
+    checkInternet().then((internet) async {
+      if (internet) {
+        OrderProvider()
+            .orderListApi(
+          loginModel?.data?.user?.id.toString() ?? "",
+          status,
+          type,
+        )
+            .then((response) async {
+
+          serviceViewModel = ServiceViewModel.fromJson(response.data);
+          if (response.statusCode == 200) {
+            setState(() {
+              isLoading = false;
+              isLoading1 = false;
+            });
+          } else {
+            setState(() {
+              isLoading = false;
+              isLoading1 = false;
+            });
+            log("Error");
+          }
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+          isLoading1 = false;
+        });
+
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+
 }
+
+

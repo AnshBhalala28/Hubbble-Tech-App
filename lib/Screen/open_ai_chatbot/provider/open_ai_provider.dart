@@ -8,7 +8,6 @@ import 'package:wavee/comman/const.dart';
 import 'package:wavee/comman/responses.dart';
 import 'package:wavee/comman/store_local.dart';
 
-
 class ChatBotAiProvider extends ChangeNotifier {
   Future<http.Response> chatbotDataApi(Map<String, String> bodyData) async {
     String url = '${baseUrl}/ai_chat';
@@ -20,33 +19,23 @@ class ChatBotAiProvider extends ChangeNotifier {
       throw Exception('Token not found');
     }
 
-    Map<String, String> headers = {
-      'Authorization': 'Bearer $token',
-    };
-
-    print("API URL: $url and \n Header:::==>>>$headers");
+    Map<String, String> headers = {'Authorization': 'Bearer $token'};
 
     var responseJson;
     try {
       final response = await http
-          .post(
-        Uri.parse(url),
-        headers: headers,
-        body: bodyData,
-      )
+          .post(Uri.parse(url), headers: headers, body: bodyData)
           .timeout(
-        const Duration(seconds: 60),
-        onTimeout: () {
-          throw const SocketException('Something went wrong');
-        },
-      );
+            const Duration(seconds: 60),
+            onTimeout: () {
+              throw const SocketException('Something went wrong');
+            },
+          );
 
       responseJson = responses(response);
-      print("Response: ${response.body}");
 
       return responseJson;
     } catch (e) {
-      print("API Error: $e");
       throw Exception("Error During Communication: $e");
     }
   }
@@ -61,32 +50,23 @@ class ChatBotAiProvider extends ChangeNotifier {
       throw Exception('Token not found');
     }
 
-    Map<String, String> headers = {
-      'Authorization': 'Bearer $token',
-    };
-
-    print("API URL: $url");
+    Map<String, String> headers = {'Authorization': 'Bearer $token'};
 
     var responseJson;
     try {
       final response = await http
-          .get(
-        Uri.parse(url),
-        headers: headers,
-      )
+          .get(Uri.parse(url), headers: headers)
           .timeout(
-        const Duration(seconds: 60),
-        onTimeout: () {
-          throw const SocketException('Something went wrong');
-        },
-      );
+            const Duration(seconds: 60),
+            onTimeout: () {
+              throw const SocketException('Something went wrong');
+            },
+          );
 
       responseJson = responses(response);
-      print("Response: ${response.body}");
 
       return responseJson;
     } catch (e) {
-      print("API Error: $e");
       throw Exception("Error During Communication: $e");
     }
   }
@@ -101,33 +81,23 @@ class ChatBotAiProvider extends ChangeNotifier {
       throw Exception('Token not found');
     }
 
-    Map<String, String> headers = {
-      'Authorization': 'Bearer $token',
-    };
-
-    print("API URL: $url and \n Header:::==>>>$headers");
+    Map<String, String> headers = {'Authorization': 'Bearer $token'};
 
     var responseJson;
     try {
       final response = await http
-          .post(
-        Uri.parse(url),
-        headers: headers,
-        body: bodyData,
-      )
+          .post(Uri.parse(url), headers: headers, body: bodyData)
           .timeout(
-        const Duration(seconds: 60),
-        onTimeout: () {
-          throw const SocketException('Something went wrong');
-        },
-      );
+            const Duration(seconds: 60),
+            onTimeout: () {
+              throw const SocketException('Something went wrong');
+            },
+          );
 
       responseJson = responses(response);
-      print("Response: ${response.body}");
 
       return responseJson;
     } catch (e) {
-      print("API Error: $e");
       throw Exception("Error During Communication: $e");
     }
   }

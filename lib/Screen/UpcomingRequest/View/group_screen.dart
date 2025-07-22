@@ -469,7 +469,6 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                 setState(() {
                   isLoading = false;
                 });
-                log("Error");
               }
             });
       } else {
@@ -497,7 +496,6 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                 setState(() {
                   isLoading = false;
                 });
-                log("Error");
               }
             });
       } else {
@@ -515,7 +513,7 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
       isAction = true;
     });
     final Map<String, String> data = {"id": id, "action_type": action};
-    log("ADD DATA ${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         MyRequestProvider().myRequestActionApi(data).then((response) async {
@@ -528,7 +526,6 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
             setState(() {
               isAction = false;
             });
-            log("Error");
           }
         });
       } else {
@@ -546,7 +543,7 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
       isAction = true;
     });
     final Map<String, String> data = {"group_id": id, "action": action};
-    log("Data ADD${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         MyRequestProvider().myRequestGroupActionApi(data).then((
@@ -562,7 +559,6 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
             setState(() {
               isAction = false;
             });
-            log("Error");
           }
         });
       } else {
@@ -591,7 +587,6 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
             setState(() {
               isLoading = false;
             });
-            log("Error");
           }
         });
       } else {

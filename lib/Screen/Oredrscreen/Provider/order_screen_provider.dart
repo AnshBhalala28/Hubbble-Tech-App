@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:wavee/comman/apiConfig.dart';
@@ -8,7 +10,7 @@ import 'package:wavee/comman/store_local.dart';
 // class OrderProvider extends ChangeNotifier {
 //   // Future<http.Response> OrderListApi(String userID, status, type) async {
 //   //   String url = '$baseUrl/myOrders?user_id=$userID&status=$status&type=$type';
-//   //   print("Request URL: $url");
+//   //
 //   //   try {
 //   //     final response = await http
 //   //         .get(Uri.parse(url))
@@ -39,7 +41,7 @@ import 'package:wavee/comman/store_local.dart';
 //   // ) async {
 //   //   String url =
 //   //       '$baseUrl/orderDetails?user_id=$userID&order_id=$orderid&order_product_id=$orderProductID';
-//   //   print("Request URL: $url");
+//   //
 //   //   try {
 //   //     final response = await http
 //   //         .get(Uri.parse(url))
@@ -65,7 +67,7 @@ import 'package:wavee/comman/store_local.dart';
 
 //   Future<http.Response> CancleOrder(Map<String, String> bodyData) async {
 //     String url = '$baseUrl/cancelOrder';
-//     print("Request URL: $url");
+//
 //     try {
 //       final response = await http
 //           .post(Uri.parse(url), body: bodyData)
@@ -97,14 +99,16 @@ class OrderProvider extends ChangeNotifier {
       if (token != null && token.isNotEmpty) {
         Map<String, String> headers = {'X-Auth-Token': '$token'};
       }
-
+      log(
+        "data url${ApiEndpoint.myOrder}?user_id=$userID&type=$type&status=$status",
+      );
       final dio = await DioHelper.getDio();
       final response = await dio.get(
-        ApiEndpoint.myOrder,
+        "${ApiEndpoint.myOrder}?user_id=$userID&type=$type&status=$status",
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
-        queryParameters: {'user_id': userID, 'status': status, 'type': type},
+        // queryParameters: {'user_id': userID, 'status': status, 'type': type},
       );
-      print("Login Success: ${response.data}");
+      log("Sucess APi call");
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
@@ -121,18 +125,22 @@ class OrderProvider extends ChangeNotifier {
       if (token != null && token.isNotEmpty) {
         Map<String, String> headers = {'X-Auth-Token': '$token'};
       }
+log(
+  "${ApiEndpoint.myOrderDetail}user_id=$userID&order_id=$orderid&order_product_id=$orderProductID",
 
+);
       final dio = await DioHelper.getDio();
       final response = await dio.get(
-        ApiEndpoint.myOrder,
+       "${ApiEndpoint.myOrderDetail}user_id=$userID&order_id=$orderid&order_product_id=$orderProductID",
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
-        queryParameters: {
-          'user_id': userID,
-          'order_id': orderid,
-          'order_product_id': orderProductID,
-        },
+        // queryParameters: {
+        //   'user_id': userID,
+        //   'order_id': orderid,
+        //   'order_product_id': orderProductID,
+        // },
       );
-      print("Login Success: ${response.data}");
+      log("sucess");
+
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));

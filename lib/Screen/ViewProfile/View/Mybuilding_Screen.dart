@@ -379,7 +379,7 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
 
   void GetProfile() {
     final Map<String, String> data = {'id': widget.id.toString()};
-    log('DATA JAY VCJEEE #${data}');
+
     checkInternet().then((internet) async {
       if (internet) {
         ProfileProvider().profileApi(data).then((response) async {

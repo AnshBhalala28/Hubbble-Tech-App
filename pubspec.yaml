@@ -84,6 +84,7 @@ dependencies:
   googleapis_auth:
   awesome_notifications: ^0.10.1
   crypto: ^3.0.6
+  flutter_dotenv: 
 
 
 
@@ -115,6 +116,7 @@ flutter:
     - assets/images/
     - assets/Svg/
     - assets/certificates/wavee_cert.pem
+    - .env
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

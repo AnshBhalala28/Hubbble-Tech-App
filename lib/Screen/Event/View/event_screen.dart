@@ -22,7 +22,8 @@ import '../Model/send_event_model.dart';
 import '../Provider/event_provider.dart';
 
 class EventScreen extends StatefulWidget {
-  const EventScreen({super.key});
+  String? userId;
+  EventScreen({super.key, this.userId});
 
   @override
   State<EventScreen> createState() => _EventScreenState();
@@ -251,8 +252,8 @@ class _EventScreenState extends State<EventScreen> {
                           ? _buildMonthView()
                           : _buildYearView(),
                       const SizedBox(height: 20),
-                      event_list_Model?.data?.length == 0 ||
-                              event_list_Model?.data?.length == null
+                      event_list_Model?.data?.data?.length == 0 ||
+                              event_list_Model?.data?.data?.length == null
                           ? Container(
                             height: selectedValue == "month" ? 65.h : 20.h,
                             alignment: Alignment.center,
@@ -271,10 +272,11 @@ class _EventScreenState extends State<EventScreen> {
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
                             physics: NeverScrollableScrollPhysics(),
-                            itemCount: event_list_Model?.data?.length ?? 0,
+                            itemCount:
+                                event_list_Model?.data?.data?.length ?? 0,
                             itemBuilder: (context, index) {
                               String eventId =
-                                  event_list_Model?.data?[index]?.id
+                                  event_list_Model?.data?.data?[index]?.id
                                       ?.toString() ??
                                   "";
                               bool isRequestSent = sentEventIds.contains(
@@ -303,6 +305,7 @@ class _EventScreenState extends State<EventScreen> {
                                               Text(
                                                 formatDate(
                                                   event_list_Model
+                                                      ?.data
                                                       ?.data?[index]
                                                       .eventDate,
                                                 ),
@@ -318,6 +321,7 @@ class _EventScreenState extends State<EventScreen> {
                                               if (isLoading)
                                                 CircularProgressIndicator()
                                               else if (event_list_Model
+                                                      ?.data
                                                       ?.data?[index]
                                                       ?.requestEvent
                                                       ?.toLowerCase() ==
@@ -331,10 +335,12 @@ class _EventScreenState extends State<EventScreen> {
                                                 ),
                                               if (!isRequestSent &&
                                                   (event_list_Model
+                                                              ?.data
                                                               ?.data?[index]
                                                               ?.requestEvent ==
                                                           null ||
                                                       event_list_Model!
+                                                          .data!
                                                           .data![index]
                                                           .requestEvent!
                                                           .isEmpty))
@@ -405,7 +411,7 @@ class _EventScreenState extends State<EventScreen> {
 
                                                                       /// Event Title
                                                                       Text(
-                                                                        event_list_Model?.data?[index]?.title ??
+                                                                        event_list_Model?.data?.data?[index]?.title ??
                                                                             "N/A",
                                                                         style: TextStyle(
                                                                           fontFamily:
@@ -425,11 +431,11 @@ class _EventScreenState extends State<EventScreen> {
 
                                                                       /// Event Time
                                                                       Text(
-                                                                        event_list_Model?.data?[index]?.eventDate !=
+                                                                        event_list_Model?.data?.data?[index]?.eventDate !=
                                                                                 null
                                                                             ? DateFormat.jm().format(
                                                                               DateTime.parse(
-                                                                                event_list_Model!.data![index]!.eventDate!,
+                                                                                event_list_Model!.data!.data![index]!.eventDate!,
                                                                               ),
                                                                             )
                                                                             : "N/A",
@@ -544,7 +550,7 @@ class _EventScreenState extends State<EventScreen> {
                                                                               );
                                                                               setState(
                                                                                 () {
-                                                                                  event_list_Model!.data![index].requestEvent = "pending";
+                                                                                  event_list_Model!.data!.data![index].requestEvent = "pending";
                                                                                 },
                                                                               );
                                                                               await sendlistap(
@@ -597,6 +603,7 @@ class _EventScreenState extends State<EventScreen> {
                                           SizedBox(height: 1.h),
                                           Text(
                                             event_list_Model
+                                                    ?.data
                                                     ?.data?[index]
                                                     ?.title ??
                                                 "N/A",
@@ -619,6 +626,7 @@ class _EventScreenState extends State<EventScreen> {
                                               Expanded(
                                                 child: Text(
                                                   event_list_Model
+                                                          ?.data
                                                           ?.data?[index]
                                                           ?.location ??
                                                       "N/A",
@@ -717,9 +725,9 @@ class _EventScreenState extends State<EventScreen> {
     });
   }
 
-  projectlistap1() {
-    final Map<String, String> data = {};
-    data['user_id'] = loginModel?.data?.user?.id.toString() ?? "";
+  projectlistap01() {
+    final Map<String, String> data = {"user_id": widget.userId ?? ""};
+
     print("login data jai che$data");
     checkInternet().then((internet) async {
       if (internet) {
@@ -759,6 +767,59 @@ class _EventScreenState extends State<EventScreen> {
       }
     });
   }
+
+  projectlistap1() {
+    final Map<String, String> data = {"user_id": widget.userId ?? ""};
+
+    checkInternet().then((internet) async {
+      if (internet) {
+        try {
+          final response = await EventProvider().eventapi(data);
+
+          if (response.statusCode == 200) {
+            eventlistModel = EventlistModel.fromJson(response.data);
+            var jsonData = response.data;
+
+            List<DateTime> dates = [];
+            if (jsonData['data'] != null &&
+                jsonData['data']['data'] != null &&
+                jsonData['data']['data'] is List) {
+              List<dynamic> projectList = jsonData['data']['data'];
+
+              dates = projectList.map<DateTime>((project) {
+                return DateTime.parse(project['event_date'].split(' ')[0]);
+              }).toList();
+            } else {
+              log("Unexpected format: ${jsonData['data']}");
+            }
+
+            if (mounted) {
+              setState(() {
+                projectDates = dates;
+                isLoading = false;
+                load = false;
+              });
+            }
+          } else {
+            setState(() {
+              load = false;
+              isLoading = false;
+            });
+          }
+        } catch (e, stackTrace) {
+          log("Error ave che che mane janavo  $e \n stackTrace Error $stackTrace");
+          setState(() {
+            load = false;
+            isLoading = false;
+          });
+        }
+      } else {
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+
 
   projectlistap() {
     final Map<String, String> data = {};

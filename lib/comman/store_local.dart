@@ -11,7 +11,7 @@
 //     SharedPreferences prefs = await SharedPreferences.getInstance();
 //     String json = jsonEncode(loginModel.toJson());
 //     await prefs.setString(userData, json);
-//     print("User data stored successfully");
+//
 //   }
 
 //   static Future<LoginModel?> getDataFromLocal() async {
@@ -28,7 +28,7 @@
 //   static Future<void> clearUserData() async {
 //     SharedPreferences prefs = await SharedPreferences.getInstance();
 //     await prefs.remove(userData);
-//     print("User data cleared");
+//
 //   }
 // }
 import 'dart:convert';
@@ -47,13 +47,11 @@ class SaveDataLocal {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String json = jsonEncode(loginModel.toJson());
     await prefs.setString(userData, json);
-    print("User data stored successfully");
 
     // Save token securely
     String? token = loginModel.data?.token;
     if (token != null && token.isNotEmpty) {
       await _secureStorage.write(key: userToken, value: token);
-      print("User token stored securely");
     }
   }
 
@@ -75,6 +73,5 @@ class SaveDataLocal {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(userData);
     await _secureStorage.delete(key: userToken);
-    print("User data and token cleared");
   }
 }

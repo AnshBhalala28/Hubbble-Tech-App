@@ -52,6 +52,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
       isLoading = true;
     });
     OrderDetailAPI();
+    OrderDetailAPI1();
   }
 
   @override
@@ -518,8 +519,11 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                       .data!
                                       .products!
                                       .product!
-                                      .images!
-                                      .isEmpty
+                                      .images==[]||orderDetailModel!
+                                  .data!
+                                  .products!
+                                  .product!
+                                  .images==null
                                   ? Container(
                                     height: 25.h,
                                     width: double.infinity,
@@ -538,7 +542,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                                 .products!
                                                 .product!
                                                 .image ??
-                                            "",
+                                            "https://portal.wavee.ai/public/business/img/logos/waveeLogoShort.png",
                                         fit: BoxFit.fill,
                                         placeholder:
                                             (context, url) => const Center(
@@ -555,7 +559,8 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                       ),
                                     ),
                                   )
-                                  : CarouselSlider(
+                                  :
+                              CarouselSlider(
                                     carouselController: _controller,
                                     options: CarouselOptions(
                                       height: 25.h,
@@ -699,22 +704,22 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                     ],
                                   ),
                                   SizedBox(height: 1.h),
-                                  Row(
-                                    children: [
-                                      Icon(Icons.timer, size: 18.sp),
-                                      SizedBox(width: 2.w),
-                                      Text(
-                                        "Pickup Time: ${orderDetailModel?.data?.order?.pickupTime}",
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                          fontFamily: AppConstants.manrope,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 1.h),
+                                  // Row(
+                                  //   children: [
+                                  //     Icon(Icons.timer, size: 18.sp),
+                                  //     SizedBox(width: 2.w),
+                                  //     Text(
+                                  //       "Pickup Time: ${orderDetailModel?.data?.order?.pickupTime}",
+                                  //       style: TextStyle(
+                                  //         fontSize: 15.sp,
+                                  //         fontWeight: FontWeight.bold,
+                                  //         color: Colors.black,
+                                  //         fontFamily: AppConstants.manrope,
+                                  //       ),
+                                  //     ),
+                                  //   ],
+                                  // ),
+                                  // SizedBox(height: 1.h),
                                   Row(
                                     children: [
                                       Icon(
@@ -1185,9 +1190,39 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
     }
   }
 
+  OrderDetailAPI1() {
+    checkInternet().then((internet) async {
+      if (internet) {
+        OrderProvider()
+            .orderDetailApi(
+          loginModel?.data?.user?.id.toString() ?? "",
+          widget.orderid,
+          widget.orderProductID,
+        )
+            .then((response) async {
+
+          serviceOrderDetail = ServiceOrderDetail.fromJson(response.data);
+          if (response.statusCode == 200) {
+            setState(() {
+              isLoading = false;
+            });
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+          }
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
   OrderDetailAPI() {
-    log("Order Detail Response: ${widget.orderid}");
-    log("Order Detail Response: ${widget.orderProductID}");
     checkInternet().then((internet) async {
       if (internet) {
         OrderProvider()
@@ -1197,8 +1232,8 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
               widget.orderProductID,
             )
             .then((response) async {
-              // orderDetailModel = OrderDetailModel.fromJson(response.data);
-              serviceOrderDetail = ServiceOrderDetail.fromJson(response.data);
+              orderDetailModel = OrderDetailModel.fromJson(response.data);
+              // serviceOrderDetail = ServiceOrderDetail.fromJson(response.data);
               if (response.statusCode == 200) {
                 setState(() {
                   isLoading = false;
@@ -1207,7 +1242,6 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                 setState(() {
                   isLoading = false;
                 });
-                log("Error");
               }
             });
       } else {
@@ -1228,8 +1262,6 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
       "user_id": loginModel?.data?.user?.id.toString() ?? "",
       "order_id": widget.orderid.toString(),
     };
-
-    log("📤 Booking Data: $data");
 
     checkInternet().then((internet) async {
       if (internet) {
@@ -1342,7 +1374,6 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
             title: "Something Else",
             subtitle: "Live chat",
             onTap: () {
-              print("check");
               Get.to(
                 MessageScreen(
                   chatName: orderDetailModel?.data?.business?.businessName,

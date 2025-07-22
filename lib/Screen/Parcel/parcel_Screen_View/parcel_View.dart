@@ -300,8 +300,6 @@ class _ParcelScreenState extends State<ParcelScreen> {
       "user_id": loginModel?.data?.user?.id.toString() ?? "",
     };
 
-    log("API Request: $data");
-
     checkInternet().then((internet) async {
       if (internet) {
         try {
@@ -310,7 +308,6 @@ class _ParcelScreenState extends State<ParcelScreen> {
             response.data,
           );
           if (response.statusCode == 200 && parcelViewModal.status == 200) {
-            log("API Response: ${response.data}");
             setState(() {
               allParcels = parcelViewModal.data?.data ?? [];
               collectedParcels =

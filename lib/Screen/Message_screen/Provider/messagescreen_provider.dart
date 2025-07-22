@@ -19,10 +19,6 @@ class MessageProvider extends ChangeNotifier {
     final String url =
         '$baseUrl/get-chat/$user_id/$concierge_id?type=$type&order_product_id=$orderproductid';
 
-    print("Request URL: $url");
-    print("concierge_id: $concierge_id");
-    print("type: $type");
-    print("user_id: $user_id");
     try {
       final response = await http
           .get(Uri.parse(url))
@@ -33,10 +29,8 @@ class MessageProvider extends ChangeNotifier {
             },
           );
       if (response.statusCode == 200) {
-        log("Successful response: ${response.body}");
         return response;
       } else {
-        log("Failed response: ${response.statusCode}");
         throw Exception("Failed to connect to the server");
       }
     } on SocketException catch (e) {
@@ -48,7 +42,6 @@ class MessageProvider extends ChangeNotifier {
 
   Future<http.Response> sendmessageapi(Map<String, String> bodyData) async {
     const url = '$baseUrl/send-message';
-    print("Request URL: $url");
 
     try {
       final imageUploadRequest = http.MultipartRequest('POST', Uri.parse(url));
@@ -61,8 +54,6 @@ class MessageProvider extends ChangeNotifier {
 
       if (bodyData['files']?.isNotEmpty ?? false) {
         final String filePath = bodyData['files']!;
-
-        print('Uploading file: $filePath');
 
         String fileExtension = filePath.split('.').last.toLowerCase();
         MediaType mediaType;
@@ -104,7 +95,7 @@ class MessageProvider extends ChangeNotifier {
 
   Future<http.Response> SendMessagApi(Map<String, String> bodyData) async {
     const url = '$baseUrl/send-message';
-    print("Request URL: $url");
+
     try {
       final response = await http
           .post(Uri.parse(url), body: bodyData)
@@ -115,10 +106,8 @@ class MessageProvider extends ChangeNotifier {
             },
           );
       if (response.statusCode == 200) {
-        log("Successful response: ${response.body}");
         return response;
       } else {
-        log("Failed response: ${response.statusCode}");
         throw Exception("Failed to connect to the server");
       }
     } on SocketException catch (e) {
@@ -130,8 +119,7 @@ class MessageProvider extends ChangeNotifier {
 
   Future<http.Response> removefriend(String ConId) async {
     String url = '${baseUrl}/remove-friends/$ConId';
-    print("Delete group url${url}");
-    print(url);
+
     var responseJson;
     final response = await http
         .get(Uri.parse(url))
@@ -142,14 +130,13 @@ class MessageProvider extends ChangeNotifier {
           },
         );
     responseJson = responses(response);
-    print(response.body);
+
     return responseJson;
   }
 
   Future<http.Response> userpersonalinfo(String ConId) async {
     String url = '${baseUrl}/concierge-friends-profile/$ConId';
-    print("userpersonalinfo url${url}");
-    print(url);
+
     var responseJson;
     final response = await http
         .get(Uri.parse(url))
@@ -160,7 +147,7 @@ class MessageProvider extends ChangeNotifier {
           },
         );
     responseJson = responses(response);
-    print(response.body);
+
     return responseJson;
   }
 
@@ -183,8 +170,7 @@ class MessageProvider extends ChangeNotifier {
       var streamedResponse = await request.send();
       return await http.Response.fromStream(streamedResponse);
     } catch (e, stackTrace) {
-      debugPrint("API Send Error: $e");
-      debugPrint("StackTrace:\n$stackTrace");
+      log('Error in sendmessageorderapi: $e\nStackTrace: $stackTrace');
       rethrow;
     }
   }

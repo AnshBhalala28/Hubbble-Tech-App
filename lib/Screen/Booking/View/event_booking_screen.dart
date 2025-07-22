@@ -393,7 +393,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
             });
           }
         } catch (e, stackTrace) {
-          log("Geeting Error $stackTrace");
           setState(() {
             isLoading = false;
           });
@@ -417,8 +416,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
       "event_id": eventId,
     };
 
-    log(" ADD DATA $data");
-
     checkInternet().then((internet) async {
       if (internet) {
         try {
@@ -436,7 +433,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
             });
           }
         } catch (e, stackTrace) {
-          log("Geeting Error $stackTrace");
           if (mounted) {
             setState(() {
               isDetailLoading = false;
@@ -662,8 +658,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                           Navigator.pop(context);
                           Navigator.pop(context);
                           RSVPAttendApi(eventid, 'no', rsvp);
-
-                          print("User chose: No");
                         },
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(color: Colors.grey.shade400),
@@ -689,7 +683,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                           Navigator.pop(context);
                           Navigator.pop(context);
                           RSVPAttendApi(eventid, 'yes', rsvp);
-                          print("User chose: Yes");
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.maincolor,
@@ -815,7 +808,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                           Navigator.pop(context);
                           Navigator.pop(context);
                           RsvpToEventApi(eventID, 'maybe');
-                          print("RSVP: Maybe");
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey[300],
@@ -841,8 +833,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                           Navigator.pop(context);
                           Navigator.pop(context);
                           RsvpToEventApi(eventID, 'decline');
-
-                          print("RSVP: Declined");
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red.shade100,
@@ -868,8 +858,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                           Navigator.pop(context);
                           Navigator.pop(context);
                           RsvpToEventApi(eventID, 'accept');
-
-                          print("RSVP: Accepted");
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.maincolor,
@@ -923,7 +911,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
             });
           }
         } catch (e, stackTrace) {
-          log("Geeting Error $stackTrace");
           setState(() {
             isRsvpLoading = false;
           });
@@ -948,8 +935,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
       "rsvp": rsvp,
     };
 
-    log(" ADD DATA $data");
-
     checkInternet().then((internet) async {
       if (internet) {
         try {
@@ -967,7 +952,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
             });
           }
         } catch (e, stackTrace) {
-          log("Geeting Error $stackTrace");
           setState(() {
             isRsvpLoading = false;
           });

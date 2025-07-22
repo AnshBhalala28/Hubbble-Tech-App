@@ -215,7 +215,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
       'type': 'post',
       'post_offer_promo_id': widget.postId.toString(),
     };
-    print("request parameter : $data");
+
     checkInternet().then((internet) async {
       if (internet) {
         CommunityProvider().postLikeApi(data).then((response) async {
@@ -230,20 +230,15 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
             _saveLikeStatus(isLiked);
 
             if (isLiked) {
-              print("Post liked successfully");
-            } else {
-              print("Post unliked successfully");
-            }
+            } else {}
           } else if (response.statusCode == 429) {
             setState(() {
               isLikeInProgress = false;
             });
-            print("Too many requests");
           } else {
             setState(() {
               isLikeInProgress = false;
             });
-            print("Internal Server Error");
           }
         });
       } else {
@@ -261,7 +256,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
       'post_id': widget.postId.toString(),
       'dwell_time': secondsWatched.toString(),
     };
-    print("request post time parameter : $data");
+
     checkInternet().then((internet) async {
       if (internet) {
         CommunityProvider().recoedDwellApi(data).then((response) async {
@@ -271,12 +266,10 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
             setState(() {
               isLikeInProgress = false;
             });
-            print("Too many requests");
           } else {
             setState(() {
               isLikeInProgress = false;
             });
-            print("Internal Server Error");
           }
         });
       } else {
@@ -293,18 +286,14 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
       'user_id': (loginModel?.data?.user?.id).toString(),
       'post_id': widget.postId.toString(),
     };
-    print("request view parameter : $data");
+
     checkInternet().then((internet) async {
       if (internet) {
         CommunityProvider().postMarkViewApi(data).then((response) async {
           if (response.statusCode == 200) {
             postasviewedmodel = PostAsViewedModel.fromJson(response.data);
-            print("View done");
           } else if (response.statusCode == 429) {
-            print("Too many requests");
-          } else {
-            print("Internal Server Error");
-          }
+          } else {}
         });
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");

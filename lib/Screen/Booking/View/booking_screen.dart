@@ -182,7 +182,7 @@ class _BookingScreenState extends State<BookingScreen> {
                             selectedType = value;
                             isLoading = true;
                           });
-                          print("Selected: $value");
+
                           BookAmetiesStatusApi(selectedType.toLowerCase());
                         },
                         color: Colors.white,
@@ -563,7 +563,7 @@ class _BookingScreenState extends State<BookingScreen> {
       "user_id": loginModel?.data?.user?.id.toString() ?? "",
       "amenity_id": id,
     };
-    log("add data sending${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         try {
@@ -580,7 +580,6 @@ class _BookingScreenState extends State<BookingScreen> {
             });
           }
         } catch (e, stackTrace) {
-          log("Geeting Error $stackTrace");
           setState(() {
             isLoading = false;
           });
@@ -599,8 +598,6 @@ class _BookingScreenState extends State<BookingScreen> {
       "booking_id": bookingId,
       "user_id": userId,
     };
-
-    log("Reject Booking Data: $data");
 
     checkInternet().then((internet) async {
       if (internet) {
@@ -637,7 +634,6 @@ class _BookingScreenState extends State<BookingScreen> {
             );
           }
         } catch (e, stackTrace) {
-          log("Exception while rejecting booking: $stackTrace");
           buildErrorDialog(context, 'Exception', e.toString());
         } finally {
           setState(() {
@@ -676,7 +672,6 @@ class _BookingScreenState extends State<BookingScreen> {
             });
           }
         } catch (e, stackTrace) {
-          log("Geeting Error $stackTrace");
           setState(() {
             isLoading = false;
           });

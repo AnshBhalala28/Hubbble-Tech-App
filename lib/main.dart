@@ -1,6 +1,4 @@
-
 import 'dart:developer';
-
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -11,7 +9,6 @@ import 'Screen/Authcation/Model/login_model.dart';
 import 'Screen/welcome_screen.dart';
 import 'comman/colors.dart';
 import 'firebase_options.dart';
-
 
 String? myDeviceToken;
 
@@ -45,20 +42,16 @@ void _showAwesomeNotification(RemoteMessage message) {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  AwesomeNotifications().initialize(
-    null,
-    [
-      NotificationChannel(
-        channelKey: 'basic_channel',
-        channelName: 'Basic Notifications',
-        channelDescription: 'Used for basic notifications',
-        defaultColor: AppColors.maincolor,
-        ledColor: Colors.white,
-        importance: NotificationImportance.High,
-      ),
-    ],
-    debug: true,
-  );
+  AwesomeNotifications().initialize(null, [
+    NotificationChannel(
+      channelKey: 'basic_channel',
+      channelName: 'Basic Notifications',
+      channelDescription: 'Used for basic notifications',
+      defaultColor: AppColors.maincolor,
+      ledColor: Colors.white,
+      importance: NotificationImportance.High,
+    ),
+  ], debug: true);
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   NotificationSettings settings = await messaging.requestPermission(
     alert: true,
@@ -114,7 +107,8 @@ class _MyAppState extends State<MyApp> {
       log('📦 Data: ${message.data}');
 
       if (Theme.of(context).platform == TargetPlatform.iOS) {
-        if (message.data['sender_token'] != myDeviceToken && message.notification == null) {
+        if (message.data['sender_token'] != myDeviceToken &&
+            message.notification == null) {
           _showAwesomeNotification(message);
         }
       } else {
@@ -126,16 +120,21 @@ class _MyAppState extends State<MyApp> {
 
     // Handle background notification click
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      log("🟢 Notification tapped from background: ${message.notification?.title}");
+      log(
+        "🟢 Notification tapped from background: ${message.notification?.title}",
+      );
     });
     checkInitialMessage();
   }
 
   Future<void> checkInitialMessage() async {
-    RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
     if (initialMessage != null &&
         initialMessage.data['sender_token'] != myDeviceToken) {
-      log("🔵 App opened from terminated via notification: ${initialMessage.notification?.title}");
+      log(
+        "🔵 App opened from terminated via notification: ${initialMessage.notification?.title}",
+      );
       _showAwesomeNotification(initialMessage);
     }
   }

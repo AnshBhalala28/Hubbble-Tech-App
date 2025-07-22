@@ -139,8 +139,6 @@ class _NotificationPageState extends State<NotificationPage> {
           onTap: () {
             String? type = notification?.type;
             String notificationId = notification?.id?.toString() ?? "";
-            log("Notification Type: $type");
-            log("Notification ID: $notificationId");
 
             Readnotification(notificationId);
             if (type == "messageboard") {
@@ -164,11 +162,9 @@ class _NotificationPageState extends State<NotificationPage> {
                   profileImage =
                       notification.conciergeProfile!.conciergeImage!.first;
                 }
-                log("Concierge Chat: $chatName");
               } else if (notification?.businessProfile != null) {
                 chatName = notification?.businessProfile?.name ?? '';
                 profileImage = notification?.businessProfile?.profile ?? '';
-                log("Business Chat: $chatName");
               }
 
               Get.to(
@@ -188,9 +184,7 @@ class _NotificationPageState extends State<NotificationPage> {
                   orderProductID: notification?.chatCreateId.toString() ?? "",
                 ),
               );
-            } else {
-              log("Unknown notification type: $type");
-            }
+            } else {}
           },
           child: Container(
             height: 14.5.h,
@@ -294,13 +288,8 @@ class _NotificationPageState extends State<NotificationPage> {
           EasyLoading.dismiss();
           if (response.statusCode == 200) {
             notificationmodel = NotificationModell.fromJson(response.data);
-          } else {
-            log(" Failed response error ave che: ${response.statusCode}");
-          }
-        } catch (e, stackTrace) {
-          log("Exception occurred: $e");
-          log("Exception occurred: $stackTrace");
-        }
+          } else {}
+        } catch (e, stackTrace) {}
       } else {
         EasyLoading.dismiss();
         buildErrorDialog(context, 'Error', "Internet Required");
@@ -315,7 +304,7 @@ class _NotificationPageState extends State<NotificationPage> {
           final response = await NotificationProvider().notificationReadApi(
             notificationId,
           );
-          print("Reading Notification ID: ${notificationId}");
+
           EasyLoading.dismiss();
           if (response.statusCode == 200) {
             notificationreadModel = NotificationReadModel.fromJson(
@@ -323,13 +312,8 @@ class _NotificationPageState extends State<NotificationPage> {
             );
 
             getnotificationCount();
-          } else {
-            log(" Failed response error ave che: ${response.statusCode}");
-          }
-        } catch (e, stackTrace) {
-          log("Exception occurred: $e");
-          log("Exception occurred: $stackTrace");
-        }
+          } else {}
+        } catch (e, stackTrace) {}
       } else {
         EasyLoading.dismiss();
         buildErrorDialog(context, 'Error', "Internet Required");
@@ -344,7 +328,6 @@ class _NotificationPageState extends State<NotificationPage> {
           final response = await NotificationProvider().notificationApi(
             (loginModel?.data?.user?.id).toString(),
           );
-          print("login user id : ${(loginModel?.data?.user?.id).toString()}");
 
           if (response.statusCode == 200) {
             notificationmodel = NotificationModell.fromJson(response.data);
@@ -353,13 +336,8 @@ class _NotificationPageState extends State<NotificationPage> {
               notificationCount = notificationmodel?.data?.totalCount ?? 0;
               isLoading = false;
             });
-            print("notificationCount : ${notificationCount}");
-          } else {
-            log(" Failed response error ave che: ${response.statusCode}");
-          }
-        } catch (e) {
-          log("Exception occurred: $e");
-        }
+          } else {}
+        } catch (e) {}
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
       }

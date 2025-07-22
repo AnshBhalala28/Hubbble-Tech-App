@@ -373,23 +373,18 @@ class _SearchScreenState extends State<SearchScreen> {
       "type": "product",
     };
 
-    log("Adding to cart: $addToCartData");
-
     checkInternet().then((internet) async {
       if (internet) {
         ProductProvider()
             .AddToCart(addToCartData)
             .then((response) async {
               if (response.statusCode == 200) {
-                log("Product added to cart successfully");
-
                 updateQuantityApi(int.parse(productID), quantity, "product");
               } else {
                 setState(() {
                   isUpdateQuantity = false;
                   isAddtoCart = false;
                 });
-                log("Error adding to cart");
               }
             })
             .catchError((error) {
@@ -397,7 +392,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 isUpdateQuantity = false;
                 isAddtoCart = false;
               });
-              log("Add to cart error: $error");
             });
       } else {
         setState(() {
@@ -417,18 +411,13 @@ class _SearchScreenState extends State<SearchScreen> {
       "type": type,
     };
 
-    log("Updating quantity: $data");
-
     checkInternet().then((internet) async {
       if (internet) {
         CartProvider()
             .updateCartQuantityApi(data)
             .then((response) async {
               if (response.statusCode == 200) {
-                log("Quantity updated successfully");
-              } else {
-                log("Error updating quantity");
-              }
+              } else {}
               setState(() {
                 isUpdateQuantity = false;
                 isAddtoCart = false;
@@ -439,7 +428,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 isUpdateQuantity = false;
                 isAddtoCart = false;
               });
-              log("Update quantity error: $error");
             });
       } else {
         setState(() {
@@ -484,7 +472,6 @@ class _SearchScreenState extends State<SearchScreen> {
             isLoading = false;
             searchResults.clear();
           });
-          log("Search API Error: $e $stackTrace");
         }
       } else {
         setState(() {

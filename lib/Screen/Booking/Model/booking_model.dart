@@ -115,7 +115,7 @@
 //     return data;
 //   }
 // }
-
+//
 // class OperatingHours {
 //   Monday? monday;
 //   Monday? tuesday;
@@ -124,7 +124,7 @@
 //   Monday? friday;
 //   Monday? saturday;
 //   Monday? sunday;
-
+//
 //   OperatingHours({
 //     this.monday,
 //     this.tuesday,
@@ -134,7 +134,7 @@
 //     this.saturday,
 //     this.sunday,
 //   });
-
+//
 //   OperatingHours.fromJson(Map<String, dynamic> json) {
 //     monday = json['monday'] != null ? Monday.fromJson(json['monday']) : null;
 //     tuesday = json['tuesday'] != null ? Monday.fromJson(json['tuesday']) : null;
@@ -147,7 +147,7 @@
 //     json['saturday'] != null ? Monday.fromJson(json['saturday']) : null;
 //     sunday = json['sunday'] != null ? Monday.fromJson(json['sunday']) : null;
 //   }
-
+//
 //   Map<String, dynamic> toJson() {
 //     final Map<String, dynamic> data = {};
 //     if (monday != null) data['monday'] = monday!.toJson();
@@ -160,18 +160,18 @@
 //     return data;
 //   }
 // }
-
+//
 // class Monday {
 //   String? open;
 //   String? close;
-
+//
 //   Monday({this.open, this.close});
-
+//
 //   Monday.fromJson(Map<String, dynamic> json) {
 //     open = json['open'];
 //     close = json['close'];
 //   }
-
+//
 //   Map<String, dynamic> toJson() {
 //     final Map<String, dynamic> data = {};
 //     data['open'] = open;
@@ -182,30 +182,30 @@
 class AmenitiesModel {
   int? status;
   String? message;
-  Data1? data1;
+  Data? data;
 
-  AmenitiesModel({this.status, this.message, this.data1});
+  AmenitiesModel({this.status, this.message, this.data});
 
   AmenitiesModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data1 = json['data1'] != null ? new Data1.fromJson(json['data1']) : null;
+    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['status'] = this.status;
     data['message'] = this.message;
-    if (this.data1 != null) {
-      data['data1'] = this.data1!.toJson();
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
     }
     return data;
   }
 }
 
-class Data1 {
+class Data {
   int? currentPage;
-  List<Data>? data;
+  List<Data1>? data;
   String? firstPageUrl;
   int? from;
   int? lastPage;
@@ -218,28 +218,27 @@ class Data1 {
   int? to;
   int? total;
 
-  Data1({
-    this.currentPage,
-    this.data,
-    this.firstPageUrl,
-    this.from,
-    this.lastPage,
-    this.lastPageUrl,
-    this.links,
-    this.nextPageUrl,
-    this.path,
-    this.perPage,
-    this.prevPageUrl,
-    this.to,
-    this.total,
-  });
+  Data(
+      {this.currentPage,
+        this.data,
+        this.firstPageUrl,
+        this.from,
+        this.lastPage,
+        this.lastPageUrl,
+        this.links,
+        this.nextPageUrl,
+        this.path,
+        this.perPage,
+        this.prevPageUrl,
+        this.to,
+        this.total});
 
-  Data1.fromJson(Map<String, dynamic> json) {
+  Data.fromJson(Map<String, dynamic> json) {
     currentPage = json['current_page'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <Data1>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(new Data1.fromJson(v));
       });
     }
     firstPageUrl = json['first_page_url'];
@@ -283,7 +282,7 @@ class Data1 {
   }
 }
 
-class Data {
+class Data1 {
   int? id;
   int? userId;
   String? name;
@@ -303,38 +302,36 @@ class Data {
   int? bookedSlots;
   int? availableSlots;
 
-  Data({
-    this.id,
-    this.userId,
-    this.name,
-    this.description,
-    this.imageUrl,
-    this.rulesNotice,
-    this.operatingHours,
-    this.bookingLimitDuration,
-    this.durationOptions,
-    this.capacity,
-    this.maxBookingPerDay,
-    this.status,
-    this.deletedAt,
-    this.createdAt,
-    this.updatedAt,
-    this.totalBookingSlots,
-    this.bookedSlots,
-    this.availableSlots,
-  });
+  Data1(
+      {this.id,
+        this.userId,
+        this.name,
+        this.description,
+        this.imageUrl,
+        this.rulesNotice,
+        this.operatingHours,
+        this.bookingLimitDuration,
+        this.durationOptions,
+        this.capacity,
+        this.maxBookingPerDay,
+        this.status,
+        this.deletedAt,
+        this.createdAt,
+        this.updatedAt,
+        this.totalBookingSlots,
+        this.bookedSlots,
+        this.availableSlots});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  Data1.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userId = json['user_id'];
     name = json['name'];
     description = json['description'];
     imageUrl = json['image_url'].cast<String>();
     rulesNotice = json['rules_notice'];
-    operatingHours =
-        json['operating_hours'] != null
-            ? new OperatingHours.fromJson(json['operating_hours'])
-            : null;
+    operatingHours = (json['operating_hours'] is Map)
+        ? OperatingHours.fromJson(json['operating_hours'])
+        : null;
     bookingLimitDuration = json['booking_limit_duration'];
     durationOptions = json['duration_options'].cast<String>();
     capacity = json['capacity'];
@@ -356,8 +353,8 @@ class Data {
     data['description'] = this.description;
     data['image_url'] = this.imageUrl;
     data['rules_notice'] = this.rulesNotice;
-    if (this.operatingHours != null) {
-      data['operating_hours'] = this.operatingHours!.toJson();
+    if (operatingHours != null) {
+      data['operating_hours'] = operatingHours!.toJson();
     }
     data['booking_limit_duration'] = this.bookingLimitDuration;
     data['duration_options'] = this.durationOptions;
@@ -381,6 +378,7 @@ class OperatingHours {
   Monday? thursday;
   Monday? friday;
   Monday? saturday;
+  Monday? sunday;
 
   OperatingHours({
     this.monday,
@@ -389,45 +387,31 @@ class OperatingHours {
     this.thursday,
     this.friday,
     this.saturday,
+    this.sunday,
   });
 
   OperatingHours.fromJson(Map<String, dynamic> json) {
-    monday =
-        json['monday'] != null ? new Monday.fromJson(json['monday']) : null;
-    tuesday =
-        json['tuesday'] != null ? new Monday.fromJson(json['tuesday']) : null;
+    monday = json['monday'] != null ? Monday.fromJson(json['monday']) : null;
+    tuesday = json['tuesday'] != null ? Monday.fromJson(json['tuesday']) : null;
     wednesday =
-        json['wednesday'] != null
-            ? new Monday.fromJson(json['wednesday'])
-            : null;
+    json['wednesday'] != null ? Monday.fromJson(json['wednesday']) : null;
     thursday =
-        json['thursday'] != null ? new Monday.fromJson(json['thursday']) : null;
-    friday =
-        json['friday'] != null ? new Monday.fromJson(json['friday']) : null;
+    json['thursday'] != null ? Monday.fromJson(json['thursday']) : null;
+    friday = json['friday'] != null ? Monday.fromJson(json['friday']) : null;
     saturday =
-        json['saturday'] != null ? new Monday.fromJson(json['saturday']) : null;
+    json['saturday'] != null ? Monday.fromJson(json['saturday']) : null;
+    sunday = json['sunday'] != null ? Monday.fromJson(json['sunday']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.monday != null) {
-      data['monday'] = this.monday!.toJson();
-    }
-    if (this.tuesday != null) {
-      data['tuesday'] = this.tuesday!.toJson();
-    }
-    if (this.wednesday != null) {
-      data['wednesday'] = this.wednesday!.toJson();
-    }
-    if (this.thursday != null) {
-      data['thursday'] = this.thursday!.toJson();
-    }
-    if (this.friday != null) {
-      data['friday'] = this.friday!.toJson();
-    }
-    if (this.saturday != null) {
-      data['saturday'] = this.saturday!.toJson();
-    }
+    final Map<String, dynamic> data = {};
+    if (monday != null) data['monday'] = monday!.toJson();
+    if (tuesday != null) data['tuesday'] = tuesday!.toJson();
+    if (wednesday != null) data['wednesday'] = wednesday!.toJson();
+    if (thursday != null) data['thursday'] = thursday!.toJson();
+    if (friday != null) data['friday'] = friday!.toJson();
+    if (saturday != null) data['saturday'] = saturday!.toJson();
+    if (sunday != null) data['sunday'] = sunday!.toJson();
     return data;
   }
 }
@@ -444,9 +428,9 @@ class Monday {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['open'] = this.open;
-    data['close'] = this.close;
+    final Map<String, dynamic> data = {};
+    data['open'] = open;
+    data['close'] = close;
     return data;
   }
 }

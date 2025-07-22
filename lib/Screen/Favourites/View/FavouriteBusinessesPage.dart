@@ -61,13 +61,8 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
         mapController.animateCamera(
           CameraUpdate.newLatLngZoom(LatLng(latitude, longitude), 20.0),
         );
-        print("Moved to Location: Lat: $latitude, Lon: $longitude");
-      } else {
-        print("Invalid stored location.");
-      }
-    } else {
-      print("AppLat or AppLon is empty.");
-    }
+      } else {}
+    } else {}
   }
 
   getlikeapi() {
@@ -128,7 +123,6 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
             .catchError((error) {
               EasyLoading.dismiss();
               EasyLoading.showError("Something went wrong");
-              print("Error in unlike API: $error");
             });
       } else {
         EasyLoading.dismiss();
@@ -148,8 +142,6 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
         ) async {
           busnessviewmodal = BusnessViewModal.fromJson(response.data);
           if (response.statusCode == 200) {
-            print("done LIst");
-
             setState(() {
               isSending = false;
             });
@@ -180,7 +172,6 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      print("📌 Location services are disabled.");
       setState(() {
         isLoading = false;
         isMapLoading = false;
@@ -192,7 +183,6 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        print("📌 Location permission denied.");
         setState(() {
           isLoading = false;
           isMapLoading = false;
@@ -202,7 +192,6 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      print("📌 Location permission permanently denied.");
       setState(() {
         isLoading = false;
         isMapLoading = false;
@@ -216,7 +205,6 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
 
     AppLat = position.latitude.toString();
     AppLon = position.longitude.toString();
-    print("Latitude Check again: $AppLat, Longitude Check: $AppLon");
 
     setState(() {
       isLocationFetched = true;
@@ -257,7 +245,6 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
         );
       }
     } catch (e) {
-      print("Error: $e");
       setState(() {
         isLoading = false;
       });
@@ -318,7 +305,6 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () {
-                                  print("id tap");
                                   print(
                                     "Liked Business ID: ${getlikeModal?.data?[index].businessId}",
                                   );

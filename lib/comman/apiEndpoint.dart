@@ -9,6 +9,8 @@ class ApiEndpoint {
   static String parcel = "${baseUrl}get-parcel-data";
   static String visitor = "${baseUrl}view-visitor";
   static String chatCount = "${baseUrl}get-total-new-messages";
+  static String getConcierge = "${baseUrl}get-concierge";
+  static String allStory = "${baseUrl}allStoryPostsGetApp";
   static String messageBoard = "${baseUrl}message-board";
   static String createPost = "${baseUrl}post_create_app";
   static String profile = "${baseUrl}residents-app-view";
@@ -68,7 +70,7 @@ class ApiEndpoint {
   static String appNotification = "${baseUrl}Appnotification";
   static String notificatonRead = "${baseUrl}notifications-read";
   static String myOrder = "${baseUrl}myOrders";
-  static String myOrderDetail = "${baseUrl}orderDetails";
+  static String myOrderDetail = "${baseUrl}orderDetails?";
   static String cancleOrder = "${baseUrl}cancelOrder";
   static String productDetail = "${baseUrl}getProductDetails";
   static String addReview = "${baseUrl}add-review";

@@ -763,7 +763,7 @@ class _AddToCartViewState extends State<AddToCartView> {
       "id": productID.toString(),
       "type": "product",
     };
-    log("DATA ${data}");
+
     checkInternet().then((internet) async {
       if (internet) {
         ProductProvider().AddToCart(data).then((response) async {
@@ -779,7 +779,6 @@ class _AddToCartViewState extends State<AddToCartView> {
               isUpdateQuantity = false;
               isAddtoCart = false;
             });
-            log("Error");
           }
         });
       } else {
@@ -939,7 +938,6 @@ class _AddToCartViewState extends State<AddToCartView> {
                 setState(() {
                   isLoading = false;
                 });
-                log("Error");
               }
             });
       } else {
@@ -996,8 +994,6 @@ class _AddToCartViewState extends State<AddToCartView> {
       "type": type,
     };
 
-    log("Sending remove request: $data");
-
     checkInternet().then((internet) async {
       if (internet) {
         CartProvider().removeCartApi(data).then((response) async {
@@ -1010,7 +1006,6 @@ class _AddToCartViewState extends State<AddToCartView> {
             setState(() {
               isUpdateQuantity = false;
             });
-            log("Error removing item from cart");
           }
         });
       } else {

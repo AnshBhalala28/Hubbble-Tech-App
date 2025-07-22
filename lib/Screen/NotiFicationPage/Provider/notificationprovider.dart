@@ -8,7 +8,7 @@ import 'package:wavee/comman/store_local.dart';
 // class NotificationProvider extends ChangeNotifier {
 //   // Future<http.Response> NotificationApi(String UserId) async {
 //   //   String url = '${baseUrl}/Appnotification?user_id=$UserId';
-//   //   print("Notification Url  : $url");
+//   //
 //   //   try {
 //   //     final response = await http
 //   //         .get(Uri.parse(url))
@@ -19,11 +19,11 @@ import 'package:wavee/comman/store_local.dart';
 //   //           },
 //   //         );
 //   //     if (response.statusCode == 200) {
-//   //       print("Successful response: ${response.body}");
+//   //
 //   //       log("lat");
 //   //       return response;
 //   //     } else {
-//   //       print("Failed response: ${response.statusCode}");
+//   //
 //   //       throw Exception("Failed to connect to the server");
 //   //     }
 //   //   } on SocketException catch (e) {
@@ -35,7 +35,7 @@ import 'package:wavee/comman/store_local.dart';
 
 //   Future<http.Response> ReadNotificationApi(String UserId) async {
 //     String url = '${baseUrl}/notifications-read?user_id=$UserId';
-//     print("Notification Url  : $url");
+//
 //     try {
 //       final response = await http
 //           .get(Uri.parse(url))
@@ -46,11 +46,11 @@ import 'package:wavee/comman/store_local.dart';
 //             },
 //           );
 //       if (response.statusCode == 200) {
-//         print("Successful response: ${response.body}");
+//
 //         log("lat");
 //         return response;
 //       } else {
-//         print("Failed response: ${response.statusCode}");
+//
 //         throw Exception("Failed to connect to the server");
 //       }
 //     } on SocketException catch (e) {
