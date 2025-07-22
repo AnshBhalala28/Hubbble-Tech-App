@@ -271,19 +271,28 @@ class Data {
   int? perPage;
   int? total;
   int? lastPage;
-  List<Data1>? data;
+  int? totalPages;
+  List<Data3>? data;
 
-  Data({this.currentPage, this.perPage, this.total, this.lastPage, this.data});
+  Data({
+    this.currentPage,
+    this.perPage,
+    this.total,
+    this.lastPage,
+    this.data,
+    this.totalPages,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     currentPage = json['current_page'];
     perPage = json['per_page'];
+    totalPages = json['total_pages'];
     total = json['total'];
     lastPage = json['last_page'];
     if (json['data'] != null) {
-      data = <Data1>[];
+      data = <Data3>[];
       json['data'].forEach((v) {
-        data!.add(new Data1.fromJson(v));
+        data!.add(new Data3.fromJson(v));
       });
     }
   }
@@ -292,6 +301,7 @@ class Data {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['current_page'] = this.currentPage;
     data['per_page'] = this.perPage;
+    data['total_pages'] = this.totalPages;
     data['total'] = this.total;
     data['last_page'] = this.lastPage;
     if (this.data != null) {
@@ -301,7 +311,7 @@ class Data {
   }
 }
 
-class Data1 {
+class Data3 {
   int? id;
   int? userId;
   String? orderNo;
@@ -316,7 +326,7 @@ class Data1 {
   List<OrderProducts>? orderProducts;
   String? randomProductImage;
 
-  Data1({
+  Data3({
     this.id,
     this.userId,
     this.orderNo,
@@ -332,7 +342,7 @@ class Data1 {
     this.randomProductImage,
   });
 
-  Data1.fromJson(Map<String, dynamic> json) {
+  Data3.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userId = json['user_id'];
     orderNo = json['order_no'];

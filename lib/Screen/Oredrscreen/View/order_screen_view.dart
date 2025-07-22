@@ -926,7 +926,7 @@ class _Order_ScreenState extends State<Order_Screen> {
         return AppColors.maincolor;
       case "ready for collection":
         return AppColors.maincolor;
-      case "declined":
+      case "declined"||"cancelled":
         return Colors.red;
       default:
         return Colors.grey;
@@ -978,7 +978,7 @@ class _Order_ScreenState extends State<Order_Screen> {
             .orderListApi(
               loginModel?.data?.user?.id.toString() ?? "",
               status,
-              type,
+              type,''
             )
             .then((response) async {
               myOrderModel = MyOrderModel.fromJson(response.data);
@@ -1022,7 +1022,7 @@ class _Order_ScreenState extends State<Order_Screen> {
             .orderListApi(
           loginModel?.data?.user?.id.toString() ?? "",
           status,
-          type,
+          type,''
         )
             .then((response) async {
 

@@ -10,6 +10,7 @@ class AmenitiesProvider extends ChangeNotifier {
     String userId,
     String amenityId,
     String date,
+    String page,
   ) async {
     try {
       String? token = await SaveDataLocal.getToken();
@@ -21,6 +22,7 @@ class AmenitiesProvider extends ChangeNotifier {
           'user_id': userId,
           'amentites_id': amenityId,
           'date': date,
+          "page":page,
         },
       );
       return response;

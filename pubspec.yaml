@@ -84,7 +84,8 @@ dependencies:
   googleapis_auth:
   awesome_notifications: ^0.10.1
   crypto: ^3.0.6
-  flutter_dotenv: 
+  flutter_dotenv:
+  infinite_scroll_pagination: ^4.0.0
 
 
 

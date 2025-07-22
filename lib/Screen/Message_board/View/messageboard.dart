@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:io' as io;
 import 'dart:io';
 
@@ -8,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
 import 'package:share_plus/share_plus.dart';
@@ -94,12 +93,18 @@ class _MessageboardState extends State<Messageboard> {
   List<bool> isLikeInProgressList = [];
   List<bool> isLikeInProgressListLocal = [];
   ScrollController _scrollController = ScrollController();
+
   String get currentUserId => loginModel?.data?.user?.id.toString() ?? '';
   List<String> localSubCategories = ['Group', 'Friends'];
   int selectedLocalSubCategory = 0;
   List<dynamic> pendingRequests = [];
   List<String> pendingFriendRequests = [];
   String currentPostId = '';
+  final PagingController<int, Data1> _pagingController = PagingController(
+    firstPageKey: 1,
+  );
+  final PageController _pageController = PageController();
+
   String formatPostDate(String? createdAt) {
     if (createdAt == null) return "";
     tz.initializeTimeZones();
@@ -141,6 +146,7 @@ class _MessageboardState extends State<Messageboard> {
       GetMyJoinGroup();
       getfriendlistdAp();
     });
+    _pagingController.addPageRequestListener(_fetchPage);
     loadGroups();
     Future.delayed(Duration(milliseconds: 100), () {
       _loadAllLikesLocal();
@@ -148,6 +154,41 @@ class _MessageboardState extends State<Messageboard> {
     });
 
     initPendingRequests();
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _fetchPage(int pageKey) async {
+    final params = {
+      'residentType': 'residents',
+      'user_id': loginModel?.data?.user?.id.toString() ?? '',
+      'page': pageKey.toString(),
+    };
+
+    try {
+      final res = await MessageBoardProvider().localPostApi(params);
+      final model = Localpost_model.fromJson(res.data);
+      final posts = model.data?.data ?? [];
+      final totalPages = model.data?.totalPages ?? 1;
+      final isLast = pageKey >= totalPages;
+
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // _ensureToggleLists(posts.length);
+
+      if (isLast) {
+        _pagingController.appendLastPage(posts);
+      } else {
+        _pagingController.appendPage(posts, pageKey + 1);
+      }
+    } catch (e) {
+      _pagingController.error = e;
+    }
   }
 
   Future<void> fetchData() async {
@@ -1437,421 +1478,7 @@ class _MessageboardState extends State<Messageboard> {
                         ],
                       ),
                       SizedBox(height: 2.h),
-                      // selectedOption == "All"
-                      //     ? messageBoardModal?.data?.length == 0 ||
-                      //             messageBoardModal?.data?.length == null
-                      //         ? Center(
-                      //             child: Container(
-                      //               height: 70.h,
-                      //               child: Text(
-                      //                 "No Posts available",
-                      //                 style: TextStyle(
-                      //                   fontSize: 17.sp,
-                      //                   color: Colors.black,
-                      //                   fontWeight: FontWeight.normal,
-                      //                   fontFamily: AppConstants.manrope,
-                      //                 ),
-                      //               ),
-                      //             ),
-                      //           )
-                      //         : Container(
-                      //             height: 70.h,
-                      //             child: ListView.builder(
-                      //               padding: EdgeInsets.zero,
-                      //               itemCount:
-                      //                   messageBoardModal?.data?.length ?? 0,
-                      //               itemBuilder: (context, index) {
-                      //                 final post =
-                      //                     messageBoardModal?.data?[index];
-                      //                 return Container(
-                      //                   margin: EdgeInsets.symmetric(
-                      //                       vertical: 0.5.h),
-                      //                   padding: EdgeInsets.symmetric(
-                      //                       horizontal: 3.w, vertical: 2.h),
-                      //                   decoration: BoxDecoration(
-                      //                     border: Border.all(
-                      //                         color: Colors.black12,
-                      //                         width: 0.2.w),
-                      //                     color: Colors.white,
-                      //                     borderRadius:
-                      //                         BorderRadius.circular(20),
-                      //                     boxShadow: [
-                      //                       BoxShadow(
-                      //                         color: Colors.black12,
-                      //                         blurRadius: 1,
-                      //                         offset: Offset(0, 1),
-                      //                       ),
-                      //                     ],
-                      //                   ),
-                      //                   child: Column(
-                      //                     mainAxisAlignment:
-                      //                         MainAxisAlignment.start,
-                      //                     crossAxisAlignment:
-                      //                         CrossAxisAlignment.start,
-                      //                     children: [
-                      //                       Row(
-                      //                         crossAxisAlignment:
-                      //                             CrossAxisAlignment.center,
-                      //                         children: [
-                      //                           Container(
-                      //                             height: 9.w,
-                      //                             width: 9.w,
-                      //                             decoration: BoxDecoration(
-                      //                               shape: BoxShape.circle,
-                      //                               border: Border.all(
-                      //                                   color:
-                      //                                       AppColors.maincolor,
-                      //                                   width: 1),
-                      //                               image: DecorationImage(
-                      //                                 image: NetworkImage(
-                      //                                   messageBoardModal
-                      //                                               ?.data?[
-                      //                                                   index]
-                      //                                               .user
-                      //                                               ?.conciergeImage ==
-                      //                                           null
-                      //                                       ? "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png"
-                      //                                       : messageBoardModal
-                      //                                               ?.data?[
-                      //                                                   index]
-                      //                                               .user
-                      //                                               ?.conciergeImage ??
-                      //                                           "",
-                      //                                 ),
-                      //                               ),
-                      //                             ),
-                      //                           ),
-                      //                           SizedBox(
-                      //                             width: 2.w,
-                      //                           ),
-                      //                           Text(
-                      //                             "${messageBoardModal?.data?[0].user?.firstName ?? ""} ${messageBoardModal?.data?[0].user?.lastName ?? ""}",
-                      //                             style: TextStyle(
-                      //                               fontFamily:
-                      //                                   AppConstants.manrope,
-                      //                               fontSize: 15.sp,
-                      //                               fontWeight: FontWeight.bold,
-                      //                             ),
-                      //                           ),
-                      //                           SizedBox(
-                      //                             width: 2.w,
-                      //                           ),
-                      //                           Text(
-                      //                             "•${formatPostDate(messageBoardModal?.data?[index].user?.createdAt)}",
-                      //                             style: TextStyle(
-                      //                                 fontSize: 14.sp,
-                      //                                 color: Colors.grey,
-                      //                                 fontFamily:
-                      //                                     AppConstants.manrope,
-                      //                                 fontWeight:
-                      //                                     FontWeight.bold),
-                      //                           ),
-                      //                         ],
-                      //                       ),
-                      //                       Text(
-                      //                         "${messageBoardModal?.data?[index].title ?? ''}",
-                      //                         style: TextStyle(
-                      //                           fontFamily:
-                      //                               AppConstants.manrope,
-                      //                           fontSize: 16.sp,
-                      //                           fontWeight: FontWeight.bold,
-                      //                           color: AppColors.maincolor,
-                      //                         ),
-                      //                       ),
-                      //                       ReadMoreText(
-                      //                         "${messageBoardModal?.data?[index].text == null || messageBoardModal?.data?[index].text == "" ? "N/A" : "${messageBoardModal?.data?[index].text}"}",
-                      //                         trimLines: 4,
-                      //                         trimLength: 146,
-                      //                         colorClickableText: Colors.blue,
-                      //                         trimMode: TrimMode.Length,
-                      //                         trimCollapsedText: ' Show more',
-                      //                         trimExpandedText: ' Show less',
-                      //                         moreStyle: TextStyle(
-                      //                           fontSize: 15.sp,
-                      //                           fontWeight: FontWeight.bold,
-                      //                           fontFamily:
-                      //                               AppConstants.manrope,
-                      //                           letterSpacing: 1,
-                      //                           color: AppColors.maincolor,
-                      //                         ),
-                      //                         lessStyle: TextStyle(
-                      //                           fontSize: 15.sp,
-                      //                           fontWeight: FontWeight.bold,
-                      //                           fontFamily:
-                      //                               AppConstants.manrope,
-                      //                           letterSpacing: 1,
-                      //                           color: AppColors.maincolor,
-                      //                         ),
-                      //                         style: TextStyle(
-                      //                           fontSize: 16.sp,
-                      //                           color: Colors.grey.shade500,
-                      //                           fontWeight: FontWeight.normal,
-                      //                           fontFamily:
-                      //                               AppConstants.manrope,
-                      //                         ),
-                      //                       ),
-                      //                       Padding(
-                      //                         padding: EdgeInsets.symmetric(
-                      //                             vertical: 1.h,
-                      //                             horizontal: 2.5.w),
-                      //                         child: ClipRRect(
-                      //                           borderRadius:
-                      //                               BorderRadius.circular(10),
-                      //                           child: post?.file?.isNotEmpty ==
-                      //                                   true
-                      //                               ? (post!.file![0]
-                      //                                       .toLowerCase()
-                      //                                       .endsWith('.pdf')
-                      //                                   ? GestureDetector(
-                      //                                       onTap: () async {
-                      //                                         final url =
-                      //                                             post.file![0];
-                      //                                         if (await canLaunchUrl(
-                      //                                             Uri.parse(
-                      //                                                 url))) {
-                      //                                           Get.to(PdfView(
-                      //                                               link: url));
-                      //                                         } else {
-                      //                                           ScaffoldMessenger.of(
-                      //                                                   context)
-                      //                                               .showSnackBar(
-                      //                                             SnackBar(
-                      //                                                 content: Text(
-                      //                                                     "Cannot open PDF")),
-                      //                                           );
-                      //                                         }
-                      //                                       },
-                      //                                       child: Container(
-                      //                                         width: double
-                      //                                             .infinity,
-                      //                                         height: 30.h,
-                      //                                         color: Colors.grey
-                      //                                             .shade300,
-                      //                                         child: Center(
-                      //                                           child: Row(
-                      //                                             mainAxisSize:
-                      //                                                 MainAxisSize
-                      //                                                     .min,
-                      //                                             children: [
-                      //                                               Icon(
-                      //                                                   Icons
-                      //                                                       .picture_as_pdf,
-                      //                                                   color: Colors
-                      //                                                       .red,
-                      //                                                   size: 30
-                      //                                                       .sp),
-                      //                                               SizedBox(
-                      //                                                   width: 2
-                      //                                                       .w),
-                      //                                               Text(
-                      //                                                 "View PDF",
-                      //                                                 style: TextStyle(
-                      //                                                     fontSize: 16
-                      //                                                         .sp,
-                      //                                                     fontWeight:
-                      //                                                         FontWeight.bold),
-                      //                                               ),
-                      //                                             ],
-                      //                                           ),
-                      //                                         ),
-                      //                                       ),
-                      //                                     )
-                      //                                   : CachedNetworkImage(
-                      //                                       imageUrl:
-                      //                                           post.file![0],
-                      //                                       placeholder:
-                      //                                           (context,
-                      //                                                   url) =>
-                      //                                               SizedBox(
-                      //                                         height: 30.h,
-                      //                                         width: double
-                      //                                             .infinity,
-                      //                                         child: Center(
-                      //                                             child:
-                      //                                                 CircularProgressIndicator()),
-                      //                                       ),
-                      //                                       errorWidget: (context,
-                      //                                               url,
-                      //                                               error) =>
-                      //                                           Icon(
-                      //                                               Icons.error,
-                      //                                               size:
-                      //                                                   24.sp),
-                      //                                       width:
-                      //                                           double.infinity,
-                      //                                       height: 30.h,
-                      //                                       fit: BoxFit.cover,
-                      //                                     ))
-                      //                               : SizedBox(height: 0.h),
-                      //                         ),
-                      //                       ),
-                      //                       SizedBox(
-                      //                         height: 1.5.h,
-                      //                       ),
-                      //                       Row(
-                      //                         mainAxisAlignment:
-                      //                             MainAxisAlignment
-                      //                                 .spaceBetween,
-                      //                         children: [
-                      //                           Row(
-                      //                             children: [
-                      //                               Text(
-                      //                                 (messageBoardModal
-                      //                                             ?.data?[index]
-                      //                                             .totalComments)
-                      //                                         .toString() +
-                      //                                     " Replies",
-                      //                                 style: TextStyle(
-                      //                                   fontFamily: AppConstants
-                      //                                       .manrope,
-                      //                                   fontSize: 16.sp,
-                      //                                   fontWeight:
-                      //                                       FontWeight.bold,
-                      //                                   color:
-                      //                                       Color(0XFF3E3E3E),
-                      //                                 ),
-                      //                               ),
-                      //                               SizedBox(
-                      //                                 width: 2.w,
-                      //                               ),
-                      //                               Text(
-                      //                                 (messageBoardModal
-                      //                                             ?.data?[index]
-                      //                                             .totalLikes)
-                      //                                         .toString() +
-                      //                                     " Likes",
-                      //                                 style: TextStyle(
-                      //                                   fontFamily: AppConstants
-                      //                                       .manrope,
-                      //                                   fontSize: 16.sp,
-                      //                                   fontWeight:
-                      //                                       FontWeight.bold,
-                      //                                   color:
-                      //                                       Color(0XFF3E3E3E),
-                      //                                 ),
-                      //                               ),
-                      //                             ],
-                      //                           ),
-                      //                           Row(
-                      //                             children: [
-                      //                               StatefulBuilder(
-                      //                                 builder: (context,
-                      //                                     localSetState) {
-                      //                                   bool isLiked = index <
-                      //                                           isLikedList
-                      //                                               .length
-                      //                                       ? isLikedList[index]
-                      //                                       : false;
-                      //                                   bool isInProgress = index <
-                      //                                           isLikeInProgressList
-                      //                                               .length
-                      //                                       ? isLikeInProgressList[
-                      //                                           index]
-                      //                                       : false;
-                      //
-                      //                                   return GestureDetector(
-                      //                                     onTap: isInProgress
-                      //                                         ? null
-                      //                                         : () {
-                      //                                             if (index <
-                      //                                                     isLikedList
-                      //                                                         .length &&
-                      //                                                 index <
-                      //                                                     isLikeInProgressList
-                      //                                                         .length) {
-                      //                                               localSetState(
-                      //                                                   () {
-                      //                                                 isLikedList[
-                      //                                                         index] =
-                      //                                                     !isLikedList[
-                      //                                                         index];
-                      //                                                 isLikeInProgressList[
-                      //                                                         index] =
-                      //                                                     true;
-                      //                                               });
-                      //                                               _saveLikeStatus(
-                      //                                                   index,
-                      //                                                   isLikedList[
-                      //                                                       index]);
-                      //                                               postslikeap(
-                      //                                                   index,
-                      //                                                   () {
-                      //                                                 localSetState(
-                      //                                                     () {
-                      //                                                   isLikeInProgressList[index] =
-                      //                                                       false;
-                      //                                                 });
-                      //                                               });
-                      //                                             }
-                      //                                           },
-                      //                                     child: Text(
-                      //                                       "Like",
-                      //                                       style: TextStyle(
-                      //                                         fontFamily:
-                      //                                             AppConstants
-                      //                                                 .manrope,
-                      //                                         fontSize: 16.sp,
-                      //                                         fontWeight:
-                      //                                             FontWeight
-                      //                                                 .bold,
-                      //                                         color: isLiked
-                      //                                             ? Colors.red
-                      //                                             : Color(
-                      //                                                 0XFF3E3E3E),
-                      //                                       ),
-                      //                                     ),
-                      //                                   );
-                      //                                 },
-                      //                               ),
-                      //                               SizedBox(
-                      //                                 width: 2.w,
-                      //                               ),
-                      //                               Container(
-                      //                                 height: 2.h,
-                      //                                 width: 0.5.w,
-                      //                                 decoration: BoxDecoration(
-                      //                                     color:
-                      //                                         Color(0XFF3E3E3E),
-                      //                                     borderRadius:
-                      //                                         BorderRadius
-                      //                                             .circular(
-                      //                                                 20)),
-                      //                               ),
-                      //                               SizedBox(
-                      //                                 width: 2.w,
-                      //                               ),
-                      //                               InkWell(
-                      //                                 onTap: () async {
-                      //                                   await getComments(
-                      //                                       context,
-                      //                                       (post?.id)
-                      //                                           .toString());
-                      //                                 },
-                      //                                 child: Text(
-                      //                                   "Comment",
-                      //                                   style: TextStyle(
-                      //                                     fontFamily:
-                      //                                         AppConstants
-                      //                                             .manrope,
-                      //                                     fontSize: 16.sp,
-                      //                                     fontWeight:
-                      //                                         FontWeight.bold,
-                      //                                     color:
-                      //                                         Color(0XFF3E3E3E),
-                      //                                   ),
-                      //                                 ),
-                      //                               ),
-                      //                             ],
-                      //                           ),
-                      //                         ],
-                      //                       ),
-                      //                     ],
-                      //                   ),
-                      //                 );
-                      //               },
-                      //             ),
-                      //           )
-                      //     :
+
                       selectedOption == "My Building"
                           ? messageBoardModal?.data?.length == 0 ||
                                   messageBoardModal?.data?.length == null
@@ -2293,553 +1920,1078 @@ class _MessageboardState extends State<Messageboard> {
                                 ),
                               )
                           : selectedOption == "Local"
-                          ? localpost_model?.data?.data?.length == null ||
-                                  localpost_model?.data?.data?.length == 0
-                              ? Center(
-                                child: Container(
-                                  height: 70.h,
-                                  child: Text(
-                                    "No Posts available",
-                                    style: TextStyle(
-                                      fontSize: 17.sp,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.normal,
-                                      fontFamily: AppConstants.manrope,
+                          ? Container(
+                            height: 60.h,
+                            child: PagedListView<int, Data1>(
+                              pagingController: _pagingController,
+                              padding: EdgeInsets.zero,
+                              builderDelegate: PagedChildBuilderDelegate<Data1>(
+                                itemBuilder: (_, post, idx) {
+                                  return Container(
+                                    margin: EdgeInsets.symmetric(
+                                      vertical: 0.5.h,
                                     ),
-                                  ),
-                                ),
-                              )
-                              : Container(
-                                height: 60.h,
-                                child: ListView.builder(
-                                  padding: EdgeInsets.zero,
-                                  itemCount:
-                                      localpost_model?.data?.data?.length,
-                                  itemBuilder: (context, index) {
-                                    final post =
-                                        localpost_model?.data?.data?[index];
-                                    return Container(
-                                      margin: EdgeInsets.symmetric(
-                                        vertical: 0.5.h,
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 3.w,
-                                        vertical: 2.h,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 3.w,
+                                      vertical: 2.h,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
                                           color: Colors.black12,
-                                          width: 0.2.w,
+                                          blurRadius: 2,
                                         ),
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(20),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black12,
-                                            blurRadius: 1,
-                                            offset: Offset(0, 1),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                height: 9.w,
-                                                width: 9.w,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                    color: AppColors.maincolor,
-                                                    width: 1,
-                                                  ),
-                                                  image: DecorationImage(
-                                                    image:
-                                                        (localpost_model
-                                                                    ?.data
-                                                                    ?.data?[index]
-                                                                    .users?[0]
-                                                                    .profiles
-                                                                    ?.isNotEmpty ??
-                                                                false)
-                                                            ? CachedNetworkImageProvider(
-                                                              localpost_model!
-                                                                  .data!
-                                                                  .data![index]
-                                                                  .users![0]
-                                                                  .profiles!,
-                                                            )
-                                                            : const AssetImage(
-                                                                  'assets/images/waveeLogoShort.png',
-                                                                )
-                                                                as ImageProvider,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 4.w,
+                                              backgroundImage:
+                                                  post
+                                                              .users
+                                                              ?.first
+                                                              .profiles
+                                                              ?.isNotEmpty ==
+                                                          true
+                                                      ? CachedNetworkImageProvider(
+                                                        post
+                                                            .users!
+                                                            .first
+                                                            .profiles!,
+                                                      )
+                                                      : const AssetImage(
+                                                            'assets/images/waveeLogoShort.png',
+                                                          )
+                                                          as ImageProvider,
+                                            ),
+                                            SizedBox(width: 2.w),
+                                            SizedBox(width: 2.w),
+                                            Text(
+                                              "${post.users?[0].name ?? ""}",
+                                              style: TextStyle(
+                                                fontFamily:
+                                                AppConstants.manrope,
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeight.bold,
                                               ),
-
-                                              SizedBox(width: 2.w),
-                                              Text(
-                                                "${localpost_model?.data?.data?[index].users?[0].name ?? ""}",
-                                                style: TextStyle(
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                  fontSize: 15.sp,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                            ),
+                                            SizedBox(width: 2.w),
+                                            Text(
+                                              "•${formatPostDate(post.createdAt)}",
+                                              style: TextStyle(
+                                                fontSize: 14.sp,
+                                                color: Colors.grey,
+                                                fontFamily:
+                                                AppConstants.manrope,
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                              SizedBox(width: 2.w),
-                                              Text(
-                                                "•${formatPostDate(localpost_model?.data?.data?[index].createdAt)}",
-                                                style: TextStyle(
-                                                  fontSize: 14.sp,
-                                                  color: Colors.grey,
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                            ),
+                                            Spacer(),
+                                            loginModel?.data?.user?.id ==
+                                                post?.userId
+                                                ? PopupMenuButton<String>(
+                                              icon: Icon(
+                                                Icons.more_vert,
+                                                color: Colors.black87,
                                               ),
-                                              Spacer(),
-                                              loginModel?.data?.user?.id ==
-                                                      post?.userId
-                                                  ? PopupMenuButton<String>(
-                                                    icon: Icon(
-                                                      Icons.more_vert,
-                                                      color: Colors.black87,
+                                              onSelected: (value) {
+                                                if (value == 'edit') {
+                                                  UpdatePostData(
+                                                    context,
+                                                    post,
+                                                  );
+                                                } else if (value ==
+                                                    'delete') {
+                                                  showCancelConfirmationDialog(
+                                                    context: context,
+                                                    post!.id.toString() ??
+                                                        "",
+                                                  );
+                                                  print(
+                                                    "Delete selected",
+                                                  );
+                                                } else if (value ==
+                                                    'report') {
+                                                  showBlockUserDialog(
+                                                    context,
+                                                    supportUrl,
+                                                  );
+                                                  print(
+                                                    "Delete selected",
+                                                  );
+                                                }
+                                              },
+                                              itemBuilder:
+                                                  (
+                                                  BuildContext context,
+                                                  ) => [
+                                                PopupMenuItem(
+                                                  value: 'edit',
+                                                  child: Text(
+                                                    'Edit',
+                                                    style: TextStyle(
+                                                      fontSize: 16.sp,
+                                                      fontFamily:
+                                                      AppConstants
+                                                          .manrope,
                                                     ),
-                                                    onSelected: (value) {
-                                                      if (value == 'edit') {
-                                                        UpdatePostData(
-                                                          context,
-                                                          post,
-                                                        );
-                                                      } else if (value ==
-                                                          'delete') {
-                                                        showCancelConfirmationDialog(
-                                                          context: context,
-                                                          post!.id.toString() ??
-                                                              "",
-                                                        );
-                                                        print(
-                                                          "Delete selected",
-                                                        );
-                                                      } else if (value ==
-                                                          'report') {
-                                                        showBlockUserDialog(
-                                                          context,
-                                                          supportUrl,
-                                                        );
-                                                        print(
-                                                          "Delete selected",
-                                                        );
-                                                      }
-                                                    },
-                                                    itemBuilder:
-                                                        (
-                                                          BuildContext context,
-                                                        ) => [
-                                                          PopupMenuItem(
-                                                            value: 'edit',
-                                                            child: Text(
-                                                              'Edit',
-                                                              style: TextStyle(
-                                                                fontSize: 16.sp,
-                                                                fontFamily:
-                                                                    AppConstants
-                                                                        .manrope,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          PopupMenuItem(
-                                                            value: 'delete',
-                                                            child: Text(
-                                                              'Delete',
-                                                              style: TextStyle(
-                                                                fontSize: 16.sp,
-                                                                fontFamily:
-                                                                    AppConstants
-                                                                        .manrope,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          PopupMenuItem(
-                                                            value: 'report',
-                                                            child: Text(
-                                                              'Report',
-                                                              style: TextStyle(
-                                                                fontSize: 16.sp,
-                                                                fontFamily:
-                                                                    AppConstants
-                                                                        .manrope,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                  )
-                                                  : InkWell(
-                                                    onTap: () {
-                                                      showBlockUserDialog(
-                                                        context,
-                                                        supportUrl,
-                                                      );
-                                                    },
-                                                    child: Icon(
-                                                      Icons.more_vert_outlined,
-                                                    ).paddingOnly(right: 2.w),
                                                   ),
-                                            ],
-                                          ),
-                                          Text(
-                                            "${localpost_model?.data?.data?[index].title ?? ""}",
-                                            style: TextStyle(
-                                              fontFamily: AppConstants.manrope,
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.maincolor,
-                                            ),
-                                          ),
-                                          ReadMoreText(
-                                            "${localpost_model?.data?.data?[index].text == null || localpost_model?.data?.data?[index].text == "" ? "N/A" : "${localpost_model?.data?.data?[index].text}"}",
-                                            trimLines: 4,
-                                            trimLength: 146,
-                                            colorClickableText: Colors.blue,
-                                            trimMode: TrimMode.Length,
-                                            trimCollapsedText: ' Show more',
-                                            trimExpandedText: ' Show less',
-                                            moreStyle: TextStyle(
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: AppConstants.manrope,
-                                              letterSpacing: 1,
-                                              color: AppColors.maincolor,
-                                            ),
-                                            lessStyle: TextStyle(
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: AppConstants.manrope,
-                                              letterSpacing: 1,
-                                              color: AppColors.maincolor,
-                                            ),
-                                            style: TextStyle(
-                                              fontSize: 16.sp,
-                                              color: Colors.grey.shade500,
-                                              fontWeight: FontWeight.normal,
-                                              fontFamily: AppConstants.manrope,
-                                            ),
-                                          ),
-                                          post?.file?.length == 0 ||
-                                                  post?.file?.length == null
-                                              ? SizedBox()
-                                              : Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                  vertical: 1.h,
-                                                  horizontal: 2.5.w,
                                                 ),
-                                                child: StatefulBuilder(
-                                                  builder: (context, setState) {
-                                                    final pageCount =
-                                                        post?.file?.length ?? 0;
-                                                    return SizedBox(
-                                                      height: 35.h,
-                                                      child: Stack(
-                                                        children: [
-                                                          PageView.builder(
-                                                            controller:
-                                                                _pageController,
-                                                            itemCount:
-                                                                pageCount,
-                                                            onPageChanged: (
+                                                PopupMenuItem(
+                                                  value: 'delete',
+                                                  child: Text(
+                                                    'Delete',
+                                                    style: TextStyle(
+                                                      fontSize: 16.sp,
+                                                      fontFamily:
+                                                      AppConstants
+                                                          .manrope,
+                                                    ),
+                                                  ),
+                                                ),
+                                                PopupMenuItem(
+                                                  value: 'report',
+                                                  child: Text(
+                                                    'Report',
+                                                    style: TextStyle(
+                                                      fontSize: 16.sp,
+                                                      fontFamily:
+                                                      AppConstants
+                                                          .manrope,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                                : InkWell(
+                                              onTap: () {
+                                                showBlockUserDialog(
+                                                  context,
+                                                  supportUrl,
+                                                );
+                                              },
+                                              child: Icon(
+                                                Icons.more_vert_outlined,
+                                              ).paddingOnly(right: 2.w),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 1.h),
+                                        Text(
+                                          "${post.title ?? ""}",
+                                          style: TextStyle(
+                                            fontFamily: AppConstants.manrope,
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.maincolor,
+                                          ),
+                                        ),
+                                        ReadMoreText(
+                                          "${post.text == null || post.text == "" ? "N/A" : "${post.text}"}",
+                                          trimLines: 4,
+                                          trimLength: 146,
+                                          colorClickableText: Colors.blue,
+                                          trimMode: TrimMode.Length,
+                                          trimCollapsedText: ' Show more',
+                                          trimExpandedText: ' Show less',
+                                          moreStyle: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: AppConstants.manrope,
+                                            letterSpacing: 1,
+                                            color: AppColors.maincolor,
+                                          ),
+                                          lessStyle: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: AppConstants.manrope,
+                                            letterSpacing: 1,
+                                            color: AppColors.maincolor,
+                                          ),
+                                          style: TextStyle(
+                                            fontSize: 16.sp,
+                                            color: Colors.grey.shade500,
+                                            fontWeight: FontWeight.normal,
+                                            fontFamily: AppConstants.manrope,
+                                          ),
+                                        ),
+                                        post?.file?.length == 0 ||
+                                            post?.file?.length == null
+                                            ? SizedBox()
+                                            : Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 1.h,
+                                            horizontal: 2.5.w,
+                                          ),
+                                          child: StatefulBuilder(
+                                            builder: (context, setState) {
+                                              final pageCount =
+                                                  post?.file?.length ?? 0;
+                                              return SizedBox(
+                                                height: 35.h,
+                                                child: Stack(
+                                                  children: [
+                                                    PageView.builder(
+                                                      controller:
+                                                      _pageController,
+                                                      itemCount:
+                                                      pageCount,
+                                                      onPageChanged: (
+                                                          index,
+                                                          ) {
+                                                        setState(
+                                                              () =>
+                                                          _currentPage =
                                                               index,
-                                                            ) {
-                                                              setState(
-                                                                () =>
-                                                                    _currentPage =
-                                                                        index,
-                                                              );
-                                                            },
-                                                            itemBuilder: (
-                                                              context,
-                                                              index,
-                                                            ) {
-                                                              final imageUrl =
-                                                                  post?.file?[index] ??
-                                                                  "";
-                                                              return ClipRRect(
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      10,
-                                                                    ),
-                                                                child: CachedNetworkImage(
-                                                                  imageUrl:
-                                                                      imageUrl,
-                                                                  placeholder:
-                                                                      (
-                                                                        context,
-                                                                        url,
-                                                                      ) => Center(
-                                                                        child:
-                                                                            CircularProgressIndicator(),
-                                                                      ),
-                                                                  errorWidget:
-                                                                      (
-                                                                        context,
-                                                                        url,
-                                                                        error,
-                                                                      ) => Image.asset(
-                                                                        "assets/images/waveeLogoShort.png",
-                                                                        fit:
-                                                                            BoxFit.cover,
-                                                                      ),
-                                                                  width:
-                                                                      double
-                                                                          .infinity,
-                                                                  height: 35.h,
-                                                                  fit:
-                                                                      BoxFit
-                                                                          .cover,
-                                                                ),
-                                                              ).marginOnly(
-                                                                right: 1.w,
-                                                              );
-                                                            },
+                                                        );
+                                                      },
+                                                      itemBuilder: (
+                                                          context,
+                                                          index,
+                                                          ) {
+                                                        final imageUrl =
+                                                            post?.file?[index] ??
+                                                                "";
+                                                        return ClipRRect(
+                                                          borderRadius:
+                                                          BorderRadius.circular(
+                                                            10,
                                                           ),
-                                                          Positioned(
-                                                            top: 8,
-                                                            right: 16,
-                                                            child: Container(
-                                                              padding:
-                                                                  EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                        10,
-                                                                    vertical: 4,
-                                                                  ),
-                                                              decoration: BoxDecoration(
-                                                                color: Colors
-                                                                    .black
-                                                                    .withOpacity(
-                                                                      0.6,
-                                                                    ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      20,
-                                                                    ),
-                                                              ),
-                                                              child: Text(
-                                                                '${_currentPage + 1}/$pageCount',
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      Colors
-                                                                          .white,
-                                                                  fontSize:
-                                                                      12.sp,
-                                                                ),
-                                                              ),
+                                                          child: CachedNetworkImage(
+                                                            imageUrl:
+                                                            imageUrl,
+                                                            placeholder:
+                                                                (
+                                                                context,
+                                                                url,
+                                                                ) => Center(
+                                                              child:
+                                                              CircularProgressIndicator(),
                                                             ),
+                                                            errorWidget:
+                                                                (
+                                                                context,
+                                                                url,
+                                                                error,
+                                                                ) => Image.asset(
+                                                              "assets/images/waveeLogoShort.png",
+                                                              fit:
+                                                              BoxFit.cover,
+                                                            ),
+                                                            width:
+                                                            double
+                                                                .infinity,
+                                                            height: 35.h,
+                                                            fit:
+                                                            BoxFit
+                                                                .cover,
                                                           ),
-                                                        ],
+                                                        ).marginOnly(
+                                                          right: 1.w,
+                                                        );
+                                                      },
+                                                    ),
+                                                    Positioned(
+                                                      top: 8,
+                                                      right: 16,
+                                                      child: Container(
+                                                        padding:
+                                                        EdgeInsets.symmetric(
+                                                          horizontal:
+                                                          10,
+                                                          vertical: 4,
+                                                        ),
+                                                        decoration: BoxDecoration(
+                                                          color: Colors
+                                                              .black
+                                                              .withOpacity(
+                                                            0.6,
+                                                          ),
+                                                          borderRadius:
+                                                          BorderRadius.circular(
+                                                            20,
+                                                          ),
+                                                        ),
+                                                        child: Text(
+                                                          '${_currentPage + 1}/$pageCount',
+                                                          style: TextStyle(
+                                                            color:
+                                                            Colors
+                                                                .white,
+                                                            fontSize:
+                                                            12.sp,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  (post
+                                                      .totalComments)
+                                                      .toString() +
+                                                      " Replies",
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                    AppConstants.manrope,
+                                                    fontSize: 16.sp,
+                                                    fontWeight:
+                                                    FontWeight.bold,
+                                                    color: Color(0XFF3E3E3E),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 2.w),
+                                                Text(
+                                                  (post
+                                                      .totalLikes)
+                                                      .toString() +
+                                                      " Likes",
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                    AppConstants.manrope,
+                                                    fontSize: 16.sp,
+                                                    fontWeight:
+                                                    FontWeight.bold,
+                                                    color: Color(0XFF3E3E3E),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 2.w),
+                                                // GestureDetector(
+                                                //   onTap: () {
+                                                //     try {
+                                                //       final imageUrl =
+                                                //           messageBoardModal
+                                                //               ?.data?[
+                                                //                   index]
+                                                //               ?.file
+                                                //               .toString();
+                                                //       final linkToShare = (imageUrl ==
+                                                //                   null ||
+                                                //               imageUrl
+                                                //                   .isEmpty)
+                                                //           ? "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png"
+                                                //           : imageUrl;
+                                                //       shareConciergeImage(
+                                                //           linkToShare);
+                                                //     } catch (e) {
+                                                //       print(
+                                                //           "Error sharing: $e");
+                                                //     }
+                                                //   },
+                                                //   child: Icon(
+                                                //     Icons
+                                                //         .share_outlined,
+                                                //     size: 18.sp,
+                                                //     color: Color(
+                                                //         0XFF3E3E3E),
+                                                //   ),
+                                                // ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                StatefulBuilder(
+                                                  builder: (
+                                                      context,
+                                                      localSetState,
+                                                      ) {
+                                                    bool isLiked =
+                                                    idx <
+                                                        isLikedListLocal
+                                                            .length
+                                                        ? isLikedListLocal[idx]
+                                                        : false;
+                                                    bool isInProgress =
+                                                    idx <
+                                                        isLikeInProgressListLocal
+                                                            .length
+                                                        ? isLikeInProgressListLocal[idx]
+                                                        : false;
+
+                                                    return GestureDetector(
+                                                      onTap:
+                                                      isInProgress
+                                                          ? null
+                                                          : () {
+                                                        if (idx <
+                                                            isLikedListLocal
+                                                                .length &&
+                                                            idx <
+                                                                isLikeInProgressListLocal
+                                                                    .length) {
+                                                          localSetState(() {
+                                                            isLikedListLocal[idx] =
+                                                            !isLikedListLocal[idx];
+                                                            isLikeInProgressListLocal[idx] =
+                                                            true;
+                                                          });
+                                                          _saveLikeStatusLocal(
+                                                            idx,
+                                                            isLikedListLocal[idx],
+                                                          );
+                                                          postslikelocalap(
+                                                            idx,
+                                                                () {
+                                                              localSetState(() {
+                                                                isLikeInProgressListLocal[idx] =
+                                                                false;
+                                                              });
+                                                            },
+                                                          );
+                                                        }
+                                                      },
+                                                      child: Text(
+                                                        "Like",
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                          AppConstants
+                                                              .manrope,
+                                                          fontSize: 16.sp,
+                                                          fontWeight:
+                                                          FontWeight.bold,
+                                                          color:
+                                                          isLiked
+                                                              ? Colors.red
+                                                              : Color(
+                                                            0XFF3E3E3E,
+                                                          ),
+                                                        ),
                                                       ),
                                                     );
                                                   },
                                                 ),
-                                              ),
-                                          SizedBox(height: 1.5.h),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    (localpost_model
-                                                                ?.data
-                                                                ?.data?[index]
-                                                                .totalComments)
-                                                            .toString() +
-                                                        " Replies",
-                                                    style: TextStyle(
-                                                      fontFamily:
-                                                          AppConstants.manrope,
-                                                      fontSize: 16.sp,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Color(0XFF3E3E3E),
+                                                SizedBox(width: 2.w),
+                                                Container(
+                                                  height: 2.h,
+                                                  width: 0.5.w,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0XFF3E3E3E),
+                                                    borderRadius:
+                                                    BorderRadius.circular(
+                                                      20,
                                                     ),
                                                   ),
-                                                  SizedBox(width: 2.w),
-                                                  Text(
-                                                    (localpost_model
-                                                                ?.data
-                                                                ?.data?[index]
-                                                                .totalLikes)
-                                                            .toString() +
-                                                        " Likes",
-                                                    style: TextStyle(
-                                                      fontFamily:
-                                                          AppConstants.manrope,
-                                                      fontSize: 16.sp,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Color(0XFF3E3E3E),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 2.w),
-                                                  // GestureDetector(
-                                                  //   onTap: () {
-                                                  //     try {
-                                                  //       final imageUrl =
-                                                  //           messageBoardModal
-                                                  //               ?.data?[
-                                                  //                   index]
-                                                  //               ?.file
-                                                  //               .toString();
-                                                  //       final linkToShare = (imageUrl ==
-                                                  //                   null ||
-                                                  //               imageUrl
-                                                  //                   .isEmpty)
-                                                  //           ? "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png"
-                                                  //           : imageUrl;
-                                                  //       shareConciergeImage(
-                                                  //           linkToShare);
-                                                  //     } catch (e) {
-                                                  //       print(
-                                                  //           "Error sharing: $e");
-                                                  //     }
-                                                  //   },
-                                                  //   child: Icon(
-                                                  //     Icons
-                                                  //         .share_outlined,
-                                                  //     size: 18.sp,
-                                                  //     color: Color(
-                                                  //         0XFF3E3E3E),
-                                                  //   ),
-                                                  // ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  StatefulBuilder(
-                                                    builder: (
+                                                ),
+                                                SizedBox(width: 2.w),
+                                                InkWell(
+                                                  onTap: () {
+                                                    getComments1(
                                                       context,
-                                                      localSetState,
-                                                    ) {
-                                                      bool isLiked =
-                                                          index <
-                                                                  isLikedListLocal
-                                                                      .length
-                                                              ? isLikedListLocal[index]
-                                                              : false;
-                                                      bool isInProgress =
-                                                          index <
-                                                                  isLikeInProgressListLocal
-                                                                      .length
-                                                              ? isLikeInProgressListLocal[index]
-                                                              : false;
-
-                                                      return GestureDetector(
-                                                        onTap:
-                                                            isInProgress
-                                                                ? null
-                                                                : () {
-                                                                  if (index <
-                                                                          isLikedListLocal
-                                                                              .length &&
-                                                                      index <
-                                                                          isLikeInProgressListLocal
-                                                                              .length) {
-                                                                    localSetState(() {
-                                                                      isLikedListLocal[index] =
-                                                                          !isLikedListLocal[index];
-                                                                      isLikeInProgressListLocal[index] =
-                                                                          true;
-                                                                    });
-                                                                    _saveLikeStatusLocal(
-                                                                      index,
-                                                                      isLikedListLocal[index],
-                                                                    );
-                                                                    postslikelocalap(
-                                                                      index,
-                                                                      () {
-                                                                        localSetState(() {
-                                                                          isLikeInProgressListLocal[index] =
-                                                                              false;
-                                                                        });
-                                                                      },
-                                                                    );
-                                                                  }
-                                                                },
-                                                        child: Text(
-                                                          "Like",
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manrope,
-                                                            fontSize: 16.sp,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color:
-                                                                isLiked
-                                                                    ? Colors.red
-                                                                    : Color(
-                                                                      0XFF3E3E3E,
-                                                                    ),
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                  ),
-                                                  SizedBox(width: 2.w),
-                                                  Container(
-                                                    height: 2.h,
-                                                    width: 0.5.w,
-                                                    decoration: BoxDecoration(
-                                                      color: Color(0XFF3E3E3E),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            20,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 2.w),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      getComments1(
-                                                        context,
-                                                        post?.id?.toString() ??
-                                                            "",
-                                                      );
-                                                    },
-                                                    child: Text(
-                                                      "Comment",
-                                                      style: TextStyle(
-                                                        fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                        fontSize: 16.sp,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Color(
-                                                          0XFF3E3E3E,
-                                                        ),
+                                                      post?.id?.toString() ??
+                                                          "",
+                                                    );
+                                                  },
+                                                  child: Text(
+                                                    "Comment",
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                      AppConstants
+                                                          .manrope,
+                                                      fontSize: 16.sp,
+                                                      fontWeight:
+                                                      FontWeight.bold,
+                                                      color: Color(
+                                                        0XFF3E3E3E,
                                                       ),
                                                     ),
                                                   ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              )
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+
+                                      ],
+                                    ),
+                                  );
+                                },
+                                firstPageProgressIndicatorBuilder:
+                                    (_) => Center(
+                                      child: Loader(),
+                                    ),
+                                newPageProgressIndicatorBuilder:
+                                    (_) => Center(
+                                      child: CircularProgressIndicator(color: AppColors.blackColor,),
+                                    ),
+                                noItemsFoundIndicatorBuilder:
+                                    (_) => Center(
+                                      child: Text('No Posts available'),
+                                    ),
+                                firstPageErrorIndicatorBuilder:
+                                    (_) => Center(
+                                      child: Text('Failed to load posts'),
+                                    ),
+                                newPageErrorIndicatorBuilder:
+                                    (_) => Center(
+                                      child: Text('Failed to load more posts'),
+                                    ),
+                              ),
+                            ),
+                          )
+                          // localpost_model?.data?.data?.length == null ||
+                          //             localpost_model?.data?.data?.length == 0
+                          //         ? Center(
+                          //           child: Container(
+                          //             height: 70.h,
+                          //             child: Text(
+                          //               "No Posts available",
+                          //               style: TextStyle(
+                          //                 fontSize: 17.sp,
+                          //                 color: Colors.black,
+                          //                 fontWeight: FontWeight.normal,
+                          //                 fontFamily: AppConstants.manrope,
+                          //               ),
+                          //             ),
+                          //           ),
+                          //         )
+                          //         : Container(
+                          //           height: 60.h,
+                          //           child: ListView.builder(
+                          //             padding: EdgeInsets.zero,
+                          //             itemCount:
+                          //                 localpost_model?.data?.data?.length,
+                          //             itemBuilder: (context, index) {
+                          //               final post =
+                          //                   localpost_model?.data?.data?[index];
+                          //               return Container(
+                          //                 margin: EdgeInsets.symmetric(
+                          //                   vertical: 0.5.h,
+                          //                 ),
+                          //                 padding: EdgeInsets.symmetric(
+                          //                   horizontal: 3.w,
+                          //                   vertical: 2.h,
+                          //                 ),
+                          //                 decoration: BoxDecoration(
+                          //                   border: Border.all(
+                          //                     color: Colors.black12,
+                          //                     width: 0.2.w,
+                          //                   ),
+                          //                   color: Colors.white,
+                          //                   borderRadius: BorderRadius.circular(20),
+                          //                   boxShadow: [
+                          //                     BoxShadow(
+                          //                       color: Colors.black12,
+                          //                       blurRadius: 1,
+                          //                       offset: Offset(0, 1),
+                          //                     ),
+                          //                   ],
+                          //                 ),
+                          //                 child: Column(
+                          //                   mainAxisAlignment:
+                          //                       MainAxisAlignment.start,
+                          //                   crossAxisAlignment:
+                          //                       CrossAxisAlignment.start,
+                          //                   children: [
+                          //                     Row(
+                          //                       crossAxisAlignment:
+                          //                           CrossAxisAlignment.center,
+                          //                       children: [
+                          //                         Container(
+                          //                           height: 9.w,
+                          //                           width: 9.w,
+                          //                           decoration: BoxDecoration(
+                          //                             shape: BoxShape.circle,
+                          //                             border: Border.all(
+                          //                               color: AppColors.maincolor,
+                          //                               width: 1,
+                          //                             ),
+                          //                             image: DecorationImage(
+                          //                               image:
+                          //                                   (localpost_model
+                          //                                               ?.data
+                          //                                               ?.data?[index]
+                          //                                               .users?[0]
+                          //                                               .profiles
+                          //                                               ?.isNotEmpty ??
+                          //                                           false)
+                          //                                       ? CachedNetworkImageProvider(
+                          //                                         localpost_model!
+                          //                                             .data!
+                          //                                             .data![index]
+                          //                                             .users![0]
+                          //                                             .profiles!,
+                          //                                       )
+                          //                                       : const AssetImage(
+                          //                                             'assets/images/waveeLogoShort.png',
+                          //                                           )
+                          //                                           as ImageProvider,
+                          //                               fit: BoxFit.cover,
+                          //                             ),
+                          //                           ),
+                          //                         ),
+                          //
+                          //                         SizedBox(width: 2.w),
+                          //                         Text(
+                          //                           "${localpost_model?.data?.data?[index].users?[0].name ?? ""}",
+                          //                           style: TextStyle(
+                          //                             fontFamily:
+                          //                                 AppConstants.manrope,
+                          //                             fontSize: 15.sp,
+                          //                             fontWeight: FontWeight.bold,
+                          //                           ),
+                          //                         ),
+                          //                         SizedBox(width: 2.w),
+                          //                         Text(
+                          //                           "•${formatPostDate(localpost_model?.data?.data?[index].createdAt)}",
+                          //                           style: TextStyle(
+                          //                             fontSize: 14.sp,
+                          //                             color: Colors.grey,
+                          //                             fontFamily:
+                          //                                 AppConstants.manrope,
+                          //                             fontWeight: FontWeight.bold,
+                          //                           ),
+                          //                         ),
+                          //                         Spacer(),
+                          //                         loginModel?.data?.user?.id ==
+                          //                                 post?.userId
+                          //                             ? PopupMenuButton<String>(
+                          //                               icon: Icon(
+                          //                                 Icons.more_vert,
+                          //                                 color: Colors.black87,
+                          //                               ),
+                          //                               onSelected: (value) {
+                          //                                 if (value == 'edit') {
+                          //                                   UpdatePostData(
+                          //                                     context,
+                          //                                     post,
+                          //                                   );
+                          //                                 } else if (value ==
+                          //                                     'delete') {
+                          //                                   showCancelConfirmationDialog(
+                          //                                     context: context,
+                          //                                     post!.id.toString() ??
+                          //                                         "",
+                          //                                   );
+                          //                                   print(
+                          //                                     "Delete selected",
+                          //                                   );
+                          //                                 } else if (value ==
+                          //                                     'report') {
+                          //                                   showBlockUserDialog(
+                          //                                     context,
+                          //                                     supportUrl,
+                          //                                   );
+                          //                                   print(
+                          //                                     "Delete selected",
+                          //                                   );
+                          //                                 }
+                          //                               },
+                          //                               itemBuilder:
+                          //                                   (
+                          //                                     BuildContext context,
+                          //                                   ) => [
+                          //                                     PopupMenuItem(
+                          //                                       value: 'edit',
+                          //                                       child: Text(
+                          //                                         'Edit',
+                          //                                         style: TextStyle(
+                          //                                           fontSize: 16.sp,
+                          //                                           fontFamily:
+                          //                                               AppConstants
+                          //                                                   .manrope,
+                          //                                         ),
+                          //                                       ),
+                          //                                     ),
+                          //                                     PopupMenuItem(
+                          //                                       value: 'delete',
+                          //                                       child: Text(
+                          //                                         'Delete',
+                          //                                         style: TextStyle(
+                          //                                           fontSize: 16.sp,
+                          //                                           fontFamily:
+                          //                                               AppConstants
+                          //                                                   .manrope,
+                          //                                         ),
+                          //                                       ),
+                          //                                     ),
+                          //                                     PopupMenuItem(
+                          //                                       value: 'report',
+                          //                                       child: Text(
+                          //                                         'Report',
+                          //                                         style: TextStyle(
+                          //                                           fontSize: 16.sp,
+                          //                                           fontFamily:
+                          //                                               AppConstants
+                          //                                                   .manrope,
+                          //                                         ),
+                          //                                       ),
+                          //                                     ),
+                          //                                   ],
+                          //                             )
+                          //                             : InkWell(
+                          //                               onTap: () {
+                          //                                 showBlockUserDialog(
+                          //                                   context,
+                          //                                   supportUrl,
+                          //                                 );
+                          //                               },
+                          //                               child: Icon(
+                          //                                 Icons.more_vert_outlined,
+                          //                               ).paddingOnly(right: 2.w),
+                          //                             ),
+                          //                       ],
+                          //                     ),
+                          //                     Text(
+                          //                       "${localpost_model?.data?.data?[index].title ?? ""}",
+                          //                       style: TextStyle(
+                          //                         fontFamily: AppConstants.manrope,
+                          //                         fontSize: 16.sp,
+                          //                         fontWeight: FontWeight.bold,
+                          //                         color: AppColors.maincolor,
+                          //                       ),
+                          //                     ),
+                          //                     ReadMoreText(
+                          //                       "${localpost_model?.data?.data?[index].text == null || localpost_model?.data?.data?[index].text == "" ? "N/A" : "${localpost_model?.data?.data?[index].text}"}",
+                          //                       trimLines: 4,
+                          //                       trimLength: 146,
+                          //                       colorClickableText: Colors.blue,
+                          //                       trimMode: TrimMode.Length,
+                          //                       trimCollapsedText: ' Show more',
+                          //                       trimExpandedText: ' Show less',
+                          //                       moreStyle: TextStyle(
+                          //                         fontSize: 15.sp,
+                          //                         fontWeight: FontWeight.bold,
+                          //                         fontFamily: AppConstants.manrope,
+                          //                         letterSpacing: 1,
+                          //                         color: AppColors.maincolor,
+                          //                       ),
+                          //                       lessStyle: TextStyle(
+                          //                         fontSize: 15.sp,
+                          //                         fontWeight: FontWeight.bold,
+                          //                         fontFamily: AppConstants.manrope,
+                          //                         letterSpacing: 1,
+                          //                         color: AppColors.maincolor,
+                          //                       ),
+                          //                       style: TextStyle(
+                          //                         fontSize: 16.sp,
+                          //                         color: Colors.grey.shade500,
+                          //                         fontWeight: FontWeight.normal,
+                          //                         fontFamily: AppConstants.manrope,
+                          //                       ),
+                          //                     ),
+                          //                     post?.file?.length == 0 ||
+                          //                             post?.file?.length == null
+                          //                         ? SizedBox()
+                          //                         : Padding(
+                          //                           padding: EdgeInsets.symmetric(
+                          //                             vertical: 1.h,
+                          //                             horizontal: 2.5.w,
+                          //                           ),
+                          //                           child: StatefulBuilder(
+                          //                             builder: (context, setState) {
+                          //                               final pageCount =
+                          //                                   post?.file?.length ?? 0;
+                          //                               return SizedBox(
+                          //                                 height: 35.h,
+                          //                                 child: Stack(
+                          //                                   children: [
+                          //                                     PageView.builder(
+                          //                                       controller:
+                          //                                           _pageController,
+                          //                                       itemCount:
+                          //                                           pageCount,
+                          //                                       onPageChanged: (
+                          //                                         index,
+                          //                                       ) {
+                          //                                         setState(
+                          //                                           () =>
+                          //                                               _currentPage =
+                          //                                                   index,
+                          //                                         );
+                          //                                       },
+                          //                                       itemBuilder: (
+                          //                                         context,
+                          //                                         index,
+                          //                                       ) {
+                          //                                         final imageUrl =
+                          //                                             post?.file?[index] ??
+                          //                                             "";
+                          //                                         return ClipRRect(
+                          //                                           borderRadius:
+                          //                                               BorderRadius.circular(
+                          //                                                 10,
+                          //                                               ),
+                          //                                           child: CachedNetworkImage(
+                          //                                             imageUrl:
+                          //                                                 imageUrl,
+                          //                                             placeholder:
+                          //                                                 (
+                          //                                                   context,
+                          //                                                   url,
+                          //                                                 ) => Center(
+                          //                                                   child:
+                          //                                                       CircularProgressIndicator(),
+                          //                                                 ),
+                          //                                             errorWidget:
+                          //                                                 (
+                          //                                                   context,
+                          //                                                   url,
+                          //                                                   error,
+                          //                                                 ) => Image.asset(
+                          //                                                   "assets/images/waveeLogoShort.png",
+                          //                                                   fit:
+                          //                                                       BoxFit.cover,
+                          //                                                 ),
+                          //                                             width:
+                          //                                                 double
+                          //                                                     .infinity,
+                          //                                             height: 35.h,
+                          //                                             fit:
+                          //                                                 BoxFit
+                          //                                                     .cover,
+                          //                                           ),
+                          //                                         ).marginOnly(
+                          //                                           right: 1.w,
+                          //                                         );
+                          //                                       },
+                          //                                     ),
+                          //                                     Positioned(
+                          //                                       top: 8,
+                          //                                       right: 16,
+                          //                                       child: Container(
+                          //                                         padding:
+                          //                                             EdgeInsets.symmetric(
+                          //                                               horizontal:
+                          //                                                   10,
+                          //                                               vertical: 4,
+                          //                                             ),
+                          //                                         decoration: BoxDecoration(
+                          //                                           color: Colors
+                          //                                               .black
+                          //                                               .withOpacity(
+                          //                                                 0.6,
+                          //                                               ),
+                          //                                           borderRadius:
+                          //                                               BorderRadius.circular(
+                          //                                                 20,
+                          //                                               ),
+                          //                                         ),
+                          //                                         child: Text(
+                          //                                           '${_currentPage + 1}/$pageCount',
+                          //                                           style: TextStyle(
+                          //                                             color:
+                          //                                                 Colors
+                          //                                                     .white,
+                          //                                             fontSize:
+                          //                                                 12.sp,
+                          //                                           ),
+                          //                                         ),
+                          //                                       ),
+                          //                                     ),
+                          //                                   ],
+                          //                                 ),
+                          //                               );
+                          //                             },
+                          //                           ),
+                          //                         ),
+                          //                     SizedBox(height: 1.5.h),
+                          //                     Row(
+                          //                       mainAxisAlignment:
+                          //                           MainAxisAlignment.spaceBetween,
+                          //                       children: [
+                          //                         Row(
+                          //                           children: [
+                          //                             Text(
+                          //                               (localpost_model
+                          //                                           ?.data
+                          //                                           ?.data?[index]
+                          //                                           .totalComments)
+                          //                                       .toString() +
+                          //                                   " Replies",
+                          //                               style: TextStyle(
+                          //                                 fontFamily:
+                          //                                     AppConstants.manrope,
+                          //                                 fontSize: 16.sp,
+                          //                                 fontWeight:
+                          //                                     FontWeight.bold,
+                          //                                 color: Color(0XFF3E3E3E),
+                          //                               ),
+                          //                             ),
+                          //                             SizedBox(width: 2.w),
+                          //                             Text(
+                          //                               (localpost_model
+                          //                                           ?.data
+                          //                                           ?.data?[index]
+                          //                                           .totalLikes)
+                          //                                       .toString() +
+                          //                                   " Likes",
+                          //                               style: TextStyle(
+                          //                                 fontFamily:
+                          //                                     AppConstants.manrope,
+                          //                                 fontSize: 16.sp,
+                          //                                 fontWeight:
+                          //                                     FontWeight.bold,
+                          //                                 color: Color(0XFF3E3E3E),
+                          //                               ),
+                          //                             ),
+                          //                             SizedBox(width: 2.w),
+                          //                             // GestureDetector(
+                          //                             //   onTap: () {
+                          //                             //     try {
+                          //                             //       final imageUrl =
+                          //                             //           messageBoardModal
+                          //                             //               ?.data?[
+                          //                             //                   index]
+                          //                             //               ?.file
+                          //                             //               .toString();
+                          //                             //       final linkToShare = (imageUrl ==
+                          //                             //                   null ||
+                          //                             //               imageUrl
+                          //                             //                   .isEmpty)
+                          //                             //           ? "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png"
+                          //                             //           : imageUrl;
+                          //                             //       shareConciergeImage(
+                          //                             //           linkToShare);
+                          //                             //     } catch (e) {
+                          //                             //       print(
+                          //                             //           "Error sharing: $e");
+                          //                             //     }
+                          //                             //   },
+                          //                             //   child: Icon(
+                          //                             //     Icons
+                          //                             //         .share_outlined,
+                          //                             //     size: 18.sp,
+                          //                             //     color: Color(
+                          //                             //         0XFF3E3E3E),
+                          //                             //   ),
+                          //                             // ),
+                          //                           ],
+                          //                         ),
+                          //                         Row(
+                          //                           children: [
+                          //                             StatefulBuilder(
+                          //                               builder: (
+                          //                                 context,
+                          //                                 localSetState,
+                          //                               ) {
+                          //                                 bool isLiked =
+                          //                                     index <
+                          //                                             isLikedListLocal
+                          //                                                 .length
+                          //                                         ? isLikedListLocal[index]
+                          //                                         : false;
+                          //                                 bool isInProgress =
+                          //                                     index <
+                          //                                             isLikeInProgressListLocal
+                          //                                                 .length
+                          //                                         ? isLikeInProgressListLocal[index]
+                          //                                         : false;
+                          //
+                          //                                 return GestureDetector(
+                          //                                   onTap:
+                          //                                       isInProgress
+                          //                                           ? null
+                          //                                           : () {
+                          //                                             if (index <
+                          //                                                     isLikedListLocal
+                          //                                                         .length &&
+                          //                                                 index <
+                          //                                                     isLikeInProgressListLocal
+                          //                                                         .length) {
+                          //                                               localSetState(() {
+                          //                                                 isLikedListLocal[index] =
+                          //                                                     !isLikedListLocal[index];
+                          //                                                 isLikeInProgressListLocal[index] =
+                          //                                                     true;
+                          //                                               });
+                          //                                               _saveLikeStatusLocal(
+                          //                                                 index,
+                          //                                                 isLikedListLocal[index],
+                          //                                               );
+                          //                                               postslikelocalap(
+                          //                                                 index,
+                          //                                                 () {
+                          //                                                   localSetState(() {
+                          //                                                     isLikeInProgressListLocal[index] =
+                          //                                                         false;
+                          //                                                   });
+                          //                                                 },
+                          //                                               );
+                          //                                             }
+                          //                                           },
+                          //                                   child: Text(
+                          //                                     "Like",
+                          //                                     style: TextStyle(
+                          //                                       fontFamily:
+                          //                                           AppConstants
+                          //                                               .manrope,
+                          //                                       fontSize: 16.sp,
+                          //                                       fontWeight:
+                          //                                           FontWeight.bold,
+                          //                                       color:
+                          //                                           isLiked
+                          //                                               ? Colors.red
+                          //                                               : Color(
+                          //                                                 0XFF3E3E3E,
+                          //                                               ),
+                          //                                     ),
+                          //                                   ),
+                          //                                 );
+                          //                               },
+                          //                             ),
+                          //                             SizedBox(width: 2.w),
+                          //                             Container(
+                          //                               height: 2.h,
+                          //                               width: 0.5.w,
+                          //                               decoration: BoxDecoration(
+                          //                                 color: Color(0XFF3E3E3E),
+                          //                                 borderRadius:
+                          //                                     BorderRadius.circular(
+                          //                                       20,
+                          //                                     ),
+                          //                               ),
+                          //                             ),
+                          //                             SizedBox(width: 2.w),
+                          //                             InkWell(
+                          //                               onTap: () {
+                          //                                 getComments1(
+                          //                                   context,
+                          //                                   post?.id?.toString() ??
+                          //                                       "",
+                          //                                 );
+                          //                               },
+                          //                               child: Text(
+                          //                                 "Comment",
+                          //                                 style: TextStyle(
+                          //                                   fontFamily:
+                          //                                       AppConstants
+                          //                                           .manrope,
+                          //                                   fontSize: 16.sp,
+                          //                                   fontWeight:
+                          //                                       FontWeight.bold,
+                          //                                   color: Color(
+                          //                                     0XFF3E3E3E,
+                          //                                   ),
+                          //                                 ),
+                          //                               ),
+                          //                             ),
+                          //                           ],
+                          //                         ),
+                          //                       ],
+                          //                     ),
+                          //                   ],
+                          //                 ),
+                          //               );
+                          //             },
+                          //           ),
+                          //         )
                           : SizedBox(),
                       //  selectedOption == "Group"
                       //     ? getgrouplistmodel?.data?.length == null ||
@@ -4155,170 +4307,6 @@ class _MessageboardState extends State<Messageboard> {
     return null;
   }
 
-  // void showCommentBottomSheetlocalpostcooments(BuildContext context, String postId) {
-  //   bool isLoading = true;
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-  //     ),
-  //     builder: (context) {
-  //       return StatefulBuilder(
-  //         builder: (context, setModalState) {
-  //           TextEditingController _commentController = TextEditingController();
-  //           bool isSendingComment = false;
-  //
-  //           Future.delayed(Duration.zero, () {
-  //             if (isLoading) {
-  //               setModalState(() => isLoading = false);
-  //             }
-  //           });
-  //
-  //           return DraggableScrollableSheet(
-  //             expand: false,
-  //             initialChildSize: 0.7,
-  //             minChildSize: 0.5,
-  //             maxChildSize: 0.95,
-  //             builder: (context, scrollController) {
-  //               return Padding(
-  //                 padding: EdgeInsets.only(
-  //                   bottom: MediaQuery.of(context).viewInsets.bottom,
-  //                 ),
-  //                 child: Container(
-  //                   padding: EdgeInsets.all(16),
-  //                   child: Column(
-  //                     children: [
-  //                       Container(
-  //                         height: 5,
-  //                         width: 40,
-  //                         decoration: BoxDecoration(
-  //                           color: Colors.grey.shade400,
-  //                           borderRadius: BorderRadius.circular(10),
-  //                         ),
-  //                       ),
-  //                       SizedBox(height: 12),
-  //                       Text(
-  //                         "Comments",
-  //                         style: TextStyle(
-  //                           fontSize: 18,
-  //                           fontWeight: FontWeight.bold,
-  //                         ),
-  //                       ),
-  //                       SizedBox(height: 12),
-  //                       Expanded(
-  //                         child:
-  //                         isLoading
-  //                             ? Center(child: CircularProgressIndicator())
-  //                             : localpost_comments_Model == null ||
-  //                             localpost_comments_Model?.data == null ||
-  //                             localpost_comments_Model!.data!.isEmpty
-  //                             ? Center(child: Text("No comments found"))
-  //                             : ListView.builder(
-  //                           controller: scrollController,
-  //                           itemCount:
-  //                           localpost_comments_Model!.data!.length,
-  //                           itemBuilder: (context, index) {
-  //                             final comment =
-  //                             localpost_comments_Model!.data![index];
-  //                             return ListTile(
-  //                               leading: CircleAvatar(
-  //                                 backgroundColor: Colors.grey.shade300,
-  //                                 backgroundImage: null,
-  //                                 child: ClipOval(
-  //                                   child: CachedNetworkImage(
-  //                                     imageUrl:
-  //                                     comment.user?.profile ?? '',
-  //                                     width: 40,
-  //                                     height: 40,
-  //                                     fit: BoxFit.cover,
-  //                                     placeholder:
-  //                                         (context, url) =>
-  //                                         CircularProgressIndicator(
-  //                                           strokeWidth: 2,
-  //                                         ),
-  //                                     errorWidget:
-  //                                         (context, url, error) => Icon(
-  //                                       Icons.person,
-  //                                       color: Colors.black,
-  //                                     ),
-  //                                   ),
-  //                                 ),
-  //                               ),
-  //                               title: Text(comment.user?.name ?? ''),
-  //                               subtitle: Text(comment.comment ?? ''),
-  //                             );
-  //                           },
-  //                         ),
-  //                       ),
-  //                       Row(
-  //                         children: [
-  //                           Expanded(
-  //                             child: TextField(
-  //                               controller: _commentController,
-  //                               decoration: InputDecoration(
-  //                                 hintText: "Write a comment...",
-  //                                 filled: true,
-  //                                 fillColor: Colors.grey.shade100,
-  //                                 border: OutlineInputBorder(
-  //                                   borderRadius: BorderRadius.circular(30),
-  //                                   borderSide: BorderSide(color: Colors.grey),
-  //                                 ),
-  //                                 contentPadding: EdgeInsets.symmetric(
-  //                                   vertical: 10,
-  //                                   horizontal: 16,
-  //                                 ),
-  //                               ),
-  //                             ),
-  //                           ),
-  //                           SizedBox(width: 8),
-  //                           isSendingComment
-  //                               ? SizedBox(
-  //                             width: 24,
-  //                             height: 24,
-  //                             child: CircularProgressIndicator(
-  //                               strokeWidth: 2,
-  //                             ),
-  //                           )
-  //                               : IconButton(
-  //                             icon: Icon(Icons.send, color: Colors.blue),
-  //                             onPressed: () async {
-  //                               if (_commentController.text.trim().isEmpty)
-  //                                 return;
-  //
-  //                               setModalState(
-  //                                     () => isSendingComment = true,
-  //                               );
-  //
-  //                               await sendComment(
-  //                                 context,
-  //                                 _commentController.text.trim(),
-  //                                 postId,
-  //                                     () {
-  //                                   _commentController.clear();
-  //                                   setModalState(() {});
-  //                                 },
-  //                               );
-  //
-  //                               setModalState(
-  //                                     () => isSendingComment = false,
-  //                               );
-  //                             },
-  //                           ),
-  //                         ],
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               );
-  //             },
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
-
   Future<void> listconciergerapi() async {
     await checkInternet().then((internet) async {
       if (internet) {
@@ -4553,6 +4541,7 @@ class _MessageboardState extends State<Messageboard> {
           );
           if (response.statusCode == 200) {
             localpostapi();
+            _pagingController.refresh();
 
             if (mounted) {
               setState(() {
@@ -4778,7 +4767,7 @@ class _MessageboardState extends State<Messageboard> {
       'user_post_id': (loginModel?.data?.user?.id).toString(),
       'type': 'like',
       'post_id': (localpost_model?.data?.data?[index].id).toString(),
-      // "user_type": "4",
+      "user_type": "4",
     };
 
     checkInternet().then((internet) async {
@@ -4790,6 +4779,7 @@ class _MessageboardState extends State<Messageboard> {
             );
           }
           onComplete();
+          _pagingController.refresh();
           localpostapi();
         });
       } else {
@@ -4823,6 +4813,7 @@ class _MessageboardState extends State<Messageboard> {
               .then((response) async {
                 if (response.statusCode == 200) {
                   add_Post_Model = Add_Post_Model.fromJson(response.data);
+                  _pagingController.refresh();
 
                   localpostapi();
                   _descController.clear();
@@ -4959,82 +4950,7 @@ class _MessageboardState extends State<Messageboard> {
     }
   }
 
-  // SendComment(String commentText, String postId) {
-  //   final Map<String, String> data = {
-  //     'user_post_id': (loginModel?.data?.user?.id).toString(),
-  //     'post_id': postId,
-  //     'type': "comment",
-  //     'comment': commentText,
-  //     'user_type': '4',
-  //   };
-  //   setState(() {
-  //     isSending = true;
-  //   });
-  //
-  //   checkInternet().then((internet) async {
-  //     if (internet) {
-  //       MessageBoardProvider().sendcommentsapi(data).then((response) async {
-  //         sendpostCommentsModel = SendPostCommentsModel.fromJson(
-  //           json.decode(response.body),
-  //         );
-  //         if (response.statusCode == 200) {
-  //
-  //           getComments1(context, postId);
-  //
-  //           print(
-  //             "1111111111>>>>>>>>>>>>.${profileModel?.data?.user?.profile}",
-  //           );
-  //           if (mounted) {
-  //             setState(() {
-  //               isSending = false;
-  //             });
-  //           }
-  //         } else {
-  //           setState(() {
-  //             isSending = false;
-  //           });
-  //           log("Error");
-  //         }
-  //       });
-  //     } else {
-  //       setState(() {
-  //         isSending = false;
-  //       });
-  //
-  //       buildErrorDialog(context, 'Error', "Internet Required");
-  //     }
-  //   });
-  // }
 
-  // Future<void> getCommentslocalpost(BuildContext context, String postId) async {
-  //   currentPostId = postId;
-  //   final Map<String, String> data = {'post_id': postId};
-  //
-  //
-  //   bool internet = await checkInternet();
-  //   if (!internet) {
-  //     buildErrorDialog(context, 'Error', "Internet Required");
-  //     return;
-  //   }
-  //
-  //   try {
-  //     final response = await MessageBoardProvider().getcommentslocalpostap(
-  //       data,
-  //     );
-  //
-  //     if (response.statusCode == 200) {
-  //       localpost_comments_Model = Localpost_comments_Model.fromJson(
-  //         json.decode(response.body),
-  //       );
-  //     } else {}
-  //   } catch (e) {
-  //
-  //   }
-  //
-  //   if (context.mounted) {
-  //     showCommentBottomSheetlocalpostcooments(context, postId);
-  //   }
-  // }
 
   Future<void> sendComment(
     BuildContext context,
@@ -5068,6 +4984,8 @@ class _MessageboardState extends State<Messageboard> {
               );
               MessageBoardApi();
               localpostapi();
+              _pagingController.refresh();
+
               onSuccess();
             }
           } else {}

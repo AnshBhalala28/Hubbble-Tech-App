@@ -63,6 +63,8 @@ class _AddToCartViewState extends State<AddToCartView> {
     return Scaffold(
       key: addtocartkey,
       drawer: SideMenu(),
+      backgroundColor: AppColors.white,
+
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -708,7 +710,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                       ),
                   if (isUpdateQuantity)
                     Container(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.white,
                       child: Center(child: Loader()),
                     ),
                   isLoading
