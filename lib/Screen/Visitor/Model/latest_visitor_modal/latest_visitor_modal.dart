@@ -269,6 +269,8 @@ class Data {
   var prevPageUrl;
   int? to;
   int? total;
+  int? totalPages;
+
 
   Data({
     this.currentPage,
@@ -284,6 +286,8 @@ class Data {
     this.prevPageUrl,
     this.to,
     this.total,
+    this.totalPages
+
   });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -310,6 +314,8 @@ class Data {
     prevPageUrl = json['prev_page_url'];
     to = json['to'];
     total = json['total'];
+    totalPages = json['total_pages'];
+
   }
 
   Map<String, dynamic> toJson() {
@@ -331,6 +337,8 @@ class Data {
     data['prev_page_url'] = this.prevPageUrl;
     data['to'] = this.to;
     data['total'] = this.total;
+    data['total_pages'] = this.totalPages;
+
     return data;
   }
 }

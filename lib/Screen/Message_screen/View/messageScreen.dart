@@ -25,6 +25,8 @@ import '../Model/SendMessageModel.dart';
 import '../Model/messagescreen_model.dart';
 import '../Provider/messagescreen_provider.dart';
 import 'UserProfileScreen.dart';
+import 'package:wavee/comman/viewPdfFunction.dart';
+
 
 class MessageScreen extends StatefulWidget {
   String? chatName;
@@ -253,15 +255,8 @@ class _MessageScreenState extends State<MessageScreen> {
                               color: Colors.black,
                             ),
                           ),
-                          Spacer(),
-                          InkWell(
-                            onTap: () {
-                              showBlockUserDialog(context, supportUrl);
-                            },
-                            child: Icon(
-                              Icons.more_vert_outlined,
-                            ).paddingOnly(right: 2.w),
-                          ),
+
+
                         ],
                       ),
                     ),
@@ -641,13 +636,20 @@ class _MessageScreenState extends State<MessageScreen> {
 
       case '2':
         return ClipRRect(
-          child: CachedNetworkImage(
-            imageUrl: message.file ?? "",
-            placeholder:
-                (context, url) => Center(
-                  child: CircularProgressIndicator(color: Colors.white),
-                ),
-            errorWidget: (context, url, error) => Icon(Icons.photo),
+          child: InkWell(
+            onTap: () {
+              Get.to(PdfView(link: message.file ?? ""));
+            },
+            child: CachedNetworkImage(
+              imageUrl: message.file ?? "",
+              height: 30.h,
+              width: 30.w,
+              placeholder:
+                  (context, url) => Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              ),
+              errorWidget: (context, url, error) => Icon(Icons.photo),
+            ),
           ),
         );
 
@@ -659,7 +661,7 @@ class _MessageScreenState extends State<MessageScreen> {
           child: Column(
             children: [
               Icon(Icons.play_circle_fill, size: 50, color: Colors.blue),
-              Text("Play Video", style: TextStyle(color: Colors.black)),
+              Text("Play Video", style: TextStyle(color: Colors.white)),
             ],
           ),
         );
@@ -667,14 +669,14 @@ class _MessageScreenState extends State<MessageScreen> {
       case '4':
         return GestureDetector(
           onTap: () async {
-            await launch(message.file ?? "");
+            Get.to(PdfView(link: message.file ?? ""));
           },
           child: Container(
             width: 78,
             height: 60,
             child: Row(
               children: [
-                Icon(Icons.picture_as_pdf, size: 70, color: Colors.black),
+                Icon(Icons.picture_as_pdf, size: 70, color: Colors.white),
                 SizedBox(width: 8),
               ],
             ),
@@ -685,6 +687,7 @@ class _MessageScreenState extends State<MessageScreen> {
         return Text("Unsupported Message Type");
     }
   }
+
 
   void MessageApi() async {
     checkInternet().then((internet) async {

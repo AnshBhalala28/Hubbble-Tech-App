@@ -33,10 +33,10 @@ class Data {
   String? nextPageUrl;
   String? path;
   int? perPage;
-  Null? prevPageUrl;
+ var prevPageUrl;
   int? to;
   int? total;
-
+  int? totalPages;
   Data({
     this.currentPage,
     this.data,
@@ -51,6 +51,7 @@ class Data {
     this.prevPageUrl,
     this.to,
     this.total,
+    this.totalPages
   });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -77,6 +78,7 @@ class Data {
     prevPageUrl = json['prev_page_url'];
     to = json['to'];
     total = json['total'];
+    totalPages = json['total_pages'];
   }
 
   Map<String, dynamic> toJson() {
@@ -98,6 +100,7 @@ class Data {
     data['prev_page_url'] = this.prevPageUrl;
     data['to'] = this.to;
     data['total'] = this.total;
+    data['total_pages'] = this.totalPages;
     return data;
   }
 }
@@ -111,12 +114,12 @@ class Data1 {
   int? noOfParcel;
   String? collectedBy;
   String? deliveredBy;
-  Null? amount;
+  var amount;
   String? comment;
-  Null? trackingNumber;
-  Null? courierService;
+  var trackingNumber;
+  var courierService;
   String? deliveryStatus;
-  Null? deletedAt;
+  var deletedAt;
   String? createdAt;
   String? updatedAt;
   Requester? requester;
@@ -203,22 +206,22 @@ class Requester {
   int? role;
   String? name;
   String? email;
-  Null? emailVerifiedAt;
+  var emailVerifiedAt;
   String? dPassword;
   int? mobileNo;
   String? gender;
-  Null? dateOfBirth;
+  var dateOfBirth;
   Address? address;
-  Null? psLatitude;
-  Null? psLongitude;
+  var psLatitude;
+  var psLongitude;
   String? fcmToken;
-  Null? forgetPassKey;
-  Null? moduleLock;
+  var forgetPassKey;
+  var moduleLock;
   String? isOnline;
-  Null? lastOnlineAt;
+  var lastOnlineAt;
   String? status;
   String? profile;
-  Null? deletedAt;
+  var deletedAt;
   String? createdAt;
   String? updatedAt;
 
@@ -330,19 +333,19 @@ class Address {
 
 class Unitsnumber {
   int? id;
-  Null? buildingId;
+  var buildingId;
   int? userId;
   String? blockNumber;
   String? flatNumber;
   int? noOfKeys;
-  Null? keysOut;
+  var keysOut;
   String? parkingOption;
   List<String>? documentsFiles;
   List<String>? documentsFilesLabel;
   String? keyWaiver;
   String? lettingAgentInfo;
   String? bicycleScooterInfo;
-  Null? deletedAt;
+  var deletedAt;
   String? createdAt;
   String? updatedAt;
 

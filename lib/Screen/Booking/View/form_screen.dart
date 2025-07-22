@@ -2087,7 +2087,7 @@ class _Form_ScreenState extends State<Form_Screen> {
       var response = await AmenitiesProvider().amenitiesApi(
         loginModel?.data?.user?.id.toString() ?? '',
         widget.amenites_id ?? "",
-        date,
+        date,''
       );
 
       if (response.statusCode == 200) {

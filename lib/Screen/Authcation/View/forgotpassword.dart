@@ -58,7 +58,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ).paddingOnly(bottom: 2.h, top: 0.h),
               Center(
                 child: Image.asset(
-                  "assets/images/waveeLogoShort.png",
+                  "assets/images/Applogo_remove_background.png",
                   height: 30.h,
                   width: 65.w,
                   fit: BoxFit.cover,

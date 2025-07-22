@@ -86,19 +86,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           radius: 35.sp,
                           backgroundColor: Colors.grey.shade200,
                           backgroundImage:
-                              (userpersonalInfoModel?.data?.conciergeImage !=
-                                          null &&
-                                      userpersonalInfoModel!
-                                          .data!
-                                          .conciergeImage!
-                                          .isNotEmpty)
-                                  ? CachedNetworkImageProvider(
-                                    userpersonalInfoModel!
-                                        .data!
-                                        .conciergeImage!,
-                                  )
-                                  : const AssetImage("assets/images/bg.jpg")
-                                      as ImageProvider<Object>,
+                          (userpersonalInfoModel?.data?.conciergeImage !=
+                              null &&
+                              userpersonalInfoModel!
+                                  .data!
+                                  .conciergeImage!
+                                  .isNotEmpty)
+                              ? CachedNetworkImageProvider(
+                            userpersonalInfoModel!
+                                .data!
+                                .conciergeImage!,
+                          )
+                              : const AssetImage("assets/images/bg.jpg")
+                          as ImageProvider<Object>,
                         ),
                       ),
                       SizedBox(height: 2.h),
@@ -143,38 +143,48 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           Icons.email_outlined,
                           "Email",
                           userpersonalInfoModel?.data?.email,
+                              () {},
                         ),
                         buildProfileDetailItem(
                           Icons.phone_outlined,
                           "Phone",
                           userpersonalInfoModel?.data?.phoneNumber,
+                              () {
+                            final phone =
+                                userpersonalInfoModel?.data?.phoneNumber;
+                            if (phone != null && phone.toString().isNotEmpty) {
+                              final telUrl = Uri.parse(
+                                "tel:${phone.toString()}",
+                              );
+                              launchUrl(
+                                telUrl,
+                                mode: LaunchMode.externalApplication,
+                              );
+                            }
+                          },
                         ),
-                        buildProfileDetailItem(
-                          Icons.calendar_today_outlined,
-                          "Date of Birth",
-                          userpersonalInfoModel?.data?.dateOfBirth,
-                        ),
-                        buildProfileDetailItem(
-                          Icons.person,
-                          "Gender",
-                          userpersonalInfoModel?.data?.gender,
-                        ),
+                        // buildProfileDetailItem(
+                        //     Icons.calendar_today_outlined,
+                        //     "Date of Birth",
+                        //     userpersonalInfoModel?.data?.dateOfBirth),
+                        // buildProfileDetailItem(Icons.person, "Gender",
+                        //     userpersonalInfoModel?.data?.gender),
                         SizedBox(height: 2.h),
                       ],
                     ),
                   ),
                 ),
-                batan(
-                  title: "Block",
-                  route: () {
-                    showBlockUserDialog(context, supportUrl);
-                  },
-                  color: AppColors.maincolor,
-                  fontcolor: AppColors.white,
-                  height: 5.h,
-                  fontsize: 18.sp,
-                  radius: 12.0,
-                ).paddingOnly(left: 4.4.w, right: 4.4.w, top: 2.h),
+                // batan(
+                //   title: "Block",
+                //   route: () {
+                //     showBlockUserDialog(context, supportUrl);
+                //   },
+                //   color: AppColors.maincolor,
+                //   fontcolor: AppColors.white,
+                //   height: 5.h,
+                //   fontsize: 18.sp,
+                //   radius: 12.0,
+                // ).paddingOnly(left: 4.4.w, right: 4.4.w, top: 2.h),
                 SizedBox(height: 3.h),
               ],
             ),
@@ -241,71 +251,71 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     SizedBox(height: 2.h),
                     isLoading
                         ? Padding(
-                          padding: EdgeInsets.symmetric(vertical: 2.h),
-                          child: CircularProgressIndicator(
-                            color: AppColors.maincolor,
-                          ),
-                        )
+                      padding: EdgeInsets.symmetric(vertical: 2.h),
+                      child: CircularProgressIndicator(
+                        color: AppColors.maincolor,
+                      ),
+                    )
                         : Row(
-                          children: [
-                            Expanded(
-                              child: Material(
-                                elevation: 2,
-                                borderRadius: BorderRadius.circular(12),
-                                child: batan(
-                                  title: "No",
-                                  width: 30.w,
-                                  route: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  color: AppColors.white,
-                                  fontcolor: Colors.black,
-                                  height: 5.h,
-                                  fontsize: 16.sp,
-                                  radius: 12.0,
-                                ),
-                              ),
+                      children: [
+                        Expanded(
+                          child: Material(
+                            elevation: 2,
+                            borderRadius: BorderRadius.circular(12),
+                            child: batan(
+                              title: "No",
+                              width: 30.w,
+                              route: () {
+                                Navigator.of(context).pop();
+                              },
+                              color: AppColors.white,
+                              fontcolor: Colors.black,
+                              height: 5.h,
+                              fontsize: 16.sp,
+                              radius: 12.0,
                             ),
-                            SizedBox(width: 2.w),
-                            Expanded(
-                              child: Material(
-                                elevation: 2,
-                                borderRadius: BorderRadius.circular(12),
-                                child: batan(
-                                  title: "Yes",
-                                  route: () async {
-                                    setState(() => isLoading = true);
-
-                                    final Uri url = Uri.parse(supportUrl);
-                                    if (await canLaunchUrl(url)) {
-                                      await launchUrl(
-                                        url,
-                                        mode: LaunchMode.externalApplication,
-                                      );
-                                    } else {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        const SnackBar(
-                                          content: Text("Could not launch URL"),
-                                        ),
-                                      );
-                                    }
-
-                                    setState(() => isLoading = false);
-                                    Navigator.of(context).pop();
-                                  },
-                                  color: AppColors.maincolor,
-                                  fontcolor: Colors.white,
-                                  height: 5.h,
-                                  fontsize: 16.sp,
-                                  radius: 12.0,
-                                  width: 30.w,
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
+                        SizedBox(width: 2.w),
+                        Expanded(
+                          child: Material(
+                            elevation: 2,
+                            borderRadius: BorderRadius.circular(12),
+                            child: batan(
+                              title: "Yes",
+                              route: () async {
+                                setState(() => isLoading = true);
+
+                                final Uri url = Uri.parse(supportUrl);
+                                if (await canLaunchUrl(url)) {
+                                  await launchUrl(
+                                    url,
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(
+                                    context,
+                                  ).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Could not launch URL"),
+                                    ),
+                                  );
+                                }
+
+                                setState(() => isLoading = false);
+                                Navigator.of(context).pop();
+                              },
+                              color: AppColors.maincolor,
+                              fontcolor: Colors.white,
+                              height: 5.h,
+                              fontsize: 16.sp,
+                              radius: 12.0,
+                              width: 30.w,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 1.h),
                   ],
                 ),
@@ -398,46 +408,55 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget buildProfileDetailItem(IconData icon, String title, String? value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 1.5.h, horizontal: 5.w),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(2.w),
-            decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10),
+  Widget buildProfileDetailItem(
+      IconData icon,
+      String title,
+      String? value,
+      VoidCallback ontap,
+      ) {
+    return InkWell(
+      onTap: ontap,
+
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 1.5.h, horizontal: 5.w),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(2.w),
+              decoration: BoxDecoration(
+                color: Colors.blue.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: Colors.blue.shade700, size: 17.sp),
             ),
-            child: Icon(icon, color: Colors.blue.shade700, size: 17.sp),
-          ),
-          SizedBox(width: 4.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    fontFamily: AppConstants.manrope,
-                    color: Colors.grey.shade600,
+            SizedBox(width: 4.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      fontFamily: AppConstants.manrope,
+                      color: Colors.grey.shade600,
+                    ),
                   ),
-                ),
-                SizedBox(height: 0.4.h),
-                Text(
-                  value ?? "N/A",
-                  style: TextStyle(
-                    fontSize: 17.sp,
-                    fontFamily: AppConstants.manrope,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+                  SizedBox(height: 0.4.h),
+                  Text(
+                    value ?? "N/A",
+                    style: TextStyle(
+                      fontSize: 17.sp,
+                      fontFamily: AppConstants.manrope,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -456,7 +475,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             userpersonalInfoModel = UserPersonalInfoModel.fromJson(
               json.decode(response.body),
             );
-
+            print("${response.body}");
+            print("${widget.id}");
             setState(() {
               isSending = false;
             });
@@ -471,7 +491,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           setState(() {
             isSending = false;
           });
-
+          print("error: ${e.toString()}");
           buildErrorDialog(context, 'Error', "Something went wrong");
         }
       } else {

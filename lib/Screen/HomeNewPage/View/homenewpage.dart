@@ -96,6 +96,7 @@ class _HomePageState extends State<HomePage> {
         GlobalKey<ScaffoldState>();
     return Scaffold(
       bottomNavigationBar: Bottom_bar(selected: 1),
+      backgroundColor: AppColors.white,
       body:
           isLoading
               ? Loader()
@@ -1179,160 +1180,9 @@ class _HomePageState extends State<HomePage> {
 
   int cartCount = cartDetailsModel?.data?.length ?? 0;
 
-  Widget _buildIconTile(
-    String title,
-    IconData icon,
-    VoidCallback onTap, {
-    int notificationCount = 0,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Container(
-                height: 8.h,
-                width: 15.w,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, color: AppColors.maincolor, size: 27.sp),
-              ),
-              Positioned(
-                top: -5,
-                right: -10,
-                child: Container(
-                  alignment: Alignment.center,
-                  height: 3.h,
-                  width: 4.h,
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Text(
-                    notificationCount.toString(),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 13.5.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 4),
-          Text(
-            title,
-            style: TextStyle(
-              color: AppColors.white,
-              fontSize: 14.sp,
-              fontWeight: FontWeight.bold,
-              fontFamily: AppConstants.manrope,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildPlaceholderBox({
-    required String title,
-    required Function() onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 6.h,
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        decoration: BoxDecoration(
-          color: Colors.purple.shade100,
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.bold,
-                fontFamily: AppConstants.manrope,
-              ),
-            ),
-            Container(
-              height: 4.h,
-              width: 8.w,
-              decoration: BoxDecoration(
-                color: Colors.purple.shade300,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.arrow_forward_ios,
-                color: AppColors.black,
-                size: 17.sp,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
-  Widget _buildNotification(
-    IconData icon,
-    VoidCallback onTap, {
-    int notificationCount = 0,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(right: 3.w),
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Container(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 1.5.h),
-                    child: Icon(icon, color: AppColors.black, size: 23.sp),
-                  ),
-                ),
-                Positioned(
-                  top: 0,
-                  right: -8,
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 2.5.h,
-                    width: 3.h,
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      notificationCount.toString(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   String formatDateTime(String? createdAt) {
     if (createdAt == null || createdAt.isEmpty) return "N/A";

@@ -1,5 +1,350 @@
-import 'dart:convert';
-import 'dart:developer';
+// import 'dart:convert';
+// import 'dart:developer';
+//
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:intl/intl.dart';
+// import 'package:readmore/readmore.dart';
+// import 'package:sizer/sizer.dart';
+// import 'package:wavee/comman/Custom_AppBar.dart';
+// import 'package:wavee/comman/SideMenu.dart';
+// import 'package:wavee/comman/colors.dart';
+// import 'package:wavee/comman/const.dart';
+//
+// import '../../../comman/check_inernet_connecty.dart';
+// import '../../../comman/error_dialog.dart';
+// import '../Model/parcel_model.dart';
+// import '../Provider/parcel_provider.dart';
+//
+// class ParcelScreen extends StatefulWidget {
+//   const ParcelScreen({super.key});
+//
+//   @override
+//   State<ParcelScreen> createState() => _ParcelScreenState();
+// }
+//
+// class _ParcelScreenState extends State<ParcelScreen> {
+//   int selectedCategory = 0;
+//   bool isLoading = false;
+//   List<String> categories = ['All', 'Collected', 'Awaiting Collection'];
+//
+//   List<Data1> allParcels = [];
+//   List<Data1> collectedParcels = [];
+//   List<Data1> inProgressParcels = [];
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     setState(() {
+//       isLoading = true;
+//     });
+//     ParselViewApi();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final GlobalKey<ScaffoldState> _scaffoldKeyParcel =
+//         GlobalKey<ScaffoldState>();
+//
+//     return Scaffold(
+//       backgroundColor: AppColors.bgcolor,
+//       drawer: const SideMenu(),
+//       key: _scaffoldKeyParcel,
+//       body: Padding(
+//         padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 2.h),
+//         child: Column(
+//           children: [
+//             SizedBox(height: 4.h),
+//             TitleBar(
+//               back: () {
+//                 Get.back();
+//               },
+//               title: 'Parcel',
+//               drawerCallback: () {
+//                 _scaffoldKeyParcel.currentState?.openDrawer();
+//               },
+//             ),
+//             SizedBox(height: 3.h),
+//             SizedBox(
+//               height: 6.h,
+//               child: ListView.builder(
+//                 scrollDirection: Axis.horizontal,
+//                 itemCount: categories.length,
+//                 itemBuilder: (context, index) {
+//                   return InkWell(
+//                     onTap: () {
+//                       if (selectedCategory != index) {
+//                         setState(() {
+//                           selectedCategory = index;
+//                         });
+//
+//                         ParselViewApi();
+//                       }
+//                     },
+//                     child: Container(
+//                       height: 6.h,
+//                       padding: EdgeInsets.symmetric(
+//                         vertical: 1.h,
+//                         horizontal: 7.w,
+//                       ),
+//                       alignment: Alignment.center,
+//                       decoration: BoxDecoration(
+//                         border: Border.all(width: 0.5, color: Colors.grey),
+//                         color:
+//                             selectedCategory == index
+//                                 ? AppColors.maincolor
+//                                 : Colors.white,
+//                         borderRadius: BorderRadius.circular(10),
+//                       ),
+//                       margin: EdgeInsets.symmetric(horizontal: 2.w),
+//                       child: Text(
+//                         categories[index],
+//                         style: TextStyle(
+//                           fontSize: 17.sp,
+//                           color:
+//                               selectedCategory == index
+//                                   ? Colors.white
+//                                   : Colors.black,
+//                           fontFamily: AppConstants.manrope,
+//                           fontWeight: FontWeight.bold,
+//                           letterSpacing: 1,
+//                         ),
+//                       ),
+//                     ),
+//                   );
+//                 },
+//               ),
+//             ),
+//             SizedBox(height: 2.h),
+//             isLoading
+//                 ? const Center(
+//                   child: CircularProgressIndicator(color: AppColors.maincolor),
+//                 ).paddingOnly(top: 25.h)
+//                 : getSelectedParcelList().length == null ||
+//                     getSelectedParcelList().isEmpty
+//                 ? Center(
+//                   child: Text(
+//                     "No Parcel Available",
+//                     style: TextStyle(
+//                       fontSize: 17.sp,
+//                       fontWeight: FontWeight.bold,
+//                       color: AppColors.black,
+//                       fontFamily: AppConstants.manrope,
+//                     ),
+//                   ).paddingOnly(top: 30.h),
+//                 )
+//                 : Expanded(
+//                   child: Container(
+//                     height: 70.h,
+//                     child: ListView.builder(
+//                       padding: EdgeInsets.zero,
+//                       itemCount: getSelectedParcelList().length,
+//                       itemBuilder: (context, index) {
+//                         var parcel = getSelectedParcelList()[index];
+//
+//                         Map<String, Color> statusColors = {
+//                           "Pending": Colors.orange,
+//                           "Collected": Colors.green,
+//                           "Cancelled": Colors.red,
+//                           "Shipped": Colors.blue,
+//                           "Processing": Colors.purple,
+//                         };
+//
+//                         String status = parcel.deliveryStatus ?? "Pending";
+//                         Color statusColor = statusColors[status] ?? Colors.grey;
+//
+//                         return GestureDetector(
+//                           onTap: () {},
+//                           child: Stack(
+//                             children: [
+//                               Container(
+//                                 decoration: BoxDecoration(
+//                                   color: Colors.white,
+//                                   borderRadius: BorderRadius.circular(20),
+//                                   boxShadow: [
+//                                     BoxShadow(
+//                                       color: Colors.black12,
+//                                       blurRadius: 5,
+//                                     ),
+//                                   ],
+//                                 ),
+//                                 margin: EdgeInsets.only(bottom: 16),
+//                                 padding: EdgeInsets.all(16),
+//                                 child: Column(
+//                                   crossAxisAlignment: CrossAxisAlignment.start,
+//                                   children: [
+//                                     Row(
+//                                       children: [
+//                                         Icon(
+//                                           Icons.pending_rounded,
+//                                           color: statusColor,
+//                                           size: 18.sp,
+//                                         ),
+//                                         SizedBox(width: 8),
+//                                         Text(
+//                                           '${status[0].toUpperCase()}${status.substring(1)}',
+//                                           style: TextStyle(
+//                                             color: statusColor,
+//                                             fontWeight: FontWeight.bold,
+//                                             fontFamily: AppConstants.manrope,
+//                                           ),
+//                                         ),
+//                                       ],
+//                                     ),
+//                                     SizedBox(height: 1.h),
+//                                     ReadMoreText(
+//                                       parcel.comment?.isNotEmpty == true
+//                                           ? '${parcel.comment![0].toUpperCase()}${parcel.comment!.substring(1)}'
+//                                           : '',
+//                                       style: TextStyle(
+//                                         fontSize: 18.sp,
+//                                         fontWeight: FontWeight.bold,
+//                                         fontFamily: AppConstants.manrope,
+//                                       ),
+//                                       trimLines: 2,
+//                                       colorClickableText: Colors.blue,
+//                                       trimMode: TrimMode.Line,
+//                                       trimCollapsedText: ' Show More',
+//                                       trimExpandedText: ' Show Less',
+//                                       moreStyle: const TextStyle(
+//                                         fontSize: 16,
+//                                         fontWeight: FontWeight.bold,
+//                                         color: AppColors.maincolor,
+//                                       ),
+//                                       lessStyle: const TextStyle(
+//                                         fontSize: 16,
+//                                         fontFamily: AppConstants.manrope,
+//                                         fontWeight: FontWeight.bold,
+//                                         color: AppColors.maincolor,
+//                                       ),
+//                                     ),
+//                                     parcel.unitsnumber == null
+//                                         ? SizedBox()
+//                                         : Text(
+//                                           'Apartment No: ${parcel.unitsnumber?.blockNumber ?? ""}-${parcel.unitsnumber?.flatNumber ?? ""}',
+//                                           style: TextStyle(
+//                                             color: Colors.black,
+//
+//                                             fontFamily: AppConstants.manrope,
+//                                           ),
+//                                         ),
+//                                     SizedBox(height: 2.h),
+//                                     Row(
+//                                       mainAxisAlignment:
+//                                           MainAxisAlignment.spaceBetween,
+//                                       children: [
+//                                         Text(
+//                                           ' ${parcel.amount ?? ""}',
+//                                           style: TextStyle(
+//                                             fontFamily: AppConstants.manrope,
+//                                             color: Colors.black,
+//                                             fontWeight: FontWeight.bold,
+//                                           ),
+//                                         ),
+//                                         Text(
+//                                           formatDateTime(parcel.createdAt),
+//                                           style: const TextStyle(
+//                                             color: Colors.grey,
+//                                             fontFamily: AppConstants.manrope,
+//
+//                                             fontWeight: FontWeight.bold,
+//                                           ),
+//                                         ),
+//                                       ],
+//                                     ),
+//                                   ],
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         );
+//                       },
+//                     ),
+//                   ),
+//                 ),
+//           ],
+//         ),
+//       ),
+//       // floatingActionButton: isLoading
+//       //     ? Container()
+//       //     : FloatingActionButton.extended(
+//       //         shape: RoundedRectangleBorder(
+//       //             borderRadius: BorderRadius.circular(900)),
+//       //         backgroundColor: Colors.white,
+//       //         onPressed: () {
+//       //           Get.to(() => const ChatBotScreen());
+//       //         },
+//       //         icon: Icon(CupertinoIcons.chat_bubble_2, color: Colors.black),
+//       //         label: Text(
+//       //           "Ai Concierge",
+//       //           style: TextStyle(
+//       //               color: Colors.black,
+//       //               fontWeight: FontWeight.w600,
+//       //               fontSize: 16.sp,
+//       //               fontFamily: AppConstants.manrope),
+//       //         ),
+//       //       ),
+//     );
+//   }
+//
+//   String formatDateTime(String? createdAt) {
+//     if (createdAt == null || createdAt.isEmpty) return "N/A";
+//
+//     DateTime parsedDate = DateTime.parse(createdAt);
+//
+//     return DateFormat('yyyy-MM-dd hh:mm a').format(parsedDate);
+//   }
+//
+//   Future<void> ParselViewApi() async {
+//     final Map<String, String> data = {
+//       "user_id": loginModel?.data?.user?.id.toString() ?? "",
+//     };
+//
+//     checkInternet().then((internet) async {
+//       if (internet) {
+//         try {
+//           var response = await ParcelProvider().getParcelApi(data);
+//           ParcelViewModal parcelViewModal = ParcelViewModal.fromJson(
+//             response.data,
+//           );
+//           if (response.statusCode == 200 && parcelViewModal.status == 200) {
+//             setState(() {
+//               allParcels = parcelViewModal.data?.data ?? [];
+//               collectedParcels =
+//                   allParcels
+//                       .where((p) => p.deliveryStatus == "Collected")
+//                       .toList();
+//               inProgressParcels =
+//                   allParcels
+//                       .where((p) => p.deliveryStatus == "Pending")
+//                       .toList();
+//               isLoading = false;
+//             });
+//           } else {
+//             setState(() {
+//               isLoading = false;
+//             });
+//           }
+//         } catch (e, stackTrace) {
+//           setState(() {
+//             isLoading = false;
+//           });
+//         }
+//       } else {
+//         setState(() {
+//           isLoading = false;
+//         });
+//         buildErrorDialog(context, 'Error', "Internet Required");
+//       }
+//     });
+//   }
+//
+//   List<Data1> getSelectedParcelList() {
+//     if (selectedCategory == 1) return collectedParcels;
+//     if (selectedCategory == 2) return inProgressParcels;
+//     return allParcels;
+//   }
+// }
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,9 +355,7 @@ import 'package:wavee/comman/Custom_AppBar.dart';
 import 'package:wavee/comman/SideMenu.dart';
 import 'package:wavee/comman/colors.dart';
 import 'package:wavee/comman/const.dart';
-
-import '../../../comman/check_inernet_connecty.dart';
-import '../../../comman/error_dialog.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../Model/parcel_model.dart';
 import '../Provider/parcel_provider.dart';
 
@@ -24,28 +367,30 @@ class ParcelScreen extends StatefulWidget {
 }
 
 class _ParcelScreenState extends State<ParcelScreen> {
-  int selectedCategory = 0;
-  bool isLoading = false;
-  List<String> categories = ['All', 'Collected', 'Awaiting Collection'];
+  final GlobalKey<ScaffoldState> _scaffoldKeyParcel = GlobalKey<ScaffoldState>();
+  final PagingController<int, Data1> _pagingController =
+  PagingController(firstPageKey: 1);
 
-  List<Data1> allParcels = [];
-  List<Data1> collectedParcels = [];
-  List<Data1> inProgressParcels = [];
+  int selectedCategory = 0;
+
+  final List<String> categories = ['All', 'Collected', 'Awaiting Collection'];
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      isLoading = true;
+    _pagingController.addPageRequestListener((pageKey) {
+      ParselViewApi(pageKey);
     });
-    ParselViewApi();
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKeyParcel =
-        GlobalKey<ScaffoldState>();
-
     return Scaffold(
       backgroundColor: AppColors.bgcolor,
       drawer: const SideMenu(),
@@ -56,13 +401,9 @@ class _ParcelScreenState extends State<ParcelScreen> {
           children: [
             SizedBox(height: 4.h),
             TitleBar(
-              back: () {
-                Get.back();
-              },
+              back: () => Get.back(),
               title: 'Parcel',
-              drawerCallback: () {
-                _scaffoldKeyParcel.currentState?.openDrawer();
-              },
+              drawerCallback: () => _scaffoldKeyParcel.currentState?.openDrawer(),
             ),
             SizedBox(height: 3.h),
             SizedBox(
@@ -77,23 +418,18 @@ class _ParcelScreenState extends State<ParcelScreen> {
                         setState(() {
                           selectedCategory = index;
                         });
-
-                        ParselViewApi();
+                        _pagingController.refresh(); // Reload data
                       }
                     },
                     child: Container(
                       height: 6.h,
-                      padding: EdgeInsets.symmetric(
-                        vertical: 1.h,
-                        horizontal: 7.w,
-                      ),
+                      padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 7.w),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         border: Border.all(width: 0.5, color: Colors.grey),
-                        color:
-                            selectedCategory == index
-                                ? AppColors.maincolor
-                                : Colors.white,
+                        color: selectedCategory == index
+                            ? AppColors.maincolor
+                            : Colors.white,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       margin: EdgeInsets.symmetric(horizontal: 2.w),
@@ -101,10 +437,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
                         categories[index],
                         style: TextStyle(
                           fontSize: 17.sp,
-                          color:
-                              selectedCategory == index
-                                  ? Colors.white
-                                  : Colors.black,
+                          color: selectedCategory == index ? Colors.white : Colors.black,
                           fontFamily: AppConstants.manrope,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 1,
@@ -116,232 +449,165 @@ class _ParcelScreenState extends State<ParcelScreen> {
               ),
             ),
             SizedBox(height: 2.h),
-            isLoading
-                ? const Center(
-                  child: CircularProgressIndicator(color: AppColors.maincolor),
-                ).paddingOnly(top: 25.h)
-                : getSelectedParcelList().length == null ||
-                    getSelectedParcelList().isEmpty
-                ? Center(
-                  child: Text(
-                    "No Parcel Available",
-                    style: TextStyle(
-                      fontSize: 17.sp,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.black,
-                      fontFamily: AppConstants.manrope,
-                    ),
-                  ).paddingOnly(top: 30.h),
-                )
-                : Expanded(
-                  child: Container(
-                    height: 70.h,
-                    child: ListView.builder(
-                      padding: EdgeInsets.zero,
-                      itemCount: getSelectedParcelList().length,
-                      itemBuilder: (context, index) {
-                        var parcel = getSelectedParcelList()[index];
+            Expanded(
+              child: PagedListView<int, Data1>(
+                pagingController: _pagingController,
+                padding: EdgeInsets.zero,
 
-                        Map<String, Color> statusColors = {
-                          "Pending": Colors.orange,
-                          "Collected": Colors.green,
-                          "Cancelled": Colors.red,
-                          "Shipped": Colors.blue,
-                          "Processing": Colors.purple,
-                        };
+                builderDelegate: PagedChildBuilderDelegate<Data1>(
+                  itemBuilder: (context, parcel, index) {
+                    if (!_isParcelVisible(parcel)) return const SizedBox();
 
-                        String status = parcel.deliveryStatus ?? "Pending";
-                        Color statusColor = statusColors[status] ?? Colors.grey;
+                    Map<String, Color> statusColors = {
+                      "Pending": Colors.orange,
+                      "Collected": Colors.green,
+                      "Cancelled": Colors.red,
+                      "Shipped": Colors.blue,
+                      "Processing": Colors.purple,
+                    };
 
-                        return GestureDetector(
-                          onTap: () {},
-                          child: Stack(
+                    String status = parcel.deliveryStatus ?? "Pending";
+                    Color statusColor = statusColors[status] ?? Colors.grey;
+
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(color: Colors.black12, blurRadius: 5),
+                        ],
+                      ),
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
                             children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(20),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black12,
-                                      blurRadius: 5,
-                                    ),
-                                  ],
-                                ),
-                                margin: EdgeInsets.only(bottom: 16),
-                                padding: EdgeInsets.all(16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.pending_rounded,
-                                          color: statusColor,
-                                          size: 18.sp,
-                                        ),
-                                        SizedBox(width: 8),
-                                        Text(
-                                          '${status[0].toUpperCase()}${status.substring(1)}',
-                                          style: TextStyle(
-                                            color: statusColor,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: AppConstants.manrope,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 1.h),
-                                    ReadMoreText(
-                                      parcel.comment?.isNotEmpty == true
-                                          ? '${parcel.comment![0].toUpperCase()}${parcel.comment!.substring(1)}'
-                                          : '',
-                                      style: TextStyle(
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
-                                      trimLines: 2,
-                                      colorClickableText: Colors.blue,
-                                      trimMode: TrimMode.Line,
-                                      trimCollapsedText: ' Show More',
-                                      trimExpandedText: ' Show Less',
-                                      moreStyle: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.maincolor,
-                                      ),
-                                      lessStyle: const TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: AppConstants.manrope,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.maincolor,
-                                      ),
-                                    ),
-                                    parcel.unitsnumber == null
-                                        ? SizedBox()
-                                        : Text(
-                                          'Apartment No: ${parcel.unitsnumber?.blockNumber ?? ""}-${parcel.unitsnumber?.flatNumber ?? ""}',
-                                          style: TextStyle(
-                                            color: Colors.black,
-
-                                            fontFamily: AppConstants.manrope,
-                                          ),
-                                        ),
-                                    SizedBox(height: 2.h),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          ' ${parcel.amount ?? ""}',
-                                          style: TextStyle(
-                                            fontFamily: AppConstants.manrope,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text(
-                                          formatDateTime(parcel.createdAt),
-                                          style: const TextStyle(
-                                            color: Colors.grey,
-                                            fontFamily: AppConstants.manrope,
-
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                              Icon(Icons.pending_rounded,
+                                  color: statusColor, size: 18.sp),
+                              const SizedBox(width: 8),
+                              Text(
+                                '${status[0].toUpperCase()}${status.substring(1)}',
+                                style: TextStyle(
+                                  color: statusColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: AppConstants.manrope,
                                 ),
                               ),
                             ],
                           ),
-                        );
-                      },
-                    ),
+                          SizedBox(height: 1.h),
+                          ReadMoreText(
+                            parcel.comment?.isNotEmpty == true
+                                ? '${parcel.comment![0].toUpperCase()}${parcel.comment!.substring(1)}'
+                                : '',
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: AppConstants.manrope,
+                            ),
+                            trimLines: 2,
+                            colorClickableText: Colors.blue,
+                            trimMode: TrimMode.Line,
+                            trimCollapsedText: ' Show More',
+                            trimExpandedText: ' Show Less',
+                            moreStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.maincolor,
+                            ),
+                            lessStyle: const TextStyle(
+                              fontSize: 16,
+                              fontFamily: AppConstants.manrope,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.maincolor,
+                            ),
+                          ),
+                          if (parcel.unitsnumber != null)
+                            Text(
+                              'Apartment No: ${parcel.unitsnumber?.blockNumber ?? ""}-${parcel.unitsnumber?.flatNumber ?? ""}',
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontFamily: AppConstants.manrope,
+                              ),
+                            ),
+                          SizedBox(height: 2.h),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                ' ${parcel.amount ?? ""}',
+                                style: TextStyle(
+                                  fontFamily: AppConstants.manrope,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                formatDateTime(parcel.createdAt),
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontFamily: AppConstants.manrope,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  noItemsFoundIndicatorBuilder: (context) => const Center(
+                    child: Text('No Parcels Available'),
                   ),
+                  firstPageProgressIndicatorBuilder: (context) =>
+                   Center(child: CircularProgressIndicator(color: AppColors.maincolor,)),
+                  newPageProgressIndicatorBuilder: (context) =>
+                      Center(child: CircularProgressIndicator(color: AppColors.maincolor,)),
+
                 ),
+              ),
+            ),
           ],
         ),
       ),
-      // floatingActionButton: isLoading
-      //     ? Container()
-      //     : FloatingActionButton.extended(
-      //         shape: RoundedRectangleBorder(
-      //             borderRadius: BorderRadius.circular(900)),
-      //         backgroundColor: Colors.white,
-      //         onPressed: () {
-      //           Get.to(() => const ChatBotScreen());
-      //         },
-      //         icon: Icon(CupertinoIcons.chat_bubble_2, color: Colors.black),
-      //         label: Text(
-      //           "Ai Concierge",
-      //           style: TextStyle(
-      //               color: Colors.black,
-      //               fontWeight: FontWeight.w600,
-      //               fontSize: 16.sp,
-      //               fontFamily: AppConstants.manrope),
-      //         ),
-      //       ),
     );
+  }
+
+  bool _isParcelVisible(Data1 parcel) {
+    if (selectedCategory == 1 && parcel.deliveryStatus != "Collected") return false;
+    if (selectedCategory == 2 && parcel.deliveryStatus != "Pending") return false;
+    return true;
   }
 
   String formatDateTime(String? createdAt) {
     if (createdAt == null || createdAt.isEmpty) return "N/A";
-
     DateTime parsedDate = DateTime.parse(createdAt);
-
     return DateFormat('yyyy-MM-dd hh:mm a').format(parsedDate);
   }
 
-  Future<void> ParselViewApi() async {
+  Future<void> ParselViewApi(int pageKey) async {
     final Map<String, String> data = {
       "user_id": loginModel?.data?.user?.id.toString() ?? "",
+      "page": pageKey.toString(),
     };
-
-    checkInternet().then((internet) async {
-      if (internet) {
-        try {
-          var response = await ParcelProvider().getParcelApi(data);
-          ParcelViewModal parcelViewModal = ParcelViewModal.fromJson(
-            response.data,
-          );
-          if (response.statusCode == 200 && parcelViewModal.status == 200) {
-            setState(() {
-              allParcels = parcelViewModal.data?.data ?? [];
-              collectedParcels =
-                  allParcels
-                      .where((p) => p.deliveryStatus == "Collected")
-                      .toList();
-              inProgressParcels =
-                  allParcels
-                      .where((p) => p.deliveryStatus == "Pending")
-                      .toList();
-              isLoading = false;
-            });
-          } else {
-            setState(() {
-              isLoading = false;
-            });
-          }
-        } catch (e, stackTrace) {
-          setState(() {
-            isLoading = false;
-          });
-        }
+    try {
+      final response = await ParcelProvider().getParcelApi(data);
+      final parcelViewModal = ParcelViewModal.fromJson(response.data);
+      final newItems = parcelViewModal.data?.data ?? [];
+      final totalPages = parcelViewModal.data?.totalPages ?? 1;
+      final isLastPage = pageKey >= totalPages;
+      await Future.delayed(const Duration(milliseconds: 600));
+      if (isLastPage) {
+        _pagingController.appendLastPage(newItems);
       } else {
-        setState(() {
-          isLoading = false;
-        });
-        buildErrorDialog(context, 'Error', "Internet Required");
+        final nextPageKey = pageKey + 1;
+        _pagingController.appendPage(newItems, nextPageKey);
       }
-    });
-  }
-
-  List<Data1> getSelectedParcelList() {
-    if (selectedCategory == 1) return collectedParcels;
-    if (selectedCategory == 2) return inProgressParcels;
-    return allParcels;
+    } catch (error) {
+      _pagingController.error = error;
+    }
   }
 }
+
