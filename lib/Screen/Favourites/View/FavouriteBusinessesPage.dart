@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:geocoding/geocoding.dart';
@@ -9,7 +6,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Screen/open_ai_chatbot/view/open_ai_screen.dart';
 
 import '../../../comman/Custom_AppBar.dart';
 import '../../../comman/SideMenu.dart';

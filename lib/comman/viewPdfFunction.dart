@@ -199,21 +199,21 @@ class _PdfViewState extends State<PdfView> {
                   IconButton(
                     onPressed:
                         () => downloadFile(
-                      widget.link ?? '',
-                      context,
-                      ((widget.link ?? '')
-                          .split('/')
-                          .last
-                          .split('.')
-                          .first ??
-                          ''),
-                      ((widget.link ?? '')
-                          .split('/')
-                          .last
-                          .split('.')
-                          .last ??
-                          ''),
-                    ),
+                          widget.link ?? '',
+                          context,
+                          ((widget.link ?? '')
+                                  .split('/')
+                                  .last
+                                  .split('.')
+                                  .first ??
+                              ''),
+                          ((widget.link ?? '')
+                                  .split('/')
+                                  .last
+                                  .split('.')
+                                  .last ??
+                              ''),
+                        ),
                     icon: Icon(
                       Icons.file_download,
                       size: 19.sp,
@@ -269,7 +269,7 @@ class _PdfViewState extends State<PdfView> {
           },
           errorBuilder:
               (context, error, stackTrace) =>
-              _errorWidget("Failed to load image"),
+                  _errorWidget("Failed to load image"),
         ),
       );
     } else {

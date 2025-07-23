@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
-import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_info_window/custom_info_window.dart';
@@ -29,7 +27,6 @@ import 'package:wavee/Screen/Product%20Detail%20Page/view/product_detail_page.da
 import 'package:wavee/Screen/ViewProfile/Model/profile_model.dart';
 import 'package:wavee/Screen/ViewProfile/Provider/profile_provider.dart';
 import 'package:wavee/comman/colors.dart';
-import 'package:wavee/comman/custom_snack_bar.dart';
 
 import '../../../../comman/bottom_bar.dart';
 import '../../../../comman/check_inernet_connecty.dart';
@@ -38,8 +35,6 @@ import '../../../../comman/custom_batan.dart';
 import '../../../../comman/error_dialog.dart';
 import '../../../../comman/loader.dart';
 import '../../../../comman/videowidget.dart';
-import '../../../Add to Cart/model/add_to_cart_model.dart';
-import '../../../Add to Cart/provider/add_to_cart_provider.dart';
 import '../../../Event/Model/send_event_model.dart';
 import '../../../Event/Provider/event_provider.dart';
 import '../../../Service Detail Page/View/service_detail_page.dart';
@@ -49,7 +44,6 @@ import '../Model/CategoriesModel.dart';
 import '../Model/GetLikeModal.dart';
 import '../Model/GetVisitedModal.dart';
 import '../Model/OfferPromoAsViewedModel.dart';
-import '../Model/RequestModal.dart';
 import '../Model/ViewCategoriesModel.dart';
 import '../Model/businesslikemodel.dart';
 import '../Model/businessprofilemodel.dart';
@@ -913,6 +907,7 @@ class _CommunityScreenState extends State<CommunityScreen>
   }
 
   bool _isDialogVisible = false;
+
   void _setFallbackLocation() {
     AppLat = fallbackLatitude.toString();
     AppLon = fallbackLongitude.toString();

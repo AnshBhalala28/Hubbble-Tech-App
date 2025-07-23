@@ -5,62 +5,6 @@ import 'package:wavee/comman/apiEndpoint.dart';
 import 'package:wavee/comman/responses.dart';
 import 'package:wavee/comman/store_local.dart';
 
-// class NotificationProvider extends ChangeNotifier {
-//   // Future<http.Response> NotificationApi(String UserId) async {
-//   //   String url = '${baseUrl}/Appnotification?user_id=$UserId';
-//   //
-//   //   try {
-//   //     final response = await http
-//   //         .get(Uri.parse(url))
-//   //         .timeout(
-//   //           const Duration(seconds: 60),
-//   //           onTimeout: () {
-//   //             throw SocketException('Request timed out');
-//   //           },
-//   //         );
-//   //     if (response.statusCode == 200) {
-//   //
-//   //       log("lat");
-//   //       return response;
-//   //     } else {
-//   //
-//   //       throw Exception("Failed to connect to the server");
-//   //     }
-//   //   } on SocketException catch (e) {
-//   //     throw Exception('No Internet connection: $e');
-//   //   } catch (e) {
-//   //     throw Exception('An error occurred: $e');
-//   //   }
-//   // }
-
-//   Future<http.Response> ReadNotificationApi(String UserId) async {
-//     String url = '${baseUrl}/notifications-read?user_id=$UserId';
-//
-//     try {
-//       final response = await http
-//           .get(Uri.parse(url))
-//           .timeout(
-//             const Duration(seconds: 60),
-//             onTimeout: () {
-//               throw SocketException('Request timed out');
-//             },
-//           );
-//       if (response.statusCode == 200) {
-//
-//         log("lat");
-//         return response;
-//       } else {
-//
-//         throw Exception("Failed to connect to the server");
-//       }
-//     } on SocketException catch (e) {
-//       throw Exception('No Internet connection: $e');
-//     } catch (e) {
-//       throw Exception('An error occurred: $e');
-//     }
-//   }
-// }
-
 class NotificationProvider extends ChangeNotifier {
   Future<Response> notificationApi(String userId) async {
     try {

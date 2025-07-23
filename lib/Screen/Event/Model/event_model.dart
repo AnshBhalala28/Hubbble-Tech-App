@@ -134,20 +134,21 @@ class Data {
   int? to;
   int? total;
 
-  Data(
-      {this.currentPage,
-        this.data,
-        this.firstPageUrl,
-        this.from,
-        this.lastPage,
-        this.lastPageUrl,
-        this.links,
-        this.nextPageUrl,
-        this.path,
-        this.perPage,
-        this.prevPageUrl,
-        this.to,
-        this.total});
+  Data({
+    this.currentPage,
+    this.data,
+    this.firstPageUrl,
+    this.from,
+    this.lastPage,
+    this.lastPageUrl,
+    this.links,
+    this.nextPageUrl,
+    this.path,
+    this.perPage,
+    this.prevPageUrl,
+    this.to,
+    this.total,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     currentPage = json['current_page'];
@@ -218,25 +219,26 @@ class Data1 {
   String? endTime;
   String? requestEvent;
 
-  Data1(
-      {this.id,
-        this.creatorId,
-        this.title,
-        this.description,
-        this.apartmentNumber,
-        this.attachment,
-        this.eventDate,
-        this.location,
-        this.latitude,
-        this.longitude,
-        this.status,
-        this.createdAt,
-        this.updatedAt,
-        this.bio,
-        this.eventTime,
-        this.startTime,
-        this.endTime,
-        this.requestEvent});
+  Data1({
+    this.id,
+    this.creatorId,
+    this.title,
+    this.description,
+    this.apartmentNumber,
+    this.attachment,
+    this.eventDate,
+    this.location,
+    this.latitude,
+    this.longitude,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+    this.bio,
+    this.eventTime,
+    this.startTime,
+    this.endTime,
+    this.requestEvent,
+  });
 
   Data1.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -304,4 +306,3 @@ class Links {
     return data;
   }
 }
-

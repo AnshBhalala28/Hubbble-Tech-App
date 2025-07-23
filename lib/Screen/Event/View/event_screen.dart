@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
@@ -23,6 +22,7 @@ import '../Provider/event_provider.dart';
 
 class EventScreen extends StatefulWidget {
   String? userId;
+
   EventScreen({super.key, this.userId});
 
   @override
@@ -786,9 +786,10 @@ class _EventScreenState extends State<EventScreen> {
                 jsonData['data']['data'] is List) {
               List<dynamic> projectList = jsonData['data']['data'];
 
-              dates = projectList.map<DateTime>((project) {
-                return DateTime.parse(project['event_date'].split(' ')[0]);
-              }).toList();
+              dates =
+                  projectList.map<DateTime>((project) {
+                    return DateTime.parse(project['event_date'].split(' ')[0]);
+                  }).toList();
             } else {
               log("Unexpected format: ${jsonData['data']}");
             }
@@ -807,7 +808,9 @@ class _EventScreenState extends State<EventScreen> {
             });
           }
         } catch (e, stackTrace) {
-          log("Error ave che che mane janavo  $e \n stackTrace Error $stackTrace");
+          log(
+            "Error ave che che mane janavo  $e \n stackTrace Error $stackTrace",
+          );
           setState(() {
             load = false;
             isLoading = false;
@@ -818,8 +821,6 @@ class _EventScreenState extends State<EventScreen> {
       }
     });
   }
-
-
 
   projectlistap() {
     final Map<String, String> data = {};

@@ -54,14 +54,15 @@ class Requests {
   String? updatedAt;
   AppUserName? appUserName;
 
-  Requests(
-      {this.id,
-      this.senderId,
-      this.receiverId,
-      this.status,
-      this.createdAt,
-      this.updatedAt,
-      this.appUserName});
+  Requests({
+    this.id,
+    this.senderId,
+    this.receiverId,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+    this.appUserName,
+  });
 
   Requests.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -70,9 +71,10 @@ class Requests {
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    appUserName = json['app_user_name'] != null
-        ? new AppUserName.fromJson(json['app_user_name'])
-        : null;
+    appUserName =
+        json['app_user_name'] != null
+            ? new AppUserName.fromJson(json['app_user_name'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -112,27 +114,28 @@ class AppUserName {
   String? firstName;
   String? lastName;
 
-  AppUserName(
-      {this.id,
-      this.role,
-      this.email,
-      this.emailVerifiedAt,
-      this.dPassword,
-      this.mobileNo,
-      this.gender,
-      this.dateOfBirth,
-      this.address,
-      this.psLatitude,
-      this.psLongitude,
-      this.fcmToken,
-      this.forgetPassKey,
-      this.moduleLock,
-      this.status,
-      this.profile,
-      this.createdAt,
-      this.updatedAt,
-      this.firstName,
-      this.lastName});
+  AppUserName({
+    this.id,
+    this.role,
+    this.email,
+    this.emailVerifiedAt,
+    this.dPassword,
+    this.mobileNo,
+    this.gender,
+    this.dateOfBirth,
+    this.address,
+    this.psLatitude,
+    this.psLongitude,
+    this.fcmToken,
+    this.forgetPassKey,
+    this.moduleLock,
+    this.status,
+    this.profile,
+    this.createdAt,
+    this.updatedAt,
+    this.firstName,
+    this.lastName,
+  });
 
   AppUserName.fromJson(Map<String, dynamic> json) {
     id = json['id'];

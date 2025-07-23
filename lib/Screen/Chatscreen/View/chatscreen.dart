@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -1095,7 +1094,7 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
-   ChatApi() {
+  ChatApi() {
     checkInternet().then((internet) async {
       if (internet) {
         try {

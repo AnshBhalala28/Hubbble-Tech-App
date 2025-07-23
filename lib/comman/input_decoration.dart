@@ -14,9 +14,7 @@ InputDecoration inputDecoration({
   return InputDecoration(
     contentPadding: EdgeInsets.symmetric(vertical: 0.80.h, horizontal: 4.w),
     suffixIcon: ico,
-    suffixIconConstraints: BoxConstraints(
-      maxHeight: 5.h,
-    ),
+    suffixIconConstraints: BoxConstraints(maxHeight: 5.h),
     errorText: errortext,
     hintText: hintText,
     prefixIcon: searchIcon,
@@ -28,11 +26,12 @@ InputDecoration inputDecoration({
       letterSpacing: 1,
     ),
     hintStyle: TextStyle(
-        fontFamily: AppConstants.manrope,
-        color: cr,
-        fontWeight: FontWeight.normal,
-        fontSize: 15.sp,
-        letterSpacing: 1),
+      fontFamily: AppConstants.manrope,
+      color: cr,
+      fontWeight: FontWeight.normal,
+      fontSize: 15.sp,
+      letterSpacing: 1,
+    ),
     fillColor: Colors.white,
     filled: true,
     disabledBorder: OutlineInputBorder(

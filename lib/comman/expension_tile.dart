@@ -40,18 +40,15 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
               children: [
                 Row(
                   children: [
-                    Icon(
-                      widget.leadingIcon,
-                      color: Colors.black,
-                      size: 20.sp,
-                    ),
+                    Icon(widget.leadingIcon, color: Colors.black, size: 20.sp),
                     SizedBox(width: 9.w),
                     Text(
                       widget.title,
                       style: TextStyle(
                         fontFamily: 'Manrope',
                         color: Colors.black,
-                        fontSize:widget.fontSize==null? 18.sp:widget.fontSize,
+                        fontSize:
+                            widget.fontSize == null ? 18.sp : widget.fontSize,
                         letterSpacing: 1,
                       ),
                     ),
@@ -68,10 +65,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
             ),
           ),
         ),
-        if (isExpanded)
-          Column(
-            children: widget.children,
-          ),
+        if (isExpanded) Column(children: widget.children),
       ],
     );
   }

@@ -45,23 +45,24 @@ class Data {
   String? updatedAt;
   String? categoryName;
 
-  Data(
-      {this.id,
-      this.userId,
-      this.productCategoryId,
-      this.name,
-      this.price,
-      this.offerPrice,
-      this.quantity,
-      this.description,
-      this.features,
-      this.status,
-      this.isFeatured,
-      this.image,
-      this.images,
-      this.createdAt,
-      this.updatedAt,
-      this.categoryName});
+  Data({
+    this.id,
+    this.userId,
+    this.productCategoryId,
+    this.name,
+    this.price,
+    this.offerPrice,
+    this.quantity,
+    this.description,
+    this.features,
+    this.status,
+    this.isFeatured,
+    this.image,
+    this.images,
+    this.createdAt,
+    this.updatedAt,
+    this.categoryName,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];

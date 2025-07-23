@@ -18,13 +18,12 @@ class _Detail_ScreenState extends State<Detail_Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: detailsKey,
-        drawer: SideMenu(),
-        body: SingleChildScrollView(
-          child: Column(children: [
-            SizedBox(
-              height: 4.h,
-            ),
+      key: detailsKey,
+      drawer: SideMenu(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 4.h),
             TitleBar(
               back: () {
                 Get.back();
@@ -34,7 +33,9 @@ class _Detail_ScreenState extends State<Detail_Screen> {
                 detailsKey.currentState?.openDrawer();
               },
             ),
-          ]),
-        ));
+          ],
+        ),
+      ),
+    );
   }
 }

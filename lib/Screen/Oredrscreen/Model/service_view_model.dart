@@ -352,20 +352,21 @@ class Data1 {
   List<OrderProducts>? orderProducts;
   var randomProductImage;
 
-  Data1(
-      {this.id,
-        this.userId,
-        this.orderNo,
-        this.tokenNo,
-        this.totalAmount,
-        this.pickupTime,
-        this.paymentIntentId,
-        this.paymentGateway,
-        this.status,
-        this.createdAt,
-        this.updatedAt,
-        this.orderProducts,
-        this.randomProductImage});
+  Data1({
+    this.id,
+    this.userId,
+    this.orderNo,
+    this.tokenNo,
+    this.totalAmount,
+    this.pickupTime,
+    this.paymentIntentId,
+    this.paymentGateway,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+    this.orderProducts,
+    this.randomProductImage,
+  });
 
   Data1.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -425,20 +426,21 @@ class OrderProducts {
   String? updatedAt;
   Service? service;
 
-  OrderProducts(
-      {this.id,
-        this.orderId,
-        this.userId,
-        this.type,
-        this.productId,
-        this.quantity,
-        this.price,
-        this.totalPrice,
-        this.isWithdrawn,
-        this.isBooked,
-        this.createdAt,
-        this.updatedAt,
-        this.service});
+  OrderProducts({
+    this.id,
+    this.orderId,
+    this.userId,
+    this.type,
+    this.productId,
+    this.quantity,
+    this.price,
+    this.totalPrice,
+    this.isWithdrawn,
+    this.isBooked,
+    this.createdAt,
+    this.updatedAt,
+    this.service,
+  });
 
   OrderProducts.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -454,7 +456,7 @@ class OrderProducts {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     service =
-    json['service'] != null ? new Service.fromJson(json['service']) : null;
+        json['service'] != null ? new Service.fromJson(json['service']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -505,32 +507,33 @@ class Service {
   String? updatedAt;
   String? deletedAt;
 
-  Service(
-      {this.id,
-        this.userId,
-        this.categoryId,
-        this.title,
-        this.slug,
-        this.description,
-        this.price,
-        this.offerPrice,
-        this.pricingType,
-        this.duration,
-        this.images,
-        this.galleryImages,
-        this.features,
-        this.benefits,
-        this.availability,
-        this.typeOfService,
-        this.serviceProvider,
-        this.contactEmail,
-        this.contactPhone,
-        this.location,
-        this.status,
-        this.isDeleted,
-        this.createdAt,
-        this.updatedAt,
-        this.deletedAt});
+  Service({
+    this.id,
+    this.userId,
+    this.categoryId,
+    this.title,
+    this.slug,
+    this.description,
+    this.price,
+    this.offerPrice,
+    this.pricingType,
+    this.duration,
+    this.images,
+    this.galleryImages,
+    this.features,
+    this.benefits,
+    this.availability,
+    this.typeOfService,
+    this.serviceProvider,
+    this.contactEmail,
+    this.contactPhone,
+    this.location,
+    this.status,
+    this.isDeleted,
+    this.createdAt,
+    this.updatedAt,
+    this.deletedAt,
+  });
 
   Service.fromJson(Map<String, dynamic> json) {
     id = json['id'];

@@ -66,44 +66,45 @@ class Data {
   double? distance;
   List<Posts>? posts;
 
-  Data(
-      {this.id,
-      this.role,
-      this.name,
-      this.email,
-      this.dPassword,
-      this.mobileNo,
-      this.address,
-      this.status,
-      this.createdAt,
-      this.updatedAt,
-      this.userId,
-      this.subId,
-      this.logo,
-      this.businessName,
-      this.description,
-      this.openingHours,
-      this.website,
-      this.categoryId,
-      this.subCategoryId,
-      this.experience,
-      this.businessAddress,
-      this.subStartDate,
-      this.subEndDate,
-      this.subStatus,
-      this.latitude,
-      this.longitude,
-      this.creditBalance,
-      this.stripeAccountId,
-      this.isStripeConnected,
-      this.onboardedAt,
-      this.loyaltyOrderThreshold,
-      this.loyaltyDiscountPercentage,
-      this.serviceStatus,
-      this.productStatus,
-      this.chatStatus,
-      this.distance,
-      this.posts});
+  Data({
+    this.id,
+    this.role,
+    this.name,
+    this.email,
+    this.dPassword,
+    this.mobileNo,
+    this.address,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+    this.userId,
+    this.subId,
+    this.logo,
+    this.businessName,
+    this.description,
+    this.openingHours,
+    this.website,
+    this.categoryId,
+    this.subCategoryId,
+    this.experience,
+    this.businessAddress,
+    this.subStartDate,
+    this.subEndDate,
+    this.subStatus,
+    this.latitude,
+    this.longitude,
+    this.creditBalance,
+    this.stripeAccountId,
+    this.isStripeConnected,
+    this.onboardedAt,
+    this.loyaltyOrderThreshold,
+    this.loyaltyDiscountPercentage,
+    this.serviceStatus,
+    this.productStatus,
+    this.chatStatus,
+    this.distance,
+    this.posts,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -209,19 +210,20 @@ class Posts {
   int? likeCount;
   UserName? userName;
 
-  Posts(
-      {this.id,
-      this.userId,
-      this.type,
-      this.file,
-      this.status,
-      this.isFeatured,
-      this.order,
-      this.createdAt,
-      this.updatedAt,
-      this.viewCount,
-      this.likeCount,
-      this.userName});
+  Posts({
+    this.id,
+    this.userId,
+    this.type,
+    this.file,
+    this.status,
+    this.isFeatured,
+    this.order,
+    this.createdAt,
+    this.updatedAt,
+    this.viewCount,
+    this.likeCount,
+    this.userName,
+  });
 
   Posts.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -235,9 +237,10 @@ class Posts {
     updatedAt = json['updated_at'];
     viewCount = json['view_count'];
     likeCount = json['like_count'];
-    userName = json['user_name'] != null
-        ? new UserName.fromJson(json['user_name'])
-        : null;
+    userName =
+        json['user_name'] != null
+            ? new UserName.fromJson(json['user_name'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -290,35 +293,36 @@ class UserName {
   String? createdAt;
   String? updatedAt;
 
-  UserName(
-      {this.id,
-      this.userId,
-      this.subId,
-      this.logo,
-      this.businessName,
-      this.description,
-      this.openingHours,
-      this.website,
-      this.categoryId,
-      this.subCategoryId,
-      this.experience,
-      this.businessAddress,
-      this.subStartDate,
-      this.subEndDate,
-      this.subStatus,
-      this.latitude,
-      this.longitude,
-      this.creditBalance,
-      this.stripeAccountId,
-      this.isStripeConnected,
-      this.onboardedAt,
-      this.loyaltyOrderThreshold,
-      this.loyaltyDiscountPercentage,
-      this.serviceStatus,
-      this.productStatus,
-      this.chatStatus,
-      this.createdAt,
-      this.updatedAt});
+  UserName({
+    this.id,
+    this.userId,
+    this.subId,
+    this.logo,
+    this.businessName,
+    this.description,
+    this.openingHours,
+    this.website,
+    this.categoryId,
+    this.subCategoryId,
+    this.experience,
+    this.businessAddress,
+    this.subStartDate,
+    this.subEndDate,
+    this.subStatus,
+    this.latitude,
+    this.longitude,
+    this.creditBalance,
+    this.stripeAccountId,
+    this.isStripeConnected,
+    this.onboardedAt,
+    this.loyaltyOrderThreshold,
+    this.loyaltyDiscountPercentage,
+    this.serviceStatus,
+    this.productStatus,
+    this.chatStatus,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   UserName.fromJson(Map<String, dynamic> json) {
     id = json['id'];

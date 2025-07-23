@@ -34,15 +34,16 @@ class Data {
   String? status;
   List<String>? images;
 
-  Data(
-      {this.serviceId,
-      this.title,
-      this.description,
-      this.price,
-      this.totalPrice,
-      this.bookingDatetime,
-      this.status,
-      this.images});
+  Data({
+    this.serviceId,
+    this.title,
+    this.description,
+    this.price,
+    this.totalPrice,
+    this.bookingDatetime,
+    this.status,
+    this.images,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     serviceId = json['service_id'];

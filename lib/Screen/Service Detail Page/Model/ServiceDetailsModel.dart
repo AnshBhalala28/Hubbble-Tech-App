@@ -52,34 +52,35 @@ class Data {
 
   String? categoryName;
 
-  Data(
-      {this.id,
-      this.userId,
-      this.categoryId,
-      this.title,
-      this.slug,
-      this.description,
-      this.price,
-      this.pricingType,
-      this.duration,
-      this.images,
-      this.galleryImages,
-      this.features,
-      this.benefits,
-      this.availability,
-      this.typeOfService,
-      this.serviceProvider,
-      this.contactEmail,
-      this.contactPhone,
-      this.location,
-      this.status,
-      this.createdAt,
-      this.updatedAt,
-      this.category,
-      this.businessId,
-      this.businessName,
-      this.productRating,
-      this.categoryName});
+  Data({
+    this.id,
+    this.userId,
+    this.categoryId,
+    this.title,
+    this.slug,
+    this.description,
+    this.price,
+    this.pricingType,
+    this.duration,
+    this.images,
+    this.galleryImages,
+    this.features,
+    this.benefits,
+    this.availability,
+    this.typeOfService,
+    this.serviceProvider,
+    this.contactEmail,
+    this.contactPhone,
+    this.location,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+    this.category,
+    this.businessId,
+    this.businessName,
+    this.productRating,
+    this.categoryName,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -93,9 +94,10 @@ class Data {
     duration = json['duration'];
     images = json['images'];
 
-    galleryImages = json['gallery_images'] != null
-        ? List<String>.from(json['gallery_images'])
-        : [];
+    galleryImages =
+        json['gallery_images'] != null
+            ? List<String>.from(json['gallery_images'])
+            : [];
 
     features =
         json['features'] != null ? List<String>.from(json['features']) : [];
@@ -112,9 +114,10 @@ class Data {
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    category = json['category'] != null
-        ? new Category.fromJson(json['category'])
-        : null;
+    category =
+        json['category'] != null
+            ? new Category.fromJson(json['category'])
+            : null;
     businessId = json['business_id'];
     businessName = json['business_name'];
     productRating = json['product_rating'];
@@ -164,8 +167,13 @@ class Category {
   String? createdAt;
   String? updatedAt;
 
-  Category(
-      {this.id, this.subCategoryId, this.name, this.createdAt, this.updatedAt});
+  Category({
+    this.id,
+    this.subCategoryId,
+    this.name,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Category.fromJson(Map<String, dynamic> json) {
     id = json['id'];

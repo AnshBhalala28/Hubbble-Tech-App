@@ -30,9 +30,10 @@ class Data {
 
   Data.fromJson(Map<String, dynamic> json) {
     order = json['order'] != null ? new Order.fromJson(json['order']) : null;
-    products = json['products'] != null
-        ? new Products.fromJson(json['products'])
-        : null;
+    products =
+        json['products'] != null
+            ? new Products.fromJson(json['products'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -60,18 +61,19 @@ class Order {
   String? createdAt;
   String? updatedAt;
 
-  Order(
-      {this.id,
-      this.userId,
-      this.orderNo,
-      this.tokenNo,
-      this.totalAmount,
-      this.pickupTime,
-      this.paymentIntentId,
-      this.paymentGateway,
-      this.status,
-      this.createdAt,
-      this.updatedAt});
+  Order({
+    this.id,
+    this.userId,
+    this.orderNo,
+    this.tokenNo,
+    this.totalAmount,
+    this.pickupTime,
+    this.paymentIntentId,
+    this.paymentGateway,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Order.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -120,21 +122,22 @@ class Products {
   Service? service;
   BookingDetails? bookingDetails;
 
-  Products(
-      {this.id,
-      this.orderId,
-      this.userId,
-      this.type,
-      this.productId,
-      this.quantity,
-      this.price,
-      this.totalPrice,
-      this.isWithdrawn,
-      this.isBooked,
-      this.createdAt,
-      this.updatedAt,
-      this.service,
-      this.bookingDetails});
+  Products({
+    this.id,
+    this.orderId,
+    this.userId,
+    this.type,
+    this.productId,
+    this.quantity,
+    this.price,
+    this.totalPrice,
+    this.isWithdrawn,
+    this.isBooked,
+    this.createdAt,
+    this.updatedAt,
+    this.service,
+    this.bookingDetails,
+  });
 
   Products.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -151,9 +154,10 @@ class Products {
     updatedAt = json['updated_at'];
     service =
         json['service'] != null ? new Service.fromJson(json['service']) : null;
-    bookingDetails = json['booking_details'] != null
-        ? new BookingDetails.fromJson(json['booking_details'])
-        : null;
+    bookingDetails =
+        json['booking_details'] != null
+            ? new BookingDetails.fromJson(json['booking_details'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -204,29 +208,30 @@ class Service {
   String? createdAt;
   String? updatedAt;
 
-  Service(
-      {this.id,
-      this.userId,
-      this.categoryId,
-      this.title,
-      this.slug,
-      this.description,
-      this.price,
-      this.pricingType,
-      this.duration,
-      this.images,
-      this.galleryImages,
-      this.features,
-      this.benefits,
-      this.availability,
-      this.typeOfService,
-      this.serviceProvider,
-      this.contactEmail,
-      this.contactPhone,
-      this.location,
-      this.status,
-      this.createdAt,
-      this.updatedAt});
+  Service({
+    this.id,
+    this.userId,
+    this.categoryId,
+    this.title,
+    this.slug,
+    this.description,
+    this.price,
+    this.pricingType,
+    this.duration,
+    this.images,
+    this.galleryImages,
+    this.features,
+    this.benefits,
+    this.availability,
+    this.typeOfService,
+    this.serviceProvider,
+    this.contactEmail,
+    this.contactPhone,
+    this.location,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Service.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -289,13 +294,14 @@ class BookingDetails {
   String? createdAt;
   String? updatedAt;
 
-  BookingDetails(
-      {this.id,
-      this.serviceRequestId,
-      this.bookingDatetime,
-      this.status,
-      this.createdAt,
-      this.updatedAt});
+  BookingDetails({
+    this.id,
+    this.serviceRequestId,
+    this.bookingDatetime,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   BookingDetails.fromJson(Map<String, dynamic> json) {
     id = json['id'];

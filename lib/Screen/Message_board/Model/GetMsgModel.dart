@@ -38,16 +38,17 @@ class Data {
   Sender? sender;
   Sender? receiver;
 
-  Data(
-      {this.id,
-      this.messageType,
-      this.message,
-      this.file,
-      this.type,
-      this.createdAt,
-      this.updatedAt,
-      this.sender,
-      this.receiver});
+  Data({
+    this.id,
+    this.messageType,
+    this.message,
+    this.file,
+    this.type,
+    this.createdAt,
+    this.updatedAt,
+    this.sender,
+    this.receiver,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];

@@ -330,12 +330,14 @@ class Data {
 
   Data.fromJson(Map<String, dynamic> json) {
     order = json['order'] != null ? new Order.fromJson(json['order']) : null;
-    products = json['products'] != null
-        ? new Products.fromJson(json['products'])
-        : null;
-    business = json['business'] != null
-        ? new Business.fromJson(json['business'])
-        : null;
+    products =
+        json['products'] != null
+            ? new Products.fromJson(json['products'])
+            : null;
+    business =
+        json['business'] != null
+            ? new Business.fromJson(json['business'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -361,29 +363,30 @@ class Order {
   int? loyaltyDiscountApplied;
   String? discountApplied;
   String? totalAmount;
-var pickupTime;
+  var pickupTime;
   String? paymentIntentId;
   String? paymentGateway;
   String? status;
-var note;
+  var note;
   String? createdAt;
   String? updatedAt;
 
-  Order(
-      {this.id,
-        this.userId,
-        this.orderNo,
-        this.tokenNo,
-        this.loyaltyDiscountApplied,
-        this.discountApplied,
-        this.totalAmount,
-        this.pickupTime,
-        this.paymentIntentId,
-        this.paymentGateway,
-        this.status,
-        this.note,
-        this.createdAt,
-        this.updatedAt});
+  Order({
+    this.id,
+    this.userId,
+    this.orderNo,
+    this.tokenNo,
+    this.loyaltyDiscountApplied,
+    this.discountApplied,
+    this.totalAmount,
+    this.pickupTime,
+    this.paymentIntentId,
+    this.paymentGateway,
+    this.status,
+    this.note,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Order.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -437,20 +440,21 @@ class Products {
   String? updatedAt;
   Product? product;
 
-  Products(
-      {this.id,
-        this.orderId,
-        this.userId,
-        this.type,
-        this.productId,
-        this.quantity,
-        this.price,
-        this.totalPrice,
-        this.isWithdrawn,
-        this.isBooked,
-        this.createdAt,
-        this.updatedAt,
-        this.product});
+  Products({
+    this.id,
+    this.orderId,
+    this.userId,
+    this.type,
+    this.productId,
+    this.quantity,
+    this.price,
+    this.totalPrice,
+    this.isWithdrawn,
+    this.isBooked,
+    this.createdAt,
+    this.updatedAt,
+    this.product,
+  });
 
   Products.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -466,7 +470,7 @@ class Products {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     product =
-    json['product'] != null ? new Product.fromJson(json['product']) : null;
+        json['product'] != null ? new Product.fromJson(json['product']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -509,24 +513,25 @@ class Product {
   String? updatedAt;
   String? deletedAt;
 
-  Product(
-      {this.id,
-        this.userId,
-        this.productCategoryId,
-        this.name,
-        this.price,
-        this.offerPrice,
-        this.quantity,
-        this.description,
-        this.features,
-        this.status,
-        this.isFeatured,
-        this.image,
-        this.images,
-        this.isDeleted,
-        this.createdAt,
-        this.updatedAt,
-        this.deletedAt});
+  Product({
+    this.id,
+    this.userId,
+    this.productCategoryId,
+    this.name,
+    this.price,
+    this.offerPrice,
+    this.quantity,
+    this.description,
+    this.features,
+    this.status,
+    this.isFeatured,
+    this.image,
+    this.images,
+    this.isDeleted,
+    this.createdAt,
+    this.updatedAt,
+    this.deletedAt,
+  });
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];

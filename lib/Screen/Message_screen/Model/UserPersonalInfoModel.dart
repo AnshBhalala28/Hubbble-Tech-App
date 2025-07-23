@@ -47,30 +47,31 @@ class Data {
   String? createdAt;
   String? updatedAt;
 
-  Data(
-      {this.id,
-      this.userId,
-      this.buildingId,
-      this.gateId,
-      this.email,
-      this.firstName,
-      this.lastName,
-      this.gender,
-      this.dateOfBirth,
-      this.phoneNumber,
-      this.conciergeImage,
-      this.address,
-      this.city,
-      this.state,
-      this.country,
-      this.zipCode,
-      this.shiftStart,
-      this.shiftEnd,
-      this.conStartTime,
-      this.conEndTime,
-      this.livestatus,
-      this.createdAt,
-      this.updatedAt});
+  Data({
+    this.id,
+    this.userId,
+    this.buildingId,
+    this.gateId,
+    this.email,
+    this.firstName,
+    this.lastName,
+    this.gender,
+    this.dateOfBirth,
+    this.phoneNumber,
+    this.conciergeImage,
+    this.address,
+    this.city,
+    this.state,
+    this.country,
+    this.zipCode,
+    this.shiftStart,
+    this.shiftEnd,
+    this.conStartTime,
+    this.conEndTime,
+    this.livestatus,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];

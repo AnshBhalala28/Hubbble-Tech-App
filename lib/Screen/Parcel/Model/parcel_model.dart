@@ -33,10 +33,11 @@ class Data {
   String? nextPageUrl;
   String? path;
   int? perPage;
- var prevPageUrl;
+  var prevPageUrl;
   int? to;
   int? total;
   int? totalPages;
+
   Data({
     this.currentPage,
     this.data,
@@ -51,7 +52,7 @@ class Data {
     this.prevPageUrl,
     this.to,
     this.total,
-    this.totalPages
+    this.totalPages,
   });
 
   Data.fromJson(Map<String, dynamic> json) {

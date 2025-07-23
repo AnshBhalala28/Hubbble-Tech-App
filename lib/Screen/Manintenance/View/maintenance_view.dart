@@ -1,7 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -16,7 +12,6 @@ import '../../../comman/Custom_AppBar.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/const.dart';
 import '../../../comman/error_dialog.dart';
-import '../../open_ai_chatbot/view/open_ai_screen.dart';
 import '../Model/maintenance_detail_model.dart';
 import '../Model/maintenance_modal.dart';
 import '../Provider/maintenance_provider.dart';

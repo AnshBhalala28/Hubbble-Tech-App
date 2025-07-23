@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -86,19 +84,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           radius: 35.sp,
                           backgroundColor: Colors.grey.shade200,
                           backgroundImage:
-                          (userpersonalInfoModel?.data?.conciergeImage !=
-                              null &&
-                              userpersonalInfoModel!
-                                  .data!
-                                  .conciergeImage!
-                                  .isNotEmpty)
-                              ? CachedNetworkImageProvider(
-                            userpersonalInfoModel!
-                                .data!
-                                .conciergeImage!,
-                          )
-                              : const AssetImage("assets/images/bg.jpg")
-                          as ImageProvider<Object>,
+                              (userpersonalInfoModel?.data?.conciergeImage !=
+                                          null &&
+                                      userpersonalInfoModel!
+                                          .data!
+                                          .conciergeImage!
+                                          .isNotEmpty)
+                                  ? CachedNetworkImageProvider(
+                                    userpersonalInfoModel!
+                                        .data!
+                                        .conciergeImage!,
+                                  )
+                                  : const AssetImage("assets/images/bg.jpg")
+                                      as ImageProvider<Object>,
                         ),
                       ),
                       SizedBox(height: 2.h),
@@ -143,13 +141,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           Icons.email_outlined,
                           "Email",
                           userpersonalInfoModel?.data?.email,
-                              () {},
+                          () {},
                         ),
                         buildProfileDetailItem(
                           Icons.phone_outlined,
                           "Phone",
                           userpersonalInfoModel?.data?.phoneNumber,
-                              () {
+                          () {
                             final phone =
                                 userpersonalInfoModel?.data?.phoneNumber;
                             if (phone != null && phone.toString().isNotEmpty) {
@@ -251,71 +249,71 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     SizedBox(height: 2.h),
                     isLoading
                         ? Padding(
-                      padding: EdgeInsets.symmetric(vertical: 2.h),
-                      child: CircularProgressIndicator(
-                        color: AppColors.maincolor,
-                      ),
-                    )
+                          padding: EdgeInsets.symmetric(vertical: 2.h),
+                          child: CircularProgressIndicator(
+                            color: AppColors.maincolor,
+                          ),
+                        )
                         : Row(
-                      children: [
-                        Expanded(
-                          child: Material(
-                            elevation: 2,
-                            borderRadius: BorderRadius.circular(12),
-                            child: batan(
-                              title: "No",
-                              width: 30.w,
-                              route: () {
-                                Navigator.of(context).pop();
-                              },
-                              color: AppColors.white,
-                              fontcolor: Colors.black,
-                              height: 5.h,
-                              fontsize: 16.sp,
-                              radius: 12.0,
+                          children: [
+                            Expanded(
+                              child: Material(
+                                elevation: 2,
+                                borderRadius: BorderRadius.circular(12),
+                                child: batan(
+                                  title: "No",
+                                  width: 30.w,
+                                  route: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  color: AppColors.white,
+                                  fontcolor: Colors.black,
+                                  height: 5.h,
+                                  fontsize: 16.sp,
+                                  radius: 12.0,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        SizedBox(width: 2.w),
-                        Expanded(
-                          child: Material(
-                            elevation: 2,
-                            borderRadius: BorderRadius.circular(12),
-                            child: batan(
-                              title: "Yes",
-                              route: () async {
-                                setState(() => isLoading = true);
+                            SizedBox(width: 2.w),
+                            Expanded(
+                              child: Material(
+                                elevation: 2,
+                                borderRadius: BorderRadius.circular(12),
+                                child: batan(
+                                  title: "Yes",
+                                  route: () async {
+                                    setState(() => isLoading = true);
 
-                                final Uri url = Uri.parse(supportUrl);
-                                if (await canLaunchUrl(url)) {
-                                  await launchUrl(
-                                    url,
-                                    mode: LaunchMode.externalApplication,
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(
-                                    context,
-                                  ).showSnackBar(
-                                    const SnackBar(
-                                      content: Text("Could not launch URL"),
-                                    ),
-                                  );
-                                }
+                                    final Uri url = Uri.parse(supportUrl);
+                                    if (await canLaunchUrl(url)) {
+                                      await launchUrl(
+                                        url,
+                                        mode: LaunchMode.externalApplication,
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        const SnackBar(
+                                          content: Text("Could not launch URL"),
+                                        ),
+                                      );
+                                    }
 
-                                setState(() => isLoading = false);
-                                Navigator.of(context).pop();
-                              },
-                              color: AppColors.maincolor,
-                              fontcolor: Colors.white,
-                              height: 5.h,
-                              fontsize: 16.sp,
-                              radius: 12.0,
-                              width: 30.w,
+                                    setState(() => isLoading = false);
+                                    Navigator.of(context).pop();
+                                  },
+                                  color: AppColors.maincolor,
+                                  fontcolor: Colors.white,
+                                  height: 5.h,
+                                  fontsize: 16.sp,
+                                  radius: 12.0,
+                                  width: 30.w,
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
                     SizedBox(height: 1.h),
                   ],
                 ),
@@ -409,11 +407,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   Widget buildProfileDetailItem(
-      IconData icon,
-      String title,
-      String? value,
-      VoidCallback ontap,
-      ) {
+    IconData icon,
+    String title,
+    String? value,
+    VoidCallback ontap,
+  ) {
     return InkWell(
       onTap: ontap,
 
@@ -468,14 +466,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response = await MessageProvider().userpersonalinfo(
+          final response = await MessageProvider().userPersonalInfo(
             (widget.id).toString(),
           );
           if (response.statusCode == 200) {
             userpersonalInfoModel = UserPersonalInfoModel.fromJson(
-              json.decode(response.body),
+              response.data,
             );
-            print("${response.body}");
+
             print("${widget.id}");
             setState(() {
               isSending = false;

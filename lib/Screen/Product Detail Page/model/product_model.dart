@@ -45,28 +45,29 @@ class Data {
   var benefits;
   String? discount;
 
-  Data(
-      {this.id,
-      this.userId,
-      this.name,
-      this.price,
-      this.offerPrice,
-      this.quantity,
-      this.description,
-      this.features,
-      this.status,
-      this.isFeatured,
-      this.image,
-      this.images,
-      this.createdAt,
-      this.updatedAt,
-      this.businessId,
-      this.businessName,
-      this.productRating,
-      this.latestReviews,
-      this.galleryImages,
-      this.benefits,
-      this.discount});
+  Data({
+    this.id,
+    this.userId,
+    this.name,
+    this.price,
+    this.offerPrice,
+    this.quantity,
+    this.description,
+    this.features,
+    this.status,
+    this.isFeatured,
+    this.image,
+    this.images,
+    this.createdAt,
+    this.updatedAt,
+    this.businessId,
+    this.businessName,
+    this.productRating,
+    this.latestReviews,
+    this.galleryImages,
+    this.benefits,
+    this.discount,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -81,10 +82,11 @@ class Data {
       if (json['features'] is List) {
         features = List<String>.from(json['features']);
       } else if (json['features'] is String) {
-        features = (json['features'] as String)
-            .split(',')
-            .map((e) => e.trim())
-            .toList();
+        features =
+            (json['features'] as String)
+                .split(',')
+                .map((e) => e.trim())
+                .toList();
       } else {
         features = [];
       }
@@ -167,16 +169,17 @@ class LatestReviews {
   String? userName;
   String? userProfile;
 
-  LatestReviews(
-      {this.id,
-      this.userId,
-      this.productId,
-      this.rating,
-      this.review,
-      this.createdAt,
-      this.updatedAt,
-      this.userName,
-      this.userProfile});
+  LatestReviews({
+    this.id,
+    this.userId,
+    this.productId,
+    this.rating,
+    this.review,
+    this.createdAt,
+    this.updatedAt,
+    this.userName,
+    this.userProfile,
+  });
 
   LatestReviews.fromJson(Map<String, dynamic> json) {
     id = json['id'];

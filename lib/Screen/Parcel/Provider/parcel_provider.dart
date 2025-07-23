@@ -1,35 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:wavee/comman/store_local.dart';
+
 import '../../../comman/apiConfig.dart';
 import '../../../comman/apiEndpoint.dart';
 import '../../../comman/responses.dart';
-
-// class ParcelProvider extends ChangeNotifier {
-//   Future<http.Response> ParcelApi(Map<String, String> bodyData) async {
-//     const url = '${baseUrl}/get-parcel-data';
-//
-//     try {
-//       final response = await http.post(Uri.parse(url), body: bodyData).timeout(
-//         const Duration(seconds: 60),
-//         onTimeout: () {
-//           throw SocketException('Request timed out');
-//         },
-//       );
-//       if (response.statusCode == 200) {
-//
-//         return response;
-//       } else {
-//
-//         throw Exception("Failed to connect to the server");
-//       }
-//     } on SocketException catch (e) {
-//       throw Exception('No Internet connection: $e');
-//     } catch (e) {
-//       throw Exception('An error occurred: $e');
-//     }
-//   }
-// }
 
 class ParcelProvider extends ChangeNotifier {
   Future<Response> getParcelApi(Map<String, String> bodyData) async {

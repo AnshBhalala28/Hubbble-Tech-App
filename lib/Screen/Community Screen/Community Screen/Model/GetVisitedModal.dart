@@ -34,23 +34,26 @@ class Data {
   Business? business;
   UserDetails? userDetails;
 
-  Data(
-      {this.businessId,
-      this.isVisited,
-      this.distanceToBusiness,
-      this.business,
-      this.userDetails});
+  Data({
+    this.businessId,
+    this.isVisited,
+    this.distanceToBusiness,
+    this.business,
+    this.userDetails,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     businessId = json['business_id'];
     isVisited = json['is_visited'];
     distanceToBusiness = json['distance_to_business'];
-    business = json['business'] != null
-        ? new Business.fromJson(json['business'])
-        : null;
-    userDetails = json['user_details'] != null
-        ? new UserDetails.fromJson(json['user_details'])
-        : null;
+    business =
+        json['business'] != null
+            ? new Business.fromJson(json['business'])
+            : null;
+    userDetails =
+        json['user_details'] != null
+            ? new UserDetails.fromJson(json['user_details'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -75,8 +78,13 @@ class Business {
   String? subStatus;
   String? industry;
 
-  Business(
-      {this.id, this.businessName, this.logo, this.subStatus, this.industry});
+  Business({
+    this.id,
+    this.businessName,
+    this.logo,
+    this.subStatus,
+    this.industry,
+  });
 
   Business.fromJson(Map<String, dynamic> json) {
     id = json['id'];

@@ -42,20 +42,21 @@ class Data {
   String? createdAt;
   String? updatedAt;
 
-  Data(
-      {this.id,
-      this.userId,
-      this.name,
-      this.description,
-      this.imageUrl,
-      this.rulesNotice,
-      this.operatingHours,
-      this.durationOptions,
-      this.capacity,
-      this.maxBookingPerDay,
-      this.status,
-      this.createdAt,
-      this.updatedAt});
+  Data({
+    this.id,
+    this.userId,
+    this.name,
+    this.description,
+    this.imageUrl,
+    this.rulesNotice,
+    this.operatingHours,
+    this.durationOptions,
+    this.capacity,
+    this.maxBookingPerDay,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -64,9 +65,10 @@ class Data {
     description = json['description'];
     imageUrl = json['image_url'].cast<String>();
     rulesNotice = json['rules_notice'];
-    operatingHours = json['operating_hours'] != null
-        ? new OperatingHours.fromJson(json['operating_hours'])
-        : null;
+    operatingHours =
+        json['operating_hours'] != null
+            ? new OperatingHours.fromJson(json['operating_hours'])
+            : null;
     durationOptions = json['duration_options'].cast<String>();
     capacity = json['capacity'];
     maxBookingPerDay = json['max_booking_per_day'];

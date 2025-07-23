@@ -81,4 +81,8 @@ class ApiEndpoint {
   static String myGroupRequest = "${baseUrl}resident_group_request";
   static String myrequestAction = "${baseUrl}friends-request-action";
   static String myrequestGroupAction = "${baseUrl}group-request-action";
+  static String getChat = "${baseUrl}get-chat";
+  static String removeFriend = "${baseUrl}remove-friends/";
+  static String conciergeProfile = "${baseUrl}concierge-friends-profile/";
+  static String sendOrderChat = "${baseUrl}sendOrderChat";
 }

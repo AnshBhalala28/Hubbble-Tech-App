@@ -1,177 +1,166 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:wavee/comman/apiEndpoint.dart';
 
-import '../../../comman/CustomExpection.dart';
-import '../../../comman/const.dart';
+import '../../../comman/apiConfig.dart';
 import '../../../comman/responses.dart';
+import '../../../comman/store_local.dart';
 
 class MessageProvider extends ChangeNotifier {
-  Future<http.Response> MessageApi(
-    String user_id,
-    String concierge_id,
+  Future<Response> messageApi(
+    String userId,
+    String conciergeId,
     String type,
-    String orderproductid,
+    String orderProductId,
   ) async {
-    final String url =
-        '$baseUrl/get-chat/$user_id/$concierge_id?type=$type&order_product_id=$orderproductid';
+    final dio = await DioHelper.getDio();
+    final token = await SaveDataLocal.getToken();
+
+    final url =
+        '${ApiEndpoint.getChat}/$userId/$conciergeId'
+        '?type=$type&order_product_id=$orderProductId';
+
+    log("GET: $url");
 
     try {
-      final response = await http
-          .get(Uri.parse(url))
-          .timeout(
-            const Duration(seconds: 60),
-            onTimeout: () {
-              throw const SocketException('Request timed out');
-            },
-          );
-      if (response.statusCode == 200) {
-        return response;
-      } else {
-        throw Exception("Failed to connect to the server");
-      }
-    } on SocketException catch (e) {
-      throw Exception('No Internet connection: $e');
-    } catch (e) {
-      throw Exception('An error occurred: $e');
+      return await dio.get(
+        url,
+        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+      );
+    } on DioException catch (e) {
+      throw Exception(handleDioError(e));
     }
   }
 
-  Future<http.Response> sendmessageapi(Map<String, String> bodyData) async {
-    const url = '$baseUrl/send-message';
+  Future<Response> sendMessageApi(Map<String, String> bodyData) async {
+    final dio = await DioHelper.getDio();
+    final token = await SaveDataLocal.getToken();
 
-    try {
-      final imageUploadRequest = http.MultipartRequest('POST', Uri.parse(url));
+    final formData = FormData();
 
-      bodyData.forEach((key, value) {
-        if (key != 'files') {
-          imageUploadRequest.fields[key] = value;
-        }
-      });
+    bodyData.forEach((key, value) {
+      if (key != 'files') {
+        formData.fields.add(MapEntry(key, value));
+      }
+    });
 
-      if (bodyData['files']?.isNotEmpty ?? false) {
-        final String filePath = bodyData['files']!;
+    if (bodyData['files']?.isNotEmpty ?? false) {
+      final filePath = bodyData['files']!;
+      final extension = filePath.split('.').last.toLowerCase();
+      String mimeType;
 
-        String fileExtension = filePath.split('.').last.toLowerCase();
-        MediaType mediaType;
+      switch (extension) {
+        case 'jpg':
+        case 'jpeg':
+        case 'png':
+          mimeType = 'image/$extension';
+          break;
+        case 'mp4':
+          mimeType = 'video/mp4';
+          break;
+        case 'pdf':
+          mimeType = 'application/pdf';
+          break;
+        default:
+          throw Exception('Unsupported file type');
+      }
 
-        switch (fileExtension) {
-          case "jpg":
-          case "jpeg":
-          case "png":
-            mediaType = MediaType('image', fileExtension);
-            break;
-          case "mp4":
-            mediaType = MediaType('video', 'mp4');
-            break;
-          case "pdf":
-            mediaType = MediaType('application', 'pdf');
-            break;
-          default:
-            throw Exception('Unsupported media type');
-        }
-
-        final file = await http.MultipartFile.fromPath(
+      formData.files.add(
+        MapEntry(
           'files',
-          filePath,
-          contentType: mediaType,
-        );
-        imageUploadRequest.files.add(file);
-      }
-
-      final streamResponse = await imageUploadRequest.send();
-      final response = await http.Response.fromStream(streamResponse);
-
-      return responses(response);
-    } on SocketException {
-      throw FetchDataException('No Internet connection');
-    } catch (e, stackTrace) {
-      throw Exception('Error: $e &&& \n strace error $stackTrace');
+          await MultipartFile.fromFile(
+            filePath,
+            contentType: MediaType.parse(mimeType),
+          ),
+        ),
+      );
     }
-  }
-
-  Future<http.Response> SendMessagApi(Map<String, String> bodyData) async {
-    const url = '$baseUrl/send-message';
 
     try {
-      final response = await http
-          .post(Uri.parse(url), body: bodyData)
-          .timeout(
-            const Duration(seconds: 60),
-            onTimeout: () {
-              throw const SocketException('Request timed out');
-            },
-          );
-      if (response.statusCode == 200) {
-        return response;
-      } else {
-        throw Exception("Failed to connect to the server");
-      }
-    } on SocketException catch (e) {
-      throw Exception('No Internet connection: $e');
-    } catch (e) {
-      throw Exception('An error occurred: $e');
+      final response = await dio.post(
+        '${ApiEndpoint.sendMessage}',
+        data: formData,
+        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+      );
+      return response;
+    } on DioException catch (e, stack) {
+      log('Dio error: ${e.message}\nStack: $stack');
+      throw Exception(handleDioError(e));
     }
   }
 
-  Future<http.Response> removefriend(String ConId) async {
-    String url = '${baseUrl}/remove-friends/$ConId';
+  Future<Response> sendMessagApi(Map<String, String> bodyData) async {
+    final dio = await DioHelper.getDio();
+    final token = await SaveDataLocal.getToken();
 
-    var responseJson;
-    final response = await http
-        .get(Uri.parse(url))
-        .timeout(
-          const Duration(seconds: 60),
-          onTimeout: () {
-            throw const SocketException('Something went wrong');
-          },
-        );
-    responseJson = responses(response);
-
-    return responseJson;
+    try {
+      return await dio.post(
+        '${ApiEndpoint.sendMessage}',
+        data: bodyData,
+        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+      );
+    } on DioException catch (e) {
+      throw Exception(handleDioError(e));
+    }
   }
 
-  Future<http.Response> userpersonalinfo(String ConId) async {
-    String url = '${baseUrl}/concierge-friends-profile/$ConId';
+  Future<Response> removeFriend(String conId) async {
+    final dio = await DioHelper.getDio();
+    final token = await SaveDataLocal.getToken();
 
-    var responseJson;
-    final response = await http
-        .get(Uri.parse(url))
-        .timeout(
-          const Duration(seconds: 60),
-          onTimeout: () {
-            throw const SocketException('Something went wrong');
-          },
-        );
-    responseJson = responses(response);
-
-    return responseJson;
+    try {
+      return await dio.get(
+        '${ApiEndpoint.removeFriend}$conId',
+        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+      );
+    } on DioException catch (e) {
+      throw Exception(handleDioError(e));
+    }
   }
 
-  Future<http.Response> sendmessageorderapi(
+  Future<Response> userPersonalInfo(String conId) async {
+    final dio = await DioHelper.getDio();
+    final token = await SaveDataLocal.getToken();
+
+    try {
+      return await dio.get(
+        '${ApiEndpoint.conciergeProfile}$conId',
+        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+      );
+    } on DioException catch (e) {
+      throw Exception(handleDioError(e));
+    }
+  }
+
+  Future<Response> sendMessageOrderApi(
     Map<String, String> data,
     File? file,
   ) async {
-    var uri = Uri.parse("https://portal.wavee.ai/api/sendOrderChat");
-    var request = http.MultipartRequest("POST", uri);
+    final dio = await DioHelper.getDio();
+    final token = await SaveDataLocal.getToken();
 
-    data.forEach((key, value) {
-      request.fields[key] = value;
-    });
+    final formData = FormData();
+    data.forEach((key, value) => formData.fields.add(MapEntry(key, value)));
 
     if (file != null && file.existsSync()) {
-      request.files.add(await http.MultipartFile.fromPath('file', file.path));
+      formData.files.add(
+        MapEntry('file', await MultipartFile.fromFile(file.path)),
+      );
     }
 
     try {
-      var streamedResponse = await request.send();
-      return await http.Response.fromStream(streamedResponse);
-    } catch (e, stackTrace) {
-      log('Error in sendmessageorderapi: $e\nStackTrace: $stackTrace');
-      rethrow;
+      return await dio.post(
+        '${ApiEndpoint.sendOrderChat}',
+        data: formData,
+        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+      );
+    } on DioException catch (e, stack) {
+      log('OrderChat error: ${e.message}\n$stack');
+      throw Exception(handleDioError(e));
     }
   }
 }

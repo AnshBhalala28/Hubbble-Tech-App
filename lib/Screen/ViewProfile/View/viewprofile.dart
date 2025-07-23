@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -19,7 +17,6 @@ import '../../../comman/const.dart';
 import '../../../comman/error_dialog.dart';
 import '../../../comman/store_local.dart';
 import '../../Authcation/Provider/authcation_provider.dart';
-import '../../HomeNewPage/View/homenewpage.dart';
 import '../Model/profile_model.dart';
 import '../Provider/profile_provider.dart';
 import 'Mybuilding_Screen.dart';

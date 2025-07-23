@@ -40,10 +40,12 @@ class StoryScreen extends StatelessWidget {
                         return Center(
                           child: CircularProgressIndicator(
                             color: Colors.white,
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    (loadingProgress.expectedTotalBytes ?? 1)
-                                : null,
+                            value:
+                                loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        (loadingProgress.expectedTotalBytes ??
+                                            1)
+                                    : null,
                           ),
                         );
                       },
@@ -62,10 +64,12 @@ class StoryScreen extends StatelessWidget {
                         CircleAvatar(
                           radius: 20,
                           backgroundColor: Colors.grey[800],
-                          backgroundImage:
-                              NetworkImage(userProfileImages[index]),
-                          onBackgroundImageError: (_, __) =>
-                              Icon(Icons.person, color: Colors.white),
+                          backgroundImage: NetworkImage(
+                            userProfileImages[index],
+                          ),
+                          onBackgroundImageError:
+                              (_, __) =>
+                                  Icon(Icons.person, color: Colors.white),
                         ),
                         SizedBox(width: 10),
                         Text(

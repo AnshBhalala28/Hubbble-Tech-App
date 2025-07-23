@@ -37,15 +37,16 @@ class Data {
   String? rsvp;
   int? isAttended;
 
-  Data(
-      {this.requestId,
-      this.eventId,
-      this.eventName,
-      this.eventDate,
-      this.eventLocation,
-      this.status,
-      this.rsvp,
-      this.isAttended});
+  Data({
+    this.requestId,
+    this.eventId,
+    this.eventName,
+    this.eventDate,
+    this.eventLocation,
+    this.status,
+    this.rsvp,
+    this.isAttended,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     requestId = json['request_id'];

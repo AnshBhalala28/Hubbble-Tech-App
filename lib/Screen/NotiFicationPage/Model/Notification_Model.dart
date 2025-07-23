@@ -64,20 +64,21 @@ class Notifications {
   ConciergeProfile? conciergeProfile;
   BusinessProfile? businessProfile;
 
-  Notifications(
-      {this.id,
-      this.bulidingId,
-      this.appUserId,
-      this.chatCreateId,
-      this.data,
-      this.type,
-      this.msgTo,
-      this.readAt,
-      this.notificationDate,
-      this.createdAt,
-      this.updatedAt,
-      this.conciergeProfile,
-      this.businessProfile});
+  Notifications({
+    this.id,
+    this.bulidingId,
+    this.appUserId,
+    this.chatCreateId,
+    this.data,
+    this.type,
+    this.msgTo,
+    this.readAt,
+    this.notificationDate,
+    this.createdAt,
+    this.updatedAt,
+    this.conciergeProfile,
+    this.businessProfile,
+  });
 
   Notifications.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -91,12 +92,14 @@ class Notifications {
     notificationDate = json['notification_date'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    conciergeProfile = json['concierge_profile'] != null
-        ? new ConciergeProfile.fromJson(json['concierge_profile'])
-        : null;
-    businessProfile = json['business_profile'] != null
-        ? new BusinessProfile.fromJson(json['business_profile'])
-        : null;
+    conciergeProfile =
+        json['concierge_profile'] != null
+            ? new ConciergeProfile.fromJson(json['concierge_profile'])
+            : null;
+    businessProfile =
+        json['business_profile'] != null
+            ? new BusinessProfile.fromJson(json['business_profile'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -147,30 +150,31 @@ class ConciergeProfile {
   String? createdAt;
   String? updatedAt;
 
-  ConciergeProfile(
-      {this.id,
-      this.userId,
-      this.buildingId,
-      this.gateId,
-      this.email,
-      this.firstName,
-      this.lastName,
-      this.gender,
-      this.dateOfBirth,
-      this.phoneNumber,
-      this.conciergeImage,
-      this.address,
-      this.city,
-      this.state,
-      this.country,
-      this.zipCode,
-      this.shiftStart,
-      this.shiftEnd,
-      this.conStartTime,
-      this.conEndTime,
-      this.livestatus,
-      this.createdAt,
-      this.updatedAt});
+  ConciergeProfile({
+    this.id,
+    this.userId,
+    this.buildingId,
+    this.gateId,
+    this.email,
+    this.firstName,
+    this.lastName,
+    this.gender,
+    this.dateOfBirth,
+    this.phoneNumber,
+    this.conciergeImage,
+    this.address,
+    this.city,
+    this.state,
+    this.country,
+    this.zipCode,
+    this.shiftStart,
+    this.shiftEnd,
+    this.conStartTime,
+    this.conEndTime,
+    this.livestatus,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   ConciergeProfile.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -248,26 +252,27 @@ class BusinessProfile {
   String? createdAt;
   String? updatedAt;
 
-  BusinessProfile(
-      {this.id,
-      this.role,
-      this.name,
-      this.email,
-      this.emailVerifiedAt,
-      this.dPassword,
-      this.mobileNo,
-      this.gender,
-      this.dateOfBirth,
-      this.address,
-      this.psLatitude,
-      this.psLongitude,
-      this.fcmToken,
-      this.forgetPassKey,
-      this.moduleLock,
-      this.status,
-      this.profile,
-      this.createdAt,
-      this.updatedAt});
+  BusinessProfile({
+    this.id,
+    this.role,
+    this.name,
+    this.email,
+    this.emailVerifiedAt,
+    this.dPassword,
+    this.mobileNo,
+    this.gender,
+    this.dateOfBirth,
+    this.address,
+    this.psLatitude,
+    this.psLongitude,
+    this.fcmToken,
+    this.forgetPassKey,
+    this.moduleLock,
+    this.status,
+    this.profile,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   BusinessProfile.fromJson(Map<String, dynamic> json) {
     id = json['id'];

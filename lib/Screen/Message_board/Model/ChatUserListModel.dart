@@ -38,16 +38,17 @@ class Data {
   List<String>? requestStatuses;
   User? user;
 
-  Data(
-      {this.id,
-      this.userId,
-      this.createId,
-      this.unitsId,
-      this.residentType,
-      this.createdAt,
-      this.updatedAt,
-      this.requestStatuses,
-      this.user});
+  Data({
+    this.id,
+    this.userId,
+    this.createId,
+    this.unitsId,
+    this.residentType,
+    this.createdAt,
+    this.updatedAt,
+    this.requestStatuses,
+    this.user,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -102,29 +103,30 @@ class User {
   String? country;
   String? zipCode;
 
-  User(
-      {this.id,
-      this.role,
-      this.email,
-      this.emailVerifiedAt,
-      this.dPassword,
-      this.mobileNo,
-      this.gender,
-      this.dateOfBirth,
-      this.psLatitude,
-      this.psLongitude,
-      this.fcmToken,
-      this.forgetPassKey,
-      this.moduleLock,
-      this.status,
-      this.profile,
-      this.createdAt,
-      this.updatedAt,
-      this.firstName,
-      this.lastName,
-      this.city,
-      this.country,
-      this.zipCode});
+  User({
+    this.id,
+    this.role,
+    this.email,
+    this.emailVerifiedAt,
+    this.dPassword,
+    this.mobileNo,
+    this.gender,
+    this.dateOfBirth,
+    this.psLatitude,
+    this.psLongitude,
+    this.fcmToken,
+    this.forgetPassKey,
+    this.moduleLock,
+    this.status,
+    this.profile,
+    this.createdAt,
+    this.updatedAt,
+    this.firstName,
+    this.lastName,
+    this.city,
+    this.country,
+    this.zipCode,
+  });
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];

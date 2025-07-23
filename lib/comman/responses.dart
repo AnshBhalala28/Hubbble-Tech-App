@@ -1,9 +1,10 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:dio/dio.dart';
+
 import 'CustomExpection.dart';
 
 responses(http.Response response) {
@@ -34,12 +35,12 @@ responses(http.Response response) {
     case 500:
     default:
       throw FetchDataException(
-          'Error occurred while Communication with Server with StatusCode :${response.statusCode}');
+        'Error occurred while Communication with Server with StatusCode :${response.statusCode}',
+      );
   }
 }
 
-
- handleDioError(DioException e) {
+handleDioError(DioException e) {
   String message = "";
 
   if (e.type == DioExceptionType.connectionTimeout ||
@@ -64,4 +65,3 @@ responses(http.Response response) {
     // duration: const Duration(seconds: 3),
   );
 }
-

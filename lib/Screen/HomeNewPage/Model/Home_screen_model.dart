@@ -61,23 +61,24 @@ class User {
   String? createdAt;
   String? updatedAt;
 
-  User(
-      {this.id,
-      this.role,
-      this.name,
-      this.email,
-      this.emailVerifiedAt,
-      this.dPassword,
-      this.mobileNo,
-      this.gender,
-      this.address,
-      this.fcmToken,
-      this.forgetPassKey,
-      this.moduleLock,
-      this.status,
-      this.profile,
-      this.createdAt,
-      this.updatedAt});
+  User({
+    this.id,
+    this.role,
+    this.name,
+    this.email,
+    this.emailVerifiedAt,
+    this.dPassword,
+    this.mobileNo,
+    this.gender,
+    this.address,
+    this.fcmToken,
+    this.forgetPassKey,
+    this.moduleLock,
+    this.status,
+    this.profile,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];

@@ -16,10 +16,7 @@ showSnackBar({
     message,
     backgroundColor: backgoundColor ?? AppColors.maincolor,
     colorText: ColorText ?? Colors.white,
-    icon: Icon(
-      IconName ?? Icons.error,
-      color: IconColor ?? Colors.white,
-    ),
+    icon: Icon(IconName ?? Icons.error, color: IconColor ?? Colors.white),
     onTap: ontap,
     shouldIconPulse: true,
     barBlur: 10,

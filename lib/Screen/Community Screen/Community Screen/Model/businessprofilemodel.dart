@@ -72,50 +72,51 @@ class Data1 {
   List<FeaturedPosts>? featuredPosts;
   var business;
 
-  Data1(
-      {this.id,
-      this.role,
-      this.name,
-      this.email,
-      this.emailVerifiedAt,
-      this.dPassword,
-      this.mobileNo,
-      this.gender,
-      this.dateOfBirth,
-      this.address,
-      this.fcmToken,
-      this.forgetPassKey,
-      this.moduleLock,
-      this.status,
-      this.profile,
-      this.createdAt,
-      this.updatedAt,
-      this.userId,
-      this.subId,
-      this.stripeSubscriptionId,
-      this.logo,
-      this.businessName,
-      this.about,
-      this.description,
-      this.industry,
-      this.categoryId,
-      this.subCategoryId,
-      this.tags,
-      this.businessServices,
-      this.experience,
-      this.businessAddress,
-      this.subStartDate,
-      this.subEndDate,
-      this.subStatus,
-      this.latitude,
-      this.longitude,
-      this.media,
-      this.creditBalance,
-      this.distance,
-      this.category,
-      this.subCategory,
-      this.featuredPosts,
-      this.business});
+  Data1({
+    this.id,
+    this.role,
+    this.name,
+    this.email,
+    this.emailVerifiedAt,
+    this.dPassword,
+    this.mobileNo,
+    this.gender,
+    this.dateOfBirth,
+    this.address,
+    this.fcmToken,
+    this.forgetPassKey,
+    this.moduleLock,
+    this.status,
+    this.profile,
+    this.createdAt,
+    this.updatedAt,
+    this.userId,
+    this.subId,
+    this.stripeSubscriptionId,
+    this.logo,
+    this.businessName,
+    this.about,
+    this.description,
+    this.industry,
+    this.categoryId,
+    this.subCategoryId,
+    this.tags,
+    this.businessServices,
+    this.experience,
+    this.businessAddress,
+    this.subStartDate,
+    this.subEndDate,
+    this.subStatus,
+    this.latitude,
+    this.longitude,
+    this.media,
+    this.creditBalance,
+    this.distance,
+    this.category,
+    this.subCategory,
+    this.featuredPosts,
+    this.business,
+  });
 
   Data1.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -162,12 +163,14 @@ class Data1 {
     media = json['media'];
     creditBalance = json['credit_balance'];
     distance = json['distance'];
-    category = json['category'] != null
-        ? new Category.fromJson(json['category'])
-        : null;
-    subCategory = json['sub_category'] != null
-        ? new SubCategory.fromJson(json['sub_category'])
-        : null;
+    category =
+        json['category'] != null
+            ? new Category.fromJson(json['category'])
+            : null;
+    subCategory =
+        json['sub_category'] != null
+            ? new SubCategory.fromJson(json['sub_category'])
+            : null;
     if (json['featured_posts'] != null) {
       featuredPosts = <FeaturedPosts>[];
       json['featured_posts'].forEach((v) {

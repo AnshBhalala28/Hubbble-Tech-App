@@ -348,6 +348,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
@@ -355,7 +356,7 @@ import 'package:wavee/comman/Custom_AppBar.dart';
 import 'package:wavee/comman/SideMenu.dart';
 import 'package:wavee/comman/colors.dart';
 import 'package:wavee/comman/const.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+
 import '../Model/parcel_model.dart';
 import '../Provider/parcel_provider.dart';
 
@@ -367,9 +368,11 @@ class ParcelScreen extends StatefulWidget {
 }
 
 class _ParcelScreenState extends State<ParcelScreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKeyParcel = GlobalKey<ScaffoldState>();
-  final PagingController<int, Data1> _pagingController =
-  PagingController(firstPageKey: 1);
+  final GlobalKey<ScaffoldState> _scaffoldKeyParcel =
+      GlobalKey<ScaffoldState>();
+  final PagingController<int, Data1> _pagingController = PagingController(
+    firstPageKey: 1,
+  );
 
   int selectedCategory = 0;
 
@@ -403,7 +406,8 @@ class _ParcelScreenState extends State<ParcelScreen> {
             TitleBar(
               back: () => Get.back(),
               title: 'Parcel',
-              drawerCallback: () => _scaffoldKeyParcel.currentState?.openDrawer(),
+              drawerCallback:
+                  () => _scaffoldKeyParcel.currentState?.openDrawer(),
             ),
             SizedBox(height: 3.h),
             SizedBox(
@@ -423,13 +427,17 @@ class _ParcelScreenState extends State<ParcelScreen> {
                     },
                     child: Container(
                       height: 6.h,
-                      padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 7.w),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 1.h,
+                        horizontal: 7.w,
+                      ),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         border: Border.all(width: 0.5, color: Colors.grey),
-                        color: selectedCategory == index
-                            ? AppColors.maincolor
-                            : Colors.white,
+                        color:
+                            selectedCategory == index
+                                ? AppColors.maincolor
+                                : Colors.white,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       margin: EdgeInsets.symmetric(horizontal: 2.w),
@@ -437,7 +445,10 @@ class _ParcelScreenState extends State<ParcelScreen> {
                         categories[index],
                         style: TextStyle(
                           fontSize: 17.sp,
-                          color: selectedCategory == index ? Colors.white : Colors.black,
+                          color:
+                              selectedCategory == index
+                                  ? Colors.white
+                                  : Colors.black,
                           fontFamily: AppConstants.manrope,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 1,
@@ -484,8 +495,11 @@ class _ParcelScreenState extends State<ParcelScreen> {
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.pending_rounded,
-                                  color: statusColor, size: 18.sp),
+                              Icon(
+                                Icons.pending_rounded,
+                                color: statusColor,
+                                size: 18.sp,
+                              ),
                               const SizedBox(width: 8),
                               Text(
                                 '${status[0].toUpperCase()}${status.substring(1)}',
@@ -558,14 +572,21 @@ class _ParcelScreenState extends State<ParcelScreen> {
                       ),
                     );
                   },
-                  noItemsFoundIndicatorBuilder: (context) => const Center(
-                    child: Text('No Parcels Available'),
-                  ),
-                  firstPageProgressIndicatorBuilder: (context) =>
-                   Center(child: CircularProgressIndicator(color: AppColors.maincolor,)),
-                  newPageProgressIndicatorBuilder: (context) =>
-                      Center(child: CircularProgressIndicator(color: AppColors.maincolor,)),
-
+                  noItemsFoundIndicatorBuilder:
+                      (context) =>
+                          const Center(child: Text('No Parcels Available')),
+                  firstPageProgressIndicatorBuilder:
+                      (context) => Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.maincolor,
+                        ),
+                      ),
+                  newPageProgressIndicatorBuilder:
+                      (context) => Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.maincolor,
+                        ),
+                      ),
                 ),
               ),
             ),
@@ -576,8 +597,10 @@ class _ParcelScreenState extends State<ParcelScreen> {
   }
 
   bool _isParcelVisible(Data1 parcel) {
-    if (selectedCategory == 1 && parcel.deliveryStatus != "Collected") return false;
-    if (selectedCategory == 2 && parcel.deliveryStatus != "Pending") return false;
+    if (selectedCategory == 1 && parcel.deliveryStatus != "Collected")
+      return false;
+    if (selectedCategory == 2 && parcel.deliveryStatus != "Pending")
+      return false;
     return true;
   }
 
@@ -610,4 +633,3 @@ class _ParcelScreenState extends State<ParcelScreen> {
     }
   }
 }
-

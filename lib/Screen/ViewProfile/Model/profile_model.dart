@@ -37,18 +37,19 @@ class Data {
   Building? building;
   BuildingDocument? buildingDocument;
 
-  Data(
-      {this.id,
-      this.userId,
-      this.createId,
-      this.unitsId,
-      this.residentType,
-      this.createdAt,
-      this.updatedAt,
-      this.user,
-      this.unit,
-      this.building,
-      this.buildingDocument});
+  Data({
+    this.id,
+    this.userId,
+    this.createId,
+    this.unitsId,
+    this.residentType,
+    this.createdAt,
+    this.updatedAt,
+    this.user,
+    this.unit,
+    this.building,
+    this.buildingDocument,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -60,12 +61,14 @@ class Data {
     updatedAt = json['updated_at'];
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
     unit = json['unit'] != null ? new Unit.fromJson(json['unit']) : null;
-    building = json['building'] != null
-        ? new Building.fromJson(json['building'])
-        : null;
-    buildingDocument = json['building_document'] != null
-        ? new BuildingDocument.fromJson(json['building_document'])
-        : null;
+    building =
+        json['building'] != null
+            ? new Building.fromJson(json['building'])
+            : null;
+    buildingDocument =
+        json['building_document'] != null
+            ? new BuildingDocument.fromJson(json['building_document'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -112,24 +115,25 @@ class User {
   String? createdAt;
   String? updatedAt;
 
-  User(
-      {this.id,
-      this.role,
-      this.name,
-      this.email,
-      this.emailVerifiedAt,
-      this.dPassword,
-      this.mobileNo,
-      this.gender,
-      this.dateOfBirth,
-      this.address,
-      this.fcmToken,
-      this.forgetPassKey,
-      this.moduleLock,
-      this.status,
-      this.profile,
-      this.createdAt,
-      this.updatedAt});
+  User({
+    this.id,
+    this.role,
+    this.name,
+    this.email,
+    this.emailVerifiedAt,
+    this.dPassword,
+    this.mobileNo,
+    this.gender,
+    this.dateOfBirth,
+    this.address,
+    this.fcmToken,
+    this.forgetPassKey,
+    this.moduleLock,
+    this.status,
+    this.profile,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -240,22 +244,23 @@ class Unit {
   String? createdAt;
   String? updatedAt;
 
-  Unit(
-      {this.id,
-      this.buildingId,
-      this.userId,
-      this.blockNumber,
-      this.flatNumber,
-      this.noOfKeys,
-      this.keysOut,
-      this.parkingOption,
-      this.documentsFiles,
-      this.documentsFilesLabel,
-      this.keyWaiver,
-      this.lettingAgentInfo,
-      this.bicycleScooterInfo,
-      this.createdAt,
-      this.updatedAt});
+  Unit({
+    this.id,
+    this.buildingId,
+    this.userId,
+    this.blockNumber,
+    this.flatNumber,
+    this.noOfKeys,
+    this.keysOut,
+    this.parkingOption,
+    this.documentsFiles,
+    this.documentsFilesLabel,
+    this.keyWaiver,
+    this.lettingAgentInfo,
+    this.bicycleScooterInfo,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Unit.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -308,17 +313,18 @@ class Building {
   String? createdAt;
   String? updatedAt;
 
-  Building(
-      {this.id,
-      this.userId,
-      this.buildingId,
-      this.companyName,
-      this.personName,
-      this.landline,
-      this.mobile,
-      this.buildingImage,
-      this.createdAt,
-      this.updatedAt});
+  Building({
+    this.id,
+    this.userId,
+    this.buildingId,
+    this.companyName,
+    this.personName,
+    this.landline,
+    this.mobile,
+    this.buildingImage,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Building.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -415,21 +421,25 @@ class BuildingDocument {
     shiftEnd = json['shift_end'];
     loyaltyCardImage = json['loyalty_card_image'];
 
-    emergencyNumbers = (json['emergency_numbers'] is List)
-        ? List<String>.from(json['emergency_numbers'])
-        : [];
+    emergencyNumbers =
+        (json['emergency_numbers'] is List)
+            ? List<String>.from(json['emergency_numbers'])
+            : [];
 
-    emergencyCaptions = (json['emergency_captions'] is List)
-        ? List<String>.from(json['emergency_captions'])
-        : [];
+    emergencyCaptions =
+        (json['emergency_captions'] is List)
+            ? List<String>.from(json['emergency_captions'])
+            : [];
 
-    documentsFiles = (json['documents_files'] is List)
-        ? List<String>.from(json['documents_files'])
-        : [];
+    documentsFiles =
+        (json['documents_files'] is List)
+            ? List<String>.from(json['documents_files'])
+            : [];
 
-    documentsFilesLabel = (json['documents_files_label'] is List)
-        ? List<String>.from(json['documents_files_label'])
-        : [];
+    documentsFilesLabel =
+        (json['documents_files_label'] is List)
+            ? List<String>.from(json['documents_files_label'])
+            : [];
 
     parkingInformation = json['parking_information'];
     conciergeInformation = json['concierge_information'];

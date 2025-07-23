@@ -5,7 +5,7 @@ class AiVideoPlayerWidget extends StatefulWidget {
   final String videoUrl;
 
   const AiVideoPlayerWidget({Key? key, required this.videoUrl})
-      : super(key: key);
+    : super(key: key);
 
   @override
   _AiVideoPlayerWidgetState createState() => _AiVideoPlayerWidgetState();
@@ -34,32 +34,32 @@ class _AiVideoPlayerWidgetState extends State<AiVideoPlayerWidget> {
   Widget build(BuildContext context) {
     return _controller.value.isInitialized
         ? AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: Stack(
-              children: [
-                VideoPlayer(_controller),
-                Positioned(
-                  bottom: 10,
-                  left: 10,
-                  child: IconButton(
-                    icon: Icon(
-                      _controller.value.isPlaying
-                          ? Icons.pause
-                          : Icons.play_arrow,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _controller.value.isPlaying
-                            ? _controller.pause()
-                            : _controller.play();
-                      });
-                    },
+          aspectRatio: _controller.value.aspectRatio,
+          child: Stack(
+            children: [
+              VideoPlayer(_controller),
+              Positioned(
+                bottom: 10,
+                left: 10,
+                child: IconButton(
+                  icon: Icon(
+                    _controller.value.isPlaying
+                        ? Icons.pause
+                        : Icons.play_arrow,
+                    color: Colors.white,
                   ),
-                )
-              ],
-            ),
-          )
+                  onPressed: () {
+                    setState(() {
+                      _controller.value.isPlaying
+                          ? _controller.pause()
+                          : _controller.play();
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        )
         : Center(child: CircularProgressIndicator());
   }
 }

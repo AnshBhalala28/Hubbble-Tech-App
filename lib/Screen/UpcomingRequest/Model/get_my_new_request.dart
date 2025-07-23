@@ -36,14 +36,15 @@ class Data {
   String? updatedAt;
   Group? group;
 
-  Data(
-      {this.id,
-      this.groupId,
-      this.userId,
-      this.status,
-      this.createdAt,
-      this.updatedAt,
-      this.group});
+  Data({
+    this.id,
+    this.groupId,
+    this.userId,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+    this.group,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -79,14 +80,15 @@ class Group {
   String? createdAt;
   String? updatedAt;
 
-  Group(
-      {this.id,
-      this.createdBy,
-      this.name,
-      this.details,
-      this.images,
-      this.createdAt,
-      this.updatedAt});
+  Group({
+    this.id,
+    this.createdBy,
+    this.name,
+    this.details,
+    this.images,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Group.fromJson(Map<String, dynamic> json) {
     id = json['id'];

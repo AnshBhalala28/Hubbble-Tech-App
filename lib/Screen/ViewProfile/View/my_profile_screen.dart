@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -17,7 +15,6 @@ import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
 import '../../../comman/input_decoration.dart';
-import '../../HomeNewPage/View/homenewpage.dart';
 import '../Model/profile_model.dart';
 import '../Provider/profile_provider.dart';
 

@@ -33,9 +33,10 @@ class _EditProfileState extends State<EditProfile> {
         title: Text(
           "Edit Profile",
           style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.black),
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
         ),
       ),
       body: CustomScrollView(
@@ -53,8 +54,9 @@ class _EditProfileState extends State<EditProfile> {
                       CircleAvatar(
                         radius: 27.sp,
                         backgroundColor: Colors.grey.shade300,
-                        backgroundImage:
-                            AssetImage('assets/images/waveeLogoShort.png'),
+                        backgroundImage: AssetImage(
+                          'assets/images/waveeLogoShort.png',
+                        ),
                       ),
                       Positioned(
                         bottom: 0,
@@ -62,8 +64,11 @@ class _EditProfileState extends State<EditProfile> {
                         child: CircleAvatar(
                           radius: 12.sp,
                           backgroundColor: Colors.blue,
-                          child: Icon(Icons.camera_alt,
-                              size: 15.sp, color: Colors.white),
+                          child: Icon(
+                            Icons.camera_alt,
+                            size: 15.sp,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],
@@ -71,8 +76,10 @@ class _EditProfileState extends State<EditProfile> {
                   SizedBox(height: 2.h),
                   Text(
                     "Parves Ahamad",
-                    style:
-                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Text(
                     "@parvesahamad",
@@ -107,16 +114,18 @@ class _EditProfileState extends State<EditProfile> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.sp)),
+                          borderRadius: BorderRadius.circular(30.sp),
+                        ),
                       ),
                       onPressed: () {},
                       child: Text(
                         "Save",
                         style: TextStyle(
-                            fontSize: 18.sp,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: AppConstants.manrope),
+                          fontSize: 18.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: AppConstants.manrope,
+                        ),
                       ),
                     ),
                   ),

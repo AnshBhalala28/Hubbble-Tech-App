@@ -39,17 +39,18 @@ class Data {
   ItemDetails? itemDetails;
   LoyaltyDetails? loyaltyDetails;
 
-  Data(
-      {this.id,
-      this.type,
-      this.userId,
-      this.productId,
-      this.quantity,
-      this.totalPrice,
-      this.createdAt,
-      this.updatedAt,
-      this.itemDetails,
-      this.loyaltyDetails});
+  Data({
+    this.id,
+    this.type,
+    this.userId,
+    this.productId,
+    this.quantity,
+    this.totalPrice,
+    this.createdAt,
+    this.updatedAt,
+    this.itemDetails,
+    this.loyaltyDetails,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -60,12 +61,14 @@ class Data {
     totalPrice = json['total_price'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    itemDetails = json['item_details'] != null
-        ? new ItemDetails.fromJson(json['item_details'])
-        : null;
-    loyaltyDetails = json['loyalty_details'] != null
-        ? new LoyaltyDetails.fromJson(json['loyalty_details'])
-        : null;
+    itemDetails =
+        json['item_details'] != null
+            ? new ItemDetails.fromJson(json['item_details'])
+            : null;
+    loyaltyDetails =
+        json['loyalty_details'] != null
+            ? new LoyaltyDetails.fromJson(json['loyalty_details'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -106,23 +109,24 @@ class ItemDetails {
   String? businessName;
   List<BusinessProducts>? businessProducts;
 
-  ItemDetails(
-      {this.id,
-      this.name,
-      this.price,
-      this.offerPrice,
-      this.quantity,
-      this.description,
-      this.features,
-      this.images,
-      this.image,
-      this.type,
-      this.status,
-      this.createdAt,
-      this.updatedAt,
-      this.businessId,
-      this.businessName,
-      this.businessProducts});
+  ItemDetails({
+    this.id,
+    this.name,
+    this.price,
+    this.offerPrice,
+    this.quantity,
+    this.description,
+    this.features,
+    this.images,
+    this.image,
+    this.type,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+    this.businessId,
+    this.businessName,
+    this.businessProducts,
+  });
 
   ItemDetails.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -136,10 +140,11 @@ class ItemDetails {
       if (json['features'] is List) {
         features = List<String>.from(json['features']);
       } else if (json['features'] is String) {
-        features = (json['features'] as String)
-            .split(',')
-            .map((e) => e.trim())
-            .toList();
+        features =
+            (json['features'] as String)
+                .split(',')
+                .map((e) => e.trim())
+                .toList();
       } else {
         features = [];
       }
@@ -281,12 +286,13 @@ class LoyaltyDetails {
   bool? willGetLoyaltyDiscountOnNextOrder;
   bool? willGetLoyaltyDiscountOnCurrentOrder;
 
-  LoyaltyDetails(
-      {this.loyaltyOrderThreshold,
-      this.loyaltyDiscountPercentage,
-      this.ordersCompletedWithBusiness,
-      this.willGetLoyaltyDiscountOnCurrentOrder,
-      this.willGetLoyaltyDiscountOnNextOrder});
+  LoyaltyDetails({
+    this.loyaltyOrderThreshold,
+    this.loyaltyDiscountPercentage,
+    this.ordersCompletedWithBusiness,
+    this.willGetLoyaltyDiscountOnCurrentOrder,
+    this.willGetLoyaltyDiscountOnNextOrder,
+  });
 
   LoyaltyDetails.fromJson(Map<String, dynamic> json) {
     loyaltyOrderThreshold = json['loyalty_order_threshold'];

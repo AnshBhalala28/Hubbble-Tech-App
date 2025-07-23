@@ -42,37 +42,29 @@ class _Bottom_barState extends State<Bottom_bar> {
                 svgIconPath: AppConstants.home,
                 label: "Home",
                 index: 1,
-                onTap: () => Get.offAll(
-                  () => HomePage(
-                    selected: 1,
-                    userName: "",
-                  ),
-                ),
+                onTap:
+                    () => Get.offAll(() => HomePage(selected: 1, userName: "")),
               ),
               _buildNavItem(
                 svgIconPath: AppConstants.community,
                 label: "Community",
                 index: 2,
-                onTap: () => Get.offAll(() => CommunityScreen(
-                      selected: 2,
-                    )),
+                onTap: () => Get.offAll(() => CommunityScreen(selected: 2)),
               ),
               _buildNavItem(
                 svgIconPath: AppConstants.chat1,
                 label: "Chat",
                 index: 3,
-                onTap: () => Get.offAll(() => ChatScreen(
-                      selected: 3,
-                    )),
+                onTap: () => Get.offAll(() => ChatScreen(selected: 3)),
               ),
               _buildNavItem(
                 svgIconPath: AppConstants.cart,
                 label: "My Cart",
                 index: 4,
-                onTap: () => Get.offAll(() => AddToCartView(
-                      selected: 4,
-                      fromBottomBar: true,
-                    )),
+                onTap:
+                    () => Get.offAll(
+                      () => AddToCartView(selected: 4, fromBottomBar: true),
+                    ),
               ),
             ],
           ),
@@ -112,9 +104,10 @@ class _Bottom_barState extends State<Bottom_bar> {
               label,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: widget.selected == index
-                    ? AppColors.maincolor
-                    : Colors.grey,
+                color:
+                    widget.selected == index
+                        ? AppColors.maincolor
+                        : Colors.grey,
                 fontSize: 14.5.sp,
                 fontFamily: AppConstants.manrope,
               ),
@@ -126,9 +119,10 @@ class _Bottom_barState extends State<Bottom_bar> {
             width: 11.w,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
-              color: widget.selected == index
-                  ? AppColors.maincolor
-                  : Colors.transparent,
+              color:
+                  widget.selected == index
+                      ? AppColors.maincolor
+                      : Colors.transparent,
             ),
           ),
         ],

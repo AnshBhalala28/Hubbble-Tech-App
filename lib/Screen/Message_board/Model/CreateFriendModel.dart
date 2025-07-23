@@ -27,13 +27,14 @@ class Data {
   String? createdAt;
   int? id;
 
-  Data(
-      {this.senderId,
-      this.receiverId,
-      this.status,
-      this.updatedAt,
-      this.createdAt,
-      this.id});
+  Data({
+    this.senderId,
+    this.receiverId,
+    this.status,
+    this.updatedAt,
+    this.createdAt,
+    this.id,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     senderId = json['sender_id'];

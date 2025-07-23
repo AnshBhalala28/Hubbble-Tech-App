@@ -41,19 +41,20 @@ class Data {
   int? unreadCount;
   String? lastMessage;
 
-  Data(
-      {this.id,
-      this.senderId,
-      this.receiverId,
-      this.status,
-      this.createdAt,
-      this.updatedAt,
-      this.senderName,
-      this.senderImage,
-      this.receiverName,
-      this.receiverImage,
-      this.unreadCount,
-      this.lastMessage});
+  Data({
+    this.id,
+    this.senderId,
+    this.receiverId,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+    this.senderName,
+    this.senderImage,
+    this.receiverName,
+    this.receiverImage,
+    this.unreadCount,
+    this.lastMessage,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];

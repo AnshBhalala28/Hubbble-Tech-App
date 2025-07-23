@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,7 +13,6 @@ import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
 import '../../../comman/error_dialog.dart';
-import '../../open_ai_chatbot/view/open_ai_screen.dart';
 import '../Model/rejectbooking.dart';
 import '../Provider/booking_provider.dart';
 import 'book_amenities.dart';

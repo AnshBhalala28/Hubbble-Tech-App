@@ -30,13 +30,14 @@ class Data {
   String? createdAt;
   int? id;
 
-  Data(
-      {this.groupId,
-      this.userId,
-      this.status,
-      this.updatedAt,
-      this.createdAt,
-      this.id});
+  Data({
+    this.groupId,
+    this.userId,
+    this.status,
+    this.updatedAt,
+    this.createdAt,
+    this.id,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     groupId = json['group_id'];

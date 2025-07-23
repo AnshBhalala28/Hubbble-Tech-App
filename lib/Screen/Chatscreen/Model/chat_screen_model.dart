@@ -83,32 +83,33 @@ class BusinessUsers {
   int? unreadCount;
   Business? business;
 
-  BusinessUsers(
-      {this.id,
-      this.role,
-      this.name,
-      this.email,
-      this.emailVerifiedAt,
-      this.dPassword,
-      this.mobileNo,
-      this.gender,
-      this.dateOfBirth,
-      this.isOnline,
-      this.address,
-      this.psLatitude,
-      this.psLongitude,
-      this.fcmToken,
-      this.forgetPassKey,
-      this.moduleLock,
-      this.status,
-      this.profile,
-      this.createdAt,
-      this.updatedAt,
-      this.lastMessage,
-      this.lastMessageTime,
-      this.unreadCount,
-      this.lastOnlineAt,
-      this.business});
+  BusinessUsers({
+    this.id,
+    this.role,
+    this.name,
+    this.email,
+    this.emailVerifiedAt,
+    this.dPassword,
+    this.mobileNo,
+    this.gender,
+    this.dateOfBirth,
+    this.isOnline,
+    this.address,
+    this.psLatitude,
+    this.psLongitude,
+    this.fcmToken,
+    this.forgetPassKey,
+    this.moduleLock,
+    this.status,
+    this.profile,
+    this.createdAt,
+    this.updatedAt,
+    this.lastMessage,
+    this.lastMessageTime,
+    this.unreadCount,
+    this.lastOnlineAt,
+    this.business,
+  });
 
   BusinessUsers.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -136,9 +137,10 @@ class BusinessUsers {
     lastMessageTime = json['last_message_time'];
     unreadCount = json['unread_count'];
     lastOnlineAt = json['last_online_at'];
-    business = json['business'] != null
-        ? new Business.fromJson(json['business'])
-        : null;
+    business =
+        json['business'] != null
+            ? new Business.fromJson(json['business'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -238,42 +240,43 @@ class Business {
   String? createdAt;
   String? updatedAt;
 
-  Business(
-      {this.id,
-      this.userId,
-      this.subId,
-      this.stripeSubscriptionId,
-      this.logo,
-      this.businessName,
-      this.about,
-      this.description,
-      this.industry,
-      this.openingHours,
-      this.website,
-      this.categoryId,
-      this.subCategoryId,
-      this.tags,
-      this.businessServices,
-      this.experience,
-      this.businessAddress,
-      this.subStartDate,
-      this.subEndDate,
-      this.subStatus,
-      this.latitude,
-      this.longitude,
-      this.media,
-      this.creditBalance,
-      this.stripeAccountId,
-      this.isStripeConnected,
-      this.stripeAccessToken,
-      this.onboardedAt,
-      this.loyaltyOrderThreshold,
-      this.loyaltyDiscountPercentage,
-      this.serviceStatus,
-      this.productStatus,
-      this.chatStatus,
-      this.createdAt,
-      this.updatedAt});
+  Business({
+    this.id,
+    this.userId,
+    this.subId,
+    this.stripeSubscriptionId,
+    this.logo,
+    this.businessName,
+    this.about,
+    this.description,
+    this.industry,
+    this.openingHours,
+    this.website,
+    this.categoryId,
+    this.subCategoryId,
+    this.tags,
+    this.businessServices,
+    this.experience,
+    this.businessAddress,
+    this.subStartDate,
+    this.subEndDate,
+    this.subStatus,
+    this.latitude,
+    this.longitude,
+    this.media,
+    this.creditBalance,
+    this.stripeAccountId,
+    this.isStripeConnected,
+    this.stripeAccessToken,
+    this.onboardedAt,
+    this.loyaltyOrderThreshold,
+    this.loyaltyDiscountPercentage,
+    this.serviceStatus,
+    this.productStatus,
+    this.chatStatus,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Business.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -382,33 +385,34 @@ class Concierges {
   var lastMessageTime;
   int? unreadCount;
 
-  Concierges(
-      {this.id,
-      this.userId,
-      this.buildingId,
-      this.gateId,
-      this.email,
-      this.firstName,
-      this.lastName,
-      this.gender,
-      this.dateOfBirth,
-      this.phoneNumber,
-      this.conciergeImage,
-      this.address,
-      this.city,
-      this.state,
-      this.country,
-      this.zipCode,
-      this.shiftStart,
-      this.shiftEnd,
-      this.conStartTime,
-      this.conEndTime,
-      this.livestatus,
-      this.createdAt,
-      this.updatedAt,
-      this.lastMessage,
-      this.lastMessageTime,
-      this.unreadCount});
+  Concierges({
+    this.id,
+    this.userId,
+    this.buildingId,
+    this.gateId,
+    this.email,
+    this.firstName,
+    this.lastName,
+    this.gender,
+    this.dateOfBirth,
+    this.phoneNumber,
+    this.conciergeImage,
+    this.address,
+    this.city,
+    this.state,
+    this.country,
+    this.zipCode,
+    this.shiftStart,
+    this.shiftEnd,
+    this.conStartTime,
+    this.conEndTime,
+    this.livestatus,
+    this.createdAt,
+    this.updatedAt,
+    this.lastMessage,
+    this.lastMessageTime,
+    this.unreadCount,
+  });
 
   Concierges.fromJson(Map<String, dynamic> json) {
     id = json['id'];

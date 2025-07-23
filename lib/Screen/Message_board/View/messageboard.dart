@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io' as io;
 import 'dart:io';
 
@@ -15,7 +16,6 @@ import 'package:sizer/sizer.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
-import 'package:video_player/video_player.dart';
 import 'package:wavee/Screen/ViewProfile/Model/profile_model.dart';
 import 'package:wavee/Screen/ViewProfile/Provider/profile_provider.dart';
 import 'package:wavee/comman/colors.dart';
@@ -137,16 +137,26 @@ class _MessageboardState extends State<Messageboard> {
     setState(() {
       isLoading = true;
     });
+    localpostapi();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+              _scrollController.position.maxScrollExtent &&
+          !isLoadingMore &&
+          hasMoreData) {
+        isLoadingMore = true;
+        currentPage++;
+        localpostapi(page: currentPage);
+      }
+    });
     MessageBoardApi();
     GetProfile();
     fetchData();
     listconciergerapi();
-    localpostapi();
     setState(() {
       GetMyJoinGroup();
       getfriendlistdAp();
     });
-    _pagingController.addPageRequestListener(_fetchPage);
+
     loadGroups();
     Future.delayed(Duration(milliseconds: 100), () {
       _loadAllLikesLocal();
@@ -161,34 +171,6 @@ class _MessageboardState extends State<Messageboard> {
     _pagingController.dispose();
     _pageController.dispose();
     super.dispose();
-  }
-
-  Future<void> _fetchPage(int pageKey) async {
-    final params = {
-      'residentType': 'residents',
-      'user_id': loginModel?.data?.user?.id.toString() ?? '',
-      'page': pageKey.toString(),
-    };
-
-    try {
-      final res = await MessageBoardProvider().localPostApi(params);
-      final model = Localpost_model.fromJson(res.data);
-      final posts = model.data?.data ?? [];
-      final totalPages = model.data?.totalPages ?? 1;
-      final isLast = pageKey >= totalPages;
-
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      // _ensureToggleLists(posts.length);
-
-      if (isLast) {
-        _pagingController.appendLastPage(posts);
-      } else {
-        _pagingController.appendPage(posts, pageKey + 1);
-      }
-    } catch (e) {
-      _pagingController.error = e;
-    }
   }
 
   Future<void> fetchData() async {
@@ -351,7 +333,6 @@ class _MessageboardState extends State<Messageboard> {
     }
   }
 
-  Offset _cartButtonPosition = Offset.zero;
   int cartCount = cartDetailsModel?.data?.length ?? 0;
 
   bool isDetailLoading = false;
@@ -481,54 +462,8 @@ class _MessageboardState extends State<Messageboard> {
                                     ),
                                   ),
                                   child:
-                                      // selectedOption == "All"
-                                      //     ?SizedBox()
-                                      // InkWell(
-                                      //         onTap: () {
-                                      //           Get.to(() => const ChatBotScreen());
-                                      //         },
-                                      //         child: Row(
-                                      //           children: [
-                                      //             Text(
-                                      //               "Ai Concierge",
-                                      //               style: TextStyle(
-                                      //                 fontFamily: AppConstants.manrope,
-                                      //                 fontSize: 16.sp,
-                                      //                 fontWeight: FontWeight.bold,
-                                      //                 color: Colors.grey,
-                                      //               ),
-                                      //             ),
-                                      //             SizedBox(width: 2.w),
-                                      //             Icon(CupertinoIcons.chat_bubble_2,
-                                      //                 color: Colors.grey),
-                                      //           ],
-                                      //         ),
-                                      //       )
-                                      //     :
                                       selectedOption == "My Building"
                                           ? SizedBox()
-                                          // InkWell(
-                                          //             onTap: () {
-                                          //               Get.to(() => const ChatBotScreen());
-                                          //             },
-                                          //             child: Row(
-                                          //               children: [
-                                          //                 Text(
-                                          //                   "Ai Concierge",
-                                          //                   style: TextStyle(
-                                          //                     fontFamily:
-                                          //                         AppConstants.manrope,
-                                          //                     fontSize: 16.sp,
-                                          //                     fontWeight: FontWeight.bold,
-                                          //                     color: Colors.grey,
-                                          //                   ),
-                                          //                 ),
-                                          //                 SizedBox(width: 2.w),
-                                          //                 Icon(CupertinoIcons.chat_bubble_2,
-                                          //                     color: Colors.grey),
-                                          //               ],
-                                          //             ),
-                                          //           )
                                           : selectedOption == "Local"
                                           ? InkWell(
                                             onTap: () {
@@ -560,919 +495,6 @@ class _MessageboardState extends State<Messageboard> {
                                             ),
                                           )
                                           : SizedBox(),
-
-                                  //  selectedOption == "Friends"
-                                  //     ? InkWell(
-                                  //         onTap: () async {
-                                  //           await listconciergerapi();
-                                  //           showDialog(
-                                  //             context: context,
-                                  //             builder: (context) {
-                                  //               List<
-                                  //                       Map<String,
-                                  //                           dynamic>>
-                                  //                   selectedFriends =
-                                  //                   [];
-                                  //               String
-                                  //                   friendSelectionError =
-                                  //                   "";
-                                  //               final ScrollController
-                                  //                   dialogScrollController =
-                                  //                   ScrollController();
-                                  //               final ScrollController
-                                  //                   listScrollController =
-                                  //                   ScrollController();
-
-                                  //               final TextEditingController
-                                  //                   searchController =
-                                  //                   TextEditingController();
-                                  //               String
-                                  //                   searchQuery =
-                                  //                   "";
-                                  //               return StatefulBuilder(
-                                  //                 builder: (context,
-                                  //                     setState) {
-                                  //                   List<dynamic>
-                                  //                       filteredFriends =
-                                  //                       chatuserlistmodel
-                                  //                               ?.data
-                                  //                               ?.where((user) {
-                                  //                             final String
-                                  //                                 fullName =
-                                  //                                 "${user.user?.firstName ?? ''} ${user.user?.lastName ?? ''}".toLowerCase();
-                                  //                             return fullName.contains(searchQuery.toLowerCase());
-                                  //                           })?.toList() ??
-                                  //                           [];
-                                  //                   return Dialog(
-                                  //                     shape:
-                                  //                         RoundedRectangleBorder(
-                                  //                       borderRadius:
-                                  //                           BorderRadius.circular(
-                                  //                               20),
-                                  //                     ),
-                                  //                     insetPadding: EdgeInsets.symmetric(
-                                  //                         horizontal:
-                                  //                             12,
-                                  //                         vertical:
-                                  //                             16),
-                                  //                     child:
-                                  //                         Container(
-                                  //                       constraints:
-                                  //                           BoxConstraints(
-                                  //                         maxHeight:
-                                  //                             MediaQuery.of(context).size.height *
-                                  //                                 0.8,
-                                  //                       ),
-                                  //                       padding: EdgeInsets.symmetric(
-                                  //                           horizontal:
-                                  //                               16,
-                                  //                           vertical:
-                                  //                               16),
-                                  //                       decoration:
-                                  //                           BoxDecoration(
-                                  //                         borderRadius:
-                                  //                             BorderRadius.circular(20),
-                                  //                         color: Colors
-                                  //                             .white,
-                                  //                       ),
-                                  //                       child:
-                                  //                           SingleChildScrollView(
-                                  //                         keyboardDismissBehavior:
-                                  //                             ScrollViewKeyboardDismissBehavior.onDrag,
-                                  //                         controller:
-                                  //                             dialogScrollController,
-                                  //                         child:
-                                  //                             Column(
-                                  //                           mainAxisSize:
-                                  //                               MainAxisSize.min,
-                                  //                           children: [
-                                  //                             Row(
-                                  //                               mainAxisAlignment: MainAxisAlignment.center,
-                                  //                               children: [
-                                  //                                 Icon(Icons.person_add_alt_1, color: AppColors.maincolor, size: 24),
-                                  //                                 SizedBox(width: 2.w),
-                                  //                                 Text(
-                                  //                                   'Add New Friend',
-                                  //                                   style: TextStyle(
-                                  //                                     color: Colors.black,
-                                  //                                     fontSize: 18.sp,
-                                  //                                     fontWeight: FontWeight.w700,
-                                  //                                     fontFamily: AppConstants.manrope,
-                                  //                                   ),
-                                  //                                 ),
-                                  //                               ],
-                                  //                             ),
-                                  //                             SizedBox(height: 1.5.h),
-                                  //                             Container(
-                                  //                               decoration: BoxDecoration(
-                                  //                                 color: Colors.grey.shade100,
-                                  //                                 borderRadius: BorderRadius.circular(10),
-                                  //                               ),
-                                  //                               child: TextField(
-                                  //                                 controller: searchController,
-                                  //                                 onChanged: (value) {
-                                  //                                   setState(() {
-                                  //                                     searchQuery = value;
-                                  //                                   });
-                                  //                                 },
-                                  //                                 decoration: InputDecoration(
-                                  //                                   hintText: 'Search friends',
-                                  //                                   prefixIcon: Icon(Icons.search, color: Colors.grey.shade600),
-                                  //                                   border: InputBorder.none,
-                                  //                                   contentPadding: EdgeInsets.symmetric(vertical: 12),
-                                  //                                 ),
-                                  //                                 style: TextStyle(
-                                  //                                   fontSize: 14.sp,
-                                  //                                   fontFamily: AppConstants.manrope,
-                                  //                                 ),
-                                  //                               ),
-                                  //                             ),
-                                  //                             SizedBox(height: 1.h),
-                                  //                             Row(
-                                  //                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  //                               children: [
-                                  //                                 Text(
-                                  //                                   'Select Friends',
-                                  //                                   style: TextStyle(
-                                  //                                     fontSize: 16.sp,
-                                  //                                     fontWeight: FontWeight.w600,
-                                  //                                     fontFamily: AppConstants.manrope,
-                                  //                                   ),
-                                  //                                 ),
-                                  //                                 Text(
-                                  //                                   '${selectedFriends.length} selected',
-                                  //                                   style: TextStyle(
-                                  //                                     fontSize: 14.sp,
-                                  //                                     fontWeight: FontWeight.w500,
-                                  //                                     fontFamily: AppConstants.manrope,
-                                  //                                     color: AppColors.maincolor,
-                                  //                                   ),
-                                  //                                 ),
-                                  //                               ],
-                                  //                             ),
-                                  //                             SizedBox(height: 0.8.h),
-                                  //                             Container(
-                                  //                               height: 32.h,
-                                  //                               decoration: BoxDecoration(
-                                  //                                 color: Colors.white,
-                                  //                                 borderRadius: BorderRadius.circular(12),
-                                  //                               ),
-                                  //                               child: Scrollbar(
-                                  //                                 thumbVisibility: true,
-                                  //                                 controller: listScrollController,
-                                  //                                 radius: Radius.circular(8),
-                                  //                                 thickness: 4,
-                                  //                                 child: filteredFriends.isEmpty
-                                  //                                     ? Center(
-                                  //                                         child: Text(
-                                  //                                           searchQuery.isEmpty ? "No users available" : "No matching friends found",
-                                  //                                           style: TextStyle(
-                                  //                                             fontSize: 14.sp,
-                                  //                                             fontFamily: AppConstants.manrope,
-                                  //                                             color: Colors.grey.shade600,
-                                  //                                           ),
-                                  //                                         ),
-                                  //                                       )
-                                  //                                     : ListView.separated(
-                                  //                                         controller: listScrollController,
-                                  //                                         padding: EdgeInsets.zero,
-                                  //                                         itemCount: filteredFriends.length,
-                                  //                                         separatorBuilder: (_, __) => Divider(height: 1, thickness: 0.5, color: Colors.grey.shade200),
-                                  //                                         itemBuilder: (context, index) {
-                                  //                                           final userData = filteredFriends[index];
-                                  //                                           final userId = userData.user?.id.toString();
-                                  //                                           final requestStatus = userData.requestStatuses ?? [];
-                                  //                                           final lowerCaseStatuses = requestStatus.map((status) => status.toLowerCase()).toList();
-                                  //                                           final friendData = {
-                                  //                                             'id': userId,
-                                  //                                             'name': "${userData.user?.firstName ?? ''} ${userData.user?.lastName ?? ''}",
-                                  //                                             'image': userData.user?.profile ?? '',
-                                  //                                           };
-                                  //                                           bool isPending = lowerCaseStatuses.contains("pending");
-                                  //                                           bool isAccepted = lowerCaseStatuses.contains("accepted");
-                                  //                                           bool isCancelled = lowerCaseStatuses.contains("cancel") || lowerCaseStatuses.contains("cancelled") || lowerCaseStatuses.contains("canceled");
-                                  //                                           bool canSelect = requestStatus.isEmpty;
-                                  //                                           bool isSelected = selectedFriends.any((element) => element['id'] == friendData['id']);
-                                  //                                           return ListTile(
-                                  //                                             contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  //                                             onTap: () {
-                                  //                                               if (canSelect) {
-                                  //                                                 setState(() {
-                                  //                                                   if (isSelected) {
-                                  //                                                     selectedFriends.removeWhere((element) => element['id'] == friendData['id']);
-                                  //                                                   } else {
-                                  //                                                     selectedFriends.add(friendData);
-                                  //                                                   }
-                                  //                                                   friendSelectionError = "";
-                                  //                                                 });
-                                  //                                               }
-                                  //                                             },
-                                  //                                             leading: CircleAvatar(
-                                  //                                               radius: 20,
-                                  //                                               backgroundColor: Colors.grey.shade200,
-                                  //                                               child: ClipOval(
-                                  //                                                 child: CachedNetworkImage(
-                                  //                                                   imageUrl: userData.user?.profile ?? "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
-                                  //                                                   placeholder: (context, url) => Image.asset(
-                                  //                                                     'assets/images/person.jpg',
-                                  //                                                     fit: BoxFit.cover,
-                                  //                                                   ),
-                                  //                                                   errorWidget: (context, url, error) => Image.asset(
-                                  //                                                     'assets/images/person.jpg',
-                                  //                                                     fit: BoxFit.cover,
-                                  //                                                   ),
-                                  //                                                   width: 40,
-                                  //                                                   height: 40,
-                                  //                                                   fit: BoxFit.cover,
-                                  //                                                 ),
-                                  //                                               ),
-                                  //                                             ),
-                                  //                                             title: Text(
-                                  //                                               "${userData.user?.firstName ?? ''} ${userData.user?.lastName ?? ''}",
-                                  //                                               style: TextStyle(
-                                  //                                                 fontFamily: AppConstants.manrope,
-                                  //                                                 fontWeight: FontWeight.w500,
-                                  //                                                 fontSize: 14.sp,
-                                  //                                                 color: isPending
-                                  //                                                     ? AppColors.maincolor
-                                  //                                                     : isAccepted
-                                  //                                                         ? Colors.green
-                                  //                                                         : isCancelled
-                                  //                                                             ? Colors.red
-                                  //                                                             : null,
-                                  //                                               ),
-                                  //                                             ),
-                                  //                                             subtitle: requestStatus.isNotEmpty
-                                  //                                                 ? Text(
-                                  //                                                     isPending
-                                  //                                                         ? "Request Pending"
-                                  //                                                         : isAccepted
-                                  //                                                             ? "Friend"
-                                  //                                                             : isCancelled
-                                  //                                                                 ? "Cancelled"
-                                  //                                                                 : "",
-                                  //                                                     style: TextStyle(
-                                  //                                                       fontFamily: AppConstants.manrope,
-                                  //                                                       fontSize: 12.sp,
-                                  //                                                       color: isPending
-                                  //                                                           ? Colors.orange
-                                  //                                                           : isAccepted
-                                  //                                                               ? Colors.green
-                                  //                                                               : isCancelled
-                                  //                                                                   ? Colors.red
-                                  //                                                                   : Colors.grey,
-                                  //                                                       fontStyle: FontStyle.italic,
-                                  //                                                     ),
-                                  //                                                   )
-                                  //                                                 : Text(
-                                  //                                                     "New User",
-                                  //                                                     style: TextStyle(
-                                  //                                                       fontFamily: AppConstants.manrope,
-                                  //                                                       fontSize: 12.sp,
-                                  //                                                       color: Colors.grey,
-                                  //                                                       fontStyle: FontStyle.italic,
-                                  //                                                     ),
-                                  //                                                   ),
-                                  //                                             trailing: Checkbox(
-                                  //                                               value: isSelected || isPending || isAccepted,
-                                  //                                               onChanged: canSelect
-                                  //                                                   ? (value) {
-                                  //                                                       setState(() {
-                                  //                                                         if (value == true) {
-                                  //                                                           if (!isSelected) {
-                                  //                                                             selectedFriends.add(friendData);
-                                  //                                                           }
-                                  //                                                         } else {
-                                  //                                                           selectedFriends.removeWhere((element) => element['id'] == friendData['id']);
-                                  //                                                         }
-                                  //                                                         friendSelectionError = "";
-                                  //                                                       });
-                                  //                                                     }
-                                  //                                                   : null,
-                                  //                                               activeColor: isPending
-                                  //                                                   ? Colors.orange
-                                  //                                                   : isAccepted
-                                  //                                                       ? Colors.green
-                                  //                                                       : AppColors.maincolor,
-                                  //                                               checkColor: Colors.white,
-                                  //                                               fillColor: !canSelect
-                                  //                                                   ? MaterialStateProperty.resolveWith((states) => isPending
-                                  //                                                       ? Colors.orange.shade400
-                                  //                                                       : isAccepted
-                                  //                                                           ? Colors.green.shade400
-                                  //                                                           : isCancelled
-                                  //                                                               ? Colors.grey.shade400
-                                  //                                                               : Colors.grey.shade400)
-                                  //                                                   : null,
-                                  //                                             ),
-                                  //                                             tileColor: (isSelected || !canSelect)
-                                  //                                                 ? (isPending
-                                  //                                                     ? Colors.orange.withOpacity(0.05)
-                                  //                                                     : isAccepted
-                                  //                                                         ? Colors.green.withOpacity(0.05)
-                                  //                                                         : isCancelled
-                                  //                                                             ? Colors.red.withOpacity(0.05)
-                                  //                                                             : Colors.blue.withOpacity(0.05))
-                                  //                                                 : null,
-                                  //                                             selected: isSelected || !canSelect,
-                                  //                                             dense: true,
-                                  //                                           );
-                                  //                                         },
-                                  //                                       ),
-                                  //                               ),
-                                  //                             ),
-                                  //                             if (friendSelectionError.isNotEmpty)
-                                  //                               Padding(
-                                  //                                 padding: EdgeInsets.only(top: 4, left: 4),
-                                  //                                 child: Align(
-                                  //                                   alignment: Alignment.center,
-                                  //                                   child: Text(
-                                  //                                     friendSelectionError,
-                                  //                                     style: TextStyle(
-                                  //                                       color: Colors.red,
-                                  //                                       fontSize: 16.sp,
-                                  //                                       fontFamily: AppConstants.manrope,
-                                  //                                     ),
-                                  //                                   ),
-                                  //                                 ),
-                                  //                               ),
-                                  //                             SizedBox(height: 2.h),
-                                  //                             Row(
-                                  //                               mainAxisAlignment: MainAxisAlignment.end,
-                                  //                               children: [
-                                  //                                 batan(
-                                  //                                   title: "Cancel",
-                                  //                                   route: () => Get.back(),
-                                  //                                   radius: 3.0.w,
-                                  //                                   color: AppColors.maincolor,
-                                  //                                   fontcolor: Colors.white,
-                                  //                                   height: 4.5.h,
-                                  //                                   width: 41.w,
-                                  //                                   fontsize: 15.5.sp,
-                                  //                                 ),
-                                  //                                 SizedBox(width: 3.w),
-                                  //                                 batan(
-                                  //                                   title: "Add Friends",
-                                  //                                   route: () async {
-                                  //                                     if (selectedFriends.isEmpty) {
-                                  //                                       setState(() {
-                                  //                                         friendSelectionError = "Please select at least one friend";
-                                  //                                       });
-                                  //                                       return;
-                                  //                                     }
-
-                                  //                                     for (var friend in selectedFriends) {
-                                  //                                       await makefriendapi(friend['id']);
-                                  //
-                                  //                                     }
-
-                                  //                                     await listconciergerapi();
-
-                                  //                                     Get.back();
-                                  //                                     Get.snackbar(
-                                  //                                       'Friend Request Sent',
-                                  //                                       'Friend requests sent to ${selectedFriends.length} friends',
-                                  //                                       backgroundColor: Colors.green.withOpacity(0.7),
-                                  //                                       colorText: Colors.white,
-                                  //                                       snackPosition: SnackPosition.BOTTOM,
-                                  //                                     );
-                                  //                                   },
-                                  //                                   radius: 3.0.w,
-                                  //                                   color: AppColors.maincolor,
-                                  //                                   fontcolor: Colors.white,
-                                  //                                   height: 4.5.h,
-                                  //                                   width: 39.w,
-                                  //                                   fontsize: 16.sp,
-                                  //                                 ),
-                                  //                               ],
-                                  //                             ),
-                                  //                           ],
-                                  //                         ),
-                                  //                       ),
-                                  //                     ),
-                                  //                   );
-                                  //                 },
-                                  //               );
-                                  //             },
-                                  //           );
-                                  //           print(
-                                  //               "New Friend Pressed");
-                                  //         },
-                                  //         child: Row(
-                                  //           children: [
-                                  //             Text(
-                                  //               "New Friend",
-                                  //               style: TextStyle(
-                                  //                 fontFamily:
-                                  //                     AppConstants
-                                  //                         .manrope,
-                                  //                 fontSize: 16.sp,
-                                  //                 fontWeight:
-                                  //                     FontWeight
-                                  //                         .bold,
-                                  //                 color:
-                                  //                     Colors.grey,
-                                  //               ),
-                                  //             ),
-                                  //             SizedBox(
-                                  //                 width: 2.w),
-                                  //             Icon(
-                                  //                 Icons
-                                  //                     .add_circle_outline_rounded,
-                                  //                 color: Colors
-                                  //                     .grey),
-                                  //           ],
-                                  //         ),
-                                  //       )
-                                  //     : InkWell(
-                                  //         onTap: () {
-                                  //           showDialog(
-                                  //             context: context,
-                                  //             builder: (context) {
-                                  //               String
-                                  //                   groupNameError =
-                                  //                   "";
-                                  //               String
-                                  //                   memberSelectionError =
-                                  //                   "";
-                                  //               final ScrollController
-                                  //                   dialogScrollController =
-                                  //                   ScrollController();
-                                  //               final ScrollController
-                                  //                   listScrollController =
-                                  //                   ScrollController();
-
-                                  //               final TextEditingController
-                                  //                   searchController =
-                                  //                   TextEditingController();
-                                  //               String
-                                  //                   searchQuery =
-                                  //                   "";
-
-                                  //               return StatefulBuilder(
-                                  //                 builder: (context,
-                                  //                     setState) {
-                                  //                   List<dynamic>
-                                  //                       filteredUsers =
-                                  //                       chatuserlistmodel
-                                  //                               ?.data
-                                  //                               ?.where((user) {
-                                  //                             final String
-                                  //                                 fullName =
-                                  //                                 "${user.user?.firstName ?? ''} ${user.user?.lastName ?? ''}".toLowerCase();
-                                  //                             return fullName.contains(searchQuery.toLowerCase());
-                                  //                           })?.toList() ??
-                                  //                           [];
-
-                                  //                   Future<void>
-                                  //                       pickImageFromGallery() async {
-                                  //                     try {
-                                  //                       final ImagePicker
-                                  //                           _picker =
-                                  //                           ImagePicker();
-                                  //                       final XFile?
-                                  //                           image =
-                                  //                           await _picker
-                                  //                               .pickImage(
-                                  //                         source:
-                                  //                             ImageSource.gallery,
-                                  //                         imageQuality:
-                                  //                             70,
-                                  //                       );
-
-                                  //                       if (image !=
-                                  //                           null) {
-                                  //                         setState(
-                                  //                             () {
-                                  //                           selectedImage =
-                                  //                               io.File(image.path);
-                                  //                           imagePath =
-                                  //                               image.path;
-                                  //                           print(
-                                  //                               "Selected image path: ${image.path}");
-                                  //                         });
-                                  //                       }
-                                  //                     } catch (e) {
-                                  //                       print(
-                                  //                           "Error picking image: $e");
-                                  //                     }
-                                  //                   }
-
-                                  //                   return Dialog(
-                                  //                     shape:
-                                  //                         RoundedRectangleBorder(
-                                  //                       borderRadius:
-                                  //                           BorderRadius.circular(
-                                  //                               20),
-                                  //                     ),
-                                  //                     insetPadding: EdgeInsets.symmetric(
-                                  //                         horizontal:
-                                  //                             12,
-                                  //                         vertical:
-                                  //                             16),
-                                  //                     child:
-                                  //                         Container(
-                                  //                       constraints:
-                                  //                           BoxConstraints(
-                                  //                         maxHeight:
-                                  //                             MediaQuery.of(context).size.height *
-                                  //                                 0.8,
-                                  //                       ),
-                                  //                       padding: EdgeInsets.symmetric(
-                                  //                           horizontal:
-                                  //                               16,
-                                  //                           vertical:
-                                  //                               16),
-                                  //                       decoration:
-                                  //                           BoxDecoration(
-                                  //                         borderRadius:
-                                  //                             BorderRadius.circular(20),
-                                  //                         color: Colors
-                                  //                             .white,
-                                  //                       ),
-                                  //                       child:
-                                  //                           SingleChildScrollView(
-                                  //                         keyboardDismissBehavior:
-                                  //                             ScrollViewKeyboardDismissBehavior.onDrag,
-                                  //                         controller:
-                                  //                             dialogScrollController,
-                                  //                         child:
-                                  //                             Column(
-                                  //                           mainAxisSize:
-                                  //                               MainAxisSize.min,
-                                  //                           children: [
-                                  //                             Row(
-                                  //                               mainAxisAlignment: MainAxisAlignment.center,
-                                  //                               children: [
-                                  //                                 Icon(Icons.group_add, color: AppColors.maincolor, size: 24),
-                                  //                                 SizedBox(width: 2.w),
-                                  //                                 Text(
-                                  //                                   'Create New Group',
-                                  //                                   style: TextStyle(
-                                  //                                     color: Colors.black,
-                                  //                                     fontSize: 18.sp,
-                                  //                                     fontWeight: FontWeight.w700,
-                                  //                                     fontFamily: AppConstants.manrope,
-                                  //                                   ),
-                                  //                                 ),
-                                  //                               ],
-                                  //                             ),
-                                  //                             SizedBox(height: 1.5.h),
-                                  //                             Align(
-                                  //                               alignment: Alignment.centerLeft,
-                                  //                               child: Text(
-                                  //                                 'Group Name',
-                                  //                                 style: TextStyle(
-                                  //                                   fontSize: 16.sp,
-                                  //                                   fontWeight: FontWeight.w600,
-                                  //                                   fontFamily: AppConstants.manrope,
-                                  //                                 ),
-                                  //                               ),
-                                  //                             ),
-                                  //                             SizedBox(height: 0.8.h),
-                                  //                             Row(
-                                  //                               crossAxisAlignment: CrossAxisAlignment.center,
-                                  //                               children: [
-                                  //                                 Container(
-                                  //                                   width: 40,
-                                  //                                   height: 40,
-                                  //                                   decoration: BoxDecoration(
-                                  //                                     shape: BoxShape.circle,
-                                  //                                     color: Colors.grey.shade50,
-                                  //                                   ),
-                                  //                                   child: InkWell(
-                                  //                                     onTap: pickImageFromGallery,
-                                  //                                     child: selectedImage != null
-                                  //                                         ? ClipRRect(
-                                  //                                             borderRadius: BorderRadius.circular(20),
-                                  //                                             child: Image.file(
-                                  //                                               selectedImage!,
-                                  //                                               width: 40,
-                                  //                                               height: 40,
-                                  //                                               fit: BoxFit.cover,
-                                  //                                             ),
-                                  //                                           )
-                                  //                                         : Center(
-                                  //                                             child: Icon(
-                                  //                                               Icons.camera_alt_outlined,
-                                  //                                               color: Colors.black54,
-                                  //                                               size: 20,
-                                  //                                             ),
-                                  //                                           ),
-                                  //                                   ),
-                                  //                                 ),
-                                  //                                 SizedBox(width: 3.w),
-                                  //                                 Expanded(
-                                  //                                   child: Column(
-                                  //                                     crossAxisAlignment: CrossAxisAlignment.start,
-                                  //                                     children: [
-                                  //                                       SizedBox(
-                                  //                                         height: 4.5.h,
-                                  //                                         child: TextField(
-                                  //                                           controller: groupNameController,
-                                  //                                           decoration: InputDecoration(
-                                  //                                             hintText: 'Enter group name',
-                                  //                                             hintStyle: TextStyle(
-                                  //                                               color: Colors.grey.shade400,
-                                  //                                               fontFamily: AppConstants.manrope,
-                                  //                                               fontSize: 14.sp,
-                                  //                                             ),
-                                  //                                             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                  //                                             filled: true,
-                                  //                                             fillColor: Colors.grey.shade50,
-                                  //                                             border: OutlineInputBorder(
-                                  //                                               borderRadius: BorderRadius.circular(10),
-                                  //                                               borderSide: BorderSide(color: Colors.grey.shade300),
-                                  //                                             ),
-                                  //                                             focusedBorder: OutlineInputBorder(
-                                  //                                               borderRadius: BorderRadius.circular(10),
-                                  //                                               borderSide: BorderSide(color: AppColors.maincolor, width: 1.2),
-                                  //                                             ),
-                                  //                                             errorBorder: OutlineInputBorder(
-                                  //                                               borderRadius: BorderRadius.circular(10),
-                                  //                                               borderSide: BorderSide(color: Colors.red, width: 1.2),
-                                  //                                             ),
-                                  //                                           ),
-                                  //                                           style: TextStyle(
-                                  //                                             fontSize: 14.sp,
-                                  //                                             fontFamily: AppConstants.manrope,
-                                  //                                           ),
-                                  //                                           onChanged: (value) {
-                                  //                                             setState(() {
-                                  //                                               groupNameError = "";
-                                  //                                             });
-                                  //                                           },
-                                  //                                         ),
-                                  //                                       ),
-                                  //                                       if (groupNameError.isNotEmpty)
-                                  //                                         Padding(
-                                  //                                           padding: EdgeInsets.only(top: 4, left: 4),
-                                  //                                           child: Text(
-                                  //                                             groupNameError,
-                                  //                                             style: TextStyle(
-                                  //                                               color: Colors.red,
-                                  //                                               fontSize: 12.sp,
-                                  //                                               fontFamily: AppConstants.manrope,
-                                  //                                             ),
-                                  //                                           ),
-                                  //                                         ),
-                                  //                                     ],
-                                  //                                   ),
-                                  //                                 ),
-                                  //                               ],
-                                  //                             ),
-                                  //                             Divider(
-                                  //                               height: 20,
-                                  //                               thickness: 1,
-                                  //                               color: Colors.grey.shade400,
-                                  //                             ),
-                                  //                             Container(
-                                  //                               decoration: BoxDecoration(
-                                  //                                 color: Colors.grey.shade100,
-                                  //                                 borderRadius: BorderRadius.circular(10),
-                                  //                               ),
-                                  //                               child: TextField(
-                                  //                                 controller: searchController,
-                                  //                                 onChanged: (value) {
-                                  //                                   setState(() {
-                                  //                                     searchQuery = value;
-                                  //                                   });
-                                  //                                 },
-                                  //                                 decoration: InputDecoration(
-                                  //                                   hintText: 'Search members',
-                                  //                                   prefixIcon: Icon(Icons.search, color: Colors.grey.shade600),
-                                  //                                   border: InputBorder.none,
-                                  //                                   contentPadding: EdgeInsets.symmetric(vertical: 12),
-                                  //                                 ),
-                                  //                                 style: TextStyle(
-                                  //                                   fontSize: 14.sp,
-                                  //                                   fontFamily: AppConstants.manrope,
-                                  //                                 ),
-                                  //                               ),
-                                  //                             ),
-                                  //                             SizedBox(height: 1.h),
-                                  //                             Row(
-                                  //                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  //                               children: [
-                                  //                                 Text(
-                                  //                                   'Select Members',
-                                  //                                   style: TextStyle(
-                                  //                                     fontSize: 16.sp,
-                                  //                                     fontWeight: FontWeight.w600,
-                                  //                                     fontFamily: AppConstants.manrope,
-                                  //                                   ),
-                                  //                                 ),
-                                  //                                 Text(
-                                  //                                   '${selectedMembers.length} selected',
-                                  //                                   style: TextStyle(
-                                  //                                     fontSize: 14.sp,
-                                  //                                     fontWeight: FontWeight.w500,
-                                  //                                     fontFamily: AppConstants.manrope,
-                                  //                                     color: AppColors.maincolor,
-                                  //                                   ),
-                                  //                                 ),
-                                  //                               ],
-                                  //                             ),
-                                  //                             SizedBox(height: 0.8.h),
-                                  //                             Container(
-                                  //                               height: 32.h,
-                                  //                               decoration: BoxDecoration(
-                                  //                                 color: Colors.white,
-                                  //                                 borderRadius: BorderRadius.circular(12),
-                                  //                               ),
-                                  //                               child: Scrollbar(
-                                  //                                 thumbVisibility: true,
-                                  //                                 controller: listScrollController,
-                                  //                                 radius: Radius.circular(8),
-                                  //                                 thickness: 4,
-                                  //                                 child: filteredUsers.isEmpty
-                                  //                                     ? Center(
-                                  //                                         child: Text(
-                                  //                                           searchQuery.isEmpty ? "No users available" : "No matching members found",
-                                  //                                           style: TextStyle(
-                                  //                                             fontSize: 14.sp,
-                                  //                                             fontFamily: AppConstants.manrope,
-                                  //                                             color: Colors.grey.shade600,
-                                  //                                           ),
-                                  //                                         ),
-                                  //                                       )
-                                  //                                     : ListView.separated(
-                                  //                                         controller: listScrollController,
-                                  //                                         padding: EdgeInsets.zero,
-                                  //                                         itemCount: filteredUsers.length,
-                                  //                                         separatorBuilder: (_, __) => Divider(height: 1, thickness: 0.5, color: Colors.grey.shade200),
-                                  //                                         itemBuilder: (context, index) {
-                                  //                                           final user = filteredUsers[index];
-                                  //                                           final memberId = user?.userId.toString() ?? "";
-                                  //                                           final isSelected = selectedMembers.contains(memberId);
-
-                                  //                                           return ListTile(
-                                  //                                             contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  //                                             leading: CircleAvatar(
-                                  //                                               radius: 20,
-                                  //                                               backgroundColor: Colors.grey.shade200,
-                                  //                                               child: ClipOval(
-                                  //                                                 child: CachedNetworkImage(
-                                  //                                                   imageUrl: user?.user?.profile ?? "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
-                                  //                                                   placeholder: (context, url) => Image.asset(
-                                  //                                                     'assets/images/person.jpg',
-                                  //                                                     fit: BoxFit.cover,
-                                  //                                                   ),
-                                  //                                                   errorWidget: (context, url, error) => Image.asset(
-                                  //                                                     'assets/images/person.jpg',
-                                  //                                                     fit: BoxFit.cover,
-                                  //                                                   ),
-                                  //                                                   width: 40,
-                                  //                                                   height: 40,
-                                  //                                                   fit: BoxFit.cover,
-                                  //                                                 ),
-                                  //                                               ),
-                                  //                                             ),
-                                  //                                             title: Text(
-                                  //                                               "${user?.user?.firstName ?? ""} ${user?.user?.lastName ?? "NA"}",
-                                  //                                               style: TextStyle(
-                                  //                                                 fontFamily: AppConstants.manrope,
-                                  //                                                 fontWeight: FontWeight.w500,
-                                  //                                                 fontSize: 14.sp,
-                                  //                                               ),
-                                  //                                             ),
-                                  //                                             trailing: Checkbox(
-                                  //                                               value: isSelected,
-                                  //                                               onChanged: (selected) {
-                                  //                                                 setState(() {
-                                  //                                                   if (selected == true) {
-                                  //                                                     selectedMembers.add(memberId);
-                                  //                                                   } else {
-                                  //                                                     selectedMembers.remove(memberId);
-                                  //                                                   }
-                                  //                                                   memberSelectionError = "";
-                                  //                                                 });
-                                  //                                               },
-                                  //                                               activeColor: AppColors.maincolor,
-                                  //                                             ),
-                                  //                                             tileColor: isSelected ? Colors.blue.withOpacity(0.1) : null,
-                                  //                                             selected: isSelected,
-                                  //                                             dense: true,
-                                  //                                             onTap: () {
-                                  //                                               setState(() {
-                                  //                                                 if (isSelected) {
-                                  //                                                   selectedMembers.remove(memberId);
-                                  //                                                 } else {
-                                  //                                                   selectedMembers.add(memberId);
-                                  //                                                 }
-                                  //                                                 memberSelectionError = "";
-                                  //                                               });
-                                  //                                             },
-                                  //                                           );
-                                  //                                         },
-                                  //                                       ),
-                                  //                               ),
-                                  //                             ),
-                                  //                             if (memberSelectionError.isNotEmpty)
-                                  //                               Padding(
-                                  //                                 padding: EdgeInsets.only(top: 4, left: 4),
-                                  //                                 child: Align(
-                                  //                                   alignment: Alignment.center,
-                                  //                                   child: Text(
-                                  //                                     memberSelectionError,
-                                  //                                     style: TextStyle(
-                                  //                                       color: Colors.red,
-                                  //                                       fontSize: 14.sp,
-                                  //                                       fontFamily: AppConstants.manrope,
-                                  //                                     ),
-                                  //                                   ),
-                                  //                                 ),
-                                  //                               ),
-                                  //                             SizedBox(height: 2.h),
-                                  //                             Row(
-                                  //                               mainAxisAlignment: MainAxisAlignment.end,
-                                  //                               children: [
-                                  //                                 batan(
-                                  //                                   title: "Cancel",
-                                  //                                   route: () {
-                                  //                                     groupNameController.clear();
-                                  //                                     selectedMembers.clear();
-                                  //                                     selectedImage = null;
-                                  //                                     imagePath = '';
-                                  //                                     Get.back();
-                                  //                                   },
-                                  //                                   radius: 3.0.w,
-                                  //                                   color: AppColors.maincolor,
-                                  //                                   fontcolor: Colors.white,
-                                  //                                   height: 4.5.h,
-                                  //                                   width: 41.w,
-                                  //                                   fontsize: 15.5.sp,
-                                  //                                 ),
-                                  //                                 SizedBox(width: 3.w),
-                                  //                                 batan(
-                                  //                                   title: "Create Group",
-                                  //                                   route: () {
-                                  //                                     if (groupNameController.text.trim().isEmpty) {
-                                  //                                       setState(() {
-                                  //                                         groupNameError = "Please enter group name";
-                                  //                                         memberSelectionError = "";
-                                  //                                       });
-                                  //                                       return;
-                                  //                                     }
-
-                                  //                                     if (selectedMembers.isEmpty) {
-                                  //                                       setState(() {
-                                  //                                         memberSelectionError = "Please select at least one member";
-                                  //                                         groupNameError = "";
-                                  //                                       });
-                                  //                                       return;
-                                  //                                     }
-
-                                  //                                     creategrouplistdAp();
-                                  //                                     Get.back();
-                                  //                                   },
-                                  //                                   radius: 3.0.w,
-                                  //                                   color: AppColors.maincolor,
-                                  //                                   fontcolor: Colors.white,
-                                  //                                   height: 4.5.h,
-                                  //                                   width: 39.w,
-                                  //                                   fontsize: 15.sp,
-                                  //                                 ),
-                                  //                               ],
-                                  //                             ),
-                                  //                           ],
-                                  //                         ),
-                                  //                       ),
-                                  //                     ),
-                                  //                   );
-                                  //                 },
-                                  //               );
-                                  //             },
-                                  //           );
-                                  //           print(
-                                  //               "Create Group Pressed");
-                                  //         },
-                                  //         child: Row(
-                                  //           children: [
-                                  //             Text(
-                                  //               "Create Group",
-                                  //               style: TextStyle(
-                                  //                 fontFamily:
-                                  //                     AppConstants
-                                  //                         .manrope,
-                                  //                 fontSize: 16.sp,
-                                  //                 fontWeight:
-                                  //                     FontWeight
-                                  //                         .bold,
-                                  //                 color:
-                                  //                     Colors.grey,
-                                  //               ),
-                                  //             ),
-                                  //             SizedBox(
-                                  //                 width: 2.w),
-                                  //             Icon(
-                                  //                 Icons
-                                  //                     .add_circle_outline_rounded,
-                                  //                 color: Colors
-                                  //                     .grey),
-                                  //           ],
-                                  //         ),
-                                  //       ),
                                 ),
                               ),
                         ],
@@ -1920,1569 +942,564 @@ class _MessageboardState extends State<Messageboard> {
                                 ),
                               )
                           : selectedOption == "Local"
-                          ? Container(
-                            height: 60.h,
-                            child: PagedListView<int, Data1>(
-                              pagingController: _pagingController,
-                              padding: EdgeInsets.zero,
-                              builderDelegate: PagedChildBuilderDelegate<Data1>(
-                                itemBuilder: (_, post, idx) {
-                                  return Container(
-                                    margin: EdgeInsets.symmetric(
-                                      vertical: 0.5.h,
+                          ? localpost_model?.data?.data?.length == null ||
+                                  localpost_model?.data?.data?.length == 0
+                              ? Center(
+                                child: Container(
+                                  height: 70.h,
+                                  child: Text(
+                                    "No Posts available",
+                                    style: TextStyle(
+                                      fontSize: 17.sp,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal,
+                                      fontFamily: AppConstants.manrope,
                                     ),
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 3.w,
-                                      vertical: 2.h,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(12),
-                                      boxShadow: [
-                                        BoxShadow(
+                                  ),
+                                ),
+                              )
+                              : Container(
+                                height: 60.h,
+                                child: ListView.builder(
+                                  controller: _scrollController,
+                                  padding: EdgeInsets.zero,
+                                  itemCount:
+                                      localpost_model?.data?.data?.length,
+                                  itemBuilder: (context, index) {
+                                    final post =
+                                        localpost_model?.data?.data?[index];
+                                    return Container(
+                                      margin: EdgeInsets.symmetric(
+                                        vertical: 0.5.h,
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 3.w,
+                                        vertical: 2.h,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
                                           color: Colors.black12,
-                                          blurRadius: 2,
+                                          width: 0.2.w,
                                         ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            CircleAvatar(
-                                              radius: 4.w,
-                                              backgroundImage:
-                                                  post
-                                                              .users
-                                                              ?.first
-                                                              .profiles
-                                                              ?.isNotEmpty ==
-                                                          true
-                                                      ? CachedNetworkImageProvider(
-                                                        post
-                                                            .users!
-                                                            .first
-                                                            .profiles!,
-                                                      )
-                                                      : const AssetImage(
-                                                            'assets/images/waveeLogoShort.png',
-                                                          )
-                                                          as ImageProvider,
-                                            ),
-                                            SizedBox(width: 2.w),
-                                            SizedBox(width: 2.w),
-                                            Text(
-                                              "${post.users?[0].name ?? ""}",
-                                              style: TextStyle(
-                                                fontFamily:
-                                                AppConstants.manrope,
-                                                fontSize: 15.sp,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            SizedBox(width: 2.w),
-                                            Text(
-                                              "•${formatPostDate(post.createdAt)}",
-                                              style: TextStyle(
-                                                fontSize: 14.sp,
-                                                color: Colors.grey,
-                                                fontFamily:
-                                                AppConstants.manrope,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Spacer(),
-                                            loginModel?.data?.user?.id ==
-                                                post?.userId
-                                                ? PopupMenuButton<String>(
-                                              icon: Icon(
-                                                Icons.more_vert,
-                                                color: Colors.black87,
-                                              ),
-                                              onSelected: (value) {
-                                                if (value == 'edit') {
-                                                  UpdatePostData(
-                                                    context,
-                                                    post,
-                                                  );
-                                                } else if (value ==
-                                                    'delete') {
-                                                  showCancelConfirmationDialog(
-                                                    context: context,
-                                                    post!.id.toString() ??
-                                                        "",
-                                                  );
-                                                  print(
-                                                    "Delete selected",
-                                                  );
-                                                } else if (value ==
-                                                    'report') {
-                                                  showBlockUserDialog(
-                                                    context,
-                                                    supportUrl,
-                                                  );
-                                                  print(
-                                                    "Delete selected",
-                                                  );
-                                                }
-                                              },
-                                              itemBuilder:
-                                                  (
-                                                  BuildContext context,
-                                                  ) => [
-                                                PopupMenuItem(
-                                                  value: 'edit',
-                                                  child: Text(
-                                                    'Edit',
-                                                    style: TextStyle(
-                                                      fontSize: 16.sp,
-                                                      fontFamily:
-                                                      AppConstants
-                                                          .manrope,
-                                                    ),
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(20),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black12,
+                                            blurRadius: 1,
+                                            offset: Offset(0, 1),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                height: 9.w,
+                                                width: 9.w,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: AppColors.maincolor,
+                                                    width: 1,
+                                                  ),
+                                                  image: DecorationImage(
+                                                    image:
+                                                        (localpost_model
+                                                                    ?.data
+                                                                    ?.data?[index]
+                                                                    .users?[0]
+                                                                    .profiles
+                                                                    ?.isNotEmpty ??
+                                                                false)
+                                                            ? CachedNetworkImageProvider(
+                                                              localpost_model!
+                                                                  .data!
+                                                                  .data![index]
+                                                                  .users![0]
+                                                                  .profiles!,
+                                                            )
+                                                            : const AssetImage(
+                                                                  'assets/images/waveeLogoShort.png',
+                                                                )
+                                                                as ImageProvider,
+                                                    fit: BoxFit.cover,
                                                   ),
                                                 ),
-                                                PopupMenuItem(
-                                                  value: 'delete',
-                                                  child: Text(
-                                                    'Delete',
-                                                    style: TextStyle(
-                                                      fontSize: 16.sp,
-                                                      fontFamily:
-                                                      AppConstants
-                                                          .manrope,
-                                                    ),
-                                                  ),
+                                              ),
+
+                                              SizedBox(width: 2.w),
+                                              Text(
+                                                "${localpost_model?.data?.data?[index].users?[0].name ?? ""}",
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                      AppConstants.manrope,
+                                                  fontSize: 15.sp,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
-                                                PopupMenuItem(
-                                                  value: 'report',
-                                                  child: Text(
-                                                    'Report',
-                                                    style: TextStyle(
-                                                      fontSize: 16.sp,
-                                                      fontFamily:
-                                                      AppConstants
-                                                          .manrope,
-                                                    ),
-                                                  ),
+                                              ),
+                                              SizedBox(width: 2.w),
+                                              Text(
+                                                "•${formatPostDate(localpost_model?.data?.data?[index].createdAt)}",
+                                                style: TextStyle(
+                                                  fontSize: 14.sp,
+                                                  color: Colors.grey,
+                                                  fontFamily:
+                                                      AppConstants.manrope,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
-                                              ],
-                                            )
-                                                : InkWell(
-                                              onTap: () {
-                                                showBlockUserDialog(
-                                                  context,
-                                                  supportUrl,
-                                                );
-                                              },
-                                              child: Icon(
-                                                Icons.more_vert_outlined,
-                                              ).paddingOnly(right: 2.w),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 1.h),
-                                        Text(
-                                          "${post.title ?? ""}",
-                                          style: TextStyle(
-                                            fontFamily: AppConstants.manrope,
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.bold,
-                                            color: AppColors.maincolor,
-                                          ),
-                                        ),
-                                        ReadMoreText(
-                                          "${post.text == null || post.text == "" ? "N/A" : "${post.text}"}",
-                                          trimLines: 4,
-                                          trimLength: 146,
-                                          colorClickableText: Colors.blue,
-                                          trimMode: TrimMode.Length,
-                                          trimCollapsedText: ' Show more',
-                                          trimExpandedText: ' Show less',
-                                          moreStyle: TextStyle(
-                                            fontSize: 15.sp,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: AppConstants.manrope,
-                                            letterSpacing: 1,
-                                            color: AppColors.maincolor,
-                                          ),
-                                          lessStyle: TextStyle(
-                                            fontSize: 15.sp,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: AppConstants.manrope,
-                                            letterSpacing: 1,
-                                            color: AppColors.maincolor,
-                                          ),
-                                          style: TextStyle(
-                                            fontSize: 16.sp,
-                                            color: Colors.grey.shade500,
-                                            fontWeight: FontWeight.normal,
-                                            fontFamily: AppConstants.manrope,
-                                          ),
-                                        ),
-                                        post?.file?.length == 0 ||
-                                            post?.file?.length == null
-                                            ? SizedBox()
-                                            : Padding(
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: 1.h,
-                                            horizontal: 2.5.w,
-                                          ),
-                                          child: StatefulBuilder(
-                                            builder: (context, setState) {
-                                              final pageCount =
-                                                  post?.file?.length ?? 0;
-                                              return SizedBox(
-                                                height: 35.h,
-                                                child: Stack(
-                                                  children: [
-                                                    PageView.builder(
-                                                      controller:
-                                                      _pageController,
-                                                      itemCount:
-                                                      pageCount,
-                                                      onPageChanged: (
-                                                          index,
-                                                          ) {
-                                                        setState(
-                                                              () =>
-                                                          _currentPage =
-                                                              index,
-                                                        );
-                                                      },
-                                                      itemBuilder: (
+                                              ),
+                                              Spacer(),
+                                              loginModel?.data?.user?.id ==
+                                                      post?.userId
+                                                  ? PopupMenuButton<String>(
+                                                    icon: Icon(
+                                                      Icons.more_vert,
+                                                      color: Colors.black87,
+                                                    ),
+                                                    onSelected: (value) {
+                                                      if (value == 'edit') {
+                                                        UpdatePostData(
                                                           context,
-                                                          index,
-                                                          ) {
-                                                        final imageUrl =
-                                                            post?.file?[index] ??
-                                                                "";
-                                                        return ClipRRect(
-                                                          borderRadius:
-                                                          BorderRadius.circular(
-                                                            10,
-                                                          ),
-                                                          child: CachedNetworkImage(
-                                                            imageUrl:
-                                                            imageUrl,
-                                                            placeholder:
-                                                                (
-                                                                context,
-                                                                url,
-                                                                ) => Center(
-                                                              child:
-                                                              CircularProgressIndicator(),
-                                                            ),
-                                                            errorWidget:
-                                                                (
-                                                                context,
-                                                                url,
-                                                                error,
-                                                                ) => Image.asset(
-                                                              "assets/images/waveeLogoShort.png",
-                                                              fit:
-                                                              BoxFit.cover,
-                                                            ),
-                                                            width:
-                                                            double
-                                                                .infinity,
-                                                            height: 35.h,
-                                                            fit:
-                                                            BoxFit
-                                                                .cover,
-                                                          ),
-                                                        ).marginOnly(
-                                                          right: 1.w,
+                                                          post,
                                                         );
-                                                      },
-                                                    ),
-                                                    Positioned(
-                                                      top: 8,
-                                                      right: 16,
-                                                      child: Container(
-                                                        padding:
-                                                        EdgeInsets.symmetric(
-                                                          horizontal:
-                                                          10,
-                                                          vertical: 4,
-                                                        ),
-                                                        decoration: BoxDecoration(
-                                                          color: Colors
-                                                              .black
-                                                              .withOpacity(
-                                                            0.6,
+                                                      } else if (value ==
+                                                          'delete') {
+                                                        showCancelConfirmationDialog(
+                                                          context: context,
+                                                          post!.id.toString() ??
+                                                              "",
+                                                        );
+                                                        print(
+                                                          "Delete selected",
+                                                        );
+                                                      } else if (value ==
+                                                          'report') {
+                                                        showBlockUserDialog(
+                                                          context,
+                                                          supportUrl,
+                                                        );
+                                                        print(
+                                                          "Delete selected",
+                                                        );
+                                                      }
+                                                    },
+                                                    itemBuilder:
+                                                        (
+                                                          BuildContext context,
+                                                        ) => [
+                                                          PopupMenuItem(
+                                                            value: 'edit',
+                                                            child: Text(
+                                                              'Edit',
+                                                              style: TextStyle(
+                                                                fontSize: 16.sp,
+                                                                fontFamily:
+                                                                    AppConstants
+                                                                        .manrope,
+                                                              ),
+                                                            ),
                                                           ),
-                                                          borderRadius:
+                                                          PopupMenuItem(
+                                                            value: 'delete',
+                                                            child: Text(
+                                                              'Delete',
+                                                              style: TextStyle(
+                                                                fontSize: 16.sp,
+                                                                fontFamily:
+                                                                    AppConstants
+                                                                        .manrope,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          PopupMenuItem(
+                                                            value: 'report',
+                                                            child: Text(
+                                                              'Report',
+                                                              style: TextStyle(
+                                                                fontSize: 16.sp,
+                                                                fontFamily:
+                                                                    AppConstants
+                                                                        .manrope,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                  )
+                                                  : InkWell(
+                                                    onTap: () {
+                                                      showBlockUserDialog(
+                                                        context,
+                                                        supportUrl,
+                                                      );
+                                                    },
+                                                    child: Icon(
+                                                      Icons.more_vert_outlined,
+                                                    ).paddingOnly(right: 2.w),
+                                                  ),
+                                            ],
+                                          ),
+                                          Text(
+                                            "${localpost_model?.data?.data?[index].title ?? ""}",
+                                            style: TextStyle(
+                                              fontFamily: AppConstants.manrope,
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color: AppColors.maincolor,
+                                            ),
+                                          ),
+                                          ReadMoreText(
+                                            "${localpost_model?.data?.data?[index].text == null || localpost_model?.data?.data?[index].text == "" ? "N/A" : "${localpost_model?.data?.data?[index].text}"}",
+                                            trimLines: 4,
+                                            trimLength: 146,
+                                            colorClickableText: Colors.blue,
+                                            trimMode: TrimMode.Length,
+                                            trimCollapsedText: ' Show more',
+                                            trimExpandedText: ' Show less',
+                                            moreStyle: TextStyle(
+                                              fontSize: 15.sp,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: AppConstants.manrope,
+                                              letterSpacing: 1,
+                                              color: AppColors.maincolor,
+                                            ),
+                                            lessStyle: TextStyle(
+                                              fontSize: 15.sp,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: AppConstants.manrope,
+                                              letterSpacing: 1,
+                                              color: AppColors.maincolor,
+                                            ),
+                                            style: TextStyle(
+                                              fontSize: 16.sp,
+                                              color: Colors.grey.shade500,
+                                              fontWeight: FontWeight.normal,
+                                              fontFamily: AppConstants.manrope,
+                                            ),
+                                          ),
+                                          post?.file?.length == 0 ||
+                                                  post?.file?.length == null
+                                              ? SizedBox()
+                                              : Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                  vertical: 1.h,
+                                                  horizontal: 2.5.w,
+                                                ),
+                                                child: StatefulBuilder(
+                                                  builder: (context, setState) {
+                                                    final pageCount =
+                                                        post?.file?.length ?? 0;
+                                                    return SizedBox(
+                                                      height: 35.h,
+                                                      child: Stack(
+                                                        children: [
+                                                          PageView.builder(
+                                                            controller:
+                                                                _pageController,
+                                                            itemCount:
+                                                                pageCount,
+                                                            onPageChanged: (
+                                                              index,
+                                                            ) {
+                                                              setState(
+                                                                () =>
+                                                                    _currentPage =
+                                                                        index,
+                                                              );
+                                                            },
+                                                            itemBuilder: (
+                                                              context,
+                                                              index,
+                                                            ) {
+                                                              final imageUrl =
+                                                                  post?.file?[index] ??
+                                                                  "";
+                                                              return ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      10,
+                                                                    ),
+                                                                child: CachedNetworkImage(
+                                                                  imageUrl:
+                                                                      imageUrl,
+                                                                  placeholder:
+                                                                      (
+                                                                        context,
+                                                                        url,
+                                                                      ) => Center(
+                                                                        child:
+                                                                            CircularProgressIndicator(),
+                                                                      ),
+                                                                  errorWidget:
+                                                                      (
+                                                                        context,
+                                                                        url,
+                                                                        error,
+                                                                      ) => Image.asset(
+                                                                        "assets/images/waveeLogoShort.png",
+                                                                        fit:
+                                                                            BoxFit.cover,
+                                                                      ),
+                                                                  width:
+                                                                      double
+                                                                          .infinity,
+                                                                  height: 35.h,
+                                                                  fit:
+                                                                      BoxFit
+                                                                          .cover,
+                                                                ),
+                                                              ).marginOnly(
+                                                                right: 1.w,
+                                                              );
+                                                            },
+                                                          ),
+                                                          Positioned(
+                                                            top: 8,
+                                                            right: 16,
+                                                            child: Container(
+                                                              padding:
+                                                                  EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        10,
+                                                                    vertical: 4,
+                                                                  ),
+                                                              decoration: BoxDecoration(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                      0.6,
+                                                                    ),
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      20,
+                                                                    ),
+                                                              ),
+                                                              child: Text(
+                                                                '${_currentPage + 1}/$pageCount',
+                                                                style: TextStyle(
+                                                                  color:
+                                                                      Colors
+                                                                          .white,
+                                                                  fontSize:
+                                                                      12.sp,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                          SizedBox(height: 1.5.h),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    (localpost_model
+                                                                ?.data
+                                                                ?.data?[index]
+                                                                .totalComments)
+                                                            .toString() +
+                                                        " Replies",
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                      fontSize: 16.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Color(0XFF3E3E3E),
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 2.w),
+                                                  Text(
+                                                    (localpost_model
+                                                                ?.data
+                                                                ?.data?[index]
+                                                                .totalLikes)
+                                                            .toString() +
+                                                        " Likes",
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                      fontSize: 16.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Color(0XFF3E3E3E),
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 2.w),
+                                                  // GestureDetector(
+                                                  //   onTap: () {
+                                                  //     try {
+                                                  //       final imageUrl =
+                                                  //           messageBoardModal
+                                                  //               ?.data?[
+                                                  //                   index]
+                                                  //               ?.file
+                                                  //               .toString();
+                                                  //       final linkToShare = (imageUrl ==
+                                                  //                   null ||
+                                                  //               imageUrl
+                                                  //                   .isEmpty)
+                                                  //           ? "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png"
+                                                  //           : imageUrl;
+                                                  //       shareConciergeImage(
+                                                  //           linkToShare);
+                                                  //     } catch (e) {
+                                                  //       print(
+                                                  //           "Error sharing: $e");
+                                                  //     }
+                                                  //   },
+                                                  //   child: Icon(
+                                                  //     Icons
+                                                  //         .share_outlined,
+                                                  //     size: 18.sp,
+                                                  //     color: Color(
+                                                  //         0XFF3E3E3E),
+                                                  //   ),
+                                                  // ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  StatefulBuilder(
+                                                    builder: (
+                                                      context,
+                                                      localSetState,
+                                                    ) {
+                                                      bool isLiked =
+                                                          index <
+                                                                  isLikedListLocal
+                                                                      .length
+                                                              ? isLikedListLocal[index]
+                                                              : false;
+                                                      bool isInProgress =
+                                                          index <
+                                                                  isLikeInProgressListLocal
+                                                                      .length
+                                                              ? isLikeInProgressListLocal[index]
+                                                              : false;
+
+                                                      return GestureDetector(
+                                                        onTap:
+                                                            isInProgress
+                                                                ? null
+                                                                : () {
+                                                                  if (index <
+                                                                          isLikedListLocal
+                                                                              .length &&
+                                                                      index <
+                                                                          isLikeInProgressListLocal
+                                                                              .length) {
+                                                                    localSetState(() {
+                                                                      isLikedListLocal[index] =
+                                                                          !isLikedListLocal[index];
+                                                                      isLikeInProgressListLocal[index] =
+                                                                          true;
+                                                                    });
+                                                                    _saveLikeStatusLocal(
+                                                                      index,
+                                                                      isLikedListLocal[index],
+                                                                    );
+                                                                    postslikelocalap(
+                                                                      index,
+                                                                      () {
+                                                                        localSetState(() {
+                                                                          isLikeInProgressListLocal[index] =
+                                                                              false;
+                                                                        });
+                                                                      },
+                                                                    );
+                                                                  }
+                                                                },
+                                                        child: Text(
+                                                          "Like",
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                AppConstants
+                                                                    .manrope,
+                                                            fontSize: 16.sp,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color:
+                                                                isLiked
+                                                                    ? Colors.red
+                                                                    : Color(
+                                                                      0XFF3E3E3E,
+                                                                    ),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                  SizedBox(width: 2.w),
+                                                  Container(
+                                                    height: 2.h,
+                                                    width: 0.5.w,
+                                                    decoration: BoxDecoration(
+                                                      color: Color(0XFF3E3E3E),
+                                                      borderRadius:
                                                           BorderRadius.circular(
                                                             20,
                                                           ),
-                                                        ),
-                                                        child: Text(
-                                                          '${_currentPage + 1}/$pageCount',
-                                                          style: TextStyle(
-                                                            color:
-                                                            Colors
-                                                                .white,
-                                                            fontSize:
-                                                            12.sp,
-                                                          ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 2.w),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      getComments1(
+                                                        context,
+                                                        post?.id?.toString() ??
+                                                            "",
+                                                      );
+                                                    },
+                                                    child: Text(
+                                                      "Comment",
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            AppConstants
+                                                                .manrope,
+                                                        fontSize: 16.sp,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Color(
+                                                          0XFF3E3E3E,
                                                         ),
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
-                                              );
-                                            },
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  (post
-                                                      .totalComments)
-                                                      .toString() +
-                                                      " Replies",
-                                                  style: TextStyle(
-                                                    fontFamily:
-                                                    AppConstants.manrope,
-                                                    fontSize: 16.sp,
-                                                    fontWeight:
-                                                    FontWeight.bold,
-                                                    color: Color(0XFF3E3E3E),
-                                                  ),
-                                                ),
-                                                SizedBox(width: 2.w),
-                                                Text(
-                                                  (post
-                                                      .totalLikes)
-                                                      .toString() +
-                                                      " Likes",
-                                                  style: TextStyle(
-                                                    fontFamily:
-                                                    AppConstants.manrope,
-                                                    fontSize: 16.sp,
-                                                    fontWeight:
-                                                    FontWeight.bold,
-                                                    color: Color(0XFF3E3E3E),
-                                                  ),
-                                                ),
-                                                SizedBox(width: 2.w),
-                                                // GestureDetector(
-                                                //   onTap: () {
-                                                //     try {
-                                                //       final imageUrl =
-                                                //           messageBoardModal
-                                                //               ?.data?[
-                                                //                   index]
-                                                //               ?.file
-                                                //               .toString();
-                                                //       final linkToShare = (imageUrl ==
-                                                //                   null ||
-                                                //               imageUrl
-                                                //                   .isEmpty)
-                                                //           ? "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png"
-                                                //           : imageUrl;
-                                                //       shareConciergeImage(
-                                                //           linkToShare);
-                                                //     } catch (e) {
-                                                //       print(
-                                                //           "Error sharing: $e");
-                                                //     }
-                                                //   },
-                                                //   child: Icon(
-                                                //     Icons
-                                                //         .share_outlined,
-                                                //     size: 18.sp,
-                                                //     color: Color(
-                                                //         0XFF3E3E3E),
-                                                //   ),
-                                                // ),
-                                              ],
+                                          if (isLoadingMore)
+                                            Padding(
+                                              padding: const EdgeInsets.all(
+                                                8.0,
+                                              ),
+                                              child: CircularProgressIndicator(
+                                                color: AppColors.blackColor,
+                                              ),
                                             ),
-                                            Row(
-                                              children: [
-                                                StatefulBuilder(
-                                                  builder: (
-                                                      context,
-                                                      localSetState,
-                                                      ) {
-                                                    bool isLiked =
-                                                    idx <
-                                                        isLikedListLocal
-                                                            .length
-                                                        ? isLikedListLocal[idx]
-                                                        : false;
-                                                    bool isInProgress =
-                                                    idx <
-                                                        isLikeInProgressListLocal
-                                                            .length
-                                                        ? isLikeInProgressListLocal[idx]
-                                                        : false;
-
-                                                    return GestureDetector(
-                                                      onTap:
-                                                      isInProgress
-                                                          ? null
-                                                          : () {
-                                                        if (idx <
-                                                            isLikedListLocal
-                                                                .length &&
-                                                            idx <
-                                                                isLikeInProgressListLocal
-                                                                    .length) {
-                                                          localSetState(() {
-                                                            isLikedListLocal[idx] =
-                                                            !isLikedListLocal[idx];
-                                                            isLikeInProgressListLocal[idx] =
-                                                            true;
-                                                          });
-                                                          _saveLikeStatusLocal(
-                                                            idx,
-                                                            isLikedListLocal[idx],
-                                                          );
-                                                          postslikelocalap(
-                                                            idx,
-                                                                () {
-                                                              localSetState(() {
-                                                                isLikeInProgressListLocal[idx] =
-                                                                false;
-                                                              });
-                                                            },
-                                                          );
-                                                        }
-                                                      },
-                                                      child: Text(
-                                                        "Like",
-                                                        style: TextStyle(
-                                                          fontFamily:
-                                                          AppConstants
-                                                              .manrope,
-                                                          fontSize: 16.sp,
-                                                          fontWeight:
-                                                          FontWeight.bold,
-                                                          color:
-                                                          isLiked
-                                                              ? Colors.red
-                                                              : Color(
-                                                            0XFF3E3E3E,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                ),
-                                                SizedBox(width: 2.w),
-                                                Container(
-                                                  height: 2.h,
-                                                  width: 0.5.w,
-                                                  decoration: BoxDecoration(
-                                                    color: Color(0XFF3E3E3E),
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                      20,
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(width: 2.w),
-                                                InkWell(
-                                                  onTap: () {
-                                                    getComments1(
-                                                      context,
-                                                      post?.id?.toString() ??
-                                                          "",
-                                                    );
-                                                  },
-                                                  child: Text(
-                                                    "Comment",
-                                                    style: TextStyle(
-                                                      fontFamily:
-                                                      AppConstants
-                                                          .manrope,
-                                                      fontSize: 16.sp,
-                                                      fontWeight:
-                                                      FontWeight.bold,
-                                                      color: Color(
-                                                        0XFF3E3E3E,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-
-                                      ],
-                                    ),
-                                  );
-                                },
-                                firstPageProgressIndicatorBuilder:
-                                    (_) => Center(
-                                      child: Loader(),
-                                    ),
-                                newPageProgressIndicatorBuilder:
-                                    (_) => Center(
-                                      child: CircularProgressIndicator(color: AppColors.blackColor,),
-                                    ),
-                                noItemsFoundIndicatorBuilder:
-                                    (_) => Center(
-                                      child: Text('No Posts available'),
-                                    ),
-                                firstPageErrorIndicatorBuilder:
-                                    (_) => Center(
-                                      child: Text('Failed to load posts'),
-                                    ),
-                                newPageErrorIndicatorBuilder:
-                                    (_) => Center(
-                                      child: Text('Failed to load more posts'),
-                                    ),
-                              ),
-                            ),
-                          )
-                          // localpost_model?.data?.data?.length == null ||
-                          //             localpost_model?.data?.data?.length == 0
-                          //         ? Center(
-                          //           child: Container(
-                          //             height: 70.h,
-                          //             child: Text(
-                          //               "No Posts available",
-                          //               style: TextStyle(
-                          //                 fontSize: 17.sp,
-                          //                 color: Colors.black,
-                          //                 fontWeight: FontWeight.normal,
-                          //                 fontFamily: AppConstants.manrope,
-                          //               ),
-                          //             ),
-                          //           ),
-                          //         )
-                          //         : Container(
-                          //           height: 60.h,
-                          //           child: ListView.builder(
-                          //             padding: EdgeInsets.zero,
-                          //             itemCount:
-                          //                 localpost_model?.data?.data?.length,
-                          //             itemBuilder: (context, index) {
-                          //               final post =
-                          //                   localpost_model?.data?.data?[index];
-                          //               return Container(
-                          //                 margin: EdgeInsets.symmetric(
-                          //                   vertical: 0.5.h,
-                          //                 ),
-                          //                 padding: EdgeInsets.symmetric(
-                          //                   horizontal: 3.w,
-                          //                   vertical: 2.h,
-                          //                 ),
-                          //                 decoration: BoxDecoration(
-                          //                   border: Border.all(
-                          //                     color: Colors.black12,
-                          //                     width: 0.2.w,
-                          //                   ),
-                          //                   color: Colors.white,
-                          //                   borderRadius: BorderRadius.circular(20),
-                          //                   boxShadow: [
-                          //                     BoxShadow(
-                          //                       color: Colors.black12,
-                          //                       blurRadius: 1,
-                          //                       offset: Offset(0, 1),
-                          //                     ),
-                          //                   ],
-                          //                 ),
-                          //                 child: Column(
-                          //                   mainAxisAlignment:
-                          //                       MainAxisAlignment.start,
-                          //                   crossAxisAlignment:
-                          //                       CrossAxisAlignment.start,
-                          //                   children: [
-                          //                     Row(
-                          //                       crossAxisAlignment:
-                          //                           CrossAxisAlignment.center,
-                          //                       children: [
-                          //                         Container(
-                          //                           height: 9.w,
-                          //                           width: 9.w,
-                          //                           decoration: BoxDecoration(
-                          //                             shape: BoxShape.circle,
-                          //                             border: Border.all(
-                          //                               color: AppColors.maincolor,
-                          //                               width: 1,
-                          //                             ),
-                          //                             image: DecorationImage(
-                          //                               image:
-                          //                                   (localpost_model
-                          //                                               ?.data
-                          //                                               ?.data?[index]
-                          //                                               .users?[0]
-                          //                                               .profiles
-                          //                                               ?.isNotEmpty ??
-                          //                                           false)
-                          //                                       ? CachedNetworkImageProvider(
-                          //                                         localpost_model!
-                          //                                             .data!
-                          //                                             .data![index]
-                          //                                             .users![0]
-                          //                                             .profiles!,
-                          //                                       )
-                          //                                       : const AssetImage(
-                          //                                             'assets/images/waveeLogoShort.png',
-                          //                                           )
-                          //                                           as ImageProvider,
-                          //                               fit: BoxFit.cover,
-                          //                             ),
-                          //                           ),
-                          //                         ),
-                          //
-                          //                         SizedBox(width: 2.w),
-                          //                         Text(
-                          //                           "${localpost_model?.data?.data?[index].users?[0].name ?? ""}",
-                          //                           style: TextStyle(
-                          //                             fontFamily:
-                          //                                 AppConstants.manrope,
-                          //                             fontSize: 15.sp,
-                          //                             fontWeight: FontWeight.bold,
-                          //                           ),
-                          //                         ),
-                          //                         SizedBox(width: 2.w),
-                          //                         Text(
-                          //                           "•${formatPostDate(localpost_model?.data?.data?[index].createdAt)}",
-                          //                           style: TextStyle(
-                          //                             fontSize: 14.sp,
-                          //                             color: Colors.grey,
-                          //                             fontFamily:
-                          //                                 AppConstants.manrope,
-                          //                             fontWeight: FontWeight.bold,
-                          //                           ),
-                          //                         ),
-                          //                         Spacer(),
-                          //                         loginModel?.data?.user?.id ==
-                          //                                 post?.userId
-                          //                             ? PopupMenuButton<String>(
-                          //                               icon: Icon(
-                          //                                 Icons.more_vert,
-                          //                                 color: Colors.black87,
-                          //                               ),
-                          //                               onSelected: (value) {
-                          //                                 if (value == 'edit') {
-                          //                                   UpdatePostData(
-                          //                                     context,
-                          //                                     post,
-                          //                                   );
-                          //                                 } else if (value ==
-                          //                                     'delete') {
-                          //                                   showCancelConfirmationDialog(
-                          //                                     context: context,
-                          //                                     post!.id.toString() ??
-                          //                                         "",
-                          //                                   );
-                          //                                   print(
-                          //                                     "Delete selected",
-                          //                                   );
-                          //                                 } else if (value ==
-                          //                                     'report') {
-                          //                                   showBlockUserDialog(
-                          //                                     context,
-                          //                                     supportUrl,
-                          //                                   );
-                          //                                   print(
-                          //                                     "Delete selected",
-                          //                                   );
-                          //                                 }
-                          //                               },
-                          //                               itemBuilder:
-                          //                                   (
-                          //                                     BuildContext context,
-                          //                                   ) => [
-                          //                                     PopupMenuItem(
-                          //                                       value: 'edit',
-                          //                                       child: Text(
-                          //                                         'Edit',
-                          //                                         style: TextStyle(
-                          //                                           fontSize: 16.sp,
-                          //                                           fontFamily:
-                          //                                               AppConstants
-                          //                                                   .manrope,
-                          //                                         ),
-                          //                                       ),
-                          //                                     ),
-                          //                                     PopupMenuItem(
-                          //                                       value: 'delete',
-                          //                                       child: Text(
-                          //                                         'Delete',
-                          //                                         style: TextStyle(
-                          //                                           fontSize: 16.sp,
-                          //                                           fontFamily:
-                          //                                               AppConstants
-                          //                                                   .manrope,
-                          //                                         ),
-                          //                                       ),
-                          //                                     ),
-                          //                                     PopupMenuItem(
-                          //                                       value: 'report',
-                          //                                       child: Text(
-                          //                                         'Report',
-                          //                                         style: TextStyle(
-                          //                                           fontSize: 16.sp,
-                          //                                           fontFamily:
-                          //                                               AppConstants
-                          //                                                   .manrope,
-                          //                                         ),
-                          //                                       ),
-                          //                                     ),
-                          //                                   ],
-                          //                             )
-                          //                             : InkWell(
-                          //                               onTap: () {
-                          //                                 showBlockUserDialog(
-                          //                                   context,
-                          //                                   supportUrl,
-                          //                                 );
-                          //                               },
-                          //                               child: Icon(
-                          //                                 Icons.more_vert_outlined,
-                          //                               ).paddingOnly(right: 2.w),
-                          //                             ),
-                          //                       ],
-                          //                     ),
-                          //                     Text(
-                          //                       "${localpost_model?.data?.data?[index].title ?? ""}",
-                          //                       style: TextStyle(
-                          //                         fontFamily: AppConstants.manrope,
-                          //                         fontSize: 16.sp,
-                          //                         fontWeight: FontWeight.bold,
-                          //                         color: AppColors.maincolor,
-                          //                       ),
-                          //                     ),
-                          //                     ReadMoreText(
-                          //                       "${localpost_model?.data?.data?[index].text == null || localpost_model?.data?.data?[index].text == "" ? "N/A" : "${localpost_model?.data?.data?[index].text}"}",
-                          //                       trimLines: 4,
-                          //                       trimLength: 146,
-                          //                       colorClickableText: Colors.blue,
-                          //                       trimMode: TrimMode.Length,
-                          //                       trimCollapsedText: ' Show more',
-                          //                       trimExpandedText: ' Show less',
-                          //                       moreStyle: TextStyle(
-                          //                         fontSize: 15.sp,
-                          //                         fontWeight: FontWeight.bold,
-                          //                         fontFamily: AppConstants.manrope,
-                          //                         letterSpacing: 1,
-                          //                         color: AppColors.maincolor,
-                          //                       ),
-                          //                       lessStyle: TextStyle(
-                          //                         fontSize: 15.sp,
-                          //                         fontWeight: FontWeight.bold,
-                          //                         fontFamily: AppConstants.manrope,
-                          //                         letterSpacing: 1,
-                          //                         color: AppColors.maincolor,
-                          //                       ),
-                          //                       style: TextStyle(
-                          //                         fontSize: 16.sp,
-                          //                         color: Colors.grey.shade500,
-                          //                         fontWeight: FontWeight.normal,
-                          //                         fontFamily: AppConstants.manrope,
-                          //                       ),
-                          //                     ),
-                          //                     post?.file?.length == 0 ||
-                          //                             post?.file?.length == null
-                          //                         ? SizedBox()
-                          //                         : Padding(
-                          //                           padding: EdgeInsets.symmetric(
-                          //                             vertical: 1.h,
-                          //                             horizontal: 2.5.w,
-                          //                           ),
-                          //                           child: StatefulBuilder(
-                          //                             builder: (context, setState) {
-                          //                               final pageCount =
-                          //                                   post?.file?.length ?? 0;
-                          //                               return SizedBox(
-                          //                                 height: 35.h,
-                          //                                 child: Stack(
-                          //                                   children: [
-                          //                                     PageView.builder(
-                          //                                       controller:
-                          //                                           _pageController,
-                          //                                       itemCount:
-                          //                                           pageCount,
-                          //                                       onPageChanged: (
-                          //                                         index,
-                          //                                       ) {
-                          //                                         setState(
-                          //                                           () =>
-                          //                                               _currentPage =
-                          //                                                   index,
-                          //                                         );
-                          //                                       },
-                          //                                       itemBuilder: (
-                          //                                         context,
-                          //                                         index,
-                          //                                       ) {
-                          //                                         final imageUrl =
-                          //                                             post?.file?[index] ??
-                          //                                             "";
-                          //                                         return ClipRRect(
-                          //                                           borderRadius:
-                          //                                               BorderRadius.circular(
-                          //                                                 10,
-                          //                                               ),
-                          //                                           child: CachedNetworkImage(
-                          //                                             imageUrl:
-                          //                                                 imageUrl,
-                          //                                             placeholder:
-                          //                                                 (
-                          //                                                   context,
-                          //                                                   url,
-                          //                                                 ) => Center(
-                          //                                                   child:
-                          //                                                       CircularProgressIndicator(),
-                          //                                                 ),
-                          //                                             errorWidget:
-                          //                                                 (
-                          //                                                   context,
-                          //                                                   url,
-                          //                                                   error,
-                          //                                                 ) => Image.asset(
-                          //                                                   "assets/images/waveeLogoShort.png",
-                          //                                                   fit:
-                          //                                                       BoxFit.cover,
-                          //                                                 ),
-                          //                                             width:
-                          //                                                 double
-                          //                                                     .infinity,
-                          //                                             height: 35.h,
-                          //                                             fit:
-                          //                                                 BoxFit
-                          //                                                     .cover,
-                          //                                           ),
-                          //                                         ).marginOnly(
-                          //                                           right: 1.w,
-                          //                                         );
-                          //                                       },
-                          //                                     ),
-                          //                                     Positioned(
-                          //                                       top: 8,
-                          //                                       right: 16,
-                          //                                       child: Container(
-                          //                                         padding:
-                          //                                             EdgeInsets.symmetric(
-                          //                                               horizontal:
-                          //                                                   10,
-                          //                                               vertical: 4,
-                          //                                             ),
-                          //                                         decoration: BoxDecoration(
-                          //                                           color: Colors
-                          //                                               .black
-                          //                                               .withOpacity(
-                          //                                                 0.6,
-                          //                                               ),
-                          //                                           borderRadius:
-                          //                                               BorderRadius.circular(
-                          //                                                 20,
-                          //                                               ),
-                          //                                         ),
-                          //                                         child: Text(
-                          //                                           '${_currentPage + 1}/$pageCount',
-                          //                                           style: TextStyle(
-                          //                                             color:
-                          //                                                 Colors
-                          //                                                     .white,
-                          //                                             fontSize:
-                          //                                                 12.sp,
-                          //                                           ),
-                          //                                         ),
-                          //                                       ),
-                          //                                     ),
-                          //                                   ],
-                          //                                 ),
-                          //                               );
-                          //                             },
-                          //                           ),
-                          //                         ),
-                          //                     SizedBox(height: 1.5.h),
-                          //                     Row(
-                          //                       mainAxisAlignment:
-                          //                           MainAxisAlignment.spaceBetween,
-                          //                       children: [
-                          //                         Row(
-                          //                           children: [
-                          //                             Text(
-                          //                               (localpost_model
-                          //                                           ?.data
-                          //                                           ?.data?[index]
-                          //                                           .totalComments)
-                          //                                       .toString() +
-                          //                                   " Replies",
-                          //                               style: TextStyle(
-                          //                                 fontFamily:
-                          //                                     AppConstants.manrope,
-                          //                                 fontSize: 16.sp,
-                          //                                 fontWeight:
-                          //                                     FontWeight.bold,
-                          //                                 color: Color(0XFF3E3E3E),
-                          //                               ),
-                          //                             ),
-                          //                             SizedBox(width: 2.w),
-                          //                             Text(
-                          //                               (localpost_model
-                          //                                           ?.data
-                          //                                           ?.data?[index]
-                          //                                           .totalLikes)
-                          //                                       .toString() +
-                          //                                   " Likes",
-                          //                               style: TextStyle(
-                          //                                 fontFamily:
-                          //                                     AppConstants.manrope,
-                          //                                 fontSize: 16.sp,
-                          //                                 fontWeight:
-                          //                                     FontWeight.bold,
-                          //                                 color: Color(0XFF3E3E3E),
-                          //                               ),
-                          //                             ),
-                          //                             SizedBox(width: 2.w),
-                          //                             // GestureDetector(
-                          //                             //   onTap: () {
-                          //                             //     try {
-                          //                             //       final imageUrl =
-                          //                             //           messageBoardModal
-                          //                             //               ?.data?[
-                          //                             //                   index]
-                          //                             //               ?.file
-                          //                             //               .toString();
-                          //                             //       final linkToShare = (imageUrl ==
-                          //                             //                   null ||
-                          //                             //               imageUrl
-                          //                             //                   .isEmpty)
-                          //                             //           ? "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png"
-                          //                             //           : imageUrl;
-                          //                             //       shareConciergeImage(
-                          //                             //           linkToShare);
-                          //                             //     } catch (e) {
-                          //                             //       print(
-                          //                             //           "Error sharing: $e");
-                          //                             //     }
-                          //                             //   },
-                          //                             //   child: Icon(
-                          //                             //     Icons
-                          //                             //         .share_outlined,
-                          //                             //     size: 18.sp,
-                          //                             //     color: Color(
-                          //                             //         0XFF3E3E3E),
-                          //                             //   ),
-                          //                             // ),
-                          //                           ],
-                          //                         ),
-                          //                         Row(
-                          //                           children: [
-                          //                             StatefulBuilder(
-                          //                               builder: (
-                          //                                 context,
-                          //                                 localSetState,
-                          //                               ) {
-                          //                                 bool isLiked =
-                          //                                     index <
-                          //                                             isLikedListLocal
-                          //                                                 .length
-                          //                                         ? isLikedListLocal[index]
-                          //                                         : false;
-                          //                                 bool isInProgress =
-                          //                                     index <
-                          //                                             isLikeInProgressListLocal
-                          //                                                 .length
-                          //                                         ? isLikeInProgressListLocal[index]
-                          //                                         : false;
-                          //
-                          //                                 return GestureDetector(
-                          //                                   onTap:
-                          //                                       isInProgress
-                          //                                           ? null
-                          //                                           : () {
-                          //                                             if (index <
-                          //                                                     isLikedListLocal
-                          //                                                         .length &&
-                          //                                                 index <
-                          //                                                     isLikeInProgressListLocal
-                          //                                                         .length) {
-                          //                                               localSetState(() {
-                          //                                                 isLikedListLocal[index] =
-                          //                                                     !isLikedListLocal[index];
-                          //                                                 isLikeInProgressListLocal[index] =
-                          //                                                     true;
-                          //                                               });
-                          //                                               _saveLikeStatusLocal(
-                          //                                                 index,
-                          //                                                 isLikedListLocal[index],
-                          //                                               );
-                          //                                               postslikelocalap(
-                          //                                                 index,
-                          //                                                 () {
-                          //                                                   localSetState(() {
-                          //                                                     isLikeInProgressListLocal[index] =
-                          //                                                         false;
-                          //                                                   });
-                          //                                                 },
-                          //                                               );
-                          //                                             }
-                          //                                           },
-                          //                                   child: Text(
-                          //                                     "Like",
-                          //                                     style: TextStyle(
-                          //                                       fontFamily:
-                          //                                           AppConstants
-                          //                                               .manrope,
-                          //                                       fontSize: 16.sp,
-                          //                                       fontWeight:
-                          //                                           FontWeight.bold,
-                          //                                       color:
-                          //                                           isLiked
-                          //                                               ? Colors.red
-                          //                                               : Color(
-                          //                                                 0XFF3E3E3E,
-                          //                                               ),
-                          //                                     ),
-                          //                                   ),
-                          //                                 );
-                          //                               },
-                          //                             ),
-                          //                             SizedBox(width: 2.w),
-                          //                             Container(
-                          //                               height: 2.h,
-                          //                               width: 0.5.w,
-                          //                               decoration: BoxDecoration(
-                          //                                 color: Color(0XFF3E3E3E),
-                          //                                 borderRadius:
-                          //                                     BorderRadius.circular(
-                          //                                       20,
-                          //                                     ),
-                          //                               ),
-                          //                             ),
-                          //                             SizedBox(width: 2.w),
-                          //                             InkWell(
-                          //                               onTap: () {
-                          //                                 getComments1(
-                          //                                   context,
-                          //                                   post?.id?.toString() ??
-                          //                                       "",
-                          //                                 );
-                          //                               },
-                          //                               child: Text(
-                          //                                 "Comment",
-                          //                                 style: TextStyle(
-                          //                                   fontFamily:
-                          //                                       AppConstants
-                          //                                           .manrope,
-                          //                                   fontSize: 16.sp,
-                          //                                   fontWeight:
-                          //                                       FontWeight.bold,
-                          //                                   color: Color(
-                          //                                     0XFF3E3E3E,
-                          //                                   ),
-                          //                                 ),
-                          //                               ),
-                          //                             ),
-                          //                           ],
-                          //                         ),
-                          //                       ],
-                          //                     ),
-                          //                   ],
-                          //                 ),
-                          //               );
-                          //             },
-                          //           ),
-                          //         )
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
                           : SizedBox(),
-                      //  selectedOption == "Group"
-                      //     ? getgrouplistmodel?.data?.length == null ||
-                      //             getgrouplistmodel?.data?.length == 0
-                      //         ? Center(
-                      //             child: Container(
-                      //               height: 70.h,
-                      //               child: Text(
-                      //                 "No Group available",
-                      //                 style: TextStyle(
-                      //                   fontSize: 17.sp,
-                      //                   color: Colors.black,
-                      //                   fontWeight: FontWeight.normal,
-                      //                   fontFamily:
-                      //                       AppConstants.manrope,
-                      //                 ),
-                      //               ),
-                      //             ),
-                      //           )
-                      //         : Container(
-                      //             height: 70.h,
-                      //             child: ListView.builder(
-                      //               padding: EdgeInsets.symmetric(
-                      //                   horizontal: 2.w, vertical: 1.h),
-                      //               itemCount: getgrouplistmodel
-                      //                       ?.data?.length ??
-                      //                   0,
-                      //               itemBuilder: (context, index) {
-                      //                 final group = getgrouplistmodel
-                      //                     ?.data?[index];
-                      //                 return GestureDetector(
-                      //                   onTap: () {
-                      //                     Get.to(() => GroupChatPage(
-                      //                           chatname:
-                      //                               group?.name ?? '',
-                      //                           image: group?.images,
-                      //                           groupid: group?.id
-                      //                                   .toString() ??
-                      //                               '',
-                      //                           type: "residents",
-                      //                         ))?.then((value) {
-                      //                       if (value == 'refresh') {
-                      //                         GetMyJoinGroup();
-                      //                       }
-                      //                     });
-                      //                   },
-                      //                   child: Stack(
-                      //                     children: [
-                      //                       Container(
-                      //                         margin: EdgeInsets.only(
-                      //                             bottom: 1.5.h),
-                      //                         padding:
-                      //                             EdgeInsets.all(2.w),
-                      //                         decoration: BoxDecoration(
-                      //                           color: Colors.white,
-                      //                           borderRadius:
-                      //                               BorderRadius
-                      //                                   .circular(20),
-                      //                           border: Border.all(
-                      //                               color: Colors.grey,
-                      //                               width: 0.5),
-                      //                           boxShadow: [
-                      //                             BoxShadow(
-                      //                               color:
-                      //                                   Colors.black12,
-                      //                               blurRadius: 4,
-                      //                               offset:
-                      //                                   Offset(0, 2),
-                      //                             ),
-                      //                           ],
-                      //                         ),
-                      //                         child: Row(
-                      //                           crossAxisAlignment:
-                      //                               CrossAxisAlignment
-                      //                                   .center,
-                      //                           children: [
-                      //                             Container(
-                      //                               width: 17.w,
-                      //                               height: 17.w,
-                      //                               decoration:
-                      //                                   BoxDecoration(
-                      //                                 shape: BoxShape
-                      //                                     .circle,
-                      //                                 image:
-                      //                                     DecorationImage(
-                      //                                   image:
-                      //                                       CachedNetworkImageProvider(
-                      //                                     group?.images ??
-                      //                                         "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
-                      //                                   ),
-                      //                                   fit: BoxFit
-                      //                                       .cover,
-                      //                                 ),
-                      //                               ),
-                      //                             ),
-                      //                             SizedBox(width: 3.w),
-                      //                             Column(
-                      //                               crossAxisAlignment:
-                      //                                   CrossAxisAlignment
-                      //                                       .start,
-                      //                               children: [
-                      //                                 Row(
-                      //                                   children: [
-                      //                                     Row(
-                      //                                       children: [
-                      //                                         Container(
-                      //                                           width:
-                      //                                               10,
-                      //                                           height:
-                      //                                               10,
-                      //                                           decoration:
-                      //                                               BoxDecoration(
-                      //                                             color:
-                      //                                                 Colors.green,
-                      //                                             shape:
-                      //                                                 BoxShape.circle,
-                      //                                             border: Border.all(
-                      //                                                 color: Colors.white,
-                      //                                                 width: 1.5),
-                      //                                           ),
-                      //                                         ),
-                      //                                         SizedBox(
-                      //                                           width:
-                      //                                               1.w,
-                      //                                         ),
-                      //                                         Text(
-                      //                                           "Online",
-                      //                                           style:
-                      //                                               TextStyle(
-                      //                                             fontSize:
-                      //                                                 14.sp,
-                      //                                             fontWeight:
-                      //                                                 FontWeight.bold,
-                      //                                             fontFamily:
-                      //                                                 AppConstants.manrope,
-                      //                                           ),
-                      //                                         ),
-                      //                                       ],
-                      //                                     ),
-                      //                                   ],
-                      //                                 ),
-                      //                                 Text(
-                      //                                   group?.name ??
-                      //                                       "N/A",
-                      //                                   style: TextStyle(
-                      //                                       fontSize:
-                      //                                           16.sp,
-                      //                                       fontWeight:
-                      //                                           FontWeight
-                      //                                               .bold,
-                      //                                       fontFamily:
-                      //                                           AppConstants
-                      //                                               .manrope,
-                      //                                       color: Color(
-                      //                                           0XFF000000)),
-                      //                                 ),
-                      //                                 SizedBox(
-                      //                                     height:
-                      //                                         0.5.h),
-                      //                                 Text(
-                      //                                   group?.lastmessage
-                      //                                           ?.message
-                      //                                           ?.toString() ??
-                      //                                       "N/A",
-                      //                                   overflow:
-                      //                                       TextOverflow
-                      //                                           .ellipsis,
-                      //                                   maxLines: 1,
-                      //                                   style: TextStyle(
-                      //                                       fontSize:
-                      //                                           13.sp,
-                      //                                       color: Color(
-                      //                                           0XFF000000),
-                      //                                       fontFamily:
-                      //                                           AppConstants
-                      //                                               .manrope,
-                      //                                       fontWeight:
-                      //                                           FontWeight
-                      //                                               .normal),
-                      //                                 ),
-                      //                               ],
-                      //                             ),
-                      //                             SizedBox(width: 2.w),
-                      //                           ],
-                      //                         ),
-                      //                       ),
-                      //                       Positioned(
-                      //                         right: 2.w,
-                      //                         top: 1.5.h,
-                      //                         child: Row(
-                      //                           children: [
-                      //                             Text(
-                      //                               "Yesterday",
-                      //                               style: TextStyle(
-                      //                                   fontSize: 15.sp,
-                      //                                   color: Color(
-                      //                                       0xFF000000),
-                      //                                   fontFamily:
-                      //                                       AppConstants
-                      //                                           .manrope,
-                      //                                   fontWeight:
-                      //                                       FontWeight
-                      //                                           .normal),
-                      //                             ),
-                      //                             Icon(
-                      //                               Icons
-                      //                                   .arrow_forward_ios_rounded,
-                      //                               size: 15.sp,
-                      //                             )
-                      //                           ],
-                      //                         ),
-                      //                       )
-                      //                     ],
-                      //                   ),
-                      //                 );
-                      //               },
-                      //             ),
-                      //           )
-                      //     : selectedOption == "Friends"
-                      //         ? getfriendListModel?.data?.length ==
-                      //                     null ||
-                      //                 getfriendListModel
-                      //                         ?.data?.length ==
-                      //                     0
-                      //             ? Center(
-                      //                 child: Container(
-                      //                   height: 70.h,
-                      //                   child: Text(
-                      //                     "No Friends available",
-                      //                     style: TextStyle(
-                      //                       fontSize: 17.sp,
-                      //                       color: Colors.black,
-                      //                       fontWeight:
-                      //                           FontWeight.normal,
-                      //                       fontFamily:
-                      //                           AppConstants.manrope,
-                      //                     ),
-                      //                   ),
-                      //                 ),
-                      //               )
-                      //             : Container(
-                      //                 height: 70.h,
-                      //                 child: ListView.builder(
-                      //                   padding: EdgeInsets.zero,
-                      //                   itemCount: getfriendListModel
-                      //                           ?.data?.length ??
-                      //                       0,
-                      //                   itemBuilder: (context, index) {
-                      //                     final friend =
-                      //                         getfriendListModel
-                      //                             ?.data?[index];
-                      //                     String friendName = (friend
-                      //                                 ?.senderId
-                      //                                 .toString() ==
-                      //                             (loginModel?.data
-                      //                                     ?.user?.id
-                      //                                     .toString() ??
-                      //                                 ""))
-                      //                         ? (friend?.receiverName
-                      //                                 ?.toString() ??
-                      //                             "")
-                      //                         : (friend?.senderName
-                      //                                 ?.toString() ??
-                      //                             "");
-
-                      //                     String friendImage = (friend
-                      //                                 ?.senderId
-                      //                                 .toString() ==
-                      //                             (loginModel?.data
-                      //                                     ?.user?.id
-                      //                                     .toString() ??
-                      //                                 ""))
-                      //                         ? (friend?.receiverImage
-                      //                                 ?.toString() ??
-                      //                             "")
-                      //                         : (friend?.senderImage
-                      //                                 ?.toString() ??
-                      //                             "");
-
-                      //                     return Padding(
-                      //                       padding:
-                      //                           EdgeInsets.symmetric(
-                      //                               vertical: 0.5.h,
-                      //                               horizontal: 1.w),
-                      //                       child: GestureDetector(
-                      //                         onTap: () {
-                      //                           log("chat ni id jay che che che ${getfriendListModel?.data?[index].receiverId.toString() ?? ""}");
-                      //                           Get.to(() =>
-                      //                               MessageScreen(
-                      //                                 chatName:
-                      //                                     friendName ??
-                      //                                         "",
-                      //                                 conciergeID: getfriendListModel
-                      //                                         ?.data?[
-                      //                                             index]
-                      //                                         .receiverId
-                      //                                         .toString() ??
-                      //                                     "",
-                      //                                 senderid: getfriendListModel
-                      //                                         ?.data?[
-                      //                                             index]
-                      //                                         .senderId
-                      //                                         .toString() ??
-                      //                                     "",
-                      //                                 type: "residents",
-                      //                                 image:
-                      //                                     friendImage ??
-                      //                                         "",
-                      //                               ))?.then((value) {
-                      //                             if (value ==
-                      //                                 'refresh') {
-                      //                               getfriendlistdAp();
-                      //                             }
-                      //                           });
-                      //                         },
-                      //                         child: Stack(
-                      //                           children: [
-                      //                             Container(
-                      //                               margin:
-                      //                                   EdgeInsets.only(
-                      //                                       bottom:
-                      //                                           1.5.h),
-                      //                               padding:
-                      //                                   EdgeInsets.all(
-                      //                                       2.w),
-                      //                               decoration:
-                      //                                   BoxDecoration(
-                      //                                 color:
-                      //                                     Colors.white,
-                      //                                 borderRadius:
-                      //                                     BorderRadius
-                      //                                         .circular(
-                      //                                             20),
-                      //                                 border: Border.all(
-                      //                                     color: Colors
-                      //                                         .grey,
-                      //                                     width: 0.5),
-                      //                                 boxShadow: [
-                      //                                   BoxShadow(
-                      //                                     color: Colors
-                      //                                         .black12,
-                      //                                     blurRadius: 4,
-                      //                                     offset:
-                      //                                         Offset(
-                      //                                             0, 2),
-                      //                                   ),
-                      //                                 ],
-                      //                               ),
-                      //                               child: Row(
-                      //                                 crossAxisAlignment:
-                      //                                     CrossAxisAlignment
-                      //                                         .center,
-                      //                                 children: [
-                      //                                   Container(
-                      //                                     width: 17.w,
-                      //                                     height: 17.w,
-                      //                                     decoration:
-                      //                                         BoxDecoration(
-                      //                                       border: Border.all(
-                      //                                           color: Colors
-                      //                                               .grey,
-                      //                                           width:
-                      //                                               1),
-                      //                                       shape: BoxShape
-                      //                                           .circle,
-                      //                                       image:
-                      //                                           DecorationImage(
-                      //                                         image:
-                      //                                             CachedNetworkImageProvider(
-                      //                                           friendImage ??
-                      //                                               "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
-                      //                                         ),
-                      //                                         fit: BoxFit
-                      //                                             .fill,
-                      //                                       ),
-                      //                                     ),
-                      //                                   ),
-                      //                                   SizedBox(
-                      //                                       width: 3.w),
-                      //                                   Column(
-                      //                                     crossAxisAlignment:
-                      //                                         CrossAxisAlignment
-                      //                                             .start,
-                      //                                     children: [
-                      //                                       Row(
-                      //                                         children: [
-                      //                                           Row(
-                      //                                             children: [
-                      //                                               Container(
-                      //                                                 width: 10,
-                      //                                                 height: 10,
-                      //                                                 decoration: BoxDecoration(
-                      //                                                   color: Colors.green,
-                      //                                                   shape: BoxShape.circle,
-                      //                                                   border: Border.all(color: Colors.white, width: 1.5),
-                      //                                                 ),
-                      //                                               ),
-                      //                                               SizedBox(
-                      //                                                 width: 1.w,
-                      //                                               ),
-                      //                                               Text(
-                      //                                                 "Last Online 2 minutes ago",
-                      //                                                 style: TextStyle(
-                      //                                                   fontSize: 14.sp,
-                      //                                                   fontWeight: FontWeight.normal,
-                      //                                                   fontFamily: AppConstants.manrope,
-                      //                                                   color: Color(0XFF000000),
-                      //                                                 ),
-                      //                                               ),
-                      //                                             ],
-                      //                                           ),
-                      //                                         ],
-                      //                                       ),
-                      //                                       Text(
-                      //                                         friendName ??
-                      //                                             "N/A",
-                      //                                         style: TextStyle(
-                      //                                             fontSize: 16
-                      //                                                 .sp,
-                      //                                             fontWeight: FontWeight
-                      //                                                 .bold,
-                      //                                             fontFamily: AppConstants
-                      //                                                 .manrope,
-                      //                                             color:
-                      //                                                 Color(0XFF000000)),
-                      //                                       ),
-                      //                                       SizedBox(
-                      //                                           height:
-                      //                                               0.5.h),
-                      //                                       Text(
-                      //                                         friend?.lastMessage ??
-                      //                                             'No Message available',
-                      //                                         overflow:
-                      //                                             TextOverflow
-                      //                                                 .ellipsis,
-                      //                                         maxLines:
-                      //                                             1,
-                      //                                         style: TextStyle(
-                      //                                             fontSize: 13
-                      //                                                 .sp,
-                      //                                             color: Color(
-                      //                                                 0XFF000000),
-                      //                                             fontFamily: AppConstants
-                      //                                                 .manrope,
-                      //                                             fontWeight:
-                      //                                                 FontWeight.normal),
-                      //                                       ),
-                      //                                     ],
-                      //                                   ),
-                      //                                   SizedBox(
-                      //                                       width: 2.w),
-                      //                                 ],
-                      //                               ),
-                      //                             ),
-                      //                             Positioned(
-                      //                               right: 2.w,
-                      //                               top: 1.5.h,
-                      //                               child: Row(
-                      //                                 children: [
-                      //                                   Text(
-                      //                                     _formatTime(friend
-                      //                                             ?.createdAt ??
-                      //                                         "00:00"),
-                      //                                     style: TextStyle(
-                      //                                         fontSize:
-                      //                                             15.sp,
-                      //                                         color: Color(
-                      //                                             0xFF000000),
-                      //                                         fontFamily:
-                      //                                             AppConstants
-                      //                                                 .manrope,
-                      //                                         fontWeight:
-                      //                                             FontWeight
-                      //                                                 .normal),
-                      //                                   ),
-                      //                                   Icon(
-                      //                                     Icons
-                      //                                         .arrow_forward_ios_rounded,
-                      //                                     size: 15.sp,
-                      //                                   )
-                      //                                 ],
-                      //                               ),
-                      //                             )
-                      //                           ],
-                      //                         ),
-                      //                       ),
-                      //                     );
-                      //                   },
-                      //                 ),
-                      //               )
-                      //         : Container(),
                     ],
                   ),
                 ),
@@ -3852,7 +1869,7 @@ class _MessageboardState extends State<Messageboard> {
                       TextFormField(
                         cursorColor: AppColors.black,
                         controller: _title,
-                        keyboardType: TextInputType.emailAddress,
+                        keyboardType: TextInputType.text,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Please enter Title";
@@ -3881,7 +1898,8 @@ class _MessageboardState extends State<Messageboard> {
                       TextFormField(
                         cursorColor: AppColors.black,
                         controller: _descController,
-                        keyboardType: TextInputType.emailAddress,
+                        keyboardType: TextInputType.text,
+
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Please enter your Description";
@@ -4440,39 +2458,49 @@ class _MessageboardState extends State<Messageboard> {
     );
   }
 
-  localpostapi() {
+  int currentPage = 1;
+  bool isLoadingMore = false;
+  bool hasMoreData = true;
+
+  Future<void> localpostapi({int page = 1}) async {
     final Map<String, String> data = {
       'residentType': "residents",
       'user_id': loginModel?.data?.user?.id.toString() ?? '',
+      'page': page.toString(), // Assuming your API accepts 'page' parameter
     };
 
-    setState(() {
-      isSending = true;
-    });
+    if (page == 1) setState(() => isSending = true);
 
     checkInternet().then((internet) async {
       if (internet) {
         try {
           final response = await MessageBoardProvider().localPostApi(data);
           if (response.statusCode == 200) {
-            localpost_model = Localpost_model.fromJson(response.data);
+            final newData = Localpost_model.fromJson(response.data);
 
             if (mounted) {
               setState(() {
+                if (page == 1) {
+                  localpost_model = newData;
+                } else {
+                  localpost_model?.data?.data?.addAll(newData.data?.data ?? []);
+                }
+
+                // If API returns less than 10 items, no more data to load
+                hasMoreData = (newData.data?.data?.length ?? 0) == 10;
+                isLoadingMore = false;
                 isSending = false;
               });
             }
-          } else if (response.statusCode == 429 || response.statusCode == 500) {
-            setState(() {
-              isSending = false;
-            });
           } else {
             setState(() {
+              isLoadingMore = false;
               isSending = false;
             });
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
           setState(() {
+            isLoadingMore = false;
             isSending = false;
           });
         }
@@ -4779,7 +2807,7 @@ class _MessageboardState extends State<Messageboard> {
             );
           }
           onComplete();
-          _pagingController.refresh();
+          // _pagingController.refresh();
           localpostapi();
         });
       } else {
@@ -4940,8 +2968,10 @@ class _MessageboardState extends State<Messageboard> {
         localpostapi();
       } else {
         getpostCommentsModel = null;
+        print("Error ave che ${response.statusCode}");
       }
     } catch (e) {
+      print("Error ave che $e");
       getpostCommentsModel = null;
     }
 
@@ -4949,8 +2979,6 @@ class _MessageboardState extends State<Messageboard> {
       showCommentBottomSheet(context, postId);
     }
   }
-
-
 
   Future<void> sendComment(
     BuildContext context,
@@ -4965,7 +2993,7 @@ class _MessageboardState extends State<Messageboard> {
       'comment': commentText,
       'user_type': '4',
     };
-
+    log("datadatadatadatadatadata$data");
     checkInternet().then((internet) async {
       if (internet) {
         try {
@@ -4977,19 +3005,22 @@ class _MessageboardState extends State<Messageboard> {
             );
 
             final refreshResponse = await MessageBoardProvider()
-                .addLikeCommentApi({'post_id': postId});
+                .getPostCommentApi({'post_id': postId});
             if (refreshResponse.statusCode == 200) {
               getpostCommentsModel = GetPostCommentsModel.fromJson(
                 refreshResponse.data,
               );
               MessageBoardApi();
               localpostapi();
-              _pagingController.refresh();
 
               onSuccess();
             }
-          } else {}
-        } catch (e) {}
+          } else {
+            print("Error ave ");
+          }
+        } catch (e, stackTrace) {
+          print("Error ave che $e $stackTrace");
+        }
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
       }
@@ -5137,79 +3168,6 @@ class _MessageboardState extends State<Messageboard> {
           },
         );
       },
-    );
-  }
-}
-
-class VideoPlayerWidget extends StatefulWidget {
-  final String videoUrl;
-
-  const VideoPlayerWidget({Key? key, required this.videoUrl}) : super(key: key);
-
-  @override
-  _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
-}
-
-class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
-  late VideoPlayerController _controller;
-  bool isPlaying = false;
-  bool showControls = true;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = VideoPlayerController.network(widget.videoUrl)
-      ..initialize().then((_) {
-        setState(() {});
-      });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _togglePlayPause() {
-    setState(() {
-      if (_controller.value.isPlaying) {
-        _controller.pause();
-      } else {
-        _controller.play();
-      }
-      isPlaying = _controller.value.isPlaying;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          showControls = !showControls;
-        });
-      },
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          _controller.value.isInitialized
-              ? AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: VideoPlayer(_controller),
-              )
-              : const Center(child: CircularProgressIndicator()),
-          if (showControls)
-            IconButton(
-              icon: Icon(
-                isPlaying ? Icons.pause : Icons.play_arrow,
-                color: Colors.white,
-                size: 50,
-              ),
-              onPressed: _togglePlayPause,
-            ),
-        ],
-      ),
     );
   }
 }

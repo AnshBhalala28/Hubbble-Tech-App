@@ -38,16 +38,17 @@ class Data {
   Sender? sender;
   Receiver? receiver;
 
-  Data(
-      {this.id,
-      this.messageType,
-      this.message,
-      this.file,
-      this.type,
-      this.createdAt,
-      this.updatedAt,
-      this.sender,
-      this.receiver});
+  Data({
+    this.id,
+    this.messageType,
+    this.message,
+    this.file,
+    this.type,
+    this.createdAt,
+    this.updatedAt,
+    this.sender,
+    this.receiver,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -67,9 +68,10 @@ class Data {
     updatedAt = json['updated_at'];
     sender =
         json['sender'] != null ? new Sender.fromJson(json['sender']) : null;
-    receiver = json['receiver'] != null
-        ? new Receiver.fromJson(json['receiver'])
-        : null;
+    receiver =
+        json['receiver'] != null
+            ? new Receiver.fromJson(json['receiver'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {

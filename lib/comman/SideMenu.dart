@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +14,6 @@ import 'package:wavee/Screen/Chatscreen/View/chatscreen.dart';
 import 'package:wavee/Screen/Favourites/View/FavouriteBusinessesPage.dart';
 import 'package:wavee/Screen/Message_board/View/messageboard.dart';
 import 'package:wavee/Screen/Visitor/View/visitorscreen.dart';
-import 'package:wavee/Screen/open_ai_chatbot/view/open_ai_screen.dart';
 import 'package:wavee/comman/const.dart';
 import 'package:wavee/comman/custom_button.dart';
 import 'package:wavee/comman/error_dialog.dart';

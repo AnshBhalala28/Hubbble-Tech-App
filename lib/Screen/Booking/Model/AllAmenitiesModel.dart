@@ -34,12 +34,13 @@ class Data1 {
   String? requestedAt;
   Amenity? amenity;
 
-  Data1(
-      {this.bookingId,
-      this.userId,
-      this.status,
-      this.requestedAt,
-      this.amenity});
+  Data1({
+    this.bookingId,
+    this.userId,
+    this.status,
+    this.requestedAt,
+    this.amenity,
+  });
 
   Data1.fromJson(Map<String, dynamic> json) {
     bookingId = json['booking_id'];
@@ -78,20 +79,21 @@ class Amenity {
   String? createdAt;
   String? updatedAt;
 
-  Amenity(
-      {this.id,
-      this.userId,
-      this.name,
-      this.description,
-      this.imageUrl,
-      this.rulesNotice,
-      this.operatingHours,
-      this.durationOptions,
-      this.capacity,
-      this.maxBookingPerDay,
-      this.status,
-      this.createdAt,
-      this.updatedAt});
+  Amenity({
+    this.id,
+    this.userId,
+    this.name,
+    this.description,
+    this.imageUrl,
+    this.rulesNotice,
+    this.operatingHours,
+    this.durationOptions,
+    this.capacity,
+    this.maxBookingPerDay,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Amenity.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -100,9 +102,10 @@ class Amenity {
     description = json['description'];
     imageUrl = json['image_url'].cast<String>();
     rulesNotice = json['rules_notice'];
-    operatingHours = json['operating_hours'] != null
-        ? new OperatingHours.fromJson(json['operating_hours'])
-        : null;
+    operatingHours =
+        json['operating_hours'] != null
+            ? new OperatingHours.fromJson(json['operating_hours'])
+            : null;
     durationOptions = json['duration_options'].cast<String>();
     capacity = json['capacity'];
     maxBookingPerDay = json['max_booking_per_day'];
@@ -143,9 +146,10 @@ class OperatingHours {
   OperatingHours.fromJson(Map<String, dynamic> json) {
     monday =
         json['monday'] != null ? new Monday.fromJson(json['monday']) : null;
-    wednesday = json['wednesday'] != null
-        ? new Monday.fromJson(json['wednesday'])
-        : null;
+    wednesday =
+        json['wednesday'] != null
+            ? new Monday.fromJson(json['wednesday'])
+            : null;
     friday =
         json['friday'] != null ? new Monday.fromJson(json['friday']) : null;
     sunday =

@@ -34,17 +34,18 @@ class Data {
   String? createdAt;
   int? id;
 
-  Data(
-      {this.userId,
-      this.postId,
-      this.likes,
-      this.comments,
-      this.report,
-      this.reportComment,
-      this.share,
-      this.updatedAt,
-      this.createdAt,
-      this.id});
+  Data({
+    this.userId,
+    this.postId,
+    this.likes,
+    this.comments,
+    this.report,
+    this.reportComment,
+    this.share,
+    this.updatedAt,
+    this.createdAt,
+    this.id,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];

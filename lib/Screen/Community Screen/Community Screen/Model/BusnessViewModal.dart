@@ -34,22 +34,24 @@ class Data {
   List<Services>? services;
   List<Products>? products;
 
-  Data(
-      {this.business,
-      this.isLiked,
-      this.isVisited,
-      this.distanceToBusiness,
-      this.nearbyBusinesses,
-      this.posts,
-      this.offerPromotions,
-      this.events,
-      this.services,
-      this.products});
+  Data({
+    this.business,
+    this.isLiked,
+    this.isVisited,
+    this.distanceToBusiness,
+    this.nearbyBusinesses,
+    this.posts,
+    this.offerPromotions,
+    this.events,
+    this.services,
+    this.products,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
-    business = json['business'] != null
-        ? new Business.fromJson(json['business'])
-        : null;
+    business =
+        json['business'] != null
+            ? new Business.fromJson(json['business'])
+            : null;
     isLiked = json['is_liked'];
     isVisited = json['is_visited'];
     distanceToBusiness = json['distance_to_business'];
@@ -162,44 +164,45 @@ class Business {
   LoyaltyInfo? loyaltyInfo;
   User? user;
 
-  Business(
-      {this.id,
-      this.userId,
-      this.subId,
-      this.stripeSubscriptionId,
-      this.logo,
-      this.businessName,
-      this.about,
-      this.description,
-      this.industry,
-      this.openingHours,
-      this.website,
-      this.categoryId,
-      this.subCategoryId,
-      this.tags,
-      this.businessServices,
-      this.experience,
-      this.businessAddress,
-      this.subStartDate,
-      this.subEndDate,
-      this.subStatus,
-      this.latitude,
-      this.longitude,
-      this.media,
-      this.creditBalance,
-      this.stripeAccountId,
-      this.isStripeConnected,
-      this.stripeAccessToken,
-      this.onboardedAt,
-      this.loyaltyOrderThreshold,
-      this.loyaltyDiscountPercentage,
-      this.serviceStatus,
-      this.productStatus,
-      this.chatStatus,
-      this.createdAt,
-      this.updatedAt,
-      this.loyaltyInfo,
-      this.user});
+  Business({
+    this.id,
+    this.userId,
+    this.subId,
+    this.stripeSubscriptionId,
+    this.logo,
+    this.businessName,
+    this.about,
+    this.description,
+    this.industry,
+    this.openingHours,
+    this.website,
+    this.categoryId,
+    this.subCategoryId,
+    this.tags,
+    this.businessServices,
+    this.experience,
+    this.businessAddress,
+    this.subStartDate,
+    this.subEndDate,
+    this.subStatus,
+    this.latitude,
+    this.longitude,
+    this.media,
+    this.creditBalance,
+    this.stripeAccountId,
+    this.isStripeConnected,
+    this.stripeAccessToken,
+    this.onboardedAt,
+    this.loyaltyOrderThreshold,
+    this.loyaltyDiscountPercentage,
+    this.serviceStatus,
+    this.productStatus,
+    this.chatStatus,
+    this.createdAt,
+    this.updatedAt,
+    this.loyaltyInfo,
+    this.user,
+  });
 
   Business.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -211,9 +214,10 @@ class Business {
     about = json['about'];
     description = json['description'];
     industry = json['industry'];
-    openingHours = json['opening_hours'] != null
-        ? new OpeningHours.fromJson(json['opening_hours'])
-        : null;
+    openingHours =
+        json['opening_hours'] != null
+            ? new OpeningHours.fromJson(json['opening_hours'])
+            : null;
     website = json['website'];
     categoryId = json['category_id'];
     subCategoryId = json['sub_category_id'];
@@ -244,9 +248,10 @@ class Business {
     chatStatus = json['chat_status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    loyaltyInfo = json['loyalty_info'] != null
-        ? new LoyaltyInfo.fromJson(json['loyalty_info'])
-        : null;
+    loyaltyInfo =
+        json['loyalty_info'] != null
+            ? new LoyaltyInfo.fromJson(json['loyalty_info'])
+            : null;
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
   }
 
@@ -310,30 +315,33 @@ class OpeningHours {
   Tuesday? saturday;
   Tuesday? sunday;
 
-  OpeningHours(
-      {this.monday,
-      this.tuesday,
-      this.wednesday,
-      this.thursday,
-      this.friday,
-      this.saturday,
-      this.sunday});
+  OpeningHours({
+    this.monday,
+    this.tuesday,
+    this.wednesday,
+    this.thursday,
+    this.friday,
+    this.saturday,
+    this.sunday,
+  });
 
   OpeningHours.fromJson(Map<String, dynamic> json) {
     monday =
         json['Monday'] != null ? new Monday.fromJson(json['Monday']) : null;
     tuesday =
         json['Tuesday'] != null ? new Tuesday.fromJson(json['Tuesday']) : null;
-    wednesday = json['Wednesday'] != null
-        ? new Monday.fromJson(json['Wednesday'])
-        : null;
+    wednesday =
+        json['Wednesday'] != null
+            ? new Monday.fromJson(json['Wednesday'])
+            : null;
     thursday =
         json['Thursday'] != null ? new Monday.fromJson(json['Thursday']) : null;
     friday =
         json['Friday'] != null ? new Tuesday.fromJson(json['Friday']) : null;
-    saturday = json['Saturday'] != null
-        ? new Tuesday.fromJson(json['Saturday'])
-        : null;
+    saturday =
+        json['Saturday'] != null
+            ? new Tuesday.fromJson(json['Saturday'])
+            : null;
     sunday =
         json['Sunday'] != null ? new Tuesday.fromJson(json['Sunday']) : null;
   }
@@ -434,11 +442,12 @@ class LoyaltyInfo {
   int? ordersCompletedWithBusiness;
   int? ordersLeftForNextDiscount;
 
-  LoyaltyInfo(
-      {this.loyaltyOrderThreshold,
-      this.loyaltyDiscountPercentage,
-      this.ordersCompletedWithBusiness,
-      this.ordersLeftForNextDiscount});
+  LoyaltyInfo({
+    this.loyaltyOrderThreshold,
+    this.loyaltyDiscountPercentage,
+    this.ordersCompletedWithBusiness,
+    this.ordersLeftForNextDiscount,
+  });
 
   LoyaltyInfo.fromJson(Map<String, dynamic> json) {
     loyaltyOrderThreshold = json['loyalty_order_threshold'];
@@ -479,26 +488,27 @@ class User {
   String? createdAt;
   String? updatedAt;
 
-  User(
-      {this.id,
-      this.role,
-      this.name,
-      this.email,
-      this.emailVerifiedAt,
-      this.dPassword,
-      this.mobileNo,
-      this.gender,
-      this.dateOfBirth,
-      this.address,
-      this.psLatitude,
-      this.psLongitude,
-      this.fcmToken,
-      this.forgetPassKey,
-      this.moduleLock,
-      this.status,
-      this.profile,
-      this.createdAt,
-      this.updatedAt});
+  User({
+    this.id,
+    this.role,
+    this.name,
+    this.email,
+    this.emailVerifiedAt,
+    this.dPassword,
+    this.mobileNo,
+    this.gender,
+    this.dateOfBirth,
+    this.address,
+    this.psLatitude,
+    this.psLongitude,
+    this.fcmToken,
+    this.forgetPassKey,
+    this.moduleLock,
+    this.status,
+    this.profile,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -608,36 +618,37 @@ class NearbyBusinesses {
   String? updatedAt;
   var distance;
 
-  NearbyBusinesses(
-      {this.id,
-      this.userId,
-      this.subId,
-      this.stripeSubscriptionId,
-      this.logo,
-      this.businessName,
-      this.about,
-      this.description,
-      this.industry,
-      this.categoryId,
-      this.subCategoryId,
-      this.tags,
-      this.businessServices,
-      this.experience,
-      this.businessAddress,
-      this.subStartDate,
-      this.subEndDate,
-      this.subStatus,
-      this.latitude,
-      this.longitude,
-      this.media,
-      this.creditBalance,
-      this.stripeAccountId,
-      this.isStripeConnected,
-      this.stripeAccessToken,
-      this.onboardedAt,
-      this.createdAt,
-      this.updatedAt,
-      this.distance});
+  NearbyBusinesses({
+    this.id,
+    this.userId,
+    this.subId,
+    this.stripeSubscriptionId,
+    this.logo,
+    this.businessName,
+    this.about,
+    this.description,
+    this.industry,
+    this.categoryId,
+    this.subCategoryId,
+    this.tags,
+    this.businessServices,
+    this.experience,
+    this.businessAddress,
+    this.subStartDate,
+    this.subEndDate,
+    this.subStatus,
+    this.latitude,
+    this.longitude,
+    this.media,
+    this.creditBalance,
+    this.stripeAccountId,
+    this.isStripeConnected,
+    this.stripeAccessToken,
+    this.onboardedAt,
+    this.createdAt,
+    this.updatedAt,
+    this.distance,
+  });
 
   NearbyBusinesses.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -772,14 +783,15 @@ class Events {
   String? attachment;
   String? requestEvent;
 
-  Events(
-      {this.id,
-      this.title,
-      this.eventDate,
-      this.location,
-      this.status,
-      this.attachment,
-      this.requestEvent});
+  Events({
+    this.id,
+    this.title,
+    this.eventDate,
+    this.location,
+    this.status,
+    this.attachment,
+    this.requestEvent,
+  });
 
   Events.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -849,22 +861,23 @@ class Products {
   String? updatedAt;
   String? productCategoryName;
 
-  Products(
-      {this.id,
-      this.userId,
-      this.name,
-      this.price,
-      this.offerPrice,
-      this.quantity,
-      this.description,
-      this.features,
-      this.status,
-      this.isFeatured,
-      this.image,
-      this.images,
-      this.createdAt,
-      this.productCategoryName,
-      this.updatedAt});
+  Products({
+    this.id,
+    this.userId,
+    this.name,
+    this.price,
+    this.offerPrice,
+    this.quantity,
+    this.description,
+    this.features,
+    this.status,
+    this.isFeatured,
+    this.image,
+    this.images,
+    this.createdAt,
+    this.productCategoryName,
+    this.updatedAt,
+  });
 
   Products.fromJson(Map<String, dynamic> json) {
     id = json['id'];

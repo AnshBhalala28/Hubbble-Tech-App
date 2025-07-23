@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -10,7 +9,6 @@ import 'package:sizer/sizer.dart';
 import 'package:wavee/comman/loader.dart';
 
 import '../../../comman/SideMenu.dart';
-import '../../../comman/bottom_bar.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
@@ -49,7 +47,6 @@ class _Order_ScreenState extends State<Order_Screen> {
     "Booking Confirmed",
     "Cancelled",
   ];
-
 
   @override
   void initState() {
@@ -221,7 +218,8 @@ class _Order_ScreenState extends State<Order_Screen> {
                               print("Selected: $value");
                               OrderListViewApi(
                                 selectedType.toString().camelCase ?? "",
-                              );OrderListViewApi1(
+                              );
+                              OrderListViewApi1(
                                 selectedType.toString().camelCase ?? "",
                               );
                             },
@@ -902,7 +900,6 @@ class _Order_ScreenState extends State<Order_Screen> {
           ),
         ],
       ),
-
     );
   }
 
@@ -926,7 +923,7 @@ class _Order_ScreenState extends State<Order_Screen> {
         return AppColors.maincolor;
       case "ready for collection":
         return AppColors.maincolor;
-      case "declined"||"cancelled":
+      case "declined" || "cancelled":
         return Colors.red;
       default:
         return Colors.grey;
@@ -978,7 +975,8 @@ class _Order_ScreenState extends State<Order_Screen> {
             .orderListApi(
               loginModel?.data?.user?.id.toString() ?? "",
               status,
-              type,''
+              type,
+              '',
             )
             .then((response) async {
               myOrderModel = MyOrderModel.fromJson(response.data);
@@ -1009,9 +1007,9 @@ class _Order_ScreenState extends State<Order_Screen> {
 
   OrderListViewApi1(type) {
     String status =
-    selectedType == "services"
-        ? getStatusFromServiceTab(selectedCategory)
-        : getStatusFromTab(selectedCategory);
+        selectedType == "services"
+            ? getStatusFromServiceTab(selectedCategory)
+            : getStatusFromTab(selectedCategory);
     log("TYPE$type");
     setState(() {
       isLoading1 = true;
@@ -1020,26 +1018,26 @@ class _Order_ScreenState extends State<Order_Screen> {
       if (internet) {
         OrderProvider()
             .orderListApi(
-          loginModel?.data?.user?.id.toString() ?? "",
-          status,
-          type,''
-        )
+              loginModel?.data?.user?.id.toString() ?? "",
+              status,
+              type,
+              '',
+            )
             .then((response) async {
-
-          serviceViewModel = ServiceViewModel.fromJson(response.data);
-          if (response.statusCode == 200) {
-            setState(() {
-              isLoading = false;
-              isLoading1 = false;
+              serviceViewModel = ServiceViewModel.fromJson(response.data);
+              if (response.statusCode == 200) {
+                setState(() {
+                  isLoading = false;
+                  isLoading1 = false;
+                });
+              } else {
+                setState(() {
+                  isLoading = false;
+                  isLoading1 = false;
+                });
+                log("Error");
+              }
             });
-          } else {
-            setState(() {
-              isLoading = false;
-              isLoading1 = false;
-            });
-            log("Error");
-          }
-        });
       } else {
         setState(() {
           isLoading = false;
@@ -1050,8 +1048,4 @@ class _Order_ScreenState extends State<Order_Screen> {
       }
     });
   }
-
-
 }
-
-

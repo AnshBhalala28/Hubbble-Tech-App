@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -10,6 +8,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wavee/Screen/Booking/View/book_amenities.dart';
 import 'package:wavee/Screen/Booking/View/booking_screen.dart';
@@ -37,7 +37,6 @@ import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
 import '../../../comman/custom_batan.dart';
 import '../../../comman/input_decoration.dart';
-
 import '../../Booking/View/service_booking_screen.dart';
 import '../../Message_board/Model/Add_Post_Model.dart';
 import '../../Message_board/Provider/messsage_board_provider.dart';
@@ -88,6 +87,31 @@ class _HomePageState extends State<HomePage> {
     MessageBoardApi();
     localpostapi();
     GetProfile();
+  }
+
+  String formatPostDate(String? createdAt) {
+    if (createdAt == null) return "";
+    tz.initializeTimeZones();
+    final ukTimeZone = tz.getLocation('Europe/London');
+    final utcDate = DateTime.parse(createdAt);
+    final postDateUk = tz.TZDateTime.from(utcDate, ukTimeZone);
+    final nowUk = tz.TZDateTime.now(ukTimeZone);
+    final postDateDay = DateTime(
+      postDateUk.year,
+      postDateUk.month,
+      postDateUk.day,
+    );
+    final nowDay = DateTime(nowUk.year, nowUk.month, nowUk.day);
+
+    final difference = nowDay.difference(postDateDay).inDays;
+
+    if (difference == 0) {
+      return "Today";
+    } else if (difference == 1) {
+      return "Yesterday";
+    } else {
+      return "$difference days ago";
+    }
   }
 
   @override
@@ -1058,21 +1082,21 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  String formatPostDate(String? createdAt) {
-    if (createdAt == null) return "";
-
-    final postDate = DateTime.parse(createdAt);
-    final now = DateTime.now();
-    final difference = now.difference(postDate).inDays;
-
-    if (difference == 0) {
-      return "Today";
-    } else if (difference == 1) {
-      return "1 day ago";
-    } else {
-      return "$difference days ago";
-    }
-  }
+  // String formatPostDate(String? createdAt) {
+  //   if (createdAt == null) return "";
+  //
+  //   final postDate = DateTime.parse(createdAt);
+  //   final now = DateTime.now();
+  //   final difference = now.difference(postDate).inDays;
+  //
+  //   if (difference == 0) {
+  //     return "Today";
+  //   } else if (difference == 1) {
+  //     return "1 day ago";
+  //   } else {
+  //     return "$difference days ago";
+  //   }
+  // }
 
   Widget homeCard({
     required String iconName,
@@ -1179,10 +1203,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   int cartCount = cartDetailsModel?.data?.length ?? 0;
-
-
-
-
 
   String formatDateTime(String? createdAt) {
     if (createdAt == null || createdAt.isEmpty) return "N/A";

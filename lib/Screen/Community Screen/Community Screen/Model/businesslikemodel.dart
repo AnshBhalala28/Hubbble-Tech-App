@@ -29,12 +29,13 @@ class Data {
   String? createdAt;
   String? updatedAt;
 
-  Data(
-      {this.appUserId,
-      this.businessId,
-      this.isLike,
-      this.createdAt,
-      this.updatedAt});
+  Data({
+    this.appUserId,
+    this.businessId,
+    this.isLike,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     appUserId = json['app_user_id'];

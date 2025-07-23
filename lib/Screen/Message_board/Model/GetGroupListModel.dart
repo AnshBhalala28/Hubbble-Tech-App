@@ -38,16 +38,17 @@ class Data {
   int? unreadCount;
   Lastmessage? lastmessage;
 
-  Data(
-      {this.id,
-      this.createdBy,
-      this.name,
-      this.details,
-      this.images,
-      this.createdAt,
-      this.updatedAt,
-      this.unreadCount,
-      this.lastmessage});
+  Data({
+    this.id,
+    this.createdBy,
+    this.name,
+    this.details,
+    this.images,
+    this.createdAt,
+    this.updatedAt,
+    this.unreadCount,
+    this.lastmessage,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -58,9 +59,10 @@ class Data {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     unreadCount = json['unread_count'];
-    lastmessage = json['lastmessage'] != null
-        ? new Lastmessage.fromJson(json['lastmessage'])
-        : null;
+    lastmessage =
+        json['lastmessage'] != null
+            ? new Lastmessage.fromJson(json['lastmessage'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -98,23 +100,24 @@ class Lastmessage {
   String? profileImage;
   Users? users;
 
-  Lastmessage(
-      {this.id,
-      this.senderId,
-      this.receiverId,
-      this.groupId,
-      this.type,
-      this.msgTo,
-      this.messageType,
-      this.message,
-      this.file,
-      this.isRead,
-      this.createdAt,
-      this.updatedAt,
-      this.firstName,
-      this.lastName,
-      this.profileImage,
-      this.users});
+  Lastmessage({
+    this.id,
+    this.senderId,
+    this.receiverId,
+    this.groupId,
+    this.type,
+    this.msgTo,
+    this.messageType,
+    this.message,
+    this.file,
+    this.isRead,
+    this.createdAt,
+    this.updatedAt,
+    this.firstName,
+    this.lastName,
+    this.profileImage,
+    this.users,
+  });
 
   Lastmessage.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -180,26 +183,27 @@ class Users {
   String? createdAt;
   String? updatedAt;
 
-  Users(
-      {this.id,
-      this.role,
-      this.name,
-      this.email,
-      this.emailVerifiedAt,
-      this.dPassword,
-      this.mobileNo,
-      this.gender,
-      this.dateOfBirth,
-      this.address,
-      this.psLatitude,
-      this.psLongitude,
-      this.fcmToken,
-      this.forgetPassKey,
-      this.moduleLock,
-      this.status,
-      this.profile,
-      this.createdAt,
-      this.updatedAt});
+  Users({
+    this.id,
+    this.role,
+    this.name,
+    this.email,
+    this.emailVerifiedAt,
+    this.dPassword,
+    this.mobileNo,
+    this.gender,
+    this.dateOfBirth,
+    this.address,
+    this.psLatitude,
+    this.psLongitude,
+    this.fcmToken,
+    this.forgetPassKey,
+    this.moduleLock,
+    this.status,
+    this.profile,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Users.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -212,7 +216,7 @@ class Users {
     gender = json['gender'];
     dateOfBirth = json['date_of_birth'];
     address =
-    json['address'] != null ? new Address.fromJson(json['address']) : null;
+        json['address'] != null ? new Address.fromJson(json['address']) : null;
     psLatitude = json['ps_latitude'];
     psLongitude = json['ps_longitude'];
     fcmToken = json['fcm_token'];
@@ -250,6 +254,7 @@ class Users {
     return data;
   }
 }
+
 class Address {
   String? address;
   String? city;

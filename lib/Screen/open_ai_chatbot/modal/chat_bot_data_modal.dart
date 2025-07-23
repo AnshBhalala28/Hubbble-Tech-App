@@ -33,13 +33,14 @@ class Conversations {
   String? createdAt;
   String? updatedAt;
 
-  Conversations(
-      {this.id,
-      this.userId,
-      this.userMessage,
-      this.aiReply,
-      this.createdAt,
-      this.updatedAt});
+  Conversations({
+    this.id,
+    this.userId,
+    this.userMessage,
+    this.aiReply,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Conversations.fromJson(Map<String, dynamic> json) {
     id = json['id'];

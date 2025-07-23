@@ -36,19 +36,20 @@ class Data {
   List<February>? february;
   List<January>? january;
 
-  Data(
-      {this.december,
-      this.november,
-      this.october,
-      this.september,
-      this.august,
-      this.july,
-      this.june,
-      this.may,
-      this.april,
-      this.march,
-      this.february,
-      this.january});
+  Data({
+    this.december,
+    this.november,
+    this.october,
+    this.september,
+    this.august,
+    this.july,
+    this.june,
+    this.may,
+    this.april,
+    this.march,
+    this.february,
+    this.january,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     if (json['december'] != null) {
@@ -176,14 +177,15 @@ class December {
   Null? attended;
   Amenity? amenity;
 
-  December(
-      {this.bookingId,
-      this.userId,
-      this.status,
-      this.requestedAt,
-      this.rsvp,
-      this.attended,
-      this.amenity});
+  December({
+    this.bookingId,
+    this.userId,
+    this.status,
+    this.requestedAt,
+    this.rsvp,
+    this.attended,
+    this.amenity,
+  });
 
   December.fromJson(Map<String, dynamic> json) {
     bookingId = json['booking_id'];
@@ -226,20 +228,21 @@ class Amenity {
   String? createdAt;
   String? updatedAt;
 
-  Amenity(
-      {this.id,
-      this.userId,
-      this.name,
-      this.description,
-      this.imageUrl,
-      this.rulesNotice,
-      this.operatingHours,
-      this.durationOptions,
-      this.capacity,
-      this.maxBookingPerDay,
-      this.status,
-      this.createdAt,
-      this.updatedAt});
+  Amenity({
+    this.id,
+    this.userId,
+    this.name,
+    this.description,
+    this.imageUrl,
+    this.rulesNotice,
+    this.operatingHours,
+    this.durationOptions,
+    this.capacity,
+    this.maxBookingPerDay,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Amenity.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -248,9 +251,10 @@ class Amenity {
     description = json['description'];
     imageUrl = json['image_url'].cast<String>();
     rulesNotice = json['rules_notice'];
-    operatingHours = json['operating_hours'] != null
-        ? new OperatingHours.fromJson(json['operating_hours'])
-        : null;
+    operatingHours =
+        json['operating_hours'] != null
+            ? new OperatingHours.fromJson(json['operating_hours'])
+            : null;
     durationOptions = json['duration_options'].cast<String>();
     capacity = json['capacity'];
     maxBookingPerDay = json['max_booking_per_day'];
@@ -289,23 +293,25 @@ class OperatingHours {
   Monday? saturday;
   Monday? sunday;
 
-  OperatingHours(
-      {this.monday,
-      this.tuesday,
-      this.wednesday,
-      this.thursday,
-      this.friday,
-      this.saturday,
-      this.sunday});
+  OperatingHours({
+    this.monday,
+    this.tuesday,
+    this.wednesday,
+    this.thursday,
+    this.friday,
+    this.saturday,
+    this.sunday,
+  });
 
   OperatingHours.fromJson(Map<String, dynamic> json) {
     monday =
         json['monday'] != null ? new Monday.fromJson(json['monday']) : null;
     tuesday =
         json['tuesday'] != null ? new Monday.fromJson(json['tuesday']) : null;
-    wednesday = json['wednesday'] != null
-        ? new Monday.fromJson(json['wednesday'])
-        : null;
+    wednesday =
+        json['wednesday'] != null
+            ? new Monday.fromJson(json['wednesday'])
+            : null;
     thursday =
         json['thursday'] != null ? new Monday.fromJson(json['thursday']) : null;
     friday =
@@ -371,14 +377,15 @@ class June {
   String? attended;
   Amenity? amenity;
 
-  June(
-      {this.bookingId,
-      this.userId,
-      this.status,
-      this.requestedAt,
-      this.rsvp,
-      this.attended,
-      this.amenity});
+  June({
+    this.bookingId,
+    this.userId,
+    this.status,
+    this.requestedAt,
+    this.rsvp,
+    this.attended,
+    this.amenity,
+  });
 
   June.fromJson(Map<String, dynamic> json) {
     bookingId = json['booking_id'];
@@ -415,14 +422,15 @@ class November {
   String? attended;
   Amenity? amenity;
 
-  November(
-      {this.bookingId,
-      this.userId,
-      this.status,
-      this.requestedAt,
-      this.rsvp,
-      this.attended,
-      this.amenity});
+  November({
+    this.bookingId,
+    this.userId,
+    this.status,
+    this.requestedAt,
+    this.rsvp,
+    this.attended,
+    this.amenity,
+  });
 
   November.fromJson(Map<String, dynamic> json) {
     bookingId = json['booking_id'];
@@ -459,14 +467,15 @@ class October {
   String? attended;
   Amenity? amenity;
 
-  October(
-      {this.bookingId,
-      this.userId,
-      this.status,
-      this.requestedAt,
-      this.rsvp,
-      this.attended,
-      this.amenity});
+  October({
+    this.bookingId,
+    this.userId,
+    this.status,
+    this.requestedAt,
+    this.rsvp,
+    this.attended,
+    this.amenity,
+  });
 
   October.fromJson(Map<String, dynamic> json) {
     bookingId = json['booking_id'];
@@ -503,14 +512,15 @@ class September {
   String? attended;
   Amenity? amenity;
 
-  September(
-      {this.bookingId,
-      this.userId,
-      this.status,
-      this.requestedAt,
-      this.rsvp,
-      this.attended,
-      this.amenity});
+  September({
+    this.bookingId,
+    this.userId,
+    this.status,
+    this.requestedAt,
+    this.rsvp,
+    this.attended,
+    this.amenity,
+  });
 
   September.fromJson(Map<String, dynamic> json) {
     bookingId = json['booking_id'];
@@ -547,14 +557,15 @@ class August {
   String? attended;
   Amenity? amenity;
 
-  August(
-      {this.bookingId,
-      this.userId,
-      this.status,
-      this.requestedAt,
-      this.rsvp,
-      this.attended,
-      this.amenity});
+  August({
+    this.bookingId,
+    this.userId,
+    this.status,
+    this.requestedAt,
+    this.rsvp,
+    this.attended,
+    this.amenity,
+  });
 
   August.fromJson(Map<String, dynamic> json) {
     bookingId = json['booking_id'];
@@ -591,14 +602,15 @@ class July {
   String? attended;
   Amenity? amenity;
 
-  July(
-      {this.bookingId,
-      this.userId,
-      this.status,
-      this.requestedAt,
-      this.rsvp,
-      this.attended,
-      this.amenity});
+  July({
+    this.bookingId,
+    this.userId,
+    this.status,
+    this.requestedAt,
+    this.rsvp,
+    this.attended,
+    this.amenity,
+  });
 
   July.fromJson(Map<String, dynamic> json) {
     bookingId = json['booking_id'];
@@ -635,14 +647,15 @@ class May {
   String? attended;
   Amenity? amenity;
 
-  May(
-      {this.bookingId,
-      this.userId,
-      this.status,
-      this.requestedAt,
-      this.rsvp,
-      this.attended,
-      this.amenity});
+  May({
+    this.bookingId,
+    this.userId,
+    this.status,
+    this.requestedAt,
+    this.rsvp,
+    this.attended,
+    this.amenity,
+  });
 
   May.fromJson(Map<String, dynamic> json) {
     bookingId = json['booking_id'];
@@ -679,14 +692,15 @@ class April {
   String? attended;
   Amenity? amenity;
 
-  April(
-      {this.bookingId,
-      this.userId,
-      this.status,
-      this.requestedAt,
-      this.rsvp,
-      this.attended,
-      this.amenity});
+  April({
+    this.bookingId,
+    this.userId,
+    this.status,
+    this.requestedAt,
+    this.rsvp,
+    this.attended,
+    this.amenity,
+  });
 
   April.fromJson(Map<String, dynamic> json) {
     bookingId = json['booking_id'];
@@ -723,14 +737,15 @@ class March {
   String? attended;
   Amenity? amenity;
 
-  March(
-      {this.bookingId,
-      this.userId,
-      this.status,
-      this.requestedAt,
-      this.rsvp,
-      this.attended,
-      this.amenity});
+  March({
+    this.bookingId,
+    this.userId,
+    this.status,
+    this.requestedAt,
+    this.rsvp,
+    this.attended,
+    this.amenity,
+  });
 
   March.fromJson(Map<String, dynamic> json) {
     bookingId = json['booking_id'];
@@ -767,14 +782,15 @@ class February {
   String? attended;
   Amenity? amenity;
 
-  February(
-      {this.bookingId,
-      this.userId,
-      this.status,
-      this.requestedAt,
-      this.rsvp,
-      this.attended,
-      this.amenity});
+  February({
+    this.bookingId,
+    this.userId,
+    this.status,
+    this.requestedAt,
+    this.rsvp,
+    this.attended,
+    this.amenity,
+  });
 
   February.fromJson(Map<String, dynamic> json) {
     bookingId = json['booking_id'];
@@ -811,14 +827,15 @@ class January {
   String? attended;
   Amenity? amenity;
 
-  January(
-      {this.bookingId,
-      this.userId,
-      this.status,
-      this.requestedAt,
-      this.rsvp,
-      this.attended,
-      this.amenity});
+  January({
+    this.bookingId,
+    this.userId,
+    this.status,
+    this.requestedAt,
+    this.rsvp,
+    this.attended,
+    this.amenity,
+  });
 
   January.fromJson(Map<String, dynamic> json) {
     bookingId = json['booking_id'];

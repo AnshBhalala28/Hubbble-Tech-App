@@ -31,14 +31,15 @@ class Data {
   String? createdAt;
   int? id;
 
-  Data(
-      {this.createdBy,
-      this.name,
-      this.details,
-      this.images,
-      this.updatedAt,
-      this.createdAt,
-      this.id});
+  Data({
+    this.createdBy,
+    this.name,
+    this.details,
+    this.images,
+    this.updatedAt,
+    this.createdAt,
+    this.id,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     createdBy = json['created_by'];

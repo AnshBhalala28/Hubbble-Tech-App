@@ -1,11 +1,8 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
@@ -492,7 +489,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                         child: Row(
                                           children: [
                                             Container(
-                                              width: 47.w,
+                                              width: 48.w,
                                               padding: EdgeInsets.symmetric(
                                                 horizontal: 3.w,
                                                 vertical: 1.h,
@@ -2087,7 +2084,8 @@ class _Form_ScreenState extends State<Form_Screen> {
       var response = await AmenitiesProvider().amenitiesApi(
         loginModel?.data?.user?.id.toString() ?? '',
         widget.amenites_id ?? "",
-        date,''
+        date,
+        '',
       );
 
       if (response.statusCode == 200) {

@@ -43,17 +43,18 @@ class Data {
   String? createdAt;
   int? id;
 
-  Data(
-      {this.orderProductId,
-      this.businessId,
-      this.userId,
-      this.message,
-      this.file,
-      this.messageType,
-      this.isRead,
-      this.updatedAt,
-      this.createdAt,
-      this.id});
+  Data({
+    this.orderProductId,
+    this.businessId,
+    this.userId,
+    this.message,
+    this.file,
+    this.messageType,
+    this.isRead,
+    this.updatedAt,
+    this.createdAt,
+    this.id,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     orderProductId = json['order_product_id'];

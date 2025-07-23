@@ -52,17 +52,20 @@ class _VideoWidgetState extends State<VideoWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.to(() => FullScreenVideoPlayer(
-              videoUrl: widget.videoUrl,
-              postId: widget.postId,
-            ));
+        Get.to(
+          () => FullScreenVideoPlayer(
+            videoUrl: widget.videoUrl,
+            postId: widget.postId,
+          ),
+        );
       },
-      child: _controller.value.isInitialized
-          ? AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: VideoPlayer(_controller),
-            )
-          : Center(child: CircularProgressIndicator()),
+      child:
+          _controller.value.isInitialized
+              ? AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              )
+              : Center(child: CircularProgressIndicator()),
     );
   }
 }

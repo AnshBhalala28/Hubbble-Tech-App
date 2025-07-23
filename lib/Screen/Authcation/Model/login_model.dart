@@ -181,20 +181,21 @@ class User {
   String? updatedAt;
   String? fullName;
 
-  User(
-      {this.id,
-      this.role,
-      this.name,
-      this.email,
-      this.dPassword,
-      this.mobileNo,
-      this.gender,
-      this.address,
-      this.status,
-      this.profile,
-      this.createdAt,
-      this.updatedAt,
-      this.fullName});
+  User({
+    this.id,
+    this.role,
+    this.name,
+    this.email,
+    this.dPassword,
+    this.mobileNo,
+    this.gender,
+    this.address,
+    this.status,
+    this.profile,
+    this.createdAt,
+    this.updatedAt,
+    this.fullName,
+  });
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];

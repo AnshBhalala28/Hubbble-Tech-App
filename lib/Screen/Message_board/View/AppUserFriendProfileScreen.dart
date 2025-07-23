@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -343,14 +341,12 @@ class _AppUserFriendProfileScreenState
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response = await MessageProvider().removefriend(
+          final response = await MessageProvider().removeFriend(
             (widget.id).toString(),
           );
 
           if (response.statusCode == 200) {
-            removefriendModel = RemoveFriendModel.fromJson(
-              json.decode(response.body),
-            );
+            removefriendModel = RemoveFriendModel.fromJson(response.data);
 
             setState(() {
               isSending = false;

@@ -1,8 +1,4 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -17,7 +13,6 @@ import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
 import '../../../comman/custom_batan.dart';
 import '../../../comman/error_dialog.dart';
-import '../../open_ai_chatbot/view/open_ai_screen.dart';
 import '../Model/service_booking_model.dart';
 import '../Provider/booking_provider.dart';
 

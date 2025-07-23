@@ -35,13 +35,14 @@ class Data {
   String? createdAt;
   String? updatedAt;
 
-  Data(
-      {this.id,
-      this.categoryName,
-      this.status,
-      this.img,
-      this.createdAt,
-      this.updatedAt});
+  Data({
+    this.id,
+    this.categoryName,
+    this.status,
+    this.img,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];

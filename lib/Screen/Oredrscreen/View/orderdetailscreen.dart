@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -516,14 +513,17 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               orderDetailModel!
-                                      .data!
-                                      .products!
-                                      .product!
-                                      .images==[]||orderDetailModel!
-                                  .data!
-                                  .products!
-                                  .product!
-                                  .images==null
+                                              .data!
+                                              .products!
+                                              .product!
+                                              .images ==
+                                          [] ||
+                                      orderDetailModel!
+                                              .data!
+                                              .products!
+                                              .product!
+                                              .images ==
+                                          null
                                   ? Container(
                                     height: 25.h,
                                     width: double.infinity,
@@ -559,8 +559,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                       ),
                                     ),
                                   )
-                                  :
-                              CarouselSlider(
+                                  : CarouselSlider(
                                     carouselController: _controller,
                                     options: CarouselOptions(
                                       height: 25.h,
@@ -1195,23 +1194,22 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
       if (internet) {
         OrderProvider()
             .orderDetailApi(
-          loginModel?.data?.user?.id.toString() ?? "",
-          widget.orderid,
-          widget.orderProductID,
-        )
+              loginModel?.data?.user?.id.toString() ?? "",
+              widget.orderid,
+              widget.orderProductID,
+            )
             .then((response) async {
-
-          serviceOrderDetail = ServiceOrderDetail.fromJson(response.data);
-          if (response.statusCode == 200) {
-            setState(() {
-              isLoading = false;
+              serviceOrderDetail = ServiceOrderDetail.fromJson(response.data);
+              if (response.statusCode == 200) {
+                setState(() {
+                  isLoading = false;
+                });
+              } else {
+                setState(() {
+                  isLoading = false;
+                });
+              }
             });
-          } else {
-            setState(() {
-              isLoading = false;
-            });
-          }
-        });
       } else {
         setState(() {
           isLoading = false;

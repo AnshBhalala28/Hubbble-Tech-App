@@ -4,8 +4,12 @@ class PostLikeModel {
   int? likesCount;
   int? dislikesCount;
 
-  PostLikeModel(
-      {this.status, this.message, this.likesCount, this.dislikesCount});
+  PostLikeModel({
+    this.status,
+    this.message,
+    this.likesCount,
+    this.dislikesCount,
+  });
 
   PostLikeModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];

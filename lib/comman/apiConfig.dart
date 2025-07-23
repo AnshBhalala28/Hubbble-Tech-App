@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart'; // Needed for DefaultHttpClientAdapter
@@ -8,6 +7,7 @@ import 'package:wavee/comman/apiEndpoint.dart';
 
 class DioHelper {
   static Dio? _dio;
+
   static Future<Dio> getDio() async {
     if (_dio != null) return _dio!;
     final sslCert = await rootBundle.load('assets/certificates/wavee_cert.pem');

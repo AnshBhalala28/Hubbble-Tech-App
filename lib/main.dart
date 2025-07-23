@@ -1,10 +1,12 @@
 import 'dart:developer';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+
 import 'Screen/Authcation/Model/login_model.dart';
 import 'Screen/welcome_screen.dart';
 import 'comman/colors.dart';
@@ -156,6 +158,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+
 // rm -rf pubspec.lock
 // flutter clean
 // flutter pub get

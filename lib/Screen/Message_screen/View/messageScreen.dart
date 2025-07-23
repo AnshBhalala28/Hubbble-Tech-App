@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -13,6 +11,7 @@ import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wavee/Screen/Message_screen/View/videourlscreen.dart';
 import 'package:wavee/comman/const.dart';
+import 'package:wavee/comman/viewPdfFunction.dart';
 
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
@@ -25,8 +24,6 @@ import '../Model/SendMessageModel.dart';
 import '../Model/messagescreen_model.dart';
 import '../Provider/messagescreen_provider.dart';
 import 'UserProfileScreen.dart';
-import 'package:wavee/comman/viewPdfFunction.dart';
-
 
 class MessageScreen extends StatefulWidget {
   String? chatName;
@@ -255,8 +252,6 @@ class _MessageScreenState extends State<MessageScreen> {
                               color: Colors.black,
                             ),
                           ),
-
-
                         ],
                       ),
                     ),
@@ -646,8 +641,8 @@ class _MessageScreenState extends State<MessageScreen> {
               width: 30.w,
               placeholder:
                   (context, url) => Center(
-                child: CircularProgressIndicator(color: Colors.white),
-              ),
+                    child: CircularProgressIndicator(color: Colors.white),
+                  ),
               errorWidget: (context, url, error) => Icon(Icons.photo),
             ),
           ),
@@ -688,7 +683,6 @@ class _MessageScreenState extends State<MessageScreen> {
     }
   }
 
-
   void MessageApi() async {
     checkInternet().then((internet) async {
       if (internet) {
@@ -705,7 +699,7 @@ class _MessageScreenState extends State<MessageScreen> {
                   ? widget.type.toString() ?? ""
                   : 'business';
 
-          var response = await MessageProvider().MessageApi(
+          var response = await MessageProvider().messageApi(
             userId,
             conciergeId,
             type,
@@ -713,8 +707,7 @@ class _MessageScreenState extends State<MessageScreen> {
           );
 
           if (response.statusCode == 200) {
-            var data = jsonDecode(response.body);
-            messageModel = MessageModel.fromJson(data);
+            messageModel = MessageModel.fromJson(response.data);
           } else {}
 
           setState(() {
@@ -767,10 +760,8 @@ class _MessageScreenState extends State<MessageScreen> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await MessageProvider().sendmessageapi(data);
-          sendMessageModel = SendMessageModel.fromJson(
-            jsonDecode(response.body),
-          );
+          var response = await MessageProvider().sendMessageApi(data);
+          sendMessageModel = SendMessageModel.fromJson(response.data);
 
           if (response.statusCode == 200 && sendMessageModel?.status == 200) {
             setState(() {
@@ -1077,14 +1068,12 @@ class _MessageScreenState extends State<MessageScreen> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await MessageProvider().sendmessageorderapi(
+          var response = await MessageProvider().sendMessageOrderApi(
             data,
             fileToSend,
           );
 
-          ordersendmessagemodel = OrdersendMessageModel.fromJson(
-            jsonDecode(response.body),
-          );
+          ordersendmessagemodel = OrdersendMessageModel.fromJson(response.data);
 
           if (response.statusCode == 200 &&
               ordersendmessagemodel?.status == 200) {
