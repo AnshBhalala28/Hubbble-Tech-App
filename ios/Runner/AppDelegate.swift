@@ -32,10 +32,7 @@ import GoogleMaps
     ) -> Bool {
         GeneratedPluginRegistrant.register(with: self)
         application.registerForRemoteNotifications()
-        // GMSServices.provideAPIKey("AIzaSyDkTKndT7jGcmnVYK1xgPL3drb7oqAQAAY")
-        if let apiKey = Bundle.main.infoDictionary?["GOOGLE_MAPS_API_KEY"] as? String {
-             GMSServices.provideAPIKey(apiKey)
-            }
+         GMSServices.provideAPIKey("AIzaSyDkTKndT7jGcmnVYK1xgPL3drb7oqAQAAY")
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
     override func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {

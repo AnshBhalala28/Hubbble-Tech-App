@@ -1109,7 +1109,7 @@ class _HomePageState extends State<HomePage> {
       child: InkWell(
         onTap: onTap,
         child: Container(
-          height: 12.h,
+          height: 14.h,
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: const Color(0xFFfafafa),
@@ -1161,7 +1161,7 @@ class _HomePageState extends State<HomePage> {
       child: InkWell(
         onTap: onTap,
         child: Container(
-          height: 9.5.h,
+          height: 11.h,
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: const Color(0xFFfafafa),

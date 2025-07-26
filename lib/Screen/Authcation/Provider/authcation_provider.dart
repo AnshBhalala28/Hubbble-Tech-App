@@ -68,7 +68,7 @@ class AuthProvider extends ChangeNotifier {
 
       return response;
     } on DioException catch (e) {
-      log('dadsadddasdsadadasd$e');
+      log('Logout API Error: ${handleDioError(e)}');
       throw Exception(handleDioError(e));
     }
   }

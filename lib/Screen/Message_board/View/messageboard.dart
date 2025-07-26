@@ -959,7 +959,7 @@ class _MessageboardState extends State<Messageboard> {
                                 ),
                               )
                               : Container(
-                                height: 60.h,
+                                height: 58.5.h,
                                 child: ListView.builder(
                                   controller: _scrollController,
                                   padding: EdgeInsets.zero,
