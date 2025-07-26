@@ -86,7 +86,7 @@ const String baseUrl = "https://portal.wavee.ai/api";
 const String jsonString = "assets/google_pay.json";
 
 class AppConstants {
-  static String BASEURL = "http://staging-portal.wavee.ai/api/";
+  static String BASEURL = "https://portal.wavee.ai/api/";
 
   static const String path = "assets/Svg/";
   static const String manrope1 = "Manrope";

@@ -1126,7 +1126,7 @@ class _ChatScreenState extends State<ChatScreen> {
             isLoading = false;
           });
         }
-        buildErrorDialog(context, 'Error', "Internet Required");
+        // buildErrorDialog(context, 'Error', "Internet Required");
       }
     });
   }

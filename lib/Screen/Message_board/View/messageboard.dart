@@ -153,7 +153,7 @@ class _MessageboardState extends State<Messageboard> {
     fetchData();
     listconciergerapi();
     setState(() {
-      GetMyJoinGroup();
+      // GetMyJoinGroup();
       getfriendlistdAp();
     });
 
@@ -187,7 +187,7 @@ class _MessageboardState extends State<Messageboard> {
       isSending = true;
     });
 
-    await GetMyJoinGroup();
+    // await GetMyJoinGroup();
 
     setState(() {
       isSending = false;
@@ -1518,6 +1518,7 @@ class _MessageboardState extends State<Messageboard> {
     );
   }
 
+
   void shareConciergeImage(String? imageUrl) {
     if (imageUrl == null || imageUrl.isEmpty) {
       return;
@@ -2347,34 +2348,34 @@ class _MessageboardState extends State<Messageboard> {
     });
   }
 
-  GetMyJoinGroup() {
-    final Map<String, String> data = {
-      'user_id': (loginModel?.data?.user?.id).toString(),
-    };
-
-    setState(() {
-      isSending = true;
-    });
-    checkInternet().then((internet) async {
-      if (internet) {
-        MessageBoardProvider().getMyJoinGroupApi(data).then((response) async {
-          if (response.statusCode == 200) {
-            getgrouplistmodel = GetGroupListModel.fromJson(response.data);
-
-            setState(() {
-              isSending = false;
-            });
-          } else if (response.statusCode == 429 || response.statusCode == 500) {
-            isSending = false;
-          } else {
-            isSending = false;
-          }
-        });
-      } else {
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
+  // GetMyJoinGroup() {
+  //   final Map<String, String> data = {
+  //     'user_id': (loginModel?.data?.user?.id).toString(),
+  //   };
+  //
+  //   setState(() {
+  //     isSending = true;
+  //   });
+  //   checkInternet().then((internet) async {
+  //     if (internet) {
+  //       MessageBoardProvider().getMyJoinGroupApi(data).then((response) async {
+  //         if (response.statusCode == 200) {
+  //           getgrouplistmodel = GetGroupListModel.fromJson(response.data);
+  //
+  //           setState(() {
+  //             isSending = false;
+  //           });
+  //         } else if (response.statusCode == 429 || response.statusCode == 500) {
+  //           isSending = false;
+  //         } else {
+  //           isSending = false;
+  //         }
+  //       });
+  //     } else {
+  //       buildErrorDialog(context, 'Error', "Internet Required");
+  //     }
+  //   });
+  // }
 
   Future<void> showCancelConfirmationDialog(
     String PostId, {
@@ -2466,7 +2467,7 @@ class _MessageboardState extends State<Messageboard> {
     final Map<String, String> data = {
       'residentType': "residents",
       'user_id': loginModel?.data?.user?.id.toString() ?? '',
-      'page': page.toString(), // Assuming your API accepts 'page' parameter
+      'page': page.toString(),
     };
 
     if (page == 1) setState(() => isSending = true);
@@ -2498,7 +2499,8 @@ class _MessageboardState extends State<Messageboard> {
               isSending = false;
             });
           }
-        } catch (e) {
+        } catch (e,stackTrace) {
+          log('error ave che ceh $e $stackTrace');
           setState(() {
             isLoadingMore = false;
             isSending = false;

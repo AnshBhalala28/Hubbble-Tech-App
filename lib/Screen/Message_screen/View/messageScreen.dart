@@ -91,7 +91,7 @@ class _MessageScreenState extends State<MessageScreen> {
       '.......................loginid....................... ${loginModel?.data?.user?.id.toString() ?? ""}',
     );
 
-    _timer = Timer.periodic(const Duration(seconds: 2), (timer) {
+    _timer = Timer.periodic( Duration(seconds: 3), (timer) {
       MessageApi();
     });
   }
@@ -244,7 +244,7 @@ class _MessageScreenState extends State<MessageScreen> {
                           ),
                           SizedBox(width: 12),
                           Text(
-                            widget.chatName!,
+                            widget.chatName??"",
                             style: TextStyle(
                               fontFamily: AppConstants.manrope,
                               fontSize: 18.sp,
@@ -724,7 +724,7 @@ class _MessageScreenState extends State<MessageScreen> {
         setState(() {
           isLoading = false;
         });
-        buildErrorDialog(context, 'Error', "Internet Required");
+        // buildErrorDialog(context, 'Error', "Internet Required");
       }
     });
   }

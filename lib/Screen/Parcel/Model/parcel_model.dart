@@ -212,7 +212,8 @@ class Requester {
   int? mobileNo;
   String? gender;
   var dateOfBirth;
-  Address? address;
+  dynamic address; // <-- CHANGE HERE
+
   var psLatitude;
   var psLongitude;
   String? fcmToken;
@@ -261,8 +262,11 @@ class Requester {
     mobileNo = json['mobile_no'];
     gender = json['gender'];
     dateOfBirth = json['date_of_birth'];
-    address =
-        json['address'] != null ? new Address.fromJson(json['address']) : null;
+    if (json['address'] is String) {
+      address = json['address'];
+    } else if (json['address'] is Map<String, dynamic>) {
+      address = Address.fromJson(json['address']);
+    }
     psLatitude = json['ps_latitude'];
     psLongitude = json['ps_longitude'];
     fcmToken = json['fcm_token'];
@@ -288,8 +292,10 @@ class Requester {
     data['mobile_no'] = this.mobileNo;
     data['gender'] = this.gender;
     data['date_of_birth'] = this.dateOfBirth;
-    if (this.address != null) {
-      data['address'] = this.address!.toJson();
+    if (address is String) {
+      data['address'] = address;
+    } else if (address is Address) {
+      data['address'] = (address as Address).toJson();
     }
     data['ps_latitude'] = this.psLatitude;
     data['ps_longitude'] = this.psLongitude;

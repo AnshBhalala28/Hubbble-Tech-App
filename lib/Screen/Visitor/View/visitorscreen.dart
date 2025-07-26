@@ -329,6 +329,8 @@
 //     });
 //   }
 // }
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -390,7 +392,8 @@ class _VisitorScreenState extends State<VisitorScreen> {
       } else {
         _pagingController.appendPage(items, pageKey + 1);
       }
-    } catch (e) {
+    } catch (e,stackTrace) {
+      log('adasddadad$e   $stackTrace');
       _pagingController.error = e;
     }
   }

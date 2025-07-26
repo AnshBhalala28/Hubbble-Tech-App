@@ -263,7 +263,7 @@ class Data {
   int? lastPage;
   String? lastPageUrl;
   List<Links>? links;
-  String? nextPageUrl;
+  var nextPageUrl;
   String? path;
   int? perPage;
   var prevPageUrl;
@@ -271,22 +271,21 @@ class Data {
   int? total;
   int? totalPages;
 
-  Data({
-    this.currentPage,
-    this.data,
-    this.firstPageUrl,
-    this.from,
-    this.lastPage,
-    this.lastPageUrl,
-    this.links,
-    this.nextPageUrl,
-    this.path,
-    this.perPage,
-    this.prevPageUrl,
-    this.to,
-    this.total,
-    this.totalPages,
-  });
+  Data(
+      {this.currentPage,
+        this.data,
+        this.firstPageUrl,
+        this.from,
+        this.lastPage,
+        this.lastPageUrl,
+        this.links,
+        this.nextPageUrl,
+        this.path,
+        this.perPage,
+        this.prevPageUrl,
+        this.to,
+        this.total,
+        this.totalPages});
 
   Data.fromJson(Map<String, dynamic> json) {
     currentPage = json['current_page'];
@@ -335,7 +334,6 @@ class Data {
     data['to'] = this.to;
     data['total'] = this.total;
     data['total_pages'] = this.totalPages;
-
     return data;
   }
 }
@@ -343,7 +341,7 @@ class Data {
 class Data1 {
   int? id;
   int? userId;
-  var gateId;
+  Null? gateId;
   int? reasonId;
   int? unitId;
   String? concigereId;
@@ -353,39 +351,38 @@ class Data1 {
   String? checkInTime;
   String? checkOutDate;
   String? checkOutTime;
-  String? inNote;
-  String? outNote;
+  var inNote;
+  var outNote;
   String? keyLog;
-  String? isContractors;
+  var isContractors;
   var deletedAt;
   String? createdAt;
   String? updatedAt;
   User? user;
   Reason? reason;
 
-  Data1({
-    this.id,
-    this.userId,
-    this.gateId,
-    this.reasonId,
-    this.unitId,
-    this.concigereId,
-    this.visitorName,
-    this.visitorPhone,
-    this.checkInDate,
-    this.checkInTime,
-    this.checkOutDate,
-    this.checkOutTime,
-    this.inNote,
-    this.outNote,
-    this.keyLog,
-    this.isContractors,
-    this.deletedAt,
-    this.createdAt,
-    this.updatedAt,
-    this.user,
-    this.reason,
-  });
+  Data1(
+      {this.id,
+        this.userId,
+        this.gateId,
+        this.reasonId,
+        this.unitId,
+        this.concigereId,
+        this.visitorName,
+        this.visitorPhone,
+        this.checkInDate,
+        this.checkInTime,
+        this.checkOutDate,
+        this.checkOutTime,
+        this.inNote,
+        this.outNote,
+        this.keyLog,
+        this.isContractors,
+        this.deletedAt,
+        this.createdAt,
+        this.updatedAt,
+        this.user,
+        this.reason});
 
   Data1.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -409,7 +406,7 @@ class Data1 {
     updatedAt = json['updated_at'];
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
     reason =
-        json['reason'] != null ? new Reason.fromJson(json['reason']) : null;
+    json['reason'] != null ? new Reason.fromJson(json['reason']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -458,43 +455,44 @@ class User {
   var psLongitude;
   var fcmToken;
   var forgetPassKey;
-  var moduleLock;
+  String? moduleLock;
   String? isOnline;
   var lastOnlineAt;
   String? status;
   String? profile;
+  int? isDeleted;
   var deletedAt;
   String? createdAt;
   String? updatedAt;
   Addressh? addressh;
   List<String>? profilepath;
 
-  User({
-    this.id,
-    this.role,
-    this.name,
-    this.email,
-    this.emailVerifiedAt,
-    this.dPassword,
-    this.mobileNo,
-    this.gender,
-    this.dateOfBirth,
-    this.address,
-    this.psLatitude,
-    this.psLongitude,
-    this.fcmToken,
-    this.forgetPassKey,
-    this.moduleLock,
-    this.isOnline,
-    this.lastOnlineAt,
-    this.status,
-    this.profile,
-    this.deletedAt,
-    this.createdAt,
-    this.updatedAt,
-    this.addressh,
-    this.profilepath,
-  });
+  User(
+      {this.id,
+        this.role,
+        this.name,
+        this.email,
+        this.emailVerifiedAt,
+        this.dPassword,
+        this.mobileNo,
+        this.gender,
+        this.dateOfBirth,
+        this.address,
+        this.psLatitude,
+        this.psLongitude,
+        this.fcmToken,
+        this.forgetPassKey,
+        this.moduleLock,
+        this.isOnline,
+        this.lastOnlineAt,
+        this.status,
+        this.profile,
+        this.isDeleted,
+        this.deletedAt,
+        this.createdAt,
+        this.updatedAt,
+        this.addressh,
+        this.profilepath});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -516,13 +514,13 @@ class User {
     lastOnlineAt = json['last_online_at'];
     status = json['status'];
     profile = json['profile'];
+    isDeleted = json['is_deleted'];
     deletedAt = json['deleted_at'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    addressh =
-        json['addressh'] != null
-            ? new Addressh.fromJson(json['addressh'])
-            : null;
+    addressh = json['addressh'] != null
+        ? new Addressh.fromJson(json['addressh'])
+        : null;
     profilepath = json['profilepath'].cast<String>();
   }
 
@@ -547,6 +545,7 @@ class User {
     data['last_online_at'] = this.lastOnlineAt;
     data['status'] = this.status;
     data['profile'] = this.profile;
+    data['is_deleted'] = this.isDeleted;
     data['deleted_at'] = this.deletedAt;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
@@ -632,3 +631,4 @@ class Links {
     return data;
   }
 }
+

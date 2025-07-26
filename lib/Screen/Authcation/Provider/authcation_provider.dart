@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:wavee/comman/apiEndpoint.dart';
@@ -35,9 +37,10 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<Response> deleteAccApi(id) async {
-    String? token = await SaveDataLocal.getToken();
 
     try {
+      String? token = await SaveDataLocal.getToken();
+
       final dio = await DioHelper.getDio();
       final response = await dio.delete(
         ApiEndpoint.deleteAccount,
@@ -52,9 +55,10 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<Response> logoutApi(Map<String, String> bodyData) async {
-    String? token = await SaveDataLocal.getToken();
 
     try {
+      String? token = await SaveDataLocal.getToken();
+
       final dio = await DioHelper.getDio();
       final response = await dio.post(
         ApiEndpoint.logout,
@@ -64,6 +68,7 @@ class AuthProvider extends ChangeNotifier {
 
       return response;
     } on DioException catch (e) {
+      log('dadsadddasdsadadasd$e');
       throw Exception(handleDioError(e));
     }
   }
