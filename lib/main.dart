@@ -1,12 +1,10 @@
 import 'dart:developer';
-
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
-
 import 'Screen/Authcation/Model/login_model.dart';
 import 'Screen/welcome_screen.dart';
 import 'comman/colors.dart';
@@ -102,8 +100,6 @@ class _MyAppState extends State<MyApp> {
       myDeviceToken = token;
       log("📱 Device Token: $token");
     });
-
-    // Handle foreground notification
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       log('📩 Foreground message received: ${message.notification?.title}');
       log('📦 Data: ${message.data}');
@@ -120,7 +116,6 @@ class _MyAppState extends State<MyApp> {
       }
     });
 
-    // Handle background notification click
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       log(
         "🟢 Notification tapped from background: ${message.notification?.title}",
@@ -134,9 +129,6 @@ class _MyAppState extends State<MyApp> {
         await FirebaseMessaging.instance.getInitialMessage();
     if (initialMessage != null &&
         initialMessage.data['sender_token'] != myDeviceToken) {
-      log(
-        "🔵 App opened from terminated via notification: ${initialMessage.notification?.title}",
-      );
       _showAwesomeNotification(initialMessage);
     }
   }
@@ -159,17 +151,4 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-// rm -rf pubspec.lock
-// flutter clean
-// flutter pub get
-// cd ios
-// pod deintegrate
-// rm -rf podfile.lock
-// rm -rf pods
-// pod init
-// pod setup
-// pod install
-// pod update
-// pod repo update
-// cd ..
-// flutter run --release
+
