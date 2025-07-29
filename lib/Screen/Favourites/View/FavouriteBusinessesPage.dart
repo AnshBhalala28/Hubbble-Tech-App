@@ -8,7 +8,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../comman/Custom_AppBar.dart';
-import '../../../comman/SideMenu.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
@@ -253,8 +252,7 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
         GlobalKey<ScaffoldState>();
     return Scaffold(
       backgroundColor: AppColors.bgcolor,
-      drawer: const SideMenu(),
-      key: _scaffoldKeyParcel,
+
       body: Stack(
         children: [
           Padding(
@@ -268,9 +266,7 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
                     Get.to(HomePage(selected: 1, userName: ''));
                   },
                   title: 'Favourites',
-                  drawerCallback: () {
-                    _scaffoldKeyParcel.currentState?.openDrawer();
-                  },
+                  drawerCallback: () {},
                 ),
                 SizedBox(height: 3.h),
                 Expanded(

@@ -16,7 +16,6 @@ import 'package:wavee/comman/const.dart';
 import 'package:wavee/comman/error_dialog.dart';
 import 'package:wavee/comman/loader.dart';
 
-import '../../../comman/SideMenu.dart';
 import '../../../comman/custom_batan.dart';
 import '../../ViewProfile/Model/profile_model.dart';
 import '../../ViewProfile/Provider/profile_provider.dart';
@@ -62,8 +61,6 @@ class _RequestPageState extends State<RequestPage> {
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> requestPageKey = GlobalKey<ScaffoldState>();
     return Scaffold(
-      key: requestPageKey,
-      drawer: SideMenu(),
       body: Stack(
         children: [
           Container(
@@ -72,12 +69,7 @@ class _RequestPageState extends State<RequestPage> {
               child: Column(
                 children: [
                   SizedBox(height: 4.h),
-                  TitleBar(
-                    title: "Friends",
-                    drawerCallback: () {
-                      requestPageKey.currentState?.openDrawer();
-                    },
-                  ),
+                  TitleBar(title: "Friends", drawerCallback: () {}),
                   SizedBox(height: 2.h),
                   SizedBox(
                     height: 6.h,

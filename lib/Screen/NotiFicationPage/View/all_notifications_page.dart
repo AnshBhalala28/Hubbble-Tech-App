@@ -10,7 +10,6 @@ import 'package:wavee/Screen/Parcel/parcel_Screen_View/parcel_View.dart';
 import 'package:wavee/Screen/Visitor/View/visitorscreen.dart';
 
 import '../../../comman/Custom_AppBar.dart';
-import '../../../comman/SideMenu.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
@@ -28,7 +27,7 @@ class AllNotificationPage extends StatefulWidget {
 
 class _AllNotificationPageState extends State<AllNotificationPage> {
   final GlobalKey<ScaffoldState> _scaffoldKeyParcel =
-      GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldState>();
 
   bool isLoading = false;
 
@@ -44,8 +43,6 @@ class _AllNotificationPageState extends State<AllNotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const SideMenu(),
-      key: _scaffoldKeyParcel,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 2.h),
         child: Column(
@@ -57,9 +54,7 @@ class _AllNotificationPageState extends State<AllNotificationPage> {
                 Get.back();
               },
               title: 'Notifications',
-              drawerCallback: () {
-                _scaffoldKeyParcel.currentState?.openDrawer();
-              },
+              drawerCallback: () {},
             ),
             SizedBox(height: 3.h),
             Expanded(child: _buildNotificationList()),
@@ -71,153 +66,156 @@ class _AllNotificationPageState extends State<AllNotificationPage> {
 
   Widget _buildNotificationList() {
     return notificationmodel?.data == null ||
-            notificationmodel!.data!.notifications!.isEmpty
+        notificationmodel!.data!.notifications!.isEmpty
         ? Center(
-          child: Text(
-            "No Notifications Available",
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey,
-              fontFamily: AppConstants.manrope,
-            ),
-          ).paddingOnly(bottom: 6.h, top: 5.h),
-        )
+      child: Text(
+        "No Notifications Available",
+        style: TextStyle(
+          fontSize: 16.sp,
+          fontWeight: FontWeight.bold,
+          color: Colors.grey,
+          fontFamily: AppConstants.manrope,
+        ),
+      ).paddingOnly(bottom: 6.h, top: 5.h),
+    )
         : ListView.builder(
-          padding: EdgeInsets.zero,
-          itemCount: (notificationmodel?.data?.notifications?.length ?? 0),
-          itemBuilder: (context, index) {
-            var notification = notificationmodel?.data?.notifications?[index];
-            return GestureDetector(
-              onTap: () {
-                String? type = notification?.type;
+      padding: EdgeInsets.zero,
+      itemCount: (notificationmodel?.data?.notifications?.length ?? 0),
+      itemBuilder: (context, index) {
+        var notification = notificationmodel?.data?.notifications?[index];
+        return GestureDetector(
+          onTap: () {
+            String? type = notification?.type;
 
-                if (type == "messageboard") {
-                  Get.to(() => Messageboard());
-                } else if (type == "parcel") {
-                  Get.to(() => ParcelScreen());
-                } else if (type == "chat") {
-                  String chatName = "";
-                  String profileImage = "";
-                  String chatType = notification?.msgTo ?? "";
+            if (type == "messageboard") {
+              Get.to(() => Messageboard());
+            } else if (type == "parcel") {
+              Get.to(() => ParcelScreen());
+            } else if (type == "chat") {
+              String chatName = "";
+              String profileImage = "";
+              String chatType = notification?.msgTo ?? "";
 
-                  if (notification?.conciergeProfile != null) {
-                    chatName =
-                        "${notification?.conciergeProfile?.firstName ?? ''} ${notification?.conciergeProfile?.lastName ?? ''}"
-                            .trim();
-                    if (notification?.conciergeProfile?.conciergeImage !=
-                            null &&
-                        notification!
-                            .conciergeProfile!
-                            .conciergeImage!
-                            .isNotEmpty) {
-                      profileImage =
-                          notification.conciergeProfile!.conciergeImage!.first;
-                    }
-                  } else if (notification?.businessProfile != null) {
-                    chatName = notification?.businessProfile?.name ?? '';
-                    profileImage = notification?.businessProfile?.profile ?? '';
-                  }
+              if (notification?.conciergeProfile != null) {
+                chatName =
+                    "${notification?.conciergeProfile?.firstName ??
+                        ''} ${notification?.conciergeProfile?.lastName ?? ''}"
+                        .trim();
+                if (notification?.conciergeProfile?.conciergeImage !=
+                    null &&
+                    notification!
+                        .conciergeProfile!
+                        .conciergeImage!
+                        .isNotEmpty) {
+                  profileImage =
+                      notification.conciergeProfile!.conciergeImage!.first;
+                }
+              } else if (notification?.businessProfile != null) {
+                chatName = notification?.businessProfile?.name ?? '';
+                profileImage = notification?.businessProfile?.profile ?? '';
+              }
 
-                  Get.to(
-                    () => MessageScreen(
+              Get.to(
+                    () =>
+                    MessageScreen(
                       chatName: chatName,
                       conciergeID: notification?.chatCreateId.toString() ?? "",
                       type: chatType,
                       image: profileImage,
                     ),
-                  );
-                } else if (type == "visitor") {
-                  Get.to(() => VisitorScreen());
-                } else if (type == "order") {
-                  Get.to(
-                    () => Orderdetail_Screen(
+              );
+            } else if (type == "visitor") {
+              Get.to(() => VisitorScreen());
+            } else if (type == "order") {
+              Get.to(
+                    () =>
+                    Orderdetail_Screen(
                       orderid: notification?.msgTo ?? "",
                       orderProductID:
-                          notification?.chatCreateId.toString() ?? "",
+                      notification?.chatCreateId.toString() ?? "",
                     ),
-                  );
-                } else {}
+              );
+            } else {}
 
-                Readnotification();
-              },
-              child: Container(
-                height: 15.h,
-                margin: EdgeInsets.only(bottom: 1.h),
-                width: double.infinity,
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: AppColors.maincolor,
-                      radius: 6.w,
-                      child: Icon(
-                        Icons.notifications,
-                        color: Colors.white,
-                        size: 5.w,
-                      ),
-                    ),
-                    SizedBox(width: 4.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            notification?.type?.capitalizeFirst ?? "No Type",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 17.sp,
-                              fontFamily: AppConstants.manrope,
-                            ),
-                          ),
-                          SizedBox(height: 0.5.h),
-                          Text(
-                            notification?.data?.capitalizeFirst ?? "No Message",
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              color: Colors.grey.shade700,
-                              fontFamily: AppConstants.manrope,
-                            ),
-                          ),
-                          SizedBox(height: 0.5.h),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Icon(
-                                  Icons.timer,
-                                  color: Colors.grey,
-                                  size: 15.sp,
-                                ),
-                                SizedBox(width: 1.w),
-                                Text(
-                                  formatDateTime(
-                                    notification?.notificationDate ?? '',
-                                  ),
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    color: Colors.grey.shade500,
-                                    fontFamily: AppConstants.manrope,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
+            Readnotification();
           },
+          child: Container(
+            height: 15.h,
+            margin: EdgeInsets.only(bottom: 1.h),
+            width: double.infinity,
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  backgroundColor: AppColors.maincolor,
+                  radius: 6.w,
+                  child: Icon(
+                    Icons.notifications,
+                    color: Colors.white,
+                    size: 5.w,
+                  ),
+                ),
+                SizedBox(width: 4.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        notification?.type?.capitalizeFirst ?? "No Type",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17.sp,
+                          fontFamily: AppConstants.manrope,
+                        ),
+                      ),
+                      SizedBox(height: 0.5.h),
+                      Text(
+                        notification?.data?.capitalizeFirst ?? "No Message",
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: Colors.grey.shade700,
+                          fontFamily: AppConstants.manrope,
+                        ),
+                      ),
+                      SizedBox(height: 0.5.h),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Icon(
+                              Icons.timer,
+                              color: Colors.grey,
+                              size: 15.sp,
+                            ),
+                            SizedBox(width: 1.w),
+                            Text(
+                              formatDateTime(
+                                notification?.notificationDate ?? '',
+                              ),
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: Colors.grey.shade500,
+                                fontFamily: AppConstants.manrope,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
+      },
+    );
   }
 
   String formatDateTime(String? createdAt) {
@@ -255,7 +253,8 @@ class _AllNotificationPageState extends State<AllNotificationPage> {
             (notificationmodel?.data?.notifications?[0].id).toString(),
           );
           print(
-            "Get Notification user id all page : ${(notificationmodel?.data?.notifications?[0].id).toString()}",
+            "Get Notification user id all page : ${(notificationmodel?.data
+                ?.notifications?[0].id).toString()}",
           );
           EasyLoading.dismiss();
           if (response.statusCode == 200) {

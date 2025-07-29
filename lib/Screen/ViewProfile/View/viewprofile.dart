@@ -7,7 +7,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/Screen/Authcation/View/loginscreen.dart';
-import 'package:wavee/comman/SideMenu.dart';
 import 'package:wavee/comman/colors.dart';
 import 'package:wavee/comman/custom_batan.dart';
 
@@ -110,222 +109,218 @@ class _ViewProfileState extends State<ViewProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      drawer: SideMenu(),
-      key: profileScreen,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.h),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 2.h),
-              TitleBar(
-                back: () {
-                  Get.back();
-                },
-                title: "My Profile",
-                drawerCallback: () => profileScreen.currentState?.openDrawer(),
-              ),
-              SizedBox(height: 3.h),
-              Stack(
-                alignment: Alignment.bottomRight,
-                children: [
-                  CircleAvatar(
-                    radius: 35.sp,
-                    backgroundColor: Colors.grey.shade300,
-                    child: ClipOval(
-                      child: CachedNetworkImage(
-                        imageUrl: profileImage,
-                        width: 70.sp,
-                        height: 70.sp,
-                        fit: BoxFit.cover,
-                        placeholder:
-                            (context, url) => Center(
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  AppColors.maincolor,
-                                ),
+
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: 6.h),
+            TitleBar(
+              back: () {
+                Get.back();
+              },
+              title: "My Profile",
+              drawerCallback: () {},
+            ),
+            SizedBox(height: 3.h),
+            Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                CircleAvatar(
+                  radius: 35.sp,
+                  backgroundColor: Colors.grey.shade300,
+                  child: ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl: profileImage,
+                      width: 70.sp,
+                      height: 70.sp,
+                      fit: BoxFit.cover,
+                      placeholder:
+                          (context, url) => Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.maincolor,
                               ),
                             ),
-                        errorWidget:
-                            (context, url, error) => Image.asset(
-                              "assets/images/waveeLogoShort.png",
-                              width: 70.sp,
-                              height: 70.sp,
-                              fit: BoxFit.cover,
-                            ),
-                      ),
+                          ),
+                      errorWidget:
+                          (context, url, error) => Image.asset(
+                            "assets/images/waveeLogoShort.png",
+                            width: 70.sp,
+                            height: 70.sp,
+                            fit: BoxFit.cover,
+                          ),
                     ),
                   ),
-                ],
-              ),
-              SizedBox(height: 4.h),
-              InkWell(
-                onTap: () {
-                  Get.to(Myprofile_Screen(id: loginModel?.data?.user?.id));
-                },
-                child: Container(
-                  width: 55.w,
-                  height: 5.5.h,
-                  decoration: BoxDecoration(
-                    color: AppColors.maincolor,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "View Profile",
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontFamily: AppConstants.manrope,
-                        fontSize: 18.sp,
-                      ),
+                ),
+              ],
+            ),
+            SizedBox(height: 4.h),
+            InkWell(
+              onTap: () {
+                Get.to(Myprofile_Screen(id: loginModel?.data?.user?.id));
+              },
+              child: Container(
+                width: 55.w,
+                height: 5.5.h,
+                decoration: BoxDecoration(
+                  color: AppColors.maincolor,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                child: Center(
+                  child: Text(
+                    "View Profile",
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontFamily: AppConstants.manrope,
+                      fontSize: 18.sp,
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 3.h),
-              SizedBox(height: 2.h),
-              menuItem(
-                Icons.home,
-                "My Home",
-                "Details about your home",
-                context,
-                MyHome_Screen(id: loginModel?.data?.user?.id),
-              ),
-              SizedBox(height: 10),
-              menuItem(
-                Icons.apartment,
-                "My Building",
-                "Details about your building",
-                context,
-                MyBuilding_Screen(id: loginModel?.data?.user?.id),
-              ),
-              SizedBox(height: 2.h),
-              batan(
-                title: "Logout",
-                route: () {
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (BuildContext context) {
-                      bool isLoading = false;
+            ),
+            SizedBox(height: 3.h),
+            SizedBox(height: 2.h),
+            menuItem(
+              Icons.home,
+              "My Home",
+              "Details about your home",
+              context,
+              MyHome_Screen(id: loginModel?.data?.user?.id),
+            ),
+            SizedBox(height: 10),
+            menuItem(
+              Icons.apartment,
+              "My Building",
+              "Details about your building",
+              context,
+              MyBuilding_Screen(id: loginModel?.data?.user?.id),
+            ),
+            SizedBox(height: 2.h),
+            batan(
+              title: "Logout",
+              route: () {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    bool isLoading = false;
 
-                      return StatefulBuilder(
-                        builder: (context, setState) {
-                          return Dialog(
-                            shape: RoundedRectangleBorder(
+                    return StatefulBuilder(
+                      builder: (context, setState) {
+                        return Dialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          backgroundColor: Colors.transparent,
+                          child: Container(
+                            width: 73.w,
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: AppColors.white,
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            backgroundColor: Colors.transparent,
-                            child: Container(
-                              width: 73.w,
-                              padding: EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: AppColors.white,
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SizedBox(height: 2.h),
-                                  Text(
-                                    "Logout",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 18.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.black,
-                                      fontFamily: AppConstants.manrope,
-                                    ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(height: 2.h),
+                                Text(
+                                  "Logout",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.black,
+                                    fontFamily: AppConstants.manrope,
                                   ),
-                                  SizedBox(height: 1.5.h),
-                                  Text(
-                                    'Are You Sure Want to Logout Your Account',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 15.sp,
-                                      color: Colors.grey.shade800,
-                                      fontFamily: AppConstants.manrope,
-                                    ),
+                                ),
+                                SizedBox(height: 1.5.h),
+                                Text(
+                                  'Are You Sure Want to Logout Your Account',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    color: Colors.grey.shade800,
+                                    fontFamily: AppConstants.manrope,
                                   ),
-                                  SizedBox(height: 2.h),
-                                  isLoading
-                                      ? Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 2.h,
-                                        ),
-                                        child: CircularProgressIndicator(
-                                          color: AppColors.maincolor,
-                                        ),
-                                      )
-                                      : Row(
-                                        children: [
-                                          Expanded(
-                                            child: Material(
-                                              elevation: 2,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              child: batan(
-                                                title: "No",
-                                                route: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                color: AppColors.white,
-                                                fontcolor: Colors.black,
-                                                height: 5.h,
-                                                width: 20.w,
-                                                fontsize: 16.sp,
-                                                radius: 12.0,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(width: 2.w),
-                                          Expanded(
-                                            child: Material(
-                                              elevation: 2,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              child: batan(
-                                                title: "Yes",
-                                                width: 20.w,
-                                                route: () async {
-                                                  await SaveDataLocal.clearUserData();
-                                                  Get.offAll(
-                                                    () => LoginScreen(),
-                                                  );
-                                                  Logout();
-                                                },
-                                                color: AppColors.maincolor,
-                                                fontcolor: Colors.white,
-                                                height: 5.h,
-                                                fontsize: 16.sp,
-                                                radius: 12.0,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                ),
+                                SizedBox(height: 2.h),
+                                isLoading
+                                    ? Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 2.h,
                                       ),
-                                  SizedBox(height: 1.h),
-                                ],
-                              ),
+                                      child: CircularProgressIndicator(
+                                        color: AppColors.maincolor,
+                                      ),
+                                    )
+                                    : Row(
+                                      children: [
+                                        Expanded(
+                                          child: Material(
+                                            elevation: 2,
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                            child: batan(
+                                              title: "No",
+                                              route: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              color: AppColors.white,
+                                              fontcolor: Colors.black,
+                                              height: 5.h,
+                                              width: 20.w,
+                                              fontsize: 16.sp,
+                                              radius: 12.0,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 2.w),
+                                        Expanded(
+                                          child: Material(
+                                            elevation: 2,
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                            child: batan(
+                                              title: "Yes",
+                                              width: 20.w,
+                                              route: () async {
+                                                await SaveDataLocal.clearUserData();
+                                                Get.offAll(() => LoginScreen());
+                                                Logout();
+                                              },
+                                              color: AppColors.maincolor,
+                                              fontcolor: Colors.white,
+                                              height: 5.h,
+                                              fontsize: 16.sp,
+                                              radius: 12.0,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                SizedBox(height: 1.h),
+                              ],
                             ),
-                          );
-                        },
-                      );
-                    },
-                  );
-                },
-                color: AppColors.maincolor,
-                fontcolor: AppColors.white,
-                height: 5.h,
-                width: 40.w,
-                fontsize: 18.sp,
-                radius: 12.0,
-              ),
-            ],
-          ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+              color: AppColors.maincolor,
+              fontcolor: AppColors.white,
+              height: 5.h,
+              width: 40.w,
+              fontsize: 18.sp,
+              radius: 12.0,
+            ),
+          ],
         ),
-      ),
+      ).paddingOnly(right: 3.w, left: 3.w),
     );
   }
 

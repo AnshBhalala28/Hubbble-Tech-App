@@ -12,6 +12,7 @@ Container TitleBar({
   Icon? backicn,
   Color? clr,
   bool isBackEnabled = true,
+  bool isSideMenu = false,
 }) {
   Color headerColor = clr ?? AppColors.maincolor;
   return Container(
@@ -52,7 +53,9 @@ Container TitleBar({
             ),
           ),
         ),
-        MenuIcon(route: drawerCallback, color: headerColor),
+        isSideMenu
+            ? MenuIcon(route: drawerCallback, color: headerColor)
+            : SizedBox().paddingOnly(right: 10.w),
       ],
     ),
   );

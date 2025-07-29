@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/Screen/Product%20Detail%20Page/view/product_detail_page.dart';
 import 'package:wavee/comman/Custom_AppBar.dart';
-import 'package:wavee/comman/SideMenu.dart';
 import 'package:wavee/comman/const.dart';
 import 'package:wavee/comman/loader.dart';
 
@@ -57,8 +56,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: categoryScreen,
-      drawer: SideMenu(),
       body:
           isLoading
               ? Loader()
@@ -68,12 +65,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 4.h),
-                      TitleBar(
-                        title: "Category",
-                        drawerCallback: () {
-                          categoryScreen.currentState?.openDrawer();
-                        },
-                      ),
+                      TitleBar(title: "Category", drawerCallback: () {}),
                       SizedBox(height: 3.h),
                       Text(
                         "Products for '${widget.CategoryName}'",

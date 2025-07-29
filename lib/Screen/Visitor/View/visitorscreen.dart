@@ -338,7 +338,6 @@ import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/comman/Custom_AppBar.dart';
-import 'package:wavee/comman/SideMenu.dart';
 import 'package:wavee/comman/colors.dart';
 import 'package:wavee/comman/const.dart';
 
@@ -392,7 +391,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
       } else {
         _pagingController.appendPage(items, pageKey + 1);
       }
-    } catch (e,stackTrace) {
+    } catch (e, stackTrace) {
       log('adasddadad$e   $stackTrace');
       _pagingController.error = e;
     }
@@ -411,9 +410,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bgcolor,
-      key: _scaffoldKey,
-      drawer: const SideMenu(),
+      backgroundColor: AppColors.white,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 2.h),
         child: Column(
@@ -422,11 +419,12 @@ class _VisitorScreenState extends State<VisitorScreen> {
             TitleBar(
               back: () => Get.back(),
               title: 'Visitors',
-              drawerCallback: () => _scaffoldKey.currentState?.openDrawer(),
+              drawerCallback: () {},
             ),
             SizedBox(height: 1.5.h),
             Expanded(
               child: PagedListView<int, Data1>(
+                padding: EdgeInsets.zero,
                 pagingController: _pagingController,
                 builderDelegate: PagedChildBuilderDelegate<Data1>(
                   itemBuilder:

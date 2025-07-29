@@ -8,7 +8,6 @@ import 'package:wavee/Screen/HomeNewPage/View/homenewpage.dart';
 import 'package:wavee/comman/loader.dart';
 
 import '../../../comman/Custom_AppBar.dart';
-import '../../../comman/SideMenu.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
@@ -121,8 +120,8 @@ class _BookingScreenState extends State<BookingScreen> {
       }
     });
     return Scaffold(
-      drawer: SideMenu(),
-      key: _scaffoldKeyBooking,
+      // drawer: SideMenu(),
+      // key: _scaffoldKeyBooking,
       backgroundColor: AppColors.bgcolor,
       body: SingleChildScrollView(
         child: Padding(
@@ -135,9 +134,7 @@ class _BookingScreenState extends State<BookingScreen> {
                   Get.to(HomePage(userName: '', selected: 1));
                 },
                 title: 'My Bookings',
-                drawerCallback: () {
-                  _scaffoldKeyBooking.currentState?.openDrawer();
-                },
+                drawerCallback: () {},
               ),
               SizedBox(height: 3.h),
               Row(
@@ -272,7 +269,7 @@ class _BookingScreenState extends State<BookingScreen> {
                   : nonEmptyBookings.length == 0 || nonEmptyBookings.isEmpty
                   ? Center(
                     child: Text(
-                      "No ${selectedType.capitalizeFirst} Bookings found",
+                      "No Bookings found",
                       style: TextStyle(
                         fontSize: 17.sp,
                         fontWeight: FontWeight.bold,

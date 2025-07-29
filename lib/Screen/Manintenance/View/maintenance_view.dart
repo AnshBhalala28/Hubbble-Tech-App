@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/comman/SideMenu.dart';
 import 'package:wavee/comman/colors.dart';
 import 'package:wavee/comman/custom_batan.dart';
 import 'package:wavee/comman/input_decoration.dart';
@@ -27,7 +27,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
   final GlobalKey<ScaffoldState> maintanceKey = GlobalKey<ScaffoldState>();
   bool isLoading = false;
 
-  List<String> categories = ['In Progress', 'Approved', 'Completed'];
+  List<String> categories = ['Pending', 'In Review', 'Completed'];
   int selectedCategory = 0;
   final TextEditingController subjectController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
@@ -48,8 +48,8 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: maintanceKey,
-      drawer: SideMenu(),
+      backgroundColor: AppColors.white,
+
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -61,9 +61,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                     Get.back();
                   },
                   title: 'Maintenance',
-                  drawerCallback: () {
-                    maintanceKey.currentState?.openDrawer();
-                  },
+                  drawerCallback: () {},
                 ),
                 SizedBox(height: 2.h),
                 SizedBox(
@@ -184,7 +182,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    formatDate(
+                                                    formatDateTime(
                                                       booking?.createdAt ?? "",
                                                     ),
                                                     style: TextStyle(
@@ -192,18 +190,29 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                                       fontWeight:
                                                           FontWeight.w600,
                                                       color: Colors.black54,
+                                                      fontFamily:
+                                                          AppConstants.manrope,
                                                     ),
                                                   ),
                                                   SizedBox(height: 4),
-                                                  Text(
-                                                    booking?.subject ?? '',
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontFamily:
-                                                          AppConstants.manrope,
-                                                      color: Colors.black87,
+                                                  SizedBox(
+                                                    width: 70.w,
+
+                                                    child: Text(
+                                                      booking
+                                                              ?.subject
+                                                              ?.capitalizeFirst ??
+                                                          '',
+                                                      maxLines: 2,
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontFamily:
+                                                            AppConstants
+                                                                .manrope,
+                                                        color: Colors.black87,
+                                                      ),
                                                     ),
                                                   ),
                                                   SizedBox(height: 4),
@@ -231,10 +240,13 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                                           ),
                                                     ),
                                                     child: Text(
-                                                      booking?.status
-                                                              .toString()
-                                                              .capitalizeFirst ??
-                                                          "",
+                                                      booking?.status ==
+                                                              "status_in_review"
+                                                          ? "In Review"
+                                                          : booking?.status
+                                                                  .toString()
+                                                                  .capitalizeFirst ??
+                                                              "",
                                                       style: const TextStyle(
                                                         fontSize: 13,
                                                         fontWeight:
@@ -326,10 +338,10 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
   Color getStatusColor(String status) {
     return status == "pending" || status == "Pending"
         ? Colors.yellow.shade800
-        : status == "Approved" || status == "approved"
+        : status == "Status_in_review" || status == "status_in_review"
         ? Colors.green
         : status == "completed" || status == "Completed"
-        ? Colors.blue
+        ? AppColors.maincolor
         : status == "rejected"
         ? Colors.orange
         : Colors.black;
@@ -340,7 +352,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
       case 0:
         return "pending";
       case 1:
-        return "approved";
+        return "status_in_review";
       case 2:
         return "completed";
       default:
@@ -696,78 +708,93 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: 16,
-            right: 16,
-            top: 24,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  height: 4,
-                  width: 20.w,
-                  margin: EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(10),
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.35,
+          minChildSize: 0.30,
+          maxChildSize: 0.95,
+          builder: (_, scrollController) {
+            return SingleChildScrollView(
+              controller: scrollController,
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 16,
+                right: 16,
+                top: 24,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      height: 4,
+                      width: 20.w,
+                      margin: EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
                   ),
-                ),
+                  Text(
+                    "Maintenance Details",
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: AppConstants.manrope,
+                    ),
+                  ),
+                  SizedBox(height: 2.h),
+                  _detailRow("Subject", detail.data?.subject ?? "-"),
+                  _detailRow("Note", detail.data?.note ?? "-"),
+                  _detailRow(
+                    "Status",
+                    detail.data?.status == "status_in_review"
+                        ? "In Review"
+                        : detail.data?.status.toString().capitalizeFirst ?? "-",
+                    color: getStatusColor(detail.data?.status.toString() ?? ""),
+                  ),
+                  _detailRow(
+                    "Created",
+                    detail.data?.createdAt != null
+                        ? DateFormat(
+                          'dd MMM yyyy, hh:mm a',
+                        ).format(DateTime.parse(detail.data!.createdAt!))
+                        : "-",
+                  ),
+                  SizedBox(height: 24),
+                  batan(
+                    title: "Close",
+                    route: () {
+                      Get.back();
+                    },
+                    color: AppColors.maincolor,
+                    fontcolor: AppColors.white,
+                    height: 5.h,
+                    width: double.infinity,
+                    fontsize: 18.sp,
+                    radius: 12.0,
+                  ),
+                  SizedBox(height: 30),
+                ],
               ),
-              Text(
-                "Maintenance Details",
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: AppConstants.manrope,
-                ),
-              ),
-              SizedBox(height: 2.h),
-              _detailRow("Subject", detail.data?.subject ?? "-"),
-              _detailRow("Note", detail.data?.note ?? "-"),
-              _detailRow(
-                "Status",
-                detail.data?.status.toString().capitalizeFirst ?? "-",
-                color: getStatusColor(detail.data?.status.toString() ?? ""),
-              ),
-              _detailRow(
-                "Created",
-                detail.data?.createdAt != null
-                    ? DateFormat('dd MMM yyyy, hh:mm a').format(
-                      DateTime.parse(detail.data?.createdAt.toString() ?? ""),
-                    )
-                    : "-",
-              ),
-              SizedBox(height: 24),
-              batan(
-                title: "Close",
-                route: () {
-                  Get.back();
-                },
-                color: AppColors.maincolor,
-                fontcolor: AppColors.white,
-                height: 5.h,
-                width: double.infinity,
-                fontsize: 18.sp,
-                radius: 12.0,
-              ),
-              SizedBox(height: 30),
-            ],
-          ),
+            );
+          },
         );
       },
     );
   }
 
   Widget _detailRow(String title, String value, {Color? color}) {
+    final isExpandable =
+        title.toLowerCase().contains('subject') ||
+        title.toLowerCase().contains('note');
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -786,14 +813,38 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
           ),
           Expanded(
             flex: 4,
-            child: Text(
-              value,
-              style: TextStyle(
-                color: color ?? Colors.black,
-                fontSize: 15,
-                fontFamily: AppConstants.manrope,
-              ),
-            ),
+            child:
+                isExpandable
+                    ? ReadMoreText(
+                      value.isNotEmpty
+                          ? '${value[0].toUpperCase()}${value.substring(1)}'
+                          : '',
+                      trimLines: 2,
+                      trimMode: TrimMode.Line,
+                      trimCollapsedText: ' Show More',
+                      trimExpandedText: ' Show Less',
+                      style: TextStyle(
+                        color: color ?? Colors.black,
+                        fontSize: 15,
+                        fontFamily: AppConstants.manrope,
+                      ),
+                      moreStyle: const TextStyle(
+                        color: AppColors.maincolor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      lessStyle: const TextStyle(
+                        color: AppColors.maincolor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                    : Text(
+                      value,
+                      style: TextStyle(
+                        color: color ?? Colors.black,
+                        fontSize: 15,
+                        fontFamily: AppConstants.manrope,
+                      ),
+                    ),
           ),
         ],
       ),

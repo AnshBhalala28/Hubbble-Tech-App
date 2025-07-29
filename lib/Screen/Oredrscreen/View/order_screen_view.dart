@@ -6,14 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/comman/Custom_AppBar.dart';
 import 'package:wavee/comman/loader.dart';
 
-import '../../../comman/SideMenu.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
 import '../../../comman/error_dialog.dart';
-import '../../ViewProfile/View/viewprofile.dart';
 import '../Model/order_screen_model.dart';
 import '../Model/service_view_model.dart';
 import '../Provider/order_screen_provider.dart';
@@ -64,8 +63,6 @@ class _Order_ScreenState extends State<Order_Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const SideMenu(),
-      key: _scaffoldKeyorder,
       backgroundColor: AppColors.bgcolor,
       body: Stack(
         children: [
@@ -74,108 +71,109 @@ class _Order_ScreenState extends State<Order_Screen> {
               padding: EdgeInsets.symmetric(horizontal: 3.w),
               child: Column(
                 children: [
-                  SizedBox(height: 4.h),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            _scaffoldKeyorder.currentState?.openDrawer();
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 10),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  height: 0.4.h,
-                                  width: 6.w,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.maincolor,
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.symmetric(vertical: 0.5.h),
-                                  height: 0.4.h,
-                                  width: 8.w,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.maincolor,
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                ),
-                                Container(
-                                  height: 0.4.h,
-                                  width: 6.w,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.maincolor,
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Text(
-                          "My Orders",
-                          style: TextStyle(
-                            fontFamily: AppConstants.manrope,
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Get.to(
-                                  ViewProfile(id: loginModel?.data?.user?.id),
-                                );
-                              },
-                              child: Container(
-                                height: 11.w,
-                                width: 11.w,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.2),
-                                      blurRadius: 5,
-                                      offset: Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: CircleAvatar(
-                                  radius: 5.w,
-                                  backgroundColor: Colors.transparent,
-                                  backgroundImage:
-                                      (profileModel?.data?.user?.profile !=
-                                                  null &&
-                                              profileModel!
-                                                  .data!
-                                                  .user!
-                                                  .profile!
-                                                  .isNotEmpty)
-                                          ? CachedNetworkImageProvider(
-                                            profileModel!.data!.user!.profile!,
-                                          )
-                                          : AssetImage(
-                                                "assets/images/waveeLogoShort.png",
-                                              )
-                                              as ImageProvider,
-                                ),
-                              ).paddingOnly(right: 2.w),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                  SizedBox(height: 6.h),
+                  TitleBar(title: "My Order", drawerCallback: () {}),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(top: 20.0),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     crossAxisAlignment: CrossAxisAlignment.center,
+                  //     children: [
+                  //       InkWell(
+                  //         onTap: () {
+                  //           _scaffoldKeyorder.currentState?.openDrawer();
+                  //         },
+                  //         child: Padding(
+                  //           padding: EdgeInsets.only(left: 10),
+                  //           child: Column(
+                  //             mainAxisSize: MainAxisSize.min,
+                  //             children: [
+                  //               Container(
+                  //                 height: 0.4.h,
+                  //                 width: 6.w,
+                  //                 decoration: BoxDecoration(
+                  //                   color: AppColors.maincolor,
+                  //                   borderRadius: BorderRadius.circular(50),
+                  //                 ),
+                  //               ),
+                  //               Container(
+                  //                 margin: EdgeInsets.symmetric(vertical: 0.5.h),
+                  //                 height: 0.4.h,
+                  //                 width: 8.w,
+                  //                 decoration: BoxDecoration(
+                  //                   color: AppColors.maincolor,
+                  //                   borderRadius: BorderRadius.circular(50),
+                  //                 ),
+                  //               ),
+                  //               Container(
+                  //                 height: 0.4.h,
+                  //                 width: 6.w,
+                  //                 decoration: BoxDecoration(
+                  //                   color: AppColors.maincolor,
+                  //                   borderRadius: BorderRadius.circular(50),
+                  //                 ),
+                  //               ),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       Text(
+                  //         "My Orders",
+                  //         style: TextStyle(
+                  //           fontFamily: AppConstants.manrope,
+                  //           fontSize: 20.sp,
+                  //           fontWeight: FontWeight.w600,
+                  //           color: Colors.black,
+                  //         ),
+                  //       ),
+                  //       Row(
+                  //         children: [
+                  //           GestureDetector(
+                  //             onTap: () {
+                  //               Get.to(
+                  //                 ViewProfile(id: loginModel?.data?.user?.id),
+                  //               );
+                  //             },
+                  //             child: Container(
+                  //               height: 11.w,
+                  //               width: 11.w,
+                  //               decoration: BoxDecoration(
+                  //                 color: Colors.white,
+                  //                 shape: BoxShape.circle,
+                  //                 boxShadow: [
+                  //                   BoxShadow(
+                  //                     color: Colors.grey.withOpacity(0.2),
+                  //                     blurRadius: 5,
+                  //                     offset: Offset(0, 3),
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //               child: CircleAvatar(
+                  //                 radius: 5.w,
+                  //                 backgroundColor: Colors.transparent,
+                  //                 backgroundImage:
+                  //                     (profileModel?.data?.user?.profile !=
+                  //                                 null &&
+                  //                             profileModel!
+                  //                                 .data!
+                  //                                 .user!
+                  //                                 .profile!
+                  //                                 .isNotEmpty)
+                  //                         ? CachedNetworkImageProvider(
+                  //                           profileModel!.data!.user!.profile!,
+                  //                         )
+                  //                         : AssetImage(
+                  //                               "assets/images/waveeLogoShort.png",
+                  //                             )
+                  //                             as ImageProvider,
+                  //               ),
+                  //             ).paddingOnly(right: 2.w),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   SizedBox(height: 3.h),
                   Row(
                     children: [
@@ -632,7 +630,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                                                 ),
                                                                 Spacer(),
                                                                 Text(
-                                                                  formatDate(
+                                                                  formatDateTime(
                                                                     orderProduct
                                                                             ?.createdAt ??
                                                                         "",
@@ -858,7 +856,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                                             ),
                                                             Spacer(),
                                                             Text(
-                                                              formatDate(
+                                                              formatDateTime(
                                                                 orderProduct
                                                                         ?.createdAt ??
                                                                     "",

@@ -8,7 +8,6 @@ import 'package:wavee/Screen/NotiFicationPage/Provider/notificationprovider.dart
 import 'package:wavee/Screen/NotiFicationPage/View/all_notifications_page.dart';
 
 import '../../../comman/Custom_AppBar.dart';
-import '../../../comman/SideMenu.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
@@ -30,7 +29,7 @@ class NotificationPage extends StatefulWidget {
 
 class _NotificationPageState extends State<NotificationPage> {
   final GlobalKey<ScaffoldState> _scaffoldKeyParcel =
-      GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldState>();
 
   bool isLoading = false;
   int notificationCount = 0;
@@ -48,8 +47,7 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.bgcolor,
-      drawer: const SideMenu(),
-      key: _scaffoldKeyParcel,
+
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 2.h),
         child: Column(
@@ -61,9 +59,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 Get.to(HomePage(selected: 1, userName: ''));
               },
               title: 'Notifications',
-              drawerCallback: () {
-                _scaffoldKeyParcel.currentState?.openDrawer();
-              },
+              drawerCallback: () {},
             ),
             SizedBox(height: 3.h),
             Expanded(
@@ -126,9 +122,9 @@ class _NotificationPageState extends State<NotificationPage> {
       padding: EdgeInsets.zero,
       physics: NeverScrollableScrollPhysics(),
       itemCount:
-          (notificationmodel?.data?.notifications?.length ?? 0) > 5
-              ? 5
-              : notificationmodel?.data?.notifications?.length ?? 0,
+      (notificationmodel?.data?.notifications?.length ?? 0) > 5
+          ? 5
+          : notificationmodel?.data?.notifications?.length ?? 0,
       itemBuilder: (context, index) {
         var notification = notificationmodel?.data?.notifications?[index];
 
@@ -149,7 +145,8 @@ class _NotificationPageState extends State<NotificationPage> {
 
               if (notification?.conciergeProfile != null) {
                 chatName =
-                    "${notification?.conciergeProfile?.firstName ?? ''} ${notification?.conciergeProfile?.lastName ?? ''}"
+                    "${notification?.conciergeProfile?.firstName ??
+                        ''} ${notification?.conciergeProfile?.lastName ?? ''}"
                         .trim();
                 if (notification?.conciergeProfile?.conciergeImage != null &&
                     notification!
@@ -165,21 +162,24 @@ class _NotificationPageState extends State<NotificationPage> {
               }
 
               Get.to(
-                () => MessageScreen(
-                  chatName: chatName,
-                  conciergeID: notification?.chatCreateId.toString() ?? "",
-                  type: chatType,
-                  image: profileImage,
-                ),
+                    () =>
+                    MessageScreen(
+                      chatName: chatName,
+                      conciergeID: notification?.chatCreateId.toString() ?? "",
+                      type: chatType,
+                      image: profileImage,
+                    ),
               );
             } else if (type == "visitor") {
               Get.to(() => VisitorScreen());
             } else if (type == "order") {
               Get.to(
-                () => Orderdetail_Screen(
-                  orderid: notification?.msgTo ?? "",
-                  orderProductID: notification?.chatCreateId.toString() ?? "",
-                ),
+                    () =>
+                    Orderdetail_Screen(
+                      orderid: notification?.msgTo ?? "",
+                      orderProductID: notification?.chatCreateId.toString() ??
+                          "",
+                    ),
               );
             } else {}
           },

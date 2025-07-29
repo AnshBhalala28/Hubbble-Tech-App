@@ -99,6 +99,7 @@ class _Form_ScreenState extends State<Form_Screen> {
 
     _generateDatesBasedOnSelection();
     AmenitiesApi(date: '');
+    log("widget widget ${widget.attend}");
   }
 
   int selectedMonthIndex = DateTime.now().month - 1;
@@ -158,8 +159,6 @@ class _Form_ScreenState extends State<Form_Screen> {
         return true;
       },
       child: Scaffold(
-        drawer: SideMenu(),
-        key: _scaffoldKeyForm,
         backgroundColor: AppColors.bgcolor,
         body: Stack(
           children: [
@@ -172,13 +171,11 @@ class _Form_ScreenState extends State<Form_Screen> {
                       TitleBar(
                         back: () {
                           widget.isPage == true
-                              ? Get.to(BookingScreen())
-                              : Get.to(BookAmenities_Screen());
+                              ? Get.offAll(BookingScreen())
+                              : Get.offAll(BookAmenities_Screen());
                         },
                         title: amenitiesModel?.data?.data?[0].name ?? "",
-                        drawerCallback: () {
-                          _scaffoldKeyForm.currentState?.openDrawer();
-                        },
+                        drawerCallback: () {},
                       ),
                       SizedBox(height: 2.h),
                       SizedBox(

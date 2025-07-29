@@ -5,7 +5,6 @@ import 'package:sizer/sizer.dart';
 import 'package:wavee/Screen/Buy%20Product/view/buy_product_view.dart';
 import 'package:wavee/Screen/HomeNewPage/View/homenewpage.dart';
 import 'package:wavee/comman/Custom_AppBar.dart';
-import 'package:wavee/comman/SideMenu.dart';
 import 'package:wavee/comman/bottom_bar.dart';
 import 'package:wavee/comman/colors.dart';
 import 'package:wavee/comman/const.dart';
@@ -37,7 +36,7 @@ class AddToCartView extends StatefulWidget {
 }
 
 class _AddToCartViewState extends State<AddToCartView> {
-  final GlobalKey<ScaffoldState> addtocartkey = GlobalKey<ScaffoldState>();
+  // final GlobalKey<ScaffoldState> addtocartkey = GlobalKey<ScaffoldState>();
   bool isLoading = false;
   bool isUpdateQuantity = false;
 
@@ -58,14 +57,13 @@ class _AddToCartViewState extends State<AddToCartView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: addtocartkey,
-      drawer: SideMenu(),
+      // drawer: SideMenu(),
       backgroundColor: AppColors.white,
 
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 5.h),
+            SizedBox(height: 6.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 2.w),
               child: TitleBar(
@@ -81,9 +79,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                   }
                 },
                 title: "Your Basket",
-                drawerCallback: () {
-                  addtocartkey.currentState?.openDrawer();
-                },
+                drawerCallback: () {},
               ),
             ),
             SizedBox(height: 5.h),

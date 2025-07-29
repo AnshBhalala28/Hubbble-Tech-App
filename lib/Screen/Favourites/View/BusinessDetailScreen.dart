@@ -12,7 +12,6 @@ import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../comman/Custom_AppBar.dart';
-import '../../../comman/SideMenu.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
@@ -161,8 +160,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.bgcolor,
-      drawer: const SideMenu(),
-      key: _scaffoldKeyParcel,
+
       body: SafeArea(
         child: Stack(
           children: [
@@ -177,9 +175,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                       Get.back();
                     },
                     title: 'Business Details',
-                    drawerCallback: () {
-                      _scaffoldKeyParcel.currentState?.openDrawer();
-                    },
+                    drawerCallback: () {},
                   ),
                 ),
                 SizedBox(height: 1.h),

@@ -9,7 +9,6 @@ import 'package:wavee/Screen/Message_screen/View/messageScreen.dart';
 import 'package:wavee/Screen/Oredrscreen/Model/service_order_model.dart';
 import 'package:wavee/Screen/Oredrscreen/View/order_screen_view.dart';
 import 'package:wavee/comman/Custom_AppBar.dart';
-import 'package:wavee/comman/SideMenu.dart';
 import 'package:wavee/comman/colors.dart';
 import 'package:wavee/comman/const.dart';
 import 'package:wavee/comman/custom_button.dart';
@@ -31,7 +30,6 @@ class Orderdetail_Screen extends StatefulWidget {
 }
 
 class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
-  final GlobalKey<ScaffoldState> productDetailKey = GlobalKey<ScaffoldState>();
   final CarouselSliderController _controller = CarouselSliderController();
   int _currentIndex = 0;
   bool _isWhereMyOrderExpanded = false;
@@ -69,8 +67,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
     }
 
     return Scaffold(
-      key: productDetailKey,
-      drawer: SideMenu(),
+      backgroundColor: AppColors.white,
       body: Stack(
         children: [
           orderDetailModel?.data?.products?.type == "service"
@@ -84,9 +81,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                             .toString()
                             .capitalizeFirst ??
                         "",
-                    drawerCallback: () {
-                      productDetailKey.currentState?.openDrawer();
-                    },
+                    drawerCallback: () {},
                     back: () {
                       Get.back();
                     },
@@ -497,9 +492,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                             .toString()
                             .capitalizeFirst ??
                         "",
-                    drawerCallback: () {
-                      productDetailKey.currentState?.openDrawer();
-                    },
+                    drawerCallback: () {},
                     back: () {
                       Get.back();
                     },

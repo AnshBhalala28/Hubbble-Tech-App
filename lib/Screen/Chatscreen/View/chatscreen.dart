@@ -149,7 +149,7 @@ class _ChatScreenState extends State<ChatScreen> {
         }
       }
     } catch (e) {
-      return "Offline";
+      return "";
     }
   }
 
@@ -162,7 +162,8 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
 
     GetProfile();
-
+    StoryApi();
+    log("daddasdad${chatStories?.data?.length}");
     ChatApi();
 
     _timer = Timer.periodic(const Duration(seconds: 2), (timer) {
@@ -280,7 +281,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 SizedBox(height: 3.h),
                 if (selectedValue == "Businesses") ...[
-                  chatStories?.data?.length == 0
+                  chatStories?.data?.length == 0||chatStories?.data?.length == null
                       ? SizedBox()
                       : Text(
                         "Business Spotlight",
@@ -290,10 +291,12 @@ class _ChatScreenState extends State<ChatScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                  chatStories?.data?.length == 0
+                  chatStories?.data?.length == 0||chatStories?.data?.length == null
+
                       ? SizedBox()
                       : SizedBox(height: 1.h),
-                  chatStories?.data?.length == 0
+                  chatStories?.data?.length == 0||chatStories?.data?.length == null
+
                       ? SizedBox()
                       : SizedBox(
                         height: 17.h,
@@ -376,10 +379,12 @@ class _ChatScreenState extends State<ChatScreen> {
                           },
                         ),
                       ),
-                  chatStories?.data?.length == 0
+                  chatStories?.data?.length == 0||chatStories?.data?.length == null
+
                       ? SizedBox()
                       : SizedBox(height: 1.h),
-                  chatStories?.data?.length == 0
+                  chatStories?.data?.length == 0||chatStories?.data?.length == null
+
                       ? SizedBox()
                       : Container(
                         height: 0.14,
@@ -440,6 +445,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                       "Unknown Business";
                                   return InkWell(
                                     onTap: () {
+                                      _timer!.cancel();
+
                                       Get.to(
                                         MessageScreen(
                                           chatName: displayName,
@@ -509,7 +516,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                         url,
                                                         error,
                                                       ) => Image.asset(
-                                                        'assets/images/appLogo.png',
+                                                        'assets/images/waveeLogoShort.png',
                                                         height: 9.h,
                                                         width: 9.h,
                                                         fit: BoxFit.cover,
@@ -761,6 +768,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
                                     return GestureDetector(
                                       onTap: () {
+                                        _timer!.cancel();
+
                                         Get.to(
                                           MessageScreen(
                                             chatName:
@@ -786,7 +795,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         log(
                                           "Tapped Concierge ID: ${concierge.id.toString() ?? ''}",
                                         );
-                                        ChatApi();
+                                        // ChatApi();
                                       },
                                       child: Stack(
                                         children: [
@@ -1142,16 +1151,18 @@ class _ChatScreenState extends State<ChatScreen> {
       "latitude": AppLat,
       "longitude": AppLon,
     };
-
+    log("data jay che $data");
     checkInternet().then((internet) async {
       if (internet) {
         try {
           var response = await ChatProvider().chatStoryApi(data);
           chatStories = ChatStoryModal.fromJson(response.data);
           if (response.statusCode == 200) {
-            setState(() {
-              isLoading = false;
-            });
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
           } else {
             setState(() {
               isLoading = false;

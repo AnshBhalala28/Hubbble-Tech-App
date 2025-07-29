@@ -9,7 +9,6 @@ import 'package:sizer/sizer.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../comman/Custom_AppBar.dart';
-import '../../../comman/SideMenu.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
@@ -139,9 +138,7 @@ class _EventScreenState extends State<EventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SideMenu(),
-      key: _scaffoldKeyEvent,
-      backgroundColor: AppColors.bgcolor,
+      backgroundColor: AppColors.white,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 2.h),
@@ -153,9 +150,7 @@ class _EventScreenState extends State<EventScreen> {
                   Get.to(HomePage(selected: 1, userName: ''));
                 },
                 title: 'Events',
-                drawerCallback: () {
-                  _scaffoldKeyEvent.currentState?.openDrawer();
-                },
+                drawerCallback: () {},
               ),
               SizedBox(height: 3.h),
               Row(
@@ -187,9 +182,9 @@ class _EventScreenState extends State<EventScreen> {
                         alignment: Alignment.bottomCenter,
                         items: [
                           DropdownMenuItem(
-                            value: "days",
+                            value: "month",
                             child: Text(
-                              "This Week",
+                              "This Month",
                               style: TextStyle(
                                 color: Colors.black,
                                 fontFamily: AppConstants.manrope,
@@ -198,9 +193,9 @@ class _EventScreenState extends State<EventScreen> {
                             ),
                           ),
                           DropdownMenuItem(
-                            value: "month",
+                            value: "days",
                             child: Text(
-                              "This Month",
+                              "This Week",
                               style: TextStyle(
                                 color: Colors.black,
                                 fontFamily: AppConstants.manrope,
@@ -246,10 +241,10 @@ class _EventScreenState extends State<EventScreen> {
                   )
                   : Column(
                     children: [
-                      selectedValue == "days"
-                          ? _buildWeekView()
-                          : selectedValue == "month"
+                      selectedValue == "month"
                           ? _buildMonthView()
+                          : selectedValue == "days"
+                          ? _buildWeekView()
                           : _buildYearView(),
                       const SizedBox(height: 20),
                       event_list_Model?.data?.data?.length == 0 ||
@@ -285,12 +280,14 @@ class _EventScreenState extends State<EventScreen> {
                               bool isLoading = false;
                               return StatefulBuilder(
                                 builder: (context, setState) {
-                                  return GestureDetector(
-                                    onTap: () {},
+                                  return Material(
+                                    elevation: 2,
+                                    borderRadius: BorderRadius.circular(20),
+
                                     child: Container(
-                                      margin: EdgeInsets.symmetric(
-                                        vertical: 10,
-                                      ),
+                                      // margin: EdgeInsets.symmetric(
+                                      //   vertical: 10,
+                                      // ),
                                       padding: EdgeInsets.all(16),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
@@ -645,7 +642,7 @@ class _EventScreenState extends State<EventScreen> {
                                         ],
                                       ),
                                     ),
-                                  );
+                                  ).marginSymmetric(vertical: 10);
                                 },
                               );
                             },
@@ -1153,9 +1150,9 @@ class _EventScreenState extends State<EventScreen> {
                 style: TextStyle(
                   color:
                       isMonthDate
-                          ? AppColors.maincolor
+                          ? AppColors.white
                           : isPast
-                          ? Colors.grey.shade300
+                          ? Colors.black
                           : AppColors.black,
                   fontFamily: AppConstants.manrope,
                   fontWeight: FontWeight.bold,

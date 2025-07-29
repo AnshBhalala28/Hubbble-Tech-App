@@ -112,6 +112,7 @@ class User {
   String? moduleLock;
   String? status;
   String? profile;
+  String? fullName;
   String? createdAt;
   String? updatedAt;
 
@@ -133,6 +134,7 @@ class User {
     this.profile,
     this.createdAt,
     this.updatedAt,
+    this.fullName,
   });
 
   User.fromJson(Map<String, dynamic> json) {
@@ -154,6 +156,7 @@ class User {
     profile = json['profile'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    fullName = json['full_name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -179,6 +182,7 @@ class User {
     data['profile'] = this.profile;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
+    data['full_name'] = this.fullName;
     return data;
   }
 }

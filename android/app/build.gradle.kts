@@ -6,8 +6,6 @@ plugins {
 }
 
 import java.util.Properties
-
-// Load API key from local.properties
 val localProperties = Properties().apply {
     val localFile = rootProject.file("local.properties")
     if (localFile.exists()) {

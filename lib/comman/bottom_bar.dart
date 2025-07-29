@@ -33,7 +33,10 @@ class _Bottom_barState extends State<Bottom_bar> {
             color: Colors.white,
           ),
           height: Platform.isAndroid ? 10.h : 12.h,
-          width: MediaQuery.of(context).size.width,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width,
           margin: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -62,8 +65,9 @@ class _Bottom_barState extends State<Bottom_bar> {
                 label: "My Cart",
                 index: 4,
                 onTap:
-                    () => Get.offAll(
-                      () => AddToCartView(selected: 4, fromBottomBar: true),
+                    () =>
+                    Get.offAll(
+                          () => AddToCartView(selected: 4, fromBottomBar: true),
                     ),
               ),
             ],
@@ -105,9 +109,9 @@ class _Bottom_barState extends State<Bottom_bar> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 color:
-                    widget.selected == index
-                        ? AppColors.maincolor
-                        : Colors.grey,
+                widget.selected == index
+                    ? AppColors.maincolor
+                    : Colors.grey,
                 fontSize: 14.5.sp,
                 fontFamily: AppConstants.manrope,
               ),
@@ -120,9 +124,9 @@ class _Bottom_barState extends State<Bottom_bar> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
               color:
-                  widget.selected == index
-                      ? AppColors.maincolor
-                      : Colors.transparent,
+              widget.selected == index
+                  ? AppColors.maincolor
+                  : Colors.transparent,
             ),
           ),
         ],
