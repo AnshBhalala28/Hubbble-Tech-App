@@ -280,8 +280,7 @@ class _MyAppState extends State<MyApp> {
       }
     });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      log("🟢 Notification tapped from background: ${message.notification
-          ?.title}");
+      log("🟢 Notification tapped from background: ${message.notification?.title}");
     });
     checkInitialMessage();
   }

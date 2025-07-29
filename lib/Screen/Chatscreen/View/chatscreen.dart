@@ -112,7 +112,7 @@ class _ChatScreenState extends State<ChatScreen> {
         return DateFormat("dd-MM-yyyy").format(parsedDate);
       }
     } catch (e) {
-      return "Offline";
+      return "";
     }
   }
 
@@ -154,18 +154,14 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Timer? _timer;
-  Offset _cartButtonPosition = Offset.zero;
-  int cartCount = cartDetailsModel?.data?.length ?? 0;
+
 
   @override
   void initState() {
     super.initState();
-
     GetProfile();
     StoryApi();
-    log("daddasdad${chatStories?.data?.length}");
     ChatApi();
-
     _timer = Timer.periodic(const Duration(seconds: 2), (timer) {
       _getCurrentLocation().then((value) {
         ChatApi();
@@ -1140,11 +1136,6 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
-  void dispose() {
-    _timer!.cancel();
-    super.dispose();
-  }
-
   Future<void> StoryApi() async {
     final Map<String, String> data = {
       "user_id": loginModel?.data?.user?.id.toString() ?? "",
@@ -1184,4 +1175,10 @@ class _ChatScreenState extends State<ChatScreen> {
       }
     });
   }
+
+  void dispose() {
+    _timer!.cancel();
+    super.dispose();
+  }
+
 }
