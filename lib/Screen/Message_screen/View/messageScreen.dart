@@ -8,14 +8,12 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:wavee/Screen/Message_screen/View/videourlscreen.dart';
 import 'package:wavee/comman/const.dart';
 import 'package:wavee/comman/viewPdfFunction.dart';
 
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
-import '../../../comman/custom_batan.dart';
 import '../../../comman/error_dialog.dart';
 import '../../../comman/loader.dart';
 import '../../Message_board/View/AppUserFriendProfileScreen.dart';
@@ -78,6 +76,7 @@ class _MessageScreenState extends State<MessageScreen> {
     setState(() {
       isLoading = true;
     });
+    MessageApi();
     print(
       '.......................image........................ ${widget.image}',
     );
@@ -91,7 +90,7 @@ class _MessageScreenState extends State<MessageScreen> {
       '.......................loginid....................... ${loginModel?.data?.user?.id.toString() ?? ""}',
     );
 
-    _timer = Timer.periodic( Duration(seconds: 3), (timer) {
+    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
       MessageApi();
     });
   }
@@ -148,6 +147,7 @@ class _MessageScreenState extends State<MessageScreen> {
         return true;
       },
       child: Scaffold(
+        backgroundColor: AppColors.white,
         body: Form(
           key: _formKey,
           child: Stack(
@@ -177,10 +177,13 @@ class _MessageScreenState extends State<MessageScreen> {
                                 : (widget.conciergeID?.toString() ?? "");
 
                         if (widget.type == "concierge") {
+                          _timer?.cancel();
                           Get.to(
                             () => UserProfileScreen(id: widget.conciergeID),
                           );
                         } else if (widget.type == "residents") {
+                          _timer?.cancel();
+
                           Get.to(
                             () => AppUserFriendProfileScreen(id: friendid),
                           );
@@ -209,11 +212,15 @@ class _MessageScreenState extends State<MessageScreen> {
                                       : (widget.conciergeID?.toString() ?? "");
 
                               if (widget.type == "concierge") {
+                                _timer?.cancel();
+
                                 Get.to(
                                   () =>
                                       UserProfileScreen(id: widget.conciergeID),
                                 );
                               } else if (widget.type == "residents") {
+                                _timer?.cancel();
+
                                 Get.to(
                                   () =>
                                       AppUserFriendProfileScreen(id: friendid),
@@ -244,7 +251,7 @@ class _MessageScreenState extends State<MessageScreen> {
                           ),
                           SizedBox(width: 12),
                           Text(
-                            widget.chatName??"",
+                            widget.chatName ?? "",
                             style: TextStyle(
                               fontFamily: AppConstants.manrope,
                               fontSize: 18.sp,
@@ -260,7 +267,8 @@ class _MessageScreenState extends State<MessageScreen> {
                       ? Center(
                         child: Center(child: Loader()),
                       ).paddingOnly(top: 30.h)
-                      : messageModel?.data == '' || messageModel?.data == null
+                      : messageModel?.data?.length == 0 ||
+                          messageModel?.data?.length == null
                       ? Expanded(
                         child: Center(
                           child: Text(
@@ -1111,131 +1119,5 @@ class _MessageScreenState extends State<MessageScreen> {
     _scrollController.dispose();
     _timer!.cancel();
     super.dispose();
-  }
-
-  final String supportUrl = "https://www.wavee.ai/help-center";
-
-  void showBlockUserDialog(BuildContext context, String supportUrl) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        bool isLoading = false;
-
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return Dialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              backgroundColor: Colors.transparent,
-              child: Container(
-                width: 73.w,
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: 2.h),
-                    Text(
-                      "Block User",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.black,
-                        fontFamily: AppConstants.manrope,
-                      ),
-                    ),
-                    SizedBox(height: 1.5.h),
-                    Text(
-                      'Are you sure you want to block this user?',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 15.sp,
-                        color: Colors.grey.shade800,
-                        fontFamily: AppConstants.manrope,
-                      ),
-                    ),
-                    SizedBox(height: 2.h),
-                    isLoading
-                        ? Padding(
-                          padding: EdgeInsets.symmetric(vertical: 2.h),
-                          child: CircularProgressIndicator(
-                            color: AppColors.maincolor,
-                          ),
-                        )
-                        : Row(
-                          children: [
-                            Expanded(
-                              child: Material(
-                                elevation: 2,
-                                borderRadius: BorderRadius.circular(12),
-                                child: batan(
-                                  title: "No",
-                                  width: 30.w,
-                                  route: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  color: AppColors.white,
-                                  fontcolor: Colors.black,
-                                  height: 5.h,
-                                  fontsize: 16.sp,
-                                  radius: 12.0,
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 2.w),
-                            Expanded(
-                              child: Material(
-                                elevation: 2,
-                                borderRadius: BorderRadius.circular(12),
-                                child: batan(
-                                  title: "Yes",
-                                  route: () async {
-                                    setState(() => isLoading = true);
-
-                                    final Uri url = Uri.parse(supportUrl);
-                                    if (await canLaunchUrl(url)) {
-                                      await launchUrl(
-                                        url,
-                                        mode: LaunchMode.externalApplication,
-                                      );
-                                    } else {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        const SnackBar(
-                                          content: Text("Could not launch URL"),
-                                        ),
-                                      );
-                                    }
-
-                                    setState(() => isLoading = false);
-                                    Navigator.of(context).pop();
-                                  },
-                                  color: AppColors.maincolor,
-                                  fontcolor: Colors.white,
-                                  height: 5.h,
-                                  fontsize: 16.sp,
-                                  radius: 12.0,
-                                  width: 30.w,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                    SizedBox(height: 1.h),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
   }
 }

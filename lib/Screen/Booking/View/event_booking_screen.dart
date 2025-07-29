@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/Screen/Booking/Model/event_detail_model.dart';
 import 'package:wavee/comman/Custom_AppBar.dart';
-import 'package:wavee/comman/SideMenu.dart';
 import 'package:wavee/comman/custom_batan.dart';
 import 'package:wavee/comman/loader.dart';
 
@@ -46,8 +45,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SideMenu(),
-      key: _eventBookingScren,
+      backgroundColor: AppColors.white,
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -56,9 +54,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                 SizedBox(height: 4.h),
                 TitleBar(
                   title: "Event Booking",
-                  drawerCallback: () {
-                    _eventBookingScren.currentState?.openDrawer();
-                  },
+                  drawerCallback: () {},
                   back: () {
                     Get.back();
                   },

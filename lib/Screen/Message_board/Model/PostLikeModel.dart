@@ -4,8 +4,12 @@ class MessageboardpostLikeModel {
   int? likesCount;
   int? dislikesCount;
 
-  MessageboardpostLikeModel(
-      {this.status, this.message, this.likesCount, this.dislikesCount});
+  MessageboardpostLikeModel({
+    this.status,
+    this.message,
+    this.likesCount,
+    this.dislikesCount,
+  });
 
   MessageboardpostLikeModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];

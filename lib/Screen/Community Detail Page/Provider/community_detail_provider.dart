@@ -14,7 +14,8 @@ class CommunityDetailProvider extends ChangeNotifier {
 
       final dio = await DioHelper.getDio();
       final response = await dio.get(
-        "${ApiEndpoint.productCategoryBusiness}${loginModel?.data?.user?.id.toString()}/$businessID/$categoryID",
+        "${ApiEndpoint.productCategoryBusiness}${loginModel?.data?.user?.id
+            .toString()}/$businessID/$categoryID",
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
       );
 
@@ -39,11 +40,9 @@ class CommunityDetailProvider extends ChangeNotifier {
     }
   }
 
-  Future<Response> categorySearchApi(
-    String userId,
-    businessID,
-    searchTerm,
-  ) async {
+  Future<Response> categorySearchApi(String userId,
+      businessID,
+      searchTerm,) async {
     try {
       final dio = await DioHelper.getDio();
       String? token = await SaveDataLocal.getToken();

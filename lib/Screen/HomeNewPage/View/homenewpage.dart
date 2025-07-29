@@ -37,12 +37,14 @@ import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
 import '../../../comman/custom_batan.dart';
 import '../../../comman/input_decoration.dart';
+import '../../Booking/View/event_booking_screen.dart';
 import '../../Booking/View/service_booking_screen.dart';
 import '../../Message_board/Model/Add_Post_Model.dart';
 import '../../Message_board/Provider/messsage_board_provider.dart';
 import '../../NotiFicationPage/Model/Notification_Model.dart';
 import '../../ViewProfile/Model/profile_model.dart';
 import '../../ViewProfile/Provider/profile_provider.dart';
+
 // import '../../Visitor/Model/latest_visitor_modal/latest_visitor_modal.dart';
 import '../Model/chat_show_count_modal.dart';
 import '../Model/message_board_modal.dart';
@@ -413,13 +415,13 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   Positioned(
-                    top: 11.h,
+                    top: 5.h,
                     left: 0,
                     right: 0,
                     bottom: 0.h,
                     child: DraggableScrollableSheet(
-                      initialChildSize: 0.32,
-                      minChildSize: 0.30,
+                      initialChildSize: 0.35,
+                      minChildSize: 0.34,
                       builder: (context, scrollController) {
                         return Container(
                           decoration: const BoxDecoration(
@@ -968,6 +970,21 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ],
                                 ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: homeCard(
+                                        iconName: AppConstants.eventBooking,
+                                        name: "Event Booking",
+                                        onTap: () {
+                                          Get.to(EventbookingScreen());
+                                        },
+                                      ),
+                                    ),
+                                    SizedBox(width: 5.w),
+                                    Expanded(child: Container()),
+                                  ],
+                                ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
                                 Container(
                                   height: 0.1.h,
                                   decoration: BoxDecoration(
@@ -1338,14 +1355,18 @@ class _HomePageState extends State<HomePage> {
             });
           }
         } catch (e) {
+          if (mounted) {
+            setState(() {
+              isLoading = false;
+            });
+          }
+        }
+      } else {
+        if (mounted) {
           setState(() {
             isLoading = false;
           });
         }
-      } else {
-        setState(() {
-          isLoading = false;
-        });
         buildErrorDialog(context, 'Error', "Internet Required");
       }
     });

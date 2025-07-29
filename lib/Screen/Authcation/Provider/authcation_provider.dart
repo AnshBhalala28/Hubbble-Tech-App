@@ -15,7 +15,7 @@ class AuthProvider extends ChangeNotifier {
       final response = await dio.post(ApiEndpoint.login, data: bodyData);
       return response;
     } on DioException catch (e) {
-      throw Exception(handleDioError(e));
+      throw Exception('error $e');
     }
   }
 
@@ -37,7 +37,6 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<Response> deleteAccApi(id) async {
-
     try {
       String? token = await SaveDataLocal.getToken();
 
@@ -55,7 +54,6 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<Response> logoutApi(Map<String, String> bodyData) async {
-
     try {
       String? token = await SaveDataLocal.getToken();
 

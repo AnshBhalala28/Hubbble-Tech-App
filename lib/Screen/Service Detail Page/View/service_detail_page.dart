@@ -6,7 +6,6 @@ import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/Screen/Product%20Detail%20Page/view/product_detail_page.dart';
 
-import '../../../comman/SideMenu.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
@@ -33,7 +32,6 @@ class ServiceDetailsPage extends StatefulWidget {
 }
 
 class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
-  final GlobalKey<ScaffoldState> serviceDetailKey = GlobalKey<ScaffoldState>();
   final CarouselSliderController _controller = CarouselSliderController();
   bool isLoading = false;
   bool isAddReviewLoading = false;
@@ -66,8 +64,6 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: serviceDetailKey,
-      drawer: SideMenu(),
       body: Stack(
         children: [
           isLoading

@@ -93,13 +93,13 @@ class Notifications {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     conciergeProfile =
-        json['concierge_profile'] != null
-            ? new ConciergeProfile.fromJson(json['concierge_profile'])
-            : null;
+    json['concierge_profile'] != null
+        ? new ConciergeProfile.fromJson(json['concierge_profile'])
+        : null;
     businessProfile =
-        json['business_profile'] != null
-            ? new BusinessProfile.fromJson(json['business_profile'])
-            : null;
+    json['business_profile'] != null
+        ? new BusinessProfile.fromJson(json['business_profile'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {

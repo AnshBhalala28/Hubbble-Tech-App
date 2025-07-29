@@ -29,6 +29,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   void initState() {
     super.initState();
+    setState(() {
+      isSending = true;
+    });
     userpersonalinfoapi();
   }
 
@@ -59,143 +62,133 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           onPressed: () => Get.back(),
         ),
       ),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(color: Colors.white),
-                  child: Column(
-                    children: [
-                      SizedBox(height: 2.h),
-                      Container(
-                        padding: EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.blue.shade100,
-                            width: 2,
-                          ),
-                        ),
-                        child: CircleAvatar(
-                          radius: 35.sp,
-                          backgroundColor: Colors.grey.shade200,
-                          backgroundImage:
-                              (userpersonalInfoModel?.data?.conciergeImage !=
-                                          null &&
-                                      userpersonalInfoModel!
-                                          .data!
-                                          .conciergeImage!
-                                          .isNotEmpty)
-                                  ? CachedNetworkImageProvider(
-                                    userpersonalInfoModel!
-                                        .data!
-                                        .conciergeImage!,
-                                  )
-                                  : const AssetImage("assets/images/bg.jpg")
-                                      as ImageProvider<Object>,
-                        ),
-                      ),
-                      SizedBox(height: 2.h),
-                      Text(
-                        "${userpersonalInfoModel?.data?.firstName} ${userpersonalInfoModel?.data?.lastName}",
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          fontFamily: AppConstants.manrope,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(height: 3.h),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 2.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5.w),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+      body:
+          isSending
+              ? Loader()
+              : Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(color: Colors.white),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(5.w, 3.h, 5.w, 1.h),
-                          child: Text(
-                            "Personal Information",
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontFamily: AppConstants.manrope,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                        SizedBox(height: 2.h),
+                        Container(
+                          padding: EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.blue.shade100,
+                              width: 2,
                             ),
                           ),
+                          child: CircleAvatar(
+                            radius: 35.sp,
+                            backgroundColor: Colors.grey.shade200,
+                            backgroundImage:
+                                (userpersonalInfoModel?.data?.conciergeImage !=
+                                            null &&
+                                        userpersonalInfoModel!
+                                            .data!
+                                            .conciergeImage!
+                                            .isNotEmpty)
+                                    ? CachedNetworkImageProvider(
+                                      userpersonalInfoModel!
+                                          .data!
+                                          .conciergeImage!,
+                                    )
+                                    : const AssetImage("assets/images/bg.jpg")
+                                        as ImageProvider<Object>,
+                          ),
                         ),
-                        Divider(),
-                        buildProfileDetailItem(
-                          Icons.email_outlined,
-                          "Email",
-                          userpersonalInfoModel?.data?.email,
-                          () {},
-                        ),
-                        buildProfileDetailItem(
-                          Icons.phone_outlined,
-                          "Phone",
-                          userpersonalInfoModel?.data?.phoneNumber,
-                          () {
-                            final phone =
-                                userpersonalInfoModel?.data?.phoneNumber;
-                            if (phone != null && phone.toString().isNotEmpty) {
-                              final telUrl = Uri.parse(
-                                "tel:${phone.toString()}",
-                              );
-                              launchUrl(
-                                telUrl,
-                                mode: LaunchMode.externalApplication,
-                              );
-                            }
-                          },
-                        ),
-                        // buildProfileDetailItem(
-                        //     Icons.calendar_today_outlined,
-                        //     "Date of Birth",
-                        //     userpersonalInfoModel?.data?.dateOfBirth),
-                        // buildProfileDetailItem(Icons.person, "Gender",
-                        //     userpersonalInfoModel?.data?.gender),
                         SizedBox(height: 2.h),
+                        Text(
+                          "${userpersonalInfoModel?.data?.firstName} ${userpersonalInfoModel?.data?.lastName}",
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            fontFamily: AppConstants.manrope,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(height: 3.h),
                       ],
                     ),
                   ),
-                ),
-                // batan(
-                //   title: "Block",
-                //   route: () {
-                //     showBlockUserDialog(context, supportUrl);
-                //   },
-                //   color: AppColors.maincolor,
-                //   fontcolor: AppColors.white,
-                //   height: 5.h,
-                //   fontsize: 18.sp,
-                //   radius: 12.0,
-                // ).paddingOnly(left: 4.4.w, right: 4.4.w, top: 2.h),
-                SizedBox(height: 3.h),
-              ],
-            ),
-            if (isSending)
-              Positioned.fill(
-                child: Container(
-                  color: Colors.white,
-                  child: Center(child: Loader()),
-                ),
+                  SizedBox(height: 2.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5.w),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(5.w, 3.h, 5.w, 1.h),
+                            child: Text(
+                              "Personal Information",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontFamily: AppConstants.manrope,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                          Divider(),
+                          buildProfileDetailItem(
+                            Icons.email_outlined,
+                            "Email",
+                            userpersonalInfoModel?.data?.email,
+                            () {},
+                          ),
+                          buildProfileDetailItem(
+                            Icons.phone_outlined,
+                            "Phone",
+                            userpersonalInfoModel?.data?.phoneNumber,
+                            () {
+                              final phone =
+                                  userpersonalInfoModel?.data?.phoneNumber;
+                              if (phone != null &&
+                                  phone.toString().isNotEmpty) {
+                                final telUrl = Uri.parse(
+                                  "tel:${phone.toString()}",
+                                );
+                                launchUrl(
+                                  telUrl,
+                                  mode: LaunchMode.externalApplication,
+                                );
+                              }
+                            },
+                          ),
+                          // buildProfileDetailItem(
+                          //     Icons.calendar_today_outlined,
+                          //     "Date of Birth",
+                          //     userpersonalInfoModel?.data?.dateOfBirth),
+                          // buildProfileDetailItem(Icons.person, "Gender",
+                          //     userpersonalInfoModel?.data?.gender),
+                          SizedBox(height: 2.h),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // batan(
+                  //   title: "Block",
+                  //   route: () {
+                  //     showBlockUserDialog(context, supportUrl);
+                  //   },
+                  //   color: AppColors.maincolor,
+                  //   fontcolor: AppColors.white,
+                  //   height: 5.h,
+                  //   fontsize: 18.sp,
+                  //   radius: 12.0,
+                  // ).paddingOnly(left: 4.4.w, right: 4.4.w, top: 2.h),
+                  SizedBox(height: 3.h),
+                ],
               ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -460,9 +453,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   userpersonalinfoapi() async {
-    setState(() {
-      isSending = true;
-    });
     checkInternet().then((internet) async {
       if (internet) {
         try {

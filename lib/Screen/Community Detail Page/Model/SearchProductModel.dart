@@ -63,13 +63,13 @@ class Data {
     offerPrice = json['offer_price'];
     description = json['description'];
     features =
-        json['features'] is List
-            ? List<String>.from(json['features'])
-            : (json['features'] != null ? [json['features']] : []);
+    json['features'] is List
+        ? List<String>.from(json['features'])
+        : (json['features'] != null ? [json['features']] : []);
     images =
-        json['images'] is List
-            ? List<String>.from(json['images'])
-            : (json['images'] != null ? [json['images']] : []);
+    json['images'] is List
+        ? List<String>.from(json['images'])
+        : (json['images'] != null ? [json['images']] : []);
 
     image = json['image'];
     status = json['status'];

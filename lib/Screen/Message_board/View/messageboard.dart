@@ -1518,7 +1518,6 @@ class _MessageboardState extends State<Messageboard> {
     );
   }
 
-
   void shareConciergeImage(String? imageUrl) {
     if (imageUrl == null || imageUrl.isEmpty) {
       return;
@@ -2499,7 +2498,7 @@ class _MessageboardState extends State<Messageboard> {
               isSending = false;
             });
           }
-        } catch (e,stackTrace) {
+        } catch (e, stackTrace) {
           log('error ave che ceh $e $stackTrace');
           setState(() {
             isLoadingMore = false;

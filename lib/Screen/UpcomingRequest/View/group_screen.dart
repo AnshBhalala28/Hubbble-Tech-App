@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../comman/Custom_AppBar.dart';
-import '../../../comman/SideMenu.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
@@ -60,8 +59,6 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
     final GlobalKey<ScaffoldState> requestPageKey = GlobalKey<ScaffoldState>();
 
     return Scaffold(
-      key: requestPageKey,
-      drawer: SideMenu(),
       body: Stack(
         children: [
           Container(
@@ -70,12 +67,7 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
               child: Column(
                 children: [
                   SizedBox(height: 4.h),
-                  TitleBar(
-                    title: "Groups",
-                    drawerCallback: () {
-                      requestPageKey.currentState?.openDrawer();
-                    },
-                  ),
+                  TitleBar(title: "Groups", drawerCallback: () {}),
                   SizedBox(height: 2.h),
                   SizedBox(
                     height: 6.h,

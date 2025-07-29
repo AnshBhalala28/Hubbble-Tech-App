@@ -8,7 +8,6 @@ import 'package:sizer/sizer.dart';
 import 'package:wavee/comman/custom_button.dart';
 
 import '../../../comman/Custom_AppBar.dart';
-import '../../../comman/SideMenu.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
@@ -68,278 +67,269 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      drawer: SideMenu(),
-      key: Myhome,
+
       body: Stack(
         children: [
           isLoading
               ? Center(child: Loader())
-              : Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.h),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 2.h),
-                      TitleBar(
-                        back: () {
-                          Get.back();
-                        },
-                        title: "My Home",
-                        drawerCallback: () => Myhome.currentState?.openDrawer(),
-                      ),
-                      SizedBox(height: 3.h),
-                      profileField(
-                        "Property Address",
-                        fullAddressController,
-                        Icons.location_on,
-                        false,
-                      ),
-                      profileField(
-                        "Key Waivers",
-                        KeyWaiversController,
-                        Icons.vpn_key,
-                        true,
-                      ),
-                      SizedBox(height: 0.5.h),
-                      profileModel?.data?.unit?.documentsFiles?.length ==
-                                  null ||
-                              profileModel
+              : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(height: 6.h),
+                    TitleBar(
+                      back: () {
+                        Get.back();
+                      },
+                      title: "My Home",
+                      drawerCallback: () {},
+                    ),
+                    SizedBox(height: 3.h),
+                    profileField(
+                      "Property Address",
+                      fullAddressController,
+                      Icons.location_on,
+                      false,
+                    ),
+                    profileField(
+                      "Key Waivers",
+                      KeyWaiversController,
+                      Icons.vpn_key,
+                      true,
+                    ),
+                    SizedBox(height: 0.5.h),
+                    profileModel?.data?.unit?.documentsFiles?.length == null ||
+                            profileModel?.data?.unit?.documentsFiles?.length ==
+                                0
+                        ? SizedBox()
+                        : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                "Apartment Documents",
+                                style: TextStyle(
+                                  fontFamily: AppConstants.manrope,
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 2.h),
+                            GridView.builder(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              physics: NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 15,
+                                    childAspectRatio: 0.8,
+                                  ),
+                              itemCount:
+                                  profileModel
                                       ?.data
                                       ?.unit
                                       ?.documentsFiles
-                                      ?.length ==
-                                  0
-                          ? SizedBox()
-                          : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  "Apartment Documents",
-                                  style: TextStyle(
-                                    fontFamily: AppConstants.manrope,
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 2.h),
-                              GridView.builder(
-                                shrinkWrap: true,
-                                padding: EdgeInsets.zero,
-                                physics: NeverScrollableScrollPhysics(),
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      crossAxisSpacing: 10,
-                                      mainAxisSpacing: 15,
-                                      childAspectRatio: 0.8,
-                                    ),
-                                itemCount:
-                                    profileModel
-                                        ?.data
-                                        ?.unit
-                                        ?.documentsFiles
-                                        ?.length ??
-                                    0,
-                                itemBuilder: (context, index) {
-                                  final documentUrl =
-                                      profileModel!
-                                          .data!
-                                          .unit!
-                                          .documentsFiles![index];
-                                  final labels =
-                                      profileModel!
-                                          .data!
-                                          .unit!
-                                          .documentsFilesLabel;
+                                      ?.length ??
+                                  0,
+                              itemBuilder: (context, index) {
+                                final documentUrl =
+                                    profileModel!
+                                        .data!
+                                        .unit!
+                                        .documentsFiles![index];
+                                final labels =
+                                    profileModel!
+                                        .data!
+                                        .unit!
+                                        .documentsFilesLabel;
 
-                                  String label =
-                                      (labels != null && index < labels.length)
-                                          ? labels[index]
-                                          : 'Document ${index + 1}';
+                                String label =
+                                    (labels != null && index < labels.length)
+                                        ? labels[index]
+                                        : 'Document ${index + 1}';
 
-                                  String finalLabel =
-                                      label.isNotEmpty
-                                          ? label[0].toUpperCase() +
-                                              label.substring(1)
-                                          : 'Document ${index + 1}';
+                                String finalLabel =
+                                    label.isNotEmpty
+                                        ? label[0].toUpperCase() +
+                                            label.substring(1)
+                                        : 'Document ${index + 1}';
 
-                                  return GestureDetector(
-                                    onTap: () {
-                                      if (documentUrl.isNotEmpty) {
-                                        Get.to(PdfView(link: documentUrl));
-                                      }
-                                    },
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          height: 7.h,
-                                          width: 15.w,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                            border: Border.all(
-                                              width: 1,
-                                              color: AppColors.maincolor,
-                                            ),
-                                          ),
-                                          child: Icon(
-                                            Icons.picture_as_pdf,
-                                            color: AppColors.maincolor,
-                                            size: 30.sp,
-                                          ),
-                                        ),
-                                        SizedBox(height: 8),
-                                        Expanded(
-                                          child: Text(
-                                            finalLabel,
-                                            textAlign: TextAlign.center,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            style: TextStyle(fontSize: 15.sp),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-
-                      profileModel
-                                      ?.data
-                                      ?.buildingDocument
-                                      ?.documentsFiles
-                                      ?.length ==
-                                  null ||
-                              profileModel
-                                      ?.data
-                                      ?.buildingDocument
-                                      ?.documentsFiles
-                                      ?.length ==
-                                  0
-                          ? SizedBox()
-                          : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  "Building Documents",
-                                  style: TextStyle(
-                                    fontFamily: AppConstants.manrope,
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 2.h),
-                              GridView.builder(
-                                shrinkWrap: true,
-                                padding: EdgeInsets.zero,
-                                physics: NeverScrollableScrollPhysics(),
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      crossAxisSpacing: 10,
-                                      mainAxisSpacing: 15,
-                                      childAspectRatio: 0.8,
-                                    ),
-                                itemCount:
-                                    profileModel
-                                        ?.data
-                                        ?.buildingDocument
-                                        ?.documentsFiles
-                                        ?.length ??
-                                    0,
-                                itemBuilder: (context, index) {
-                                  final documentUrl =
-                                      profileModel!
-                                          .data!
-                                          .buildingDocument!
-                                          .documentsFiles![index];
-                                  final labels =
-                                      profileModel!
-                                          .data!
-                                          .buildingDocument!
-                                          .documentsFilesLabel;
-
-                                  if (documentUrl == null ||
-                                      documentUrl.isEmpty)
-                                    return SizedBox();
-
-                                  String label =
-                                      (labels != null && index < labels.length)
-                                          ? labels[index]
-                                          : 'Document ${index + 1}';
-
-                                  String finalLabel =
-                                      label.isNotEmpty
-                                          ? label[0].toUpperCase() +
-                                              label.substring(1)
-                                          : 'Document ${index + 1}';
-
-                                  return GestureDetector(
-                                    onTap: () {
+                                return GestureDetector(
+                                  onTap: () {
+                                    if (documentUrl.isNotEmpty) {
                                       Get.to(PdfView(link: documentUrl));
-                                    },
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          height: 7.h,
-                                          width: 15.w,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                            border: Border.all(
-                                              width: 1,
-                                              color: AppColors.maincolor,
-                                            ),
+                                    }
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: 7.h,
+                                        width: 15.w,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
                                           ),
-                                          child: Icon(
-                                            Icons.picture_as_pdf,
+                                          border: Border.all(
+                                            width: 1,
                                             color: AppColors.maincolor,
-                                            size: 30.sp,
                                           ),
                                         ),
-                                        SizedBox(height: 8),
-                                        Expanded(
-                                          child: Text(
-                                            finalLabel,
-                                            textAlign: TextAlign.center,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            style: TextStyle(fontSize: 15.sp),
-                                          ),
+                                        child: Icon(
+                                          Icons.picture_as_pdf,
+                                          color: AppColors.maincolor,
+                                          size: 30.sp,
                                         ),
-                                      ],
-                                    ),
-                                  );
-                                },
+                                      ),
+                                      SizedBox(height: 8),
+                                      Expanded(
+                                        child: Text(
+                                          finalLabel,
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          style: TextStyle(fontSize: 15.sp),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+
+                    profileModel
+                                    ?.data
+                                    ?.buildingDocument
+                                    ?.documentsFiles
+                                    ?.length ==
+                                null ||
+                            profileModel
+                                    ?.data
+                                    ?.buildingDocument
+                                    ?.documentsFiles
+                                    ?.length ==
+                                0
+                        ? SizedBox()
+                        : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                "Building Documents",
+                                style: TextStyle(
+                                  fontFamily: AppConstants.manrope,
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ],
-                          ),
-                      batan(
-                        title: "Save Home",
-                        route: () {
-                          EditProfile();
-                        },
-                        color: AppColors.maincolor,
-                        fontcolor: Colors.white,
-                        height: 5.5.h,
-                        fontsize: 17.sp,
-                        radius: 12.0,
-                      ),
-                    ],
-                  ),
+                            ),
+                            SizedBox(height: 2.h),
+                            GridView.builder(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              physics: NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 15,
+                                    childAspectRatio: 0.8,
+                                  ),
+                              itemCount:
+                                  profileModel
+                                      ?.data
+                                      ?.buildingDocument
+                                      ?.documentsFiles
+                                      ?.length ??
+                                  0,
+                              itemBuilder: (context, index) {
+                                final documentUrl =
+                                    profileModel!
+                                        .data!
+                                        .buildingDocument!
+                                        .documentsFiles![index];
+                                final labels =
+                                    profileModel!
+                                        .data!
+                                        .buildingDocument!
+                                        .documentsFilesLabel;
+
+                                if (documentUrl == null || documentUrl.isEmpty)
+                                  return SizedBox();
+
+                                String label =
+                                    (labels != null && index < labels.length)
+                                        ? labels[index]
+                                        : 'Document ${index + 1}';
+
+                                String finalLabel =
+                                    label.isNotEmpty
+                                        ? label[0].toUpperCase() +
+                                            label.substring(1)
+                                        : 'Document ${index + 1}';
+
+                                return GestureDetector(
+                                  onTap: () {
+                                    Get.to(PdfView(link: documentUrl));
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: 7.h,
+                                        width: 15.w,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          border: Border.all(
+                                            width: 1,
+                                            color: AppColors.maincolor,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          Icons.picture_as_pdf,
+                                          color: AppColors.maincolor,
+                                          size: 30.sp,
+                                        ),
+                                      ),
+                                      SizedBox(height: 8),
+                                      Expanded(
+                                        child: Text(
+                                          finalLabel,
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          style: TextStyle(fontSize: 15.sp),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                    batan(
+                      title: "Save Home",
+                      route: () {
+                        EditProfile();
+                      },
+                      color: AppColors.maincolor,
+                      fontcolor: Colors.white,
+                      height: 5.5.h,
+                      fontsize: 17.sp,
+                      radius: 12.0,
+                    ),
+                  ],
                 ),
-              ),
+              ).paddingOnly(right: 3.w, left: 3.w),
           if (isEditing)
+            //
             Container(
               color: Colors.black.withOpacity(0.3),
               child: Center(child: Loader()),

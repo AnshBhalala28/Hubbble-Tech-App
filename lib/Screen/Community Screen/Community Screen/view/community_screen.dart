@@ -4587,47 +4587,115 @@ class _CommunityScreenState extends State<CommunityScreen>
     });
   }
 
-  CategoriesProfileView(String id, String categoryName, String categoryImage) {
+  // CategoriesProfileView(String id, String categoryName, String categoryImage) {
+  //   setState(() {
+  //     isSending = true;
+  //   });
+  //
+  //   checkInternet().then((internet) async {
+  //     if (internet) {
+  //       CommunityProvider()
+  //           .categoryViewApi(
+  //             (loginModel?.data?.user?.id).toString(),
+  //             AppLon,
+  //             AppLat,
+  //             id,
+  //           )
+  //           .then((response) async {
+  //             viewcategoriesmodel = ViewCategoriesModel.fromJson(response.data);
+  //             if (response.statusCode == 200) {
+  //               setState(() {
+  //                 isSending = false;
+  //               });
+  //
+  //               await _showcategoriesdBottomSheet(
+  //                 viewcategoriesmodel,
+  //                 categoryName,
+  //                 categoryImage,
+  //               );
+  //             } else if (response.statusCode == 422) {
+  //               setState(() {
+  //                 isSending = false;
+  //               });
+  //             } else {
+  //               setState(() {
+  //                 isSending = false;
+  //               });
+  //             }
+  //           });
+  //     } else {
+  //       setState(() {
+  //         isSending = false;
+  //       });
+  //       buildErrorDialog(context, 'Error', "Internet Required");
+  //     }
+  //   });
+  // }
+  void CategoriesProfileView(
+    String id,
+    String categoryName,
+    String categoryImage,
+  ) {
     setState(() {
       isSending = true;
     });
 
     checkInternet().then((internet) async {
-      if (internet) {
-        CommunityProvider()
-            .categoryViewApi(
-              (loginModel?.data?.user?.id).toString(),
-              AppLon,
-              AppLat,
-              id,
-            )
-            .then((response) async {
-              viewcategoriesmodel = ViewCategoriesModel.fromJson(response.data);
-              if (response.statusCode == 200) {
-                setState(() {
-                  isSending = false;
-                });
-
-                await _showcategoriesdBottomSheet(
-                  viewcategoriesmodel,
-                  categoryName,
-                  categoryImage,
-                );
-              } else if (response.statusCode == 422) {
-                setState(() {
-                  isSending = false;
-                });
-              } else {
-                setState(() {
-                  isSending = false;
-                });
-              }
-            });
-      } else {
+      if (!internet) {
         setState(() {
           isSending = false;
         });
         buildErrorDialog(context, 'Error', "Internet Required");
+        return;
+      }
+
+      try {
+        final response = await CommunityProvider().categoryViewApi(
+          (loginModel?.data?.user?.id).toString(),
+          AppLon,
+          AppLat,
+          id,
+        );
+
+        if (response.statusCode == 200) {
+          viewcategoriesmodel = ViewCategoriesModel.fromJson(response.data);
+          setState(() {
+            isSending = false;
+          });
+
+          await _showcategoriesdBottomSheet(
+            viewcategoriesmodel,
+            categoryName,
+            categoryImage,
+          );
+        } else if (response.statusCode == 422) {
+          setState(() {
+            isSending = false;
+          });
+        } else if (response.statusCode == 429) {
+          setState(() {
+            isSending = false;
+          });
+          buildErrorDialog(
+            context,
+            'Too Many Requests',
+            'You are making requests too quickly. Please wait a moment and try again.',
+          );
+        } else {
+          setState(() {
+            isSending = false;
+          });
+          buildErrorDialog(
+            context,
+            'Error',
+            'Something went wrong (${response.statusCode})',
+          );
+        }
+      } catch (e) {
+        setState(() {
+          isSending = false;
+        });
+        buildErrorDialog(context, 'Error', 'An unexpected error occurred: $e');
       }
     });
   }

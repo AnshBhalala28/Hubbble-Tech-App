@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, constant_identifier_names
 
+import 'package:intl/intl.dart';
 import 'package:wavee/Screen/Authcation/Model/DeleteAccountModel.dart';
 import 'package:wavee/Screen/Authcation/Model/forgotPasswordModel.dart';
 import 'package:wavee/Screen/Authcation/Model/login_model.dart';
@@ -85,6 +86,13 @@ import '../Screen/open_ai_chatbot/modal/send_data_model.dart';
 const String baseUrl = "https://portal.wavee.ai/api";
 const String jsonString = "assets/google_pay.json";
 
+String formatDateTime(String? createdAt) {
+  if (createdAt == null || createdAt.isEmpty) return "N/A";
+  DateTime parsedDate = DateTime.parse(createdAt);
+  return "${DateFormat('dd MMM yyyy').format(parsedDate)}, ${DateFormat(
+      'hh:mm a').format(parsedDate)}";
+}
+
 class AppConstants {
   static String BASEURL = "https://portal.wavee.ai/api/";
 
@@ -114,6 +122,7 @@ class AppConstants {
   static const String Privacy = "${path}Privacy1.svg";
   static const String terms = "${path}terms.svg";
   static const String messageBoard = "${path}messageboard.svg";
+  static const String eventBooking = "${path}eventbookin.svg";
 }
 
 LoginModel? loginModel;

@@ -1,8 +1,8 @@
 import 'dart:developer';
 
+//
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:wavee/comman/responses.dart';
 
 import '../../../comman/apiConfig.dart'; // For DioHelper
 import '../../../comman/apiEndpoint.dart';
@@ -29,7 +29,7 @@ class ChatProvider extends ChangeNotifier {
 
       return response;
     } on DioException catch (e) {
-      throw Exception(handleDioError(e));
+      throw Exception("Something went wrong: $e");
     } catch (e) {
       throw Exception("Something went wrong: $e");
     }
@@ -45,10 +45,10 @@ class ChatProvider extends ChangeNotifier {
         data: bodyData,
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
       );
-
+      log("urkl ${ApiEndpoint.allStory}");
       return response;
     } on DioException catch (e) {
-      throw Exception(handleDioError(e));
+      throw Exception("Something went wrong: $e");
     } catch (e) {
       throw Exception("Something went wrong: $e");
     }

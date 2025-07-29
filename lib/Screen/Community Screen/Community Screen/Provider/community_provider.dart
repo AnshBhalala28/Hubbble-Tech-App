@@ -46,7 +46,7 @@ class CommunityProvider extends ChangeNotifier {
 
       final dio = await DioHelper.getDio();
       final response = await dio.get(
-        "${ApiEndpoint.businessProfileView}${loginModel?.data?.user?.id.toString()}/$id?longitude=$lon&latitude=$lat",
+        "${ApiEndpoint.businessProfileView}${loginModel?.data?.user?.id.toString()}/$id?latitude=$lat&longitude=$lon",
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
       );
 
@@ -195,7 +195,7 @@ class CommunityProvider extends ChangeNotifier {
 
       return response;
     } on DioException catch (e) {
-      throw Exception(handleDioError(e));
+      throw Exception("Something went wrong: $e");
     }
   }
 

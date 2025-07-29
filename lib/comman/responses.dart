@@ -35,7 +35,8 @@ responses(http.Response response) {
     case 500:
     default:
       throw FetchDataException(
-        'Error occurred while Communication with Server with StatusCode :${response.statusCode}',
+        'Error occurred while Communication with Server with StatusCode :${response
+            .statusCode}',
       );
   }
 }

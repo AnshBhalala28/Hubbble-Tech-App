@@ -368,7 +368,6 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../comman/Custom_AppBar.dart';
-import '../../../comman/SideMenu.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
@@ -441,8 +440,6 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SideMenu(),
-      key: _scaffoldKeyBookAmenities,
       backgroundColor: AppColors.bgcolor,
       body: Stack(
         children: [
@@ -454,9 +451,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                 TitleBar(
                   back: () => Get.to(HomePage(userName: "", selected: 1)),
                   title: 'Amenities',
-                  drawerCallback:
-                      () =>
-                          _scaffoldKeyBookAmenities.currentState?.openDrawer(),
+                  drawerCallback: () {},
                 ),
                 SizedBox(height: 3.h),
                 Expanded(
@@ -473,7 +468,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                 color: AppColors.black,
                                 fontFamily: AppConstants.manrope,
                               ),
-                            ).paddingOnly(top: 35.h),
+                            ).paddingOnly(bottom: 10.h),
                           ),
                       itemBuilder:
                           (context, booking, index) => Stack(

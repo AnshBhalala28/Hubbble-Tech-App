@@ -164,13 +164,13 @@ class Data1 {
     creditBalance = json['credit_balance'];
     distance = json['distance'];
     category =
-        json['category'] != null
-            ? new Category.fromJson(json['category'])
-            : null;
+    json['category'] != null
+        ? new Category.fromJson(json['category'])
+        : null;
     subCategory =
-        json['sub_category'] != null
-            ? new SubCategory.fromJson(json['sub_category'])
-            : null;
+    json['sub_category'] != null
+        ? new SubCategory.fromJson(json['sub_category'])
+        : null;
     if (json['featured_posts'] != null) {
       featuredPosts = <FeaturedPosts>[];
       json['featured_posts'].forEach((v) {

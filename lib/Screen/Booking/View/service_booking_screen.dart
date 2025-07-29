@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/comman/SideMenu.dart';
 import 'package:wavee/comman/loader.dart';
 
 import '../../../comman/Custom_AppBar.dart';
@@ -41,19 +40,16 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: serviceBookingkey,
-      drawer: SideMenu(),
+      backgroundColor: AppColors.white,
       body: Column(
         children: [
-          SizedBox(height: 4.h),
+          SizedBox(height: 6.h),
           TitleBar(
             back: () {
               Get.back();
             },
             title: 'Service Booking',
-            drawerCallback: () {
-              serviceBookingkey.currentState?.openDrawer();
-            },
+            drawerCallback: () {},
           ),
           SizedBox(height: 2.h),
           SizedBox(
