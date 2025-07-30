@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:wavee/comman/apiConfig.dart';
@@ -31,7 +33,8 @@ class CommunityProvider extends ChangeNotifier {
       );
 
       return response;
-    } on DioException catch (e) {
+    } on DioException catch (e,stackTrace) {
+      log('messagemessagemessagemessagemessagemessage$stackTrace  $e');
       throw Exception(handleDioError(e));
     }
   }
@@ -51,7 +54,9 @@ class CommunityProvider extends ChangeNotifier {
       );
 
       return response;
-    } on DioException catch (e) {
+    } on DioException catch (e, stackTrace) {
+      log('messagemessagemessagemessagemessagemessage$stackTrace  $e');
+
       throw Exception(handleDioError(e));
     }
   }

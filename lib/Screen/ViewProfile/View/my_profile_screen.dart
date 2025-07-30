@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -79,7 +80,10 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                   ),
                   SizedBox(height: 3.h),
                   GestureDetector(
-                    onTap: pickImage,
+                    onTap: () {
+                      log('adadaadad');
+                      pickImage();
+                    },
                     child: Stack(
                       alignment: Alignment.bottomRight,
                       children: [
@@ -327,13 +331,12 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
   }
 
   Future<void> pickImage() async {
-    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    final androidInfo = await deviceInfo.androidInfo;
-    final androidVersion = androidInfo.version.sdkInt;
-
     PermissionStatus status;
 
     if (Platform.isAndroid) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      final androidVersion = androidInfo.version.sdkInt;
+
       if (androidVersion >= 33) {
         status = await Permission.photos.request();
       } else {
@@ -351,6 +354,7 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
       }
     }
 
+    // No permission required for iOS if Info.plist is set
     final pickedFile = await ImagePicker().pickImage(
       source: ImageSource.gallery,
     );
@@ -368,6 +372,7 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
       );
     }
   }
+
 
   void EditProfile() {
     final List<String> names = nameController.text.trim().split(' ');

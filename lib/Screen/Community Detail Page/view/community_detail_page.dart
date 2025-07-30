@@ -20,6 +20,7 @@ import '../../../comman/bottom_bar.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/const.dart';
 import '../../../comman/error_dialog.dart';
+import '../../../comman/loader.dart';
 import '../../Add to Cart/provider/add_to_cart_provider.dart';
 import '../../Add to Cart/view/add_to_cart_view.dart';
 import '../../Community Screen/Community Screen/Model/BusnessViewModal.dart';
@@ -49,6 +50,7 @@ class BusinessDetailPage extends StatefulWidget {
 
 class _BusinessDetailPageState extends State<BusinessDetailPage> {
   bool isLoading = false;
+  bool isSending = false;
   bool isAddtoCart = false;
 
   final ScrollController _scrollController = ScrollController();
@@ -116,7 +118,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
     final todayKey = getTodayKey();
 
     final openingHours =
-    busnessviewmodal?.data?.business?.openingHours?.toJson();
+        busnessviewmodal?.data?.business?.openingHours?.toJson();
     final todayHours = openingHours?[todayKey];
 
     final isClosedToday = todayHours?['closed'] ?? true;
@@ -190,10 +192,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                           ?.data
                                           ?.business
                                           ?.businessName ??
-                                          "Our Business";
+                                      "Our Business";
                                   String imageUrl =
                                       busnessviewmodal?.data?.business?.logo ??
-                                          "";
+                                      "";
                                   String userId = widget.userID ?? "";
                                   String businessId = widget.businessID ?? "";
                                   String longitude =
@@ -221,11 +223,11 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                     final bytes = response.bodyBytes;
 
                                     final tempDir =
-                                    await getTemporaryDirectory();
+                                        await getTemporaryDirectory();
                                     final file =
-                                    await File(
-                                      '${tempDir.path}/shared_business.jpg',
-                                    ).create();
+                                        await File(
+                                          '${tempDir.path}/shared_business.jpg',
+                                        ).create();
                                     await file.writeAsBytes(bytes);
 
                                     await Share.shareXFiles(
@@ -282,10 +284,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                     SearchScreen(
                                       businessID: widget.businessID,
                                       addStatus:
-                                      busnessviewmodal
-                                          ?.data
-                                          ?.business
-                                          ?.productStatus,
+                                          busnessviewmodal
+                                              ?.data
+                                              ?.business
+                                              ?.productStatus,
                                     ),
                                   );
                                 },
@@ -308,19 +310,19 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                     size: 20,
                                   ),
                                   suffixIcon:
-                                  searchController.text.isNotEmpty
-                                      ? IconButton(
-                                    icon: Icon(
-                                      Icons.close,
-                                      color: Colors.grey[600],
-                                      size: 18,
-                                    ),
-                                    onPressed: () {
-                                      searchController.clear();
-                                      setState(() {});
-                                    },
-                                  )
-                                      : null,
+                                      searchController.text.isNotEmpty
+                                          ? IconButton(
+                                            icon: Icon(
+                                              Icons.close,
+                                              color: Colors.grey[600],
+                                              size: 18,
+                                            ),
+                                            onPressed: () {
+                                              searchController.clear();
+                                              setState(() {});
+                                            },
+                                          )
+                                          : null,
                                 ),
                                 style: TextStyle(fontSize: 14),
                               ),
@@ -378,22 +380,21 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                   value: selectedOption,
                                   icon: Icon(Icons.keyboard_arrow_down),
                                   items:
-                                  categoryOptions
-                                      .map(
-                                        (item) =>
-                                        DropdownMenuItem(
-                                          value: item['name'],
-                                          child: Text(item['name'] ?? ""),
-                                        ),
-                                  )
-                                      .toList(),
+                                      categoryOptions
+                                          .map(
+                                            (item) => DropdownMenuItem(
+                                              value: item['name'],
+                                              child: Text(item['name'] ?? ""),
+                                            ),
+                                          )
+                                          .toList(),
                                   onChanged: (value) {
                                     setState(() {
                                       selectedOption = value;
                                       selectedCategoryId =
-                                      categoryOptions.firstWhere(
+                                          categoryOptions.firstWhere(
                                             (item) => item['name'] == value,
-                                      )['id'];
+                                          )['id'];
                                       Get.to(
                                         CategoryScreen(
                                           categoryID: selectedCategoryId,
@@ -416,19 +417,19 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                           child: GridView.builder(
                             padding: EdgeInsets.zero,
                             itemCount:
-                            busnessviewmodal?.data?.products?.length ?? 0,
+                                busnessviewmodal?.data?.products?.length ?? 0,
                             physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             gridDelegate:
-                            SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              childAspectRatio: 0.70,
-                              crossAxisSpacing: 3.w,
-                              mainAxisSpacing: 2.h,
-                            ),
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  childAspectRatio: 0.70,
+                                  crossAxisSpacing: 3.w,
+                                  mainAxisSpacing: 2.h,
+                                ),
                             itemBuilder: (context, index) {
                               final product =
-                              busnessviewmodal!.data!.products![index];
+                                  busnessviewmodal!.data!.products![index];
                               return GestureDetector(
                                 onTap: () {
                                   Get.to(
@@ -439,451 +440,452 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                   );
                                 },
                                 child:
-                                product == null
-                                    ? Center(
-                                  child: Text(
-                                    "No Product Available",
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontFamily: AppConstants.manrope,
-                                    ),
-                                  ),
-                                )
-                                    : Material(
-                                  elevation: 2,
-                                  borderRadius: BorderRadius.circular(
-                                    12,
-                                  ),
-                                  child: Container(
-                                    height: 25.h,
-                                    decoration: BoxDecoration(
-                                      borderRadius:
-                                      BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: Color(0xffc7c7c7),
-                                        width: 1,
-                                      ),
-                                      color: Colors.white,
-                                    ),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                          BorderRadius.only(
-                                            topLeft:
-                                            Radius.circular(12),
-                                            topRight:
-                                            Radius.circular(12),
-                                          ),
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                            product.image
-                                                ?.toString() ??
-                                                "",
-                                            height: 28.h,
-                                            width: double.infinity,
-                                            fit: BoxFit.cover,
-                                            placeholder:
-                                                (context,
-                                                url,) =>
-                                            const Center(
-                                              child: CircularProgressIndicator(
-                                                color:
-                                                AppColors
-                                                    .maincolor,
-                                              ),
+                                    product == null
+                                        ? Center(
+                                          child: Text(
+                                            "No Product Available",
+                                            style: TextStyle(
+                                              fontSize: 14.sp,
+                                              fontFamily: AppConstants.manrope,
                                             ),
-                                            errorWidget:
-                                                (context,
-                                                url,
-                                                error,) =>
-                                                Image.asset(
-                                                  "assets/images/waveeLogoShort.png",
-                                                  height: 15.h,
-                                                  width:
-                                                  double.infinity,
-                                                  fit: BoxFit.cover,
-                                                ),
                                           ),
-                                        ),
-                                        Positioned(
-                                          bottom: 0.h,
+                                        )
+                                        : Material(
+                                          elevation: 2,
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                           child: Container(
-                                            padding:
-                                            EdgeInsets.symmetric(
-                                              horizontal: 2.w,
-                                              vertical: 1.h,
-                                            ),
-                                            width: 29.w,
+                                            height: 25.h,
                                             decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              border: Border.all(
-                                                width: 1,
-                                                color: Color(
-                                                  0xffc7c7c7,
-                                                ),
-                                              ),
                                               borderRadius:
-                                              BorderRadius.only(
-                                                topRight:
-                                                Radius.circular(
-                                                  10,
-                                                ),
-                                                topLeft:
-                                                Radius.circular(
-                                                  10,
-                                                ),
+                                                  BorderRadius.circular(12),
+                                              border: Border.all(
+                                                color: Color(0xffc7c7c7),
+                                                width: 1,
                                               ),
+                                              color: Colors.white,
                                             ),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .start,
-                                              mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .start,
+                                            child: Stack(
+                                              clipBehavior: Clip.none,
                                               children: [
-                                                Text(
-                                                  product.name ??
-                                                      "Product Name",
-                                                  maxLines: 2,
-                                                  overflow:
-                                                  TextOverflow
-                                                      .ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 16.sp,
-                                                    fontWeight:
-                                                    FontWeight.w700,
-                                                    fontFamily:
-                                                    AppConstants
-                                                        .manrope,
-                                                    color: Colors.black,
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                        topLeft:
+                                                            Radius.circular(12),
+                                                        topRight:
+                                                            Radius.circular(12),
+                                                      ),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl:
+                                                        product.image
+                                                            ?.toString() ??
+                                                        "",
+                                                    height: 28.h,
+                                                    width: double.infinity,
+                                                    fit: BoxFit.cover,
+                                                    placeholder:
+                                                        (
+                                                          context,
+                                                          url,
+                                                        ) => const Center(
+                                                          child: CircularProgressIndicator(
+                                                            color:
+                                                                AppColors
+                                                                    .maincolor,
+                                                          ),
+                                                        ),
+                                                    errorWidget:
+                                                        (
+                                                          context,
+                                                          url,
+                                                          error,
+                                                        ) => Image.asset(
+                                                          "assets/images/waveeLogoShort.png",
+                                                          height: 15.h,
+                                                          width:
+                                                              double.infinity,
+                                                          fit: BoxFit.cover,
+                                                        ),
                                                   ),
                                                 ),
-                                                Text(
-                                                  product.productCategoryName ??
-                                                      "Product Category",
-                                                  maxLines: 1,
-                                                  overflow:
-                                                  TextOverflow
-                                                      .ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 16.sp,
-                                                    fontFamily:
-                                                    AppConstants
-                                                        .manrope,
-                                                    color: Color(
-                                                      0xffa1a1a1,
+                                                Positioned(
+                                                  bottom: 0.h,
+                                                  child: Container(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                          horizontal: 2.w,
+                                                          vertical: 1.h,
+                                                        ),
+                                                    width: 29.w,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      border: Border.all(
+                                                        width: 1,
+                                                        color: Color(
+                                                          0xffc7c7c7,
+                                                        ),
+                                                      ),
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                            topRight:
+                                                                Radius.circular(
+                                                                  10,
+                                                                ),
+                                                            topLeft:
+                                                                Radius.circular(
+                                                                  10,
+                                                                ),
+                                                          ),
+                                                    ),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          product.name ??
+                                                              "Product Name",
+                                                          maxLines: 2,
+                                                          overflow:
+                                                              TextOverflow
+                                                                  .ellipsis,
+                                                          style: TextStyle(
+                                                            fontSize: 16.sp,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            fontFamily:
+                                                                AppConstants
+                                                                    .manrope,
+                                                            color: Colors.black,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          product.productCategoryName ??
+                                                              "Product Category",
+                                                          maxLines: 1,
+                                                          overflow:
+                                                              TextOverflow
+                                                                  .ellipsis,
+                                                          style: TextStyle(
+                                                            fontSize: 16.sp,
+                                                            fontFamily:
+                                                                AppConstants
+                                                                    .manrope,
+                                                            color: Color(
+                                                              0xffa1a1a1,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        (product?.offerPrice !=
+                                                                    null &&
+                                                                product!.offerPrice !=
+                                                                    "0.00" &&
+                                                                product.offerPrice !=
+                                                                    product
+                                                                        .price)
+                                                            ? Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .end,
+                                                              children: [
+                                                                Text(
+                                                                  "£${product.price}",
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        13.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                    fontFamily:
+                                                                        AppConstants
+                                                                            .manrope,
+                                                                    color:
+                                                                        Colors
+                                                                            .grey,
+                                                                    decoration:
+                                                                        TextDecoration
+                                                                            .lineThrough,
+                                                                    decorationColor:
+                                                                        AppColors
+                                                                            .maincolor,
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  "£${product.offerPrice}",
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        14.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontFamily:
+                                                                        AppConstants
+                                                                            .manrope,
+                                                                    color:
+                                                                        Colors
+                                                                            .black,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )
+                                                            : Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .end,
+                                                              children: [
+                                                                Text(
+                                                                  "£${product?.price ?? ""}",
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        14.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontFamily:
+                                                                        AppConstants
+                                                                            .manrope,
+                                                                    color:
+                                                                        Colors
+                                                                            .black,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                        product?.quantity ==
+                                                                    0 ||
+                                                                product?.quantity ==
+                                                                    null
+                                                            ? Text(
+                                                              "Out of Stock",
+                                                              style: TextStyle(
+                                                                fontSize: 14.sp,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontFamily:
+                                                                    AppConstants
+                                                                        .manrope,
+                                                                color:
+                                                                    Colors.red,
+                                                              ),
+                                                            )
+                                                            : SizedBox(),
+                                                      ],
                                                     ),
                                                   ),
                                                 ),
-                                                (product?.offerPrice !=
-                                                    null &&
-                                                    product!.offerPrice !=
-                                                        "0.00" &&
-                                                    product.offerPrice !=
-                                                        product
-                                                            .price)
-                                                    ? Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .end,
-                                                  children: [
-                                                    Text(
-                                                      "£${product.price}",
-                                                      style: TextStyle(
-                                                        fontSize:
-                                                        13.sp,
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .normal,
-                                                        fontFamily:
-                                                        AppConstants
-                                                            .manrope,
+                                                Positioned(
+                                                  top: 0.5.h,
+                                                  right: 2,
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      bool isBlocked =
+                                                          product?.quantity ==
+                                                              0 ||
+                                                          product?.quantity ==
+                                                              null;
+                                                      int? productStatus =
+                                                          busnessviewmodal
+                                                              ?.data
+                                                              ?.business
+                                                              ?.productStatus;
+                                                      log(
+                                                        "dsadsadsdadasd$productStatus",
+                                                      );
+
+                                                      if (productStatus == 0) {
+                                                        showOnlineOrderDisabledDialog(
+                                                          context: context,
+                                                          businessName:
+                                                              busnessviewmodal
+                                                                  ?.data
+                                                                  ?.business
+                                                                  ?.businessName ??
+                                                              "",
+                                                          isProduct: true,
+                                                        );
+                                                        return;
+                                                      }
+
+                                                      if (isBlocked) {
+                                                        ScaffoldMessenger.of(
+                                                          context,
+                                                        ).showSnackBar(
+                                                          SnackBar(
+                                                            content: Text(
+                                                              'Product is out of stock.',
+                                                            ),
+                                                            backgroundColor:
+                                                                Colors.red,
+                                                          ),
+                                                        );
+                                                        return;
+                                                      }
+
+                                                      if (cartDetailsModel
+                                                                  ?.data !=
+                                                              null &&
+                                                          cartDetailsModel!
+                                                              .data!
+                                                              .isNotEmpty) {
+                                                        if (cartDetailsModel!
+                                                                .data![0]
+                                                                .type ==
+                                                            "service") {
+                                                          ShowAddCart(
+                                                            context: context,
+                                                            businessName:
+                                                                busnessviewmodal
+                                                                    ?.data
+                                                                    ?.business
+                                                                    ?.businessName ??
+                                                                "",
+                                                            isProduct: false,
+                                                            onContinue: () async {
+                                                              for (
+                                                                int i = 0;
+                                                                i <
+                                                                    cartDetailsModel!
+                                                                        .data!
+                                                                        .length;
+                                                                i++
+                                                              ) {
+                                                                final itemId =
+                                                                    cartDetailsModel!
+                                                                        .data![i]
+                                                                        .itemDetails
+                                                                        ?.id;
+                                                                if (itemId !=
+                                                                    null) {
+                                                                  await RemoveFromCartApi(
+                                                                    itemId,
+                                                                    "service",
+                                                                  );
+                                                                }
+                                                              }
+                                                              AddCartProductApi(
+                                                                product?.id
+                                                                        .toString() ??
+                                                                    "",
+                                                              );
+                                                            },
+                                                          );
+                                                        } else if (cartDetailsModel!
+                                                                .data![0]
+                                                                .itemDetails
+                                                                ?.businessId ==
+                                                            productViewModel
+                                                                ?.data
+                                                                ?.businessId) {
+                                                          AddCartProductApi(
+                                                            product?.id
+                                                                    .toString() ??
+                                                                "",
+                                                          );
+                                                        } else {
+                                                          ShowAddCart(
+                                                            context: context,
+                                                            businessName:
+                                                                busnessviewmodal
+                                                                    ?.data
+                                                                    ?.business
+                                                                    ?.businessName ??
+                                                                "",
+                                                            isProduct: false,
+                                                            onContinue: () async {
+                                                              for (
+                                                                int i = 0;
+                                                                i <
+                                                                    cartDetailsModel!
+                                                                        .data!
+                                                                        .length;
+                                                                i++
+                                                              ) {
+                                                                final itemId =
+                                                                    cartDetailsModel!
+                                                                        .data![i]
+                                                                        .itemDetails
+                                                                        ?.id;
+                                                                final itemtype =
+                                                                    cartDetailsModel!
+                                                                        .data![i]
+                                                                        .itemDetails
+                                                                        ?.type;
+                                                                if (itemId !=
+                                                                    null) {
+                                                                  await RemoveFromCartApi(
+                                                                    itemId,
+                                                                    itemtype
+                                                                        .toString(),
+                                                                  );
+                                                                }
+                                                              }
+                                                              AddCartProductApi(
+                                                                product?.id
+                                                                        .toString() ??
+                                                                    "",
+                                                              );
+                                                            },
+                                                          );
+                                                        }
+                                                      } else {
+                                                        AddCartProductApi(
+                                                          product?.id
+                                                                  .toString() ??
+                                                              "",
+                                                        );
+                                                      }
+                                                    },
+                                                    child: Container(
+                                                      width: 7.w,
+                                                      height: 7.w,
+                                                      alignment:
+                                                          Alignment.center,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              5,
+                                                            ),
+                                                        shape:
+                                                            BoxShape.rectangle,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color:
+                                                                Colors.black26,
+                                                            blurRadius: 4,
+                                                            offset: Offset(
+                                                              0,
+                                                              2,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: Icon(
+                                                        product?.quantity == "0"
+                                                            ? Icons.block
+                                                            : Icons.add,
+                                                        size: 17.sp,
                                                         color:
-                                                        Colors
-                                                            .grey,
-                                                        decoration:
-                                                        TextDecoration
-                                                            .lineThrough,
-                                                        decorationColor:
-                                                        AppColors
-                                                            .maincolor,
+                                                            product?.quantity ==
+                                                                    "0"
+                                                                ? AppColors
+                                                                    .redColor
+                                                                : AppColors
+                                                                    .maincolor,
                                                       ),
                                                     ),
-                                                    Text(
-                                                      "£${product.offerPrice}",
-                                                      style: TextStyle(
-                                                        fontSize:
-                                                        14.sp,
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .bold,
-                                                        fontFamily:
-                                                        AppConstants
-                                                            .manrope,
-                                                        color:
-                                                        Colors
-                                                            .black,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                                    : Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .end,
-                                                  children: [
-                                                    Text(
-                                                      "£${product?.price ??
-                                                          ""}",
-                                                      style: TextStyle(
-                                                        fontSize:
-                                                        14.sp,
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .bold,
-                                                        fontFamily:
-                                                        AppConstants
-                                                            .manrope,
-                                                        color:
-                                                        Colors
-                                                            .black,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                product?.quantity ==
-                                                    0 ||
-                                                    product?.quantity ==
-                                                        null
-                                                    ? Text(
-                                                  "Out of Stock",
-                                                  style: TextStyle(
-                                                    fontSize: 14.sp,
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .bold,
-                                                    fontFamily:
-                                                    AppConstants
-                                                        .manrope,
-                                                    color:
-                                                    Colors.red,
                                                   ),
-                                                )
-                                                    : SizedBox(),
+                                                ),
                                               ],
                                             ),
                                           ),
                                         ),
-                                        Positioned(
-                                          top: 0.5.h,
-                                          right: 2,
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              bool isBlocked =
-                                                  product?.quantity ==
-                                                      0 ||
-                                                      product?.quantity ==
-                                                          null;
-                                              int? productStatus =
-                                                  busnessviewmodal
-                                                      ?.data
-                                                      ?.business
-                                                      ?.productStatus;
-                                              log(
-                                                "dsadsadsdadasd$productStatus",
-                                              );
-
-                                              if (productStatus == 0) {
-                                                showOnlineOrderDisabledDialog(
-                                                  context: context,
-                                                  businessName:
-                                                  busnessviewmodal
-                                                      ?.data
-                                                      ?.business
-                                                      ?.businessName ??
-                                                      "",
-                                                  isProduct: true,
-                                                );
-                                                return;
-                                              }
-
-                                              if (isBlocked) {
-                                                ScaffoldMessenger.of(
-                                                  context,
-                                                ).showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(
-                                                      'Product is out of stock.',
-                                                    ),
-                                                    backgroundColor:
-                                                    Colors.red,
-                                                  ),
-                                                );
-                                                return;
-                                              }
-
-                                              if (cartDetailsModel
-                                                  ?.data !=
-                                                  null &&
-                                                  cartDetailsModel!
-                                                      .data!
-                                                      .isNotEmpty) {
-                                                if (cartDetailsModel!
-                                                    .data![0]
-                                                    .type ==
-                                                    "service") {
-                                                  ShowAddCart(
-                                                    context: context,
-                                                    businessName:
-                                                    busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.businessName ??
-                                                        "",
-                                                    isProduct: false,
-                                                    onContinue: () async {
-                                                      for (
-                                                      int i = 0;
-                                                      i <
-                                                          cartDetailsModel!
-                                                              .data!
-                                                              .length;
-                                                      i++
-                                                      ) {
-                                                        final itemId =
-                                                            cartDetailsModel!
-                                                                .data![i]
-                                                                .itemDetails
-                                                                ?.id;
-                                                        if (itemId !=
-                                                            null) {
-                                                          await RemoveFromCartApi(
-                                                            itemId,
-                                                            "service",
-                                                          );
-                                                        }
-                                                      }
-                                                      AddCartProductApi(
-                                                        product?.id
-                                                            .toString() ??
-                                                            "",
-                                                      );
-                                                    },
-                                                  );
-                                                } else if (cartDetailsModel!
-                                                    .data![0]
-                                                    .itemDetails
-                                                    ?.businessId ==
-                                                    productViewModel
-                                                        ?.data
-                                                        ?.businessId) {
-                                                  AddCartProductApi(
-                                                    product?.id
-                                                        .toString() ??
-                                                        "",
-                                                  );
-                                                } else {
-                                                  ShowAddCart(
-                                                    context: context,
-                                                    businessName:
-                                                    busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.businessName ??
-                                                        "",
-                                                    isProduct: false,
-                                                    onContinue: () async {
-                                                      for (
-                                                      int i = 0;
-                                                      i <
-                                                          cartDetailsModel!
-                                                              .data!
-                                                              .length;
-                                                      i++
-                                                      ) {
-                                                        final itemId =
-                                                            cartDetailsModel!
-                                                                .data![i]
-                                                                .itemDetails
-                                                                ?.id;
-                                                        final itemtype =
-                                                            cartDetailsModel!
-                                                                .data![i]
-                                                                .itemDetails
-                                                                ?.type;
-                                                        if (itemId !=
-                                                            null) {
-                                                          await RemoveFromCartApi(
-                                                            itemId,
-                                                            itemtype
-                                                                .toString(),
-                                                          );
-                                                        }
-                                                      }
-                                                      AddCartProductApi(
-                                                        product?.id
-                                                            .toString() ??
-                                                            "",
-                                                      );
-                                                    },
-                                                  );
-                                                }
-                                              } else {
-                                                AddCartProductApi(
-                                                  product?.id
-                                                      .toString() ??
-                                                      "",
-                                                );
-                                              }
-                                            },
-                                            child: Container(
-                                              width: 7.w,
-                                              height: 7.w,
-                                              alignment:
-                                              Alignment.center,
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                BorderRadius.circular(
-                                                  5,
-                                                ),
-                                                shape:
-                                                BoxShape.rectangle,
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color:
-                                                    Colors.black26,
-                                                    blurRadius: 4,
-                                                    offset: Offset(
-                                                      0,
-                                                      2,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              child: Icon(
-                                                product?.quantity == "0"
-                                                    ? Icons.block
-                                                    : Icons.add,
-                                                size: 17.sp,
-                                                color:
-                                                product?.quantity ==
-                                                    "0"
-                                                    ? AppColors
-                                                    .redColor
-                                                    : AppColors
-                                                    .maincolor,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
                               );
                             },
                           ),
@@ -970,7 +972,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius:
-                                              BorderRadius.circular(12),
+                                                  BorderRadius.circular(12),
                                             ),
                                             child: Row(
                                               children: [
@@ -981,17 +983,14 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                 ),
                                                 SizedBox(width: 2.w),
                                                 Text(
-                                                  "${(busnessviewmodal?.data
-                                                      ?.distanceToBusiness ?? 0)
-                                                      .toStringAsFixed(
-                                                      2)} Miles",
+                                                  "${(busnessviewmodal?.data?.distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
                                                   //
                                                   style: TextStyle(
                                                     fontSize: 15.sp,
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.black,
                                                     fontFamily:
-                                                    AppConstants.manrope,
+                                                        AppConstants.manrope,
                                                   ),
                                                 ),
                                               ],
@@ -1012,7 +1011,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius:
-                                              BorderRadius.circular(12),
+                                                  BorderRadius.circular(12),
                                             ),
                                             child: Row(
                                               children: [
@@ -1031,7 +1030,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.black,
                                                     fontFamily:
-                                                    AppConstants.manrope,
+                                                        AppConstants.manrope,
                                                   ),
                                                 ),
                                               ],
@@ -1047,13 +1046,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: ReadMoreText(
-                                        "${busnessviewmodal?.data?.business
-                                            ?.description == null ||
-                                            busnessviewmodal?.data?.business
-                                                ?.description == ""
-                                            ? "N/A"
-                                            : busnessviewmodal?.data?.business
-                                            ?.description}",
+                                        "${busnessviewmodal?.data?.business?.description == null || busnessviewmodal?.data?.business?.description == "" ? "N/A" : busnessviewmodal?.data?.business?.description}",
                                         trimLines: 4,
                                         trimLength: 145,
                                         colorClickableText: AppColors.maincolor,
@@ -1091,29 +1084,29 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                               MessageScreen(
                                                 type: "business",
                                                 chatName:
-                                                busnessviewmodal
-                                                    ?.data
-                                                    ?.business
-                                                    ?.businessName ??
+                                                    busnessviewmodal
+                                                        ?.data
+                                                        ?.business
+                                                        ?.businessName ??
                                                     "N/A",
                                                 conciergeID:
-                                                (busnessviewmodal
-                                                    ?.data
-                                                    ?.business
-                                                    ?.user
-                                                    ?.id)
-                                                    .toString(),
+                                                    (busnessviewmodal
+                                                            ?.data
+                                                            ?.business
+                                                            ?.user
+                                                            ?.id)
+                                                        .toString(),
                                                 image:
-                                                busnessviewmodal
-                                                    ?.data
-                                                    ?.business
-                                                    ?.logo ??
+                                                    busnessviewmodal
+                                                        ?.data
+                                                        ?.business
+                                                        ?.logo ??
                                                     "",
                                                 chatStatus:
-                                                busnessviewmodal
-                                                    ?.data
-                                                    ?.business
-                                                    ?.chatStatus,
+                                                    busnessviewmodal
+                                                        ?.data
+                                                        ?.business
+                                                        ?.chatStatus,
                                               ),
                                             );
                                           },
@@ -1124,7 +1117,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                             ),
                                             decoration: BoxDecoration(
                                               borderRadius:
-                                              BorderRadius.circular(10),
+                                                  BorderRadius.circular(10),
                                               color: Colors.white,
                                               border: Border.all(
                                                 color: Color(0xffc0c0c0),
@@ -1138,31 +1131,50 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.black,
                                                 fontFamily:
-                                                AppConstants.manrope,
+                                                    AppConstants.manrope,
                                               ),
                                             ),
                                           ),
                                         ),
                                         SizedBox(width: 2.w),
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 2.w,
-                                            vertical: 0.5.h,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              5,
+                                        GestureDetector(
+                                          onTap: () async {
+                                            if (busnessviewmodal
+                                                    ?.data
+                                                    ?.business
+                                                    ?.id !=
+                                                null) {
+                                              await handleLikeTap();
+                                            } else {}
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 2.w,
+                                              vertical: 0.4.h,
                                             ),
-                                            color: Colors.white,
-                                            border: Border.all(
-                                              color: Color(0xffc0c0c0),
-                                              width: 1,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              color: Colors.white,
+                                              border: Border.all(
+                                                color: Color(0xffc0c0c0),
+                                                width: 1,
+                                              ),
                                             ),
-                                          ),
-                                          child: Icon(
-                                            Icons.add_home,
-                                            color: Colors.black,
-                                            size: 17.sp,
+                                            child: Icon(
+                                              busnessviewmodal?.data?.isLiked ==
+                                                      true
+                                                  ? Icons.favorite
+                                                  : Icons.favorite_outline,
+                                              color:
+                                                  busnessviewmodal
+                                                              ?.data
+                                                              ?.isLiked ==
+                                                          true
+                                                      ? Colors.red
+                                                      : Colors.black,
+size: 18.sp,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -1176,6 +1188,11 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                       },
                     ),
                   ),
+                  if (isSending)
+                    Container(
+
+                      child: Center(child: Loader()),
+                    ),
                 ],
               ),
             ),
@@ -1184,6 +1201,49 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
       ),
       bottomNavigationBar: Bottom_bar(selected: 0),
     );
+  }
+
+  handleLikeTap() {
+    bool isCurrentlyLiked = busnessviewmodal?.data?.isLiked ?? false;
+    String newLikeStatus = isCurrentlyLiked ? "0" : "1";
+    final Map<String, String> data = {
+      'user_id': (loginModel?.data?.user?.id).toString(),
+      'business_id': (busnessviewmodal?.data?.business?.id).toString(),
+      'is_like': newLikeStatus,
+    };
+
+    setState(() {
+      isSending = true;
+    });
+
+    checkInternet().then((internet) async {
+      if (internet) {
+        CommunityProvider()
+            .businessLikeApi(data)
+            .then((response) async {
+              if (response.statusCode == 200) {
+                bussinesslikemodel = BussinessLikeModel.fromJson(response.data);
+
+                setState(() {
+                  isSending = false;
+                });
+                await Future.delayed(Duration(milliseconds: 100));
+                BussinessViewProfile();
+              } else if (response.statusCode == 429) {
+                setState(() {
+                  isSending = false;
+                });
+              } else {
+                print(
+                  "Internal Server Error - Status Code: ${response.statusCode}",
+                );
+              }
+            })
+            .catchError((error, stackTrace) {});
+      } else {
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
   }
 
   Widget _iconCircle({
@@ -1210,35 +1270,34 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
       if (internet) {
         CommunityProvider()
             .businessProfileViewApi(
-          widget.businessID.toString(),
-          widget.lat,
-          widget.long,
-        )
+              widget.businessID.toString(),
+              widget.lat,
+              widget.long,
+            )
             .then((response) async {
-          busnessviewmodal = BusnessViewModal.fromJson(response.data);
-          if (response.statusCode == 200) {
-            log(
-              "widget.businessID.toString()${widget.businessID.toString()}",
-            );
-            log("widget.businessID.toString()${widget.long}");
-            log("widget.businessID.toString()${widget.lat}");
-            log(
-              "asddfssdfadfssdfasadfsdfafsddfsa${(busnessviewmodal?.data
-                  ?.distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
-            );
-            setState(() {
-              isLoading = false;
+              busnessviewmodal = BusnessViewModal.fromJson(response.data);
+              if (response.statusCode == 200) {
+                log(
+                  "widget.businessID.toString()${widget.businessID.toString()}",
+                );
+                log("widget.businessID.toString()${widget.long}");
+                log("widget.businessID.toString()${widget.lat}");
+                log(
+                  "asddfssdfadfssdfasadfsdfafsddfsa${(busnessviewmodal?.data?.distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
+                );
+                setState(() {
+                  isLoading = false;
+                });
+              } else if (response.statusCode == 422) {
+                setState(() {
+                  isLoading = false;
+                });
+              } else {
+                setState(() {
+                  isLoading = false;
+                });
+              }
             });
-          } else if (response.statusCode == 422) {
-            setState(() {
-              isLoading = false;
-            });
-          } else {
-            setState(() {
-              isLoading = false;
-            });
-          }
-        });
       } else {
         setState(() {
           isLoading = false;
@@ -1292,31 +1351,31 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
         CommunityDetailProvider()
             .categoryViewApi(widget.businessID.toString())
             .then((response) async {
-          categoryModal = CategoryModal.fromJson(response.data);
-          if (response.statusCode == 200) {
-            if (categoryModal?.data != null) {
-              for (int i = 0; i < categoryModal!.data!.length; i++) {
-                final name = categoryModal?.data![i].name;
-                final id = categoryModal?.data![i].id?.toString() ?? "";
+              categoryModal = CategoryModal.fromJson(response.data);
+              if (response.statusCode == 200) {
+                if (categoryModal?.data != null) {
+                  for (int i = 0; i < categoryModal!.data!.length; i++) {
+                    final name = categoryModal?.data![i].name;
+                    final id = categoryModal?.data![i].id?.toString() ?? "";
 
-                if (name != null && name.isNotEmpty) {
-                  categoryOptions.add({'name': name, 'id': id});
+                    if (name != null && name.isNotEmpty) {
+                      categoryOptions.add({'name': name, 'id': id});
+                    }
+                  }
                 }
+                setState(() {
+                  isLoading = false;
+                });
+              } else if (response.statusCode == 422) {
+                setState(() {
+                  isLoading = false;
+                });
+              } else {
+                setState(() {
+                  isLoading = false;
+                });
               }
-            }
-            setState(() {
-              isLoading = false;
             });
-          } else if (response.statusCode == 422) {
-            setState(() {
-              isLoading = false;
-            });
-          } else {
-            setState(() {
-              isLoading = false;
-            });
-          }
-        });
       } else {
         setState(() {
           isLoading = false;
