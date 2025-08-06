@@ -843,7 +843,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                           url,
                                                           error,
                                                         ) => Image.asset(
-                                                          'assets/images/appLogo.png',
+                                                          'assets/images/waveeLogoShort.png',
                                                           height: 9.h,
                                                           width: 9.h,
                                                           fit: BoxFit.cover,

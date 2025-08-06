@@ -38,6 +38,7 @@ import '../Screen/Community Screen/Community Screen/Model/ViewCategoriesModel.da
 import '../Screen/Community Screen/Community Screen/Model/businesslikemodel.dart';
 import '../Screen/Community Screen/Community Screen/Model/businessprofilemodel.dart';
 import '../Screen/Community Screen/Community Screen/Model/postlikemodel.dart';
+import '../Screen/Event/Model/eventDetailModal.dart';
 import '../Screen/Event/Model/event_model.dart';
 import '../Screen/Event/Model/send_event_model.dart';
 import '../Screen/HomeNewPage/Model/chat_show_count_modal.dart';
@@ -208,3 +209,4 @@ CategoryDetailModal? categoryDetailModal;
 OrdersendMessageModel? ordersendmessagemodel;
 SearchProductModel? searchproductmodel;
 ChatStoryModal? chatStories;
+EventDetailModal?eventDetailModal;

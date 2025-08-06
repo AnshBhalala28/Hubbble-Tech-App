@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:wavee/Screen/Event/View/event_detail.dart';
 
 import '../../../comman/Custom_AppBar.dart';
 import '../../../comman/check_inernet_connecty.dart';
@@ -284,362 +285,371 @@ class _EventScreenState extends State<EventScreen> {
                                     elevation: 2,
                                     borderRadius: BorderRadius.circular(20),
 
-                                    child: Container(
-                                      // margin: EdgeInsets.symmetric(
-                                      //   vertical: 10,
-                                      // ),
-                                      padding: EdgeInsets.all(16),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                formatDate(
-                                                  event_list_Model
-                                                      ?.data
-                                                      ?.data?[index]
-                                                      .eventDate,
-                                                ),
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 15.sp,
-                                                ),
-                                              ),
-                                              Spacer(),
-                                              if (isLoading)
-                                                CircularProgressIndicator()
-                                              else if (event_list_Model
-                                                      ?.data
-                                                      ?.data?[index]
-                                                      ?.requestEvent
-                                                      ?.toLowerCase() ==
-                                                  "pending")
+                                    child: InkWell(
+                                      onTap:(){
+                                        Get.to(EventDetail(
+                                          eventID: eventId,
+                                          status:event_list_Model
+                                              ?.data
+                                              ?.data?[index]
+                                              ?.requestEvent ,
+                                        ));
+                                      },
+                                      child: Container(
+
+                                        padding: EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
                                                 Text(
-                                                  "Requested",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.orange,
+                                                  formatDate(
+                                                    event_list_Model
+                                                        ?.data
+                                                        ?.data?[index]
+                                                        .eventDate,
                                                   ),
-                                                ),
-                                              if (!isRequestSent &&
-                                                  (event_list_Model
-                                                              ?.data
-                                                              ?.data?[index]
-                                                              ?.requestEvent ==
-                                                          null ||
-                                                      event_list_Model!
-                                                          .data!
-                                                          .data![index]
-                                                          .requestEvent!
-                                                          .isEmpty))
-                                                InkWell(
-                                                  onTap: () {
-                                                    requestController.clear();
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (
-                                                        BuildContext context,
-                                                      ) {
-                                                        return StatefulBuilder(
-                                                          builder: (
-                                                            context,
-                                                            setDialogState,
-                                                          ) {
-                                                            return Dialog(
-                                                              backgroundColor:
-                                                                  Colors.white,
-                                                              shape: RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      16,
-                                                                    ),
-                                                              ),
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets.all(
-                                                                      10,
-                                                                    ),
-                                                                child: Form(
-                                                                  key: _formKey,
-                                                                  autovalidateMode:
-                                                                      AutovalidateMode
-                                                                          .onUserInteraction,
-                                                                  child: Column(
-                                                                    mainAxisSize:
-                                                                        MainAxisSize
-                                                                            .min,
-                                                                    children: [
-                                                                      Row(
-                                                                        children: [
-                                                                          SizedBox(
-                                                                            width:
-                                                                                15.w,
-                                                                          ),
-                                                                          Text(
-                                                                            "${profileModel?.data?.user?.name?.firstName?.capitalizeFirst ?? ""} ${profileModel?.data?.user?.name?.lastName?.capitalizeFirst ?? ""}",
-                                                                            style: TextStyle(
-                                                                              color:
-                                                                                  Colors.black,
-                                                                              fontSize:
-                                                                                  20.sp,
-                                                                              fontFamily:
-                                                                                  AppConstants.manrope,
-                                                                              fontWeight:
-                                                                                  FontWeight.bold,
-                                                                            ),
-                                                                          ),
-                                                                          Spacer(),
-                                                                          CloseButton(),
-                                                                        ],
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            8,
-                                                                      ),
-
-                                                                      /// Event Title
-                                                                      Text(
-                                                                        event_list_Model?.data?.data?[index]?.title ??
-                                                                            "N/A",
-                                                                        style: TextStyle(
-                                                                          fontFamily:
-                                                                              AppConstants.manrope,
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                          color:
-                                                                              Colors.black38,
-                                                                        ),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            5,
-                                                                      ),
-
-                                                                      /// Event Time
-                                                                      Text(
-                                                                        event_list_Model?.data?.data?[index]?.eventDate !=
-                                                                                null
-                                                                            ? DateFormat.jm().format(
-                                                                              DateTime.parse(
-                                                                                event_list_Model!.data!.data![index]!.eventDate!,
-                                                                              ),
-                                                                            )
-                                                                            : "N/A",
-                                                                        style: TextStyle(
-                                                                          fontFamily:
-                                                                              AppConstants.manrope,
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                          color:
-                                                                              Colors.black38,
-                                                                        ),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            12,
-                                                                      ),
-
-                                                                      /// Request Text Field
-                                                                      TextFormField(
-                                                                        controller:
-                                                                            requestController,
-                                                                        maxLines:
-                                                                            3,
-                                                                        decoration: InputDecoration(
-                                                                          hintText:
-                                                                              "Enter your request...",
-                                                                          filled:
-                                                                              true,
-                                                                          fillColor:
-                                                                              Colors.white,
-                                                                          border: OutlineInputBorder(
-                                                                            borderRadius: BorderRadius.circular(
-                                                                              10,
-                                                                            ),
-                                                                            borderSide: BorderSide(
-                                                                              color:
-                                                                                  Colors.black26,
-                                                                            ),
-                                                                          ),
-                                                                          enabledBorder: OutlineInputBorder(
-                                                                            borderRadius: BorderRadius.circular(
-                                                                              10,
-                                                                            ),
-                                                                            borderSide: BorderSide(
-                                                                              color:
-                                                                                  Colors.black26,
-                                                                            ),
-                                                                          ),
-                                                                          focusedBorder: OutlineInputBorder(
-                                                                            borderRadius: BorderRadius.circular(
-                                                                              10,
-                                                                            ),
-                                                                            borderSide: BorderSide(
-                                                                              color:
-                                                                                  Colors.blue,
-                                                                            ),
-                                                                          ),
-                                                                          errorBorder: OutlineInputBorder(
-                                                                            borderRadius: BorderRadius.circular(
-                                                                              10,
-                                                                            ),
-                                                                            borderSide: BorderSide(
-                                                                              color:
-                                                                                  Colors.red,
-                                                                            ),
-                                                                          ),
-                                                                          focusedErrorBorder: OutlineInputBorder(
-                                                                            borderRadius: BorderRadius.circular(
-                                                                              10,
-                                                                            ),
-                                                                            borderSide: BorderSide(
-                                                                              color:
-                                                                                  Colors.red,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        style: TextStyle(
-                                                                          color:
-                                                                              Colors.black,
-                                                                        ),
-                                                                        validator: (
-                                                                          value,
-                                                                        ) {
-                                                                          if (value ==
-                                                                                  null ||
-                                                                              value.trim().isEmpty) {
-                                                                            return "Please enter your request";
-                                                                          }
-                                                                          return null;
-                                                                        },
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            20,
-                                                                      ),
-
-                                                                      /// Submit Button
-                                                                      SizedBox(
-                                                                        width:
-                                                                            double.infinity,
-                                                                        child: batan(
-                                                                          title:
-                                                                              "Send Request",
-                                                                          route: () async {
-                                                                            if (_formKey.currentState!.validate()) {
-                                                                              setDialogState(
-                                                                                () =>
-                                                                                    isLoading =
-                                                                                        true,
-                                                                              );
-                                                                              setState(
-                                                                                () {
-                                                                                  event_list_Model!.data!.data![index].requestEvent = "pending";
-                                                                                },
-                                                                              );
-                                                                              await sendlistap(
-                                                                                eventId,
-                                                                              );
-                                                                              setDialogState(
-                                                                                () =>
-                                                                                    isLoading =
-                                                                                        false,
-                                                                              );
-                                                                              Get.back();
-                                                                            }
-                                                                          },
-                                                                          radius:
-                                                                              4.0.w,
-                                                                          color:
-                                                                              AppColors.maincolor,
-                                                                          fontcolor:
-                                                                              AppColors.white,
-                                                                          height:
-                                                                              6.h,
-                                                                          width:
-                                                                              72.w,
-                                                                          fontsize:
-                                                                              19.sp,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            );
-                                                          },
-                                                        );
-                                                      },
-                                                    );
-                                                  },
-                                                  child:
-                                                      isLoading
-                                                          ? CircularProgressIndicator(
-                                                            color: Colors.blue,
-                                                          )
-                                                          : Icon(
-                                                            Icons.more_vert,
-                                                            color: Colors.black,
-                                                          ),
-                                                ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 1.h),
-                                          Text(
-                                            event_list_Model
-                                                    ?.data
-                                                    ?.data?[index]
-                                                    ?.title ??
-                                                "N/A",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 16.5.sp,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: AppConstants.manrope,
-                                            ),
-                                          ),
-                                          SizedBox(height: 1.h),
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.location_on,
-                                                color: Colors.black,
-                                                size: 18.sp,
-                                              ),
-                                              SizedBox(width: 5),
-                                              Expanded(
-                                                child: Text(
-                                                  event_list_Model
-                                                          ?.data
-                                                          ?.data?[index]
-                                                          ?.location ??
-                                                      "N/A",
                                                   style: TextStyle(
                                                     color: Colors.black,
-                                                    fontSize: 15.sp,
                                                     fontFamily:
                                                         AppConstants.manrope,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 15.sp,
                                                   ),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
                                                 ),
+                                                Spacer(),
+                                                if (isLoading)
+                                                  CircularProgressIndicator()
+                                                else if (event_list_Model
+                                                        ?.data
+                                                        ?.data?[index]
+                                                        ?.requestEvent
+                                                        ?.toLowerCase() ==
+                                                    "pending")
+                                                  Text(
+                                                    "Requested",
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.orange,
+                                                    ),
+                                                  ),
+                                                // if (!isRequestSent &&
+                                                //     (event_list_Model
+                                                //                 ?.data
+                                                //                 ?.data?[index]
+                                                //                 ?.requestEvent ==
+                                                //             null ||
+                                                //         event_list_Model!
+                                                //             .data!
+                                                //             .data![index]
+                                                //             .requestEvent!
+                                                //             .isEmpty))
+                                                //   InkWell(
+                                                //     onTap: () {
+                                                //       // requestController.clear();
+                                                //       // showDialog(
+                                                //       //   context: context,
+                                                //       //   builder: (
+                                                //       //     BuildContext context,
+                                                //       //   ) {
+                                                //       //     return StatefulBuilder(
+                                                //       //       builder: (
+                                                //       //         context,
+                                                //       //         setDialogState,
+                                                //       //       ) {
+                                                //       //         return Dialog(
+                                                //       //           backgroundColor:
+                                                //       //               Colors.white,
+                                                //       //           shape: RoundedRectangleBorder(
+                                                //       //             borderRadius:
+                                                //       //                 BorderRadius.circular(
+                                                //       //                   16,
+                                                //       //                 ),
+                                                //       //           ),
+                                                //       //           child: Padding(
+                                                //       //             padding:
+                                                //       //                 const EdgeInsets.all(
+                                                //       //                   10,
+                                                //       //                 ),
+                                                //       //             child: Form(
+                                                //       //               key: _formKey,
+                                                //       //               autovalidateMode:
+                                                //       //                   AutovalidateMode
+                                                //       //                       .onUserInteraction,
+                                                //       //               child: Column(
+                                                //       //                 mainAxisSize:
+                                                //       //                     MainAxisSize
+                                                //       //                         .min,
+                                                //       //                 children: [
+                                                //       //                   Row(
+                                                //       //                     children: [
+                                                //       //                       SizedBox(
+                                                //       //                         width:
+                                                //       //                             15.w,
+                                                //       //                       ),
+                                                //       //                       Text(
+                                                //       //                         "${profileModel?.data?.user?.name?.firstName?.capitalizeFirst ?? ""} ${profileModel?.data?.user?.name?.lastName?.capitalizeFirst ?? ""}",
+                                                //       //                         style: TextStyle(
+                                                //       //                           color:
+                                                //       //                               Colors.black,
+                                                //       //                           fontSize:
+                                                //       //                               20.sp,
+                                                //       //                           fontFamily:
+                                                //       //                               AppConstants.manrope,
+                                                //       //                           fontWeight:
+                                                //       //                               FontWeight.bold,
+                                                //       //                         ),
+                                                //       //                       ),
+                                                //       //                       Spacer(),
+                                                //       //                       CloseButton(),
+                                                //       //                     ],
+                                                //       //                   ),
+                                                //       //                   SizedBox(
+                                                //       //                     height:
+                                                //       //                         8,
+                                                //       //                   ),
+                                                //       //
+                                                //       //                   /// Event Title
+                                                //       //                   Text(
+                                                //       //                     event_list_Model?.data?.data?[index]?.title ??
+                                                //       //                         "N/A",
+                                                //       //                     style: TextStyle(
+                                                //       //                       fontFamily:
+                                                //       //                           AppConstants.manrope,
+                                                //       //                       fontSize:
+                                                //       //                           16,
+                                                //       //                       fontWeight:
+                                                //       //                           FontWeight.bold,
+                                                //       //                       color:
+                                                //       //                           Colors.black38,
+                                                //       //                     ),
+                                                //       //                   ),
+                                                //       //                   SizedBox(
+                                                //       //                     height:
+                                                //       //                         5,
+                                                //       //                   ),
+                                                //       //
+                                                //       //                   /// Event Time
+                                                //       //                   Text(
+                                                //       //                     event_list_Model?.data?.data?[index]?.eventDate !=
+                                                //       //                             null
+                                                //       //                         ? DateFormat.jm().format(
+                                                //       //                           DateTime.parse(
+                                                //       //                             event_list_Model!.data!.data![index]!.eventDate!,
+                                                //       //                           ),
+                                                //       //                         )
+                                                //       //                         : "N/A",
+                                                //       //                     style: TextStyle(
+                                                //       //                       fontFamily:
+                                                //       //                           AppConstants.manrope,
+                                                //       //                       fontSize:
+                                                //       //                           16,
+                                                //       //                       fontWeight:
+                                                //       //                           FontWeight.bold,
+                                                //       //                       color:
+                                                //       //                           Colors.black38,
+                                                //       //                     ),
+                                                //       //                   ),
+                                                //       //                   SizedBox(
+                                                //       //                     height:
+                                                //       //                         12,
+                                                //       //                   ),
+                                                //       //
+                                                //       //                   /// Request Text Field
+                                                //       //                   TextFormField(
+                                                //       //                     controller:
+                                                //       //                         requestController,
+                                                //       //                     maxLines:
+                                                //       //                         3,
+                                                //       //                     decoration: InputDecoration(
+                                                //       //                       hintText:
+                                                //       //                           "Enter your request...",
+                                                //       //                       filled:
+                                                //       //                           true,
+                                                //       //                       fillColor:
+                                                //       //                           Colors.white,
+                                                //       //                       border: OutlineInputBorder(
+                                                //       //                         borderRadius: BorderRadius.circular(
+                                                //       //                           10,
+                                                //       //                         ),
+                                                //       //                         borderSide: BorderSide(
+                                                //       //                           color:
+                                                //       //                               Colors.black26,
+                                                //       //                         ),
+                                                //       //                       ),
+                                                //       //                       enabledBorder: OutlineInputBorder(
+                                                //       //                         borderRadius: BorderRadius.circular(
+                                                //       //                           10,
+                                                //       //                         ),
+                                                //       //                         borderSide: BorderSide(
+                                                //       //                           color:
+                                                //       //                               Colors.black26,
+                                                //       //                         ),
+                                                //       //                       ),
+                                                //       //                       focusedBorder: OutlineInputBorder(
+                                                //       //                         borderRadius: BorderRadius.circular(
+                                                //       //                           10,
+                                                //       //                         ),
+                                                //       //                         borderSide: BorderSide(
+                                                //       //                           color:
+                                                //       //                               Colors.blue,
+                                                //       //                         ),
+                                                //       //                       ),
+                                                //       //                       errorBorder: OutlineInputBorder(
+                                                //       //                         borderRadius: BorderRadius.circular(
+                                                //       //                           10,
+                                                //       //                         ),
+                                                //       //                         borderSide: BorderSide(
+                                                //       //                           color:
+                                                //       //                               Colors.red,
+                                                //       //                         ),
+                                                //       //                       ),
+                                                //       //                       focusedErrorBorder: OutlineInputBorder(
+                                                //       //                         borderRadius: BorderRadius.circular(
+                                                //       //                           10,
+                                                //       //                         ),
+                                                //       //                         borderSide: BorderSide(
+                                                //       //                           color:
+                                                //       //                               Colors.red,
+                                                //       //                         ),
+                                                //       //                       ),
+                                                //       //                     ),
+                                                //       //                     style: TextStyle(
+                                                //       //                       color:
+                                                //       //                           Colors.black,
+                                                //       //                     ),
+                                                //       //                     validator: (
+                                                //       //                       value,
+                                                //       //                     ) {
+                                                //       //                       if (value ==
+                                                //       //                               null ||
+                                                //       //                           value.trim().isEmpty) {
+                                                //       //                         return "Please enter your request";
+                                                //       //                       }
+                                                //       //                       return null;
+                                                //       //                     },
+                                                //       //                   ),
+                                                //       //                   SizedBox(
+                                                //       //                     height:
+                                                //       //                         20,
+                                                //       //                   ),
+                                                //       //
+                                                //       //                   /// Submit Button
+                                                //       //                   SizedBox(
+                                                //       //                     width:
+                                                //       //                         double.infinity,
+                                                //       //                     child: batan(
+                                                //       //                       title:
+                                                //       //                           "Send Request",
+                                                //       //                       route: () async {
+                                                //       //                         if (_formKey.currentState!.validate()) {
+                                                //       //                           setDialogState(
+                                                //       //                             () =>
+                                                //       //                                 isLoading =
+                                                //       //                                     true,
+                                                //       //                           );
+                                                //       //                           setState(
+                                                //       //                             () {
+                                                //       //                               event_list_Model!.data!.data![index].requestEvent = "pending";
+                                                //       //                             },
+                                                //       //                           );
+                                                //       //                           await sendlistap(
+                                                //       //                             eventId,
+                                                //       //                           );
+                                                //       //                           setDialogState(
+                                                //       //                             () =>
+                                                //       //                                 isLoading =
+                                                //       //                                     false,
+                                                //       //                           );
+                                                //       //                           Get.back();
+                                                //       //                         }
+                                                //       //                       },
+                                                //       //                       radius:
+                                                //       //                           4.0.w,
+                                                //       //                       color:
+                                                //       //                           AppColors.maincolor,
+                                                //       //                       fontcolor:
+                                                //       //                           AppColors.white,
+                                                //       //                       height:
+                                                //       //                           6.h,
+                                                //       //                       width:
+                                                //       //                           72.w,
+                                                //       //                       fontsize:
+                                                //       //                           19.sp,
+                                                //       //                     ),
+                                                //       //                   ),
+                                                //       //                 ],
+                                                //       //               ),
+                                                //       //             ),
+                                                //       //           ),
+                                                //       //         );
+                                                //       //       },
+                                                //       //     );
+                                                //       //   },
+                                                //       // );
+                                                //     },
+                                                //     child:
+                                                //         isLoading
+                                                //             ? CircularProgressIndicator(
+                                                //               color: Colors.blue,
+                                                //             )
+                                                //             : Icon(
+                                                //               Icons.more_vert,
+                                                //               color: Colors.black,
+                                                //             ),
+                                                //   ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 1.h),
+                                            Text(
+                                              event_list_Model
+                                                      ?.data
+                                                      ?.data?[index]
+                                                      ?.title ??
+                                                  "N/A",
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 16.5.sp,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily: AppConstants.manrope,
                                               ),
-                                            ],
-                                          ),
-                                        ],
+                                            ),
+                                            SizedBox(height: 1.h),
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.location_on,
+                                                  color: Colors.black,
+                                                  size: 18.sp,
+                                                ),
+                                                SizedBox(width: 5),
+                                                Expanded(
+                                                  child: Text(
+                                                    event_list_Model
+                                                            ?.data
+                                                            ?.data?[index]
+                                                            ?.location ??
+                                                        "N/A",
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 15.sp,
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ).marginSymmetric(vertical: 10);

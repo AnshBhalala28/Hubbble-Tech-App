@@ -241,11 +241,15 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                                                   color: Colors.black45,
                                                 ),
                                                 SizedBox(width: 4),
-                                                Text(
-                                                  booking?.eventLocation ?? "",
-                                                  style: TextStyle(
-                                                    fontSize: 13,
-                                                    color: Colors.black54,
+                                                SizedBox(
+                                                  width: 70.w,
+                                                  child: Text(
+                                                    booking?.eventLocation ??
+                                                        "",
+                                                    style: TextStyle(
+                                                      fontSize: 13,
+                                                      color: Colors.black54,
+                                                    ),
                                                   ),
                                                 ),
                                               ],

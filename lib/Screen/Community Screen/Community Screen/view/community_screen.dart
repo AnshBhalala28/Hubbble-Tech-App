@@ -21,6 +21,7 @@ import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wavee/Screen/Community%20Detail%20Page/view/community_detail_page.dart';
 import 'package:wavee/Screen/Community%20Screen/Community%20Screen/Model/BusnessViewModal.dart';
+import 'package:wavee/Screen/Event/View/event_detail.dart';
 import 'package:wavee/Screen/HomeNewPage/View/homenewpage.dart';
 import 'package:wavee/Screen/Message_screen/View/messageScreen.dart';
 import 'package:wavee/Screen/Product%20Detail%20Page/view/product_detail_page.dart';
@@ -3901,12 +3902,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                     ?.mobileNo ==
                                                 null
                                             ? "N/A"
-                                            : (busnessviewmodal
-                                                    ?.data
-                                                    ?.business
-                                                    ?.user
-                                                    ?.mobileNo)
-                                                .toString(),
+                                            : "0${(busnessviewmodal?.data?.business?.user?.mobileNo).toString()}",
                                   ),
                                 ),
                                 Divider(color: Colors.grey.shade300),
@@ -5329,7 +5325,12 @@ class _CommunityScreenState extends State<CommunityScreen>
                   ),
                   child: ListTile(
                     onTap: () {
-                      showRequestDialog();
+                      // showRequestDialog();
+                      print("Event id Aa rahi hai $eventId");
+                      Get.to(EventDetail(eventID: eventId,status: busnessviewmodal
+                          ?.data
+                          ?.events?[index]
+                          ?.requestEvent??"",));
                     },
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 8,

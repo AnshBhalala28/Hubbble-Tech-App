@@ -40,7 +40,7 @@ class ProfileProvider extends ChangeNotifier {
       }
       final dio = await DioHelper.getDio();
       final response = await dio.post(
-        ApiEndpoint.profile,
+        ApiEndpoint.updateProfile,
         data: bodyData,
 
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
