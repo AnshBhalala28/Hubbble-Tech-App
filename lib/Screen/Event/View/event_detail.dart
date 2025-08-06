@@ -189,7 +189,7 @@ class _EventDetailState extends State<EventDetail> {
                                       ).paddingOnly(right: 2.w),
 
                                       SizedBox(
-                                        width: 80.w,
+                                        width: 79.w,
                                         child: Text(
                                           "${eventDetailModal?.data?.location ?? ""}",
                                           style: TextStyle(
