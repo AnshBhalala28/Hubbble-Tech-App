@@ -64,6 +64,7 @@ class ApiEndpoint {
   static String markOfferPromo = "${baseUrl}markOfferPromoAsViewed";
   static String featuredPosts = "${baseUrl}listFeaturedPosts";
   static String event = "${baseUrl}getEvents";
+  static String eventDetail = "${baseUrl}view-event";
   static String sendEventRequest = "${baseUrl}sendEventRequest";
   static String maintanceRequest = "${baseUrl}maintenance-request-app";
   static String getMaintance = "${baseUrl}get-maintenance-request-app";

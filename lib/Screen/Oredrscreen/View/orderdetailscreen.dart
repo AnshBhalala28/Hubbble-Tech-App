@@ -129,7 +129,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                         errorWidget:
                                             (context, url, error) => Image(
                                               image: AssetImage(
-                                                'assets/images/waveeLogoShort.png',
+                                                'assets/images/Applogo_remove_background.png',
                                               ),
                                             ),
                                       ),

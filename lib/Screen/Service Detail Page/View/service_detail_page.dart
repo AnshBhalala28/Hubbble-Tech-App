@@ -283,7 +283,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      servicedetailsmodel?.data?.businessName ??
+                                      servicedetailsmodel?.data?.title ??
                                           "",
                                       style: TextStyle(
                                         fontWeight: FontWeight.w700,
@@ -699,7 +699,9 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           "Something went wrong. Please try again.",
         );
       }
-    } catch (e) {
+    } catch (e,stackTrace) {
+      print("error ic coming $e");
+      print("error ic coming $stackTrace");
       setState(() {
         isLoading = false;
       });
