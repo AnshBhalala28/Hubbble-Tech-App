@@ -921,15 +921,281 @@ class _EventScreenState extends State<EventScreen> {
       ),
     );
   }
-
+  //
+  // Widget _buildMonthView() {
+  //   final DateTime today = DateTime.now();
+  //   final DateTime todayOnly = DateTime(today.year, today.month, today.day);
+  //
+  //   return TableCalendar(
+  //     firstDay: DateTime(today.year, today.month, 1),
+  //     lastDay: DateTime(today.year, today.month + 1, 0),
+  //     focusedDay: today,
+  //     calendarFormat: CalendarFormat.month,
+  //     headerStyle: HeaderStyle(
+  //       formatButtonVisible: false,
+  //       leftChevronVisible: false,
+  //       rightChevronVisible: false,
+  //       titleCentered: true,
+  //       titleTextStyle: TextStyle(
+  //         color: Colors.black,
+  //         fontSize: 18.sp,
+  //         fontFamily: AppConstants.manrope,
+  //       ),
+  //     ),
+  //     daysOfWeekStyle: const DaysOfWeekStyle(
+  //       weekdayStyle: TextStyle(
+  //         color: Colors.black,
+  //         fontFamily: AppConstants.manrope,
+  //         fontSize: 13.5,
+  //         fontWeight: FontWeight.normal,
+  //       ),
+  //       weekendStyle: TextStyle(
+  //         color: Colors.black,
+  //         fontFamily: AppConstants.manrope,
+  //         fontSize: 13.5,
+  //         fontWeight: FontWeight.normal,
+  //       ),
+  //     ),
+  //     calendarStyle: const CalendarStyle(
+  //       todayDecoration: BoxDecoration(
+  //         color: Colors.grey,
+  //         shape: BoxShape.circle,
+  //       ),
+  //       selectedDecoration: BoxDecoration(
+  //         color: AppColors.maincolor,
+  //         shape: BoxShape.circle,
+  //       ),
+  //       selectedTextStyle: TextStyle(
+  //         color: Colors.white,
+  //         fontFamily: AppConstants.manrope,
+  //       ),
+  //       todayTextStyle: TextStyle(
+  //         color: Colors.black,
+  //         fontFamily: AppConstants.manrope,
+  //       ),
+  //       defaultTextStyle: TextStyle(
+  //         color: Colors.white,
+  //         fontFamily: AppConstants.manrope,
+  //       ),
+  //       weekendTextStyle: TextStyle(
+  //         color: Colors.white,
+  //         fontFamily: AppConstants.manrope,
+  //       ),
+  //     ),
+  //     selectedDayPredicate: (day) {
+  //       return isSameDay(selectedDay, day);
+  //     },
+  //     calendarBuilders: CalendarBuilders(
+  //       defaultBuilder: (context, day, _) {
+  //         DateTime normalizedDay = DateTime(day.year, day.month, day.day);
+  //         bool isHighlighted = projectDates.any((createdDate) {
+  //           DateTime normalizedCreatedDate = DateTime(
+  //             createdDate.year,
+  //             createdDate.month,
+  //             createdDate.day,
+  //           );
+  //           return isSameDay(normalizedCreatedDate, normalizedDay);
+  //         });
+  //
+  //         bool isPast = normalizedDay.isBefore(todayOnly);
+  //
+  //         return GestureDetector(
+  //           onTap:
+  //               isPast
+  //                   ? null
+  //                   : () {
+  //                     setState(() {
+  //                       selectedDay = day;
+  //                       selectedDate = DateFormat('yyyy-MM-dd').format(day);
+  //                       load = true;
+  //                     });
+  //                     projectlistap();
+  //                   },
+  //           child: Container(
+  //             margin: EdgeInsets.all(6.0),
+  //             alignment: Alignment.center,
+  //             decoration: BoxDecoration(
+  //               color:
+  //                   isHighlighted
+  //                       ? AppColors.maincolor
+  //                       : isPast
+  //                       ? Colors.grey.shade300
+  //                       : AppColors.white,
+  //               shape: BoxShape.circle,
+  //             ),
+  //             child: Text(
+  //               '${day.day}',
+  //               style: TextStyle(
+  //                 color:
+  //                     isHighlighted
+  //                         ? AppColors.white
+  //                         : isPast
+  //                         ? Colors.black
+  //                         : AppColors.black,
+  //                 fontWeight: FontWeight.bold,
+  //                 fontFamily: AppConstants.manrope,
+  //               ),
+  //             ),
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //     onDaySelected: (newSelectedDay, focusedDay) {
+  //       DateTime normalizedNewDay = DateTime(
+  //         newSelectedDay.year,
+  //         newSelectedDay.month,
+  //         newSelectedDay.day,
+  //       );
+  //
+  //       if (normalizedNewDay.isBefore(todayOnly)) return;
+  //
+  //       setState(() {
+  //         selectedDay = newSelectedDay;
+  //         selectedDate = DateFormat('yyyy-MM-dd').format(newSelectedDay);
+  //         load = true;
+  //       });
+  //       projectlistap();
+  //     },
+  //   );
+  // }
+  //
+  // Widget _buildYearView() {
+  //   DateTime firstDayOfYear = DateTime(now.year, 1, 1);
+  //   DateTime lastDayOfYear = DateTime(now.year, 12, 31);
+  //   DateTime today = DateTime.now();
+  //   DateTime todayOnly = DateTime(today.year, today.month, today.day);
+  //
+  //   return TableCalendar(
+  //     firstDay: firstDayOfYear,
+  //     lastDay: lastDayOfYear,
+  //     focusedDay: selectedYear ?? now,
+  //     currentDay: now,
+  //     calendarFormat: CalendarFormat.month,
+  //     headerStyle: HeaderStyle(
+  //       formatButtonVisible: false,
+  //       titleCentered: true,
+  //       titleTextStyle: TextStyle(
+  //         color: Colors.black,
+  //         fontSize: 18.sp,
+  //         fontFamily: AppConstants.manrope,
+  //       ),
+  //       leftChevronIcon: Icon(Icons.chevron_left, color: Colors.black),
+  //       rightChevronIcon: Icon(Icons.chevron_right, color: Colors.black),
+  //     ),
+  //     daysOfWeekStyle: DaysOfWeekStyle(
+  //       weekdayStyle: TextStyle(
+  //         color: Colors.black,
+  //         fontSize: 13.5,
+  //         fontFamily: AppConstants.manrope,
+  //       ),
+  //       weekendStyle: TextStyle(
+  //         color: Colors.black,
+  //         fontSize: 13.5,
+  //         fontFamily: AppConstants.manrope,
+  //       ),
+  //     ),
+  //     calendarStyle: const CalendarStyle(
+  //       todayDecoration: BoxDecoration(
+  //         color: Colors.grey,
+  //         shape: BoxShape.circle,
+  //       ),
+  //       selectedDecoration: BoxDecoration(
+  //         color: AppColors.maincolor,
+  //         shape: BoxShape.circle,
+  //       ),
+  //       selectedTextStyle: TextStyle(
+  //         color: Colors.white,
+  //         fontFamily: AppConstants.manrope,
+  //       ),
+  //       todayTextStyle: TextStyle(
+  //         color: Colors.white,
+  //         fontFamily: AppConstants.manrope,
+  //       ),
+  //       defaultTextStyle: TextStyle(
+  //         color: Colors.white,
+  //         fontFamily: AppConstants.manrope,
+  //       ),
+  //       weekendTextStyle: TextStyle(
+  //         color: Colors.white,
+  //         fontFamily: AppConstants.manrope,
+  //       ),
+  //     ),
+  //     selectedDayPredicate: (day) {
+  //       return isSameDay(selectedYear, day);
+  //     },
+  //     calendarBuilders: CalendarBuilders(
+  //       defaultBuilder: (context, day, focusedDay) {
+  //         bool isMonthDate = projectDates.any((projectDate) {
+  //           return isSameDay(projectDate, day);
+  //         });
+  //
+  //         bool isPast = day.isBefore(todayOnly);
+  //
+  //         return GestureDetector(
+  //           onTap:
+  //               isPast
+  //                   ? null
+  //                   : () {
+  //                     setState(() {
+  //                       selectedYear = day;
+  //                       selectedDate = DateFormat('yyyy-MM-dd').format(day);
+  //                       load = true;
+  //                     });
+  //                     projectlistap();
+  //                   },
+  //           child: Container(
+  //             margin: EdgeInsets.all(6.0),
+  //             alignment: Alignment.center,
+  //             decoration: BoxDecoration(
+  //               color:
+  //                   isMonthDate
+  //                       ? AppColors.maincolor
+  //                       : isPast
+  //                       ? Colors.grey.shade300
+  //                       : AppColors.white,
+  //               shape: BoxShape.circle,
+  //             ),
+  //             child: Text(
+  //               '${day.day}',
+  //               style: TextStyle(
+  //                 color:
+  //                     isMonthDate
+  //                         ? AppColors.white
+  //                         : isPast
+  //                         ? Colors.black
+  //                         : AppColors.black,
+  //                 fontFamily: AppConstants.manrope,
+  //                 fontWeight: FontWeight.bold,
+  //               ),
+  //             ),
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //     onDaySelected: (newSelectedDay, focusedDay) {
+  //       if (newSelectedDay.isBefore(todayOnly)) return;
+  //
+  //       setState(() {
+  //         selectedYear = newSelectedDay;
+  //         selectedDate = DateFormat('yyyy-MM-dd').format(newSelectedDay);
+  //         load = true;
+  //       });
+  //       projectlistap();
+  //     },
+  //     onPageChanged: (focusedDay) {
+  //       if (focusedDay.isBefore(firstDayOfYear)) {
+  //         setState(() {
+  //           selectedYear = todayOnly;
+  //         });
+  //       }
+  //     },
+  //   );
+  // }
   Widget _buildMonthView() {
-    final DateTime today = DateTime.now();
-    final DateTime todayOnly = DateTime(today.year, today.month, today.day);
-
     return TableCalendar(
-      firstDay: DateTime(today.year, today.month, 1),
-      lastDay: DateTime(today.year, today.month + 1, 0),
-      focusedDay: today,
+      firstDay: DateTime(now.year, now.month, 1),
+      lastDay: DateTime(now.year, now.month + 1, 0),
+      focusedDay: now,
       calendarFormat: CalendarFormat.month,
       headerStyle: HeaderStyle(
         formatButtonVisible: false,
@@ -958,29 +1224,21 @@ class _EventScreenState extends State<EventScreen> {
       ),
       calendarStyle: const CalendarStyle(
         todayDecoration: BoxDecoration(
-          color: Colors.grey,
-          shape: BoxShape.circle,
-        ),
-        selectedDecoration: BoxDecoration(
           color: AppColors.maincolor,
           shape: BoxShape.circle,
         ),
-        selectedTextStyle: TextStyle(
-          color: Colors.white,
-          fontFamily: AppConstants.manrope,
+        selectedDecoration: BoxDecoration(
+          color: Colors.black45,
+          shape: BoxShape.circle,
         ),
-        todayTextStyle: TextStyle(
-          color: Colors.black,
-          fontFamily: AppConstants.manrope,
-        ),
-        defaultTextStyle: TextStyle(
-          color: Colors.white,
-          fontFamily: AppConstants.manrope,
-        ),
-        weekendTextStyle: TextStyle(
-          color: Colors.white,
-          fontFamily: AppConstants.manrope,
-        ),
+        selectedTextStyle:
+        TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
+        todayTextStyle:
+        TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
+        defaultTextStyle:
+        TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
+        weekendTextStyle:
+        TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
       ),
       selectedDayPredicate: (day) {
         return isSameDay(selectedDay, day);
@@ -988,50 +1246,38 @@ class _EventScreenState extends State<EventScreen> {
       calendarBuilders: CalendarBuilders(
         defaultBuilder: (context, day, _) {
           DateTime normalizedDay = DateTime(day.year, day.month, day.day);
+          DateTime today = DateTime.now();
+          bool isPastDate = normalizedDay.isBefore(DateTime(today.year, today.month, today.day));
+
           bool isHighlighted = projectDates.any((createdDate) {
-            DateTime normalizedCreatedDate = DateTime(
-              createdDate.year,
-              createdDate.month,
-              createdDate.day,
-            );
+            DateTime normalizedCreatedDate = DateTime(createdDate.year, createdDate.month, createdDate.day);
             return isSameDay(normalizedCreatedDate, normalizedDay);
           });
 
-          bool isPast = normalizedDay.isBefore(todayOnly);
-
           return GestureDetector(
-            onTap:
-                isPast
-                    ? null
-                    : () {
-                      setState(() {
-                        selectedDay = day;
-                        selectedDate = DateFormat('yyyy-MM-dd').format(day);
-                        load = true;
-                      });
-                      projectlistap();
-                    },
+            onTap: () {
+              setState(() {
+                selectedDay = day;
+                selectedDate = DateFormat('yyyy-MM-dd').format(day);
+                load = true;
+              });
+              projectlistap();
+            },
             child: Container(
               margin: EdgeInsets.all(6.0),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color:
-                    isHighlighted
-                        ? AppColors.maincolor
-                        : isPast
-                        ? Colors.grey.shade300
-                        : AppColors.white,
+                color: isHighlighted
+                    ? AppColors.maincolor
+                    : (isPastDate ? Colors.grey.shade300 : AppColors.white),
                 shape: BoxShape.circle,
               ),
               child: Text(
                 '${day.day}',
                 style: TextStyle(
-                  color:
-                      isHighlighted
-                          ? AppColors.white
-                          : isPast
-                          ? Colors.black
-                          : AppColors.black,
+                  color: isHighlighted
+                      ? Colors.white
+                      : (isPastDate ? Colors.grey.shade600 : Colors.black),
                   fontWeight: FontWeight.bold,
                   fontFamily: AppConstants.manrope,
                 ),
@@ -1040,15 +1286,8 @@ class _EventScreenState extends State<EventScreen> {
           );
         },
       ),
+
       onDaySelected: (newSelectedDay, focusedDay) {
-        DateTime normalizedNewDay = DateTime(
-          newSelectedDay.year,
-          newSelectedDay.month,
-          newSelectedDay.day,
-        );
-
-        if (normalizedNewDay.isBefore(todayOnly)) return;
-
         setState(() {
           selectedDay = newSelectedDay;
           selectedDate = DateFormat('yyyy-MM-dd').format(newSelectedDay);
@@ -1062,9 +1301,6 @@ class _EventScreenState extends State<EventScreen> {
   Widget _buildYearView() {
     DateTime firstDayOfYear = DateTime(now.year, 1, 1);
     DateTime lastDayOfYear = DateTime(now.year, 12, 31);
-    DateTime today = DateTime.now();
-    DateTime todayOnly = DateTime(today.year, today.month, today.day);
-
     return TableCalendar(
       firstDay: firstDayOfYear,
       lastDay: lastDayOfYear,
@@ -1096,11 +1332,11 @@ class _EventScreenState extends State<EventScreen> {
       ),
       calendarStyle: const CalendarStyle(
         todayDecoration: BoxDecoration(
-          color: Colors.grey,
+          color: AppColors.maincolor,
           shape: BoxShape.circle,
         ),
         selectedDecoration: BoxDecoration(
-          color: AppColors.maincolor,
+          color: Colors.black45,
           shape: BoxShape.circle,
         ),
         selectedTextStyle: TextStyle(
@@ -1125,67 +1361,50 @@ class _EventScreenState extends State<EventScreen> {
       },
       calendarBuilders: CalendarBuilders(
         defaultBuilder: (context, day, focusedDay) {
+          DateTime today = DateTime.now();
+          bool isPastDate = DateTime(day.year, day.month, day.day)
+              .isBefore(DateTime(today.year, today.month, today.day));
+
           bool isMonthDate = projectDates.any((projectDate) {
             return isSameDay(projectDate, day);
           });
 
-          bool isPast = day.isBefore(todayOnly);
-
-          return GestureDetector(
-            onTap:
-                isPast
-                    ? null
-                    : () {
-                      setState(() {
-                        selectedYear = day;
-                        selectedDate = DateFormat('yyyy-MM-dd').format(day);
-                        load = true;
-                      });
-                      projectlistap();
-                    },
-            child: Container(
-              margin: EdgeInsets.all(6.0),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color:
-                    isMonthDate
-                        ? AppColors.maincolor
-                        : isPast
-                        ? Colors.grey.shade300
-                        : AppColors.white,
-                shape: BoxShape.circle,
-              ),
-              child: Text(
-                '${day.day}',
-                style: TextStyle(
-                  color:
-                      isMonthDate
-                          ? AppColors.white
-                          : isPast
-                          ? Colors.black
-                          : AppColors.black,
-                  fontFamily: AppConstants.manrope,
-                  fontWeight: FontWeight.bold,
-                ),
+          return Container(
+            margin: EdgeInsets.all(6.0),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: isMonthDate
+                  ? AppColors.maincolor
+                  : (isPastDate ? Colors.grey.shade300 : AppColors.white),
+              shape: BoxShape.circle,
+            ),
+            child: Text(
+              '${day.day}',
+              style: TextStyle(
+                color: isMonthDate
+                    ? Colors.white
+                    : (isPastDate ? Colors.grey.shade600 : Colors.black),
+                fontFamily: AppConstants.manrope,
+                fontWeight: FontWeight.bold,
               ),
             ),
           );
         },
       ),
-      onDaySelected: (newSelectedDay, focusedDay) {
-        if (newSelectedDay.isBefore(todayOnly)) return;
 
+      onDaySelected: (newSelectedDay, focusedDay) {
         setState(() {
-          selectedYear = newSelectedDay;
+          selectedYear = newSelectedDay; // Update selected day
           selectedDate = DateFormat('yyyy-MM-dd').format(newSelectedDay);
           load = true;
         });
         projectlistap();
       },
       onPageChanged: (focusedDay) {
+        // Prevent going to past months
         if (focusedDay.isBefore(firstDayOfYear)) {
           setState(() {
-            selectedYear = todayOnly;
+            selectedYear = firstDayOfYear; // Reset to current month
           });
         }
       },

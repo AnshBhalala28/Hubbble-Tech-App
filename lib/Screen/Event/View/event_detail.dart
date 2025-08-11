@@ -274,7 +274,7 @@ class _EventDetailState extends State<EventDetail> {
                                             widget.status == "rejected"
                                                 ? "Reject"
                                                 : widget.status == ""
-                                                ? "Book Now"
+                                                ? "Request Reservation"
                                                 : "Pending",
                                         route: () {
                                           widget.status == ""
@@ -331,8 +331,8 @@ class _EventDetailState extends State<EventDetail> {
                 });
                 Get.to(HomePage(userName: ""));
                 Get.snackbar(
-                  "Event Book",
-                  "Event Book sucessfully",
+                  "Event Request",
+                  "Event access has been requested",
                   backgroundColor: AppColors.maincolor,
                   colorText: AppColors.white,
                 );

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -35,14 +36,22 @@ responses(http.Response response) {
     case 500:
     default:
       throw FetchDataException(
-        'Error occurred while Communication with Server with StatusCode :${response
-            .statusCode}',
+        'Error occurred while Communication with Server with StatusCode :${response.statusCode}',
       );
   }
 }
 
 handleDioError(DioException e) {
   String message = "";
+
+  // Always log full details for debugging
+  debugPrint("===== Dio Error Debug Info =====");
+  debugPrint("Type: ${e.type}");
+  debugPrint("Message: ${e.message}");
+  debugPrint("Error: ${e.error}");
+  debugPrint("Response: ${e.response}");
+  debugPrint("StackTrace: ${e.stackTrace}");
+  debugPrint("===============================");
 
   if (e.type == DioExceptionType.connectionTimeout ||
       e.type == DioExceptionType.receiveTimeout ||
@@ -52,10 +61,16 @@ handleDioError(DioException e) {
     final statusCode = e.response?.statusCode ?? "Unknown";
     message = "Server error (Status Code: $statusCode)";
   } else if (e.type == DioExceptionType.unknown) {
-    message = "No internet connection.";
+    // Check if it's really a socket exception (no internet)
+    if (e.error is SocketException) {
+      message = "No internet connection.";
+    } else {
+      message = "Unexpected error: ${e.error}";
+    }
   } else {
     message = "Something went wrong.";
   }
+
   Get.snackbar(
     "Error",
     message,
@@ -63,6 +78,31 @@ handleDioError(DioException e) {
     backgroundColor: Colors.red.withOpacity(0.1),
     colorText: Colors.black,
     margin: const EdgeInsets.all(12),
-    // duration: const Duration(seconds: 3),
   );
 }
+
+// handleDioError(DioException e) {
+//   String message = "";
+//
+//   if (e.type == DioExceptionType.connectionTimeout ||
+//       e.type == DioExceptionType.receiveTimeout ||
+//       e.type == DioExceptionType.sendTimeout) {
+//     message = "Request timed out. Please try again.";
+//   } else if (e.type == DioExceptionType.badResponse) {
+//     final statusCode = e.response?.statusCode ?? "Unknown";
+//     message = "Server error (Status Code: $statusCode)";
+//   } else if (e.type == DioExceptionType.unknown) {
+//     message = "No internet connection.";
+//   } else {
+//     message = "Something went wrong.";
+//   }
+//   Get.snackbar(
+//     "Error",
+//     message,
+//     snackPosition: SnackPosition.BOTTOM,
+//     backgroundColor: Colors.red.withOpacity(0.1),
+//     colorText: Colors.black,
+//     margin: const EdgeInsets.all(12),
+//     // duration: const Duration(seconds: 3),
+//   );
+// }
