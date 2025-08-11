@@ -181,11 +181,11 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                     ),
                   ),
                   SizedBox(height: 2.h),
-                  profileField("Full Name", nameController, Icons.person, true),
+                  profileField("Full Name", nameController, Icons.person, false),
                   profileField("Email", emailController, Icons.email, false),
                   SizedBox(height: 2.h),
                   batan(
-                    title: "Edit Profile",
+                    title: "Update Profile",
                     route: () {
                       EditProfile();
                     },
@@ -375,15 +375,12 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
 
 
   void EditProfile() {
-    final List<String> names = nameController.text.trim().split(' ');
-    final String firstName = names.isNotEmpty ? names[0] : '';
-    final String lastName = names.length > 1 ? names.sublist(1).join(' ') : '';
+
 
     final Map<String, String> data = {
       'update_id': profileModel?.data?.id.toString() ?? '',
       "apartment_number": profileModel?.data?.unitsId.toString() ?? '',
-      "frist_name": firstName,
-      "last_name": lastName,
+
     };
     setState(() {
       isEditing = true;

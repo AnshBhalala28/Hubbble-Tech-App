@@ -128,9 +128,9 @@ class _ChatScreenState extends State<ChatScreen> {
       if (diff.inMinutes < 1) {
         return "Just now";
       } else if (diff.inMinutes < 60) {
-        return "Last Online ${diff.inMinutes} minutes ago";
+        return "Offline";
       } else if (diff.inHours < 24) {
-        return "Last Online ${diff.inHours} hours ago";
+        return "Offline";
       } else {
         DateTime today = DateTime(now.year, now.month, now.day);
         DateTime yesterday = today.subtract(const Duration(days: 1));
@@ -143,9 +143,9 @@ class _ChatScreenState extends State<ChatScreen> {
         if (dateToCompare == today) {
           return "Today at ${DateFormat('hh:mm a').format(parsedDate)}";
         } else if (dateToCompare == yesterday) {
-          return "Yesterday at ${DateFormat('hh:mm a').format(parsedDate)}";
+          return "Offline";
         } else {
-          return "Last Online \n${DateFormat("dd - MM - yyyy hh:mm a").format(parsedDate)}";
+          return "Offline";
         }
       }
     } catch (e) {
@@ -154,7 +154,6 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Timer? _timer;
-
 
   @override
   void initState() {
@@ -277,7 +276,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 SizedBox(height: 3.h),
                 if (selectedValue == "Businesses") ...[
-                  chatStories?.data?.length == 0||chatStories?.data?.length == null
+                  chatStories?.data?.length == 0 ||
+                          chatStories?.data?.length == null
                       ? SizedBox()
                       : Text(
                         "Business Spotlight",
@@ -287,12 +287,12 @@ class _ChatScreenState extends State<ChatScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                  chatStories?.data?.length == 0||chatStories?.data?.length == null
-
+                  chatStories?.data?.length == 0 ||
+                          chatStories?.data?.length == null
                       ? SizedBox()
                       : SizedBox(height: 1.h),
-                  chatStories?.data?.length == 0||chatStories?.data?.length == null
-
+                  chatStories?.data?.length == 0 ||
+                          chatStories?.data?.length == null
                       ? SizedBox()
                       : SizedBox(
                         height: 17.h,
@@ -375,12 +375,12 @@ class _ChatScreenState extends State<ChatScreen> {
                           },
                         ),
                       ),
-                  chatStories?.data?.length == 0||chatStories?.data?.length == null
-
+                  chatStories?.data?.length == 0 ||
+                          chatStories?.data?.length == null
                       ? SizedBox()
                       : SizedBox(height: 1.h),
-                  chatStories?.data?.length == 0||chatStories?.data?.length == null
-
+                  chatStories?.data?.length == 0 ||
+                          chatStories?.data?.length == null
                       ? SizedBox()
                       : Container(
                         height: 0.14,
@@ -557,7 +557,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                           user.isOnline ==
                                                                   "online"
                                                               ? Text(
-                                                                user.isOnline ??
+                                                                user.isOnline.toString().capitalizeFirst ??
                                                                     "Offline",
                                                                 style: TextStyle(
                                                                   fontSize:
@@ -571,11 +571,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                                                 ),
                                                               )
                                                               : Text(
-                                                                formatLastOnline(
+                                                                // formatLastOnline(
                                                                   user?.lastOnlineAt
                                                                           .toString() ??
                                                                       "",
-                                                                ),
+                                                                // ),
                                                                 style: TextStyle(
                                                                   fontSize:
                                                                       14.sp,
@@ -634,21 +634,21 @@ class _ChatScreenState extends State<ChatScreen> {
                                             children: [
                                               Row(
                                                 children: [
-                                                  Text(
-                                                    _formatTime(
-                                                      user?.lastOnlineAt
-                                                              .toString() ??
-                                                          "",
-                                                    ),
-                                                    style: TextStyle(
-                                                      fontSize: 15.sp,
-                                                      color: Color(0xFF000000),
-                                                      fontFamily:
-                                                          AppConstants.manrope,
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                    ),
-                                                  ),
+                                                  // Text(
+                                                  //   _formatTime(
+                                                  //     user?.lastOnlineAt
+                                                  //             .toString() ??
+                                                  //         "",
+                                                  //   ),
+                                                  //   style: TextStyle(
+                                                  //     fontSize: 15.sp,
+                                                  //     color: Color(0xFF000000),
+                                                  //     fontFamily:
+                                                  //         AppConstants.manrope,
+                                                  //     fontWeight:
+                                                  //         FontWeight.normal,
+                                                  //   ),
+                                                  // ),
                                                   Icon(
                                                     Icons
                                                         .arrow_forward_ios_rounded,
@@ -996,23 +996,23 @@ class _ChatScreenState extends State<ChatScreen> {
                                               children: [
                                                 Row(
                                                   children: [
-                                                    Text(
-                                                      _formatTime(
-                                                        concierge
-                                                            .lastMessageTime,
-                                                      ),
-                                                      style: TextStyle(
-                                                        fontSize: 15.sp,
-                                                        color: Color(
-                                                          0xFF000000,
-                                                        ),
-                                                        fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                        fontWeight:
-                                                            FontWeight.normal,
-                                                      ),
-                                                    ),
+                                                    // Text(
+                                                    //   _formatTime(
+                                                    //     concierge
+                                                    //         .lastMessageTime,
+                                                    //   ),
+                                                    //   style: TextStyle(
+                                                    //     fontSize: 15.sp,
+                                                    //     color: Color(
+                                                    //       0xFF000000,
+                                                    //     ),
+                                                    //     fontFamily:
+                                                    //         AppConstants
+                                                    //             .manrope,
+                                                    //     fontWeight:
+                                                    //         FontWeight.normal,
+                                                    //   ),
+                                                    // ),
                                                     Icon(
                                                       Icons
                                                           .arrow_forward_ios_rounded,
@@ -1180,5 +1180,4 @@ class _ChatScreenState extends State<ChatScreen> {
     _timer!.cancel();
     super.dispose();
   }
-
 }

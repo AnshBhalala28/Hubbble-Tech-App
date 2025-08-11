@@ -99,7 +99,7 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
             ),
           ),
           Positioned(
-            top: 3.h,
+            top: 7.h,
             right: 3.w,
             child: Container(
               decoration: BoxDecoration(

@@ -368,9 +368,11 @@ class _CommunityScreenState extends State<CommunityScreen>
     }
 
     final firstBatchMarkers = await Future.wait(firstBatchFutures);
-    setState(() {
-      _markers = firstBatchMarkers.toSet();
-    });
+    if (mounted) {
+      setState(() {
+        _markers = firstBatchMarkers.toSet();
+      });
+    }
 
     while (processedCount < entries.length) {
       List<Future<Marker>> batchFutures = [];
@@ -1282,9 +1284,11 @@ class _CommunityScreenState extends State<CommunityScreen>
         ProfileProvider().profileApi(data).then((response) async {
           profileModel = ProfileModel.fromJson(response.data);
           if (response.statusCode == 200) {
-            setState(() {
-              isLoading = false;
-            });
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
           } else {
             setState(() {
               isLoading = false;
@@ -3883,7 +3887,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     if (phone != null &&
                                         phone.toString().isNotEmpty) {
                                       final telUrl = Uri.parse(
-                                        "tel:${phone.toString()}",
+                                        "tel:0${phone.toString()}",
                                       );
                                       launchUrl(
                                         telUrl,
@@ -5327,10 +5331,17 @@ class _CommunityScreenState extends State<CommunityScreen>
                     onTap: () {
                       // showRequestDialog();
                       print("Event id Aa rahi hai $eventId");
-                      Get.to(EventDetail(eventID: eventId,status: busnessviewmodal
-                          ?.data
-                          ?.events?[index]
-                          ?.requestEvent??"",));
+                      Get.to(
+                        EventDetail(
+                          eventID: eventId,
+                          status:
+                              busnessviewmodal
+                                  ?.data
+                                  ?.events?[index]
+                                  ?.requestEvent ??
+                              "",
+                        ),
+                      );
                     },
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 8,

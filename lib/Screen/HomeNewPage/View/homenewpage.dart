@@ -859,15 +859,25 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                     SizedBox(width: 5.w),
+                                    // Expanded(
+                                    //   child: homeCard(
+                                    //     iconName: AppConstants.booking,
+                                    //     name: "My Bookings",
+                                    //     onTap: () {
+                                    //       Get.to(BookingScreen());
+                                    //     },
+                                    //   ),
+                                    // ),
                                     Expanded(
                                       child: homeCard(
-                                        iconName: AppConstants.booking,
-                                        name: "My Bookings",
+                                        iconName: AppConstants.maintance,
+                                        name: "Maintenance",
                                         onTap: () {
-                                          Get.to(BookingScreen());
+                                          Get.to(MaintenanceScreen());
                                         },
                                       ),
                                     ),
+
                                   ],
                                 ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
                                 Row(
@@ -884,13 +894,14 @@ class _HomePageState extends State<HomePage> {
                                     SizedBox(width: 5.w),
                                     Expanded(
                                       child: homeCard(
-                                        iconName: AppConstants.maintance,
-                                        name: "Maintenance",
+                                        iconName: AppConstants.booking,
+                                        name: "My Bookings",
                                         onTap: () {
-                                          Get.to(MaintenanceScreen());
+                                          Get.to(BookingScreen());
                                         },
                                       ),
                                     ),
+
                                   ],
                                 ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
                                 Container(
@@ -929,19 +940,15 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                     SizedBox(width: 5.w),
-                                    Expanded(
-                                      child: homeCard(
-                                        iconName: AppConstants.maintance,
-                                        name: "My Service Bookings",
-                                        onTap: () {
-                                          Get.to(ServiceBookingScreen());
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
-                                Row(
-                                  children: [
+                                    // Expanded(
+                                    //   child: homeCard(
+                                    //     iconName: AppConstants.maintance,
+                                    //     name: "My Service Bookings",
+                                    //     onTap: () {
+                                    //       Get.to(ServiceBookingScreen());
+                                    //     },
+                                    //   ),
+                                    // ),
                                     Expanded(
                                       child: homeCard(
                                         iconName: AppConstants.shopping,
@@ -951,7 +958,20 @@ class _HomePageState extends State<HomePage> {
                                         },
                                       ),
                                     ),
-                                    SizedBox(width: 5.w),
+
+                                  ],
+                                ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
+                                Row(
+                                  children: [
+                                    // Expanded(
+                                    //   child: homeCard(
+                                    //     iconName: AppConstants.shopping,
+                                    //     name: "Shopping",
+                                    //     onTap: () {
+                                    //       Get.to(CommunityScreen());
+                                    //     },
+                                    //   ),
+                                    // ),
                                     Expanded(
                                       child: homeCard(
                                         iconName: AppConstants.events,
@@ -960,18 +980,16 @@ class _HomePageState extends State<HomePage> {
                                           Get.to(
                                             EventScreen(
                                               userId:
-                                                  loginModel?.data?.user?.id
-                                                      .toString() ??
+                                              loginModel?.data?.user?.id
+                                                  .toString() ??
                                                   "",
                                             ),
                                           );
                                         },
                                       ),
                                     ),
-                                  ],
-                                ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
-                                Row(
-                                  children: [
+                                    SizedBox(width: 5.w),
+
                                     Expanded(
                                       child: homeCard(
                                         iconName: AppConstants.eventBooking,
@@ -981,10 +999,24 @@ class _HomePageState extends State<HomePage> {
                                         },
                                       ),
                                     ),
-                                    SizedBox(width: 5.w),
-                                    Expanded(child: Container()),
+
                                   ],
                                 ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
+                                // Row(
+                                //   children: [
+                                //     Expanded(
+                                //       child: homeCard(
+                                //         iconName: AppConstants.eventBooking,
+                                //         name: "Event Booking",
+                                //         onTap: () {
+                                //           Get.to(EventbookingScreen());
+                                //         },
+                                //       ),
+                                //     ),
+                                //     SizedBox(width: 5.w),
+                                //     Expanded(child: Container()),
+                                //   ],
+                                // ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
                                 Container(
                                   height: 0.1.h,
                                   decoration: BoxDecoration(

@@ -28,6 +28,7 @@ class ProfileProvider extends ChangeNotifier {
       );
       return response;
     } on DioException catch (e) {
+      log("Error is coming $e");
       throw Exception(handleDioError(e));
     }
   }

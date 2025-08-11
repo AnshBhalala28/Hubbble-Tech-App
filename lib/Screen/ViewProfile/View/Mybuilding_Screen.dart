@@ -97,28 +97,28 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                       Icons.location_on,
                       false,
                     ),
-                    profileField(
-                      "Total Floors",
-                      TextEditingController(
-                        text:
-                            profileModel?.data?.buildingDocument?.totalFloors
-                                ?.toString() ??
-                            "",
-                      ),
-                      Icons.stairs,
-                      false,
-                    ),
-                    profileField(
-                      "Total Units",
-                      TextEditingController(
-                        text:
-                            profileModel?.data?.buildingDocument?.totalUnits
-                                ?.toString() ??
-                            "",
-                      ),
-                      Icons.house,
-                      false,
-                    ),
+                    // profileField(
+                    //   "Total Floors",
+                    //   TextEditingController(
+                    //     text:
+                    //         profileModel?.data?.buildingDocument?.totalFloors
+                    //             ?.toString() ??
+                    //         "",
+                    //   ),
+                    //   Icons.stairs,
+                    //   false,
+                    // ),
+                    // profileField(
+                    //   "Total Units",
+                    //   TextEditingController(
+                    //     text:
+                    //         profileModel?.data?.buildingDocument?.totalUnits
+                    //             ?.toString() ??
+                    //         "",
+                    //   ),
+                    //   Icons.house,
+                    //   false,
+                    // ),
                     profileField(
                       "Parking Info",
                       TextEditingController(
