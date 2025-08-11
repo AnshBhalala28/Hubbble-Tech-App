@@ -33,7 +33,7 @@ class CommunityProvider extends ChangeNotifier {
       );
 
       return response;
-    } on DioException catch (e,stackTrace) {
+    } on DioException catch (e, stackTrace) {
       log('messagemessagemessagemessagemessagemessage$stackTrace  $e');
       throw Exception(handleDioError(e));
     }
@@ -46,7 +46,9 @@ class CommunityProvider extends ChangeNotifier {
       if (token != null && token.isNotEmpty) {
         Map<String, String> headers = {'X-Auth-Token': '$token'};
       }
-
+      log(
+        "fsdfsfsdfs${ApiEndpoint.businessProfileView}${loginModel?.data?.user?.id.toString()}/$id?latitude=$lat&longitude=$lon",
+      );
       final dio = await DioHelper.getDio();
       final response = await dio.get(
         "${ApiEndpoint.businessProfileView}${loginModel?.data?.user?.id.toString()}/$id?latitude=$lat&longitude=$lon",

@@ -40,7 +40,7 @@ class _NotificationPageState extends State<NotificationPage> {
     setState(() {
       isLoading = true;
     });
-    getnotification();
+    // getnotification();
   }
 
   @override
@@ -272,27 +272,27 @@ class _NotificationPageState extends State<NotificationPage> {
     return DateFormat('yyyy-MM-dd hh:mm a').format(parsedDate);
   }
 
-  getnotification() {
-    checkInternet().then((internet) async {
-      if (internet) {
-        try {
-          final response = await NotificationProvider().notificationApi(
-            (loginModel?.data?.user?.id).toString(),
-          );
-          print(
-            "login user id newwwww: ${(loginModel?.data?.user?.id).toString()}",
-          );
-          EasyLoading.dismiss();
-          if (response.statusCode == 200) {
-            notificationmodel = NotificationModell.fromJson(response.data);
-          } else {}
-        } catch (e, stackTrace) {}
-      } else {
-        EasyLoading.dismiss();
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
+  // getnotification() {
+  //   checkInternet().then((internet) async {
+  //     if (internet) {
+  //       try {
+  //         final response = await NotificationProvider().notificationApi(
+  //           (loginModel?.data?.user?.id).toString(),
+  //         );
+  //         print(
+  //           "login user id newwwww: ${(loginModel?.data?.user?.id).toString()}",
+  //         );
+  //         EasyLoading.dismiss();
+  //         if (response.statusCode == 200) {
+  //           notificationmodel = NotificationModell.fromJson(response.data);
+  //         } else {}
+  //       } catch (e, stackTrace) {}
+  //     } else {
+  //       EasyLoading.dismiss();
+  //       buildErrorDialog(context, 'Error', "Internet Required");
+  //     }
+  //   });
+  // }
 
   Readnotification(String notificationId) {
     checkInternet().then((internet) async {
@@ -308,7 +308,7 @@ class _NotificationPageState extends State<NotificationPage> {
               response.data,
             );
 
-            getnotificationCount();
+            // getnotificationCount();
           } else {}
         } catch (e, stackTrace) {}
       } else {
@@ -318,26 +318,26 @@ class _NotificationPageState extends State<NotificationPage> {
     });
   }
 
-  getnotificationCount() {
-    checkInternet().then((internet) async {
-      if (internet) {
-        try {
-          final response = await NotificationProvider().notificationApi(
-            (loginModel?.data?.user?.id).toString(),
-          );
-
-          if (response.statusCode == 200) {
-            notificationmodel = NotificationModell.fromJson(response.data);
-
-            setState(() {
-              notificationCount = notificationmodel?.data?.totalCount ?? 0;
-              isLoading = false;
-            });
-          } else {}
-        } catch (e) {}
-      } else {
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
+  // getnotificationCount() {
+  //   checkInternet().then((internet) async {
+  //     if (internet) {
+  //       try {
+  //         final response = await NotificationProvider().notificationApi(
+  //           (loginModel?.data?.user?.id).toString(),
+  //         );
+  //
+  //         if (response.statusCode == 200) {
+  //           notificationmodel = NotificationModell.fromJson(response.data);
+  //
+  //           setState(() {
+  //             notificationCount = notificationmodel?.data?.totalCount ?? 0;
+  //             isLoading = false;
+  //           });
+  //         } else {}
+  //       } catch (e) {}
+  //     } else {
+  //       buildErrorDialog(context, 'Error', "Internet Required");
+  //     }
+  //   });
+  // }
 }

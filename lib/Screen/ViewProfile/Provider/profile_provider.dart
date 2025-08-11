@@ -106,12 +106,4 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
-  // MediaType? _getMediaType(String path) {
-  //   final mimeType = lookupMimeType(path);
-  //   if (mimeType != null) {
-  //     final parts = mimeType.split('/');
-  //     return MediaType(parts[0], parts[1]);
-  //   }
-  //   return null;
-  // }
 }

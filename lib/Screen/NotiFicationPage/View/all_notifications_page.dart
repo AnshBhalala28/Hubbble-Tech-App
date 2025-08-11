@@ -37,7 +37,7 @@ class _AllNotificationPageState extends State<AllNotificationPage> {
     setState(() {
       isLoading = true;
     });
-    getnotification();
+    // getnotification();
   }
 
   @override
@@ -224,26 +224,26 @@ class _AllNotificationPageState extends State<AllNotificationPage> {
     return DateFormat('yyyy-MM-dd hh:mm a').format(parsedDate);
   }
 
-  getnotification() {
-    checkInternet().then((internet) async {
-      if (internet) {
-        try {
-          final response = await NotificationProvider().notificationApi(
-            (loginModel?.data?.user?.id).toString(),
-          );
-          EasyLoading.dismiss();
-          if (response.statusCode == 200) {
-            setState(() {
-              notificationmodel = NotificationModell.fromJson(response.data);
-            });
-          } else {}
-        } catch (e) {}
-      } else {
-        EasyLoading.dismiss();
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
+  // getnotification() {
+  //   checkInternet().then((internet) async {
+  //     if (internet) {
+  //       try {
+  //         final response = await NotificationProvider().notificationApi(
+  //           (loginModel?.data?.user?.id).toString(),
+  //         );
+  //         EasyLoading.dismiss();
+  //         if (response.statusCode == 200) {
+  //           setState(() {
+  //             notificationmodel = NotificationModell.fromJson(response.data);
+  //           });
+  //         } else {}
+  //       } catch (e) {}
+  //     } else {
+  //       EasyLoading.dismiss();
+  //       buildErrorDialog(context, 'Error', "Internet Required");
+  //     }
+  //   });
+  // }
 
   Readnotification() {
     checkInternet().then((internet) async {

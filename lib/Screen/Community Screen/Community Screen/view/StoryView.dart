@@ -4,6 +4,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sizer/sizer.dart';
 import 'package:story_view/controller/story_controller.dart';
 import 'package:story_view/utils.dart';
 import 'package:story_view/widgets/story_view.dart';
@@ -240,7 +241,7 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
             repeat: false,
           ),
           Positioned(
-            top: 40,
+            top: 7.h,
             right: 16,
             child: Container(
               decoration: BoxDecoration(

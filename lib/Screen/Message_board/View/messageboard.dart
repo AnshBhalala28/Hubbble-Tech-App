@@ -151,10 +151,10 @@ class _MessageboardState extends State<Messageboard> {
     MessageBoardApi();
     GetProfile();
     fetchData();
-    listconciergerapi();
+    // listconciergerapi();
     setState(() {
       // GetMyJoinGroup();
-      getfriendlistdAp();
+      // getfriendlistdAp();
     });
 
     loadGroups();
@@ -2325,27 +2325,27 @@ class _MessageboardState extends State<Messageboard> {
     return null;
   }
 
-  Future<void> listconciergerapi() async {
-    await checkInternet().then((internet) async {
-      if (internet) {
-        try {
-          final response = await MessageBoardProvider().listConciergeApi(
-            (loginModel?.data?.user?.id).toString(),
-          );
-
-          if (response.statusCode == 200) {
-            chatuserlistmodel = ChatUserListModel.fromJson(response.data);
-
-            for (var user in chatuserlistmodel!.data!) {
-              user.requestStatuses ??= [];
-            }
-          }
-        } catch (e) {}
-      } else {
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
+  // Future<void> listconciergerapi() async {
+  //   await checkInternet().then((internet) async {
+  //     if (internet) {
+  //       try {
+  //         final response = await MessageBoardProvider().listConciergeApi(
+  //           (loginModel?.data?.user?.id).toString(),
+  //         );
+  //
+  //         if (response.statusCode == 200) {
+  //           chatuserlistmodel = ChatUserListModel.fromJson(response.data);
+  //
+  //           for (var user in chatuserlistmodel!.data!) {
+  //             user.requestStatuses ??= [];
+  //           }
+  //         }
+  //       } catch (e) {}
+  //     } else {
+  //       buildErrorDialog(context, 'Error', "Internet Required");
+  //     }
+  //   });
+  // }
 
   // GetMyJoinGroup() {
   //   final Map<String, String> data = {
@@ -2597,171 +2597,171 @@ class _MessageboardState extends State<Messageboard> {
     });
   }
 
-  creategrouplistdAp() {
-    final Map<String, String> data = {
-      'created_by': (loginModel?.data?.user?.id).toString(),
-      'name': groupNameController.text.toString(),
-      'details': "",
-    };
+  // creategrouplistdAp() {
+  //   final Map<String, String> data = {
+  //     'created_by': (loginModel?.data?.user?.id).toString(),
+  //     'name': groupNameController.text.toString(),
+  //     'details': "",
+  //   };
+  //
+  //   checkInternet().then((internet) async {
+  //     if (internet) {
+  //       MessageBoardProvider()
+  //           .createGroupApi(
+  //             bodyData: data,
+  //             memberIds: selectedMembers,
+  //             images: selectedImage != null ? [XFile(selectedImage!.path)] : [],
+  //           )
+  //           .then((response) async {
+  //             if (response.statusCode == 200) {
+  //               creategroupmodel = CreateGroupModel.fromJson(response.data);
+  //
+  //               await refreshGroupList();
+  //               groupNameController.clear();
+  //               selectedMembers.clear();
+  //               selectedImage = null;
+  //               imagePath = '';
+  //               setState(() {
+  //                 isLoading = false;
+  //               });
+  //             } else if (response.statusCode == 422) {
+  //               setState(() {
+  //                 isLoading = false;
+  //               });
+  //             } else {
+  //               setState(() {
+  //                 isLoading = false;
+  //               });
+  //             }
+  //           });
+  //     } else {
+  //       buildErrorDialog(context, 'Error', "Internet Required");
+  //     }
+  //   });
+  // }
 
-    checkInternet().then((internet) async {
-      if (internet) {
-        MessageBoardProvider()
-            .createGroupApi(
-              bodyData: data,
-              memberIds: selectedMembers,
-              images: selectedImage != null ? [XFile(selectedImage!.path)] : [],
-            )
-            .then((response) async {
-              if (response.statusCode == 200) {
-                creategroupmodel = CreateGroupModel.fromJson(response.data);
+  // makefriendapi(dynamic receiverId) {
+  //   final Map<String, String> data = {
+  //     'sender_id': (loginModel?.data?.user?.id).toString(),
+  //     'receiver_id': receiverId.toString(),
+  //   };
+  //
+  //   checkInternet().then((internet) async {
+  //     if (internet) {
+  //       MessageBoardProvider()
+  //           .friendRequestApi(data)
+  //           .then((response) async {
+  //             if (response.statusCode == 200) {
+  //               createfriendModel = CreateFriendModel.fromJson(response.data);
+  //             } else if (response.statusCode == 429) {
+  //               Get.snackbar(
+  //                 'Error',
+  //                 'Too many requests. Please try again later.',
+  //                 backgroundColor: Colors.red.withOpacity(0.7),
+  //                 colorText: Colors.white,
+  //                 snackPosition: SnackPosition.BOTTOM,
+  //               );
+  //             } else {
+  //               Get.snackbar(
+  //                 'Error',
+  //                 'Too many requests. Please try again later.',
+  //                 backgroundColor: Colors.red.withOpacity(0.7),
+  //                 colorText: Colors.white,
+  //                 snackPosition: SnackPosition.BOTTOM,
+  //               );
+  //             }
+  //           })
+  //           .catchError((error) {});
+  //     } else {
+  //       buildErrorDialog(context, 'Error', "Internet Required");
+  //     }
+  //   });
+  // }
 
-                await refreshGroupList();
-                groupNameController.clear();
-                selectedMembers.clear();
-                selectedImage = null;
-                imagePath = '';
-                setState(() {
-                  isLoading = false;
-                });
-              } else if (response.statusCode == 422) {
-                setState(() {
-                  isLoading = false;
-                });
-              } else {
-                setState(() {
-                  isLoading = false;
-                });
-              }
-            });
-      } else {
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
+  // getfriendlistdAp() {
+  //   final Map<String, String> data = {
+  //     'user_id': (loginModel?.data?.user?.id).toString(),
+  //   };
+  //
+  //   setState(() {
+  //     isSending = true;
+  //   });
+  //   checkInternet().then((internet) async {
+  //     if (internet) {
+  //       MessageBoardProvider().groupFriendRequestApi(data).then((
+  //         response,
+  //       ) async {
+  //         if (response.statusCode == 200) {
+  //           getfriendListModel = GetFriendListModel.fromJson(response.data);
+  //
+  //           setState(() {
+  //             isSending = false;
+  //           });
+  //         } else if (response.statusCode == 429) {
+  //           setState(() {
+  //             isSending = false;
+  //           });
+  //         } else {
+  //           setState(() {
+  //             isSending = false;
+  //           });
+  //           Get.snackbar(
+  //             'Error',
+  //             'Internal Server Error',
+  //             backgroundColor: Colors.red.withOpacity(0.7),
+  //             colorText: Colors.white,
+  //             snackPosition: SnackPosition.BOTTOM,
+  //           );
+  //         }
+  //       });
+  //     } else {
+  //       setState(() {
+  //         isSending = false;
+  //       });
+  //       buildErrorDialog(context, 'Error', "Internet Required");
+  //     }
+  //   });
+  // }
 
-  makefriendapi(dynamic receiverId) {
-    final Map<String, String> data = {
-      'sender_id': (loginModel?.data?.user?.id).toString(),
-      'receiver_id': receiverId.toString(),
-    };
-
-    checkInternet().then((internet) async {
-      if (internet) {
-        MessageBoardProvider()
-            .friendRequestApi(data)
-            .then((response) async {
-              if (response.statusCode == 200) {
-                createfriendModel = CreateFriendModel.fromJson(response.data);
-              } else if (response.statusCode == 429) {
-                Get.snackbar(
-                  'Error',
-                  'Too many requests. Please try again later.',
-                  backgroundColor: Colors.red.withOpacity(0.7),
-                  colorText: Colors.white,
-                  snackPosition: SnackPosition.BOTTOM,
-                );
-              } else {
-                Get.snackbar(
-                  'Error',
-                  'Too many requests. Please try again later.',
-                  backgroundColor: Colors.red.withOpacity(0.7),
-                  colorText: Colors.white,
-                  snackPosition: SnackPosition.BOTTOM,
-                );
-              }
-            })
-            .catchError((error) {});
-      } else {
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
-
-  getfriendlistdAp() {
-    final Map<String, String> data = {
-      'user_id': (loginModel?.data?.user?.id).toString(),
-    };
-
-    setState(() {
-      isSending = true;
-    });
-    checkInternet().then((internet) async {
-      if (internet) {
-        MessageBoardProvider().groupFriendRequestApi(data).then((
-          response,
-        ) async {
-          if (response.statusCode == 200) {
-            getfriendListModel = GetFriendListModel.fromJson(response.data);
-
-            setState(() {
-              isSending = false;
-            });
-          } else if (response.statusCode == 429) {
-            setState(() {
-              isSending = false;
-            });
-          } else {
-            setState(() {
-              isSending = false;
-            });
-            Get.snackbar(
-              'Error',
-              'Internal Server Error',
-              backgroundColor: Colors.red.withOpacity(0.7),
-              colorText: Colors.white,
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          }
-        });
-      } else {
-        setState(() {
-          isSending = false;
-        });
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
-
-  Future<void> refreshGroupList() async {
-    final Map<String, String> data = {
-      'created_by': (loginModel?.data?.user?.id).toString(),
-    };
-
-    setState(() {
-      isSending = true;
-    });
-
-    try {
-      bool internet = await checkInternet();
-      if (internet) {
-        final response = await MessageBoardProvider().getGroupApi(data);
-        getgrouplistmodel = GetGroupListModel.fromJson(response.data);
-
-        if (response.statusCode == 200) {
-          setState(() {
-            isSending = false;
-          });
-          setState(() {});
-
-          return;
-        } else if (response.statusCode == 429) {
-          setState(() {
-            isSending = false;
-          });
-        } else {
-          setState(() {
-            isSending = false;
-          });
-        }
-      } else {
-        setState(() {
-          isSending = false;
-        });
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    } catch (e) {}
-  }
+  // Future<void> refreshGroupList() async {
+  //   final Map<String, String> data = {
+  //     'created_by': (loginModel?.data?.user?.id).toString(),
+  //   };
+  //
+  //   setState(() {
+  //     isSending = true;
+  //   });
+  //
+  //   try {
+  //     bool internet = await checkInternet();
+  //     if (internet) {
+  //       final response = await MessageBoardProvider().getGroupApi(data);
+  //       getgrouplistmodel = GetGroupListModel.fromJson(response.data);
+  //
+  //       if (response.statusCode == 200) {
+  //         setState(() {
+  //           isSending = false;
+  //         });
+  //         setState(() {});
+  //
+  //         return;
+  //       } else if (response.statusCode == 429) {
+  //         setState(() {
+  //           isSending = false;
+  //         });
+  //       } else {
+  //         setState(() {
+  //           isSending = false;
+  //         });
+  //       }
+  //     } else {
+  //       setState(() {
+  //         isSending = false;
+  //       });
+  //       buildErrorDialog(context, 'Error', "Internet Required");
+  //     }
+  //   } catch (e) {}
+  // }
 
   void postslikeap(int index, VoidCallback onComplete) {
     final Map<String, String> data = {
@@ -3028,23 +3028,23 @@ class _MessageboardState extends State<Messageboard> {
     });
   }
 
-  showrequestapi() {
-    checkInternet().then((internet) async {
-      if (internet) {
-        try {
-          final response = await MessageBoardProvider().getRequestAppApi(
-            (loginModel?.data?.user?.id).toString(),
-          );
-
-          if (response.statusCode == 200) {
-            getrequestModel = GetRequestModel.fromJson(response.data);
-          }
-        } catch (e) {}
-      } else {
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
+  // showrequestapi() {
+  //   checkInternet().then((internet) async {
+  //     if (internet) {
+  //       try {
+  //         final response = await MessageBoardProvider().getRequestAppApi(
+  //           (loginModel?.data?.user?.id).toString(),
+  //         );
+  //
+  //         if (response.statusCode == 200) {
+  //           getrequestModel = GetRequestModel.fromJson(response.data);
+  //         }
+  //       } catch (e) {}
+  //     } else {
+  //       buildErrorDialog(context, 'Error', "Internet Required");
+  //     }
+  //   });
+  // }
 
   final String supportUrl = "https://www.wavee.ai/help-center";
 

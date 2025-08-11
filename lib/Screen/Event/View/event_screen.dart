@@ -294,6 +294,12 @@ class _EventScreenState extends State<EventScreen> {
                                               ?.data?[index]
                                               ?.requestEvent ,
                                         ));
+                                        log("asdadasds${
+                                            event_list_Model
+                                                ?.data
+                                                ?.data?[index]
+                                                ?.requestEvent
+                                        }");
                                       },
                                       child: Container(
 

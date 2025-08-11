@@ -68,7 +68,7 @@ class ApiEndpoint {
   static String sendEventRequest = "${baseUrl}sendEventRequest";
   static String maintanceRequest = "${baseUrl}maintenance-request-app";
   static String getMaintance = "${baseUrl}get-maintenance-request-app";
-  static String appNotification = "${baseUrl}Appnotification";
+  // static String appNotification = "${baseUrl}Appnotification";
   static String notificatonRead = "${baseUrl}notifications-read";
   static String myOrder = "${baseUrl}myOrders";
   static String myOrderDetail = "${baseUrl}orderDetails?";

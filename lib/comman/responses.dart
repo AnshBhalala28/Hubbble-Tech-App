@@ -42,14 +42,13 @@ responses(http.Response response) {
 }
 
 handleDioError(DioException e) {
-  String message = "";
+  String? message; // make it nullable so we can skip snackbar when needed
 
-  // Always log full details for debugging
   debugPrint("===== Dio Error Debug Info =====");
   debugPrint("Type: ${e.type}");
   debugPrint("Message: ${e.message}");
   debugPrint("Error: ${e.error}");
-  debugPrint("Response: ${e.response}");
+  debugPrint("Response : ${e.response}");
   debugPrint("StackTrace: ${e.stackTrace}");
   debugPrint("===============================");
 
@@ -61,29 +60,28 @@ handleDioError(DioException e) {
     final statusCode = e.response?.statusCode ?? "Unknown";
     message = "Server error (Status Code: $statusCode)";
   } else if (e.type == DioExceptionType.unknown) {
-    // Check if it's really a socket exception (no internet)
     if (e.error is SocketException) {
       message = "No internet connection.";
     } else {
-      message = "Unexpected error: ${e.error}";
+      debugPrint("Unexpected unknown Dio error: ${e.error}");
     }
   } else {
     message = "Something went wrong.";
   }
-
-  Get.snackbar(
-    "Error",
-    message,
-    snackPosition: SnackPosition.BOTTOM,
-    backgroundColor: Colors.red.withOpacity(0.1),
-    colorText: Colors.black,
-    margin: const EdgeInsets.all(12),
-  );
+  if (message != null && message.isNotEmpty) {
+    Get.snackbar(
+      "Error",
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.red.withOpacity(0.1),
+      colorText: Colors.black,
+      margin: const EdgeInsets.all(12),
+    );
+  }
 }
 
 // handleDioError(DioException e) {
 //   String message = "";
-//
 //   if (e.type == DioExceptionType.connectionTimeout ||
 //       e.type == DioExceptionType.receiveTimeout ||
 //       e.type == DioExceptionType.sendTimeout) {

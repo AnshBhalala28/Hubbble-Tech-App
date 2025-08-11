@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
@@ -11,6 +12,7 @@ import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
 import '../../../comman/error_dialog.dart';
+import '../../Community Detail Page/view/community_detail_page.dart';
 import '../Model/eventDetailModal.dart';
 import '../Model/send_event_model.dart';
 import '../Provider/event_provider.dart';
@@ -28,6 +30,8 @@ class EventDetail extends StatefulWidget {
 class _EventDetailState extends State<EventDetail> {
   bool isLoading = false;
   bool isBooking = false;
+  String AppLat = '';
+  String AppLon = '';
 
   @override
   void initState() {
@@ -36,275 +40,376 @@ class _EventDetailState extends State<EventDetail> {
     setState(() {
       isLoading = true;
     });
-
-    print("cssad${widget.status}");
     eventDetailApi();
+    _getCurrentLocation().then((value) {
+      eventDetailApi();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body:
-          isLoading
-              ? Loader()
-              : Stack(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-
-                    children: [
-                      SizedBox(height: 10.h),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: 2.h,
-                          horizontal: 3.w,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.bgcolor,
-                          border: Border(
-                            top: BorderSide(color: Colors.grey),
-                            left: BorderSide(color: Colors.grey),
-                            right: BorderSide(color: Colors.grey),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context, null);
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        body:
+            isLoading
+                ? Loader()
+                : Stack(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 10.h),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 2.h,
+                            horizontal: 3.w,
                           ),
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(45),
-                            topRight: Radius.circular(45),
+                          decoration: BoxDecoration(
+                            color: AppColors.bgcolor,
+                            border: Border(
+                              top: BorderSide(color: Colors.grey),
+                              left: BorderSide(color: Colors.grey),
+                              right: BorderSide(color: Colors.grey),
+                            ),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(45),
+                              topRight: Radius.circular(45),
+                            ),
                           ),
-                        ),
-                        child: SizedBox(
-                          width: double.infinity,
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: CachedNetworkImage(
-                                    width: double.infinity,
-                                    imageUrl:
-                                        eventDetailModal?.data?.attachment ??
-                                        "",
-                                    fit: BoxFit.fill,
-                                    placeholder:
-                                        (context, url) => const Center(
-                                          child: CircularProgressIndicator(
-                                            color: AppColors.maincolor,
-                                          ),
-                                        ),
-                                    errorWidget:
-                                        (context, url, error) => Container(
-                                          height: 30.h,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                              width: 1,
-                                              color: AppColors.borderColor,
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                          child: Image(
-                                            image: AssetImage(
-                                              'assets/images/Applogo_remove_background.png',
-                                            ),
-                                          ),
-                                        ),
-                                  ),
-                                ),
-                                SizedBox(height: 2.h),
-                                Text(
-                                  eventDetailModal?.data?.title ?? "",
-                                  style: TextStyle(
-                                    color: AppColors.maincolor,
-                                    fontSize: 20.sp,
-                                    fontFamily: AppConstants.manrope,
-                                  ),
-                                ),
-                                Container(
-                                  height: 0.6.h,
-                                  width: 25.w,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.borderColor,
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ).paddingOnly(right: 5.w, bottom: 2.h),
-                                Container(
-                                  width: 92.w,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: ReadMoreText(
-                                    "${eventDetailModal?.data?.bio ?? ""}",
-                                    trimLines: 4,
-                                    trimLength: 145,
-                                    colorClickableText: Colors.blue,
-                                    trimMode: TrimMode.Length,
-                                    trimCollapsedText: ' Show more',
-                                    trimExpandedText: ' Show less',
-                                    moreStyle: TextStyle(
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: AppConstants.manrope,
-                                      letterSpacing: 1,
-                                      color: AppColors.maincolor,
+                                    child: CachedNetworkImage(
+                                      width: double.infinity,
+                                      height: 25.h,
+                                      imageUrl:
+                                          eventDetailModal?.data?.attachment ??
+                                          "",
+                                      fit: BoxFit.fill,
+                                      placeholder:
+                                          (context, url) => const Center(
+                                            child: CircularProgressIndicator(
+                                              color: AppColors.maincolor,
+                                            ),
+                                          ),
+                                      errorWidget:
+                                          (context, url, error) => Container(
+                                            height: 30.h,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                width: 1,
+                                                color: AppColors.borderColor,
+                                              ),
+                                              borderRadius: BorderRadius.circular(
+                                                20,
+                                              ),
+                                            ),
+                                            child: Image(
+                                              image: AssetImage(
+                                                'assets/images/Applogo_remove_background.png',
+                                              ),
+                                            ),
+                                          ),
                                     ),
-                                    lessStyle: TextStyle(
-                                      fontSize: 15.sp,
-                                      fontFamily: AppConstants.manrope,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 1,
-                                      color: AppColors.maincolor,
-                                    ),
+                                  ),
+                                  SizedBox(height: 2.h),
+                                  Text(
+                                    eventDetailModal?.data?.title ?? "",
                                     style: TextStyle(
-                                      fontSize: 16.sp,
-                                      color: Colors.grey.shade500,
-                                      fontWeight: FontWeight.normal,
+                                      color: AppColors.maincolor,
+                                      fontSize: 20.sp,
                                       fontFamily: AppConstants.manrope,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                ).paddingOnly(bottom: 2.h),
-                                Text(
-                                  "Event Location",
-                                  style: TextStyle(
-                                    color: AppColors.maincolor,
-                                    fontSize: 18.sp,
-                                    fontFamily: AppConstants.manrope,
-                                  ),
-                                ).paddingOnly(bottom: 1.h),
-
-                                Container(
-                                  padding: EdgeInsets.all(5),
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    color: AppColors.white,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.location_on,
+                                  Container(
+                                    height: 0.6.h,
+                                    width: 25.w,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.borderColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ).paddingOnly(right: 5.w, bottom: 2.h),
+                                  Container(
+                                    width: 92.w,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: ReadMoreText(
+                                      "${eventDetailModal?.data?.bio ?? ""}",
+                                      trimLines: 4,
+                                      trimLength: 145,
+                                      colorClickableText: Colors.blue,
+                                      trimMode: TrimMode.Length,
+                                      trimCollapsedText: ' Show more',
+                                      trimExpandedText: ' Show less',
+                                      moreStyle: TextStyle(
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: AppConstants.manrope,
+                                        letterSpacing: 1,
                                         color: AppColors.maincolor,
-                                      ).paddingOnly(right: 2.w),
-
-                                      SizedBox(
-                                        width: 79.w,
-                                        child: Text(
-                                          "${eventDetailModal?.data?.location ?? ""}",
+                                      ),
+                                      lessStyle: TextStyle(
+                                        fontSize: 15.sp,
+                                        fontFamily: AppConstants.manrope,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1,
+                                        color: AppColors.maincolor,
+                                      ),
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        color: Colors.grey.shade500,
+                                        fontWeight: FontWeight.normal,
+                                        fontFamily: AppConstants.manrope,
+                                      ),
+                                    ),
+                                  ).paddingOnly(bottom: 2.h),
+                                  Text(
+                                    "Business Overview",
+                                    style: TextStyle(
+                                      color: AppColors.maincolor,
+                                      fontSize: 18.sp,
+                                      fontFamily: AppConstants.manrope,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ).paddingOnly(bottom: 1.h),
+      
+                                  Container(
+                                    height: 0.6.h,
+                                    width: 25.w,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.borderColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ).paddingOnly(right: 5.w, bottom: 2.h),
+      
+                                  InkWell(
+                                    onTap: () {
+                                      Get.to(
+                                        BusinessDetailPage(
+                                          businessID:
+                                              eventDetailModal
+                                                  ?.data
+                                                  ?.business?[0]
+                                                  .id
+                                                  .toString() ??
+                                              "",
+                                          lat: AppLat,
+                                          long: AppLon,
+                                          userID:
+                                              loginModel?.data?.user?.id
+                                                  .toString() ??
+                                              "",
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      height: 7.h,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.white,
+      
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          ClipOval(
+                                            child: CachedNetworkImage(
+                                              imageUrl:
+                                                  eventDetailModal
+                                                      ?.data
+                                                      ?.business?[0]
+                                                      .logo ??
+                                                  "",
+                                              fit: BoxFit.cover,
+      
+                                              width: 50,
+                                              // circle width
+                                              height: 50,
+                                              // circle height
+                                              placeholder:
+                                                  (context, url) => const Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                          color:
+                                                              AppColors.maincolor,
+                                                        ),
+                                                  ),
+                                              errorWidget:
+                                                  (
+                                                    context,
+                                                    url,
+                                                    error,
+                                                  ) => Container(
+                                                    width: 50,
+                                                    height: 50,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      border: Border.all(
+                                                        width: 1,
+                                                        color:
+                                                            AppColors.borderColor,
+                                                      ),
+                                                    ),
+                                                    child: ClipOval(
+                                                      child: Image.asset(
+                                                        'assets/images/Applogo_remove_background.png',
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ),
+                                            ),
+                                          ).paddingOnly(left: 3.w, right: 3.w),
+                                          Text(
+                                            "${eventDetailModal?.data?.business?[0].businessName ?? ""}",
+                                            style: TextStyle(
+                                              fontFamily: AppConstants.manrope,
+                                              fontSize: 17.sp,
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ).paddingOnly(bottom: 1.h),
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.all(5),
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: AppColors.white,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.location_on,
+                                          color: AppColors.maincolor,
+                                        ).paddingOnly(right: 2.w),
+      
+                                        SizedBox(
+                                          width: 79.w,
+                                          child: Text(
+                                            "${eventDetailModal?.data?.location ?? ""}",
+                                            style: TextStyle(
+                                              fontFamily: AppConstants.manrope,
+                                              fontSize: 15.sp,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ).paddingOnly(left: 3.w),
+                                  ).paddingOnly(bottom: 1.h),
+      
+                                  Container(
+                                    height: 5.h,
+                                    padding: EdgeInsets.all(5),
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: AppColors.white,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.calendar_month,
+                                        ).paddingOnly(right: 2.w),
+                                        Text(
+                                          "Event Date: ${formatDateTime(eventDetailModal?.data?.eventDate ?? "")}",
                                           style: TextStyle(
                                             fontFamily: AppConstants.manrope,
-                                            fontSize: 15.sp,
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ).paddingOnly(left: 3.w),
-                                ).paddingOnly(bottom: 1.h),
-
-                                Container(
-                                  height: 5.h,
-                                  padding: EdgeInsets.all(5),
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    color: AppColors.white,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.calendar_month,
-                                      ).paddingOnly(right: 2.w),
-                                      Text(
-                                        "Event Date: ${formatDateTime(eventDetailModal?.data?.eventDate ?? "")}",
-                                        style: TextStyle(
-                                          fontFamily: AppConstants.manrope,
-                                        ),
-                                      ),
-                                    ],
-                                  ).paddingOnly(left: 3.w),
-                                ).paddingOnly(bottom: 1.h),
-
-                                Container(
-                                  height: 5.h,
-                                  padding: EdgeInsets.all(5),
-                                  width: 40.w,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    color: AppColors.white,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        eventDetailModal?.data?.status ==
-                                                'active'
-                                            ? Icons.check_circle
-                                            : Icons.block,
-                                        color:
-                                            eventDetailModal?.data?.status ==
-                                                    'active'
-                                                ? AppColors.maincolor
-                                                : AppColors.redColor,
-                                      ).paddingOnly(right: 2.w),
-                                      Text(
-                                        "Status: ${eventDetailModal?.data?.status?.capitalizeFirst ?? ""}",
-                                        style: TextStyle(
-                                          fontFamily: AppConstants.manrope,
-                                        ),
-                                      ),
-                                    ],
-                                  ).paddingOnly(left: 3.w),
-                                ).paddingOnly(bottom: 2.h),
-                                eventDetailModal?.data?.status == "inactive"
-                                    ? Center(
-                                      child: batan(
-                                        title: 'Inactive',
-                                        route: () {},
-                                        color: AppColors.maincolor,
-                                        fontcolor: AppColors.white,
-                                        height: 5.h,
-                                        width: 50.w,
-                                        fontsize: 16.sp,
-                                        radius: 15.0,
-                                      ),
-                                    )
-                                    : Center(
-                                      child: batan(
-                                        title:
-                                            widget.status == "rejected"
-                                                ? "Reject"
-                                                : widget.status == ""
-                                                ? "Request Reservation"
-                                                : "Pending",
-                                        route: () {
-                                          widget.status == ""
-                                              ? sendlistap(widget.eventID)
-                                              : null;
-                                        },
-                                        color: AppColors.maincolor,
-                                        fontcolor: AppColors.white,
-                                        height: 5.h,
-                                        width: 50.w,
-                                        fontsize: 16.sp,
-                                        radius: 15.0,
-                                      ),
+                                      ],
+                                    ).paddingOnly(left: 3.w),
+                                  ).paddingOnly(bottom: 1.h),
+      
+                                  Container(
+                                    height: 5.h,
+                                    padding: EdgeInsets.all(5),
+                                    width: 40.w,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: AppColors.white,
                                     ),
-                              ],
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          eventDetailModal?.data?.status ==
+                                                  'active'
+                                              ? Icons.check_circle
+                                              : Icons.block,
+                                          color:
+                                              eventDetailModal?.data?.status ==
+                                                      'active'
+                                                  ? AppColors.maincolor
+                                                  : AppColors.redColor,
+                                        ).paddingOnly(right: 2.w),
+                                        Text(
+                                          "Status: ${eventDetailModal?.data?.status?.capitalizeFirst ?? ""}",
+                                          style: TextStyle(
+                                            fontFamily: AppConstants.manrope,
+                                          ),
+                                        ),
+                                      ],
+                                    ).paddingOnly(left: 3.w),
+                                  ).paddingOnly(bottom: 2.h),
+                                  eventDetailModal?.data?.status == "inactive"
+                                      ? Center(
+                                        child: batan(
+                                          title: 'Inactive',
+                                          route: () {},
+                                          color: AppColors.maincolor,
+                                          fontcolor: AppColors.white,
+                                          height: 5.h,
+                                          width: 50.w,
+                                          fontsize: 16.sp,
+                                          radius: 15.0,
+                                        ),
+                                      )
+                                      : Center(
+                                        child: batan(
+                                          title:  widget.status == ""?"Request Reservation": widget.status?.capitalizeFirst,
+                                          route: () {
+                                            widget.status == ""
+                                                ? sendlistap(widget.eventID)
+                                                : null;
+                                          },
+                                          color: AppColors.maincolor,
+                                          fontcolor: AppColors.white,
+                                          height: 5.h,
+                                          width: 50.w,
+                                          fontsize: 16.sp,
+                                          radius: 15.0,
+                                        ),
+                                      ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  if (isBooking)
-                    Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.black.withOpacity(0.1),
-                      ),
-                      child: Loader(),
+                      ],
                     ),
-                ],
-              ),
+                    if (isBooking)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.black.withOpacity(0.1),
+                        ),
+                        child: Loader(),
+                      ),
+                  ],
+                ),
+      ),
     );
   }
 
@@ -378,17 +483,23 @@ class _EventDetailState extends State<EventDetail> {
           eventDetailModal = EventDetailModal.fromJson(response.data);
 
           if (response.statusCode == 200) {
-            setState(() {
-              isLoading = false;
-            });
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
           } else if (response.statusCode == 422) {
-            setState(() {
-              isLoading = false;
-            });
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
           } else {
-            setState(() {
-              isLoading = false;
-            });
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
           }
         });
       } else {
@@ -398,5 +509,49 @@ class _EventDetailState extends State<EventDetail> {
         buildErrorDialog(context, 'Error', "Internet Required");
       }
     });
+  }
+
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    if (mounted) {
+      setState(() {
+        AppLat = position.latitude.toString();
+        AppLon = position.longitude.toString();
+        print(
+          "Latitude: ${position.latitude}, Longitude: ${position.longitude}",
+        );
+      });
+    }
   }
 }

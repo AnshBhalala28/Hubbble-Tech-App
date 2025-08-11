@@ -11,21 +11,21 @@ import '../../../comman/apiEndpoint.dart';
 import '../../../comman/responses.dart';
 
 class MessageBoardProvider extends ChangeNotifier {
-  Future<Response> listConciergeApi(id) async {
-    try {
-      String? token = await SaveDataLocal.getToken();
-      final dio = await DioHelper.getDio();
-      final response = await dio.get(
-        ApiEndpoint.conciergerList,
-        queryParameters: {'user_id': id},
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
-      );
-
-      return response;
-    } on DioException catch (e) {
-      throw Exception(handleDioError(e));
-    }
-  }
+  // Future<Response> listConciergeApi(id) async {
+  //   try {
+  //     String? token = await SaveDataLocal.getToken();
+  //     final dio = await DioHelper.getDio();
+  //     final response = await dio.get(
+  //       ApiEndpoint.conciergerList,
+  //       queryParameters: {'user_id': id},
+  //       options: Options(headers: {'X-Auth-Token': token ?? ''}),
+  //     );
+  //
+  //     return response;
+  //   } on DioException catch (e) {
+  //     throw Exception(handleDioError(e));
+  //   }
+  // }
 
   Future<Response> addPostApiWithImages({
     required Map<String, String> bodyData,
@@ -59,53 +59,94 @@ class MessageBoardProvider extends ChangeNotifier {
     }
   }
 
+  // Future<Response> localPostApi(Map<String, String> bodyData) async {
+  //   try {
+  //     String? token = await SaveDataLocal.getToken();
+  //     final dio = await DioHelper.getDio();
+  //     final response = await dio.post(
+  //       ApiEndpoint.localPost,
+  //       data: bodyData,
+  //       options: Options(headers: {'X-Auth-Token': token ?? ''}),
+  //     );
+  //
+  //     return response;
+  //   } on DioException catch (e) {
+  //     throw Exception(handleDioError(e));
+  //   }
+  // }
   Future<Response> localPostApi(Map<String, String> bodyData) async {
     try {
       String? token = await SaveDataLocal.getToken();
       final dio = await DioHelper.getDio();
+
+      // Increase timeouts
+      dio.options.connectTimeout = const Duration(seconds: 15);
+      dio.options.receiveTimeout = const Duration(seconds: 30);
+
       final response = await dio.post(
         ApiEndpoint.localPost,
-        data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        data: FormData.fromMap(bodyData), // send as form-data
+        options: Options(
+          headers: {
+            'X-Auth-Token': token ?? '',
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        ),
       );
 
       return response;
     } on DioException catch (e) {
+      // Detailed logging
+      print('===== Dio Error Debug Info =====');
+      print('Type: ${e.type}');
+      print('Message: ${e.message}');
+      print('Error: ${e.error}');
+      print('Response: ${e.response?.data}');
+      print('StackTrace: ${e.stackTrace}');
+      print('===============================');
+
       throw Exception(handleDioError(e));
+    } catch (e, stackTrace) {
+      print('===== Unknown Error =====');
+      print('Error: $e');
+      print('StackTrace: $stackTrace');
+      print('=========================');
+      rethrow;
     }
   }
 
-  Future<Response> getGroupApi(Map<String, String> bodyData) async {
-    try {
-      String? token = await SaveDataLocal.getToken();
-      final dio = await DioHelper.getDio();
-      final response = await dio.post(
-        ApiEndpoint.getGroup,
-        data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
-      );
 
-      return response;
-    } on DioException catch (e) {
-      throw Exception(handleDioError(e));
-    }
-  }
+  // Future<Response> getGroupApi(Map<String, String> bodyData) async {
+  //   try {
+  //     String? token = await SaveDataLocal.getToken();
+  //     final dio = await DioHelper.getDio();
+  //     final response = await dio.post(
+  //       ApiEndpoint.getGroup,
+  //       data: bodyData,
+  //       options: Options(headers: {'X-Auth-Token': token ?? ''}),
+  //     );
+  //
+  //     return response;
+  //   } on DioException catch (e) {
+  //     throw Exception(handleDioError(e));
+  //   }
+  // }
 
-  Future<Response> getMyJoinGroupApi(Map<String, String> bodyData) async {
-    try {
-      String? token = await SaveDataLocal.getToken();
-      final dio = await DioHelper.getDio();
-      final response = await dio.post(
-        ApiEndpoint.myJoinGroup,
-        data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
-      );
-
-      return response;
-    } on DioException catch (e) {
-      throw Exception(handleDioError(e));
-    }
-  }
+  // Future<Response> getMyJoinGroupApi(Map<String, String> bodyData) async {
+  //   try {
+  //     String? token = await SaveDataLocal.getToken();
+  //     final dio = await DioHelper.getDio();
+  //     final response = await dio.post(
+  //       ApiEndpoint.myJoinGroup,
+  //       data: bodyData,
+  //       options: Options(headers: {'X-Auth-Token': token ?? ''}),
+  //     );
+  //
+  //     return response;
+  //   } on DioException catch (e) {
+  //     throw Exception(handleDioError(e));
+  //   }
+  // }
 
   Future<Response> createGroupApi({
     required Map<String, String> bodyData,
@@ -183,64 +224,103 @@ class MessageBoardProvider extends ChangeNotifier {
     }
   }
 
-  Future<Response> groupMessageApi(String groupId, userId) async {
-    try {
-      String? token = await SaveDataLocal.getToken();
-      final dio = await DioHelper.getDio();
-      final response = await dio.get(
-        '${ApiEndpoint.getGroupMsg}$groupId/$userId',
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
-      );
-      return response;
-    } on DioException catch (e) {
-      throw Exception(handleDioError(e));
-    }
-  }
+  // Future<Response> groupMessageApi(String groupId, userId) async {
+  //   try {
+  //     String? token = await SaveDataLocal.getToken();
+  //     final dio = await DioHelper.getDio();
+  //     final response = await dio.get(
+  //       '${ApiEndpoint.getGroupMsg}$groupId/$userId',
+  //       options: Options(headers: {'X-Auth-Token': token ?? ''}),
+  //     );
+  //     return response;
+  //   } on DioException catch (e) {
+  //     throw Exception(handleDioError(e));
+  //   }
+  // }
 
-  Future<Response> friendRequestApi(Map<String, String> bodyData) async {
-    try {
-      String? token = await SaveDataLocal.getToken();
-      final dio = await DioHelper.getDio();
-      final response = await dio.post(
-        ApiEndpoint.friendRequestChat,
-        data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
-      );
-      return response;
-    } on DioException catch (e) {
-      throw Exception(handleDioError(e));
-    }
-  }
+  // Future<Response> friendRequestApi(Map<String, String> bodyData) async {
+  //   try {
+  //     String? token = await SaveDataLocal.getToken();
+  //     final dio = await DioHelper.getDio();
+  //     final response = await dio.post(
+  //       ApiEndpoint.friendRequestChat,
+  //       data: bodyData,
+  //       options: Options(headers: {'X-Auth-Token': token ?? ''}),
+  //     );
+  //     return response;
+  //   } on DioException catch (e) {
+  //     throw Exception(handleDioError(e));
+  //   }
+  // }
 
-  Future<Response> groupFriendRequestApi(Map<String, String> bodyData) async {
-    try {
-      String? token = await SaveDataLocal.getToken();
-      final dio = await DioHelper.getDio();
-      final response = await dio.post(
-        ApiEndpoint.listGroupRequest,
-        data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
-      );
-      return response;
-    } on DioException catch (e) {
-      throw Exception(handleDioError(e));
-    }
-  }
+  // Future<Response> groupFriendRequestApi(Map<String, String> bodyData) async {
+  //   try {
+  //     String? token = await SaveDataLocal.getToken();
+  //     final dio = await DioHelper.getDio();
+  //     final response = await dio.post(
+  //       ApiEndpoint.listGroupRequest,
+  //       data: bodyData,
+  //       options: Options(headers: {'X-Auth-Token': token ?? ''}),
+  //     );
+  //     return response;
+  //   } on DioException catch (e) {
+  //     throw Exception(handleDioError(e));
+  //   }
+  // }
 
+  // Future<Response> addLikeCommentApi(Map<String, String> bodyData) async {
+  //   try {
+  //     String? token = await SaveDataLocal.getToken();
+  //     final dio = await DioHelper.getDio();
+  //     final response = await dio.post(
+  //       ApiEndpoint.addLikeComment,
+  //       data: bodyData,
+  //       options: Options(headers: {'X-Auth-Token': token ?? ''}),
+  //     );
+  //     return response;
+  //   } on DioException catch (e) {
+  //     throw Exception(handleDioError(e));
+  //   }
+  // }
   Future<Response> addLikeCommentApi(Map<String, String> bodyData) async {
     try {
       String? token = await SaveDataLocal.getToken();
       final dio = await DioHelper.getDio();
+
+      // Increase timeouts
+      dio.options.connectTimeout = const Duration(seconds: 15);
+      dio.options.receiveTimeout = const Duration(seconds: 30);
+
       final response = await dio.post(
         ApiEndpoint.addLikeComment,
-        data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        data: FormData.fromMap(bodyData), // safer for Laravel form data
+        options: Options(
+          headers: {
+            'X-Auth-Token': token ?? '',
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        ),
       );
+
       return response;
     } on DioException catch (e) {
+      print('===== Dio Error Debug Info =====');
+      print('Type: ${e.type}');
+      print('Message: ${e.message}');
+      print('Error: ${e.error}');
+      print('Response: ${e.response?.data}');
+      print('StackTrace: ${e.stackTrace}');
+      print('===============================');
       throw Exception(handleDioError(e));
+    } catch (e, stackTrace) {
+      print('===== Unknown Error =====');
+      print('Error: $e');
+      print('StackTrace: $stackTrace');
+      print('=========================');
+      rethrow;
     }
   }
+
 
   Future<Response> getPostCommentApi(Map<String, String> bodyData) async {
     try {
@@ -272,81 +352,81 @@ class MessageBoardProvider extends ChangeNotifier {
     }
   }
 
-  Future<Response> groupMemberApi(String groupId) async {
-    try {
-      String? token = await SaveDataLocal.getToken();
-      final dio = await DioHelper.getDio();
-      final response = await dio.get(
-        '${ApiEndpoint.groupMember}$groupId',
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
-      );
-      return response;
-    } on DioException catch (e) {
-      throw Exception(handleDioError(e));
-    }
-  }
+  // Future<Response> groupMemberApi(String groupId) async {
+  //   try {
+  //     String? token = await SaveDataLocal.getToken();
+  //     final dio = await DioHelper.getDio();
+  //     final response = await dio.get(
+  //       '${ApiEndpoint.groupMember}$groupId',
+  //       options: Options(headers: {'X-Auth-Token': token ?? ''}),
+  //     );
+  //     return response;
+  //   } on DioException catch (e) {
+  //     throw Exception(handleDioError(e));
+  //   }
+  // }
 
-  Future<Response> removeGroupMemberApi(Map<String, String> bodyData) async {
-    try {
-      String? token = await SaveDataLocal.getToken();
-      final dio = await DioHelper.getDio();
-      final response = await dio.post(
-        ApiEndpoint.removeGroupMember,
-        data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
-      );
+  // Future<Response> removeGroupMemberApi(Map<String, String> bodyData) async {
+  //   try {
+  //     String? token = await SaveDataLocal.getToken();
+  //     final dio = await DioHelper.getDio();
+  //     final response = await dio.post(
+  //       ApiEndpoint.removeGroupMember,
+  //       data: bodyData,
+  //       options: Options(headers: {'X-Auth-Token': token ?? ''}),
+  //     );
+  //
+  //     return response;
+  //   } on DioException catch (e) {
+  //     throw Exception(handleDioError(e));
+  //   }
+  // }
 
-      return response;
-    } on DioException catch (e) {
-      throw Exception(handleDioError(e));
-    }
-  }
+  // Future<Response> addGroupMemebrApi(Map<String, String> bodyData) async {
+  //   try {
+  //     String? token = await SaveDataLocal.getToken();
+  //     final dio = await DioHelper.getDio();
+  //     final response = await dio.post(
+  //       ApiEndpoint.addGroupMember,
+  //       data: bodyData,
+  //       options: Options(headers: {'X-Auth-Token': token ?? ''}),
+  //     );
+  //
+  //     return response;
+  //   } on DioException catch (e) {
+  //     throw Exception(handleDioError(e));
+  //   }
+  // }
 
-  Future<Response> addGroupMemebrApi(Map<String, String> bodyData) async {
-    try {
-      String? token = await SaveDataLocal.getToken();
-      final dio = await DioHelper.getDio();
-      final response = await dio.post(
-        ApiEndpoint.addGroupMember,
-        data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
-      );
+  // Future<Response> deleteGroupApi(String groupId, userId) async {
+  //   try {
+  //     String? token = await SaveDataLocal.getToken();
+  //     final dio = await DioHelper.getDio();
+  //     final response = await dio.get(
+  //       '${ApiEndpoint.deleteGroup}$groupId/?user_id=$userId',
+  //       options: Options(headers: {'X-Auth-Token': token ?? ''}),
+  //     );
+  //     return response;
+  //   } on DioException catch (e) {
+  //     throw Exception(handleDioError(e));
+  //   }
+  // }
 
-      return response;
-    } on DioException catch (e) {
-      throw Exception(handleDioError(e));
-    }
-  }
-
-  Future<Response> deleteGroupApi(String groupId, userId) async {
-    try {
-      String? token = await SaveDataLocal.getToken();
-      final dio = await DioHelper.getDio();
-      final response = await dio.get(
-        '${ApiEndpoint.deleteGroup}$groupId/?user_id=$userId',
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
-      );
-      return response;
-    } on DioException catch (e) {
-      throw Exception(handleDioError(e));
-    }
-  }
-
-  Future<Response> getRequestAppApi(id) async {
-    try {
-      String? token = await SaveDataLocal.getToken();
-      final dio = await DioHelper.getDio();
-      final response = await dio.get(
-        ApiEndpoint.getRequestApp,
-        queryParameters: {'user_id': id},
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
-      );
-
-      return response;
-    } on DioException catch (e) {
-      throw Exception(handleDioError(e));
-    }
-  }
+  // Future<Response> getRequestAppApi(id) async {
+  //   try {
+  //     String? token = await SaveDataLocal.getToken();
+  //     final dio = await DioHelper.getDio();
+  //     final response = await dio.get(
+  //       ApiEndpoint.getRequestApp,
+  //       queryParameters: {'user_id': id},
+  //       options: Options(headers: {'X-Auth-Token': token ?? ''}),
+  //     );
+  //
+  //     return response;
+  //   } on DioException catch (e) {
+  //     throw Exception(handleDioError(e));
+  //   }
+  // }
 
   Future<Response> appFriendUserPersonalInfoApi(
     Map<String, String> bodyData,

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/Screen/Booking/Model/event_detail_model.dart';
+import 'package:wavee/Screen/Event/View/event_detail.dart';
 import 'package:wavee/comman/Custom_AppBar.dart';
 import 'package:wavee/comman/custom_batan.dart';
 import 'package:wavee/comman/loader.dart';
@@ -501,6 +502,23 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                   event?.status ?? "",
                   event?.rsvp,
                   event?.isAttended,
+                ),
+              ).paddingOnly(bottom: 1.h),
+              Center(
+                child: InkWell(
+                  onTap: () {
+                    Get.to(
+                      EventDetail(eventID: event?.eventId.toString() ?? "",status: event?.status??"",),
+                    );
+                  },
+                  child: Text(
+                    "View Details",
+                    style: TextStyle(
+                      fontFamily: AppConstants.manrope,
+                      decoration: TextDecoration.underline,
+                      fontSize: 16.sp,
+                    ),
+                  ),
                 ),
               ),
               SizedBox(height: 24),

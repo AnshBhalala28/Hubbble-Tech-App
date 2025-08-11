@@ -82,7 +82,7 @@ class _HomePageState extends State<HomePage> {
       isLoading = true;
     });
 
-    getnotificationCount();
+    // getnotificationCount();
     ParcelShowCount();
     VisitorShowCount();
     ChatShowCount();
@@ -1435,28 +1435,28 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  getnotificationCount() {
-    checkInternet().then((internet) async {
-      if (internet) {
-        try {
-          final response = await NotificationProvider().notificationApi(
-            (loginModel?.data?.user?.id).toString(),
-          );
-
-          if (response.statusCode == 200) {
-            notificationmodel = NotificationModell.fromJson(response.data);
-
-            setState(() {
-              notificationCount = notificationmodel?.data?.totalCount ?? 0;
-              isLoading = false;
-            });
-          } else {}
-        } catch (e) {}
-      } else {
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
+  // getnotificationCount() {
+  //   checkInternet().then((internet) async {
+  //     if (internet) {
+  //       try {
+  //         final response = await NotificationProvider().notificationApi(
+  //           (loginModel?.data?.user?.id).toString(),
+  //         );
+  //
+  //         if (response.statusCode == 200) {
+  //           notificationmodel = NotificationModell.fromJson(response.data);
+  //
+  //           setState(() {
+  //             notificationCount = notificationmodel?.data?.totalCount ?? 0;
+  //             isLoading = false;
+  //           });
+  //         } else {}
+  //       } catch (e) {}
+  //     } else {
+  //       buildErrorDialog(context, 'Error', "Internet Required");
+  //     }
+  //   });
+  // }
 
   Widget commonLoader() {
     return SizedBox(

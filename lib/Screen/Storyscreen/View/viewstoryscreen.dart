@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../../comman/const.dart';
 
@@ -88,14 +89,14 @@ class StoryScreen extends StatelessWidget {
               );
             },
           ),
-          Positioned(
-            top: 40,
-            right: 20,
-            child: IconButton(
-              icon: Icon(Icons.close, color: Colors.white, size: 30),
-              onPressed: () => Get.back(),
-            ),
-          ),
+          // Positioned(
+          //   top: 8.h,
+          //   right: 8.w,
+          //   child: IconButton(
+          //     icon: Icon(Icons.close, color: Colors.white, size: 30),
+          //     onPressed: () => Get.back(),
+          //   ),
+          // ),
         ],
       ),
     );
