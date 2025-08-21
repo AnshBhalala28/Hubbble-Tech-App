@@ -1,5 +1,10 @@
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
@@ -370,7 +375,140 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
     }
   }
 
+  // void showAddRequestBottomSheet(BuildContext context) {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     backgroundColor: Colors.white,
+  //     isScrollControlled: true,
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+  //     ),
+  //     builder: (context) {
+  //       return Padding(
+  //         padding: EdgeInsets.only(
+  //           bottom: MediaQuery.of(context).viewInsets.bottom,
+  //           left: 16,
+  //           right: 16,
+  //           top: 24,
+  //         ),
+  //         child: StatefulBuilder(
+  //           builder: (context, setState) {
+  //             return SingleChildScrollView(
+  //               child: Form(
+  //                 key: _formKey,
+  //                 child: Column(
+  //                   mainAxisSize: MainAxisSize.min,
+  //                   children: [
+  //                     const Text(
+  //                       'Add Maintenance',
+  //                       style: TextStyle(
+  //                         fontSize: 18,
+  //                         fontWeight: FontWeight.bold,
+  //                         fontFamily: AppConstants.manrope,
+  //                       ),
+  //                     ),
+  //                     SizedBox(height: 2.h),
+  //                     SizedBox(height: 1.5.h),
+  //                     Align(
+  //                       alignment: Alignment.topLeft,
+  //                       child: Text(
+  //                         "Subject",
+  //                         style: TextStyle(
+  //                           fontFamily: AppConstants.manrope,
+  //                           fontSize: 16.sp,
+  //                           fontWeight: FontWeight.bold,
+  //                         ),
+  //                       ),
+  //                     ).paddingOnly(bottom: 1.h),
+  //                     TextFormField(
+  //                       controller: subjectController,
+  //                       validator: (value) {
+  //                         if (value == null || value.trim().isEmpty) {
+  //                           return 'Please enter subject';
+  //                         }
+  //                         return null;
+  //                       },
+  //                       style: const TextStyle(
+  //                         fontFamily: AppConstants.manrope,
+  //                         fontWeight: FontWeight.bold,
+  //                       ),
+  //                       decoration: inputDecoration(
+  //                         cr: AppColors.black,
+  //                         hintText: "Enter Subject",
+  //                       ),
+  //                     ),
+  //                     SizedBox(height: 1.5.h),
+  //                     Align(
+  //                       alignment: Alignment.topLeft,
+  //                       child: Text(
+  //                         "Note",
+  //                         style: TextStyle(
+  //                           fontFamily: AppConstants.manrope,
+  //                           fontSize: 16.sp,
+  //                           fontWeight: FontWeight.bold,
+  //                         ),
+  //                       ),
+  //                     ).paddingOnly(bottom: 1.h),
+  //                     TextFormField(
+  //                       controller: noteController,
+  //                       validator: (value) {
+  //                         if (value == null || value.trim().isEmpty) {
+  //                           return 'Please enter note';
+  //                         }
+  //                         return null;
+  //                       },
+  //                       style: const TextStyle(
+  //                         fontFamily: AppConstants.manrope,
+  //                         fontWeight: FontWeight.bold,
+  //                       ),
+  //                       decoration: inputDecoration(
+  //                         hintText: "Enter Note",
+  //                         cr: AppColors.black,
+  //                       ),
+  //                       maxLines: 4,
+  //                     ),
+  //                     SizedBox(height: 2.h),
+  //                     isLoading
+  //                         ? const CircularProgressIndicator(
+  //                           color: AppColors.maincolor,
+  //                         )
+  //                         : batan(
+  //                           title: "Submit",
+  //                           route: () {
+  //                             bool isValid = _formKey.currentState!.validate();
+  //
+  //                             if (isValid) {
+  //                               setState(() {
+  //                                 isLoading = true;
+  //                               });
+  //                               AddMaintenance();
+  //                               Navigator.of(context).pop();
+  //                             }
+  //                           },
+  //                           color: AppColors.maincolor,
+  //                           fontcolor: Colors.white,
+  //                           height: 5.5.h,
+  //                           width: double.infinity,
+  //                           fontsize: 16.sp,
+  //                           radius: 20.0,
+  //                         ),
+  //                     SizedBox(height: 5.h),
+  //                   ],
+  //                 ),
+  //               ),
+  //             );
+  //           },
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+
+  File? selectedImage;
+
   void showAddRequestBottomSheet(BuildContext context) {
+    final ImagePicker picker = ImagePicker();
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -403,7 +541,8 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                         ),
                       ),
                       SizedBox(height: 2.h),
-                      SizedBox(height: 1.5.h),
+
+                      /// Subject Field
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
@@ -433,6 +572,8 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                         ),
                       ),
                       SizedBox(height: 1.5.h),
+
+                      /// Note Field
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
@@ -463,6 +604,72 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                         maxLines: 4,
                       ),
                       SizedBox(height: 2.h),
+
+                      /// Image Picker
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Attach Image (optional)",
+                          style: TextStyle(
+                            fontFamily: AppConstants.manrope,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ).paddingOnly(bottom: 1.h),
+
+                      InkWell(
+                        onTap: () async {
+                          final pickedFile = await picker.pickImage(
+                            source: ImageSource.gallery,
+                            imageQuality: 80,
+                          );
+                          if (pickedFile != null) {
+                            setState(() {
+                              selectedImage = File(pickedFile.path);
+                            });
+                          }
+                        },
+                        child: Container(
+                          height: 150,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.grey.shade100,
+                          ),
+                          child:
+                              selectedImage != null
+                                  ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.file(
+                                      selectedImage!,
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                    ),
+                                  )
+                                  : Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.add_a_photo,
+                                          color: Colors.grey,
+                                        ),
+                                        SizedBox(height: 5),
+                                        Text(
+                                          "Pick an Image",
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                        ),
+                      ),
+                      SizedBox(height: 2.h),
+
+                      /// Submit Button
                       isLoading
                           ? const CircularProgressIndicator(
                             color: AppColors.maincolor,
@@ -476,7 +683,10 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                 setState(() {
                                   isLoading = true;
                                 });
-                                AddMaintenance();
+
+                                /// You can send `selectedImage` along with form data here
+                                AddMaintenance(selectedImage);
+
                                 Navigator.of(context).pop();
                               }
                             },
@@ -499,62 +709,66 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
     );
   }
 
-  void AddMaintenance1() {
-    final Map<String, String> data = {
-      'user_id': loginModel?.data?.user?.id.toString() ?? '',
-      "subject": subjectController.text.trim(),
-      "note": noteController.text.trim(),
-    };
 
-    checkInternet().then((internet) async {
-      if (internet) {
-        MaintenanceProvider().addMaintanceRequestApi(data).then((
-          response,
-        ) async {
-          if (response.statusCode == 200) {
-            AllMaintenanceApi();
-            setState(() {
-              isLoading = false;
-              subjectController.clear();
-              noteController.clear();
-            });
-          } else {
-            setState(() {
-              isLoading = false;
-            });
-          }
-        });
-      } else {
-        setState(() {
-          isLoading = false;
-        });
 
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
-
-  void AddMaintenance() {
-    final Map<String, String> data = {
-      'user_id': loginModel?.data?.user?.id.toString() ?? '',
-      "subject": subjectController.text.trim(),
-      "note": noteController.text.trim(),
-    };
-
+//   void AddMaintenance(File? file) {
+//     final Map<String, String> data = {
+//       'user_id': loginModel?.data?.user?.id.toString() ?? '',
+//       "subject": subjectController.text.trim(),
+//       "note": noteController.text.trim(),
+//       'file[]': file?.path ?? "",
+//     };
+//
+//     setState(() {
+//       isLoading = true;
+//     });
+// log("dasdasadasdas$data");
+//     checkInternet().then((internet) async {
+//       if (internet) {
+//         MaintenanceProvider().addMaintanceRequestApi(data).then((
+//           response,
+//         ) async {
+//           if (response.statusCode == 200) {
+//             AllMaintenanceApi();
+//             setState(() {
+//               subjectController.clear();
+//               noteController.clear();
+//             });
+//           } else {
+//             setState(() {
+//               isLoading = false;
+//             });
+//           }
+//         });
+//       } else {
+//         setState(() {
+//           isLoading = false;
+//         });
+//         buildErrorDialog(context, 'Error', "Internet Required");
+//       }
+//     });
+//   }
+  void AddMaintenance(File? file) {
     setState(() {
       isLoading = true;
     });
 
     checkInternet().then((internet) async {
       if (internet) {
-        MaintenanceProvider().addMaintanceRequestApi(data).then((
-          response,
-        ) async {
+        MaintenanceProvider()
+            .addMaintanceRequestApi(
+          userId: loginModel?.data?.user?.id.toString() ?? '',
+          subject: subjectController.text.trim(),
+          note: noteController.text.trim(),
+          file: file,
+        )
+            .then((response) async {
           if (response.statusCode == 200) {
             AllMaintenanceApi();
             setState(() {
               subjectController.clear();
               noteController.clear();
+              isLoading = false;
             });
           } else {
             setState(() {
@@ -612,45 +826,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
     });
   }
 
-  void MaintenanceDetailApi1(String detailId) {
-    final Map<String, String> data = {
-      'user_id': loginModel?.data?.user?.id.toString() ?? '',
-      "id": detailId ?? "",
-    };
 
-    checkInternet().then((internet) async {
-      if (internet) {
-        MaintenanceProvider().getMaintanceApi(data).then((response) async {
-          maintenanceDetailModel = MaintenanceDetailModel.fromJson(
-            response.data,
-          );
-
-          if (response.statusCode == 200) {
-            showMaintenanceDetailBottomSheet(context, maintenanceDetailModel!);
-            if (mounted) {
-              setState(() {
-                isLoading = false;
-              });
-            }
-          } else {
-            if (mounted) {
-              setState(() {
-                isLoading = false;
-              });
-            }
-          }
-        });
-      } else {
-        if (mounted) {
-          setState(() {
-            isLoading = false;
-          });
-        }
-
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
 
   void MaintenanceDetailApi(String detailId) async {
     setState(() {
@@ -701,10 +877,12 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
     }
   }
 
+
+
   void showMaintenanceDetailBottomSheet(
-    BuildContext context,
-    MaintenanceDetailModel detail,
-  ) {
+      BuildContext context,
+      MaintenanceDetailModel detail,
+      ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -730,6 +908,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  /// Top handle bar
                   Center(
                     child: Container(
                       height: 4,
@@ -741,6 +920,8 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                       ),
                     ),
                   ),
+
+                  /// Title
                   Text(
                     "Maintenance Details",
                     style: TextStyle(
@@ -750,6 +931,8 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                     ),
                   ),
                   SizedBox(height: 2.h),
+
+                  /// Details
                   _detailRow("Subject", detail.data?.subject ?? "-"),
                   _detailRow("Note", detail.data?.note ?? "-"),
                   _detailRow(
@@ -762,12 +945,55 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                   _detailRow(
                     "Created",
                     detail.data?.createdAt != null
-                        ? DateFormat(
-                          'dd MMM yyyy, hh:mm a',
-                        ).format(DateTime.parse(detail.data!.createdAt!))
+                        ? DateFormat('dd MMM yyyy, hh:mm a')
+                        .format(DateTime.parse(detail.data!.createdAt!))
                         : "-",
                   ),
-                  SizedBox(height: 24),
+
+                  SizedBox(height: 16),
+
+                  /// Image Preview
+                  if (detail.data?.file != null &&
+                      detail.data!.file!.isNotEmpty)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Attached Image",
+                          style: TextStyle(
+                            fontFamily: AppConstants.manrope,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 1.h),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: CachedNetworkImage(
+                            imageUrl: detail.data!.file!,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Container(
+                              height: 200,
+                              color: Colors.grey.shade200,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              height: 200,
+                              color: Colors.grey.shade200,
+                              child: const Icon(Icons.broken_image,
+                                  color: Colors.grey),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                      ],
+                    ),
+
+                  /// Close Button
                   batan(
                     title: "Close",
                     route: () {
@@ -789,6 +1015,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
       },
     );
   }
+
 
   Widget _detailRow(String title, String value, {Color? color}) {
     final isExpandable =

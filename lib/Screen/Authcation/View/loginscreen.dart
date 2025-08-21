@@ -33,6 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+    backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -341,26 +342,26 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     // Fetch the FCM token
-    // String? fcmToken = await FirebaseMessaging.instance.getToken();
-    //
-    // if (fcmToken == null) {
-    //   showSnackBar(
-    //     title: "FCM Error",
-    //     message: "Unable to fetch FCM token",
-    //     backgoundColor: Colors.red,
-    //     ColorText: Colors.white,
-    //   );
-    //   setState(() {
-    //     isLoading = false;
-    //   });
-    //   return;
-    // }
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+
+    if (fcmToken == null) {
+      showSnackBar(
+        title: "FCM Error",
+        message: "Unable to fetch FCM token",
+        backgoundColor: Colors.red,
+        ColorText: Colors.white,
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
 
     final Map<String, String> data = {
       'email': email.text.trim(),
       'password': password.text.trim(),
       'role': '4',
-      // "fcm_token": fcmToken,
+      "fcm_token": fcmToken,
     };
 
     checkInternet().then((internet) async {

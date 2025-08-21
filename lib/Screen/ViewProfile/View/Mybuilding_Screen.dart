@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -35,6 +36,8 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
   TextEditingController countryController = TextEditingController();
   TextEditingController zipCodeController = TextEditingController();
   TextEditingController fullAddressController = TextEditingController();
+  TextEditingController landline = TextEditingController();
+  TextEditingController number = TextEditingController();
   bool isLoading = false;
   String profileImage = "";
   bool isEditing = false;
@@ -80,10 +83,9 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                       "Building Name",
                       TextEditingController(
                         text:
-                            profileModel?.data?.buildingDocument?.buildingName
-                                .toString()
-                                .capitalizeFirst ??
-                            "",
+                        (profileModel?.data?.buildingDocument?.buildingName ?? "")
+                            .toLowerCase()
+                            .replaceFirstMapped(RegExp(r'^[a-z]'), (m) => m[0]!.toUpperCase()),
                       ),
                       Icons.apartment,
                       false,
@@ -119,6 +121,19 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                     //   Icons.house,
                     //   false,
                     // ),
+                    profileField(
+                      "Landline Number",
+                      landline,
+
+                      Icons.phone,
+                      false,
+                    ),
+                    profileField(
+                      "Additional Number",
+                      number,
+                      Icons.phone,
+                      false,
+                    ),
                     profileField(
                       "Parking Info",
                       TextEditingController(
@@ -372,7 +387,12 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
         ProfileProvider().profileApi(data).then((response) async {
           if (response.statusCode == 200) {
             setState(() {
+
+
               var profileModel = ProfileModel.fromJson(response.data);
+              landline.text = profileModel.data?.building?.landline ?? "";
+              number.text = profileModel.data?.building?.mobile ?? "";
+
               if (profileModel.status == 200) {
                 var user = profileModel.data?.user;
                 var building = profileModel.data?.buildingDocument;
@@ -380,6 +400,7 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                   myBuilingname.text = building?.buildingName ?? "";
                 }
               }
+              log("landline   landlinelandline${profileModel.data?.building?.landline}");
               isLoading = false;
             });
           } else {
