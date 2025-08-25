@@ -11,7 +11,7 @@ import 'package:timezone/timezone.dart' as tz;
 // import 'package:upi_india/upi_india.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wavee/Screen/Buy%20Product/place_order_model.dart';
-import 'package:wavee/Screen/Thankyou%20Page/view/thankyou_page.dart';
+import 'package:wavee/Screen/thankYouPage/view/thankyou_page.dart';
 import 'package:wavee/comman/const.dart';
 import 'package:wavee/comman/expension_tile.dart';
 import 'package:wavee/comman/loader.dart';

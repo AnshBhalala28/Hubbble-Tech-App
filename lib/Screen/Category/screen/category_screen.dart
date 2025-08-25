@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Screen/Product%20Detail%20Page/view/product_detail_page.dart';
+import 'package:wavee/Screen/productDetailPage/view/product_detail_page.dart';
 import 'package:wavee/comman/Custom_AppBar.dart';
 import 'package:wavee/comman/const.dart';
 import 'package:wavee/comman/loader.dart';
@@ -18,7 +18,7 @@ import '../../Add to Cart/model/add_to_cart_model.dart';
 import '../../Add to Cart/provider/add_to_cart_provider.dart';
 import '../../Add to Cart/view/add_to_cart_view.dart';
 import '../../Community Detail Page/Provider/community_detail_provider.dart';
-import '../../Product Detail Page/provider/product_provider.dart';
+import '../../productDetailPage/provider/product_provider.dart';
 import '../Modal/category_detail_modal.dart';
 
 class CategoryScreen extends StatefulWidget {

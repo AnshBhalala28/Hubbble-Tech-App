@@ -16,7 +16,7 @@ import '../../../comman/loader.dart';
 import '../../Community Screen/Community Screen/Model/BusnessViewModal.dart';
 import '../../Community Screen/Community Screen/Model/GetLikeModal.dart';
 import '../../Community Screen/Community Screen/Provider/community_provider.dart';
-import '../../HomeNewPage/View/homenewpage.dart';
+import '../../homePage/View/homenewpage.dart';
 import 'BusinessDetailScreen.dart';
 
 class FavouriteBusinessesPage extends StatefulWidget {

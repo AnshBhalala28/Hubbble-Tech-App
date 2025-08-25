@@ -4,7 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Screen/HomeNewPage/View/homenewpage.dart';
+import 'package:wavee/Screen/homePage/View/homenewpage.dart';
 import 'package:wavee/comman/custom_batan.dart';
 import 'package:wavee/comman/loader.dart';
 

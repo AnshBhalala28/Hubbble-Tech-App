@@ -374,7 +374,7 @@ import '../../../comman/const.dart';
 import '../../../comman/custom_batan.dart';
 import '../../../comman/error_dialog.dart';
 import '../../../comman/loader.dart';
-import '../../HomeNewPage/View/homenewpage.dart';
+import '../../homePage/View/homenewpage.dart';
 import '../Model/booking_model.dart';
 import '../Provider/booking_provider.dart';
 import 'form_screen.dart';

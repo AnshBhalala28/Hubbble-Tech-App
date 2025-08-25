@@ -13,7 +13,7 @@
 // import 'package:wavee/Screen/Chatscreen/View/chatscreen.dart';
 // import 'package:wavee/Screen/Favourites/View/FavouriteBusinessesPage.dart';
 // import 'package:wavee/Screen/Message_board/View/messageboard.dart';
-// import 'package:wavee/Screen/Visitor/View/visitorscreen.dart';
+// import 'package:wavee/Screen/visitor/View/visitorscreen.dart';
 // import 'package:wavee/comman/const.dart';
 // import 'package:wavee/comman/custom_button.dart';
 // import 'package:wavee/comman/error_dialog.dart';
@@ -27,11 +27,11 @@
 // import '../Screen/Manintenance/View/maintenance_view.dart';
 // import '../Screen/Oredrscreen/View/order_screen_view.dart';
 // import '../Screen/Parcel/parcel_Screen_View/parcel_View.dart';
-// import '../Screen/UpcomingRequest/View/Request_Page.dart';
-// import '../Screen/UpcomingRequest/View/group_screen.dart';
-// import '../Screen/ViewProfile/Model/profile_model.dart';
-// import '../Screen/ViewProfile/Provider/profile_provider.dart';
-// import '../Screen/ViewProfile/View/viewprofile.dart';
+// import '../Screen/upcomingRequest/View/Request_Page.dart';
+// import '../Screen/upcomingRequest/View/group_screen.dart';
+// import '../Screen/viewProfile/Model/profile_model.dart';
+// import '../Screen/viewProfile/Provider/profile_provider.dart';
+// import '../Screen/viewProfile/View/viewprofile.dart';
 // import 'check_inernet_connecty.dart';
 // import 'colors.dart';
 // import 'custom_snack_bar.dart';
@@ -812,7 +812,7 @@
 //                     children: [
 //                       InkWell(
 //                         onTap: () {
-//                           Get.to(ViewProfile(id: loginModel?.data?.user?.id));
+//                           Get.to(viewProfile(id: loginModel?.data?.user?.id));
 //                         },
 //                         child: Row(
 //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/Screen/Buy%20Product/place_order_model.dart';
-import 'package:wavee/Screen/Thankyou%20Page/view/thankyou_page.dart';
+import 'package:wavee/Screen/thankYouPage/view/thankyou_page.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 

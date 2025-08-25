@@ -26,9 +26,9 @@ import '../../Community Screen/Community Screen/Provider/community_provider.dart
 import '../../Community Screen/Community Screen/view/FullScreenImageView.dart';
 import '../../Event/Model/send_event_model.dart';
 import '../../Event/Provider/event_provider.dart';
-import '../../Message_screen/View/messageScreen.dart';
-import '../../Product Detail Page/view/product_detail_page.dart';
-import '../../Service Detail Page/View/service_detail_page.dart';
+import '../../messageScreen/View/messageScreen.dart';
+import '../../productDetailPage/view/product_detail_page.dart';
+import '../../serviceDetailPage/View/service_detail_page.dart';
 
 class BusinessDetailScreen extends StatefulWidget {
   final BusnessViewModal? busnessviewmodal;

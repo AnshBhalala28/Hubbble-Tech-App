@@ -9,7 +9,7 @@ import 'package:wavee/Screen/Chatscreen/View/chatscreen.dart';
 import 'package:wavee/Screen/Community%20Screen/Community%20Screen/view/community_screen.dart';
 import 'package:wavee/comman/const.dart';
 
-import '../Screen/HomeNewPage/View/homenewpage.dart';
+import '../Screen/homePage/View/homenewpage.dart';
 import 'colors.dart';
 
 class Bottom_bar extends StatefulWidget {

@@ -9,15 +9,15 @@ import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/Screen/Chatscreen/Model/Chatstorymodal.dart';
 import 'package:wavee/Screen/Community%20Screen/Community%20Screen/view/StoryView.dart';
-import 'package:wavee/Screen/ViewProfile/Model/profile_model.dart';
+import 'package:wavee/Screen/viewProfile/Model/profile_model.dart';
 import 'package:wavee/comman/bottom_bar.dart';
 import 'package:wavee/comman/const.dart';
 
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/error_dialog.dart';
-import '../../Message_screen/View/messageScreen.dart';
-import '../../ViewProfile/Provider/profile_provider.dart';
+import '../../messageScreen/View/messageScreen.dart';
+import '../../viewProfile/Provider/profile_provider.dart';
 import '../Model/chat_screen_model.dart';
 import '../Provider/chat_screen_provider.dart';
 

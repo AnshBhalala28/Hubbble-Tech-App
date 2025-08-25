@@ -15,7 +15,7 @@ import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
 import '../../../comman/custom_batan.dart';
 import '../../../comman/error_dialog.dart';
-import '../../HomeNewPage/View/homenewpage.dart';
+import '../../homePage/View/homenewpage.dart';
 import '../Model/event_model.dart';
 import '../Model/send_event_model.dart';
 import '../Provider/event_provider.dart';

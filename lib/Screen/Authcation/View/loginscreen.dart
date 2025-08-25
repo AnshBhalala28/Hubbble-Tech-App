@@ -10,7 +10,7 @@ import '../../../comman/custom_snack_bar.dart';
 import '../../../comman/error_dialog.dart';
 import '../../../comman/input_decoration.dart';
 import '../../../comman/store_local.dart';
-import '../../HomeNewPage/View/homenewpage.dart';
+import '../../homePage/View/homenewpage.dart';
 import '../Model/login_model.dart';
 import '../Provider/authcation_provider.dart';
 import 'forgotpassword.dart';

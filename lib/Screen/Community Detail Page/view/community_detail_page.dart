@@ -12,7 +12,7 @@ import 'package:sizer/sizer.dart';
 import 'package:wavee/Screen/Category/screen/category_screen.dart';
 import 'package:wavee/Screen/Community%20Detail%20Page/view/ProductSearchScreen.dart';
 import 'package:wavee/Screen/Community%20Screen/Community%20Screen/Model/businesslikemodel.dart';
-import 'package:wavee/Screen/Product%20Detail%20Page/view/product_detail_page.dart';
+import 'package:wavee/Screen/productDetailPage/view/product_detail_page.dart';
 import 'package:wavee/comman/colors.dart';
 import 'package:wavee/comman/product_disable.dart';
 
@@ -25,8 +25,8 @@ import '../../Add to Cart/provider/add_to_cart_provider.dart';
 import '../../Add to Cart/view/add_to_cart_view.dart';
 import '../../Community Screen/Community Screen/Model/BusnessViewModal.dart';
 import '../../Community Screen/Community Screen/Provider/community_provider.dart';
-import '../../Message_screen/View/messageScreen.dart';
-import '../../Product Detail Page/provider/product_provider.dart';
+import '../../messageScreen/View/messageScreen.dart';
+import '../../productDetailPage/provider/product_provider.dart';
 import '../Model/category_modal.dart';
 import '../Provider/community_detail_provider.dart';
 

@@ -13,7 +13,7 @@ import 'package:video_player/video_player.dart';
 import '../../../../comman/check_inernet_connecty.dart';
 import '../../../../comman/const.dart';
 import '../../../../comman/error_dialog.dart';
-import '../../../Message_screen/View/messageScreen.dart';
+import '../../../messageScreen/View/messageScreen.dart';
 import '../Model/StroyModel.dart';
 import '../Model/postlikemodel.dart';
 import '../Provider/community_provider.dart';

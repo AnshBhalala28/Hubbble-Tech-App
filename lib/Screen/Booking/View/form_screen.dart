@@ -10,7 +10,7 @@ import 'package:sizer/sizer.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:torn_ticket/torn_ticket.dart';
 import 'package:wavee/Screen/Booking/View/book_amenities.dart';
-import 'package:wavee/Screen/HomeNewPage/View/homenewpage.dart';
+import 'package:wavee/Screen/homePage/View/homenewpage.dart';
 import 'package:wavee/comman/custom_batan.dart';
 import 'package:wavee/comman/loader.dart';
 

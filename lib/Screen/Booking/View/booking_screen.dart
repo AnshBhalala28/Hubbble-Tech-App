@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/Screen/Booking/Model/amenities_book_status_model.dart';
-import 'package:wavee/Screen/HomeNewPage/View/homenewpage.dart';
+import 'package:wavee/Screen/homePage/View/homenewpage.dart';
 import 'package:wavee/comman/loader.dart';
 
 import '../../../comman/Custom_AppBar.dart';

@@ -7,8 +7,8 @@ import '../../../comman/const.dart';
 import '../../../comman/error_dialog.dart';
 import '../../Add to Cart/provider/add_to_cart_provider.dart';
 import '../../Add to Cart/view/add_to_cart_view.dart';
-import '../../Product Detail Page/provider/product_provider.dart';
-import '../../Product Detail Page/view/product_detail_page.dart';
+import '../../productDetailPage/provider/product_provider.dart';
+import '../../productDetailPage/view/product_detail_page.dart';
 import '../Model/SearchProductModel.dart';
 import '../Provider/community_detail_provider.dart';
 

@@ -8,7 +8,7 @@ import 'package:wavee/comman/store_local.dart';
 
 import '../comman/custom_batan.dart';
 import 'Authcation/View/loginscreen.dart';
-import 'HomeNewPage/View/homenewpage.dart';
+import 'homePage/View/homenewpage.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
