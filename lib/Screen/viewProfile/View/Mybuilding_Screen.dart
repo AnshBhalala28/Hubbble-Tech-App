@@ -53,7 +53,14 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
     });
     GetProfile();
   }
-
+  String capitalizeWords(String input) {
+    if (input.isEmpty) return "";
+    return input
+        .split(" ")
+        .map((word) =>
+    word.isNotEmpty ? word[0].toUpperCase() + word.substring(1).toLowerCase() : "")
+        .join(" ");
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,14 +89,14 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                     profileField(
                       "Building Name",
                       TextEditingController(
-                        text:
-                        (profileModel?.data?.buildingDocument?.buildingName ?? "")
-                            .toLowerCase()
-                            .replaceFirstMapped(RegExp(r'^[a-z]'), (m) => m[0]!.toUpperCase()),
+                        text: capitalizeWords(
+                          profileModel?.data?.buildingDocument?.buildingName ?? "",
+                        ),
                       ),
                       Icons.apartment,
                       false,
                     ),
+
                     profileField(
                       "Address",
                       TextEditingController(
