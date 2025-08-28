@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -36,12 +37,18 @@ import 'package:wavee/comman/loader.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
 import '../../../comman/custom_batan.dart';
+import '../../../comman/custom_snack_bar.dart';
 import '../../../comman/input_decoration.dart';
+import '../../Authcation/Model/login_model.dart';
+import '../../Authcation/Provider/authcation_provider.dart';
 import '../../Booking/View/event_booking_screen.dart';
-import '../../messageBoard/Model/Add_Post_Model.dart';
-import '../../messageBoard/Provider/messsage_board_provider.dart';
-import '../../viewProfile/Model/profile_model.dart';
-import '../../viewProfile/Provider/profile_provider.dart';
+import '../../Message_board/Model/Add_Post_Model.dart';
+import '../../Message_board/Provider/messsage_board_provider.dart';
+import '../../NotiFicationPage/Model/Notification_Model.dart';
+import '../../ViewProfile/Model/profile_model.dart';
+import '../../ViewProfile/Provider/profile_provider.dart';
+
+// import '../../Visitor/Model/latest_visitor_modal/latest_visitor_modal.dart';
 import '../Model/chat_show_count_modal.dart';
 import '../Model/message_board_modal.dart';
 
@@ -85,6 +92,7 @@ class _HomePageState extends State<HomePage> {
     MessageBoardApi();
     localpostapi();
     GetProfile();
+    updateFCM1();
   }
 
   String formatPostDate(String? createdAt) {
@@ -873,7 +881,6 @@ class _HomePageState extends State<HomePage> {
                                         },
                                       ),
                                     ),
-
                                   ],
                                 ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
                                 Row(
@@ -897,7 +904,6 @@ class _HomePageState extends State<HomePage> {
                                         },
                                       ),
                                     ),
-
                                   ],
                                 ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
                                 Container(
@@ -954,7 +960,6 @@ class _HomePageState extends State<HomePage> {
                                         },
                                       ),
                                     ),
-
                                   ],
                                 ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
                                 Row(
@@ -976,8 +981,8 @@ class _HomePageState extends State<HomePage> {
                                           Get.to(
                                             EventScreen(
                                               userId:
-                                              loginModel?.data?.user?.id
-                                                  .toString() ??
+                                                  loginModel?.data?.user?.id
+                                                      .toString() ??
                                                   "",
                                             ),
                                           );
@@ -995,7 +1000,6 @@ class _HomePageState extends State<HomePage> {
                                         },
                                       ),
                                     ),
-
                                   ],
                                 ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
                                 // Row(
@@ -1431,6 +1435,29 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  getnotificationCount() {
+    checkInternet().then((internet) async {
+      if (internet) {
+        try {
+          final response = await NotificationProvider().notificationApi(
+            (loginModel?.data?.user?.id).toString(),
+          );
+
+          if (response.statusCode == 200) {
+            notificationmodel = NotificationModell.fromJson(response.data);
+
+            setState(() {
+              notificationCount = notificationmodel?.data?.totalCount ?? 0;
+              isLoading = false;
+            });
+          } else {}
+        } catch (e) {}
+      } else {
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
   // getnotificationCount() {
   //   checkInternet().then((internet) async {
   //     if (internet) {
@@ -1765,6 +1792,117 @@ class _HomePageState extends State<HomePage> {
           });
         }
       } else {
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  void updateFCM() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    // Fetch the FCM token
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+
+    if (fcmToken == null) {
+      showSnackBar(
+        title: "FCM Error",
+        message: "Unable to fetch FCM token",
+        backgoundColor: Colors.red,
+        ColorText: Colors.white,
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    final Map<String, String> data = {
+      "user_id": loginModel?.data?.user?.id.toString() ?? "",
+      "fcm_token": fcmToken,
+    };
+    print("fcm changes$data");
+    checkInternet().then((internet) async {
+      if (internet) {
+        try {
+          var response = await AuthProvider().updateFCM(data);
+
+          if (response.statusCode == 200) {
+          } else if (response.statusCode == 422) {
+            showSnackBar(
+              title: "Sorry",
+              message: "Please Enter valid email and password",
+              backgoundColor: AppColors.redColor,
+              ColorText: AppColors.white,
+            );
+          } else {
+            throw Exception(
+              "Failed to login with status code: ${response.statusCode}",
+            );
+          }
+        } catch (e) {
+          showSnackBar(
+            title: "Error",
+            message: "Something went wrong during login",
+            backgoundColor: Colors.red,
+            ColorText: Colors.white,
+          );
+        } finally {
+          setState(() {
+            isLoading = false;
+          });
+        }
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  void updateFCM1() async {
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+
+    if (fcmToken == null) {
+      showSnackBar(
+        title: "FCM Error",
+        message: "Unable to fetch FCM token",
+        backgoundColor: Colors.red,
+        ColorText: Colors.white,
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+    final Map<String, String> data = {};
+    data["user_id"] = loginModel?.data?.user?.id.toString() ?? "";
+    data["fcm_token"] = fcmToken;
+    print("Data adasdads$data");
+    checkInternet().then((internet) async {
+      if (internet) {
+        try {
+          var response = await AuthProvider().updateFCM(data);
+          if (response.statusCode == 200) {
+            setState(() {
+              isLoading = false;
+            });
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+          }
+        } catch (e) {
+          setState(() {
+            isLoading = false;
+          });
+        }
+      } else {
+        setState(() {
+          isLoading = false;
+        });
         buildErrorDialog(context, 'Error', "Internet Required");
       }
     });
