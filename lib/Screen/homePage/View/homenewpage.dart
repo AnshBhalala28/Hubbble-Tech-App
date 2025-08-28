@@ -39,8 +39,9 @@ import '../../../comman/const.dart';
 import '../../../comman/custom_batan.dart';
 import '../../../comman/custom_snack_bar.dart';
 import '../../../comman/input_decoration.dart';
+import '../../Authcation/Model/login_model.dart';
+import '../../Authcation/Provider/authcation_provider.dart';
 import '../../Booking/View/event_booking_screen.dart';
-import '../../Booking/View/service_booking_screen.dart';
 import '../../Message_board/Model/Add_Post_Model.dart';
 import '../../Message_board/Provider/messsage_board_provider.dart';
 import '../../NotiFicationPage/Model/Notification_Model.dart';
@@ -903,7 +904,6 @@ class _HomePageState extends State<HomePage> {
                                         },
                                       ),
                                     ),
-
                                   ],
                                 ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
                                 Container(
