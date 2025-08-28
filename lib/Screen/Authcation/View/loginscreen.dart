@@ -242,99 +242,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String? usertoken, userrole, userId;
 
-  // 267VQLZD49  Key id
-  // LWK9CT582 team
-  // void LoginApi() async {
-  //   // await FirebaseMessaging.instance.requestPermission(provisional: true);
-  //   // if (Platform.isIOS) {
-  //   //   // Get APNS token
-  //   //   String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
-  //   //   log(apnsToken);
-  //   //   // final notificationSettings = await FirebaseMessaging.instance.requestPermission(provisional: true);
-  //   //   if (apnsToken == null) {
-  //   //     log(
-  //   //       "APNS Token not set. Please ensure Push Notifications are enabled.",
-  //   //     );
-  //   //     return;
-  //   //   }
-  //   // }
-  //   // String? fcmToken = await FirebaseMessaging.instance.getToken();
-  //   // if (fcmToken == null) {
-  //   //   // Handle error if FCM token is not available
-  //   //   log("FCM Token not available.");
-  //   //   return;
-  //   // }
-  //   // log("FCM TOKEN AVE CHE $fcmToken");
-  //   final Map<String, String> data = {
-  //     'email': email.text.trim(),
-  //     'password': password.text.trim(),
-  //     'role': '4',
-  //     // "fcm_token": fcmToken,
-  //   };
-  //
-  //   log("Request data sending: $data");
-  //
-  //   checkInternet().then((internet) async {
-  //     if (internet) {
-  //       try {
-  //         var response = await AuthProvider().LoginApi(data);
-  //         log("Response status: ${response.statusCode}");
-  //         log("Response body: ${response.body}");
-  //         loginModel = LoginModel.fromJson(jsonDecode(response.body));
-  //         if (response.statusCode == 200 && loginModel?.status == 200) {
-  //           if (loginModel?.data?.user?.role == 4) {
-  //             await SaveDataLocal.saveLogInData(loginModel!);
-  //             showSnackBar(
-  //               title: "Login",
-  //               message: "Login Successful.",
-  //               backgoundColor: AppColors.maincolor,
-  //               ColorText: AppColors.white,
-  //               IconColor: AppColors.white,
-  //               IconName: Icons.check_circle,
-  //             );
-  //             await Get.offAll(() => HomePage(selected: 1, userName: ""));
-  //             setState(() {
-  //               isLoading = false;
-  //             });
-  //             email.clear();
-  //             password.clear();
-  //           }
-  //         } else if (response.statusCode == 422) {
-  //           showSnackBar(
-  //             title: "Sorry",
-  //             message: "Please Enter valid email and password",
-  //             backgoundColor: AppColors.redColor,
-  //             ColorText: AppColors.white,
-  //           );
-  //           setState(() {
-  //             isLoading = false;
-  //           });
-  //         } else {
-  //           throw Exception(
-  //             "Failed to login with status code: ${response.statusCode}",
-  //           );
-  //         }
-  //       } catch (e) {
-  //         setState(() {
-  //           isLoading = false;
-  //         });
-  //         showSnackBar(
-  //           title: "Sorry",
-  //           message: "Please enter valid email and password",
-  //           backgoundColor: Colors.red.shade400,
-  //           ColorText: Colors.white,
-  //           IconColor: Colors.white,
-  //         );
-  //         log("Error: $e");
-  //       }
-  //     } else {
-  //       setState(() {
-  //         isLoading = false;
-  //       });
-  //       buildErrorDialog(context, 'Error', "Internet Required");
-  //     }
-  //   });
-  // }
   void LoginApi() async {
     setState(() {
       isLoading = true;
@@ -405,6 +312,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ColorText: Colors.white,
           );
         } finally {
+
           setState(() {
             isLoading = false;
           });
