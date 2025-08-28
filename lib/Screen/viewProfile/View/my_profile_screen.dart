@@ -114,9 +114,11 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                                           Future.delayed(
                                             Duration(milliseconds: 300),
                                             () {
-                                              setState(() {
-                                                isLoading = false;
-                                              });
+                                              if (mounted) {
+                                                setState(() {
+                                                  isLoading = false;
+                                                });
+                                              }
                                             },
                                           );
                                           return child;
@@ -181,7 +183,12 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                     ),
                   ),
                   SizedBox(height: 2.h),
-                  profileField("Full Name", nameController, Icons.person, false),
+                  profileField(
+                    "Full Name",
+                    nameController,
+                    Icons.person,
+                    false,
+                  ),
                   profileField("Email", emailController, Icons.email, false),
                   SizedBox(height: 2.h),
                   batan(
@@ -373,14 +380,10 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
     }
   }
 
-
   void EditProfile() {
-
-
     final Map<String, String> data = {
       'update_id': profileModel?.data?.id.toString() ?? '',
       "apartment_number": profileModel?.data?.unitsId.toString() ?? '',
-
     };
     setState(() {
       isEditing = true;
