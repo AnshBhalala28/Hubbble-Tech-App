@@ -11,13 +11,13 @@ class ChatStoryModal {
     if (json['data'] != null) {
       data = <Data>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(Data.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -146,13 +146,13 @@ class Data {
     if (json['posts'] != null) {
       posts = <Posts>[];
       json['posts'].forEach((v) {
-        posts!.add(new Posts.fromJson(v));
+        posts!.add(Posts.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['role'] = this.role;
     data['name'] = this.name;
@@ -238,13 +238,11 @@ class Posts {
     viewCount = json['view_count'];
     likeCount = json['like_count'];
     userName =
-        json['user_name'] != null
-            ? new UserName.fromJson(json['user_name'])
-            : null;
+        json['user_name'] != null ? UserName.fromJson(json['user_name']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['type'] = this.type;
@@ -356,7 +354,7 @@ class UserName {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['sub_id'] = this.subId;

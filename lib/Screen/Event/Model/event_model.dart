@@ -105,11 +105,11 @@ class EventlistModel {
   EventlistModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -127,10 +127,10 @@ class Data {
   int? lastPage;
   String? lastPageUrl;
   List<Links>? links;
-  Null? nextPageUrl;
+  Null nextPageUrl;
   String? path;
   int? perPage;
-  Null? prevPageUrl;
+  Null prevPageUrl;
   int? to;
   int? total;
 
@@ -155,7 +155,7 @@ class Data {
     if (json['data'] != null) {
       data = <Data1>[];
       json['data'].forEach((v) {
-        data!.add(new Data1.fromJson(v));
+        data!.add(Data1.fromJson(v));
       });
     }
     firstPageUrl = json['first_page_url'];
@@ -165,7 +165,7 @@ class Data {
     if (json['links'] != null) {
       links = <Links>[];
       json['links'].forEach((v) {
-        links!.add(new Links.fromJson(v));
+        links!.add(Links.fromJson(v));
       });
     }
     nextPageUrl = json['next_page_url'];
@@ -177,7 +177,7 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['current_page'] = this.currentPage;
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
@@ -203,13 +203,13 @@ class Data1 {
   int? id;
   int? creatorId;
   String? title;
-  Null? description;
-  Null? apartmentNumber;
+  Null description;
+  Null apartmentNumber;
   String? attachment;
   String? eventDate;
   String? location;
-  Null? latitude;
-  Null? longitude;
+  Null latitude;
+  Null longitude;
   String? status;
   String? createdAt;
   String? updatedAt;
@@ -262,7 +262,7 @@ class Data1 {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['creator_id'] = this.creatorId;
     data['title'] = this.title;
@@ -299,7 +299,7 @@ class Links {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['url'] = this.url;
     data['label'] = this.label;
     data['active'] = this.active;

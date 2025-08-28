@@ -78,11 +78,11 @@ class LocationService {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Permission Required"),
+          title: const Text("Permission Required"),
           content: Text(message),
           actions: [
             TextButton(
-              child: Text("OK"),
+              child: const Text("OK"),
               onPressed: () {
                 Navigator.of(context).pop();
               },

@@ -8,11 +8,11 @@ class GetRequestModel {
   GetRequestModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -31,13 +31,13 @@ class Data {
     if (json['requests'] != null) {
       requests = <Requests>[];
       json['requests'].forEach((v) {
-        requests!.add(new Requests.fromJson(v));
+        requests!.add(Requests.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (this.requests != null) {
       data['requests'] = this.requests!.map((v) => v.toJson()).toList();
     }
@@ -73,12 +73,12 @@ class Requests {
     updatedAt = json['updated_at'];
     appUserName =
         json['app_user_name'] != null
-            ? new AppUserName.fromJson(json['app_user_name'])
+            ? AppUserName.fromJson(json['app_user_name'])
             : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['sender_id'] = this.senderId;
     data['receiver_id'] = this.receiverId;
@@ -147,7 +147,7 @@ class AppUserName {
     gender = json['gender'];
     dateOfBirth = json['date_of_birth'];
     address =
-        json['address'] != null ? new Address.fromJson(json['address']) : null;
+        json['address'] != null ? Address.fromJson(json['address']) : null;
     psLatitude = json['ps_latitude'];
     psLongitude = json['ps_longitude'];
     fcmToken = json['fcm_token'];
@@ -162,7 +162,7 @@ class AppUserName {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['role'] = this.role;
     data['email'] = this.email;
@@ -205,7 +205,7 @@ class Address {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['address'] = this.address;
     data['city'] = this.city;
     data['country'] = this.country;

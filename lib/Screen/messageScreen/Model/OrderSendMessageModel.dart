@@ -17,11 +17,11 @@ class OrdersendMessageModel {
       message = null;
     }
 
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -70,7 +70,7 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['order_product_id'] = this.orderProductId;
     data['business_id'] = this.businessId;
     data['user_id'] = this.userId;

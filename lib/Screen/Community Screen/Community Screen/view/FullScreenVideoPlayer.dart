@@ -19,10 +19,10 @@ class FullScreenVideoPlayer extends StatefulWidget {
   final int postId;
 
   const FullScreenVideoPlayer({
-    Key? key,
+    super.key,
     required this.videoUrl,
     required this.postId,
-  }) : super(key: key);
+  });
 
   @override
   State<FullScreenVideoPlayer> createState() => _FullScreenVideoPlayerState();
@@ -128,20 +128,20 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
         child: Stack(
           children: [
             if (controller.value.isInitialized)
-              Container(
+              SizedBox(
                 width: 100.w,
                 height: 100.h,
                 child: Center(
                   child:
-                  controller.value.aspectRatio > 0
-                      ? Transform.scale(
-                    scale: _calculateScale(context),
-                    child: AspectRatio(
-                      aspectRatio: controller.value.aspectRatio,
-                      child: VideoPlayer(controller),
-                    ),
-                  )
-                      : VideoPlayer(controller),
+                      controller.value.aspectRatio > 0
+                          ? Transform.scale(
+                            scale: _calculateScale(context),
+                            child: AspectRatio(
+                              aspectRatio: controller.value.aspectRatio,
+                              child: VideoPlayer(controller),
+                            ),
+                          )
+                          : VideoPlayer(controller),
                 ),
               )
             else
@@ -150,7 +150,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
               top: 3.h,
               right: 3.w,
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white24,
                   shape: BoxShape.circle,
                 ),
@@ -164,7 +164,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
               bottom: 5.h,
               right: 3.w,
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white24,
                   shape: BoxShape.circle,
                 ),
@@ -228,7 +228,8 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
             _saveLikeStatus(isLiked);
 
-            if (isLiked) {} else {}
+            if (isLiked) {
+            } else {}
           } else if (response.statusCode == 429) {
             setState(() {
               isLikeInProgress = false;
@@ -290,7 +291,8 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
         CommunityProvider().postMarkViewApi(data).then((response) async {
           if (response.statusCode == 200) {
             postasviewedmodel = PostAsViewedModel.fromJson(response.data);
-          } else if (response.statusCode == 429) {} else {}
+          } else if (response.statusCode == 429) {
+          } else {}
         });
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
@@ -299,9 +301,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   }
 
   double _calculateScale(BuildContext context) {
-    final Size screenSize = MediaQuery
-        .of(context)
-        .size;
+    final Size screenSize = MediaQuery.of(context).size;
     final double screenAspect = screenSize.width / screenSize.height;
     final double videoAspect = controller.value.aspectRatio;
 

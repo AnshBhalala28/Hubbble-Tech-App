@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:wavee/comman/apiEndpoint.dart';
@@ -66,8 +64,17 @@ class AuthProvider extends ChangeNotifier {
 
       return response;
     } on DioException catch (e) {
-      log('Logout API Error: ${handleDioError(e)}');
       throw Exception(handleDioError(e));
+    }
+  }
+
+  Future<Response> updateFCM(Map<String, String> bodyData) async {
+    try {
+      final dio = await DioHelper.getDio();
+      final response = await dio.post(ApiEndpoint.updateFcm, data: bodyData);
+      return response;
+    } on DioException catch (e) {
+      throw Exception('error $e');
     }
   }
 }

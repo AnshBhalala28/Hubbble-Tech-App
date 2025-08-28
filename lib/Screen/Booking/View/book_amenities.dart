@@ -105,9 +105,7 @@
 //                           itemBuilder: (context, index) {
 //                             var booking =
 //                                 aneminitiesDataModel?.data?.data?[index];
-//                             log(
-//                               "Booking Data: ${aneminitiesDataModel?.data?.data?.length}",
-//                             );
+//
 //                             return Stack(
 //                               alignment: Alignment.topRight,
 //                               children: [
@@ -285,7 +283,7 @@
 //             });
 //           }
 //         } catch (e, stackTrace) {
-//           log("Error fetching amenities: $e\n$stackTrace");
+//
 //           setState(() {
 //             isLoading = false;
 //           });
@@ -359,8 +357,6 @@
 //
 // }
 
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -427,8 +423,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
           } else {
             _pagingController.appendPage(newItems, pageKey + 1);
           }
-        } catch (e, stackTrace) {
-          log("Error fetching amenities: $e $stackTrace");
+        } catch (e) {
           _pagingController.error = e;
         }
       } else {
@@ -496,7 +491,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         ClipRRect(
-                                          borderRadius: BorderRadius.only(
+                                          borderRadius: const BorderRadius.only(
                                             topLeft: Radius.circular(12),
                                             topRight: Radius.circular(12),
                                           ),
@@ -512,7 +507,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                             width: double.infinity,
                                             height: 20.h,
                                             placeholder:
-                                                (context, url) => Center(
+                                                (context, url) => const Center(
                                                   child:
                                                       CircularProgressIndicator(),
                                                 ),
@@ -559,7 +554,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                             ),
                                           ),
                                         ),
-                                        Spacer(),
+                                        const Spacer(),
                                         Padding(
                                           padding: EdgeInsets.only(
                                             right: 2.w,

@@ -11,13 +11,13 @@ class CartDetailsModel {
     if (json['data'] != null) {
       data = <Data>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(Data.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -63,16 +63,16 @@ class Data {
     updatedAt = json['updated_at'];
     itemDetails =
         json['item_details'] != null
-            ? new ItemDetails.fromJson(json['item_details'])
+            ? ItemDetails.fromJson(json['item_details'])
             : null;
     loyaltyDetails =
         json['loyalty_details'] != null
-            ? new LoyaltyDetails.fromJson(json['loyalty_details'])
+            ? LoyaltyDetails.fromJson(json['loyalty_details'])
             : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['type'] = this.type;
     data['user_id'] = this.userId;
@@ -182,7 +182,7 @@ class ItemDetails {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['name'] = this.name;
     data['price'] = this.price;
@@ -305,7 +305,7 @@ class LoyaltyDetails {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['loyalty_order_threshold'] = this.loyaltyOrderThreshold;
     data['loyalty_discount_percentage'] = this.loyaltyDiscountPercentage;
     data['orders_completed_with_business'] = this.ordersCompletedWithBusiness;

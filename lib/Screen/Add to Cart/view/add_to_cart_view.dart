@@ -87,9 +87,9 @@ class _AddToCartViewState extends State<AddToCartView> {
               padding: EdgeInsets.symmetric(vertical: 2.h),
               height: 90.h,
               decoration: BoxDecoration(
-                border: Border.all(color: Color(0xffdedfe5), width: 1),
+                border: Border.all(color: const Color(0xffdedfe5), width: 1),
                 color: AppColors.white,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(45),
                   topRight: Radius.circular(45),
                 ),
@@ -106,7 +106,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                 cartDetailsModel?.data?.length == 0
                             ? Expanded(
                               child: SingleChildScrollView(
-                                physics: BouncingScrollPhysics(),
+                                physics: const BouncingScrollPhysics(),
                                 child: Padding(
                                   padding: EdgeInsets.only(top: 20.h),
                                   child: Column(
@@ -114,7 +114,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                       Container(
                                         width: 25.w,
                                         height: 25.w,
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
                                           color: Color(0xFFF0F0F0),
                                           shape: BoxShape.circle,
                                         ),
@@ -131,7 +131,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                           fontFamily: AppConstants.manrope,
                                           fontSize: 20.sp,
                                           fontWeight: FontWeight.w600,
-                                          color: Color(0xFF2E3333),
+                                          color: const Color(0xFF2E3333),
                                         ),
                                       ),
                                       SizedBox(height: 1.h),
@@ -198,7 +198,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                               0.05,
                                             ),
                                             blurRadius: 10,
-                                            offset: Offset(0, 2),
+                                            offset: const Offset(0, 2),
                                           ),
                                         ],
                                       ),
@@ -239,7 +239,9 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                 "Items (${cartDetailsModel?.data?.length})",
                                                 style: TextStyle(
                                                   fontSize: 18.sp,
-                                                  color: Color(0xFF969696),
+                                                  color: const Color(
+                                                    0xFF969696,
+                                                  ),
                                                   fontFamily:
                                                       AppConstants.manrope,
                                                   fontWeight: FontWeight.w600,
@@ -252,7 +254,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                             padding: EdgeInsets.zero,
                                             shrinkWrap: true,
                                             physics:
-                                                NeverScrollableScrollPhysics(),
+                                                const NeverScrollableScrollPhysics(),
                                             itemCount:
                                                 cartDetailsModel
                                                     ?.data
@@ -261,7 +263,9 @@ class _AddToCartViewState extends State<AddToCartView> {
                                             separatorBuilder:
                                                 (context, index) => Container(
                                                   height: 1,
-                                                  color: Color(0xFFF5F5F5),
+                                                  color: const Color(
+                                                    0xFFF5F5F5,
+                                                  ),
                                                   margin: EdgeInsets.symmetric(
                                                     horizontal: 4.w,
                                                   ),
@@ -289,7 +293,9 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                       BorderRadius.circular(20),
                                                   color: Colors.white,
                                                   border: Border.all(
-                                                    color: Color(0xFF969696),
+                                                    color: const Color(
+                                                      0xFF969696,
+                                                    ),
                                                     width: 1,
                                                   ),
                                                 ),
@@ -306,7 +312,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                         width: 18.w,
                                                         height: 18.w,
                                                         decoration: BoxDecoration(
-                                                          color: Color(
+                                                          color: const Color(
                                                             0xFFF8F8F8,
                                                           ),
                                                           borderRadius:
@@ -338,7 +344,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                                 context,
                                                                 url,
                                                               ) => Container(
-                                                                child: Center(
+                                                                child: const Center(
                                                                   child: CircularProgressIndicator(
                                                                     color:
                                                                         AppColors
@@ -388,7 +394,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                                     fontFamily:
                                                                         AppConstants
                                                                             .manrope,
-                                                                    color: Color(
+                                                                    color: const Color(
                                                                       0xFF2E3333,
                                                                     ),
                                                                   ),
@@ -408,7 +414,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                                       EdgeInsets.all(
                                                                         1.w,
                                                                       ),
-                                                                  decoration: BoxDecoration(
+                                                                  decoration: const BoxDecoration(
                                                                     color: Color(
                                                                       0xFFF5F5F5,
                                                                     ),
@@ -446,7 +452,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                                           .maincolor,
                                                                 ),
                                                               ),
-                                                              Spacer(),
+                                                              const Spacer(),
                                                               Container(
                                                                 padding:
                                                                     EdgeInsets.symmetric(
@@ -461,7 +467,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                                         10,
                                                                       ),
                                                                   border: Border.all(
-                                                                    color: Color(
+                                                                    color: const Color(
                                                                       0xff969696,
                                                                     ),
                                                                   ),
@@ -575,7 +581,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Padding(
+                                            const Padding(
                                               padding: EdgeInsets.symmetric(
                                                 horizontal: 12,
                                               ),
@@ -590,7 +596,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                             _buildSuggestedList(),
                                           ],
                                         )
-                                        : SizedBox.shrink(),
+                                        : const SizedBox.shrink(),
                                     SizedBox(height: 50.h),
                                   ],
                                 ),
@@ -619,19 +625,19 @@ class _AddToCartViewState extends State<AddToCartView> {
                                 vertical: 1.h,
                               ),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
+                                borderRadius: const BorderRadius.only(
                                   topRight: Radius.circular(45),
                                   topLeft: Radius.circular(45),
                                 ),
                                 border: Border.all(
-                                  color: Color(0xffc7c7c7),
+                                  color: const Color(0xffc7c7c7),
                                   width: 1,
                                 ),
-                                color: Color(0xfff2f2f2),
+                                color: const Color(0xfff2f2f2),
                               ),
                               child: SingleChildScrollView(
                                 controller: scrollController,
-                                physics: BouncingScrollPhysics(),
+                                physics: const BouncingScrollPhysics(),
                                 child: Column(
                                   children: [
                                     cartDetailsModel?.data?.length == "" ||
@@ -674,7 +680,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                     getLoyaltyDiscountAmount(),
                                                     isDiscount: true,
                                                   )
-                                                  : SizedBox(),
+                                                  : const SizedBox(),
                                               Divider(
                                                 height: 3.h,
                                                 thickness: 1,
@@ -724,7 +730,9 @@ class _AddToCartViewState extends State<AddToCartView> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
                               color: Colors.white,
-                              border: Border.all(color: Color(0xffd9d9d9)),
+                              border: Border.all(
+                                color: const Color(0xffd9d9d9),
+                              ),
                             ),
                             child: Text(
                               "Checkout",
@@ -744,7 +752,7 @@ class _AddToCartViewState extends State<AddToCartView> {
           ],
         ),
       ),
-      bottomNavigationBar: Bottom_bar(selected: 4),
+      bottomNavigationBar: BottomBar(selected: 4),
     );
   }
 
@@ -799,7 +807,7 @@ class _AddToCartViewState extends State<AddToCartView> {
             height: 1.h,
             width: 20.w,
             decoration: BoxDecoration(
-              color: Color(0xf0D9D9D9),
+              color: const Color(0xf0D9D9D9),
               borderRadius: BorderRadius.circular(10),
             ),
           ).paddingOnly(top: 2.h, bottom: 2.h),
@@ -812,7 +820,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                 fontSize: 18.sp,
                 fontFamily: AppConstants.manrope,
                 fontWeight: FontWeight.w600,
-                color: Color(0xff969696),
+                color: const Color(0xff969696),
               ),
             ),
           ],
@@ -838,7 +846,7 @@ class _AddToCartViewState extends State<AddToCartView> {
             ),
           ),
           Text(
-            "£${amount}",
+            "£$amount",
             style: TextStyle(
               fontSize: isTotal ? 18.sp : 17.sp,
               fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
@@ -1050,12 +1058,12 @@ class _AddToCartViewState extends State<AddToCartView> {
             .whereType<BusinessProducts>()
             .toList();
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       height: 10.h,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: allProducts.length,
-        padding: EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         itemBuilder: (context, index) {
           final product = allProducts[index];
 
@@ -1066,7 +1074,7 @@ class _AddToCartViewState extends State<AddToCartView> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               color: Colors.white,
-              border: Border.all(color: Color(0xFF969696), width: 1),
+              border: Border.all(color: const Color(0xFF969696), width: 1),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -1087,7 +1095,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                         width: 14.w,
                         height: 14.w,
                         placeholder:
-                            (context, url) => Center(
+                            (context, url) => const Center(
                               child: CircularProgressIndicator(
                                 color: AppColors.maincolor,
                                 strokeWidth: 2,
@@ -1110,13 +1118,13 @@ class _AddToCartViewState extends State<AddToCartView> {
                           product.name ?? "",
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        (product?.offerPrice != null &&
-                                product!.offerPrice != "0.00" &&
+                        (product.offerPrice != null &&
+                                product.offerPrice != "0.00" &&
                                 product.offerPrice != product.price)
                             ? Row(
                               children: [
@@ -1131,7 +1139,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                     decorationColor: AppColors.maincolor,
                                   ),
                                 ),
-                                SizedBox(width: 5),
+                                const SizedBox(width: 5),
                                 Text(
                                   "£${product.offerPrice}",
                                   style: TextStyle(
@@ -1145,7 +1153,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                 InkWell(
                                   onTap: () {
                                     AddCartProductApi(
-                                      product?.id.toString() ?? "",
+                                      product.id.toString() ?? "",
                                     );
                                   },
                                   child: Container(
@@ -1165,7 +1173,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                             : Row(
                               children: [
                                 Text(
-                                  "£${product?.price ?? ""}",
+                                  "£${product.price ?? ""}",
                                   style: TextStyle(
                                     fontSize: 15.sp,
                                     fontWeight: FontWeight.bold,
@@ -1176,7 +1184,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                 InkWell(
                                   onTap: () {
                                     AddCartProductApi(
-                                      product?.id.toString() ?? "",
+                                      product.id.toString() ?? "",
                                     );
                                   },
                                   child: Container(
@@ -1226,7 +1234,7 @@ class _AddToCartViewState extends State<AddToCartView> {
             expand: false,
             builder:
                 (_, controller) => Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.white,
                     // com.wavee.comunity
                     borderRadius: BorderRadius.vertical(
@@ -1244,7 +1252,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                         ),
                         child: ListView(
                           controller: controller,
-                          physics: BouncingScrollPhysics(),
+                          physics: const BouncingScrollPhysics(),
                           children: [
                             Center(
                               child: Container(
@@ -1266,7 +1274,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                     fontSize: 20.sp,
                                     fontWeight: FontWeight.w700,
                                     fontFamily: AppConstants.manrope,
-                                    color: Color(0xFF2E3333),
+                                    color: const Color(0xFF2E3333),
                                   ),
                                 ),
                                 GestureDetector(
@@ -1289,7 +1297,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w600,
                                     fontFamily: AppConstants.manrope,
-                                    color: Color(0xFF2E3333),
+                                    color: const Color(0xFF2E3333),
                                   ),
                                 ),
                                 SizedBox(height: 0.5.h),
@@ -1320,7 +1328,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                             else
                               GridView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: suggestedProducts.length,
                                 gridDelegate:
                                     SliverGridDelegateWithFixedCrossAxisCount(
@@ -1335,7 +1343,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       border: Border.all(
-                                        color: Color(0xFFE5E5E5),
+                                        color: const Color(0xFFE5E5E5),
                                         width: 1,
                                       ),
                                       borderRadius: BorderRadius.circular(12),
@@ -1349,7 +1357,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                           children: [
                                             ClipRRect(
                                               borderRadius:
-                                                  BorderRadius.vertical(
+                                                  const BorderRadius.vertical(
                                                     top: Radius.circular(12),
                                                   ),
                                               child: CachedNetworkImage(
@@ -1371,8 +1379,10 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                 width: double.infinity,
                                                 placeholder:
                                                     (context, url) => Container(
-                                                      color: Color(0xFFF8F8F8),
-                                                      child: Center(
+                                                      color: const Color(
+                                                        0xFFF8F8F8,
+                                                      ),
+                                                      child: const Center(
                                                         child:
                                                             CircularProgressIndicator(
                                                               color:
@@ -1388,7 +1398,9 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                       url,
                                                       error,
                                                     ) => Container(
-                                                      color: Color(0xFFF8F8F8),
+                                                      color: const Color(
+                                                        0xFFF8F8F8,
+                                                      ),
                                                       height: 14.h,
                                                       child: Icon(
                                                         Icons.image_outlined,
@@ -1420,7 +1432,10 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                             .withOpacity(0.15),
                                                         blurRadius: 6,
                                                         spreadRadius: 2,
-                                                        offset: Offset(0, 2),
+                                                        offset: const Offset(
+                                                          0,
+                                                          2,
+                                                        ),
                                                       ),
                                                     ],
                                                   ),
@@ -1451,18 +1466,20 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                     fontWeight: FontWeight.w600,
                                                     fontFamily:
                                                         AppConstants.manrope,
-                                                    color: Color(0xFF2E3333),
+                                                    color: const Color(
+                                                      0xFF2E3333,
+                                                    ),
                                                   ),
                                                 ),
-                                                Spacer(),
+                                                const Spacer(),
                                                 Padding(
                                                   padding: EdgeInsets.symmetric(
                                                     horizontal: 0.w,
                                                   ),
                                                   child:
-                                                      (product?.offerPrice !=
+                                                      (product.offerPrice !=
                                                                   null &&
-                                                              product!.offerPrice !=
+                                                              product.offerPrice !=
                                                                   "0.00" &&
                                                               product.offerPrice !=
                                                                   product.price)
@@ -1497,7 +1514,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                                             .maincolor,
                                                                   ),
                                                                 ),
-                                                                SizedBox(
+                                                                const SizedBox(
                                                                   width: 5,
                                                                 ),
                                                                 Text(
@@ -1520,7 +1537,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                             ),
                                                           )
                                                           : Text(
-                                                            "£${product?.price ?? ""}",
+                                                            "£${product.price ?? ""}",
                                                             style: TextStyle(
                                                               fontSize: 14.sp,
                                                               fontWeight:
@@ -1553,7 +1570,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                         right: 0,
                         child: Container(
                           padding: EdgeInsets.all(4.w),
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: Colors.white,
                             boxShadow: [
                               BoxShadow(
@@ -1599,7 +1616,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                             "You're getting closer to an exclusive reward! Complete ${cartDetailsModel?.data?[0].loyaltyDetails?.loyaltyOrderThreshold} more orders to unlock a ${cartDetailsModel?.data?[0].loyaltyDetails?.loyaltyDiscountPercentage?.replaceAll(RegExp(r'\\.0+\$'), '')}% discount on your next purchase.",
                                             style: TextStyle(
                                               fontSize: 14.sp,
-                                              color: Color(0xFF3C1361),
+                                              color: const Color(0xFF3C1361),
                                               fontFamily: AppConstants.manrope,
                                               fontWeight: FontWeight.w600,
                                             ),
@@ -1608,11 +1625,11 @@ class _AddToCartViewState extends State<AddToCartView> {
                                         Container(
                                           width: 28,
                                           height: 28,
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             color: AppColors.maincolor,
                                             shape: BoxShape.circle,
                                           ),
-                                          child: Icon(
+                                          child: const Icon(
                                             Icons.card_giftcard,
                                             size: 16,
                                             color: Colors.white,
@@ -1621,7 +1638,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                       ],
                                     ),
                                   )
-                                  : SizedBox(),
+                                  : const SizedBox(),
                               GestureDetector(
                                 onTap: () {
                                   Get.back();

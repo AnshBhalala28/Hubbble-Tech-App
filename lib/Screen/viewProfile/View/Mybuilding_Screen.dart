@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -53,14 +52,20 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
     });
     GetProfile();
   }
+
   String capitalizeWords(String input) {
     if (input.isEmpty) return "";
     return input
         .split(" ")
-        .map((word) =>
-    word.isNotEmpty ? word[0].toUpperCase() + word.substring(1).toLowerCase() : "")
+        .map(
+          (word) =>
+              word.isNotEmpty
+                  ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+                  : "",
+        )
         .join(" ");
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +86,109 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
             isLoading
                 ? Center(child: Loader().paddingOnly(top: 25.h))
                 : profileModel?.data?.buildingDocument == null
-                ? SizedBox()
+                ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 1.h),
+                    profileField(
+                      "Building Name",
+                      TextEditingController(
+                        text: capitalizeWords(
+                          profileModel?.data?.buildingDocument?.buildingName ??
+                              "",
+                        ),
+                      ),
+                      Icons.apartment,
+                      false,
+                    ),
+
+                    profileField(
+                      "Address",
+                      TextEditingController(
+                        text:
+                            profileModel?.data?.buildingDocument?.address ?? "",
+                      ),
+                      Icons.location_on,
+                      false,
+                    ),
+                    // profileField(
+                    //   "Total Floors",
+                    //   TextEditingController(
+                    //     text:
+                    //         profileModel?.data?.buildingDocument?.totalFloors
+                    //             ?.toString() ??
+                    //         "",
+                    //   ),
+                    //   Icons.stairs,
+                    //   false,
+                    // ),
+                    // profileField(
+                    //   "Total Units",
+                    //   TextEditingController(
+                    //     text:
+                    //         profileModel?.data?.buildingDocument?.totalUnits
+                    //             ?.toString() ??
+                    //         "",
+                    //   ),
+                    //   Icons.house,
+                    //   false,
+                    // ),
+                    profileField(
+                      "Landline Number",
+                      landline,
+
+                      Icons.phone,
+                      false,
+                    ),
+                    profileField(
+                      "Additional Number",
+                      number,
+                      Icons.phone,
+                      false,
+                    ),
+                    profileField(
+                      "Parking Info",
+                      TextEditingController(
+                        text:
+                            profileModel
+                                ?.data
+                                ?.buildingDocument
+                                ?.parkingInformation ??
+                            "",
+                      ),
+                      Icons.local_parking,
+                      false,
+                    ),
+                    profileField(
+                      "Concierge Info",
+                      TextEditingController(
+                        text:
+                            profileModel
+                                ?.data
+                                ?.buildingDocument
+                                ?.conciergeInformation ??
+                            "",
+                      ),
+                      Icons.support_agent,
+                      false,
+                    ),
+                    profileField(
+                      "Fitness Centre",
+                      TextEditingController(
+                        text:
+                            profileModel
+                                ?.data
+                                ?.buildingDocument
+                                ?.fitnessCentreInformation ??
+                            "",
+                      ),
+                      Icons.fitness_center,
+                      false,
+                    ),
+
+                    SizedBox(height: 3.h),
+                  ],
+                )
                 : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -90,7 +197,8 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                       "Building Name",
                       TextEditingController(
                         text: capitalizeWords(
-                          profileModel?.data?.buildingDocument?.buildingName ?? "",
+                          profileModel?.data?.buildingDocument?.buildingName ??
+                              "",
                         ),
                       ),
                       Icons.apartment,
@@ -230,7 +338,9 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                                           .emergencyCaptions![index]
                                       : "Emergency ${index + 1}";
                               return Padding(
-                                padding: EdgeInsets.symmetric(vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 4,
+                                ),
                                 child: Text("$caption: $number"),
                               );
                             },
@@ -241,7 +351,7 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                     if (profileModel!.data!.buildingDocument!.documentsFiles !=
                             null &&
                         profileModel!.data!.buildingDocument!.documentsFiles!
-                            .any((url) => url != null && url.isNotEmpty))
+                            .any((url) => url.isNotEmpty))
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -256,9 +366,9 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                           SizedBox(height: 1.h),
                           GridView.builder(
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
                                   crossAxisSpacing: 10,
                                   mainAxisSpacing: 15,
@@ -283,8 +393,9 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                                       .buildingDocument!
                                       .documentsFilesLabel;
 
-                              if (documentUrl == null || documentUrl.isEmpty)
-                                return SizedBox();
+                              if (documentUrl.isEmpty) {
+                                return const SizedBox();
+                              }
 
                               String label =
                                   (labels != null && index < labels.length)
@@ -319,7 +430,7 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                                         size: 30.sp,
                                       ),
                                     ),
-                                    SizedBox(height: 8),
+                                    const SizedBox(height: 8),
                                     Expanded(
                                       child: Text(
                                         finalLabel,
@@ -376,7 +487,7 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
           inputFormatters: inputFormatters,
           decoration: inputDecoration(hintText: label).copyWith(
             prefixIcon: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Icon(icon, size: 20.sp, color: AppColors.maincolor),
             ),
           ),
@@ -394,8 +505,6 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
         ProfileProvider().profileApi(data).then((response) async {
           if (response.statusCode == 200) {
             setState(() {
-
-
               var profileModel = ProfileModel.fromJson(response.data);
               landline.text = profileModel.data?.building?.landline ?? "";
               number.text = profileModel.data?.building?.mobile ?? "";
@@ -407,7 +516,7 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                   myBuilingname.text = building?.buildingName ?? "";
                 }
               }
-              log("landline   landlinelandline${profileModel.data?.building?.landline}");
+
               isLoading = false;
             });
           } else {

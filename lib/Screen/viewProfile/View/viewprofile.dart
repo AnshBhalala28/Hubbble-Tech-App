@@ -25,7 +25,7 @@ import 'myhome_screen.dart';
 class ViewProfile extends StatefulWidget {
   final int? id;
 
-  ViewProfile({super.key, this.id});
+  const ViewProfile({super.key, this.id});
 
   @override
   State<ViewProfile> createState() => _ViewProfileState();
@@ -136,7 +136,7 @@ class _ViewProfileState extends State<ViewProfile> {
                       height: 70.sp,
                       fit: BoxFit.cover,
                       placeholder:
-                          (context, url) => Center(
+                          (context, url) => const Center(
                             child: CircularProgressIndicator(
                               valueColor: AlwaysStoppedAnimation<Color>(
                                 AppColors.maincolor,
@@ -163,7 +163,7 @@ class _ViewProfileState extends State<ViewProfile> {
               child: Container(
                 width: 55.w,
                 height: 5.5.h,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: AppColors.maincolor,
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                 ),
@@ -188,7 +188,7 @@ class _ViewProfileState extends State<ViewProfile> {
               context,
               MyHome_Screen(id: loginModel?.data?.user?.id),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             menuItem(
               Icons.apartment,
               "My Building",
@@ -215,7 +215,7 @@ class _ViewProfileState extends State<ViewProfile> {
                           backgroundColor: Colors.transparent,
                           child: Container(
                             width: 73.w,
-                            padding: EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
                               color: AppColors.white,
                               borderRadius: BorderRadius.circular(16),
@@ -250,7 +250,7 @@ class _ViewProfileState extends State<ViewProfile> {
                                       padding: EdgeInsets.symmetric(
                                         vertical: 2.h,
                                       ),
-                                      child: CircularProgressIndicator(
+                                      child: const CircularProgressIndicator(
                                         color: AppColors.maincolor,
                                       ),
                                     )
@@ -288,7 +288,9 @@ class _ViewProfileState extends State<ViewProfile> {
                                               width: 20.w,
                                               route: () async {
                                                 await SaveDataLocal.clearUserData();
-                                                Get.offAll(() => LoginScreen());
+                                                Get.offAll(
+                                                  () => const LoginScreen(),
+                                                );
                                                 Logout();
                                               },
                                               color: AppColors.maincolor,
@@ -341,7 +343,7 @@ class _ViewProfileState extends State<ViewProfile> {
         leading: Icon(icon, color: AppColors.maincolor, size: 30),
         title: Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
             fontFamily: AppConstants.manrope,
@@ -349,13 +351,17 @@ class _ViewProfileState extends State<ViewProfile> {
         ),
         subtitle: Text(
           description,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 14,
             color: Colors.grey,
             fontFamily: AppConstants.manrope,
           ),
         ),
-        trailing: Icon(Icons.arrow_forward_ios, size: 18, color: Colors.grey),
+        trailing: const Icon(
+          Icons.arrow_forward_ios,
+          size: 18,
+          color: Colors.grey,
+        ),
         onTap: () {
           Get.to(screen);
         },
@@ -433,7 +439,7 @@ class _ViewProfileState extends State<ViewProfile> {
   //         if (response.statusCode == 200) {
   //           var profileModel = ProfileModel.fromJson(jsonDecode(response.body));
   //           if (profileModel.status == 200) {
-  //             log("Profile Updated: ${response.body}");
+  //
   //             Get.snackbar(
   //               "Success",
   //               "Profile updated successfully",

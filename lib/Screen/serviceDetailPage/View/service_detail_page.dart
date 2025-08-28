@@ -82,12 +82,12 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                         ),
                         decoration: BoxDecoration(
                           color: AppColors.bgcolor,
-                          border: Border(
+                          border: const Border(
                             top: BorderSide(color: Colors.grey),
                             left: BorderSide(color: Colors.grey),
                             right: BorderSide(color: Colors.grey),
                           ),
-                          borderRadius: BorderRadius.only(
+                          borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(45),
                             topRight: Radius.circular(45),
                           ),
@@ -283,8 +283,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      servicedetailsmodel?.data?.title ??
-                                          "",
+                                      servicedetailsmodel?.data?.title ?? "",
                                       style: TextStyle(
                                         fontWeight: FontWeight.w700,
                                         fontSize: 20.sp,
@@ -407,7 +406,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                           icon: Icons.check_circle_outline,
                                           title: feature,
                                         );
-                                      }).toList(),
+                                      }),
                                     ],
                                   ),
                                 if (benefitsList.isNotEmpty)
@@ -431,7 +430,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                           icon: Icons.check_circle_outline,
                                           title: benefit,
                                         );
-                                      }).toList(),
+                                      }),
                                     ],
                                   ),
                                 SizedBox(height: 10.h),
@@ -458,7 +457,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                 width: double.infinity * 0.5,
                 padding: EdgeInsets.symmetric(horizontal: 25.w),
                 margin: EdgeInsets.only(bottom: 2.h),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
@@ -467,9 +466,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                       offset: Offset(0, -2),
                     ),
                   ],
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(20),
-                  ),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                 ),
                 child: Row(
                   children: [
@@ -699,9 +696,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           "Something went wrong. Please try again.",
         );
       }
-    } catch (e,stackTrace) {
-      print("error ic coming $e");
-      print("error ic coming $stackTrace");
+    } catch (e) {
       setState(() {
         isLoading = false;
       });

@@ -43,7 +43,7 @@ InkWell batan({
             style: TextStyle(
               fontFamily: AppConstants.manrope,
               color: fontcolor,
-              fontWeight: fontWeight == null ? FontWeight.bold : fontWeight,
+              fontWeight: fontWeight ?? FontWeight.bold,
               letterSpacing: 1,
               fontSize: fontsize,
             ),

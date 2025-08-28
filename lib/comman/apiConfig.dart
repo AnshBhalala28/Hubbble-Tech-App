@@ -14,7 +14,7 @@ class DioHelper {
     SecurityContext context = SecurityContext(withTrustedRoots: false);
     context.setTrustedCertificatesBytes(sslCert.buffer.asUint8List());
     final HttpClient client = HttpClient(context: context);
-    final adapter = DefaultHttpClientAdapter();
+    final adapter = IOHttpClientAdapter();
     adapter.onHttpClientCreate = (HttpClient _) => client;
     _dio = Dio(
       BaseOptions(

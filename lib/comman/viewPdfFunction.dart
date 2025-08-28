@@ -27,7 +27,7 @@
 //   @override
 //   void initState() {
 //     super.initState();
-//     print('Link Is : ${widget.link}');
+//
 //   }
 //
 //   @override
@@ -114,7 +114,7 @@
 //           );
 //         }
 //       } catch (e) {
-//         print('Error: Invalid URL format');
+//
 //         Fluttertoast.showToast(
 //           msg: 'Invalid PDF URL',
 //           toastLength: Toast.LENGTH_SHORT,
@@ -150,7 +150,7 @@ import 'downloadFunctions.dart';
 class PdfView extends StatefulWidget {
   final String? link;
 
-  PdfView({Key? key, this.link}) : super(key: key);
+  const PdfView({super.key, this.link});
 
   @override
   State<PdfView> createState() => _PdfViewState();
@@ -162,7 +162,6 @@ class _PdfViewState extends State<PdfView> {
   @override
   void initState() {
     super.initState();
-    print('Link Is : ${widget.link}');
   }
 
   @override
@@ -265,7 +264,7 @@ class _PdfViewState extends State<PdfView> {
           fit: BoxFit.contain,
           loadingBuilder: (context, child, loadingProgress) {
             if (loadingProgress == null) return child;
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           },
           errorBuilder:
               (context, error, stackTrace) =>

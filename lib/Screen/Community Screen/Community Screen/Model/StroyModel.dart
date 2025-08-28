@@ -8,11 +8,11 @@ class StroyModel {
   StroyModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -29,17 +29,17 @@ class Data {
   Data({this.owner, this.featuredPosts});
 
   Data.fromJson(Map<String, dynamic> json) {
-    owner = json['owner'] != null ? new Owner.fromJson(json['owner']) : null;
+    owner = json['owner'] != null ? Owner.fromJson(json['owner']) : null;
     if (json['featured_posts'] != null) {
       featuredPosts = <FeaturedPosts>[];
       json['featured_posts'].forEach((v) {
-        featuredPosts!.add(new FeaturedPosts.fromJson(v));
+        featuredPosts!.add(FeaturedPosts.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (this.owner != null) {
       data['owner'] = this.owner!.toJson();
     }
@@ -65,7 +65,7 @@ class Owner {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['user_id'] = this.userId;
     data['name'] = this.name;
     data['logo'] = this.logo;
@@ -91,7 +91,7 @@ class FeaturedPosts {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['type'] = this.type;
     data['file'] = this.file;

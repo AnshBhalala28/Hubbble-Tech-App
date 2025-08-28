@@ -11,13 +11,13 @@ class MessageModel {
     if (json['data'] != null) {
       data = <Data>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(Data.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -66,16 +66,13 @@ class Data {
     type = json['type']?.toString();
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    sender =
-        json['sender'] != null ? new Sender.fromJson(json['sender']) : null;
+    sender = json['sender'] != null ? Sender.fromJson(json['sender']) : null;
     receiver =
-        json['receiver'] != null
-            ? new Receiver.fromJson(json['receiver'])
-            : null;
+        json['receiver'] != null ? Receiver.fromJson(json['receiver']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['message_type'] = this.messageType;
     data['message'] = this.message;
@@ -111,7 +108,7 @@ class Sender {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['first_name'] = this.firstName;
     data['last_name'] = this.lastName;
@@ -139,7 +136,7 @@ class Receiver {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['first_name'] = this.firstName;
     data['last_name'] = this.lastName;

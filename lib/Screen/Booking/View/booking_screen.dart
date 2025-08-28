@@ -158,7 +158,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       ),
                     ],
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Material(
                     elevation: 2,
                     borderRadius: BorderRadius.circular(10),
@@ -182,7 +182,7 @@ class _BookingScreenState extends State<BookingScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        offset: Offset(0, 45),
+                        offset: const Offset(0, 45),
                         itemBuilder:
                             (BuildContext context) => [
                               PopupMenuItem(
@@ -236,7 +236,7 @@ class _BookingScreenState extends State<BookingScreen> {
                             ],
                         child: Container(
                           alignment: Alignment.center,
-                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -266,7 +266,7 @@ class _BookingScreenState extends State<BookingScreen> {
               SizedBox(height: 2.h),
               isLoading
                   ? Loader().paddingOnly(top: 20.h)
-                  : nonEmptyBookings.length == 0 || nonEmptyBookings.isEmpty
+                  : nonEmptyBookings.isEmpty || nonEmptyBookings.isEmpty
                   ? Center(
                     child: Text(
                       "No Bookings found",
@@ -283,7 +283,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       children: [
                         ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: nonEmptyBookings.length,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,
@@ -324,7 +324,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                     ),
                                     child: Text(
                                       monthFormatted,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black87,
@@ -372,10 +372,10 @@ class _BookingScreenState extends State<BookingScreen> {
                                                 fontWeight: FontWeight.w500,
                                               ),
                                             ),
-                                            SizedBox(height: 2),
+                                            const SizedBox(height: 2),
                                             Text(
                                               dayNum,
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontSize: 24,
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.black87,
@@ -383,7 +383,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                             ),
                                           ],
                                         ),
-                                        SizedBox(width: 12),
+                                        const SizedBox(width: 12),
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment:
@@ -393,17 +393,17 @@ class _BookingScreenState extends State<BookingScreen> {
                                                 children: [
                                                   Text(
                                                     time,
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontSize: 13,
                                                       color: Colors.black87,
                                                       fontWeight:
                                                           FontWeight.w500,
                                                     ),
                                                   ),
-                                                  Spacer(),
+                                                  const Spacer(),
                                                   Container(
                                                     padding:
-                                                        EdgeInsets.symmetric(
+                                                        const EdgeInsets.symmetric(
                                                           horizontal: 8,
                                                           vertical: 4,
                                                         ),
@@ -425,7 +425,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                                         booking['rsvp'],
                                                         booking['attended'],
                                                       ),
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 12,
                                                         fontWeight:
@@ -435,29 +435,29 @@ class _BookingScreenState extends State<BookingScreen> {
                                                   ),
                                                 ],
                                               ),
-                                              SizedBox(height: 4),
+                                              const SizedBox(height: 4),
                                               Text(
                                                 booking['amenity']['name'] ??
                                                     "Meeting Room",
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.black87,
                                                 ),
                                               ),
-                                              SizedBox(height: 2),
+                                              const SizedBox(height: 2),
                                               Text(
                                                 booking['amenity']['description'] ??
                                                     "",
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 13,
                                                   color: Colors.black54,
                                                 ),
                                               ),
-                                              SizedBox(height: 8),
-                                              Divider(thickness: 0.5),
+                                              const SizedBox(height: 8),
+                                              const Divider(thickness: 0.5),
                                             ],
                                           ),
                                         ),
@@ -482,16 +482,19 @@ class _BookingScreenState extends State<BookingScreen> {
               ? Container()
               : Row(
                 children: [
-                  Spacer(),
+                  const Spacer(),
                   FloatingActionButton.extended(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(900),
                     ),
                     backgroundColor: Colors.white,
                     onPressed: () {
-                      Get.to(() => BookAmenities_Screen());
+                      Get.to(() => const BookAmenities_Screen());
                     },
-                    icon: Icon(Icons.home_repair_service, color: Colors.black),
+                    icon: const Icon(
+                      Icons.home_repair_service,
+                      color: Colors.black,
+                    ),
                     label: Text(
                       "Amenities",
                       style: TextStyle(
@@ -566,13 +569,13 @@ class _BookingScreenState extends State<BookingScreen> {
             setState(() {
               isLoading = false;
             });
-            Get.off(() => BookingScreen(), arguments: {'tabIndex': 0});
+            Get.off(() => const BookingScreen(), arguments: {'tabIndex': 0});
           } else {
             setState(() {
               isLoading = false;
             });
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
           setState(() {
             isLoading = false;
           });
@@ -626,7 +629,7 @@ class _BookingScreenState extends State<BookingScreen> {
               'Server Error: ${response.statusCode}',
             );
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
           buildErrorDialog(context, 'Exception', e.toString());
         } finally {
           setState(() {
@@ -664,7 +667,7 @@ class _BookingScreenState extends State<BookingScreen> {
               isLoading = false;
             });
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
           setState(() {
             isLoading = false;
           });

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 //
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -12,12 +10,10 @@ class ChatProvider extends ChangeNotifier {
   Future<Response> chatApi(String userId, String lon, String lat) async {
     try {
       final dio = await DioHelper.getDio();
-      log(
-        '${ApiEndpoint.getConcierge}?user_id=$userId&longitude=$lon&latitude=$lat',
-      );
+
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
       final response = await dio.get(
         '${ApiEndpoint.getConcierge}?user_id=$userId&longitude=$lon&latitude=$lat',
@@ -25,7 +21,6 @@ class ChatProvider extends ChangeNotifier {
 
         // queryParameters: {'user_id': userId, 'longitude': lon, 'latitude': lat},
       );
-      log("Sucess");
 
       return response;
     } on DioException catch (e) {
@@ -45,7 +40,7 @@ class ChatProvider extends ChangeNotifier {
         data: bodyData,
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
       );
-      log("urkl ${ApiEndpoint.allStory}");
+
       return response;
     } on DioException catch (e) {
       throw Exception("Something went wrong: $e");

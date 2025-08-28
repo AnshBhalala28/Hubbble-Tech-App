@@ -20,7 +20,7 @@ import '../../homePage/View/homenewpage.dart';
 import 'BusinessDetailScreen.dart';
 
 class FavouriteBusinessesPage extends StatefulWidget {
-  const FavouriteBusinessesPage({Key? key}) : super(key: key);
+  const FavouriteBusinessesPage({super.key});
 
   @override
   State<FavouriteBusinessesPage> createState() =>
@@ -31,7 +31,7 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
   String AppLat = '';
   String AppLon = '';
   bool isLoading = false;
-  bool _isBottomSheetOpen = false;
+  final bool _isBottomSheetOpen = false;
   bool isSending = false;
   String selectedUserId = '';
   late GoogleMapController mapController;
@@ -230,14 +230,6 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
         setState(() {
           isLoading = false;
         });
-        print(
-          ""
-          ""
-          ""
-          ""
-          ""
-          " $city",
-        );
       }
     } catch (e) {
       setState(() {
@@ -248,7 +240,7 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKeyParcel =
+    final GlobalKey<ScaffoldState> scaffoldKeyParcel =
         GlobalKey<ScaffoldState>();
     return Scaffold(
       backgroundColor: AppColors.bgcolor,
@@ -279,7 +271,7 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
                           )
                           : (getlikeModal?.data == null ||
                               getlikeModal!.data!.isEmpty)
-                          ? Center(
+                          ? const Center(
                             child: Text(
                               "No Favourites Added!",
                               style: TextStyle(
@@ -289,7 +281,7 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
                             ),
                           )
                           : ListView.builder(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 8,
                               vertical: 5,
                             ),
@@ -297,18 +289,14 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () {
-                                  print(
-                                    "Liked Business ID: ${getlikeModal?.data?[index].businessId}",
-                                  );
-
                                   BussinessViewProfile(
                                     (getlikeModal?.data?[index].businessId)
                                         .toString(),
                                   );
                                 },
                                 child: Container(
-                                  margin: EdgeInsets.only(bottom: 10),
-                                  padding: EdgeInsets.all(10),
+                                  margin: const EdgeInsets.only(bottom: 10),
+                                  padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
                                     color: Colors.white,
@@ -333,7 +321,7 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
                                                   "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=600",
                                         ),
                                       ),
-                                      SizedBox(width: 15),
+                                      const SizedBox(width: 15),
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment:
@@ -345,7 +333,7 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
                                                       .business
                                                       ?.businessName ??
                                                   "N/A",
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.black87,
@@ -353,10 +341,10 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                             ),
-                                            SizedBox(height: 3),
+                                            const SizedBox(height: 3),
                                             Text(
                                               "${(getlikeModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontSize: 14,
                                                 color: Colors.black54,
                                               ),
@@ -364,10 +352,10 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
                                           ],
                                         ),
                                       ),
-                                      SizedBox(width: 10),
+                                      const SizedBox(width: 10),
                                       GestureDetector(
                                         onTap: () => unlikeBusiness(index),
-                                        child: Icon(
+                                        child: const Icon(
                                           Icons.favorite,
                                           color: Colors.red,
                                           size: 28,

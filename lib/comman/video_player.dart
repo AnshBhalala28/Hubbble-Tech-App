@@ -4,8 +4,7 @@ import 'package:video_player/video_player.dart';
 class AiVideoPlayerWidget extends StatefulWidget {
   final String videoUrl;
 
-  const AiVideoPlayerWidget({Key? key, required this.videoUrl})
-    : super(key: key);
+  const AiVideoPlayerWidget({super.key, required this.videoUrl});
 
   @override
   _AiVideoPlayerWidgetState createState() => _AiVideoPlayerWidgetState();
@@ -60,6 +59,6 @@ class _AiVideoPlayerWidgetState extends State<AiVideoPlayerWidget> {
             ],
           ),
         )
-        : Center(child: CircularProgressIndicator());
+        : const Center(child: CircularProgressIndicator());
   }
 }

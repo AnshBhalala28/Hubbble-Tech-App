@@ -19,7 +19,6 @@ import '../../orderScreen/View/orderdetailscreen.dart';
 import '../../Parcel/parcel_Screen_View/parcel_View.dart';
 import '../../Visitor/View/visitorscreen.dart';
 
-
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
 
@@ -29,7 +28,7 @@ class NotificationPage extends StatefulWidget {
 
 class _NotificationPageState extends State<NotificationPage> {
   final GlobalKey<ScaffoldState> _scaffoldKeyParcel =
-  GlobalKey<ScaffoldState>();
+      GlobalKey<ScaffoldState>();
 
   bool isLoading = false;
   int notificationCount = 0;
@@ -67,11 +66,11 @@ class _NotificationPageState extends State<NotificationPage> {
                 child: Column(children: [_buildNotificationList()]),
               ),
             ),
-            if (notifications != null && notifications!.length! > 5)
+            if (notifications != null && notifications!.length > 5)
               Center(
                 child: TextButton(
                   onPressed: () {
-                    Get.to(() => AllNotificationPage());
+                    Get.to(() => const AllNotificationPage());
                   },
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -85,13 +84,13 @@ class _NotificationPageState extends State<NotificationPage> {
                           fontFamily: AppConstants.manrope,
                         ),
                       ),
-                      Icon(Icons.keyboard_arrow_down, color: Colors.blue),
+                      const Icon(Icons.keyboard_arrow_down, color: Colors.blue),
                     ],
                   ),
                 ),
               )
             else
-              SizedBox(),
+              const SizedBox(),
             SizedBox(height: 2.h),
           ],
         ),
@@ -120,11 +119,11 @@ class _NotificationPageState extends State<NotificationPage> {
     return ListView.builder(
       shrinkWrap: true,
       padding: EdgeInsets.zero,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount:
-      (notificationmodel?.data?.notifications?.length ?? 0) > 5
-          ? 5
-          : notificationmodel?.data?.notifications?.length ?? 0,
+          (notificationmodel?.data?.notifications?.length ?? 0) > 5
+              ? 5
+              : notificationmodel?.data?.notifications?.length ?? 0,
       itemBuilder: (context, index) {
         var notification = notificationmodel?.data?.notifications?[index];
 
@@ -137,7 +136,7 @@ class _NotificationPageState extends State<NotificationPage> {
             if (type == "messageboard") {
               Get.to(() => Messageboard());
             } else if (type == "parcel") {
-              Get.to(() => ParcelScreen());
+              Get.to(() => const ParcelScreen());
             } else if (type == "chat") {
               String chatName = "";
               String profileImage = "";
@@ -145,8 +144,7 @@ class _NotificationPageState extends State<NotificationPage> {
 
               if (notification?.conciergeProfile != null) {
                 chatName =
-                    "${notification?.conciergeProfile?.firstName ??
-                        ''} ${notification?.conciergeProfile?.lastName ?? ''}"
+                    "${notification?.conciergeProfile?.firstName ?? ''} ${notification?.conciergeProfile?.lastName ?? ''}"
                         .trim();
                 if (notification?.conciergeProfile?.conciergeImage != null &&
                     notification!
@@ -162,24 +160,21 @@ class _NotificationPageState extends State<NotificationPage> {
               }
 
               Get.to(
-                    () =>
-                    MessageScreen(
-                      chatName: chatName,
-                      conciergeID: notification?.chatCreateId.toString() ?? "",
-                      type: chatType,
-                      image: profileImage,
-                    ),
+                () => MessageScreen(
+                  chatName: chatName,
+                  conciergeID: notification?.chatCreateId.toString() ?? "",
+                  type: chatType,
+                  image: profileImage,
+                ),
               );
             } else if (type == "visitor") {
               Get.to(() => VisitorScreen());
             } else if (type == "order") {
               Get.to(
-                    () =>
-                    Orderdetail_Screen(
-                      orderid: notification?.msgTo ?? "",
-                      orderProductID: notification?.chatCreateId.toString() ??
-                          "",
-                    ),
+                () => Orderdetail_Screen(
+                  orderid: notification?.msgTo ?? "",
+                  orderProductID: notification?.chatCreateId.toString() ?? "",
+                ),
               );
             } else {}
           },
@@ -187,11 +182,11 @@ class _NotificationPageState extends State<NotificationPage> {
             height: 14.5.h,
             margin: EdgeInsets.only(bottom: 1.h),
             width: double.infinity,
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(15),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Colors.black12,
                   blurRadius: 6,
@@ -279,9 +274,7 @@ class _NotificationPageState extends State<NotificationPage> {
   //         final response = await NotificationProvider().notificationApi(
   //           (loginModel?.data?.user?.id).toString(),
   //         );
-  //         print(
-  //           "login user id newwwww: ${(loginModel?.data?.user?.id).toString()}",
-  //         );
+  //
   //         EasyLoading.dismiss();
   //         if (response.statusCode == 200) {
   //           notificationmodel = NotificationModell.fromJson(response.data);
@@ -310,7 +303,7 @@ class _NotificationPageState extends State<NotificationPage> {
 
             // getnotificationCount();
           } else {}
-        } catch (e, stackTrace) {}
+        } catch (e) {}
       } else {
         EasyLoading.dismiss();
         buildErrorDialog(context, 'Error', "Internet Required");

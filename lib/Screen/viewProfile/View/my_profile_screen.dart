@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -81,7 +80,6 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                   SizedBox(height: 3.h),
                   GestureDetector(
                     onTap: () {
-                      log('adadaadad');
                       pickImage();
                     },
                     child: Stack(
@@ -112,16 +110,18 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                                       ) {
                                         if (loadingProgress == null) {
                                           Future.delayed(
-                                            Duration(milliseconds: 300),
+                                            const Duration(milliseconds: 300),
                                             () {
-                                              setState(() {
-                                                isLoading = false;
-                                              });
+                                              if (mounted) {
+                                                setState(() {
+                                                  isLoading = false;
+                                                });
+                                              }
                                             },
                                           );
                                           return child;
                                         } else {
-                                          return Center(
+                                          return const Center(
                                             child: CircularProgressIndicator(
                                               valueColor:
                                                   AlwaysStoppedAnimation<Color>(
@@ -160,7 +160,7 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                             shape: BoxShape.circle,
                             color: AppColors.maincolor,
                           ),
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           child: Icon(
                             Icons.camera_alt,
                             size: 18.sp,
@@ -181,7 +181,12 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                     ),
                   ),
                   SizedBox(height: 2.h),
-                  profileField("Full Name", nameController, Icons.person, false),
+                  profileField(
+                    "Full Name",
+                    nameController,
+                    Icons.person,
+                    false,
+                  ),
                   profileField("Email", emailController, Icons.email, false),
                   SizedBox(height: 2.h),
                   batan(
@@ -240,7 +245,7 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
           inputFormatters: inputFormatters,
           decoration: inputDecoration(hintText: label).copyWith(
             prefixIcon: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Icon(icon, size: 20.sp, color: AppColors.maincolor),
             ),
           ),
@@ -373,14 +378,10 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
     }
   }
 
-
   void EditProfile() {
-
-
     final Map<String, String> data = {
       'update_id': profileModel?.data?.id.toString() ?? '',
       "apartment_number": profileModel?.data?.unitsId.toString() ?? '',
-
     };
     setState(() {
       isEditing = true;
@@ -395,7 +396,7 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
             var profileModel = ProfileModel.fromJson(response.data);
 
             if (profileModel.status == 200) {
-              Future.delayed(Duration(microseconds: 100), () {
+              Future.delayed(const Duration(microseconds: 100), () {
                 Get.offAll(HomePage(userName: ""));
               });
 

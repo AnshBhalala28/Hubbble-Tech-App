@@ -141,7 +141,7 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
+                          boxShadow: const [
                             BoxShadow(
                               color: Colors.black12,
                               blurRadius: 5,
@@ -197,7 +197,14 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
                             ),
                             SizedBox(height: 1.h),
                             ReadMoreText(
-                              "${serviceBookingModel?.data?[index].description == null || serviceBookingModel?.data?[index].description == "" ? "N/A" : "${serviceBookingModel?.data?[index].description}"}",
+                              serviceBookingModel?.data?[index].description ==
+                                          null ||
+                                      serviceBookingModel
+                                              ?.data?[index]
+                                              .description ==
+                                          ""
+                                  ? "N/A"
+                                  : "${serviceBookingModel?.data?[index].description}",
                               trimLines: 2,
                               trimLength: 100,
                               colorClickableText: Colors.blue,
@@ -246,7 +253,7 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
                                                 .bookingDatetime
                                                 ?.length ==
                                             0
-                                    ? SizedBox()
+                                    ? const SizedBox()
                                     : Text(
                                       formatDate(
                                         serviceBookingModel
@@ -331,7 +338,7 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
                   child: Container(
                     height: 4,
                     width: 20.w,
-                    margin: EdgeInsets.only(bottom: 16),
+                    margin: const EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(10),
@@ -348,13 +355,13 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
                       fit: BoxFit.cover,
                       placeholder:
                           (context, url) =>
-                              Center(child: CircularProgressIndicator()),
+                              const Center(child: CircularProgressIndicator()),
                       errorWidget:
                           (context, url, error) =>
                               Image(image: AssetImage(image)),
                     ),
                   ),
-                if (imageUrl != null) SizedBox(height: 16),
+                if (imageUrl != null) const SizedBox(height: 16),
                 Text(
                   "Booking Details",
                   style: TextStyle(
@@ -369,7 +376,7 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
                   children: [
                     SizedBox(
                       width: 30.w,
-                      child: Text(
+                      child: const Text(
                         "Description:",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
@@ -381,7 +388,7 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
                     SizedBox(
                       width: 60.w,
                       child: ReadMoreText(
-                        "${description == null || description == "" ? "N/A" : "${description}"}",
+                        description == "" ? "N/A" : description,
                         trimLines: 3,
                         trimLength: 60,
                         colorClickableText: Colors.blue,
@@ -418,10 +425,10 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
                   type.toString().capitalizeFirst ?? "",
                   color: getStatusColor(type),
                 ),
-                created == null || created.isEmpty
-                    ? SizedBox()
+                created.isEmpty
+                    ? const SizedBox()
                     : _detailRow("Booked", formatDate(created)),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 batan(
                   title: "Close",
                   route: () {
@@ -434,7 +441,7 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
                   fontsize: 18.sp,
                   radius: 12.0,
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
               ],
             ),
           ),
@@ -453,7 +460,7 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
             flex: 2,
             child: Text(
               "$title:",
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: AppConstants.manrope,
                 fontSize: 15,
@@ -514,7 +521,7 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
               isLoading = false;
             });
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
           setState(() {
             isLoading = false;
           });

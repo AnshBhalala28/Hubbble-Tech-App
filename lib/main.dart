@@ -15,7 +15,7 @@
 // Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 //   await Firebase.initializeApp();
 //
-//   log("🔧 Handling background message: ${message.messageId}");
+//
 //
 //   if (message.data['sender_token'] != myDeviceToken) {
 //     _showAwesomeNotification(message);
@@ -26,7 +26,7 @@
 //   String? title = message.notification?.title ?? message.data['title'] ?? '';
 //   String? body = message.notification?.body ?? message.data['body'] ?? '';
 //
-//   log("🔔 Showing Awesome Notification - Title: $title, Body: $body");
+//
 //
 //   AwesomeNotifications().createNotification(
 //     content: NotificationContent(
@@ -62,20 +62,20 @@
 //     criticalAlert: true,
 //     provisional: false,
 //   );
-//   log('🔔 Notification permission status: ${settings.authorizationStatus}');
+//
 //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-//     log('✅ User granted permission');
+//
 //   } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-//     log('🟡 User granted provisional permission');
+//
 //   } else {
-//     log('❌ User declined or has not accepted permission');
+//
 //   }
 //   bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
 //   if (!isAllowed) {
-//     log('🛑 Awesome Notifications permission not granted. Requesting...');
+//
 //     AwesomeNotifications().requestPermissionToSendNotifications();
 //   } else {
-//     log('✅ Awesome Notifications permission granted');
+//
 //   }
 //   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 //   runApp(MyApp());
@@ -98,11 +98,11 @@
 //     // Get device token
 //     FirebaseMessaging.instance.getToken().then((token) {
 //       myDeviceToken = token;
-//       log("📱 Device Token: $token");
+//
 //     });
 //     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-//       log('📩 Foreground message received: ${message.notification?.title}');
-//       log('📦 Data: ${message.data}');
+//
+//
 //
 //       if (Theme.of(context).platform == TargetPlatform.iOS) {
 //         if (message.data['sender_token'] != myDeviceToken &&
@@ -117,9 +117,7 @@
 //     });
 //
 //     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-//       log(
-//         "🟢 Notification tapped from background: ${message.notification?.title}",
-//       );
+//
 //     });
 //     checkInitialMessage();
 //   }
@@ -150,7 +148,6 @@
 //     );
 //   }
 // }
-import 'dart:developer';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -167,7 +164,6 @@ String? myDeviceToken;
 /// Background handler
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  log("🔧 Handling background message: ${message.messageId}");
 
   if (message.data['sender_token'] != myDeviceToken) {
     _showAwesomeNotification(message);
@@ -178,20 +174,15 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void _showAwesomeNotification(RemoteMessage message) async {
   bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
   if (!isAllowed) {
-    log("🚫 Notification not allowed. Skipping...");
     return;
   }
 
   String? title = message.notification?.title ?? message.data['title'] ?? '';
   String? body = message.notification?.body ?? message.data['body'] ?? '';
 
-  log("🔔 Showing Awesome Notification - Title: $title, Body: $body");
-
   AwesomeNotifications().createNotification(
     content: NotificationContent(
-      id: DateTime
-          .now()
-          .millisecondsSinceEpoch ~/ 1000,
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
       channelKey: 'basic_channel',
       title: title,
       body: body,
@@ -205,20 +196,16 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Initialize Awesome Notifications
-  AwesomeNotifications().initialize(
-    null,
-    [
-      NotificationChannel(
-        channelKey: 'basic_channel',
-        channelName: 'Basic Notifications',
-        channelDescription: 'Used for basic notifications',
-        defaultColor: AppColors.maincolor,
-        ledColor: Colors.white,
-        importance: NotificationImportance.High,
-      ),
-    ],
-    debug: true,
-  );
+  AwesomeNotifications().initialize(null, [
+    NotificationChannel(
+      channelKey: 'basic_channel',
+      channelName: 'Basic Notifications',
+      channelDescription: 'Used for basic notifications',
+      defaultColor: AppColors.maincolor,
+      ledColor: Colors.white,
+      importance: NotificationImportance.High,
+    ),
+  ], debug: true);
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   NotificationSettings settings = await messaging.requestPermission(
@@ -233,26 +220,19 @@ void main() async {
 
   switch (settings.authorizationStatus) {
     case AuthorizationStatus.authorized:
-      log('✅ User granted permission');
       break;
     case AuthorizationStatus.provisional:
-      log('🟡 User granted provisional permission');
       break;
     case AuthorizationStatus.denied:
     case AuthorizationStatus.notDetermined:
-      log('❌ User denied or has not accepted notification permission');
       break;
   }
   bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
   if (!isAllowed) {
-    log(
-        '🔕 Awesome Notifications permission not granted. Skipping notification requests.');
-  } else {
-    log('✅ Awesome Notifications permission granted');
-  }
+  } else {}
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -270,24 +250,19 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     FirebaseMessaging.instance.getToken().then((token) {
       myDeviceToken = token;
-      log("📱 Device Token: $token");
     });
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      log('📩 Foreground message received: ${message.notification?.title}');
-      log('📦 Data: ${message.data}');
       if (message.data['sender_token'] != myDeviceToken) {
         _showAwesomeNotification(message);
       }
     });
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      log("🟢 Notification tapped from background: ${message.notification?.title}");
-    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {});
     checkInitialMessage();
   }
 
   Future<void> checkInitialMessage() async {
-    RemoteMessage? initialMessage = await FirebaseMessaging.instance
-        .getInitialMessage();
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
     if (initialMessage != null &&
         initialMessage.data['sender_token'] != myDeviceToken) {
       _showAwesomeNotification(initialMessage);
@@ -305,7 +280,7 @@ class _MyAppState extends State<MyApp> {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
           ),
-          home: WelcomeScreen(),
+          home: const WelcomeScreen(),
         );
       },
     );

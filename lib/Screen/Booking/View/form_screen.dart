@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +13,6 @@ import 'package:wavee/comman/custom_batan.dart';
 import 'package:wavee/comman/loader.dart';
 
 import '../../../comman/Custom_AppBar.dart';
-import '../../../comman/SideMenu.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
@@ -35,7 +32,7 @@ class Form_Screen extends StatefulWidget {
   final String? requestedDate;
   final bool? isPage;
 
-  Form_Screen({
+  const Form_Screen({
     super.key,
     this.amenites_id,
     this.isPage,
@@ -57,7 +54,7 @@ class _Form_ScreenState extends State<Form_Screen> {
   bool isLoading = false;
   bool load = false;
 
-  int _currentIndex = 0;
+  final int _currentIndex = 0;
   List<Map<String, dynamic>> dates = [];
   String selectedValue = 'days';
   int selectedIndex = 0;
@@ -99,7 +96,6 @@ class _Form_ScreenState extends State<Form_Screen> {
 
     _generateDatesBasedOnSelection();
     AmenitiesApi(date: '');
-    log("widget widget ${widget.attend}");
   }
 
   int selectedMonthIndex = DateTime.now().month - 1;
@@ -171,8 +167,8 @@ class _Form_ScreenState extends State<Form_Screen> {
                       TitleBar(
                         back: () {
                           widget.isPage == true
-                              ? Get.offAll(BookingScreen())
-                              : Get.offAll(BookAmenities_Screen());
+                              ? Get.offAll(const BookingScreen())
+                              : Get.offAll(const BookAmenities_Screen());
                         },
                         title: amenitiesModel?.data?.data?[0].name ?? "",
                         drawerCallback: () {},
@@ -181,7 +177,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                       SizedBox(
                         child: ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           padding: EdgeInsets.zero,
                           itemCount: amenitiesModel?.data?.data?.length ?? 0,
                           itemBuilder: (context, index) {
@@ -198,13 +194,13 @@ class _Form_ScreenState extends State<Form_Screen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      imageList.length == 0
+                                      imageList.isEmpty
                                           ? Container(
                                             height: 25.h,
                                             decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(12),
-                                              image: DecorationImage(
+                                              image: const DecorationImage(
                                                 image: AssetImage(
                                                   "assets/images/waveeLogoShort.png",
                                                 ),
@@ -249,7 +245,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                 (
                                                                   context,
                                                                   url,
-                                                                ) => Center(
+                                                                ) => const Center(
                                                                   child:
                                                                       CircularProgressIndicator(),
                                                                 ),
@@ -258,7 +254,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                   context,
                                                                   url,
                                                                   error,
-                                                                ) => Center(
+                                                                ) => const Center(
                                                                   child: Icon(
                                                                     Icons.error,
                                                                     color:
@@ -305,12 +301,13 @@ class _Form_ScreenState extends State<Form_Screen> {
                                           imageList.length,
                                           (dotIndex) {
                                             return AnimatedContainer(
-                                              duration: Duration(
+                                              duration: const Duration(
                                                 milliseconds: 300,
                                               ),
-                                              margin: EdgeInsets.symmetric(
-                                                horizontal: 4,
-                                              ),
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 4,
+                                                  ),
                                               width:
                                                   currentIndex == dotIndex
                                                       ? 10
@@ -349,7 +346,10 @@ class _Form_ScreenState extends State<Form_Screen> {
                                           ),
                                         ),
                                         child: ReadMoreText(
-                                          "${booking?.description == null || booking?.description == "" ? "N/A" : "${booking?.description.toString().capitalize}"}",
+                                          booking?.description == null ||
+                                                  booking?.description == ""
+                                              ? "N/A"
+                                              : "${booking?.description.toString().capitalize}",
                                           trimLines: 4,
                                           trimLength: 145,
                                           colorClickableText: Colors.blue,
@@ -590,7 +590,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                           child: Center(
                                                             child: Text(
                                                               calendar1Months[index],
-                                                              style: TextStyle(
+                                                              style: const TextStyle(
                                                                 fontFamily:
                                                                     AppConstants
                                                                         .manrope,
@@ -825,7 +825,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                       ),
                                                     ),
                                                   ),
-                                                  SizedBox(width: 6),
+                                                  const SizedBox(width: 6),
                                                   buildSlotBox(
                                                     label: 'Total',
                                                     value:
@@ -837,7 +837,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                         "0",
                                                     color: Colors.blue,
                                                   ),
-                                                  SizedBox(width: 6),
+                                                  const SizedBox(width: 6),
                                                   buildSlotBox(
                                                     label: 'Booked',
                                                     value:
@@ -849,7 +849,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                         "0",
                                                     color: Colors.red,
                                                   ),
-                                                  SizedBox(width: 6),
+                                                  const SizedBox(width: 6),
                                                   buildSlotBox(
                                                     label: 'Available',
                                                     value:
@@ -861,7 +861,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                         "0",
                                                     color: Colors.green,
                                                   ),
-                                                  SizedBox(width: 6),
+                                                  const SizedBox(width: 6),
                                                 ],
                                               ),
                                             ),
@@ -871,7 +871,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                             SizedBox(height: 2.h),
                                             Container(
                                               height: 25.h,
-                                              padding: EdgeInsets.all(16),
+                                              padding: const EdgeInsets.all(16),
                                               width: double.infinity,
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
@@ -939,7 +939,11 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                     .maincolor,
                                                           ),
                                                           Text(
-                                                            "${getOperatingHours(calendar1SelectedDate!, selectedAmenity?.operatingHours)}",
+                                                            getOperatingHours(
+                                                              calendar1SelectedDate!,
+                                                              selectedAmenity
+                                                                  ?.operatingHours,
+                                                            ),
                                                             style: TextStyle(
                                                               fontWeight:
                                                                   FontWeight
@@ -982,7 +986,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                       ),
                                                     ],
                                                   ),
-                                                  Spacer(),
+                                                  const Spacer(),
                                                   isGlobalLoading
                                                       ? Container(
                                                         height: 5.h,
@@ -990,7 +994,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                             Alignment.center,
                                                         width: double.infinity,
                                                         child:
-                                                            CircularProgressIndicator(
+                                                            const CircularProgressIndicator(
                                                               color:
                                                                   AppColors
                                                                       .maincolor,
@@ -1072,7 +1076,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                   children: [
                                                                     Transform.translate(
                                                                       offset:
-                                                                          Offset(
+                                                                          const Offset(
                                                                             -4,
                                                                             0,
                                                                           ),
@@ -1087,7 +1091,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                     ),
                                                                     Transform.translate(
                                                                       offset:
-                                                                          Offset(
+                                                                          const Offset(
                                                                             4,
                                                                             0,
                                                                           ),
@@ -1122,7 +1126,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                         ),
                       ),
                       isLoading
-                          ? CircularProgressIndicator()
+                          ? const CircularProgressIndicator()
                           : widget.status != null
                           ? buildStatusContainer(
                             widget.status ?? "",
@@ -1172,9 +1176,6 @@ class _Form_ScreenState extends State<Form_Screen> {
                               setState(() {
                                 showBookingDetails = true;
                               });
-                              log(
-                                "selectedCalendarDate: $calendar1SelectedDate",
-                              );
                             },
                             child: Container(
                               height: 6.h,
@@ -1216,7 +1217,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                       alignment: Alignment.center,
                                       children: [
                                         Transform.translate(
-                                          offset: Offset(-4, 0),
+                                          offset: const Offset(-4, 0),
                                           child: Icon(
                                             Icons.arrow_forward_ios,
                                             color: Colors.white,
@@ -1224,7 +1225,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                           ),
                                         ),
                                         Transform.translate(
-                                          offset: Offset(4, 0),
+                                          offset: const Offset(4, 0),
                                           child: Icon(
                                             Icons.arrow_forward_ios,
                                             color: Colors.white,
@@ -1238,7 +1239,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                               ),
                             ),
                           )
-                          : SizedBox(),
+                          : const SizedBox(),
                       SizedBox(height: 5.h),
                     ],
                   ).paddingSymmetric(horizontal: 3.w),
@@ -1261,7 +1262,7 @@ class _Form_ScreenState extends State<Form_Screen> {
   }) {
     return Container(
       height: 5.h,
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
@@ -1269,7 +1270,7 @@ class _Form_ScreenState extends State<Form_Screen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             "$label: ",
             style: TextStyle(
@@ -1279,7 +1280,7 @@ class _Form_ScreenState extends State<Form_Screen> {
               fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(width: 2),
+          const SizedBox(width: 2),
           Text(
             value,
             textAlign: TextAlign.center,
@@ -1506,7 +1507,7 @@ class _Form_ScreenState extends State<Form_Screen> {
             borderRadius: BorderRadius.circular(20),
           ),
           elevation: 8,
-          insetPadding: EdgeInsets.symmetric(horizontal: 20),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 20),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -1515,14 +1516,14 @@ class _Form_ScreenState extends State<Form_Screen> {
                 CircleAvatar(
                   radius: 32,
                   backgroundColor: AppColors.maincolor.withOpacity(0.1),
-                  child: Icon(
+                  child: const Icon(
                     Icons.event_available,
                     color: AppColors.maincolor,
                     size: 36,
                   ),
                 ),
-                SizedBox(height: 16),
-                Text(
+                const SizedBox(height: 16),
+                const Text(
                   "You're Invited!",
                   style: TextStyle(
                     fontSize: 20,
@@ -1530,8 +1531,8 @@ class _Form_ScreenState extends State<Form_Screen> {
                     fontFamily: AppConstants.manrope,
                   ),
                 ),
-                SizedBox(height: 8),
-                Text(
+                const SizedBox(height: 8),
+                const Text(
                   "Would you like to RSVP for",
                   style: TextStyle(
                     fontSize: 14,
@@ -1539,7 +1540,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                     fontFamily: AppConstants.manrope,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
                   "\"$eventName\"",
                   textAlign: TextAlign.center,
@@ -1550,7 +1551,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                     fontFamily: AppConstants.manrope,
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Row(
                   children: [
                     Expanded(
@@ -1561,12 +1562,12 @@ class _Form_ScreenState extends State<Form_Screen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey[300],
                           foregroundColor: Colors.black87,
-                          padding: EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        child: Column(
+                        child: const Column(
                           children: [
                             Icon(Icons.help_outline),
                             SizedBox(height: 4),
@@ -1575,7 +1576,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
@@ -1584,12 +1585,12 @@ class _Form_ScreenState extends State<Form_Screen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red.shade100,
                           foregroundColor: Colors.red.shade700,
-                          padding: EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        child: Column(
+                        child: const Column(
                           children: [
                             Icon(Icons.cancel_outlined),
                             SizedBox(height: 4),
@@ -1598,7 +1599,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
@@ -1607,12 +1608,12 @@ class _Form_ScreenState extends State<Form_Screen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.maincolor,
                           foregroundColor: Colors.white,
-                          padding: EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        child: Column(
+                        child: const Column(
                           children: [
                             Icon(Icons.check_circle_outline),
                             SizedBox(height: 4),
@@ -1646,7 +1647,7 @@ class _Form_ScreenState extends State<Form_Screen> {
             borderRadius: BorderRadius.circular(20),
           ),
           backgroundColor: Colors.white,
-          insetPadding: EdgeInsets.symmetric(horizontal: 24),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 24),
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
@@ -1655,32 +1656,32 @@ class _Form_ScreenState extends State<Form_Screen> {
                 CircleAvatar(
                   backgroundColor: AppColors.maincolor.withOpacity(0.1),
                   radius: 32,
-                  child: Icon(
+                  child: const Icon(
                     Icons.how_to_reg,
                     color: AppColors.maincolor,
                     size: 36,
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Text(
                   "${loginModel?.data?.user?.name?.firstName ?? " "} ${loginModel?.data?.user?.name?.lastName ?? ""}",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     fontFamily: AppConstants.manrope,
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   "Do you want to mark yourself as attended for\n\"$eventName\"?",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     color: Colors.black54,
                     fontFamily: AppConstants.manrope,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Row(
                   children: [
                     Expanded(
@@ -1694,7 +1695,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          padding: EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                         child: const Text(
                           "No",
@@ -1706,7 +1707,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
@@ -1718,9 +1719,9 @@ class _Form_ScreenState extends State<Form_Screen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          padding: EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
-                        child: Text(
+                        child: const Text(
                           "Yes",
                           style: TextStyle(
                             color: Colors.white,
@@ -1823,7 +1824,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                         ),
                         Text(
                           location,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w500,
                             fontFamily: AppConstants.manrope,
@@ -2101,7 +2102,7 @@ class _Form_ScreenState extends State<Form_Screen> {
         });
         return false;
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       setState(() {
         isLoading = false;
         load = false;
@@ -2161,7 +2162,7 @@ class _Form_ScreenState extends State<Form_Screen> {
 
         return false;
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       if (mounted) {
         setState(() {
           isGlobalLoading = false;
@@ -2195,13 +2196,13 @@ class _Form_ScreenState extends State<Form_Screen> {
                 isRsvpLoading = false;
               });
             }
-            Get.to(BookingScreen());
+            Get.to(const BookingScreen());
           } else {
             setState(() {
               isRsvpLoading = false;
             });
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
           if (mounted) {
             setState(() {
               isRsvpLoading = false;
@@ -2246,7 +2247,7 @@ class _Form_ScreenState extends State<Form_Screen> {
               isRsvpLoading = false;
             });
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
           if (mounted) {
             setState(() {
               isRsvpLoading = false;

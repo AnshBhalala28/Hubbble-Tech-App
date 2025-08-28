@@ -28,7 +28,7 @@ responses(http.Response response) {
         "Server Unavailable",
         "Server's are Unavailable Please Try Again Later",
         snackPosition: SnackPosition.TOP,
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );

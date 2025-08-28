@@ -11,13 +11,13 @@ class GetGroupListModel {
     if (json['data'] != null) {
       data = <Data>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(Data.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -61,12 +61,12 @@ class Data {
     unreadCount = json['unread_count'];
     lastmessage =
         json['lastmessage'] != null
-            ? new Lastmessage.fromJson(json['lastmessage'])
+            ? Lastmessage.fromJson(json['lastmessage'])
             : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['created_by'] = this.createdBy;
     data['name'] = this.name;
@@ -135,7 +135,7 @@ class Lastmessage {
     firstName = json['first_name'];
     lastName = json['last_name'];
     profileImage = json['profile_image'];
-    users = json['users'] != null ? new Users.fromJson(json['users']) : null;
+    users = json['users'] != null ? Users.fromJson(json['users']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -216,7 +216,7 @@ class Users {
     gender = json['gender'];
     dateOfBirth = json['date_of_birth'];
     address =
-        json['address'] != null ? new Address.fromJson(json['address']) : null;
+        json['address'] != null ? Address.fromJson(json['address']) : null;
     psLatitude = json['ps_latitude'];
     psLongitude = json['ps_longitude'];
     fcmToken = json['fcm_token'];
@@ -229,7 +229,7 @@ class Users {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['role'] = this.role;
     data['name'] = this.name;
@@ -271,7 +271,7 @@ class Address {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['address'] = this.address;
     data['city'] = this.city;
     data['country'] = this.country;

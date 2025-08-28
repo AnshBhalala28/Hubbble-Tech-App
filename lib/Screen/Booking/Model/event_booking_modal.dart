@@ -11,13 +11,13 @@ class EventBookingModal {
     if (json['data'] != null) {
       data = <Data4>[];
       json['data'].forEach((v) {
-        data!.add(new Data4.fromJson(v));
+        data!.add(Data4.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -60,7 +60,7 @@ class Data4 {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['request_id'] = this.requestId;
     data['event_id'] = this.eventId;
     data['event_name'] = this.eventName;

@@ -252,11 +252,11 @@ class MyOrderModel {
   MyOrderModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -292,13 +292,13 @@ class Data {
     if (json['data'] != null) {
       data = <Data3>[];
       json['data'].forEach((v) {
-        data!.add(new Data3.fromJson(v));
+        data!.add(Data3.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['current_page'] = this.currentPage;
     data['per_page'] = this.perPage;
     data['total_pages'] = this.totalPages;
@@ -357,14 +357,14 @@ class Data3 {
     if (json['orderProducts'] != null) {
       orderProducts = <OrderProducts>[];
       json['orderProducts'].forEach((v) {
-        orderProducts!.add(new OrderProducts.fromJson(v));
+        orderProducts!.add(OrderProducts.fromJson(v));
       });
     }
     randomProductImage = json['random_product_image'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['order_no'] = this.orderNo;
@@ -395,7 +395,7 @@ class OrderProducts {
   String? price;
   String? totalPrice;
   int? isWithdrawn;
-  Null? isBooked;
+  Null isBooked;
   String? createdAt;
   String? updatedAt;
   Product? product;
@@ -430,11 +430,11 @@ class OrderProducts {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     product =
-        json['product'] != null ? new Product.fromJson(json['product']) : null;
+        json['product'] != null ? Product.fromJson(json['product']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['order_id'] = this.orderId;
     data['user_id'] = this.userId;
@@ -525,7 +525,7 @@ class Product {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['product_category_id'] = this.productCategoryId;

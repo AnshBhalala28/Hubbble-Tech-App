@@ -100,7 +100,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                     profileModel?.data?.unit?.documentsFiles?.length == null ||
                             profileModel?.data?.unit?.documentsFiles?.length ==
                                 0
-                        ? SizedBox()
+                        ? const SizedBox()
                         : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -119,9 +119,9 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                             GridView.builder(
                               shrinkWrap: true,
                               padding: EdgeInsets.zero,
-                              physics: NeverScrollableScrollPhysics(),
+                              physics: const NeverScrollableScrollPhysics(),
                               gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 3,
                                     crossAxisSpacing: 10,
                                     mainAxisSpacing: 15,
@@ -183,7 +183,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                                           size: 30.sp,
                                         ),
                                       ),
-                                      SizedBox(height: 8),
+                                      const SizedBox(height: 8),
                                       Expanded(
                                         child: Text(
                                           finalLabel,
@@ -213,7 +213,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                                     ?.documentsFiles
                                     ?.length ==
                                 0
-                        ? SizedBox()
+                        ? const SizedBox()
                         : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -232,9 +232,9 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                             GridView.builder(
                               shrinkWrap: true,
                               padding: EdgeInsets.zero,
-                              physics: NeverScrollableScrollPhysics(),
+                              physics: const NeverScrollableScrollPhysics(),
                               gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 3,
                                     crossAxisSpacing: 10,
                                     mainAxisSpacing: 15,
@@ -259,8 +259,9 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                                         .buildingDocument!
                                         .documentsFilesLabel;
 
-                                if (documentUrl == null || documentUrl.isEmpty)
-                                  return SizedBox();
+                                if (documentUrl.isEmpty) {
+                                  return const SizedBox();
+                                }
 
                                 String label =
                                     (labels != null && index < labels.length)
@@ -297,7 +298,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                                           size: 30.sp,
                                         ),
                                       ),
-                                      SizedBox(height: 8),
+                                      const SizedBox(height: 8),
                                       Expanded(
                                         child: Text(
                                           finalLabel,
@@ -370,7 +371,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
           inputFormatters: inputFormatters,
           decoration: inputDecoration(hintText: label).copyWith(
             prefixIcon: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Icon(icon, size: 20.sp, color: AppColors.maincolor),
             ),
           ),
@@ -409,16 +410,14 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
           var profileModel = ProfileModel.fromJson(response.data);
 
           if (profileModel.status == 200) {
+            Get.offAll(HomePage(userName: ""));
+
             Get.snackbar(
               "Success",
               "Home Updated Successfully",
               backgroundColor: AppColors.maincolor,
               colorText: Colors.white,
             );
-
-            Future.delayed(Duration(seconds: 1), () {
-              Get.offAll(HomePage(userName: ""));
-            });
           } else {
             Get.snackbar(
               "Error",
@@ -442,7 +441,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
             colorText: Colors.white,
           );
         }
-      } catch (e, straceTrace) {
+      } catch (e) {
         Get.snackbar(
           "Error",
           "An error occurred: $e",

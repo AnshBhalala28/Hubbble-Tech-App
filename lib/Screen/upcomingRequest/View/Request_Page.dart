@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -154,7 +152,7 @@ class _RequestPageState extends State<RequestPage> {
                           shrinkWrap: true,
                           itemCount:
                               myRequestModel?.data?.requests?.length ?? 0,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           padding: EdgeInsets.zero,
                           itemBuilder: (context, index) {
                             var request =
@@ -181,7 +179,7 @@ class _RequestPageState extends State<RequestPage> {
                                       BoxShadow(
                                         color: Colors.grey.withOpacity(0.2),
                                         blurRadius: 5,
-                                        offset: Offset(0, 3),
+                                        offset: const Offset(0, 3),
                                       ),
                                     ],
                                   ),
@@ -198,7 +196,7 @@ class _RequestPageState extends State<RequestPage> {
                                           fit: BoxFit.cover,
                                           placeholder:
                                               (context, url) =>
-                                                  CircularProgressIndicator(),
+                                                  const CircularProgressIndicator(),
                                           errorWidget:
                                               (
                                                 context,
@@ -244,9 +242,6 @@ class _RequestPageState extends State<RequestPage> {
                                                         ? "Request Cancelled"
                                                         : "Cancel Request",
                                                 route: () {
-                                                  log(
-                                                    "Cancled id #${request?.id}",
-                                                  );
                                                   request?.status == "cancel"
                                                       ? null
                                                       : RequestActionApi(
@@ -290,7 +285,7 @@ class _RequestPageState extends State<RequestPage> {
                         ).paddingOnly(top: 20.h)
                         : ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount:
                               onGoingFreindRequestModel
                                   ?.data
@@ -314,7 +309,7 @@ class _RequestPageState extends State<RequestPage> {
                                   BoxShadow(
                                     color: Colors.grey.withOpacity(0.2),
                                     blurRadius: 5,
-                                    offset: Offset(0, 3),
+                                    offset: const Offset(0, 3),
                                   ),
                                 ],
                               ),
@@ -331,7 +326,7 @@ class _RequestPageState extends State<RequestPage> {
                                       fit: BoxFit.cover,
                                       placeholder:
                                           (context, url) =>
-                                              CircularProgressIndicator(),
+                                              const CircularProgressIndicator(),
                                       errorWidget:
                                           (context, url, error) => Image.asset(
                                             "assets/images/waveeLogoShort.png",
@@ -383,9 +378,6 @@ class _RequestPageState extends State<RequestPage> {
                                           batan(
                                             title: "Accept",
                                             route: () {
-                                              log(
-                                                "id ave che single ${request?.id.toString() ?? ''}",
-                                              );
                                               RequestActionApi(
                                                 request?.id.toString() ?? '',
                                                 'Accepted',
@@ -460,10 +452,6 @@ class _RequestPageState extends State<RequestPage> {
             .then((response) async {
               myRequestModel = MyRequestModel.fromJson(response.data);
               if (response.statusCode == 200) {
-                print(
-                  "1111111111>>>>>>>>>>>>.${profileModel?.data?.user?.profile}",
-                );
-
                 setState(() {
                   isLoading = false;
                 });

@@ -8,11 +8,11 @@ class BusnessViewModal {
   BusnessViewModal.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -49,52 +49,50 @@ class Data {
 
   Data.fromJson(Map<String, dynamic> json) {
     business =
-        json['business'] != null
-            ? new Business.fromJson(json['business'])
-            : null;
+        json['business'] != null ? Business.fromJson(json['business']) : null;
     isLiked = json['is_liked'];
     isVisited = json['is_visited'];
     distanceToBusiness = json['distance_to_business'];
     if (json['nearby_businesses'] != null) {
       nearbyBusinesses = <NearbyBusinesses>[];
       json['nearby_businesses'].forEach((v) {
-        nearbyBusinesses!.add(new NearbyBusinesses.fromJson(v));
+        nearbyBusinesses!.add(NearbyBusinesses.fromJson(v));
       });
     }
     if (json['posts'] != null) {
       posts = <Posts>[];
       json['posts'].forEach((v) {
-        posts!.add(new Posts.fromJson(v));
+        posts!.add(Posts.fromJson(v));
       });
     }
     if (json['offerPromotions'] != null) {
       offerPromotions = <OfferPromotions>[];
       json['offerPromotions'].forEach((v) {
-        offerPromotions!.add(new OfferPromotions.fromJson(v));
+        offerPromotions!.add(OfferPromotions.fromJson(v));
       });
     }
     if (json['events'] != null) {
       events = <Events>[];
       json['events'].forEach((v) {
-        events!.add(new Events.fromJson(v));
+        events!.add(Events.fromJson(v));
       });
     }
     if (json['services'] != null) {
       services = <Services>[];
       json['services'].forEach((v) {
-        services!.add(new Services.fromJson(v));
+        services!.add(Services.fromJson(v));
       });
     }
     if (json['products'] != null) {
       products = <Products>[];
       json['products'].forEach((v) {
-        products!.add(new Products.fromJson(v));
+        products!.add(Products.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (this.business != null) {
       data['business'] = this.business!.toJson();
     }
@@ -216,7 +214,7 @@ class Business {
     industry = json['industry'];
     openingHours =
         json['opening_hours'] != null
-            ? new OpeningHours.fromJson(json['opening_hours'])
+            ? OpeningHours.fromJson(json['opening_hours'])
             : null;
     website = json['website'];
     categoryId = json['category_id'];
@@ -224,7 +222,7 @@ class Business {
     if (json['tags'] != null) {
       tags = <Tags>[];
       json['tags'].forEach((v) {
-        tags!.add(new Tags.fromJson(v));
+        tags!.add(Tags.fromJson(v));
       });
     }
     businessServices = json['business_services'];
@@ -250,13 +248,13 @@ class Business {
     updatedAt = json['updated_at'];
     loyaltyInfo =
         json['loyalty_info'] != null
-            ? new LoyaltyInfo.fromJson(json['loyalty_info'])
+            ? LoyaltyInfo.fromJson(json['loyalty_info'])
             : null;
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    user = json['user'] != null ? User.fromJson(json['user']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['sub_id'] = this.subId;
@@ -326,28 +324,21 @@ class OpeningHours {
   });
 
   OpeningHours.fromJson(Map<String, dynamic> json) {
-    monday =
-        json['Monday'] != null ? new Monday.fromJson(json['Monday']) : null;
+    monday = json['Monday'] != null ? Monday.fromJson(json['Monday']) : null;
     tuesday =
-        json['Tuesday'] != null ? new Tuesday.fromJson(json['Tuesday']) : null;
+        json['Tuesday'] != null ? Tuesday.fromJson(json['Tuesday']) : null;
     wednesday =
-        json['Wednesday'] != null
-            ? new Monday.fromJson(json['Wednesday'])
-            : null;
+        json['Wednesday'] != null ? Monday.fromJson(json['Wednesday']) : null;
     thursday =
-        json['Thursday'] != null ? new Monday.fromJson(json['Thursday']) : null;
-    friday =
-        json['Friday'] != null ? new Tuesday.fromJson(json['Friday']) : null;
+        json['Thursday'] != null ? Monday.fromJson(json['Thursday']) : null;
+    friday = json['Friday'] != null ? Tuesday.fromJson(json['Friday']) : null;
     saturday =
-        json['Saturday'] != null
-            ? new Tuesday.fromJson(json['Saturday'])
-            : null;
-    sunday =
-        json['Sunday'] != null ? new Tuesday.fromJson(json['Sunday']) : null;
+        json['Saturday'] != null ? Tuesday.fromJson(json['Saturday']) : null;
+    sunday = json['Sunday'] != null ? Tuesday.fromJson(json['Sunday']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (this.monday != null) {
       data['Monday'] = this.monday!.toJson();
     }
@@ -387,7 +378,7 @@ class Monday {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['open'] = this.open;
     data['close'] = this.close;
     data['closed'] = this.closed;
@@ -409,7 +400,7 @@ class Tuesday {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['open'] = this.open;
     data['close'] = this.close;
     data['closed'] = this.closed;
@@ -429,7 +420,7 @@ class Tags {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['name'] = this.name;
     data['img'] = this.img;
     return data;
@@ -457,7 +448,7 @@ class LoyaltyInfo {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['loyalty_order_threshold'] = this.loyaltyOrderThreshold;
     data['loyalty_discount_percentage'] = this.loyaltyDiscountPercentage;
     data['orders_completed_with_business'] = this.ordersCompletedWithBusiness;
@@ -521,7 +512,7 @@ class User {
     gender = json['gender'];
     dateOfBirth = json['date_of_birth'];
     address =
-        json['address'] != null ? new Address.fromJson(json['address']) : null;
+        json['address'] != null ? Address.fromJson(json['address']) : null;
 
     psLatitude = json['ps_latitude'];
     psLongitude = json['ps_longitude'];
@@ -535,7 +526,7 @@ class User {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['role'] = this.role;
     data['name'] = this.name;
@@ -578,7 +569,7 @@ class Address {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['address'] = this.address;
     data['city'] = this.city;
     data['country'] = this.country;
@@ -665,7 +656,7 @@ class NearbyBusinesses {
     if (json['tags'] != null) {
       tags = <Tags>[];
       json['tags'].forEach((v) {
-        tags!.add(new Tags.fromJson(v));
+        tags!.add(Tags.fromJson(v));
       });
     }
     businessServices = json['business_services'];
@@ -688,7 +679,7 @@ class NearbyBusinesses {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['sub_id'] = this.subId;
@@ -740,7 +731,7 @@ class Posts {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['type'] = this.type;
     data['file'] = this.file;
@@ -765,7 +756,7 @@ class OfferPromotions {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['title'] = this.title;
     data['url'] = this.url;
@@ -804,7 +795,7 @@ class Events {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['title'] = this.title;
     data['event_date'] = this.eventDate;
@@ -834,7 +825,7 @@ class Services {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['title'] = this.title;
     data['price'] = this.price;
@@ -904,7 +895,7 @@ class Products {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['name'] = this.name;

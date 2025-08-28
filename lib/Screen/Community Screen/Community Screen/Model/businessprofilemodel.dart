@@ -11,13 +11,13 @@ class BusinessProfileModel {
     if (json['data'] != null) {
       data = <Data1>[];
       json['data'].forEach((v) {
-        data!.add(new Data1.fromJson(v));
+        data!.add(Data1.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -149,7 +149,7 @@ class Data1 {
     if (json['tags'] != null) {
       tags = <Tags>[];
       json['tags'].forEach((v) {
-        tags!.add(new Tags.fromJson(v));
+        tags!.add(Tags.fromJson(v));
       });
     }
     businessServices = json['business_services'];
@@ -164,24 +164,22 @@ class Data1 {
     creditBalance = json['credit_balance'];
     distance = json['distance'];
     category =
-    json['category'] != null
-        ? new Category.fromJson(json['category'])
-        : null;
+        json['category'] != null ? Category.fromJson(json['category']) : null;
     subCategory =
-    json['sub_category'] != null
-        ? new SubCategory.fromJson(json['sub_category'])
-        : null;
+        json['sub_category'] != null
+            ? SubCategory.fromJson(json['sub_category'])
+            : null;
     if (json['featured_posts'] != null) {
       featuredPosts = <FeaturedPosts>[];
       json['featured_posts'].forEach((v) {
-        featuredPosts!.add(new FeaturedPosts.fromJson(v));
+        featuredPosts!.add(FeaturedPosts.fromJson(v));
       });
     }
     business = json['business'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['role'] = this.role;
     data['name'] = this.name;
@@ -250,7 +248,7 @@ class Tags {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['name'] = this.name;
     data['img'] = this.img;
     return data;
@@ -269,7 +267,7 @@ class Category {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['category_id'] = this.categoryId;
     data['category_name'] = this.categoryName;
     return data;
@@ -288,7 +286,7 @@ class SubCategory {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['sub_category_id'] = this.subCategoryId;
     data['sub_category_name'] = this.subCategoryName;
     return data;
@@ -311,7 +309,7 @@ class FeaturedPosts {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['type'] = this.type;
     data['file'] = this.file;

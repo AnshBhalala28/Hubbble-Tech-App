@@ -23,11 +23,10 @@ Container TitleBar({
         isBackEnabled
             ? InkWell(
               onTap:
-                  back == null
-                      ? () {
-                        Get.back();
-                      }
-                      : back,
+                  back ??
+                  () {
+                    Get.back();
+                  },
               child: Container(
                 height: 12.w,
                 width: 12.w,
@@ -38,7 +37,7 @@ Container TitleBar({
                 child: Icon(Icons.arrow_back, size: 20.sp, color: Colors.white),
               ),
             )
-            : Container(width: 12.w, height: 12.w),
+            : SizedBox(width: 12.w, height: 12.w),
         SizedBox(
           width: 72.w,
           child: Text(
@@ -55,7 +54,7 @@ Container TitleBar({
         ),
         isSideMenu
             ? MenuIcon(route: drawerCallback, color: headerColor)
-            : SizedBox().paddingOnly(right: 10.w),
+            : const SizedBox().paddingOnly(right: 10.w),
       ],
     ),
   );

@@ -10,7 +10,7 @@ import 'package:wavee/comman/store_local.dart';
 
 class ChatBotAiProvider extends ChangeNotifier {
   Future<http.Response> chatbotDataApi(Map<String, String> bodyData) async {
-    String url = '${baseUrl}/ai_chat';
+    String url = '$baseUrl/ai_chat';
 
     LoginModel? userData = await SaveDataLocal.getDataFromLocal();
     String token = userData?.data?.token ?? '';
@@ -41,7 +41,7 @@ class ChatBotAiProvider extends ChangeNotifier {
   }
 
   Future<http.Response> chatBotReceiveData(String userId) async {
-    String url = '${baseUrl}/get_chat_history?user_id=$userId';
+    String url = '$baseUrl/get_chat_history?user_id=$userId';
 
     LoginModel? userData = await SaveDataLocal.getDataFromLocal();
     String token = userData?.data?.token ?? '';
@@ -72,7 +72,7 @@ class ChatBotAiProvider extends ChangeNotifier {
   }
 
   Future<http.Response> clearChatBotData(Map<String, String> bodyData) async {
-    String url = '${baseUrl}/clear_chat_messages';
+    String url = '$baseUrl/clear_chat_messages';
 
     LoginModel? userData = await SaveDataLocal.getDataFromLocal();
     String token = userData?.data?.token ?? '';

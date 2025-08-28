@@ -33,8 +33,7 @@ import '../../serviceDetailPage/View/service_detail_page.dart';
 class BusinessDetailScreen extends StatefulWidget {
   final BusnessViewModal? busnessviewmodal;
 
-  const BusinessDetailScreen({Key? key, required this.busnessviewmodal})
-    : super(key: key);
+  const BusinessDetailScreen({super.key, required this.busnessviewmodal});
 
   @override
   _BusinessDetailScreenState createState() => _BusinessDetailScreenState();
@@ -136,14 +135,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
         setState(() {
           isSending = false;
         });
-        print(
-          ""
-          ""
-          ""
-          ""
-          ""
-          " $city",
-        );
       }
     } catch (e) {
       setState(() {
@@ -155,7 +146,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final busnessviewmodal = widget.busnessviewmodal;
-    final GlobalKey<ScaffoldState> _scaffoldKeyParcel =
+    final GlobalKey<ScaffoldState> scaffoldKeyParcel =
         GlobalKey<ScaffoldState>();
 
     return Scaffold(
@@ -169,7 +160,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
               children: [
                 SizedBox(height: 1.h),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
                   child: TitleBar(
                     back: () {
                       Get.back();
@@ -216,7 +207,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                                       .business!
                                                       .logo!,
                                                 )
-                                                : AssetImage(
+                                                : const AssetImage(
                                                       "assets/images/waveeLogoShort.png",
                                                     )
                                                     as ImageProvider,
@@ -333,9 +324,10 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                                 Container(
                                                   height: 2.5.h,
                                                   width: 2.5.h,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                  ),
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                      ),
                                                   child: ClipOval(
                                                     child: Image.network(
                                                       busnessviewmodal
@@ -394,7 +386,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                   child: Container(
                                     height: 4.5.h,
                                     width: 27.w,
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                       horizontal: 5,
                                       vertical: 5,
                                     ),
@@ -427,7 +419,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                 child: Container(
                                   height: 4.5.h,
                                   width: 27.w,
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     horizontal: 12,
                                     vertical: 5,
                                   ),
@@ -451,13 +443,13 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                                 .latitude
                                                 .toString();
                                         AppLon =
-                                            busnessviewmodal!
+                                            busnessviewmodal
                                                 .data!
                                                 .business!
                                                 .longitude
                                                 .toString();
                                         selectedUserId =
-                                            busnessviewmodal!.data!.business!.id
+                                            busnessviewmodal.data!.business!.id
                                                 .toString();
 
                                         Navigator.pop(context);
@@ -465,7 +457,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                       } else {}
                                     },
                                     padding: EdgeInsets.zero,
-                                    constraints: BoxConstraints(),
+                                    constraints: const BoxConstraints(),
                                   ),
                                 ),
                               ),
@@ -474,7 +466,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                 child: Container(
                                   height: 4.5.h,
                                   width: 27.w,
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     horizontal: 12,
                                     vertical: 5,
                                   ),
@@ -489,15 +481,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                       size: 5.w,
                                     ),
                                     onPressed: () {
-                                      print(
-                                        'Hello Id ${busnessviewmodal?.data?.business?.user?.id}',
-                                      );
-                                      print(
-                                        'Mine Id ${loginModel?.data?.user?.id}',
-                                      );
-                                      print(
-                                        'Image is ${busnessviewmodal?.data?.business?.logo}',
-                                      );
                                       Get.to(
                                         MessageScreen(
                                           type: "business",
@@ -524,7 +507,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                       );
                                     },
                                     padding: EdgeInsets.zero,
-                                    constraints: BoxConstraints(),
+                                    constraints: const BoxConstraints(),
                                   ),
                                 ),
                               ),
@@ -542,7 +525,9 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                               (busnessviewmodal?.data?.products ?? [])
                                   .isNotEmpty)
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -725,15 +710,15 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                   },
                                   child: Container(
                                     width: 110.w,
-                                    margin: EdgeInsets.symmetric(
+                                    margin: const EdgeInsets.symmetric(
                                       vertical: 4,
                                       horizontal: 16,
                                     ),
-                                    padding: EdgeInsets.all(12),
+                                    padding: const EdgeInsets.all(12),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(12),
-                                      boxShadow: [
+                                      boxShadow: const [
                                         BoxShadow(
                                           color: Colors.black12,
                                           blurRadius: 2,
@@ -747,9 +732,6 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                       children: [
                                         InkWell(
                                           onTap: () {
-                                            print(
-                                              "Business ID: ${busnessviewmodal?.data?.nearbyBusinesses?[i].id}",
-                                            );
                                             BussinessViewProfile(
                                               (busnessviewmodal
                                                       ?.data
@@ -769,7 +751,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: 12),
+                                        const SizedBox(width: 12),
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment:
@@ -787,14 +769,14 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                                         .nearbyBusinesses![i]
                                                         .businessName!
                                                     : "N/A",
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.bold,
                                                   fontFamily:
                                                       AppConstants.manrope,
                                                 ),
                                               ),
-                                              SizedBox(height: 4),
+                                              const SizedBox(height: 4),
                                               Container(
                                                 width: double.infinity,
                                                 padding: EdgeInsets.symmetric(
@@ -850,11 +832,11 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                                   ),
                                                 ),
                                               ),
-                                              SizedBox(height: 4),
+                                              const SizedBox(height: 4),
                                               RichText(
                                                 text: TextSpan(
                                                   children: [
-                                                    TextSpan(
+                                                    const TextSpan(
                                                       text: "Distance :- ",
                                                       style: TextStyle(
                                                         color: Colors.black,
@@ -898,7 +880,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                               ],
                             ],
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                         ],
                       ),
                     ),
@@ -976,17 +958,13 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                 final String businessId =
                     (busnessviewmodal?.data?.business?.id).toString();
                 Get.back();
-                await Future.delayed(Duration(milliseconds: 100));
+                await Future.delayed(const Duration(milliseconds: 100));
                 BussinessViewProfile(businessId);
               } else if (response.statusCode == 429) {
                 setState(() {
                   isSending = true;
                 });
               } else {
-                print(
-                  "Internal Server Error - Status Code: ${response.statusCode}",
-                );
-
                 EasyLoading.showError("Internal Server Error");
               }
             })
@@ -1056,7 +1034,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
               ],
             ),
           ),
-          Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
+          const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
         ],
       ),
     );
@@ -1080,7 +1058,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
               return Container(
                 width: 44.w,
                 height: 30.h,
-                margin: EdgeInsets.symmetric(horizontal: 4),
+                margin: const EdgeInsets.symmetric(horizontal: 4),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: Colors.grey.shade300, width: 1.5),
@@ -1105,18 +1083,20 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                             },
                             child:
                                 item.file == null || item.file!.isEmpty
-                                    ? Center(child: CircularProgressIndicator())
+                                    ? const Center(
+                                      child: CircularProgressIndicator(),
+                                    )
                                     : CachedNetworkImage(
                                       imageUrl: item.file!,
                                       fit: BoxFit.cover,
                                       width: double.infinity,
                                       height: double.infinity,
                                       placeholder:
-                                          (context, url) => Center(
+                                          (context, url) => const Center(
                                             child: CircularProgressIndicator(),
                                           ),
                                       errorWidget:
-                                          (context, url, error) => Icon(
+                                          (context, url, error) => const Icon(
                                             Icons.broken_image,
                                             size: 40,
                                             color: Colors.grey,
@@ -1135,7 +1115,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
   Widget buildEventListView() {
     if (busnessviewmodal?.data?.events == null ||
         busnessviewmodal!.data!.events!.isEmpty) {
-      return Center();
+      return const Center();
     }
 
     return Column(
@@ -1152,7 +1132,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
           return StatefulBuilder(
             builder: (context, setState) {
               void showRequestDialog() {
-                if (busnessviewmodal?.data?.events?[index]?.requestEvent
+                if (busnessviewmodal?.data?.events?[index].requestEvent
                         ?.toLowerCase() ==
                     "pending") {
                   return;
@@ -1170,7 +1150,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Container(
-                            padding: EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(16),
@@ -1187,7 +1167,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                       Align(
                                         alignment: Alignment.center,
                                         child: Padding(
-                                          padding: EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                             vertical: 10,
                                           ),
                                           child: Text(
@@ -1203,7 +1183,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                           ),
                                         ),
                                       ),
-                                      Align(
+                                      const Align(
                                         alignment: Alignment.topRight,
                                         child: CloseButton(),
                                       ),
@@ -1213,39 +1193,39 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                     busnessviewmodal
                                             ?.data
                                             ?.events?[index]
-                                            ?.title ??
+                                            .title ??
                                         "N/A",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontFamily: AppConstants.manrope,
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black38,
                                     ),
                                   ),
-                                  SizedBox(height: 10),
+                                  const SizedBox(height: 10),
                                   Text(
                                     busnessviewmodal
                                                 ?.data
                                                 ?.events?[index]
-                                                ?.eventDate !=
+                                                .eventDate !=
                                             null
                                         ? DateFormat.jm().format(
                                           DateTime.parse(
                                             busnessviewmodal!
                                                 .data!
-                                                .events![index]!
+                                                .events![index]
                                                 .eventDate!,
                                           ),
                                         )
                                         : "N/A",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontFamily: AppConstants.manrope,
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black38,
                                     ),
                                   ),
-                                  SizedBox(height: 12),
+                                  const SizedBox(height: 12),
                                   TextFormField(
                                     controller: requestController,
                                     maxLines: 3,
@@ -1253,38 +1233,38 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                       hintText: "Enter your request...",
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
+                                        borderSide: const BorderSide(
                                           color: Colors.black26,
                                         ),
                                       ),
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
+                                        borderSide: const BorderSide(
                                           color: Colors.black26,
                                         ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
+                                        borderSide: const BorderSide(
                                           color: Colors.blue,
                                         ),
                                       ),
                                       errorBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
+                                        borderSide: const BorderSide(
                                           color: Colors.red,
                                         ),
                                       ),
                                       focusedErrorBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
+                                        borderSide: const BorderSide(
                                           color: Colors.red,
                                         ),
                                       ),
                                       fillColor: Colors.white,
                                       filled: true,
                                     ),
-                                    style: TextStyle(color: Colors.black),
+                                    style: const TextStyle(color: Colors.black),
                                     validator: (value) {
                                       if (value == null ||
                                           value.trim().isEmpty) {
@@ -1293,7 +1273,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                       return null;
                                     },
                                   ),
-                                  SizedBox(height: 20),
+                                  const SizedBox(height: 20),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -1339,7 +1319,10 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
               }
 
               return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 3.0,
+                  vertical: 4.0,
+                ),
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey.shade300),
@@ -1350,14 +1333,14 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                     onTap: () {
                       showRequestDialog();
                     },
-                    contentPadding: EdgeInsets.symmetric(
+                    contentPadding: const EdgeInsets.symmetric(
                       horizontal: 8,
                       vertical: 4,
                     ),
                     leading: Container(
                       width: 15.w,
                       height: 7.h,
-                      decoration: BoxDecoration(shape: BoxShape.circle),
+                      decoration: const BoxDecoration(shape: BoxShape.circle),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(30),
                         child:
@@ -1370,7 +1353,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                           .events![index]
                                           .attachment!,
                                   placeholder:
-                                      (context, url) => Center(
+                                      (context, url) => const Center(
                                         child: CircularProgressIndicator(),
                                       ),
                                   errorWidget:
@@ -1404,7 +1387,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 4),
+                        const SizedBox(height: 4),
                         Row(
                           children: [
                             Icon(
@@ -1412,10 +1395,14 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                               color: Colors.red,
                               size: 16.sp,
                             ),
-                            SizedBox(width: 4),
+                            const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                "${busnessviewmodal?.data?.events?[index].location ?? 'No Location'}",
+                                busnessviewmodal
+                                        ?.data
+                                        ?.events?[index]
+                                        .location ??
+                                    'No Location',
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   color: Colors.grey[600],
@@ -1427,7 +1414,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 4),
+                        const SizedBox(height: 4),
                         Row(
                           children: [
                             Icon(
@@ -1435,12 +1422,13 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                               color: Colors.blue,
                               size: 16.sp,
                             ),
-                            SizedBox(width: 4),
+                            const SizedBox(width: 4),
                             Expanded(
                               child: Text(
                                 (String? eventDate) {
-                                  if (eventDate == null || eventDate.isEmpty)
+                                  if (eventDate == null || eventDate.isEmpty) {
                                     return "N/A";
+                                  }
                                   DateTime parsedDate = DateTime.parse(
                                     eventDate,
                                   );
@@ -1468,7 +1456,9 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                     ),
                     trailing:
                         isLoading
-                            ? CircularProgressIndicator(color: Colors.blue)
+                            ? const CircularProgressIndicator(
+                              color: Colors.blue,
+                            )
                             : InkWell(
                               onTap: () {
                                 showRequestDialog();
@@ -1477,17 +1467,17 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                                   busnessviewmodal
                                               ?.data
                                               ?.events?[index]
-                                              ?.requestEvent
+                                              .requestEvent
                                               ?.toLowerCase() ==
                                           "pending"
-                                      ? Text(
+                                      ? const Text(
                                         "Requested",
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.orange,
                                         ),
                                       )
-                                      : Icon(
+                                      : const Icon(
                                         Icons.arrow_forward_ios,
                                         size: 16,
                                         color: Colors.black54,
@@ -1570,18 +1560,18 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
               displayUrl = uri.host;
 
               if (displayUrl.length > 30) {
-                displayUrl = displayUrl.substring(0, 27) + '...';
+                displayUrl = '${displayUrl.substring(0, 27)}...';
               }
             } catch (e) {
               displayUrl = linkUrl;
               if (displayUrl.length > 30) {
-                displayUrl = displayUrl.substring(0, 27) + '...';
+                displayUrl = '${displayUrl.substring(0, 27)}...';
               }
             }
           }
 
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+            padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey.shade300),
@@ -1602,14 +1592,14 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                     } else {}
                   } else {}
                 },
-                contentPadding: EdgeInsets.symmetric(
+                contentPadding: const EdgeInsets.symmetric(
                   horizontal: 8,
                   vertical: 4,
                 ),
                 leading: Container(
                   width: 15.w,
                   height: 7.h,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
@@ -1625,7 +1615,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                       imageUrl: items[index] ?? '',
                       placeholder:
                           (context, url) =>
-                              Center(child: CircularProgressIndicator()),
+                              const Center(child: CircularProgressIndicator()),
                       errorWidget:
                           (context, url, error) => Image.network(
                             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdQLwDqDwd2JfzifvfBTFT8I7iKFFevcedYg&s",
@@ -1645,7 +1635,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                 subtitle: Row(
                   children: [
                     Icon(Icons.link, size: 16.sp, color: Colors.blue),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         displayUrl.isNotEmpty
@@ -1666,7 +1656,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                     ),
                   ],
                 ),
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.arrow_forward_ios,
                   size: 16,
                   color: Colors.black54,
@@ -1682,7 +1672,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
   Widget buildServiceListView(List<Services> services) {
     if (busnessviewmodal?.data?.services == null ||
         busnessviewmodal!.data!.services!.isEmpty) {
-      return Center();
+      return const Center();
     }
 
     return Column(
@@ -1693,7 +1683,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
           String imageUrl = services[index].images ?? '';
 
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+            padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey.shade300),
@@ -1702,28 +1692,22 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
               ),
               child: ListTile(
                 onTap: () {
-                  print(
-                    "service Detail ID Ave che che : ${services?[index].id ?? ''}",
-                  );
-                  print(
-                    "service Detail ID Ave che che : ${busnessviewmodal?.data?.business?.id.toString()}",
-                  );
                   Get.to(
                     () => ServiceDetailsPage(
-                      serviceID: services?[index].id.toString() ?? "",
+                      serviceID: services[index].id.toString() ?? "",
                       businessID:
                           busnessviewmodal?.data?.business?.id.toString() ?? "",
                     ),
                   );
                 },
-                contentPadding: EdgeInsets.symmetric(
+                contentPadding: const EdgeInsets.symmetric(
                   horizontal: 8,
                   vertical: 4,
                 ),
                 leading: Container(
                   width: 15.w,
                   height: 7.h,
-                  decoration: BoxDecoration(shape: BoxShape.circle),
+                  decoration: const BoxDecoration(shape: BoxShape.circle),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(30),
                     child: CachedNetworkImage(
@@ -1734,7 +1718,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                       fit: BoxFit.cover,
                       placeholder:
                           (context, url) =>
-                              Center(child: CircularProgressIndicator()),
+                              const Center(child: CircularProgressIndicator()),
                       errorWidget:
                           (context, url, error) => Icon(
                             Icons.home_repair_service,
@@ -1757,7 +1741,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
                         Text(
@@ -1768,7 +1752,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                             color: Colors.green,
                           ),
                         ),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Expanded(
                           child: Text(
                             "Price: ${services[index].price ?? 'N/A'}",
@@ -1783,7 +1767,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
                         Icon(
@@ -1791,7 +1775,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                           color: Colors.blue,
                           size: 16.sp,
                         ),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Expanded(
                           child: Text(
                             "Availability: ${services[index].availability ?? 'N/A'}",
@@ -1808,7 +1792,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                     ),
                   ],
                 ),
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.arrow_forward_ios,
                   size: 16,
                   color: Colors.black54,
@@ -1824,7 +1808,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
   Widget buildProductList(List<Products> products) {
     if (busnessviewmodal?.data?.products == null ||
         busnessviewmodal!.data!.products!.isEmpty) {
-      return Center();
+      return const Center();
     }
 
     return Column(
@@ -1835,7 +1819,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
           final product = products[index];
 
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+            padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey.shade300),
@@ -1851,7 +1835,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                     ),
                   );
                 },
-                contentPadding: EdgeInsets.symmetric(
+                contentPadding: const EdgeInsets.symmetric(
                   horizontal: 8,
                   vertical: 4,
                 ),
@@ -1903,7 +1887,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
                         if (product.offerPrice != null)
@@ -1916,7 +1900,8 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                               fontFamily: AppConstants.manrope,
                             ),
                           ),
-                        if (product.offerPrice != null) SizedBox(width: 6),
+                        if (product.offerPrice != null)
+                          const SizedBox(width: 6),
                         Text(
                           "£${product.price}",
                           style: TextStyle(
@@ -1934,7 +1919,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       product.description ?? '',
                       maxLines: 2,
@@ -1946,7 +1931,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                     ),
                   ],
                 ),
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.arrow_forward_ios,
                   size: 16,
                   color: Colors.black54,

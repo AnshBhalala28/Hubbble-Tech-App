@@ -88,7 +88,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     Get.to(const LoginScreen());
                   },
                   borderRadius: BorderRadius.circular(5),
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       "Back To Login",
                       style: TextStyle(
@@ -131,7 +131,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               IconColor: AppColors.white,
               IconName: Icons.check_circle,
             );
-            await Get.offAll(() => LoginScreen());
+            await Get.offAll(() => const LoginScreen());
             setState(() {
               isLoading = false;
             });

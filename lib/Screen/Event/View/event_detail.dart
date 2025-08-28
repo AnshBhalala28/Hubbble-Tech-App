@@ -71,12 +71,12 @@ class _EventDetailState extends State<EventDetail> {
                           ),
                           decoration: BoxDecoration(
                             color: AppColors.bgcolor,
-                            border: Border(
+                            border: const Border(
                               top: BorderSide(color: Colors.grey),
                               left: BorderSide(color: Colors.grey),
                               right: BorderSide(color: Colors.grey),
                             ),
-                            borderRadius: BorderRadius.only(
+                            borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(45),
                               topRight: Radius.circular(45),
                             ),
@@ -111,11 +111,10 @@ class _EventDetailState extends State<EventDetail> {
                                                 width: 1,
                                                 color: AppColors.borderColor,
                                               ),
-                                              borderRadius: BorderRadius.circular(
-                                                20,
-                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
                                             ),
-                                            child: Image(
+                                            child: const Image(
                                               image: AssetImage(
                                                 'assets/images/Applogo_remove_background.png',
                                               ),
@@ -147,7 +146,7 @@ class _EventDetailState extends State<EventDetail> {
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     child: ReadMoreText(
-                                      "${eventDetailModal?.data?.bio ?? ""}",
+                                      eventDetailModal?.data?.bio ?? "",
                                       trimLines: 4,
                                       trimLength: 145,
                                       colorClickableText: Colors.blue,
@@ -185,7 +184,7 @@ class _EventDetailState extends State<EventDetail> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ).paddingOnly(bottom: 1.h),
-      
+
                                   Container(
                                     height: 0.6.h,
                                     width: 25.w,
@@ -194,7 +193,7 @@ class _EventDetailState extends State<EventDetail> {
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                   ).paddingOnly(right: 5.w, bottom: 2.h),
-      
+
                                   InkWell(
                                     onTap: () {
                                       Get.to(
@@ -219,7 +218,7 @@ class _EventDetailState extends State<EventDetail> {
                                       height: 7.h,
                                       decoration: BoxDecoration(
                                         color: AppColors.white,
-      
+
                                         borderRadius: BorderRadius.circular(15),
                                       ),
                                       child: Row(
@@ -233,17 +232,21 @@ class _EventDetailState extends State<EventDetail> {
                                                       .logo ??
                                                   "",
                                               fit: BoxFit.cover,
-      
+
                                               width: 50,
                                               // circle width
                                               height: 50,
                                               // circle height
                                               placeholder:
-                                                  (context, url) => const Center(
+                                                  (
+                                                    context,
+                                                    url,
+                                                  ) => const Center(
                                                     child:
                                                         CircularProgressIndicator(
                                                           color:
-                                                              AppColors.maincolor,
+                                                              AppColors
+                                                                  .maincolor,
                                                         ),
                                                   ),
                                               errorWidget:
@@ -259,7 +262,8 @@ class _EventDetailState extends State<EventDetail> {
                                                       border: Border.all(
                                                         width: 1,
                                                         color:
-                                                            AppColors.borderColor,
+                                                            AppColors
+                                                                .borderColor,
                                                       ),
                                                     ),
                                                     child: ClipOval(
@@ -272,7 +276,11 @@ class _EventDetailState extends State<EventDetail> {
                                             ),
                                           ).paddingOnly(left: 3.w, right: 3.w),
                                           Text(
-                                            "${eventDetailModal?.data?.business?[0].businessName ?? ""}",
+                                            eventDetailModal
+                                                    ?.data
+                                                    ?.business?[0]
+                                                    .businessName ??
+                                                "",
                                             style: TextStyle(
                                               fontFamily: AppConstants.manrope,
                                               fontSize: 17.sp,
@@ -284,7 +292,7 @@ class _EventDetailState extends State<EventDetail> {
                                     ).paddingOnly(bottom: 1.h),
                                   ),
                                   Container(
-                                    padding: EdgeInsets.all(5),
+                                    padding: const EdgeInsets.all(5),
                                     width: double.infinity,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(15),
@@ -292,15 +300,16 @@ class _EventDetailState extends State<EventDetail> {
                                     ),
                                     child: Row(
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.location_on,
                                           color: AppColors.maincolor,
                                         ).paddingOnly(right: 2.w),
-      
+
                                         SizedBox(
                                           width: 79.w,
                                           child: Text(
-                                            "${eventDetailModal?.data?.location ?? ""}",
+                                            eventDetailModal?.data?.location ??
+                                                "",
                                             style: TextStyle(
                                               fontFamily: AppConstants.manrope,
                                               fontSize: 15.sp,
@@ -310,10 +319,10 @@ class _EventDetailState extends State<EventDetail> {
                                       ],
                                     ).paddingOnly(left: 3.w),
                                   ).paddingOnly(bottom: 1.h),
-      
+
                                   Container(
                                     height: 5.h,
-                                    padding: EdgeInsets.all(5),
+                                    padding: const EdgeInsets.all(5),
                                     width: double.infinity,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(15),
@@ -321,22 +330,22 @@ class _EventDetailState extends State<EventDetail> {
                                     ),
                                     child: Row(
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.calendar_month,
                                         ).paddingOnly(right: 2.w),
                                         Text(
                                           "Event Date: ${formatDateTime(eventDetailModal?.data?.eventDate ?? "")}",
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontFamily: AppConstants.manrope,
                                           ),
                                         ),
                                       ],
                                     ).paddingOnly(left: 3.w),
                                   ).paddingOnly(bottom: 1.h),
-      
+
                                   Container(
                                     height: 5.h,
-                                    padding: EdgeInsets.all(5),
+                                    padding: const EdgeInsets.all(5),
                                     width: 40.w,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(15),
@@ -357,7 +366,7 @@ class _EventDetailState extends State<EventDetail> {
                                         ).paddingOnly(right: 2.w),
                                         Text(
                                           "Status: ${eventDetailModal?.data?.status?.capitalizeFirst ?? ""}",
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontFamily: AppConstants.manrope,
                                           ),
                                         ),
@@ -379,7 +388,12 @@ class _EventDetailState extends State<EventDetail> {
                                       )
                                       : Center(
                                         child: batan(
-                                          title:  widget.status == ""?"Request Reservation": widget.status?.capitalizeFirst,
+                                          title:
+                                              widget.status == ""
+                                                  ? "Request Reservation"
+                                                  : widget
+                                                      .status
+                                                      ?.capitalizeFirst,
                                           route: () {
                                             widget.status == ""
                                                 ? sendlistap(widget.eventID)
@@ -417,7 +431,6 @@ class _EventDetailState extends State<EventDetail> {
     final Map<String, String> data = {};
     data['user_id'] = loginModel?.data?.user?.id.toString() ?? "";
     data['event_id'] = selectedid ?? "";
-    print("send event data jai che$data");
 
     setState(() {
       isBooking = true;
@@ -476,7 +489,6 @@ class _EventDetailState extends State<EventDetail> {
   eventDetailApi() {
     final Map<String, String> data = {"user_id": widget.eventID ?? ""};
 
-    print("login data jai che$data");
     checkInternet().then((internet) async {
       if (internet) {
         EventProvider().eventDetailApi(data).then((response) async {
@@ -548,9 +560,6 @@ class _EventDetailState extends State<EventDetail> {
       setState(() {
         AppLat = position.latitude.toString();
         AppLon = position.longitude.toString();
-        print(
-          "Latitude: ${position.latitude}, Longitude: ${position.longitude}",
-        );
       });
     }
   }

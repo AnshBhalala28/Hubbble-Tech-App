@@ -9,13 +9,13 @@ class ChatbotDataModal {
     if (json['conversations'] != null) {
       conversations = <Conversations>[];
       json['conversations'].forEach((v) {
-        conversations!.add(new Conversations.fromJson(v));
+        conversations!.add(Conversations.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     if (this.conversations != null) {
       data['conversations'] =
@@ -52,7 +52,7 @@ class Conversations {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['user_message'] = this.userMessage;

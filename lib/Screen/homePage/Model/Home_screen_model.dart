@@ -8,11 +8,11 @@ class Homemodel {
   Homemodel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -29,12 +29,12 @@ class Data {
   Data({this.user, this.token});
 
   Data.fromJson(Map<String, dynamic> json) {
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    user = json['user'] != null ? User.fromJson(json['user']) : null;
     token = json['token'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (this.user != null) {
       data['user'] = this.user!.toJson();
     }
@@ -48,14 +48,14 @@ class User {
   int? role;
   String? name;
   String? email;
-  Null? emailVerifiedAt;
+  Null emailVerifiedAt;
   String? dPassword;
   int? mobileNo;
   String? gender;
   Address? address;
-  Null? fcmToken;
-  Null? forgetPassKey;
-  Null? moduleLock;
+  Null fcmToken;
+  Null forgetPassKey;
+  Null moduleLock;
   String? status;
   String? profile;
   String? createdAt;
@@ -90,7 +90,7 @@ class User {
     mobileNo = json['mobile_no'];
     gender = json['gender'];
     address =
-        json['address'] != null ? new Address.fromJson(json['address']) : null;
+        json['address'] != null ? Address.fromJson(json['address']) : null;
     fcmToken = json['fcm_token'];
     forgetPassKey = json['forget_pass_key'];
     moduleLock = json['module_lock'];
@@ -101,7 +101,7 @@ class User {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['role'] = this.role;
     data['name'] = this.name;
@@ -140,7 +140,7 @@ class Address {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['address'] = this.address;
     data['city'] = this.city;
     data['country'] = this.country;

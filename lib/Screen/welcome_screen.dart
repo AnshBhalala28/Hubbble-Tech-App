@@ -48,7 +48,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     await getdata();
 
     if (loginModel == null) {
-      await Get.offAll(LoginScreen(), transition: Transition.fade);
+      await Get.offAll(const LoginScreen(), transition: Transition.fade);
     } else {
       await Get.offAll(
         HomePage(selected: 1, userName: ""),

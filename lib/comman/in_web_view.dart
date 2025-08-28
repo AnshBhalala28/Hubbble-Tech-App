@@ -95,7 +95,7 @@ class _StripeWebViewState extends State<StripeWebView> {
                   onTap: () {
                     Get.back();
                   },
-                  child: Icon(Icons.arrow_back),
+                  child: const Icon(Icons.arrow_back),
                 ),
                 SizedBox(width: 35.w),
                 Text(

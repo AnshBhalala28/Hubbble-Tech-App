@@ -27,13 +27,14 @@ class ChatBotScreen extends StatefulWidget {
 class _ChatBotScreenState extends State<ChatBotScreen>
     with WidgetsBindingObserver {
   final GlobalKey<ScaffoldState> scaffoldChatbot = GlobalKey<ScaffoldState>();
-  TextEditingController _msg = TextEditingController();
+  final TextEditingController _msg = TextEditingController();
   bool isLoading = false;
   bool isSending = false;
   String AppLat = '';
   String AppLon = '';
   final ScrollController _scrollController = ScrollController();
 
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
@@ -82,7 +83,7 @@ class _ChatBotScreenState extends State<ChatBotScreen>
               },
               child: Container(
                 padding: EdgeInsets.all(3.w),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: AppColors.maincolor,
                 ),
@@ -167,7 +168,7 @@ class _ChatBotScreenState extends State<ChatBotScreen>
                                                   color: Colors.blueAccent,
                                                 ),
                                                 child: Text(
-                                                  message!.userMessage!,
+                                                  message.userMessage!,
                                                   style: TextStyle(
                                                     fontSize: 16.sp,
                                                     color: Colors.white,
@@ -194,7 +195,7 @@ class _ChatBotScreenState extends State<ChatBotScreen>
                                     Align(
                                       alignment: Alignment.topLeft,
                                       child: AIReplyWidget(
-                                        aiReply: message!.aiReply!,
+                                        aiReply: message.aiReply!,
                                       ),
                                     ),
                                   ],
@@ -213,7 +214,7 @@ class _ChatBotScreenState extends State<ChatBotScreen>
                     Expanded(
                       child: TextFormField(
                         controller: _msg,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.black,
                           fontFamily: AppConstants.manrope,
                         ),
@@ -245,7 +246,7 @@ class _ChatBotScreenState extends State<ChatBotScreen>
                           shape: BoxShape.circle,
                           color: Colors.white,
                         ),
-                        child: Icon(Icons.send, color: Colors.black),
+                        child: const Icon(Icons.send, color: Colors.black),
                       ),
                     ),
                   ],
@@ -300,19 +301,16 @@ class _ChatBotScreenState extends State<ChatBotScreen>
       setState(() {
         AppLat = position.latitude.toString();
         AppLon = position.longitude.toString();
-        print(
-          "AI Lat : ${position.latitude},AI Longitude: ${position.longitude}",
-        );
       });
     }
   }
 
   void _scrollToBottom() {
-    Future.delayed(Duration(milliseconds: 300), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           curve: Curves.bounceIn,
         );
       }
@@ -460,7 +458,7 @@ class _AIReplyWidgetState extends State<AIReplyWidget> {
     final bool shouldTrim = cleanedText.length > charLimit;
     final String visibleText =
         shouldTrim && !_isExpanded
-            ? cleanedText.substring(0, charLimit) + "..."
+            ? "${cleanedText.substring(0, charLimit)}..."
             : cleanedText;
 
     return Container(
@@ -508,7 +506,7 @@ class _AIReplyWidgetState extends State<AIReplyWidget> {
                         width: double.infinity,
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
-                          return Center(
+                          return const Center(
                             child: CircularProgressIndicator(
                               color: AppColors.maincolor,
                             ),
@@ -523,12 +521,12 @@ class _AIReplyWidgetState extends State<AIReplyWidget> {
                     ),
                 ],
               );
-            }).toList(),
+            }),
           ],
           if (shouldTrim)
             Row(
               children: [
-                Spacer(),
+                const Spacer(),
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -559,7 +557,7 @@ class _AIReplyWidgetState extends State<AIReplyWidget> {
 class VideoPlayerWidget extends StatefulWidget {
   final String videoUrl;
 
-  const VideoPlayerWidget({Key? key, required this.videoUrl}) : super(key: key);
+  const VideoPlayerWidget({super.key, required this.videoUrl});
 
   @override
   _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
@@ -614,6 +612,8 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             ],
           ),
         )
-        : Center(child: CircularProgressIndicator(color: AppColors.maincolor));
+        : const Center(
+          child: CircularProgressIndicator(color: AppColors.maincolor),
+        );
   }
 }

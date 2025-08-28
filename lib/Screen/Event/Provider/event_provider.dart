@@ -24,6 +24,7 @@ class EventProvider extends ChangeNotifier {
       throw Exception('An error occurred: $e');
     }
   }
+
   Future<Response> eventDetailApi(Map<String, String> bodyData) async {
     try {
       final dio = Dio();
@@ -44,7 +45,6 @@ class EventProvider extends ChangeNotifier {
   }
 
   Future<Response> sendeventapi(Map<String, String> bodyData) async {
-
     try {
       final dio = Dio();
       String? token = await SaveDataLocal.getToken();

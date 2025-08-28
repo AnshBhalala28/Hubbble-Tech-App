@@ -26,7 +26,7 @@ class _ThankYouPageState extends State<ThankYouPage> {
     super.initState();
     orderNumber =
         "#ORD${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}";
-    collectionCode = "${Random().nextInt(9999).toString().padLeft(4, '0')}";
+    collectionCode = Random().nextInt(9999).toString().padLeft(4, '0');
   }
 
   @override

@@ -8,11 +8,11 @@ class EventDetailModal {
   EventDetailModal.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -45,28 +45,29 @@ class Data {
   Creator? creator;
   List<Business>? business;
 
-  Data(
-      {this.id,
-        this.creatorId,
-        this.title,
-        this.description,
-        this.apartmentNumber,
-        this.attachment,
-        this.eventDate,
-        this.location,
-        this.latitude,
-        this.longitude,
-        this.status,
-        this.isDeleted,
-        this.createdAt,
-        this.updatedAt,
-        this.deletedAt,
-        this.bio,
-        this.eventTime,
-        this.startTime,
-        this.endTime,
-        this.creator,
-        this.business});
+  Data({
+    this.id,
+    this.creatorId,
+    this.title,
+    this.description,
+    this.apartmentNumber,
+    this.attachment,
+    this.eventDate,
+    this.location,
+    this.latitude,
+    this.longitude,
+    this.status,
+    this.isDeleted,
+    this.createdAt,
+    this.updatedAt,
+    this.deletedAt,
+    this.bio,
+    this.eventTime,
+    this.startTime,
+    this.endTime,
+    this.creator,
+    this.business,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -89,17 +90,17 @@ class Data {
     startTime = json['start_time'];
     endTime = json['end_time'];
     creator =
-    json['creator'] != null ? new Creator.fromJson(json['creator']) : null;
+        json['creator'] != null ? Creator.fromJson(json['creator']) : null;
     if (json['business'] != null) {
       business = <Business>[];
       json['business'].forEach((v) {
-        business!.add(new Business.fromJson(v));
+        business!.add(Business.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['creator_id'] = this.creatorId;
     data['title'] = this.title;
@@ -154,30 +155,31 @@ class Creator {
   String? createdAt;
   String? updatedAt;
 
-  Creator(
-      {this.id,
-        this.role,
-        this.name,
-        this.email,
-        this.emailVerifiedAt,
-        this.dPassword,
-        this.mobileNo,
-        this.gender,
-        this.dateOfBirth,
-        this.address,
-        this.psLatitude,
-        this.psLongitude,
-        this.fcmToken,
-        this.forgetPassKey,
-        this.moduleLock,
-        this.isOnline,
-        this.lastOnlineAt,
-        this.status,
-        this.profile,
-        this.isDeleted,
-        this.deletedAt,
-        this.createdAt,
-        this.updatedAt});
+  Creator({
+    this.id,
+    this.role,
+    this.name,
+    this.email,
+    this.emailVerifiedAt,
+    this.dPassword,
+    this.mobileNo,
+    this.gender,
+    this.dateOfBirth,
+    this.address,
+    this.psLatitude,
+    this.psLongitude,
+    this.fcmToken,
+    this.forgetPassKey,
+    this.moduleLock,
+    this.isOnline,
+    this.lastOnlineAt,
+    this.status,
+    this.profile,
+    this.isDeleted,
+    this.deletedAt,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Creator.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -206,7 +208,7 @@ class Creator {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['role'] = this.role;
     data['name'] = this.name;
@@ -280,51 +282,52 @@ class Business {
   var cardNo;
   var cardExp;
 
-  Business(
-      {this.id,
-        this.userId,
-        this.subId,
-        this.stripeSubscriptionId,
-        this.logo,
-        this.businessName,
-        this.about,
-        this.description,
-        this.industry,
-        this.openingHours,
-        this.website,
-        this.categoryId,
-        this.subCategoryId,
-        this.tags,
-        this.businessServices,
-        this.experience,
-        this.businessAddress,
-        this.subStartDate,
-        this.subEndDate,
-        this.subStatus,
-        this.latitude,
-        this.longitude,
-        this.media,
-        this.creditBalance,
-        this.stripeAccountId,
-        this.stripePrimaryAccountId,
-        this.isStripeConnected,
-        this.stripeAccessToken,
-        this.onboardedAt,
-        this.loyaltyOrderThreshold,
-        this.loyaltyDiscountPercentage,
-        this.serviceStatus,
-        this.productStatus,
-        this.chatStatus,
-        this.isDeleted,
-        this.createdAt,
-        this.updatedAt,
-        this.deletedAt,
-        this.loyaltyOnServiceId,
-        this.loyaltyOnServiceCatId,
-        this.loyaltyOnProductId,
-        this.loyaltyOnProductCatId,
-        this.cardNo,
-        this.cardExp});
+  Business({
+    this.id,
+    this.userId,
+    this.subId,
+    this.stripeSubscriptionId,
+    this.logo,
+    this.businessName,
+    this.about,
+    this.description,
+    this.industry,
+    this.openingHours,
+    this.website,
+    this.categoryId,
+    this.subCategoryId,
+    this.tags,
+    this.businessServices,
+    this.experience,
+    this.businessAddress,
+    this.subStartDate,
+    this.subEndDate,
+    this.subStatus,
+    this.latitude,
+    this.longitude,
+    this.media,
+    this.creditBalance,
+    this.stripeAccountId,
+    this.stripePrimaryAccountId,
+    this.isStripeConnected,
+    this.stripeAccessToken,
+    this.onboardedAt,
+    this.loyaltyOrderThreshold,
+    this.loyaltyDiscountPercentage,
+    this.serviceStatus,
+    this.productStatus,
+    this.chatStatus,
+    this.isDeleted,
+    this.createdAt,
+    this.updatedAt,
+    this.deletedAt,
+    this.loyaltyOnServiceId,
+    this.loyaltyOnServiceCatId,
+    this.loyaltyOnProductId,
+    this.loyaltyOnProductCatId,
+    this.cardNo,
+    this.cardExp,
+  });
 
   Business.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -374,7 +377,7 @@ class Business {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['sub_id'] = this.subId;

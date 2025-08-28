@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -13,7 +11,6 @@ import '../../../comman/Custom_AppBar.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
-import '../../../comman/custom_batan.dart';
 import '../../../comman/error_dialog.dart';
 import '../../homePage/View/homenewpage.dart';
 import '../Model/event_model.dart';
@@ -156,7 +153,7 @@ class _EventScreenState extends State<EventScreen> {
               SizedBox(height: 3.h),
               Row(
                 children: [
-                  Spacer(),
+                  const Spacer(),
                   Container(
                     height: 5.h,
                     width: 37.w,
@@ -221,7 +218,7 @@ class _EventScreenState extends State<EventScreen> {
                             selectedValue = value.toString();
                           });
 
-                          Future.delayed(Duration(milliseconds: 500), () {
+                          Future.delayed(const Duration(milliseconds: 500), () {
                             setState(() {});
                           });
                         },
@@ -234,7 +231,7 @@ class _EventScreenState extends State<EventScreen> {
               isLoading
                   ? SizedBox(
                     height: 65.h,
-                    child: Center(
+                    child: const Center(
                       child: CircularProgressIndicator(
                         color: AppColors.maincolor,
                       ),
@@ -267,12 +264,12 @@ class _EventScreenState extends State<EventScreen> {
                             padding: EdgeInsets.zero,
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount:
                                 event_list_Model?.data?.data?.length ?? 0,
                             itemBuilder: (context, index) {
                               String eventId =
-                                  event_list_Model?.data?.data?[index]?.id
+                                  event_list_Model?.data?.data?[index].id
                                       ?.toString() ??
                                   "";
                               bool isRequestSent = sentEventIds.contains(
@@ -286,27 +283,25 @@ class _EventScreenState extends State<EventScreen> {
                                     borderRadius: BorderRadius.circular(20),
 
                                     child: InkWell(
-                                      onTap:(){
-                                        Get.to(EventDetail(
-                                          eventID: eventId,
-                                          status:event_list_Model
-                                              ?.data
-                                              ?.data?[index]
-                                              ?.requestEvent ,
-                                        ));
-                                        log("asdadasds${
-                                            event_list_Model
-                                                ?.data
-                                                ?.data?[index]
-                                                ?.requestEvent
-                                        }");
+                                      onTap: () {
+                                        Get.to(
+                                          EventDetail(
+                                            eventID: eventId,
+                                            status:
+                                                event_list_Model
+                                                    ?.data
+                                                    ?.data?[index]
+                                                    .requestEvent,
+                                          ),
+                                        );
                                       },
                                       child: Container(
-
-                                        padding: EdgeInsets.all(16),
+                                        padding: const EdgeInsets.all(16),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: BorderRadius.circular(20),
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
                                         ),
                                         child: Column(
                                           crossAxisAlignment:
@@ -329,19 +324,20 @@ class _EventScreenState extends State<EventScreen> {
                                                     fontSize: 15.sp,
                                                   ),
                                                 ),
-                                                Spacer(),
+                                                const Spacer(),
                                                 if (isLoading)
-                                                  CircularProgressIndicator()
+                                                  const CircularProgressIndicator()
                                                 else if (event_list_Model
                                                         ?.data
                                                         ?.data?[index]
-                                                        ?.requestEvent
+                                                        .requestEvent
                                                         ?.toLowerCase() ==
                                                     "pending")
-                                                  Text(
+                                                  const Text(
                                                     "Requested",
                                                     style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       color: Colors.orange,
                                                     ),
                                                   ),
@@ -617,13 +613,14 @@ class _EventScreenState extends State<EventScreen> {
                                               event_list_Model
                                                       ?.data
                                                       ?.data?[index]
-                                                      ?.title ??
+                                                      .title ??
                                                   "N/A",
                                               style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 16.5.sp,
                                                 fontWeight: FontWeight.bold,
-                                                fontFamily: AppConstants.manrope,
+                                                fontFamily:
+                                                    AppConstants.manrope,
                                               ),
                                             ),
                                             SizedBox(height: 1.h),
@@ -634,13 +631,13 @@ class _EventScreenState extends State<EventScreen> {
                                                   color: Colors.black,
                                                   size: 18.sp,
                                                 ),
-                                                SizedBox(width: 5),
+                                                const SizedBox(width: 5),
                                                 Expanded(
                                                   child: Text(
                                                     event_list_Model
                                                             ?.data
                                                             ?.data?[index]
-                                                            ?.location ??
+                                                            .location ??
                                                         "N/A",
                                                     style: TextStyle(
                                                       color: Colors.black,
@@ -695,7 +692,6 @@ class _EventScreenState extends State<EventScreen> {
     final Map<String, String> data = {};
     data['user_id'] = loginModel?.data?.user?.id.toString() ?? "";
     data['event_id'] = selectedid ?? "";
-    print("send event data jai che$data");
 
     setState(() {
       isLoading = true;
@@ -741,7 +737,6 @@ class _EventScreenState extends State<EventScreen> {
   projectlistap01() {
     final Map<String, String> data = {"user_id": widget.userId ?? ""};
 
-    print("login data jai che$data");
     checkInternet().then((internet) async {
       if (internet) {
         EventProvider().eventapi(data).then((response) async {
@@ -760,8 +755,6 @@ class _EventScreenState extends State<EventScreen> {
               isLoading = false;
               load = false;
             });
-
-            log("Without date${projectDates}");
           } else if (response.statusCode == 422) {
             setState(() {
               isLoading = false;
@@ -803,9 +796,7 @@ class _EventScreenState extends State<EventScreen> {
                   projectList.map<DateTime>((project) {
                     return DateTime.parse(project['event_date'].split(' ')[0]);
                   }).toList();
-            } else {
-              log("Unexpected format: ${jsonData['data']}");
-            }
+            } else {}
 
             if (mounted) {
               setState(() {
@@ -820,10 +811,7 @@ class _EventScreenState extends State<EventScreen> {
               isLoading = false;
             });
           }
-        } catch (e, stackTrace) {
-          log(
-            "Error ave che che mane janavo  $e \n stackTrace Error $stackTrace",
-          );
+        } catch (e) {
           setState(() {
             load = false;
             isLoading = false;
@@ -840,7 +828,6 @@ class _EventScreenState extends State<EventScreen> {
     data['user_id'] = loginModel?.data?.user?.id.toString() ?? "";
     data['date'] = selectedDate.toString() ?? "";
 
-    print(" Sending datasending$data");
     checkInternet().then((internet) async {
       if (internet) {
         EventProvider().eventapi(data).then((response) async {
@@ -850,8 +837,6 @@ class _EventScreenState extends State<EventScreen> {
               isLoading = false;
               load = false;
             });
-
-            log("Date Ave Ave che hhee projejsdf ${projectDates}");
           } else if (response.statusCode == 422) {
             setState(() {
               isLoading = false;
@@ -893,7 +878,7 @@ class _EventScreenState extends State<EventScreen> {
             },
             child: Container(
               width: 20.w,
-              margin: EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.only(right: 10),
               decoration: BoxDecoration(
                 color: isSelected ? AppColors.maincolor : Colors.white,
                 borderRadius: BorderRadius.circular(20),
@@ -927,6 +912,7 @@ class _EventScreenState extends State<EventScreen> {
       ),
     );
   }
+
   //
   // Widget _buildMonthView() {
   //   final DateTime today = DateTime.now();
@@ -1237,14 +1223,22 @@ class _EventScreenState extends State<EventScreen> {
           color: Colors.black45,
           shape: BoxShape.circle,
         ),
-        selectedTextStyle:
-        TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
-        todayTextStyle:
-        TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
-        defaultTextStyle:
-        TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
-        weekendTextStyle:
-        TextStyle(color: Colors.white, fontFamily: AppConstants.manrope),
+        selectedTextStyle: TextStyle(
+          color: Colors.white,
+          fontFamily: AppConstants.manrope,
+        ),
+        todayTextStyle: TextStyle(
+          color: Colors.white,
+          fontFamily: AppConstants.manrope,
+        ),
+        defaultTextStyle: TextStyle(
+          color: Colors.white,
+          fontFamily: AppConstants.manrope,
+        ),
+        weekendTextStyle: TextStyle(
+          color: Colors.white,
+          fontFamily: AppConstants.manrope,
+        ),
       ),
       selectedDayPredicate: (day) {
         return isSameDay(selectedDay, day);
@@ -1253,10 +1247,16 @@ class _EventScreenState extends State<EventScreen> {
         defaultBuilder: (context, day, _) {
           DateTime normalizedDay = DateTime(day.year, day.month, day.day);
           DateTime today = DateTime.now();
-          bool isPastDate = normalizedDay.isBefore(DateTime(today.year, today.month, today.day));
+          bool isPastDate = normalizedDay.isBefore(
+            DateTime(today.year, today.month, today.day),
+          );
 
           bool isHighlighted = projectDates.any((createdDate) {
-            DateTime normalizedCreatedDate = DateTime(createdDate.year, createdDate.month, createdDate.day);
+            DateTime normalizedCreatedDate = DateTime(
+              createdDate.year,
+              createdDate.month,
+              createdDate.day,
+            );
             return isSameDay(normalizedCreatedDate, normalizedDay);
           });
 
@@ -1270,20 +1270,22 @@ class _EventScreenState extends State<EventScreen> {
               projectlistap();
             },
             child: Container(
-              margin: EdgeInsets.all(6.0),
+              margin: const EdgeInsets.all(6.0),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: isHighlighted
-                    ? AppColors.maincolor
-                    : (isPastDate ? Colors.grey.shade300 : AppColors.white),
+                color:
+                    isHighlighted
+                        ? AppColors.maincolor
+                        : (isPastDate ? Colors.grey.shade300 : AppColors.white),
                 shape: BoxShape.circle,
               ),
               child: Text(
                 '${day.day}',
                 style: TextStyle(
-                  color: isHighlighted
-                      ? Colors.white
-                      : (isPastDate ? Colors.grey.shade600 : Colors.black),
+                  color:
+                      isHighlighted
+                          ? Colors.white
+                          : (isPastDate ? Colors.grey.shade600 : Colors.black),
                   fontWeight: FontWeight.bold,
                   fontFamily: AppConstants.manrope,
                 ),
@@ -1321,10 +1323,10 @@ class _EventScreenState extends State<EventScreen> {
           fontSize: 18.sp,
           fontFamily: AppConstants.manrope,
         ),
-        leftChevronIcon: Icon(Icons.chevron_left, color: Colors.black),
-        rightChevronIcon: Icon(Icons.chevron_right, color: Colors.black),
+        leftChevronIcon: const Icon(Icons.chevron_left, color: Colors.black),
+        rightChevronIcon: const Icon(Icons.chevron_right, color: Colors.black),
       ),
-      daysOfWeekStyle: DaysOfWeekStyle(
+      daysOfWeekStyle: const DaysOfWeekStyle(
         weekdayStyle: TextStyle(
           color: Colors.black,
           fontSize: 13.5,
@@ -1368,28 +1370,33 @@ class _EventScreenState extends State<EventScreen> {
       calendarBuilders: CalendarBuilders(
         defaultBuilder: (context, day, focusedDay) {
           DateTime today = DateTime.now();
-          bool isPastDate = DateTime(day.year, day.month, day.day)
-              .isBefore(DateTime(today.year, today.month, today.day));
+          bool isPastDate = DateTime(
+            day.year,
+            day.month,
+            day.day,
+          ).isBefore(DateTime(today.year, today.month, today.day));
 
           bool isMonthDate = projectDates.any((projectDate) {
             return isSameDay(projectDate, day);
           });
 
           return Container(
-            margin: EdgeInsets.all(6.0),
+            margin: const EdgeInsets.all(6.0),
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: isMonthDate
-                  ? AppColors.maincolor
-                  : (isPastDate ? Colors.grey.shade300 : AppColors.white),
+              color:
+                  isMonthDate
+                      ? AppColors.maincolor
+                      : (isPastDate ? Colors.grey.shade300 : AppColors.white),
               shape: BoxShape.circle,
             ),
             child: Text(
               '${day.day}',
               style: TextStyle(
-                color: isMonthDate
-                    ? Colors.white
-                    : (isPastDate ? Colors.grey.shade600 : Colors.black),
+                color:
+                    isMonthDate
+                        ? Colors.white
+                        : (isPastDate ? Colors.grey.shade600 : Colors.black),
                 fontFamily: AppConstants.manrope,
                 fontWeight: FontWeight.bold,
               ),

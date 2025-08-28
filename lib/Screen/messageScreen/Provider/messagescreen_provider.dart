@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -23,8 +22,6 @@ class MessageProvider extends ChangeNotifier {
     final url =
         '${ApiEndpoint.getChat}/$userId/$conciergeId'
         '?type=$type&order_product_id=$orderProductId';
-
-    log("GET: $url");
 
     try {
       return await dio.get(
@@ -82,13 +79,12 @@ class MessageProvider extends ChangeNotifier {
 
     try {
       final response = await dio.post(
-        '${ApiEndpoint.sendMessage}',
+        ApiEndpoint.sendMessage,
         data: formData,
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
       );
       return response;
-    } on DioException catch (e, stack) {
-      log('Dio error: ${e.message}\nStack: $stack');
+    } on DioException catch (e) {
       throw Exception(handleDioError(e));
     }
   }
@@ -99,7 +95,7 @@ class MessageProvider extends ChangeNotifier {
 
     try {
       return await dio.post(
-        '${ApiEndpoint.sendMessage}',
+        ApiEndpoint.sendMessage,
         data: bodyData,
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
       );
@@ -154,12 +150,11 @@ class MessageProvider extends ChangeNotifier {
 
     try {
       return await dio.post(
-        '${ApiEndpoint.sendOrderChat}',
+        ApiEndpoint.sendOrderChat,
         data: formData,
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
       );
-    } on DioException catch (e, stack) {
-      log('OrderChat error: ${e.message}\n$stack');
+    } on DioException catch (e) {
       throw Exception(handleDioError(e));
     }
   }

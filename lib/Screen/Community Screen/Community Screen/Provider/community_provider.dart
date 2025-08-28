@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:wavee/comman/apiConfig.dart';
@@ -18,7 +16,7 @@ class CommunityProvider extends ChangeNotifier {
     try {
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final dio = await DioHelper.getDio();
@@ -33,8 +31,7 @@ class CommunityProvider extends ChangeNotifier {
       );
 
       return response;
-    } on DioException catch (e, stackTrace) {
-      log('messagemessagemessagemessagemessagemessage$stackTrace  $e');
+    } on DioException catch (e) {
       throw Exception(handleDioError(e));
     }
   }
@@ -44,11 +41,9 @@ class CommunityProvider extends ChangeNotifier {
       // '${baseUrl}/businessProfile/$UserId/$id?longitude=$lon&latitude=$lat';
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
-      log(
-        "fsdfsfsdfs${ApiEndpoint.businessProfileView}${loginModel?.data?.user?.id.toString()}/$id?latitude=$lat&longitude=$lon",
-      );
+
       final dio = await DioHelper.getDio();
       final response = await dio.get(
         "${ApiEndpoint.businessProfileView}${loginModel?.data?.user?.id.toString()}/$id?latitude=$lat&longitude=$lon",
@@ -56,9 +51,7 @@ class CommunityProvider extends ChangeNotifier {
       );
 
       return response;
-    } on DioException catch (e, stackTrace) {
-      log('messagemessagemessagemessagemessagemessage$stackTrace  $e');
-
+    } on DioException catch (e) {
       throw Exception(handleDioError(e));
     }
   }
@@ -67,7 +60,7 @@ class CommunityProvider extends ChangeNotifier {
     try {
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final dio = await DioHelper.getDio();
@@ -88,7 +81,7 @@ class CommunityProvider extends ChangeNotifier {
     try {
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final dio = await DioHelper.getDio();
@@ -114,7 +107,7 @@ class CommunityProvider extends ChangeNotifier {
       final dio = await DioHelper.getDio();
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final response = await dio.get(
@@ -138,7 +131,7 @@ class CommunityProvider extends ChangeNotifier {
       final dio = await DioHelper.getDio();
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final response = await dio.get(
@@ -162,7 +155,7 @@ class CommunityProvider extends ChangeNotifier {
       final dio = await DioHelper.getDio();
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final response = await dio.get(
@@ -186,7 +179,7 @@ class CommunityProvider extends ChangeNotifier {
       final dio = await DioHelper.getDio();
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final response = await dio.get(
@@ -210,7 +203,7 @@ class CommunityProvider extends ChangeNotifier {
     try {
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final dio = await DioHelper.getDio();
@@ -232,7 +225,7 @@ class CommunityProvider extends ChangeNotifier {
       final dio = await DioHelper.getDio();
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final response = await dio.post(
@@ -253,7 +246,7 @@ class CommunityProvider extends ChangeNotifier {
       final dio = await DioHelper.getDio();
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final response = await dio.post(
@@ -274,7 +267,7 @@ class CommunityProvider extends ChangeNotifier {
       final dio = await DioHelper.getDio();
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final response = await dio.post(
@@ -295,7 +288,7 @@ class CommunityProvider extends ChangeNotifier {
       final dio = await DioHelper.getDio();
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final response = await dio.get(
