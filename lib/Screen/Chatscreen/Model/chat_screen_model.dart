@@ -8,11 +8,11 @@ class ChatModel {
   ChatModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -32,19 +32,19 @@ class Data {
     if (json['business_users'] != null) {
       businessUsers = <BusinessUsers>[];
       json['business_users'].forEach((v) {
-        businessUsers!.add(new BusinessUsers.fromJson(v));
+        businessUsers!.add(BusinessUsers.fromJson(v));
       });
     }
     if (json['concierges'] != null) {
       concierges = <Concierges>[];
       json['concierges'].forEach((v) {
-        concierges!.add(new Concierges.fromJson(v));
+        concierges!.add(Concierges.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (this.businessUsers != null) {
       data['business_users'] =
           this.businessUsers!.map((v) => v.toJson()).toList();
@@ -123,7 +123,7 @@ class BusinessUsers {
     isOnline = json['is_online'];
     dateOfBirth = json['date_of_birth'];
     address =
-        json['address'] != null ? new Address.fromJson(json['address']) : null;
+        json['address'] != null ? Address.fromJson(json['address']) : null;
     psLatitude = json['ps_latitude'];
     psLongitude = json['ps_longitude'];
     fcmToken = json['fcm_token'];
@@ -138,13 +138,11 @@ class BusinessUsers {
     unreadCount = json['unread_count'];
     lastOnlineAt = json['last_online_at'];
     business =
-        json['business'] != null
-            ? new Business.fromJson(json['business'])
-            : null;
+        json['business'] != null ? Business.fromJson(json['business']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['role'] = this.role;
     data['name'] = this.name;
@@ -194,7 +192,7 @@ class Address {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['address'] = this.address;
     data['city'] = this.city;
     data['country'] = this.country;
@@ -317,7 +315,7 @@ class Business {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['sub_id'] = this.subId;
@@ -444,7 +442,7 @@ class Concierges {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['building_id'] = this.buildingId;

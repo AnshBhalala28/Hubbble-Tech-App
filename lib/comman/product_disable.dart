@@ -32,13 +32,13 @@ showOnlineOrderDisabledDialog({
                       shape: BoxShape.circle,
                     ),
                     padding: const EdgeInsets.all(18),
-                    child: Icon(
+                    child: const Icon(
                       Icons.info_outline,
                       color: AppColors.maincolor,
                       size: 42,
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Text(
                     "Online Orders Paused",
                     style: TextStyle(
@@ -49,7 +49,7 @@ showOnlineOrderDisabledDialog({
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 14),
+                  const SizedBox(height: 14),
                   Text(
                     "$businessName has not activated online orders.\nOrders cannot currently be placed for ${isProduct ? 'products' : 'services'}.",
                     style: TextStyle(
@@ -60,7 +60,7 @@ showOnlineOrderDisabledDialog({
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 28),
+                  const SizedBox(height: 28),
                   batan(
                     title: "OK",
                     route: () {
@@ -108,13 +108,13 @@ ShowAddCart({
                       shape: BoxShape.circle,
                     ),
                     padding: const EdgeInsets.all(18),
-                    child: Icon(
+                    child: const Icon(
                       Icons.info_outline,
                       color: AppColors.maincolor,
                       size: 42,
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Text(
                     businessName,
                     style: TextStyle(
@@ -125,7 +125,7 @@ ShowAddCart({
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 14),
+                  const SizedBox(height: 14),
                   Text(
                     "You are about to create a new basket.All previous items will be removed.",
                     style: TextStyle(
@@ -136,7 +136,7 @@ ShowAddCart({
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 28),
+                  const SizedBox(height: 28),
                   Row(
                     children: [
                       Expanded(
@@ -153,7 +153,7 @@ ShowAddCart({
                           radius: 12.0,
                         ),
                       ),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: batan(
                           title: "Continue",

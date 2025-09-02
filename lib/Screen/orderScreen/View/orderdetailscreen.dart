@@ -127,7 +127,11 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                               ),
                                             ),
                                         errorWidget:
-                                            (context, url, error) => Image(
+                                            (
+                                              context,
+                                              url,
+                                              error,
+                                            ) => const Image(
                                               image: AssetImage(
                                                 'assets/images/Applogo_remove_background.png',
                                               ),
@@ -283,14 +287,14 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                               ?.products
                                               ?.bookingDetails ==
                                           null
-                                      ? SizedBox()
+                                      ? const SizedBox()
                                       : SizedBox(height: 1.h),
                                   serviceOrderDetail
                                               ?.data
                                               ?.products
                                               ?.bookingDetails ==
                                           null
-                                      ? SizedBox()
+                                      ? const SizedBox()
                                       : Row(
                                         children: [
                                           Icon(Icons.date_range, size: 18.sp),
@@ -390,7 +394,12 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: ReadMoreText(
-                                  "${serviceOrderDetail?.data?.products?.service?.description ?? ""}",
+                                  serviceOrderDetail
+                                          ?.data
+                                          ?.products
+                                          ?.service
+                                          ?.description ??
+                                      "",
                                   trimLines: 4,
                                   trimLength: 145,
                                   colorClickableText: Colors.blue,
@@ -474,7 +483,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                         ),
                                     ],
                                   )
-                                  : SizedBox(),
+                                  : const SizedBox(),
                               SizedBox(height: 10.h),
                             ],
                           ),
@@ -544,7 +553,11 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                               ),
                                             ),
                                         errorWidget:
-                                            (context, url, error) => Image(
+                                            (
+                                              context,
+                                              url,
+                                              error,
+                                            ) => const Image(
                                               image: AssetImage(
                                                 'assets/images/waveeLogoShort.png',
                                               ),
@@ -788,7 +801,12 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: ReadMoreText(
-                                  "${orderDetailModel?.data?.products?.product?.description ?? ""}",
+                                  orderDetailModel
+                                          ?.data
+                                          ?.products
+                                          ?.product
+                                          ?.description ??
+                                      "",
                                   trimLines: 4,
                                   trimLength: 145,
                                   colorClickableText: Colors.blue,
@@ -872,7 +890,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                         ),
                                     ],
                                   )
-                                  : SizedBox(),
+                                  : const SizedBox(),
                               SizedBox(height: 1.h),
                               _buildOrderManagementSection(),
                               SizedBox(height: 10.h),
@@ -894,7 +912,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
           (isLoading ||
                   orderDetailModel?.data?.order?.status == "Collected" ||
                   orderDetailModel?.data?.order?.status == "cancelled")
-              ? SizedBox.shrink()
+              ? const SizedBox.shrink()
               : (orderDetailModel?.data?.order?.status?.toLowerCase() ==
                       "declined" ||
                   orderDetailModel?.data?.order?.status?.toLowerCase() ==
@@ -989,7 +1007,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                   ],
                 ),
               )
-              : SizedBox.shrink(),
+              : const SizedBox.shrink(),
     );
   }
 
@@ -1323,7 +1341,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
               fontFamily: AppConstants.manrope,
             ),
           ),
-          Spacer(),
+          const Spacer(),
           if (isSelected)
             Icon(Icons.check_circle, color: AppColors.maincolor, size: 20.sp),
         ],
@@ -1394,7 +1412,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
             color: Colors.grey.withOpacity(0.1),
             spreadRadius: 1,
             blurRadius: 3,
-            offset: Offset(0, 1),
+            offset: const Offset(0, 1),
           ),
         ],
       ),
@@ -1451,7 +1469,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                   ),
                   AnimatedRotation(
                     turns: _isWhereMyOrderExpanded ? 0.5 : 0,
-                    duration: Duration(milliseconds: 300),
+                    duration: const Duration(milliseconds: 300),
                     child: Icon(
                       Icons.keyboard_arrow_down,
                       size: 20.sp,
@@ -1463,7 +1481,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
             ),
           ),
           AnimatedContainer(
-            duration: Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 300),
             height: _isWhereMyOrderExpanded ? null : 0,
             child:
                 _isWhereMyOrderExpanded
@@ -1486,7 +1504,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                         ],
                       ),
                     )
-                    : SizedBox.shrink(),
+                    : const SizedBox.shrink(),
           ),
         ],
       ),
@@ -1509,7 +1527,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
             color: Colors.grey.withOpacity(0.1),
             spreadRadius: 1,
             blurRadius: 3,
-            offset: Offset(0, 1),
+            offset: const Offset(0, 1),
           ),
         ],
       ),
@@ -1625,7 +1643,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                             index < currentStatusIndex
                                 ? AppColors.maincolor.withOpacity(0.5)
                                 : Colors.grey[300],
-                        margin: EdgeInsets.symmetric(vertical: 2),
+                        margin: const EdgeInsets.symmetric(vertical: 2),
                       ),
                   ],
                 ),
@@ -1925,11 +1943,11 @@ class CustomFeatureCard extends StatelessWidget {
   final String subtitle;
 
   const CustomFeatureCard({
-    Key? key,
+    super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1939,7 +1957,7 @@ class CustomFeatureCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2)),
         ],
       ),
@@ -1980,8 +1998,7 @@ class CustomFeatureCard extends StatelessWidget {
 class OrderStepsWidget extends StatelessWidget {
   final String currentStatus;
 
-  const OrderStepsWidget({Key? key, required this.currentStatus})
-    : super(key: key);
+  const OrderStepsWidget({super.key, required this.currentStatus});
 
   @override
   Widget build(BuildContext context) {
@@ -2032,11 +2049,11 @@ class OrderStepsWidget extends StatelessWidget {
                             index < currentStatusIndex
                                 ? AppColors.maincolor.withOpacity(0.5)
                                 : Colors.grey[300],
-                        margin: EdgeInsets.symmetric(vertical: 2),
+                        margin: const EdgeInsets.symmetric(vertical: 2),
                       ),
                   ],
                 ),
-                SizedBox(width: 12),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(bottom: isLast ? 0 : 20),
@@ -2063,8 +2080,8 @@ class OrderStepsWidget extends StatelessWidget {
                         ),
                         if (isActive)
                           Container(
-                            margin: EdgeInsets.only(top: 8),
-                            padding: EdgeInsets.symmetric(
+                            margin: const EdgeInsets.only(top: 8),
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 10,
                               vertical: 5,
                             ),
@@ -2113,7 +2130,7 @@ class OrderStepsWidget extends StatelessWidget {
                 color: Colors.white,
                 size: isActive ? 12 : 10,
               )
-              : SizedBox.shrink(),
+              : const SizedBox.shrink(),
     );
   }
 
@@ -2138,7 +2155,7 @@ class OrderStepsWidget extends StatelessWidget {
 class PulsingDot extends StatefulWidget {
   final Widget child;
 
-  const PulsingDot({Key? key, required this.child}) : super(key: key);
+  const PulsingDot({super.key, required this.child});
 
   @override
   State<PulsingDot> createState() => _PulsingDotState();
@@ -2153,7 +2170,7 @@ class _PulsingDotState extends State<PulsingDot>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 800),
       lowerBound: 0.95,
       upperBound: 1.05,
     )..repeat(reverse: true);

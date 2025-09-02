@@ -90,7 +90,7 @@ buildErrorDialog(
                 ),
               ),
               SizedBox(height: 2.h),
-              Divider(height: 1.0, color: Colors.grey),
+              const Divider(height: 1.0, color: Colors.grey),
               SizedBox(height: 2.h),
               okButton,
               SizedBox(height: 2.h),
@@ -211,14 +211,14 @@ optionalDialog(
                 ),
               ),
               SizedBox(height: 2.h),
-              Divider(height: 1.0, color: Colors.grey),
+              const Divider(height: 1.0, color: Colors.grey),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   YesButton,
                   SizedBox(
                     height: 6.h,
-                    child: VerticalDivider(color: Colors.grey),
+                    child: const VerticalDivider(color: Colors.grey),
                   ),
                   NoButton,
                 ],

@@ -86,12 +86,12 @@ Future<void> downloadFile(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
-                backgroundColor: Color(0xff232323),
+                backgroundColor: const Color(0xff232323),
                 child: Container(
                   width: 300,
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Color(0xff232323),
+                    color: const Color(0xff232323),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(
@@ -99,7 +99,7 @@ Future<void> downloadFile(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         "Downloading File",
                         style: TextStyle(
                           fontSize: 18,
@@ -107,7 +107,7 @@ Future<void> downloadFile(
                           fontFamily: 'task',
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Stack(
                         alignment: Alignment.center,
                         children: [
@@ -131,7 +131,7 @@ Future<void> downloadFile(
                           ),
                           Text(
                             "${(value * 100).toStringAsFixed(0)}%",
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 16,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,

@@ -90,6 +90,9 @@ dependencies:
 
 
 
+  path_provider: any
+  webview_flutter_android: any
+  path: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

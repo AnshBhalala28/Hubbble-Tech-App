@@ -97,24 +97,12 @@ class MessageBoardProvider extends ChangeNotifier {
       return response;
     } on DioException catch (e) {
       // Detailed logging
-      print('===== Dio Error Debug Info =====');
-      print('Type: ${e.type}');
-      print('Message: ${e.message}');
-      print('Error: ${e.error}');
-      print('Response: ${e.response?.data}');
-      print('StackTrace: ${e.stackTrace}');
-      print('===============================');
 
       throw Exception(handleDioError(e));
-    } catch (e, stackTrace) {
-      print('===== Unknown Error =====');
-      print('Error: $e');
-      print('StackTrace: $stackTrace');
-      print('=========================');
+    } catch (e) {
       rethrow;
     }
   }
-
 
   // Future<Response> getGroupApi(Map<String, String> bodyData) async {
   //   try {
@@ -304,23 +292,11 @@ class MessageBoardProvider extends ChangeNotifier {
 
       return response;
     } on DioException catch (e) {
-      print('===== Dio Error Debug Info =====');
-      print('Type: ${e.type}');
-      print('Message: ${e.message}');
-      print('Error: ${e.error}');
-      print('Response: ${e.response?.data}');
-      print('StackTrace: ${e.stackTrace}');
-      print('===============================');
       throw Exception(handleDioError(e));
-    } catch (e, stackTrace) {
-      print('===== Unknown Error =====');
-      print('Error: $e');
-      print('StackTrace: $stackTrace');
-      print('=========================');
+    } catch (e) {
       rethrow;
     }
   }
-
 
   Future<Response> getPostCommentApi(Map<String, String> bodyData) async {
     try {

@@ -77,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: 2.h),
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: TextFormField(
                     cursorColor: AppColors.black,
@@ -108,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: 2.h),
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: TextFormField(
                     cursorColor: AppColors.maincolor,
@@ -170,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 3.h),
                 isLoading == true
-                    ? Center(
+                    ? const Center(
                       child: CircularProgressIndicator(
                         color: AppColors.maincolor,
                       ),
@@ -192,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                         },
                         borderRadius: BorderRadius.circular(5),
-                        child: Center(
+                        child: const Center(
                           child: Text(
                             "Login",
                             style: TextStyle(

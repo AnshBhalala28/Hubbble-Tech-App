@@ -326,12 +326,8 @@
 //                                                                     isExistingMember ||
 //                                                                     isRequestedMember;
 //
-//                                                                 print(
-//                                                                   "existingMembers: $existingMembers",
-//                                                                 );
-//                                                                 print(
-//                                                                   "requestedMembers: $requestedMembers",
-//                                                                 );
+//
+//
 //
 //                                                                 return CheckboxListTile(
 //                                                                   tileColor:

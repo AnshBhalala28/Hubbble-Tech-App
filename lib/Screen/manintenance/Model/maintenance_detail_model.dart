@@ -8,11 +8,11 @@ class MaintenanceDetailModel {
   MaintenanceDetailModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -37,20 +37,21 @@ class Data {
   String? createdAt;
   String? updatedAt;
 
-  Data(
-      {this.id,
-        this.userId,
-        this.buildingId,
-        this.unitId,
-        this.subject,
-        this.date,
-        this.note,
-        this.file,
-        this.status,
-        this.notiRead,
-        this.deletedAt,
-        this.createdAt,
-        this.updatedAt});
+  Data({
+    this.id,
+    this.userId,
+    this.buildingId,
+    this.unitId,
+    this.subject,
+    this.date,
+    this.note,
+    this.file,
+    this.status,
+    this.notiRead,
+    this.deletedAt,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -69,7 +70,7 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['building_id'] = this.buildingId;

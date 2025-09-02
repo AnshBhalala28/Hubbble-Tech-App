@@ -8,11 +8,11 @@ class ServiceOrderDetail {
   ServiceOrderDetail.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -29,15 +29,13 @@ class Data {
   Data({this.order, this.products});
 
   Data.fromJson(Map<String, dynamic> json) {
-    order = json['order'] != null ? new Order.fromJson(json['order']) : null;
+    order = json['order'] != null ? Order.fromJson(json['order']) : null;
     products =
-        json['products'] != null
-            ? new Products.fromJson(json['products'])
-            : null;
+        json['products'] != null ? Products.fromJson(json['products']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (this.order != null) {
       data['order'] = this.order!.toJson();
     }
@@ -90,7 +88,7 @@ class Order {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['order_no'] = this.orderNo;
@@ -153,15 +151,15 @@ class Products {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     service =
-        json['service'] != null ? new Service.fromJson(json['service']) : null;
+        json['service'] != null ? Service.fromJson(json['service']) : null;
     bookingDetails =
         json['booking_details'] != null
-            ? new BookingDetails.fromJson(json['booking_details'])
+            ? BookingDetails.fromJson(json['booking_details'])
             : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['order_id'] = this.orderId;
     data['user_id'] = this.userId;
@@ -259,7 +257,7 @@ class Service {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['category_id'] = this.categoryId;
@@ -313,7 +311,7 @@ class BookingDetails {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['service_request_id'] = this.serviceRequestId;
     data['booking_datetime'] = this.bookingDatetime;

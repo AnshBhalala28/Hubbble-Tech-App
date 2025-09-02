@@ -62,8 +62,8 @@ class _MessageScreenState extends State<MessageScreen> {
   File? selectedImage;
   String profileImage = "";
   Timer? _timer;
-  ImagePicker _picker = ImagePicker();
-  File? _pickedFile = null;
+  final ImagePicker _picker = ImagePicker();
+  File? _pickedFile;
   var photo = "";
   int type = 0;
   bool isSending = false;
@@ -77,20 +77,8 @@ class _MessageScreenState extends State<MessageScreen> {
       isLoading = true;
     });
     MessageApi();
-    print(
-      '.......................image........................ ${widget.image}',
-    );
-    print(
-      '.......................senderid....................... ${widget.senderid}',
-    );
-    print(
-      '.......................receiveid....................... ${widget.conciergeID}',
-    );
-    print(
-      '.......................loginid....................... ${loginModel?.data?.user?.id.toString() ?? ""}',
-    );
 
-    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       MessageApi();
     });
   }
@@ -124,12 +112,12 @@ class _MessageScreenState extends State<MessageScreen> {
   }
 
   void _scrollToBottom({bool forceScroll = false}) {
-    Future.delayed(Duration(seconds: 0), () {
+    Future.delayed(const Duration(seconds: 0), () {
       if (_scrollController.hasClients) {
         if (forceScroll) {
           _scrollController.animateTo(
             _scrollController.position.maxScrollExtent,
-            duration: Duration(seconds: 0),
+            duration: const Duration(seconds: 0),
             curve: Curves.easeOut,
           );
         }
@@ -156,8 +144,8 @@ class _MessageScreenState extends State<MessageScreen> {
                 children: [
                   Container(
                     height: 100,
-                    padding: EdgeInsets.only(top: 20, left: 5),
-                    decoration: BoxDecoration(
+                    padding: const EdgeInsets.only(top: 20, left: 5),
+                    decoration: const BoxDecoration(
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
@@ -192,7 +180,7 @@ class _MessageScreenState extends State<MessageScreen> {
                       child: Row(
                         children: [
                           IconButton(
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.arrow_back,
                               color: Colors.black,
                               size: 30,
@@ -249,7 +237,7 @@ class _MessageScreenState extends State<MessageScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           Text(
                             widget.chatName ?? "",
                             style: TextStyle(
@@ -341,7 +329,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                                   .createdAt ??
                                               "",
                                         ),
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey,
                                           fontFamily: AppConstants.manrope,
@@ -374,7 +362,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                               height: 38.sp,
                                               placeholder:
                                                   (context, url) =>
-                                                      CircularProgressIndicator(
+                                                      const CircularProgressIndicator(
                                                         strokeWidth: 1,
                                                       ),
                                               errorWidget:
@@ -391,7 +379,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                             ),
                                           ),
                                         ),
-                                      if (!isMe) SizedBox(width: 8),
+                                      if (!isMe) const SizedBox(width: 8),
                                       Flexible(
                                         child: Container(
                                           constraints: BoxConstraints(
@@ -417,7 +405,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                           ),
                                         ),
                                       ),
-                                      if (isMe) SizedBox(width: 8),
+                                      if (isMe) const SizedBox(width: 8),
                                       if (isMe)
                                         ClipRRect(
                                           borderRadius: BorderRadius.circular(
@@ -461,8 +449,8 @@ class _MessageScreenState extends State<MessageScreen> {
                         ),
                       ),
                   isLoading
-                      ? Center(child: Text(""))
-                      : widget?.chatStatus == 0
+                      ? const Center(child: Text(""))
+                      : widget.chatStatus == 0
                       ? Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -484,7 +472,7 @@ class _MessageScreenState extends State<MessageScreen> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.info_outline_rounded,
                                 color: AppColors.redColor,
                                 size: 20,
@@ -493,7 +481,7 @@ class _MessageScreenState extends State<MessageScreen> {
                               Expanded(
                                 child: Text(
                                   "Chat is temporarily unavailable as the ${widget.chatName!} has paused messages.",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontFamily: AppConstants.manrope,
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
@@ -523,18 +511,20 @@ class _MessageScreenState extends State<MessageScreen> {
                                 },
                               ),
                             ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             Expanded(
                               child: Container(
                                 height: 50,
-                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(25),
                                   border: Border.all(
                                     color: Colors.grey.shade300,
                                   ),
-                                  boxShadow: [
+                                  boxShadow: const [
                                     BoxShadow(
                                       color: Colors.black12,
                                       blurRadius: 4,
@@ -561,11 +551,11 @@ class _MessageScreenState extends State<MessageScreen> {
                                       horizontal: 16,
                                     ),
                                   ),
-                                  style: TextStyle(fontSize: 16),
+                                  style: const TextStyle(fontSize: 16),
                                 ),
                               ),
                             ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             CircleAvatar(
                               backgroundColor: AppColors.maincolor,
                               radius: 22,
@@ -616,7 +606,7 @@ class _MessageScreenState extends State<MessageScreen> {
                       child: Center(child: Loader()),
                     ),
                   )
-                  : SizedBox(),
+                  : const SizedBox(),
             ],
           ),
         ),
@@ -625,7 +615,7 @@ class _MessageScreenState extends State<MessageScreen> {
   }
 
   Widget getMessageWidget(message, bool isMe) {
-    if (message == null) return SizedBox.shrink();
+    if (message == null) return const SizedBox.shrink();
 
     switch (message.messageType) {
       case '1':
@@ -648,10 +638,10 @@ class _MessageScreenState extends State<MessageScreen> {
               height: 30.h,
               width: 30.w,
               placeholder:
-                  (context, url) => Center(
+                  (context, url) => const Center(
                     child: CircularProgressIndicator(color: Colors.white),
                   ),
-              errorWidget: (context, url, error) => Icon(Icons.photo),
+              errorWidget: (context, url, error) => const Icon(Icons.photo),
             ),
           ),
         );
@@ -661,7 +651,7 @@ class _MessageScreenState extends State<MessageScreen> {
           onTap: () {
             Get.to(VideoPlayerScreen(videoUrl: message.file ?? ""));
           },
-          child: Column(
+          child: const Column(
             children: [
               Icon(Icons.play_circle_fill, size: 50, color: Colors.blue),
               Text("Play Video", style: TextStyle(color: Colors.white)),
@@ -674,7 +664,7 @@ class _MessageScreenState extends State<MessageScreen> {
           onTap: () async {
             Get.to(PdfView(link: message.file ?? ""));
           },
-          child: Container(
+          child: const SizedBox(
             width: 78,
             height: 60,
             child: Row(
@@ -687,7 +677,7 @@ class _MessageScreenState extends State<MessageScreen> {
         );
 
       default:
-        return Text("Unsupported Message Type");
+        return const Text("Unsupported Message Type");
     }
   }
 
@@ -721,7 +711,7 @@ class _MessageScreenState extends State<MessageScreen> {
           setState(() {
             isLoading = false;
           });
-        } catch (e, stackTrace) {
+        } catch (e) {
           if (mounted) {
             setState(() {
               isLoading = false;
@@ -782,7 +772,6 @@ class _MessageScreenState extends State<MessageScreen> {
             });
             MessageApi();
           } else {}
-        } catch (e, stackTrace) {
         } finally {
           isLoading = false;
         }
@@ -800,7 +789,7 @@ class _MessageScreenState extends State<MessageScreen> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       content: Stack(
         children: [
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width,
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -815,7 +804,7 @@ class _MessageScreenState extends State<MessageScreen> {
                   ),
                 ),
                 SizedBox(height: 1.h),
-                Divider(color: Colors.black),
+                const Divider(color: Colors.black),
                 SizedBox(height: 1.h),
                 SizedBox(
                   width: 80.w,
@@ -1028,11 +1017,11 @@ class _MessageScreenState extends State<MessageScreen> {
                 height: 8.w,
                 width: 8.w,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(Icons.close, color: Colors.black),
+                child: const Icon(Icons.close, color: Colors.black),
               ),
             ),
           ),
@@ -1098,7 +1087,7 @@ class _MessageScreenState extends State<MessageScreen> {
               isLoading = false;
             });
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
           setState(() {
             isSending = false;
             isLoading = false;
@@ -1114,6 +1103,7 @@ class _MessageScreenState extends State<MessageScreen> {
     });
   }
 
+  @override
   void dispose() {
     _messageController.dispose();
     _scrollController.dispose();

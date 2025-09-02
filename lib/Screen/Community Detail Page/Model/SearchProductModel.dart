@@ -19,7 +19,7 @@ class SearchProductModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -63,13 +63,13 @@ class Data {
     offerPrice = json['offer_price'];
     description = json['description'];
     features =
-    json['features'] is List
-        ? List<String>.from(json['features'])
-        : (json['features'] != null ? [json['features']] : []);
+        json['features'] is List
+            ? List<String>.from(json['features'])
+            : (json['features'] != null ? [json['features']] : []);
     images =
-    json['images'] is List
-        ? List<String>.from(json['images'])
-        : (json['images'] != null ? [json['images']] : []);
+        json['images'] is List
+            ? List<String>.from(json['images'])
+            : (json['images'] != null ? [json['images']] : []);
 
     image = json['image'];
     status = json['status'];
@@ -78,7 +78,7 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['name'] = this.name;
     data['price'] = this.price;

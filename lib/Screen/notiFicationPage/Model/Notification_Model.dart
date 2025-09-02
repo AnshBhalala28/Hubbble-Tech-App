@@ -8,11 +8,11 @@ class NotificationModell {
   NotificationModell.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -32,14 +32,14 @@ class Data {
     if (json['notifications'] != null) {
       notifications = <Notifications>[];
       json['notifications'].forEach((v) {
-        notifications!.add(new Notifications.fromJson(v));
+        notifications!.add(Notifications.fromJson(v));
       });
     }
     totalCount = json['total_count'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (this.notifications != null) {
       data['notifications'] =
           this.notifications!.map((v) => v.toJson()).toList();
@@ -93,17 +93,17 @@ class Notifications {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     conciergeProfile =
-    json['concierge_profile'] != null
-        ? new ConciergeProfile.fromJson(json['concierge_profile'])
-        : null;
+        json['concierge_profile'] != null
+            ? ConciergeProfile.fromJson(json['concierge_profile'])
+            : null;
     businessProfile =
-    json['business_profile'] != null
-        ? new BusinessProfile.fromJson(json['business_profile'])
-        : null;
+        json['business_profile'] != null
+            ? BusinessProfile.fromJson(json['business_profile'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['buliding_id'] = this.bulidingId;
     data['app_user_id'] = this.appUserId;
@@ -203,7 +203,7 @@ class ConciergeProfile {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['building_id'] = this.buildingId;
@@ -297,7 +297,7 @@ class BusinessProfile {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['role'] = this.role;
     data['name'] = this.name;

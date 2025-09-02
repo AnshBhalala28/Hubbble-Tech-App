@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -19,9 +18,9 @@ class MaintenanceProvider {
   //     );
   //     return response;
   //   } on DioException catch (e) {
-  //     log(e.toString());
-  //     log(e.message??"");
-  //     log(e.response!.data??"");
+  //
+  //
+  //
   //     throw Exception(handleDioError(e));
   //   }
   // }
@@ -55,9 +54,6 @@ class MaintenanceProvider {
       );
       return response;
     } on DioException catch (e) {
-      log(e.toString());
-      log(e.message ?? "");
-      log(e.response?.data.toString() ?? "");
       throw Exception(handleDioError(e));
     }
   }

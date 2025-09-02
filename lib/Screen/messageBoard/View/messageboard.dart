@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io' as io;
 import 'dart:io';
 
@@ -10,14 +9,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wavee/Screen/ViewProfile/Model/profile_model.dart';
-import 'package:wavee/Screen/ViewProfile/Provider/profile_provider.dart';
 import 'package:wavee/comman/colors.dart';
 import 'package:wavee/comman/const.dart';
 
@@ -61,7 +57,7 @@ class _MessageboardState extends State<Messageboard> {
     return DateFormat('yyyy-MM-dd hh:mm a').format(parsedDate);
   }
 
-  TextEditingController _commentController = TextEditingController();
+  final TextEditingController _commentController = TextEditingController();
   List<List<String>> postComments = [[], [], []];
   int? selectedPostIndex;
   List<int> postLikes = [0, 0, 0];
@@ -86,7 +82,7 @@ class _MessageboardState extends State<Messageboard> {
   List<bool> isLikedListLocal = [];
   List<bool> isLikeInProgressList = [];
   List<bool> isLikeInProgressListLocal = [];
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   String get currentUserId => loginModel?.data?.user?.id.toString() ?? '';
   List<String> localSubCategories = ['Group', 'Friends'];
@@ -151,7 +147,7 @@ class _MessageboardState extends State<Messageboard> {
     });
 
     loadGroups();
-    Future.delayed(Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 100), () {
       _loadAllLikesLocal();
       _loadAllLikes();
     });
@@ -166,7 +162,7 @@ class _MessageboardState extends State<Messageboard> {
   }
 
   Future<void> fetchData() async {
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
     if (mounted) {
       setState(() {
         isLoading = false;
@@ -331,7 +327,7 @@ class _MessageboardState extends State<Messageboard> {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey_messageboard =
+    final GlobalKey<ScaffoldState> scaffoldkeyMessageboard =
         GlobalKey<ScaffoldState>();
 
     return Scaffold(
@@ -348,12 +344,12 @@ class _MessageboardState extends State<Messageboard> {
                   height: 95.h,
                   decoration: BoxDecoration(
                     color: AppColors.bgcolor,
-                    border: Border(
+                    border: const Border(
                       top: BorderSide(color: Colors.grey),
                       left: BorderSide(color: Colors.grey),
                       right: BorderSide(color: Colors.grey),
                     ),
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(45),
                       topRight: Radius.circular(45),
                     ),
@@ -387,7 +383,7 @@ class _MessageboardState extends State<Messageboard> {
                           Container(
                             height: 5.h,
                             width: 40.w,
-                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               border: Border.all(color: Colors.grey.shade300),
@@ -408,7 +404,7 @@ class _MessageboardState extends State<Messageboard> {
                                   ),
                                 ),
                                 value: selectedOption,
-                                icon: Icon(Icons.keyboard_arrow_down),
+                                icon: const Icon(Icons.keyboard_arrow_down),
                                 items:
                                     ['My Building', 'Local']
                                         .map(
@@ -438,7 +434,7 @@ class _MessageboardState extends State<Messageboard> {
                             ),
                           ),
                           selectedOption == "My Building"
-                              ? SizedBox()
+                              ? const SizedBox()
                               : GestureDetector(
                                 onTap: () {},
                                 child: Container(
@@ -455,7 +451,7 @@ class _MessageboardState extends State<Messageboard> {
                                   ),
                                   child:
                                       selectedOption == "My Building"
-                                          ? SizedBox()
+                                          ? const SizedBox()
                                           : selectedOption == "Local"
                                           ? InkWell(
                                             onTap: () {
@@ -478,7 +474,7 @@ class _MessageboardState extends State<Messageboard> {
                                                   ),
                                                 ),
                                                 SizedBox(width: 2.w),
-                                                Icon(
+                                                const Icon(
                                                   Icons
                                                       .add_circle_outline_rounded,
                                                   color: Colors.grey,
@@ -486,7 +482,7 @@ class _MessageboardState extends State<Messageboard> {
                                               ],
                                             ),
                                           )
-                                          : SizedBox(),
+                                          : const SizedBox(),
                                 ),
                               ),
                         ],
@@ -497,7 +493,7 @@ class _MessageboardState extends State<Messageboard> {
                           ? messageBoardModal?.data?.length == 0 ||
                                   messageBoardModal?.data?.length == null
                               ? Center(
-                                child: Container(
+                                child: SizedBox(
                                   height: 70.h,
                                   child: Text(
                                     "No Posts available",
@@ -510,7 +506,7 @@ class _MessageboardState extends State<Messageboard> {
                                   ),
                                 ),
                               )
-                              : Container(
+                              : SizedBox(
                                 height: 60.h,
                                 child: ListView.builder(
                                   padding: EdgeInsets.zero,
@@ -533,7 +529,7 @@ class _MessageboardState extends State<Messageboard> {
                                         ),
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(20),
-                                        boxShadow: [
+                                        boxShadow: const [
                                           BoxShadow(
                                             color: Colors.black12,
                                             blurRadius: 1,
@@ -599,7 +595,7 @@ class _MessageboardState extends State<Messageboard> {
                                                 ),
                                               ),
 
-                                              Spacer(),
+                                              const Spacer(),
                                               InkWell(
                                                 onTap: () {
                                                   showBlockUserDialog(
@@ -607,14 +603,17 @@ class _MessageboardState extends State<Messageboard> {
                                                     supportUrl,
                                                   );
                                                 },
-                                                child: Icon(
+                                                child: const Icon(
                                                   Icons.more_vert_outlined,
                                                 ).paddingOnly(right: 2.w),
                                               ),
                                             ],
                                           ),
                                           Text(
-                                            "${messageBoardModal?.data?[index].title ?? ""}",
+                                            messageBoardModal
+                                                    ?.data?[index]
+                                                    .title ??
+                                                "",
                                             style: TextStyle(
                                               fontFamily: AppConstants.manrope,
                                               fontSize: 16.sp,
@@ -623,7 +622,16 @@ class _MessageboardState extends State<Messageboard> {
                                             ),
                                           ),
                                           ReadMoreText(
-                                            "${messageBoardModal?.data?[index].text == null || messageBoardModal?.data?[index].text == "" ? "N/A" : "${messageBoardModal?.data?[index].text}"}",
+                                            messageBoardModal
+                                                            ?.data?[index]
+                                                            .text ==
+                                                        null ||
+                                                    messageBoardModal
+                                                            ?.data?[index]
+                                                            .text ==
+                                                        ""
+                                                ? "N/A"
+                                                : "${messageBoardModal?.data?[index].text}",
                                             trimLines: 4,
                                             trimLength: 146,
                                             colorClickableText: Colors.blue,
@@ -751,7 +759,7 @@ class _MessageboardState extends State<Messageboard> {
                                                                   width:
                                                                       double
                                                                           .infinity,
-                                                                  child: Center(
+                                                                  child: const Center(
                                                                     child:
                                                                         CircularProgressIndicator(),
                                                                   ),
@@ -781,34 +789,30 @@ class _MessageboardState extends State<Messageboard> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    (messageBoardModal
-                                                                ?.data?[index]
-                                                                .totalComments)
-                                                            .toString() +
-                                                        " Replies",
+                                                    "${messageBoardModal?.data?[index].totalComments} Replies",
                                                     style: TextStyle(
                                                       fontFamily:
                                                           AppConstants.manrope,
                                                       fontSize: 16.sp,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Color(0XFF3E3E3E),
+                                                      color: const Color(
+                                                        0XFF3E3E3E,
+                                                      ),
                                                     ),
                                                   ),
                                                   SizedBox(width: 2.w),
                                                   Text(
-                                                    (messageBoardModal
-                                                                ?.data?[index]
-                                                                .totalLikes)
-                                                            .toString() +
-                                                        " Likes",
+                                                    "${messageBoardModal?.data?[index].totalLikes} Likes",
                                                     style: TextStyle(
                                                       fontFamily:
                                                           AppConstants.manrope,
                                                       fontSize: 16.sp,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Color(0XFF3E3E3E),
+                                                      color: const Color(
+                                                        0XFF3E3E3E,
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
@@ -838,9 +842,6 @@ class _MessageboardState extends State<Messageboard> {
                                                             isInProgress
                                                                 ? null
                                                                 : () {
-                                                                  print(
-                                                                    "like count${messageBoardModal?.data?[index].totalLikes}",
-                                                                  );
                                                                   if (index <
                                                                           isLikedList
                                                                               .length &&
@@ -880,7 +881,7 @@ class _MessageboardState extends State<Messageboard> {
                                                             color:
                                                                 isLiked
                                                                     ? Colors.red
-                                                                    : Color(
+                                                                    : const Color(
                                                                       0XFF3E3E3E,
                                                                     ),
                                                           ),
@@ -893,7 +894,9 @@ class _MessageboardState extends State<Messageboard> {
                                                     height: 2.h,
                                                     width: 0.5.w,
                                                     decoration: BoxDecoration(
-                                                      color: Color(0XFF3E3E3E),
+                                                      color: const Color(
+                                                        0XFF3E3E3E,
+                                                      ),
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                             20,
@@ -917,7 +920,7 @@ class _MessageboardState extends State<Messageboard> {
                                                         fontSize: 16.sp,
                                                         fontWeight:
                                                             FontWeight.bold,
-                                                        color: Color(
+                                                        color: const Color(
                                                           0XFF3E3E3E,
                                                         ),
                                                       ),
@@ -937,7 +940,7 @@ class _MessageboardState extends State<Messageboard> {
                           ? localpost_model?.data?.data?.length == null ||
                                   localpost_model?.data?.data?.length == 0
                               ? Center(
-                                child: Container(
+                                child: SizedBox(
                                   height: 70.h,
                                   child: Text(
                                     "No Posts available",
@@ -950,7 +953,7 @@ class _MessageboardState extends State<Messageboard> {
                                   ),
                                 ),
                               )
-                              : Container(
+                              : SizedBox(
                                 height: 58.5.h,
                                 child: ListView.builder(
                                   controller: _scrollController,
@@ -975,7 +978,7 @@ class _MessageboardState extends State<Messageboard> {
                                         ),
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(20),
-                                        boxShadow: [
+                                        boxShadow: const [
                                           BoxShadow(
                                             color: Colors.black12,
                                             blurRadius: 1,
@@ -1029,7 +1032,12 @@ class _MessageboardState extends State<Messageboard> {
 
                                               SizedBox(width: 2.w),
                                               Text(
-                                                "${localpost_model?.data?.data?[index].users?[0].name ?? ""}",
+                                                localpost_model
+                                                        ?.data
+                                                        ?.data?[index]
+                                                        .users?[0]
+                                                        .name ??
+                                                    "",
                                                 style: TextStyle(
                                                   fontFamily:
                                                       AppConstants.manrope,
@@ -1048,11 +1056,11 @@ class _MessageboardState extends State<Messageboard> {
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
-                                              Spacer(),
+                                              const Spacer(),
                                               loginModel?.data?.user?.id ==
                                                       post?.userId
                                                   ? PopupMenuButton<String>(
-                                                    icon: Icon(
+                                                    icon: const Icon(
                                                       Icons.more_vert,
                                                       color: Colors.black87,
                                                     ),
@@ -1069,17 +1077,11 @@ class _MessageboardState extends State<Messageboard> {
                                                           post!.id.toString() ??
                                                               "",
                                                         );
-                                                        print(
-                                                          "Delete selected",
-                                                        );
                                                       } else if (value ==
                                                           'report') {
                                                         showBlockUserDialog(
                                                           context,
                                                           supportUrl,
-                                                        );
-                                                        print(
-                                                          "Delete selected",
                                                         );
                                                       }
                                                     },
@@ -1132,14 +1134,18 @@ class _MessageboardState extends State<Messageboard> {
                                                         supportUrl,
                                                       );
                                                     },
-                                                    child: Icon(
+                                                    child: const Icon(
                                                       Icons.more_vert_outlined,
                                                     ).paddingOnly(right: 2.w),
                                                   ),
                                             ],
                                           ),
                                           Text(
-                                            "${localpost_model?.data?.data?[index].title ?? ""}",
+                                            localpost_model
+                                                    ?.data
+                                                    ?.data?[index]
+                                                    .title ??
+                                                "",
                                             style: TextStyle(
                                               fontFamily: AppConstants.manrope,
                                               fontSize: 16.sp,
@@ -1153,7 +1159,7 @@ class _MessageboardState extends State<Messageboard> {
                                                       .users?[0]
                                                       .areaName ==
                                                   null
-                                              ? SizedBox()
+                                              ? const SizedBox()
                                               : Text(
                                                 "Area: ${localpost_model?.data?.data?[index].users?[0].areaName ?? ""}",
                                                 style: TextStyle(
@@ -1165,24 +1171,36 @@ class _MessageboardState extends State<Messageboard> {
                                                 ),
                                               ),
                                           localpost_model
-                                              ?.data
-                                              ?.data?[index]
-                                              .users?[0]
-                                              .buildingName ==
-                                              null
-                                              ? SizedBox()
-                                              :   Text(
-                                            "Building:${localpost_model?.data?.data?[index].users?[0].buildingName ?? ""}",
-                                            style: TextStyle(
-                                              fontFamily: AppConstants.manrope,
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.normal,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
+                                                      ?.data
+                                                      ?.data?[index]
+                                                      .users?[0]
+                                                      .buildingName ==
+                                                  null
+                                              ? const SizedBox()
+                                              : Text(
+                                                "Building:${localpost_model?.data?.data?[index].users?[0].buildingName ?? ""}",
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                      AppConstants.manrope,
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.normal,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
 
                                           ReadMoreText(
-                                            "${localpost_model?.data?.data?[index].text == null || localpost_model?.data?.data?[index].text == "" ? "N/A" : "${localpost_model?.data?.data?[index].text}"}",
+                                            localpost_model
+                                                            ?.data
+                                                            ?.data?[index]
+                                                            .text ==
+                                                        null ||
+                                                    localpost_model
+                                                            ?.data
+                                                            ?.data?[index]
+                                                            .text ==
+                                                        ""
+                                                ? "N/A"
+                                                : "${localpost_model?.data?.data?[index].text}",
                                             trimLines: 4,
                                             trimLength: 146,
                                             colorClickableText: Colors.blue,
@@ -1212,7 +1230,7 @@ class _MessageboardState extends State<Messageboard> {
                                           ),
                                           post?.file?.length == 0 ||
                                                   post?.file?.length == null
-                                              ? SizedBox()
+                                              ? const SizedBox()
                                               : Padding(
                                                 padding: EdgeInsets.symmetric(
                                                   vertical: 1.h,
@@ -1259,7 +1277,7 @@ class _MessageboardState extends State<Messageboard> {
                                                                       (
                                                                         context,
                                                                         url,
-                                                                      ) => Center(
+                                                                      ) => const Center(
                                                                         child:
                                                                             CircularProgressIndicator(),
                                                                       ),
@@ -1291,7 +1309,7 @@ class _MessageboardState extends State<Messageboard> {
                                                             right: 16,
                                                             child: Container(
                                                               padding:
-                                                                  EdgeInsets.symmetric(
+                                                                  const EdgeInsets.symmetric(
                                                                     horizontal:
                                                                         10,
                                                                     vertical: 4,
@@ -1333,36 +1351,30 @@ class _MessageboardState extends State<Messageboard> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    (localpost_model
-                                                                ?.data
-                                                                ?.data?[index]
-                                                                .totalComments)
-                                                            .toString() +
-                                                        " Replies",
+                                                    "${localpost_model?.data?.data?[index].totalComments} Replies",
                                                     style: TextStyle(
                                                       fontFamily:
                                                           AppConstants.manrope,
                                                       fontSize: 16.sp,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Color(0XFF3E3E3E),
+                                                      color: const Color(
+                                                        0XFF3E3E3E,
+                                                      ),
                                                     ),
                                                   ),
                                                   SizedBox(width: 2.w),
                                                   Text(
-                                                    (localpost_model
-                                                                ?.data
-                                                                ?.data?[index]
-                                                                .totalLikes)
-                                                            .toString() +
-                                                        " Likes",
+                                                    "${localpost_model?.data?.data?[index].totalLikes} Likes",
                                                     style: TextStyle(
                                                       fontFamily:
                                                           AppConstants.manrope,
                                                       fontSize: 16.sp,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Color(0XFF3E3E3E),
+                                                      color: const Color(
+                                                        0XFF3E3E3E,
+                                                      ),
                                                     ),
                                                   ),
                                                   SizedBox(width: 2.w),
@@ -1384,8 +1396,7 @@ class _MessageboardState extends State<Messageboard> {
                                                   //       shareConciergeImage(
                                                   //           linkToShare);
                                                   //     } catch (e) {
-                                                  //       print(
-                                                  //           "Error sharing: $e");
+                                                  //
                                                   //     }
                                                   //   },
                                                   //   child: Icon(
@@ -1462,7 +1473,7 @@ class _MessageboardState extends State<Messageboard> {
                                                             color:
                                                                 isLiked
                                                                     ? Colors.red
-                                                                    : Color(
+                                                                    : const Color(
                                                                       0XFF3E3E3E,
                                                                     ),
                                                           ),
@@ -1475,7 +1486,9 @@ class _MessageboardState extends State<Messageboard> {
                                                     height: 2.h,
                                                     width: 0.5.w,
                                                     decoration: BoxDecoration(
-                                                      color: Color(0XFF3E3E3E),
+                                                      color: const Color(
+                                                        0XFF3E3E3E,
+                                                      ),
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                             20,
@@ -1500,7 +1513,7 @@ class _MessageboardState extends State<Messageboard> {
                                                         fontSize: 16.sp,
                                                         fontWeight:
                                                             FontWeight.bold,
-                                                        color: Color(
+                                                        color: const Color(
                                                           0XFF3E3E3E,
                                                         ),
                                                       ),
@@ -1511,10 +1524,8 @@ class _MessageboardState extends State<Messageboard> {
                                             ],
                                           ),
                                           if (isLoadingMore)
-                                            Padding(
-                                              padding: const EdgeInsets.all(
-                                                8.0,
-                                              ),
+                                            const Padding(
+                                              padding: EdgeInsets.all(8.0),
                                               child: CircularProgressIndicator(
                                                 color: AppColors.blackColor,
                                               ),
@@ -1525,7 +1536,7 @@ class _MessageboardState extends State<Messageboard> {
                                   },
                                 ),
                               )
-                          : SizedBox(),
+                          : const SizedBox(),
                     ],
                   ),
                 ),
@@ -1540,10 +1551,9 @@ class _MessageboardState extends State<Messageboard> {
             ),
         ],
       ),
-      bottomNavigationBar: Bottom_bar(selected: 0),
+      bottomNavigationBar: BottomBar(selected: 0),
     );
   }
-
 
   void MessageBoardApi() {
     final Map<String, String> data = {};
@@ -1577,7 +1587,7 @@ class _MessageboardState extends State<Messageboard> {
               'Something went wrong. Please try again later.',
             );
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
           setState(() {
             isLoading = false;
           });
@@ -1605,10 +1615,10 @@ class _MessageboardState extends State<Messageboard> {
   List<XFile> _images = [];
 
   Future<void> _pickImages(Function setModalState) async {
-    final ImagePicker _picker = ImagePicker();
-    final List<XFile>? pickedImages = await _picker.pickMultiImage();
+    final ImagePicker picker = ImagePicker();
+    final List<XFile> pickedImages = await picker.pickMultiImage();
 
-    if (pickedImages != null && pickedImages.isNotEmpty) {
+    if (pickedImages.isNotEmpty) {
       setModalState(() {
         _images.addAll(pickedImages);
       });
@@ -1621,13 +1631,13 @@ class _MessageboardState extends State<Messageboard> {
       context: context,
       backgroundColor: Colors.white,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
-            TextEditingController _commentController = TextEditingController();
+            TextEditingController commentController = TextEditingController();
             bool isSendingComment = false;
 
             Future.delayed(Duration.zero, () {
@@ -1647,7 +1657,7 @@ class _MessageboardState extends State<Messageboard> {
                     bottom: MediaQuery.of(context).viewInsets.bottom,
                   ),
                   child: Container(
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
                         Container(
@@ -1658,8 +1668,8 @@ class _MessageboardState extends State<Messageboard> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        SizedBox(height: 12),
-                        Text(
+                        const SizedBox(height: 12),
+                        const Text(
                           "Comments",
                           style: TextStyle(
                             fontSize: 18,
@@ -1667,15 +1677,19 @@ class _MessageboardState extends State<Messageboard> {
                             fontFamily: AppConstants.manrope,
                           ),
                         ),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 12),
                         Expanded(
                           child:
                               isLoading
-                                  ? Center(child: CircularProgressIndicator())
+                                  ? const Center(
+                                    child: CircularProgressIndicator(),
+                                  )
                                   : getpostCommentsModel == null ||
                                       getpostCommentsModel?.data == null ||
                                       getpostCommentsModel!.data!.isEmpty
-                                  ? Center(child: Text("No comments found"))
+                                  ? const Center(
+                                    child: Text("No comments found"),
+                                  )
                                   : ListView.builder(
                                     controller: scrollController,
                                     itemCount:
@@ -1696,7 +1710,7 @@ class _MessageboardState extends State<Messageboard> {
                                               fit: BoxFit.cover,
                                               placeholder:
                                                   (context, url) =>
-                                                      CircularProgressIndicator(
+                                                      const CircularProgressIndicator(
                                                         strokeWidth: 2,
                                                       ),
                                               errorWidget: (
@@ -1713,7 +1727,7 @@ class _MessageboardState extends State<Messageboard> {
                                                       color: Colors.black,
                                                       width: 1,
                                                     ),
-                                                    image: DecorationImage(
+                                                    image: const DecorationImage(
                                                       image: AssetImage(
                                                         "assets/images/waveeLogoShort.png",
                                                       ),
@@ -1735,25 +1749,27 @@ class _MessageboardState extends State<Messageboard> {
                           children: [
                             Expanded(
                               child: TextField(
-                                controller: _commentController,
+                                controller: commentController,
                                 decoration: InputDecoration(
                                   hintText: "Write a comment...",
                                   filled: true,
                                   fillColor: Colors.grey.shade100,
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(30),
-                                    borderSide: BorderSide(color: Colors.grey),
+                                    borderSide: const BorderSide(
+                                      color: Colors.grey,
+                                    ),
                                   ),
-                                  contentPadding: EdgeInsets.symmetric(
+                                  contentPadding: const EdgeInsets.symmetric(
                                     vertical: 10,
                                     horizontal: 16,
                                   ),
                                 ),
                               ),
                             ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             isSendingComment
-                                ? SizedBox(
+                                ? const SizedBox(
                                   width: 24,
                                   height: 24,
                                   child: CircularProgressIndicator(
@@ -1761,10 +1777,14 @@ class _MessageboardState extends State<Messageboard> {
                                   ),
                                 )
                                 : IconButton(
-                                  icon: Icon(Icons.send, color: Colors.blue),
+                                  icon: const Icon(
+                                    Icons.send,
+                                    color: Colors.blue,
+                                  ),
                                   onPressed: () async {
-                                    if (_commentController.text.trim().isEmpty)
+                                    if (commentController.text.trim().isEmpty) {
                                       return;
+                                    }
 
                                     setModalState(
                                       () => isSendingComment = true,
@@ -1772,10 +1792,10 @@ class _MessageboardState extends State<Messageboard> {
 
                                     await sendComment(
                                       context,
-                                      _commentController.text.trim(),
+                                      commentController.text.trim(),
                                       postId,
                                       () {
-                                        _commentController.clear();
+                                        commentController.clear();
                                         setModalState(() {});
                                       },
                                     );
@@ -1806,7 +1826,7 @@ class _MessageboardState extends State<Messageboard> {
       context: context,
       backgroundColor: Colors.white,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
       ),
       builder: (context) {
@@ -1831,7 +1851,7 @@ class _MessageboardState extends State<Messageboard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(
+                      const Center(
                         child: Text(
                           "Add Post",
                           style: TextStyle(
@@ -1842,7 +1862,7 @@ class _MessageboardState extends State<Messageboard> {
                         ),
                       ),
                       SizedBox(height: 2.h),
-                      Text(
+                      const Text(
                         "Title",
                         style: TextStyle(
                           fontSize: 16,
@@ -1871,7 +1891,7 @@ class _MessageboardState extends State<Messageboard> {
                         ),
                       ),
                       SizedBox(height: 2.h),
-                      Text(
+                      const Text(
                         "Description",
                         style: TextStyle(
                           fontSize: 16,
@@ -1914,8 +1934,8 @@ class _MessageboardState extends State<Messageboard> {
                         iconData: Icons.image,
                         fontsize: 17.sp,
                       ),
-                      SizedBox(height: 8),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       if (_images.isNotEmpty)
                         const Text(
                           "Selected Images",
@@ -1925,7 +1945,7 @@ class _MessageboardState extends State<Messageboard> {
                             fontFamily: AppConstants.manrope,
                           ),
                         ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       if (_images.isNotEmpty)
                         SizedBox(
                           height: 100,
@@ -1982,7 +2002,7 @@ class _MessageboardState extends State<Messageboard> {
                             },
                           ),
                         ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Container(
                         height: 6.h,
                         decoration: BoxDecoration(
@@ -2029,8 +2049,8 @@ class _MessageboardState extends State<Messageboard> {
       text: post?.title?.toString() ?? '',
     );
 
-    List<String> _existingImages = List<String>.from(post?.file ?? []);
-    List<XFile> _newImages = [];
+    List<String> existingImages = List<String>.from(post?.file ?? []);
+    List<XFile> newImages0 = [];
 
     showModalBottomSheet(
       context: context,
@@ -2055,7 +2075,7 @@ class _MessageboardState extends State<Messageboard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(
+                      const Center(
                         child: Text(
                           "Edit Post",
                           style: TextStyle(
@@ -2065,7 +2085,7 @@ class _MessageboardState extends State<Messageboard> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       const Text(
                         "Title",
                         style: TextStyle(
@@ -2074,7 +2094,7 @@ class _MessageboardState extends State<Messageboard> {
                           fontFamily: AppConstants.manrope,
                         ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       TextFormField(
                         controller: titleUpdate,
                         validator: (value) {
@@ -2085,10 +2105,10 @@ class _MessageboardState extends State<Messageboard> {
                         },
                         decoration: inputDecoration(
                           hintText: 'Enter Description',
-                          searchIcon: Icon(Icons.description),
+                          searchIcon: const Icon(Icons.description),
                         ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       const Text(
                         "Description",
                         style: TextStyle(
@@ -2097,7 +2117,7 @@ class _MessageboardState extends State<Messageboard> {
                           fontFamily: AppConstants.manrope,
                         ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       TextFormField(
                         controller: descUpdateController,
                         validator: (value) {
@@ -2108,10 +2128,10 @@ class _MessageboardState extends State<Messageboard> {
                         },
                         decoration: inputDecoration(
                           hintText: 'Enter Description',
-                          searchIcon: Icon(Icons.description),
+                          searchIcon: const Icon(Icons.description),
                         ),
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       batan(
                         title: "Choose Image",
                         route: () async {
@@ -2120,7 +2140,7 @@ class _MessageboardState extends State<Messageboard> {
                           );
                           if (picked != null) {
                             setModalState(() {
-                              _newImages.addAll(picked);
+                              newImages0.addAll(picked);
                             });
                           }
                         },
@@ -2132,28 +2152,28 @@ class _MessageboardState extends State<Messageboard> {
                         iconData: Icons.image,
                         fontsize: 17,
                       ),
-                      SizedBox(height: 16),
-                      if (_existingImages.isNotEmpty)
+                      const SizedBox(height: 16),
+                      if (existingImages.isNotEmpty)
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Existing Images"),
+                            const Text("Existing Images"),
                             SizedBox(
                               height: 100,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
-                                itemCount: _existingImages.length,
+                                itemCount: existingImages.length,
                                 itemBuilder: (context, index) {
                                   return Stack(
                                     children: [
                                       Container(
-                                        margin: EdgeInsets.all(6),
+                                        margin: const EdgeInsets.all(6),
                                         child: ClipRRect(
                                           borderRadius: BorderRadius.circular(
                                             12,
                                           ),
                                           child: Image.network(
-                                            _existingImages[index],
+                                            existingImages[index],
                                             width: 100,
                                             height: 100,
                                             fit: BoxFit.cover,
@@ -2166,7 +2186,7 @@ class _MessageboardState extends State<Messageboard> {
                                         child: InkWell(
                                           onTap: () {
                                             setModalState(() {
-                                              _existingImages.removeAt(index);
+                                              existingImages.removeAt(index);
                                             });
                                           },
                                           child: Container(
@@ -2192,27 +2212,27 @@ class _MessageboardState extends State<Messageboard> {
                             ),
                           ],
                         ),
-                      if (_newImages.isNotEmpty)
+                      if (newImages0.isNotEmpty)
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("New Images"),
+                            const Text("New Images"),
                             SizedBox(
                               height: 100,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
-                                itemCount: _newImages.length,
+                                itemCount: newImages0.length,
                                 itemBuilder: (context, index) {
                                   return Stack(
                                     children: [
                                       Container(
-                                        margin: EdgeInsets.all(6),
+                                        margin: const EdgeInsets.all(6),
                                         child: ClipRRect(
                                           borderRadius: BorderRadius.circular(
                                             12,
                                           ),
                                           child: Image.file(
-                                            File(_newImages[index].path),
+                                            File(newImages0[index].path),
                                             width: 100,
                                             height: 100,
                                             fit: BoxFit.cover,
@@ -2225,7 +2245,7 @@ class _MessageboardState extends State<Messageboard> {
                                         child: InkWell(
                                           onTap: () {
                                             setModalState(() {
-                                              _newImages.removeAt(index);
+                                              newImages0.removeAt(index);
                                             });
                                           },
                                           child: Container(
@@ -2251,7 +2271,7 @@ class _MessageboardState extends State<Messageboard> {
                             ),
                           ],
                         ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Container(
                         height: 50,
                         decoration: BoxDecoration(
@@ -2263,8 +2283,8 @@ class _MessageboardState extends State<Messageboard> {
                             if (addPostFormkey.currentState!.validate()) {
                               String updatedDesc =
                                   descUpdateController.text.trim();
-                              List<String> updatedImages = [..._existingImages];
-                              List<XFile> newImages = _newImages;
+                              List<String> updatedImages = [...existingImages];
+                              List<XFile> newImages = newImages0;
 
                               updatepostapi(
                                 post.id.toString(),
@@ -2276,7 +2296,7 @@ class _MessageboardState extends State<Messageboard> {
                               Navigator.pop(context);
                             }
                           },
-                          child: Center(
+                          child: const Center(
                             child: Text(
                               "Update Post",
                               style: TextStyle(
@@ -2302,9 +2322,9 @@ class _MessageboardState extends State<Messageboard> {
 
   Future<List<XFile>?> _pickImages1(Function setModalState) async {
     final ImagePicker picker = ImagePicker();
-    final List<XFile>? pickedFiles = await picker.pickMultiImage();
+    final List<XFile> pickedFiles = await picker.pickMultiImage();
 
-    if (pickedFiles != null && pickedFiles.isNotEmpty) {
+    if (pickedFiles.isNotEmpty) {
       return pickedFiles;
     }
     return null;
@@ -2483,8 +2503,7 @@ class _MessageboardState extends State<Messageboard> {
               isSending = false;
             });
           }
-        } catch (e, stackTrace) {
-          log('error ave che ceh $e $stackTrace');
+        } catch (e) {
           setState(() {
             isLoadingMore = false;
             isSending = false;
@@ -2529,7 +2548,7 @@ class _MessageboardState extends State<Messageboard> {
               isSending = false;
             });
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
           setState(() {
             isSending = false;
           });
@@ -2571,7 +2590,7 @@ class _MessageboardState extends State<Messageboard> {
               isSending1 = false;
             });
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
           setState(() {
             isSending1 = false;
           });
@@ -2954,10 +2973,8 @@ class _MessageboardState extends State<Messageboard> {
         localpostapi();
       } else {
         getpostCommentsModel = null;
-        print("Error ave che ${response.statusCode}");
       }
     } catch (e) {
-      print("Error ave che $e");
       getpostCommentsModel = null;
     }
 
@@ -2979,7 +2996,7 @@ class _MessageboardState extends State<Messageboard> {
       'comment': commentText,
       'user_type': '4',
     };
-    log("datadatadatadatadatadata$data");
+
     checkInternet().then((internet) async {
       if (internet) {
         try {
@@ -3001,12 +3018,8 @@ class _MessageboardState extends State<Messageboard> {
 
               onSuccess();
             }
-          } else {
-            print("Error ave ");
-          }
-        } catch (e, stackTrace) {
-          print("Error ave che $e $stackTrace");
-        }
+          } else {}
+        } catch (e) {}
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
       }
@@ -3049,7 +3062,7 @@ class _MessageboardState extends State<Messageboard> {
               backgroundColor: Colors.transparent,
               child: Container(
                 width: 73.w,
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: AppColors.white,
                   borderRadius: BorderRadius.circular(16),
@@ -3082,7 +3095,7 @@ class _MessageboardState extends State<Messageboard> {
                     isLoading
                         ? Padding(
                           padding: EdgeInsets.symmetric(vertical: 2.h),
-                          child: CircularProgressIndicator(
+                          child: const CircularProgressIndicator(
                             color: AppColors.maincolor,
                           ),
                         )

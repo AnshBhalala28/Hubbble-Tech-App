@@ -56,7 +56,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         leading: IconButton(
           icon: Container(
             padding: EdgeInsets.all(1.w),
-            decoration: BoxDecoration(),
+            decoration: const BoxDecoration(),
             child: Icon(Icons.arrow_back, color: Colors.black87, size: 22.sp),
           ),
           onPressed: () => Get.back(),
@@ -69,12 +69,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 children: [
                   Container(
                     width: double.infinity,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     child: Column(
                       children: [
                         SizedBox(height: 2.h),
                         Container(
-                          padding: EdgeInsets.all(3),
+                          padding: const EdgeInsets.all(3),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
@@ -138,7 +138,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               ),
                             ),
                           ),
-                          Divider(),
+                          const Divider(),
                           buildProfileDetailItem(
                             Icons.email_outlined,
                             "Email",
@@ -210,7 +210,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               backgroundColor: Colors.transparent,
               child: Container(
                 width: 73.w,
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: AppColors.white,
                   borderRadius: BorderRadius.circular(16),
@@ -243,7 +243,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     isLoading
                         ? Padding(
                           padding: EdgeInsets.symmetric(vertical: 2.h),
-                          child: CircularProgressIndicator(
+                          child: const CircularProgressIndicator(
                             color: AppColors.maincolor,
                           ),
                         )
@@ -330,7 +330,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           elevation: 0,
           backgroundColor: Colors.transparent,
           child: Container(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
@@ -338,7 +338,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
                   "Remove Friend",
                   style: TextStyle(
@@ -346,14 +346,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Text(
                   "Are you sure you want to delete this Friend?",
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 14.sp),
                 ),
-                SizedBox(height: 20),
-                Divider(thickness: 1),
+                const SizedBox(height: 20),
+                const Divider(thickness: 1),
                 IntrinsicHeight(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -372,7 +372,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                         ),
                       ),
-                      VerticalDivider(thickness: 1),
+                      const VerticalDivider(thickness: 1),
                       Expanded(
                         child: TextButton(
                           onPressed: () {
@@ -464,7 +464,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               response.data,
             );
 
-            print("${widget.id}");
             setState(() {
               isSending = false;
             });
@@ -479,7 +478,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           setState(() {
             isSending = false;
           });
-          print("error: ${e.toString()}");
+
           buildErrorDialog(context, 'Error', "Something went wrong");
         }
       } else {

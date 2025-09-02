@@ -9,7 +9,8 @@ class VideoWidget extends StatefulWidget {
   final bool play;
   final int postId;
 
-  VideoWidget({
+  const VideoWidget({
+    super.key,
     required this.videoUrl,
     this.play = false,
     required this.postId,
@@ -53,20 +54,19 @@ class _VideoWidgetState extends State<VideoWidget> {
     return GestureDetector(
       onTap: () {
         Get.to(
-              () =>
-              FullScreenVideoPlayer(
-                videoUrl: widget.videoUrl,
-                postId: widget.postId,
-              ),
+          () => FullScreenVideoPlayer(
+            videoUrl: widget.videoUrl,
+            postId: widget.postId,
+          ),
         );
       },
       child:
-      _controller.value.isInitialized
-          ? AspectRatio(
-        aspectRatio: _controller.value.aspectRatio,
-        child: VideoPlayer(_controller),
-      )
-          : Center(child: CircularProgressIndicator()),
+          _controller.value.isInitialized
+              ? AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              )
+              : const Center(child: CircularProgressIndicator()),
     );
   }
 }

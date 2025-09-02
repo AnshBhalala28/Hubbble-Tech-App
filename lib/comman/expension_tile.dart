@@ -47,8 +47,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
                       style: TextStyle(
                         fontFamily: 'Manrope',
                         color: Colors.black,
-                        fontSize:
-                            widget.fontSize == null ? 18.sp : widget.fontSize,
+                        fontSize: widget.fontSize ?? 18.sp,
                         letterSpacing: 1,
                       ),
                     ),

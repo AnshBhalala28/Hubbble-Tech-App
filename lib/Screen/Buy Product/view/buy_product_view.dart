@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -46,7 +44,7 @@ class _BuyProductViewState extends State<BuyProductView> {
   String transactionStatus = "No transaction yet.";
   String AppLat = '';
   String AppLon = '';
-  bool _mapVisible = false;
+  final bool _mapVisible = false;
 
   List<Map<String, dynamic>> timeSlots = [];
 
@@ -149,9 +147,6 @@ class _BuyProductViewState extends State<BuyProductView> {
         AppLon = position.longitude.toString();
 
         BussinessViewProfile(widget.bunessid ?? "");
-        print(
-          "Latitude: ${position.latitude}, Longitude: ${position.longitude}",
-        );
       });
     }
   }
@@ -163,11 +158,6 @@ class _BuyProductViewState extends State<BuyProductView> {
       isLoading = true;
     });
     GetCartDetailApi();
-
-    print(
-      "widget.bunessid ?? "
-      "${widget.bunessid ?? ""}",
-    );
 
     initPickupSlots();
     _getCurrentLocation();
@@ -224,7 +214,6 @@ class _BuyProductViewState extends State<BuyProductView> {
                                         mode: LaunchMode.externalApplication,
                                       );
                                     }
-                                    ;
                                   },
                                   icon: Icons.phone,
                                   subtitle:
@@ -346,7 +335,7 @@ class _BuyProductViewState extends State<BuyProductView> {
                                                       ),
                                                   markers: {
                                                     Marker(
-                                                      markerId: MarkerId(
+                                                      markerId: const MarkerId(
                                                         'business',
                                                       ),
                                                       position: LatLng(
@@ -373,7 +362,7 @@ class _BuyProductViewState extends State<BuyProductView> {
                                                 )
                                                 : Container(
                                                   color: Colors.grey[200],
-                                                  child: Center(
+                                                  child: const Center(
                                                     child: Text(
                                                       "Location not available",
                                                     ),
@@ -402,7 +391,7 @@ class _BuyProductViewState extends State<BuyProductView> {
                                       leadingIcon: Icons.timer,
                                       children: [
                                         Container(
-                                          padding: EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                             horizontal: 16,
                                             vertical: 8,
                                           ),
@@ -584,7 +573,7 @@ class _BuyProductViewState extends State<BuyProductView> {
                                         getLoyaltyDiscountAmount(),
                                         isDiscount: true,
                                       )
-                                      : SizedBox(),
+                                      : const SizedBox(),
                                   Divider(height: 2.5.h, thickness: 1),
                                   widget.type != 'service'
                                       ? _buildSummaryRow(
@@ -603,24 +592,23 @@ class _BuyProductViewState extends State<BuyProductView> {
                             SizedBox(height: 2.h),
                             GestureDetector(
                               onTap: () {
-                                if (selectedPayment == null ||
-                                    selectedPayment!.isEmpty) {
+                                if (selectedPayment.isEmpty) {
                                   Get.snackbar(
                                     "Payment Method Required",
                                     "Please select a payment method before placing your order.",
                                     backgroundColor: Colors.red,
                                     colorText: Colors.white,
-                                    margin: EdgeInsets.all(10),
+                                    margin: const EdgeInsets.all(10),
                                     snackPosition: SnackPosition.TOP,
                                   );
-                                } else if (selectedPayment!.toLowerCase() ==
+                                } else if (selectedPayment.toLowerCase() ==
                                     "stripe") {
                                   CheckOutAPI(
                                     selectedPickupTime,
-                                    selectedPayment!.toLowerCase(),
+                                    selectedPayment.toLowerCase(),
                                   );
                                 } else {
-                                  Get.to(ThankYouPage());
+                                  Get.to(const ThankYouPage());
                                 }
                               },
                               child: Container(
@@ -641,7 +629,7 @@ class _BuyProductViewState extends State<BuyProductView> {
                                         0.3,
                                       ),
                                       blurRadius: 8,
-                                      offset: Offset(0, 4),
+                                      offset: const Offset(0, 4),
                                     ),
                                   ],
                                 ),
@@ -747,7 +735,7 @@ class _BuyProductViewState extends State<BuyProductView> {
                 fontFamily: AppConstants.manrope,
               ),
             ),
-            Spacer(),
+            const Spacer(),
             if (isSelected)
               Icon(Icons.check_circle, color: AppColors.maincolor, size: 20.sp),
           ],
@@ -797,7 +785,7 @@ class _BuyProductViewState extends State<BuyProductView> {
       BoxShadow(
         color: Colors.grey.withOpacity(0.1),
         blurRadius: 4,
-        offset: Offset(0, 2),
+        offset: const Offset(0, 2),
       ),
     ],
   );
@@ -910,9 +898,7 @@ class _BuyProductViewState extends State<BuyProductView> {
             setState(() {
               isCheckout = false;
             });
-            log(
-              "Payment Link Ave che che ###${placeOrderModel?.data?.paymentUrl.toString()}",
-            );
+
             _openPaymentPage(
               placeOrderModel?.data?.paymentUrl.toString() ?? "",
             );
@@ -958,7 +944,7 @@ class _BuyProductViewState extends State<BuyProductView> {
             padding: EdgeInsets.all(3.w),
             decoration: BoxDecoration(
               color: Colors.grey[50],
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
               ),
@@ -1202,7 +1188,7 @@ class _BuyProductViewState extends State<BuyProductView> {
     final isToday = day == _getDayName(DateTime.now().weekday);
 
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       decoration:
           isToday
               ? BoxDecoration(

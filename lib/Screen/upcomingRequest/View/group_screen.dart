@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -55,6 +53,7 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
     GetMyGroupApi();
   }
 
+  @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> requestPageKey = GlobalKey<ScaffoldState>();
 
@@ -152,7 +151,7 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                           shrinkWrap: true,
                           itemCount:
                               myRequestModel?.data?.requests?.length ?? 0,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           padding: EdgeInsets.zero,
                           itemBuilder: (context, index) {
                             var request =
@@ -179,7 +178,7 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                                       BoxShadow(
                                         color: Colors.grey.withOpacity(0.2),
                                         blurRadius: 5,
-                                        offset: Offset(0, 3),
+                                        offset: const Offset(0, 3),
                                       ),
                                     ],
                                   ),
@@ -196,7 +195,7 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                                           fit: BoxFit.cover,
                                           placeholder:
                                               (context, url) =>
-                                                  CircularProgressIndicator(),
+                                                  const CircularProgressIndicator(),
                                           errorWidget:
                                               (
                                                 context,
@@ -242,9 +241,6 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                                                         ? "Request Cancelled"
                                                         : "Cancel Request",
                                                 route: () {
-                                                  log(
-                                                    "Cancled id #${request?.id}",
-                                                  );
                                                   request?.status == "cancel"
                                                       ? null
                                                       : RequestActionApi(
@@ -287,7 +283,7 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                         ).paddingOnly(top: 20.h)
                         : ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: myGroupRequestModel?.data?.length,
                           padding: EdgeInsets.zero,
                           itemBuilder: (context, index) {
@@ -303,7 +299,7 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                                   BoxShadow(
                                     color: Colors.grey.withOpacity(0.2),
                                     blurRadius: 5,
-                                    offset: Offset(0, 3),
+                                    offset: const Offset(0, 3),
                                   ),
                                 ],
                               ),
@@ -317,13 +313,13 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
                                                     .images!
                                                     .isNotEmpty)
                                             ? CachedNetworkImage(
-                                              imageUrl: request!.group!.images!,
+                                              imageUrl: request.group!.images!,
                                               width: 80,
                                               height: 80,
                                               fit: BoxFit.cover,
                                               placeholder:
                                                   (context, url) =>
-                                                      CircularProgressIndicator(),
+                                                      const CircularProgressIndicator(),
                                               errorWidget:
                                                   (
                                                     context,
@@ -449,10 +445,6 @@ class _GroupRequestScreenState extends State<GroupRequestScreen> {
             .then((response) async {
               myRequestModel = MyRequestModel.fromJson(response.data);
               if (response.statusCode == 200) {
-                print(
-                  "1111111111>>>>>>>>>>>>.${profileModel?.data?.user?.profile}",
-                );
-
                 setState(() {
                   isLoading = false;
                 });

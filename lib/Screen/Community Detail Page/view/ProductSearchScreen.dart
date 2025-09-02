@@ -45,13 +45,13 @@ class _SearchScreenState extends State<SearchScreen> {
         title: Row(
           children: [
             IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.black),
+              icon: const Icon(Icons.arrow_back, color: Colors.black),
               onPressed: () => Get.back(),
             ),
             Expanded(
               child: Container(
                 height: 38,
-                margin: EdgeInsets.only(right: 10),
+                margin: const EdgeInsets.only(right: 10),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(20),
@@ -72,7 +72,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     hintStyle: TextStyle(color: Colors.grey[600], fontSize: 14),
                     border: InputBorder.none,
                     isDense: true,
-                    contentPadding: EdgeInsets.symmetric(
+                    contentPadding: const EdgeInsets.symmetric(
                       horizontal: 12,
                       vertical: 10,
                     ),
@@ -98,7 +98,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             )
                             : null,
                   ),
-                  style: TextStyle(fontSize: 14),
+                  style: const TextStyle(fontSize: 14),
                 ),
               ),
             ),
@@ -107,7 +107,7 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
       body:
           isLoading
-              ? Center(
+              ? const Center(
                 child: CircularProgressIndicator(color: AppColors.maincolor),
               )
               : searchResults.isEmpty
@@ -116,7 +116,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.search, size: 60, color: Colors.grey[300]),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Text(
                       "Search for products",
                       style: TextStyle(
@@ -129,13 +129,13 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               )
               : ListView.builder(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 itemCount: searchResults.length,
                 itemBuilder: (context, index) {
                   final product = searchResults[index];
                   return Container(
-                    margin: EdgeInsets.only(bottom: 12),
-                    padding: EdgeInsets.all(12),
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
@@ -143,7 +143,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         BoxShadow(
                           color: Colors.black.withOpacity(0.05),
                           blurRadius: 8,
-                          offset: Offset(0, 2),
+                          offset: const Offset(0, 2),
                         ),
                       ],
                     ),
@@ -178,7 +178,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               },
                             ),
                           ),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           Expanded(
                             child: InkWell(
                               onTap: () {
@@ -194,7 +194,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 children: [
                                   Text(
                                     product.name ?? '',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
                                       color: Colors.black87,
@@ -202,7 +202,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                   ),
-                                  SizedBox(height: 4),
+                                  const SizedBox(height: 4),
                                   Row(
                                     children: [
                                       if (product.offerPrice != null &&
@@ -218,10 +218,10 @@ class _SearchScreenState extends State<SearchScreen> {
                                         ),
                                       if (product.offerPrice != null &&
                                           product.offerPrice != product.price)
-                                        SizedBox(width: 8),
+                                        const SizedBox(width: 8),
                                       Text(
                                         "£${product.offerPrice ?? product.price}",
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600,
                                           color: AppColors.maincolor,
@@ -242,14 +242,14 @@ class _SearchScreenState extends State<SearchScreen> {
       bottomNavigationBar:
           searchResults.any((product) => getProductQuantity(product.id!) > 0)
               ? Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.1),
                       blurRadius: 10,
-                      offset: Offset(0, -2),
+                      offset: const Offset(0, -2),
                     ),
                   ],
                 ),
@@ -274,7 +274,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         BoxShadow(
                           color: AppColors.maincolor.withOpacity(0.3),
                           blurRadius: 8,
-                          offset: Offset(0, 2),
+                          offset: const Offset(0, 2),
                         ),
                       ],
                     ),
@@ -283,14 +283,14 @@ class _SearchScreenState extends State<SearchScreen> {
                       children: [
                         Text(
                           "${getTotalItems()}",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        SizedBox(width: 8),
-                        Text(
+                        const SizedBox(width: 8),
+                        const Text(
                           "View Basket",
                           style: TextStyle(
                             fontSize: 16,
@@ -298,10 +298,10 @@ class _SearchScreenState extends State<SearchScreen> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Text(
                           "£${getTotalPrice().toStringAsFixed(2)}",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -336,7 +336,7 @@ class _SearchScreenState extends State<SearchScreen> {
             "Please remove service items before adding a product.",
             backgroundColor: AppColors.redColor,
             colorText: Colors.white,
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             snackPosition: SnackPosition.TOP,
           );
         } else if (cartDetailsModel!.data![0].itemDetails?.businessId ==
@@ -348,7 +348,7 @@ class _SearchScreenState extends State<SearchScreen> {
             "You can only add items from the same business to the cart.",
             backgroundColor: AppColors.redColor,
             colorText: Colors.white,
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             snackPosition: SnackPosition.TOP,
           );
         }
@@ -464,7 +464,7 @@ class _SearchScreenState extends State<SearchScreen> {
               searchResults.clear();
             });
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
           setState(() {
             isLoading = false;
             searchResults.clear();
@@ -489,14 +489,14 @@ class _SearchScreenState extends State<SearchScreen> {
 
   double getTotalPrice() {
     double total = 0.0;
-    searchResults.forEach((product) {
+    for (var product in searchResults) {
       final quantity = getProductQuantity(product.id!);
       if (quantity > 0) {
         final price =
             double.tryParse(product.offerPrice ?? product.price ?? '0') ?? 0.0;
         total += price * quantity;
       }
-    });
+    }
     return total;
   }
 }

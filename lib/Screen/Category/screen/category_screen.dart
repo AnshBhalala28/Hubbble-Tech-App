@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -78,7 +76,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       SizedBox(
                         child: GridView.builder(
                           itemCount: categoryDetailModal?.data?.length ?? 0,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
@@ -128,7 +126,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                 children: [
                                                   ClipRRect(
                                                     borderRadius:
-                                                        BorderRadius.only(
+                                                        const BorderRadius.only(
                                                           topLeft:
                                                               Radius.circular(
                                                                 12,
@@ -202,7 +200,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                                   Colors.black,
                                                             ),
                                                           ),
-                                                          Spacer(),
+                                                          const Spacer(),
                                                           Padding(
                                                             padding:
                                                                 EdgeInsets.symmetric(
@@ -210,9 +208,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                                       0.5.w,
                                                                 ),
                                                             child:
-                                                                (product?.offerPrice !=
+                                                                (product.offerPrice !=
                                                                             null &&
-                                                                        product!.offerPrice !=
+                                                                        product.offerPrice !=
                                                                             "0.00" &&
                                                                         product.offerPrice !=
                                                                             product.price)
@@ -235,7 +233,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                                                 AppColors.maincolor,
                                                                           ),
                                                                         ),
-                                                                        SizedBox(
+                                                                        const SizedBox(
                                                                           width:
                                                                               5,
                                                                         ),
@@ -255,7 +253,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                                       ],
                                                                     )
                                                                     : Text(
-                                                                      "£${product?.price ?? ""}",
+                                                                      "£${product.price ?? ""}",
                                                                       style: TextStyle(
                                                                         fontSize:
                                                                             14.sp,
@@ -275,9 +273,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                                       0.5.w,
                                                                 ),
                                                             child:
-                                                                product?.quantity ==
+                                                                product.quantity ==
                                                                             0 ||
-                                                                        product?.quantity ==
+                                                                        product.quantity ==
                                                                             null
                                                                     ? Text(
                                                                       "Out of Stock",
@@ -292,7 +290,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                                             Colors.red,
                                                                       ),
                                                                     )
-                                                                    : SizedBox(),
+                                                                    : const SizedBox(),
                                                           ),
                                                           SizedBox(height: 3.h),
                                                         ],
@@ -307,18 +305,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                 child: GestureDetector(
                                                   onTap: () {
                                                     bool isBlocked =
-                                                        product?.quantity ==
-                                                            0 ||
-                                                        product?.quantity ==
+                                                        product.quantity == 0 ||
+                                                        product.quantity ==
                                                             null;
                                                     int? productStatus =
                                                         busnessviewmodal
                                                             ?.data
                                                             ?.business
                                                             ?.productStatus;
-                                                    log(
-                                                      "dsadsadsdadasd$productStatus",
-                                                    );
 
                                                     if (productStatus == 0) {
                                                       showOnlineOrderDisabledDialog(
@@ -338,7 +332,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                       ScaffoldMessenger.of(
                                                         context,
                                                       ).showSnackBar(
-                                                        SnackBar(
+                                                        const SnackBar(
                                                           content: Text(
                                                             'Product is out of stock.',
                                                           ),
@@ -391,7 +385,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                               }
                                                             }
                                                             AddCartProductApi(
-                                                              product?.id
+                                                              product.id
                                                                       .toString() ??
                                                                   "",
                                                             );
@@ -405,7 +399,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                               ?.data
                                                               ?.businessId) {
                                                         AddCartProductApi(
-                                                          product?.id
+                                                          product.id
                                                                   .toString() ??
                                                               "",
                                                         );
@@ -448,7 +442,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                               }
                                                             }
                                                             AddCartProductApi(
-                                                              product?.id
+                                                              product.id
                                                                       .toString() ??
                                                                   "",
                                                             );
@@ -457,8 +451,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                       }
                                                     } else {
                                                       AddCartProductApi(
-                                                        product?.id
-                                                                .toString() ??
+                                                        product.id.toString() ??
                                                             "",
                                                       );
                                                     }
@@ -466,28 +459,35 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                   child: Container(
                                                     width: 10.w,
                                                     height: 10.w,
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      shape: BoxShape.circle,
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.black26,
-                                                          blurRadius: 4,
-                                                          offset: Offset(0, 2),
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                          color: Colors.white,
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color:
+                                                                  Colors
+                                                                      .black26,
+                                                              blurRadius: 4,
+                                                              offset: Offset(
+                                                                0,
+                                                                2,
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
-                                                      ],
-                                                    ),
                                                     child: Icon(
-                                                      product?.quantity == 0 ||
-                                                              product?.quantity ==
+                                                      product.quantity == 0 ||
+                                                              product.quantity ==
                                                                   null
                                                           ? Icons.block
                                                           : Icons.add,
                                                       size: 22.sp,
                                                       color:
-                                                          product?.quantity ==
+                                                          product.quantity ==
                                                                       0 ||
-                                                                  product?.quantity ==
+                                                                  product.quantity ==
                                                                       null
                                                               ? AppColors
                                                                   .redColor

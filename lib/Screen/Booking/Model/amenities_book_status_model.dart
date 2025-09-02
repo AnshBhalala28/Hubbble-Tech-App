@@ -8,11 +8,11 @@ class BookAmenitiesStatusModel {
   BookAmenitiesStatusModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -55,79 +55,79 @@ class Data {
     if (json['december'] != null) {
       december = <December>[];
       json['december'].forEach((v) {
-        december!.add(new December.fromJson(v));
+        december!.add(December.fromJson(v));
       });
     }
     if (json['november'] != null) {
       november = <November>[];
       json['november'].forEach((v) {
-        november!.add(new November.fromJson(v));
+        november!.add(November.fromJson(v));
       });
     }
     if (json['october'] != null) {
       october = <October>[];
       json['october'].forEach((v) {
-        october!.add(new October.fromJson(v));
+        october!.add(October.fromJson(v));
       });
     }
     if (json['september'] != null) {
       september = <September>[];
       json['september'].forEach((v) {
-        september!.add(new September.fromJson(v));
+        september!.add(September.fromJson(v));
       });
     }
     if (json['august'] != null) {
       august = <August>[];
       json['august'].forEach((v) {
-        august!.add(new August.fromJson(v));
+        august!.add(August.fromJson(v));
       });
     }
     if (json['july'] != null) {
       july = <July>[];
       json['july'].forEach((v) {
-        july!.add(new July.fromJson(v));
+        july!.add(July.fromJson(v));
       });
     }
     if (json['june'] != null) {
       june = <June>[];
       json['june'].forEach((v) {
-        june!.add(new June.fromJson(v));
+        june!.add(June.fromJson(v));
       });
     }
     if (json['may'] != null) {
       may = <May>[];
       json['may'].forEach((v) {
-        may!.add(new May.fromJson(v));
+        may!.add(May.fromJson(v));
       });
     }
     if (json['april'] != null) {
       april = <April>[];
       json['april'].forEach((v) {
-        april!.add(new April.fromJson(v));
+        april!.add(April.fromJson(v));
       });
     }
     if (json['march'] != null) {
       march = <March>[];
       json['march'].forEach((v) {
-        march!.add(new March.fromJson(v));
+        march!.add(March.fromJson(v));
       });
     }
     if (json['february'] != null) {
       february = <February>[];
       json['february'].forEach((v) {
-        february!.add(new February.fromJson(v));
+        february!.add(February.fromJson(v));
       });
     }
     if (json['january'] != null) {
       january = <January>[];
       json['january'].forEach((v) {
-        january!.add(new January.fromJson(v));
+        january!.add(January.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (this.december != null) {
       data['december'] = this.december!.map((v) => v.toJson()).toList();
     }
@@ -173,8 +173,8 @@ class December {
   int? userId;
   String? status;
   String? requestedAt;
-  Null? rsvp;
-  Null? attended;
+  Null rsvp;
+  Null attended;
   Amenity? amenity;
 
   December({
@@ -195,11 +195,11 @@ class December {
     rsvp = json['rsvp'];
     attended = json['attended'];
     amenity =
-        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['booking_id'] = this.bookingId;
     data['user_id'] = this.userId;
     data['status'] = this.status;
@@ -253,7 +253,7 @@ class Amenity {
     rulesNotice = json['rules_notice'];
     operatingHours =
         json['operating_hours'] != null
-            ? new OperatingHours.fromJson(json['operating_hours'])
+            ? OperatingHours.fromJson(json['operating_hours'])
             : null;
     durationOptions = json['duration_options'].cast<String>();
     capacity = json['capacity'];
@@ -264,7 +264,7 @@ class Amenity {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['name'] = this.name;
@@ -304,26 +304,20 @@ class OperatingHours {
   });
 
   OperatingHours.fromJson(Map<String, dynamic> json) {
-    monday =
-        json['monday'] != null ? new Monday.fromJson(json['monday']) : null;
-    tuesday =
-        json['tuesday'] != null ? new Monday.fromJson(json['tuesday']) : null;
+    monday = json['monday'] != null ? Monday.fromJson(json['monday']) : null;
+    tuesday = json['tuesday'] != null ? Monday.fromJson(json['tuesday']) : null;
     wednesday =
-        json['wednesday'] != null
-            ? new Monday.fromJson(json['wednesday'])
-            : null;
+        json['wednesday'] != null ? Monday.fromJson(json['wednesday']) : null;
     thursday =
-        json['thursday'] != null ? new Monday.fromJson(json['thursday']) : null;
-    friday =
-        json['friday'] != null ? new Monday.fromJson(json['friday']) : null;
+        json['thursday'] != null ? Monday.fromJson(json['thursday']) : null;
+    friday = json['friday'] != null ? Monday.fromJson(json['friday']) : null;
     saturday =
-        json['saturday'] != null ? new Monday.fromJson(json['saturday']) : null;
-    sunday =
-        json['sunday'] != null ? new Monday.fromJson(json['sunday']) : null;
+        json['saturday'] != null ? Monday.fromJson(json['saturday']) : null;
+    sunday = json['sunday'] != null ? Monday.fromJson(json['sunday']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (this.monday != null) {
       data['monday'] = this.monday!.toJson();
     }
@@ -361,7 +355,7 @@ class Monday {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['open'] = this.open;
     data['close'] = this.close;
     return data;
@@ -395,11 +389,11 @@ class June {
     rsvp = json['rsvp'];
     attended = json['attended'];
     amenity =
-        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['booking_id'] = this.bookingId;
     data['user_id'] = this.userId;
     data['status'] = this.status;
@@ -440,11 +434,11 @@ class November {
     rsvp = json['rsvp'];
     attended = json['attended'];
     amenity =
-        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['booking_id'] = this.bookingId;
     data['user_id'] = this.userId;
     data['status'] = this.status;
@@ -485,11 +479,11 @@ class October {
     rsvp = json['rsvp'];
     attended = json['attended'];
     amenity =
-        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['booking_id'] = this.bookingId;
     data['user_id'] = this.userId;
     data['status'] = this.status;
@@ -530,11 +524,11 @@ class September {
     rsvp = json['rsvp'];
     attended = json['attended'];
     amenity =
-        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['booking_id'] = this.bookingId;
     data['user_id'] = this.userId;
     data['status'] = this.status;
@@ -575,11 +569,11 @@ class August {
     rsvp = json['rsvp'];
     attended = json['attended'];
     amenity =
-        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['booking_id'] = this.bookingId;
     data['user_id'] = this.userId;
     data['status'] = this.status;
@@ -620,11 +614,11 @@ class July {
     rsvp = json['rsvp'];
     attended = json['attended'];
     amenity =
-        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['booking_id'] = this.bookingId;
     data['user_id'] = this.userId;
     data['status'] = this.status;
@@ -665,11 +659,11 @@ class May {
     rsvp = json['rsvp'];
     attended = json['attended'];
     amenity =
-        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['booking_id'] = this.bookingId;
     data['user_id'] = this.userId;
     data['status'] = this.status;
@@ -710,11 +704,11 @@ class April {
     rsvp = json['rsvp'];
     attended = json['attended'];
     amenity =
-        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['booking_id'] = this.bookingId;
     data['user_id'] = this.userId;
     data['status'] = this.status;
@@ -755,11 +749,11 @@ class March {
     rsvp = json['rsvp'];
     attended = json['attended'];
     amenity =
-        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['booking_id'] = this.bookingId;
     data['user_id'] = this.userId;
     data['status'] = this.status;
@@ -800,11 +794,11 @@ class February {
     rsvp = json['rsvp'];
     attended = json['attended'];
     amenity =
-        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['booking_id'] = this.bookingId;
     data['user_id'] = this.userId;
     data['status'] = this.status;
@@ -845,11 +839,11 @@ class January {
     rsvp = json['rsvp'];
     attended = json['attended'];
     amenity =
-        json['amenity'] != null ? new Amenity.fromJson(json['amenity']) : null;
+        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['booking_id'] = this.bookingId;
     data['user_id'] = this.userId;
     data['status'] = this.status;

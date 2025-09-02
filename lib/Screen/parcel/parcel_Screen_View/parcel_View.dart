@@ -201,7 +201,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
                               children: [
                                 Text(
                                   ' ${parcel.amount ?? ""}',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontFamily: AppConstants.manrope,
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
@@ -234,13 +234,13 @@ class _ParcelScreenState extends State<ParcelScreen> {
                         ),
                       ),
                   firstPageProgressIndicatorBuilder:
-                      (context) => Center(
+                      (context) => const Center(
                         child: CircularProgressIndicator(
                           color: AppColors.maincolor,
                         ),
                       ),
                   newPageProgressIndicatorBuilder:
-                      (context) => Center(
+                      (context) => const Center(
                         child: CircularProgressIndicator(
                           color: AppColors.maincolor,
                         ),
@@ -255,10 +255,12 @@ class _ParcelScreenState extends State<ParcelScreen> {
   }
 
   bool _isParcelVisible(Data1 parcel) {
-    if (selectedCategory == 1 && parcel.deliveryStatus != "Collected")
+    if (selectedCategory == 1 && parcel.deliveryStatus != "Collected") {
       return false;
-    if (selectedCategory == 2 && parcel.deliveryStatus != "Pending")
+    }
+    if (selectedCategory == 2 && parcel.deliveryStatus != "Pending") {
       return false;
+    }
     return true;
   }
 
@@ -273,10 +275,12 @@ class _ParcelScreenState extends State<ParcelScreen> {
       final allItems = parcelViewModal.data?.data ?? [];
       final newItems =
           allItems.where((parcel) {
-            if (selectedCategory == 1)
+            if (selectedCategory == 1) {
               return parcel.deliveryStatus == "Collected";
-            if (selectedCategory == 2)
+            }
+            if (selectedCategory == 2) {
               return parcel.deliveryStatus == "Pending";
+            }
             return true;
           }).toList();
 

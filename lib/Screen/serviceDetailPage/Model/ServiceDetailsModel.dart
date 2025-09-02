@@ -8,11 +8,11 @@ class ServiceDetailsModel {
   ServiceDetailsModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -115,9 +115,7 @@ class Data {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     category =
-        json['category'] != null
-            ? new Category.fromJson(json['category'])
-            : null;
+        json['category'] != null ? Category.fromJson(json['category']) : null;
     businessId = json['business_id'];
     businessName = json['business_name'];
     productRating = json['product_rating'];
@@ -125,7 +123,7 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['category_id'] = this.categoryId;
@@ -184,7 +182,7 @@ class Category {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['sub_category_id'] = this.subCategoryId;
     data['name'] = this.name;

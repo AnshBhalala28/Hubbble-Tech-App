@@ -329,7 +329,6 @@
 //     });
 //   }
 // }
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -347,7 +346,7 @@ import '../Model/latest_visitor_modal/latest_visitor_modal.dart';
 class VisitorScreen extends StatefulWidget {
   final String? latestVisitor;
 
-  VisitorScreen({super.key, this.latestVisitor});
+  const VisitorScreen({super.key, this.latestVisitor});
 
   @override
   State<VisitorScreen> createState() => _VisitorScreenState();
@@ -391,8 +390,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
       } else {
         _pagingController.appendPage(items, pageKey + 1);
       }
-    } catch (e, stackTrace) {
-      log('adasddadad$e   $stackTrace');
+    } catch (e) {
       _pagingController.error = e;
     }
   }
@@ -429,7 +427,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
                 builderDelegate: PagedChildBuilderDelegate<Data1>(
                   itemBuilder:
                       (ctx, visitor, _) => Padding(
-                        padding: EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.only(bottom: 10),
                         child: Material(
                           elevation: 0.5,
                           borderRadius: BorderRadius.circular(20),
@@ -596,7 +594,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
                         ),
                       ),
                   firstPageProgressIndicatorBuilder:
-                      (_) => Center(
+                      (_) => const Center(
                         child: CircularProgressIndicator(
                           color: AppColors.maincolor,
                         ),

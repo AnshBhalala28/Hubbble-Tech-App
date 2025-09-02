@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -164,7 +163,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                         color: Colors.grey.withOpacity(0.2),
                                         spreadRadius: 2,
                                         blurRadius: 5,
-                                        offset: Offset(0, 3),
+                                        offset: const Offset(0, 3),
                                       ),
                                     ],
                                   ),
@@ -191,7 +190,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                                     formatDateTime(
                                                       booking?.createdAt ?? "",
                                                     ),
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontSize: 13,
                                                       fontWeight:
                                                           FontWeight.w600,
@@ -200,7 +199,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                                           AppConstants.manrope,
                                                     ),
                                                   ),
-                                                  SizedBox(height: 4),
+                                                  const SizedBox(height: 4),
                                                   SizedBox(
                                                     width: 70.w,
 
@@ -210,7 +209,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                                               ?.capitalizeFirst ??
                                                           '',
                                                       maxLines: 2,
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                         fontSize: 16,
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -221,7 +220,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                                       ),
                                                     ),
                                                   ),
-                                                  SizedBox(height: 4),
+                                                  const SizedBox(height: 4),
                                                 ],
                                               ),
                                             ),
@@ -232,7 +231,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                                 children: [
                                                   Container(
                                                     padding:
-                                                        EdgeInsets.symmetric(
+                                                        const EdgeInsets.symmetric(
                                                           horizontal: 10,
                                                           vertical: 4,
                                                         ),
@@ -295,7 +294,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
               ? Container()
               : Row(
                 children: [
-                  Spacer(),
+                  const Spacer(),
                   FloatingActionButton.extended(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(900),
@@ -514,7 +513,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
       context: context,
       backgroundColor: Colors.white,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
       ),
       builder: (context) {
@@ -649,7 +648,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                       width: double.infinity,
                                     ),
                                   )
-                                  : Center(
+                                  : const Center(
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -721,7 +720,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
   //     setState(() {
   //       isLoading = true;
   //     });
-  // log("dasdasadasdas$data");
+  //
   //     checkInternet().then((internet) async {
   //       if (internet) {
   //         MaintenanceProvider().addMaintanceRequestApi(data).then((
@@ -908,7 +907,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                     child: Container(
                       height: 4,
                       width: 20.w,
-                      margin: EdgeInsets.only(bottom: 16),
+                      margin: const EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
                         color: Colors.grey[300],
                         borderRadius: BorderRadius.circular(10),
@@ -946,7 +945,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                         : "-",
                   ),
 
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   /// Image Preview
                   if (detail.data?.file != null &&
@@ -989,7 +988,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                 ),
                           ),
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                       ],
                     ),
 
@@ -1006,7 +1005,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                     fontsize: 18.sp,
                     radius: 12.0,
                   ),
-                  SizedBox(height: 30),
+                  const SizedBox(height: 30),
                 ],
               ),
             );
@@ -1030,7 +1029,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
             flex: 2,
             child: Text(
               "$title:",
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: AppConstants.manrope,
                 fontSize: 15,

@@ -21,7 +21,7 @@ import '../Provider/community_provider.dart';
 class StoryViewerScreen extends StatefulWidget {
   final int userId;
 
-  const StoryViewerScreen({Key? key, required this.userId}) : super(key: key);
+  const StoryViewerScreen({super.key, required this.userId});
 
   @override
   _StoryViewerScreenState createState() => _StoryViewerScreenState();
@@ -43,8 +43,8 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
   bool isLiked = false;
   bool isLikeInProgress = false;
 
-  List<VideoPlayerController?> _preloadedVideoControllers = [];
-  List<bool> _preloadedImages = [];
+  final List<VideoPlayerController?> _preloadedVideoControllers = [];
+  final List<bool> _preloadedImages = [];
 
   @override
   void initState() {
@@ -367,12 +367,6 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
             });
 
             _saveLikeStatus(isLiked);
-
-            print(
-              isLiked
-                  ? "Image liked successfully"
-                  : "Image unliked successfully",
-            );
           } else if (response.statusCode == 429) {
             setState(() => isLikeInProgress = false);
           } else {
@@ -396,14 +390,14 @@ class StoryProgressIndicator extends StatefulWidget {
   final VideoPlayerController? videoController;
 
   const StoryProgressIndicator({
-    Key? key,
+    super.key,
     required this.isActive,
     required this.isPaused,
     required this.isCompleted,
     required this.duration,
     this.animationController,
     this.videoController,
-  }) : super(key: key);
+  });
 
   @override
   State<StoryProgressIndicator> createState() => _StoryProgressIndicatorState();

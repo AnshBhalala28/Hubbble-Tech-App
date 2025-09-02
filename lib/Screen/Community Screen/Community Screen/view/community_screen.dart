@@ -216,8 +216,7 @@ class _CommunityScreenState extends State<CommunityScreen>
   Future<void> _loadSelectedUserMarker() async {
     if (businessprofileModel?.data == null ||
         businessprofileModel!.data!.isEmpty ||
-        selectedUserId == null ||
-        selectedUserId!.isEmpty) {
+        selectedUserId.isEmpty) {
       setState(() => isMapLoading = false);
       return;
     }
@@ -227,9 +226,7 @@ class _CommunityScreenState extends State<CommunityScreen>
       orElse: () => Data1(),
     );
 
-    if (selectedUser == null ||
-        selectedUser.latitude == null ||
-        selectedUser.longitude == null) {
+    if (selectedUser.latitude == null || selectedUser.longitude == null) {
       _loadMarkers();
       return;
     }
@@ -257,7 +254,7 @@ class _CommunityScreenState extends State<CommunityScreen>
           markerId: MarkerId("selected_$selectedUserId"),
           position: LatLng(lat, lon),
           icon: icon,
-          anchor: hasStory ? Offset(0.5, 0.8) : Offset(0.5, 0.5),
+          anchor: hasStory ? const Offset(0.5, 0.8) : const Offset(0.5, 0.5),
           onTap: () => _handleMarkerTap(selectedUser),
         ),
       };
@@ -428,7 +425,7 @@ class _CommunityScreenState extends State<CommunityScreen>
 
       processedCount += nextBatchSize;
 
-      await Future.delayed(Duration(milliseconds: 10));
+      await Future.delayed(const Duration(milliseconds: 10));
     }
   }
 
@@ -456,7 +453,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     );
     final ui.FrameInfo frameInfo = await codec.getNextFrame();
     final ui.Image image = frameInfo.image;
-    canvas.drawImage(image, Offset(0, 0), paint);
+    canvas.drawImage(image, const Offset(0, 0), paint);
 
     double countCircleX = size - 30;
     double countCircleY = 17;
@@ -816,13 +813,13 @@ class _CommunityScreenState extends State<CommunityScreen>
       barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
-          contentPadding: EdgeInsets.only(
+          contentPadding: const EdgeInsets.only(
             top: 16,
             left: 24,
             right: 24,
             bottom: 16,
           ),
-          titlePadding: EdgeInsets.only(top: 16, left: 24, right: 0),
+          titlePadding: const EdgeInsets.only(top: 16, left: 24, right: 0),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -839,7 +836,7 @@ class _CommunityScreenState extends State<CommunityScreen>
               CircleAvatar(
                 backgroundColor: Colors.white,
                 child: IconButton(
-                  icon: Icon(Icons.close),
+                  icon: const Icon(Icons.close),
                   onPressed: () {
                     Navigator.of(context).pop();
                     _isDialogVisible = false;
@@ -853,7 +850,11 @@ class _CommunityScreenState extends State<CommunityScreen>
             message,
             style: TextStyle(fontFamily: AppConstants.manrope, fontSize: 16.sp),
           ),
-          actionsPadding: EdgeInsets.only(bottom: 12, left: 16, right: 16),
+          actionsPadding: const EdgeInsets.only(
+            bottom: 12,
+            left: 16,
+            right: 16,
+          ),
           actions: [
             Row(
               children: [
@@ -874,7 +875,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                       width: double.infinity,
                     ),
                   ),
-                if (openSettings && showCancel) SizedBox(width: 12),
+                if (openSettings && showCancel) const SizedBox(width: 12),
                 if (openSettings)
                   Expanded(
                     child: batan(
@@ -885,7 +886,7 @@ class _CommunityScreenState extends State<CommunityScreen>
 
                         await Geolocator.openAppSettings();
                         await Future.delayed(
-                          Duration(seconds: 1),
+                          const Duration(seconds: 1),
                         ); // give time to apply
 
                         LocationPermission permission =
@@ -950,7 +951,7 @@ class _CommunityScreenState extends State<CommunityScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Bottom_bar(selected: 2),
+      bottomNavigationBar: BottomBar(selected: 2),
       body: WillPopScope(
         onWillPop: () async {
           Get.offAll(() => HomePage(selected: 1, userName: ""));
@@ -988,7 +989,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                     _customInfoWindowController.onCameraMove!();
                   },
                 )
-                : Center(child: CircularProgressIndicator()), // or fallback UI
+                : const Center(
+                  child: CircularProgressIndicator(),
+                ), // or fallback UI
 
             CustomInfoWindow(
               controller: _customInfoWindowController,
@@ -1034,7 +1037,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                               child: SizedBox(
                                 width: 20.sp,
                                 height: 20.sp,
-                                child: CircularProgressIndicator(
+                                child: const CircularProgressIndicator(
                                   strokeWidth: 2,
                                   valueColor: AlwaysStoppedAnimation<Color>(
                                     AppColors.maincolor,
@@ -1050,7 +1053,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: Colors.grey.shade200,
-                                image: DecorationImage(
+                                image: const DecorationImage(
                                   image: AssetImage(
                                     "assets/images/waveeLogoShort.png",
                                   ),
@@ -1095,7 +1098,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                             shape: BoxShape.circle,
                             color: Colors.grey[200],
                           ),
-                          child: Icon(
+                          child: const Icon(
                             Icons.search,
                             color: Colors.black87,
                             size: 25,
@@ -1109,11 +1112,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                           getlikeapi();
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
                           width: 33.w,
                           height: 5.h,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(
+                            borderRadius: const BorderRadius.all(
                               ui.Radius.circular(20),
                             ),
                             color: Colors.grey[200],
@@ -1129,7 +1132,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   size: 17.sp,
                                 ),
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                               Text(
                                 "Favourites",
                                 style: TextStyle(fontSize: 16.sp),
@@ -1144,11 +1147,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                           getvisitedapi();
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
                           width: 29.w,
                           height: 5.h,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(
+                            borderRadius: const BorderRadius.all(
                               ui.Radius.circular(20),
                             ),
                             color: Colors.grey[200],
@@ -1164,7 +1167,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   size: 17.sp,
                                 ),
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                               Text(
                                 "Visited",
                                 style: TextStyle(fontSize: 16.sp),
@@ -1201,7 +1204,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                                 );
                               },
                               child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                ),
                                 height: 5.h,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
@@ -1253,7 +1258,7 @@ class _CommunityScreenState extends State<CommunityScreen>
             if (isMapLoading)
               Positioned.fill(
                 child: Container(
-                  child: Center(
+                  child: const Center(
                     child: CircularProgressIndicator(
                       color: AppColors.maincolor,
                     ),
@@ -1267,7 +1272,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                     child: Center(child: Loader()),
                   ),
                 )
-                : SizedBox(),
+                : const SizedBox(),
           ],
         ),
       ),
@@ -1312,7 +1317,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
@@ -1325,10 +1330,10 @@ class _CommunityScreenState extends State<CommunityScreen>
             return StatefulBuilder(
               builder: (context, setState) {
                 return Container(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppColors.bgcolor,
-                    borderRadius: BorderRadius.vertical(
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(20),
                     ),
                   ),
@@ -1345,24 +1350,24 @@ class _CommunityScreenState extends State<CommunityScreen>
                           ),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
                             children: [
-                              CircleAvatar(
+                              const CircleAvatar(
                                 backgroundColor: Colors.pink,
                                 child: Icon(
                                   Icons.favorite,
                                   color: Colors.white,
                                 ),
                               ),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
+                                  const Text(
                                     "Favourites",
                                     style: TextStyle(
                                       fontSize: 16,
@@ -1371,7 +1376,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   ),
                                   Text(
                                     "${getlikeModal?.data?.length ?? "No"} Favourites",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.grey,
                                       fontSize: 14,
                                     ),
@@ -1398,18 +1403,18 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   Get.back();
                                 },
                                 padding: EdgeInsets.zero,
-                                constraints: BoxConstraints(),
+                                constraints: const BoxConstraints(),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Expanded(
                         child:
                             (getlikeModal?.data == null ||
                                     getlikeModal!.data!.isEmpty)
-                                ? Center(
+                                ? const Center(
                                   child: Text(
                                     "No Favourites Added!",
                                     style: TextStyle(
@@ -1441,7 +1446,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                             );
                                           },
                                           child: Container(
-                                            padding: EdgeInsets.symmetric(
+                                            padding: const EdgeInsets.symmetric(
                                               vertical: 10,
                                               horizontal: 10,
                                             ),
@@ -1450,19 +1455,27 @@ class _CommunityScreenState extends State<CommunityScreen>
                                               borderRadius: BorderRadius.only(
                                                 topLeft:
                                                     isFirst
-                                                        ? Radius.circular(15)
+                                                        ? const Radius.circular(
+                                                          15,
+                                                        )
                                                         : Radius.zero,
                                                 topRight:
                                                     isFirst
-                                                        ? Radius.circular(15)
+                                                        ? const Radius.circular(
+                                                          15,
+                                                        )
                                                         : Radius.zero,
                                                 bottomLeft:
                                                     isLast
-                                                        ? Radius.circular(15)
+                                                        ? const Radius.circular(
+                                                          15,
+                                                        )
                                                         : Radius.zero,
                                                 bottomRight:
                                                     isLast
-                                                        ? Radius.circular(15)
+                                                        ? const Radius.circular(
+                                                          15,
+                                                        )
                                                         : Radius.zero,
                                               ),
                                             ),
@@ -1491,7 +1504,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                               )
                                                               as ImageProvider,
                                                 ),
-                                                SizedBox(width: 15),
+                                                const SizedBox(width: 15),
                                                 Expanded(
                                                   child: Column(
                                                     crossAxisAlignment:
@@ -1504,7 +1517,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                 .business
                                                                 ?.businessName ??
                                                             "N/A",
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           fontSize: 16,
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -1515,10 +1528,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                             TextOverflow
                                                                 .ellipsis,
                                                       ),
-                                                      SizedBox(height: 3),
+                                                      const SizedBox(height: 3),
                                                       Text(
                                                         "${(getlikeModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           fontSize: 14,
                                                           color: Colors.black54,
                                                         ),
@@ -1530,7 +1543,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                   onTap: () {
                                                     unlikeBusiness(index);
                                                   },
-                                                  child: Icon(
+                                                  child: const Icon(
                                                     Icons.favorite,
                                                     color: Colors.red,
                                                     size: 28,
@@ -1572,7 +1585,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
@@ -1585,10 +1598,10 @@ class _CommunityScreenState extends State<CommunityScreen>
             return StatefulBuilder(
               builder: (context, setState) {
                 return Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: AppColors.bgcolor,
-                    borderRadius: BorderRadius.vertical(
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(20),
                     ),
                   ),
@@ -1605,24 +1618,24 @@ class _CommunityScreenState extends State<CommunityScreen>
                           ),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
                             children: [
-                              CircleAvatar(
+                              const CircleAvatar(
                                 backgroundColor: Colors.purpleAccent,
                                 child: Icon(
                                   Icons.location_on,
                                   color: Colors.white,
                                 ),
                               ),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
+                                  const Text(
                                     "Recently Visited",
                                     style: TextStyle(
                                       fontSize: 16,
@@ -1631,7 +1644,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   ),
                                   Text(
                                     "${getvisitedModal?.data?.length ?? "No"}  Recently Visited",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.grey,
                                       fontSize: 14,
                                     ),
@@ -1658,18 +1671,18 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   Get.back();
                                 },
                                 padding: EdgeInsets.zero,
-                                constraints: BoxConstraints(),
+                                constraints: const BoxConstraints(),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Expanded(
                         child:
                             (getvisitedModal?.data == null ||
                                     getvisitedModal!.data!.isEmpty)
-                                ? Center(
+                                ? const Center(
                                   child: Text(
                                     "No Businesses Found!",
                                     style: TextStyle(
@@ -1680,7 +1693,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                 )
                                 : ListView.builder(
                                   controller: scrollController,
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     horizontal: 4,
                                     vertical: 2,
                                   ),
@@ -1705,25 +1718,33 @@ class _CommunityScreenState extends State<CommunityScreen>
                                             );
                                           },
                                           child: Container(
-                                            padding: EdgeInsets.all(12),
+                                            padding: const EdgeInsets.all(12),
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius: BorderRadius.only(
                                                 topLeft:
                                                     isFirst
-                                                        ? Radius.circular(15)
+                                                        ? const Radius.circular(
+                                                          15,
+                                                        )
                                                         : Radius.zero,
                                                 topRight:
                                                     isFirst
-                                                        ? Radius.circular(15)
+                                                        ? const Radius.circular(
+                                                          15,
+                                                        )
                                                         : Radius.zero,
                                                 bottomLeft:
                                                     isLast
-                                                        ? Radius.circular(15)
+                                                        ? const Radius.circular(
+                                                          15,
+                                                        )
                                                         : Radius.zero,
                                                 bottomRight:
                                                     isLast
-                                                        ? Radius.circular(15)
+                                                        ? const Radius.circular(
+                                                          15,
+                                                        )
                                                         : Radius.zero,
                                               ),
                                             ),
@@ -1740,7 +1761,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                   ?.logo
                                                                   ?.isEmpty ??
                                                               true)
-                                                          ? AssetImage(
+                                                          ? const AssetImage(
                                                             "assets/images/waveeLogoShort.png",
                                                           )
                                                           : CachedNetworkImageProvider(
@@ -1752,7 +1773,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                               )
                                                               as ImageProvider,
                                                 ),
-                                                SizedBox(width: 15),
+                                                const SizedBox(width: 15),
                                                 Expanded(
                                                   child: Column(
                                                     crossAxisAlignment:
@@ -1765,7 +1786,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                 .business
                                                                 ?.businessName ??
                                                             "N/A",
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           fontSize: 16,
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -1776,10 +1797,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                             TextOverflow
                                                                 .ellipsis,
                                                       ),
-                                                      SizedBox(height: 3),
+                                                      const SizedBox(height: 3),
                                                       Text(
                                                         "${(getvisitedModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           fontSize: 14,
                                                           color: Colors.black54,
                                                         ),
@@ -1827,7 +1848,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
@@ -1840,10 +1861,10 @@ class _CommunityScreenState extends State<CommunityScreen>
             return StatefulBuilder(
               builder: (context, setState) {
                 return Container(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppColors.bgcolor,
-                    borderRadius: BorderRadius.vertical(
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(20),
                     ),
                   ),
@@ -1860,7 +1881,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                           ),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -1885,7 +1906,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                 width: 3.h,
                                                 fit: BoxFit.cover,
                                               )
-                                              : Icon(
+                                              : const Icon(
                                                 Icons.category_rounded,
                                                 color: Colors.white,
                                               ),
@@ -1893,20 +1914,20 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     categoryName,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   Text(
                                     "${viewcategoriesmodel?.data?.length ?? "No"} $categoryName",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.grey,
                                       fontSize: 14,
                                     ),
@@ -1933,18 +1954,18 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   Get.back();
                                 },
                                 padding: EdgeInsets.zero,
-                                constraints: BoxConstraints(),
+                                constraints: const BoxConstraints(),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Expanded(
                         child:
                             (viewcategoriesmodel?.data == null ||
                                     viewcategoriesmodel!.data!.isEmpty)
-                                ? Center(
+                                ? const Center(
                                   child: Text(
                                     "No Businesses Found!",
                                     style: TextStyle(
@@ -1955,17 +1976,17 @@ class _CommunityScreenState extends State<CommunityScreen>
                                 )
                                 : ListView.builder(
                                   controller: scrollController,
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     horizontal: 4,
                                     vertical: 2,
                                   ),
                                   itemCount:
-                                      viewcategoriesmodel?.data?.length ?? 0,
+                                      viewcategoriesmodel.data?.length ?? 0,
                                   itemBuilder: (context, index) {
                                     bool isFirstItem = index == 0;
                                     bool isLastItem =
                                         index ==
-                                        (viewcategoriesmodel?.data?.length ??
+                                        (viewcategoriesmodel.data?.length ??
                                                 0) -
                                             1;
 
@@ -1976,16 +1997,13 @@ class _CommunityScreenState extends State<CommunityScreen>
                                             Get.back();
                                             BussinessViewProfile(
                                               (viewcategoriesmodel
-                                                      ?.data?[index]
+                                                      .data?[index]
                                                       .id)
                                                   .toString(),
                                             );
-                                            print(
-                                              "viewcategoriesmodel?.data?[index].id${viewcategoriesmodel?.data?[index].id}",
-                                            );
                                           },
                                           child: Container(
-                                            padding: EdgeInsets.all(12),
+                                            padding: const EdgeInsets.all(12),
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.only(
                                                 topLeft: Radius.circular(
@@ -2011,8 +2029,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                       Colors.grey[200],
                                                   backgroundImage:
                                                       (viewcategoriesmodel
-                                                                  ?.data?[index]
-                                                                  ?.logo
+                                                                  .data?[index]
+                                                                  .logo
                                                                   ?.isEmpty ??
                                                               true)
                                                           ? const AssetImage(
@@ -2020,13 +2038,13 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                           )
                                                           : CachedNetworkImageProvider(
                                                                 viewcategoriesmodel
-                                                                        ?.data?[index]
-                                                                        ?.logo ??
+                                                                        .data?[index]
+                                                                        .logo ??
                                                                     "",
                                                               )
                                                               as ImageProvider,
                                                 ),
-                                                SizedBox(width: 15),
+                                                const SizedBox(width: 15),
                                                 Expanded(
                                                   child: Column(
                                                     crossAxisAlignment:
@@ -2035,10 +2053,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                     children: [
                                                       Text(
                                                         viewcategoriesmodel
-                                                                ?.data?[index]
+                                                                .data?[index]
                                                                 .businessName ??
                                                             "N/A",
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           fontSize: 16,
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -2049,10 +2067,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                             TextOverflow
                                                                 .ellipsis,
                                                       ),
-                                                      SizedBox(height: 3),
+                                                      const SizedBox(height: 3),
                                                       Text(
-                                                        "${(viewcategoriesmodel?.data?[index].distance ?? 0).toStringAsFixed(2)} Miles",
-                                                        style: TextStyle(
+                                                        "${(viewcategoriesmodel.data?[index].distance ?? 0).toStringAsFixed(2)} Miles",
+                                                        style: const TextStyle(
                                                           fontSize: 14,
                                                           color: Colors.black54,
                                                         ),
@@ -2097,7 +2115,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
@@ -2110,10 +2128,10 @@ class _CommunityScreenState extends State<CommunityScreen>
               expand: false,
               builder: (context, scrollController) {
                 return Container(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppColors.bgcolor,
-                    borderRadius: BorderRadius.vertical(
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(20),
                     ),
                   ),
@@ -2143,7 +2161,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     fontFamily: AppConstants.manrope,
                                     fontSize: 16.sp,
                                   ),
-                                  prefixIcon: Icon(
+                                  prefixIcon: const Icon(
                                     Icons.search,
                                     color: Colors.black87,
                                   ),
@@ -2231,7 +2249,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                               ),
                             ),
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Container(
                             width: 8.w,
                             height: 8.w,
@@ -2257,7 +2275,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   Get.back();
                                 },
                                 padding: EdgeInsets.zero,
-                                constraints: BoxConstraints(),
+                                constraints: const BoxConstraints(),
                               ),
                             ),
                           ),
@@ -2316,12 +2334,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                           String categoryImage =
                                               categoriesModel?.data?[i].img ??
                                               "";
-                                          print(
-                                            "categoryIdcategoryId : ${categoryId}",
-                                          );
-                                          print(
-                                            "Selected Category Name: $categoryName",
-                                          );
+
                                           Get.back();
                                           CategoriesProfileView(
                                             categoryId,
@@ -2330,7 +2343,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                           );
                                         },
                                         child: Container(
-                                          padding: EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                             horizontal: 8,
                                             vertical: 4,
                                           ),
@@ -2355,7 +2368,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                         "",
                                                   ),
                                                 ),
-                                                SizedBox(width: 4),
+                                                const SizedBox(width: 4),
                                                 Text(
                                                   categoriesModel
                                                           ?.data?[i]
@@ -2383,7 +2396,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                       Expanded(
                         child:
                             isLoading
-                                ? Center(child: CircularProgressIndicator())
+                                ? const Center(
+                                  child: CircularProgressIndicator(),
+                                )
                                 : (filteredList.isEmpty)
                                 ? Container(
                                   margin: EdgeInsets.only(top: 6.h),
@@ -2417,16 +2432,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                 : filteredList[index].id
                                                     .toString();
 
-                                        print(
-                                          "businessId from filteredList: $businessId",
-                                        );
-
                                         Get.back();
                                         BussinessViewProfile(businessId);
-
-                                        print(
-                                          "Navigating to business details with ID: $businessId",
-                                        );
                                       },
                                       child: Container(
                                         padding: EdgeInsets.all(1.w),
@@ -2503,7 +2510,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                                               subtitle: Row(
                                                 children: [
                                                   Text(
-                                                    "${(businessprofileModel?.data?[index].subStatus?.capitalizeFirst ?? "")}",
+                                                    (businessprofileModel
+                                                            ?.data?[index]
+                                                            .subStatus
+                                                            ?.capitalizeFirst ??
+                                                        ""),
                                                     style: TextStyle(
                                                       fontSize: 13.sp,
                                                       fontWeight:
@@ -2551,7 +2562,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                     moveToLocation();
                                                   },
                                                   padding: EdgeInsets.zero,
-                                                  constraints: BoxConstraints(),
+                                                  constraints:
+                                                      const BoxConstraints(),
                                                 ),
                                               ),
                                             ),
@@ -2586,9 +2598,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                           businessprofileModel
                                                               ?.data?[index]
                                                               .tags?[tagIndex];
-                                                      print(
-                                                        "tag ave che knau @${tag?.img}",
-                                                      );
+
                                                       return Row(
                                                         children: [
                                                           Container(
@@ -2619,7 +2629,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                 Container(
                                                                   height: 2.5.h,
                                                                   width: 2.5.h,
-                                                                  decoration: BoxDecoration(
+                                                                  decoration: const BoxDecoration(
                                                                     shape:
                                                                         BoxShape
                                                                             .circle,
@@ -2640,7 +2650,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                           (
                                                                             context,
                                                                             url,
-                                                                          ) => CircularProgressIndicator(
+                                                                          ) => const CircularProgressIndicator(
                                                                             color:
                                                                                 AppColors.maincolor,
                                                                           ),
@@ -2728,7 +2738,7 @@ class _CommunityScreenState extends State<CommunityScreen>
         onTap: onTap,
         borderRadius: BorderRadius.circular(20),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 7, vertical: 7),
+          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 7),
           decoration: BoxDecoration(
             color: Colors.grey[200],
             borderRadius: BorderRadius.circular(18),
@@ -2774,7 +2784,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: AppColors.bgcolor,
-                      borderRadius: BorderRadius.vertical(
+                      borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(20),
                       ),
                     ),
@@ -2813,7 +2823,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                       .business!
                                                       .logo!,
                                                 )
-                                                : AssetImage(
+                                                : const AssetImage(
                                                       "assets/images/waveeLogoShort.png",
                                                     )
                                                     as ImageProvider,
@@ -2915,7 +2925,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                   Get.back();
                                                 },
                                                 padding: EdgeInsets.zero,
-                                                constraints: BoxConstraints(),
+                                                constraints:
+                                                    const BoxConstraints(),
                                               ),
                                             ),
                                           ),
@@ -2958,9 +2969,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                 Container(
                                                   height: 2.h,
                                                   width: 2.h,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                  ),
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                      ),
                                                   child: ClipOval(
                                                     child: CachedNetworkImage(
                                                       imageUrl:
@@ -2977,7 +2989,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                           (
                                                             context,
                                                             url,
-                                                          ) => Center(
+                                                          ) => const Center(
                                                             child:
                                                                 CircularProgressIndicator(
                                                                   strokeWidth:
@@ -2989,7 +3001,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                             context,
                                                             url,
                                                             error,
-                                                          ) => Image(
+                                                          ) => const Image(
                                                             image: AssetImage(
                                                               "assets/images/waveeLogoShort.png",
                                                             ),
@@ -3041,7 +3053,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   child: Container(
                                     height: 4.5.h,
                                     width: 27.w,
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                       horizontal: 5,
                                       vertical: 5,
                                     ),
@@ -3074,7 +3086,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                 child: Container(
                                   height: 4.5.h,
                                   width: 27.w,
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     horizontal: 12,
                                     vertical: 5,
                                   ),
@@ -3098,13 +3110,13 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                 .latitude
                                                 .toString();
                                         AppLon =
-                                            busnessviewmodal!
+                                            busnessviewmodal
                                                 .data!
                                                 .business!
                                                 .longitude
                                                 .toString();
                                         selectedUserId =
-                                            busnessviewmodal!.data!.business!.id
+                                            busnessviewmodal.data!.business!.id
                                                 .toString();
 
                                         Get.back();
@@ -3112,7 +3124,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       } else {}
                                     },
                                     padding: EdgeInsets.zero,
-                                    constraints: BoxConstraints(),
+                                    constraints: const BoxConstraints(),
                                   ),
                                 ),
                               ),
@@ -3121,7 +3133,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                 child: Container(
                                   height: 4.5.h,
                                   width: 27.w,
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     horizontal: 12,
                                     vertical: 5,
                                   ),
@@ -3136,15 +3148,6 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       size: 5.w,
                                     ),
                                     onPressed: () {
-                                      print(
-                                        'Hello Id ${busnessviewmodal?.data?.business?.user?.id}',
-                                      );
-                                      print(
-                                        'Mine Id ${loginModel?.data?.user?.id}',
-                                      );
-                                      print(
-                                        'Image is ${busnessviewmodal?.data?.business?.logo}',
-                                      );
                                       Get.to(
                                         MessageScreen(
                                           type: "business",
@@ -3176,7 +3179,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       );
                                     },
                                     padding: EdgeInsets.zero,
-                                    constraints: BoxConstraints(),
+                                    constraints: const BoxConstraints(),
                                   ),
                                 ),
                               ),
@@ -3375,14 +3378,14 @@ class _CommunityScreenState extends State<CommunityScreen>
                                           "${address.address}, ${address.city}, ${address.country}";
                                       showModalBottomSheet(
                                         context: context,
-                                        shape: RoundedRectangleBorder(
+                                        shape: const RoundedRectangleBorder(
                                           borderRadius: BorderRadius.vertical(
                                             top: Radius.circular(20),
                                           ),
                                         ),
                                         builder: (BuildContext context) {
                                           return Container(
-                                            decoration: BoxDecoration(
+                                            decoration: const BoxDecoration(
                                               color: Colors.white,
                                               borderRadius:
                                                   BorderRadius.vertical(
@@ -3395,7 +3398,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                 Container(
                                                   width: 40,
                                                   height: 3,
-                                                  margin: EdgeInsets.only(
+                                                  margin: const EdgeInsets.only(
                                                     top: 12,
                                                     bottom: 20,
                                                   ),
@@ -3407,7 +3410,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                         ),
                                                   ),
                                                 ),
-                                                Padding(
+                                                const Padding(
                                                   padding: EdgeInsets.symmetric(
                                                     horizontal: 20,
                                                   ),
@@ -3427,9 +3430,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                 ),
                                                 SizedBox(height: 0.5.h),
                                                 Container(
-                                                  margin: EdgeInsets.symmetric(
-                                                    horizontal: 16,
-                                                  ),
+                                                  margin:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 16,
+                                                      ),
                                                   decoration: BoxDecoration(
                                                     color: Colors.white,
                                                     borderRadius:
@@ -3441,7 +3445,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                         color: Colors.black
                                                             .withOpacity(0.05),
                                                         blurRadius: 10,
-                                                        offset: Offset(0, 2),
+                                                        offset: const Offset(
+                                                          0,
+                                                          2,
+                                                        ),
                                                       ),
                                                     ],
                                                   ),
@@ -3451,12 +3458,12 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                           ? Container(
                                                             child: ListTile(
                                                               contentPadding:
-                                                                  EdgeInsets.symmetric(
+                                                                  const EdgeInsets.symmetric(
                                                                     horizontal:
                                                                         16,
                                                                     vertical: 6,
                                                                   ),
-                                                              leading: Container(
+                                                              leading: SizedBox(
                                                                 width: 32,
                                                                 height: 30,
                                                                 child: ClipRRect(
@@ -3489,7 +3496,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                                 6,
                                                                               ),
                                                                         ),
-                                                                        child: Icon(
+                                                                        child: const Icon(
                                                                           Icons
                                                                               .map,
                                                                           color:
@@ -3502,7 +3509,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                   ),
                                                                 ),
                                                               ),
-                                                              title: Text(
+                                                              title: const Text(
                                                                 "Open in Apple Maps",
                                                                 style: TextStyle(
                                                                   fontSize: 17,
@@ -3541,7 +3548,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                               },
                                                             ),
                                                           )
-                                                          : SizedBox(),
+                                                          : const SizedBox(),
                                                       Container(
                                                         height: 0.5,
                                                         color: Colors.grey[300],
@@ -3549,11 +3556,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                       Container(
                                                         child: ListTile(
                                                           contentPadding:
-                                                              EdgeInsets.symmetric(
+                                                              const EdgeInsets.symmetric(
                                                                 horizontal: 16,
                                                                 vertical: 6,
                                                               ),
-                                                          leading: Container(
+                                                          leading: SizedBox(
                                                             width: 32,
                                                             height: 30,
                                                             child: ClipRRect(
@@ -3585,7 +3592,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                             6,
                                                                           ),
                                                                     ),
-                                                                    child: Icon(
+                                                                    child: const Icon(
                                                                       Icons
                                                                           .location_on,
                                                                       color:
@@ -3598,7 +3605,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                               ),
                                                             ),
                                                           ),
-                                                          title: Text(
+                                                          title: const Text(
                                                             "Open in Google Maps",
                                                             style: TextStyle(
                                                               fontSize: 17,
@@ -3642,11 +3649,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                       Container(
                                                         child: ListTile(
                                                           contentPadding:
-                                                              EdgeInsets.symmetric(
+                                                              const EdgeInsets.symmetric(
                                                                 horizontal: 16,
                                                                 vertical: 6,
                                                               ),
-                                                          leading: Container(
+                                                          leading: SizedBox(
                                                             width: 32,
                                                             height: 30,
                                                             child: ClipRRect(
@@ -3696,7 +3703,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                 CrossAxisAlignment
                                                                     .start,
                                                             children: [
-                                                              Text(
+                                                              const Text(
                                                                 "Copy Address",
                                                                 style: TextStyle(
                                                                   fontSize: 17,
@@ -3708,7 +3715,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                           .black,
                                                                 ),
                                                               ),
-                                                              SizedBox(
+                                                              const SizedBox(
                                                                 height: 2,
                                                               ),
                                                               Text(
@@ -3742,11 +3749,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                               context,
                                                             ).showSnackBar(
                                                               SnackBar(
-                                                                content: Text(
+                                                                content: const Text(
                                                                   "Address copied to clipboard",
                                                                 ),
                                                                 duration:
-                                                                    Duration(
+                                                                    const Duration(
                                                                       seconds:
                                                                           2,
                                                                     ),
@@ -3776,9 +3783,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                 SizedBox(height: 0.5.h),
                                                 Container(
                                                   width: double.infinity,
-                                                  margin: EdgeInsets.symmetric(
-                                                    horizontal: 16,
-                                                  ),
+                                                  margin:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 16,
+                                                      ),
                                                   child: ElevatedButton(
                                                     onPressed: () {
                                                       Get.back();
@@ -3790,7 +3798,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                           Colors.black,
                                                       elevation: 0,
                                                       padding:
-                                                          EdgeInsets.symmetric(
+                                                          const EdgeInsets.symmetric(
                                                             vertical: 12,
                                                           ),
                                                       shape: RoundedRectangleBorder(
@@ -3805,7 +3813,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                         ),
                                                       ),
                                                     ),
-                                                    child: Text(
+                                                    child: const Text(
                                                       "Done",
                                                       style: TextStyle(
                                                         fontSize: 17,
@@ -3911,11 +3919,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                                 ),
                                 Divider(color: Colors.grey.shade300),
                                 ExpansionTile(
-                                  leading: Icon(
+                                  leading: const Icon(
                                     Icons.access_time,
                                     color: Colors.grey,
                                   ),
-                                  title: Text(
+                                  title: const Text(
                                     "Opening Hours",
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
@@ -3925,11 +3933,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     _getCurrentDayStatus(),
                                     style: TextStyle(color: Colors.grey[600]),
                                   ),
-                                  shape: Border(),
-                                  collapsedShape: Border(),
+                                  shape: const Border(),
+                                  collapsedShape: const Border(),
                                   children: [
                                     Container(
-                                      padding: EdgeInsets.symmetric(
+                                      padding: const EdgeInsets.symmetric(
                                         horizontal: 16,
                                         vertical: 8,
                                       ),
@@ -4064,9 +4072,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                 InkWell(
                                   onTap: () {
                                     Get.back();
-                                    print(
-                                      "Business Chceck ID: ${busnessviewmodal?.data?.nearbyBusinesses?[i].id}",
-                                    );
+
                                     BussinessViewProfile(
                                       (busnessviewmodal
                                               ?.data
@@ -4077,12 +4083,14 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   },
                                   child: Container(
                                     width: 110.w,
-                                    margin: EdgeInsets.symmetric(vertical: 4),
-                                    padding: EdgeInsets.all(12),
+                                    margin: const EdgeInsets.symmetric(
+                                      vertical: 4,
+                                    ),
+                                    padding: const EdgeInsets.all(12),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(12),
-                                      boxShadow: [
+                                      boxShadow: const [
                                         BoxShadow(
                                           color: Colors.black12,
                                           blurRadius: 2,
@@ -4096,9 +4104,6 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       children: [
                                         InkWell(
                                           onTap: () {
-                                            print(
-                                              "Business ID: ${busnessviewmodal?.data?.nearbyBusinesses?[i].id}",
-                                            );
                                             BussinessViewProfile(
                                               (busnessviewmodal
                                                       ?.data
@@ -4118,7 +4123,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: 12),
+                                        const SizedBox(width: 12),
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment:
@@ -4136,14 +4141,14 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                         .nearbyBusinesses![i]
                                                         .businessName!
                                                     : "N/A",
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.bold,
                                                   fontFamily:
                                                       AppConstants.manrope,
                                                 ),
                                               ),
-                                              SizedBox(height: 4),
+                                              const SizedBox(height: 4),
                                               Container(
                                                 decoration: BoxDecoration(
                                                   borderRadius:
@@ -4195,11 +4200,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                   ),
                                                 ),
                                               ),
-                                              SizedBox(height: 4),
+                                              const SizedBox(height: 4),
                                               RichText(
                                                 text: TextSpan(
                                                   children: [
-                                                    TextSpan(
+                                                    const TextSpan(
                                                       text: "Distance :- ",
                                                       style: TextStyle(
                                                         color: Colors.black,
@@ -4296,7 +4301,6 @@ class _CommunityScreenState extends State<CommunityScreen>
 
       DateTime endTime = DateTime.now();
       Duration totalTime = endTime.difference(startTime);
-    } catch (e, stackTrace) {
     } finally {
       if (mounted) {
         setState(() {
@@ -4372,17 +4376,13 @@ class _CommunityScreenState extends State<CommunityScreen>
                 final String businessId =
                     (busnessviewmodal?.data?.business?.id).toString();
                 Get.back();
-                await Future.delayed(Duration(milliseconds: 100));
+                await Future.delayed(const Duration(milliseconds: 100));
                 BussinessViewProfile(businessId);
               } else if (response.statusCode == 429) {
                 setState(() {
                   isSending = true;
                 });
               } else {
-                print(
-                  "Internal Server Error - Status Code: ${response.statusCode}",
-                );
-
                 EasyLoading.showError("Internal Server Error");
               }
             })
@@ -4548,7 +4548,7 @@ class _CommunityScreenState extends State<CommunityScreen>
 
                 Get.back();
 
-                await Future.delayed(Duration(milliseconds: 500));
+                await Future.delayed(const Duration(milliseconds: 500));
                 _showFavouriteBottomSheet();
               } else {
                 setState(() {
@@ -4790,18 +4790,18 @@ class _CommunityScreenState extends State<CommunityScreen>
               displayUrl = uri.host;
 
               if (displayUrl.length > 30) {
-                displayUrl = displayUrl.substring(0, 27) + '...';
+                displayUrl = '${displayUrl.substring(0, 27)}...';
               }
             } catch (e) {
               displayUrl = linkUrl;
               if (displayUrl.length > 30) {
-                displayUrl = displayUrl.substring(0, 27) + '...';
+                displayUrl = '${displayUrl.substring(0, 27)}...';
               }
             }
           }
 
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+            padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey.shade300),
@@ -4822,14 +4822,14 @@ class _CommunityScreenState extends State<CommunityScreen>
                     } else {}
                   } else {}
                 },
-                contentPadding: EdgeInsets.symmetric(
+                contentPadding: const EdgeInsets.symmetric(
                   horizontal: 8,
                   vertical: 4,
                 ),
                 leading: Container(
                   width: 15.w,
                   height: 7.h,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
@@ -4845,9 +4845,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                       imageUrl: items[index] ?? '',
                       placeholder:
                           (context, url) =>
-                              Center(child: CircularProgressIndicator()),
+                              const Center(child: CircularProgressIndicator()),
                       errorWidget:
-                          (context, url, error) => Image(
+                          (context, url, error) => const Image(
                             image: AssetImage(
                               "assets/images/waveeLogoShort.png",
                             ),
@@ -4867,7 +4867,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                 subtitle: Row(
                   children: [
                     Icon(Icons.link, size: 16.sp, color: Colors.blue),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         displayUrl.isNotEmpty
@@ -4888,7 +4888,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                     ),
                   ],
                 ),
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.arrow_forward_ios,
                   size: 16,
                   color: Colors.black54,
@@ -4919,7 +4919,7 @@ class _CommunityScreenState extends State<CommunityScreen>
               return Container(
                 width: 44.w,
                 height: 30.h,
-                margin: EdgeInsets.symmetric(horizontal: 4),
+                margin: const EdgeInsets.symmetric(horizontal: 4),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: Colors.grey.shade300, width: 1.5),
@@ -4944,18 +4944,20 @@ class _CommunityScreenState extends State<CommunityScreen>
                             },
                             child:
                                 item.file == null || item.file!.isEmpty
-                                    ? Center(child: CircularProgressIndicator())
+                                    ? const Center(
+                                      child: CircularProgressIndicator(),
+                                    )
                                     : CachedNetworkImage(
                                       imageUrl: item.file!,
                                       fit: BoxFit.cover,
                                       width: double.infinity,
                                       height: double.infinity,
                                       placeholder:
-                                          (context, url) => Center(
+                                          (context, url) => const Center(
                                             child: CircularProgressIndicator(),
                                           ),
                                       errorWidget:
-                                          (context, url, error) => Icon(
+                                          (context, url, error) => const Icon(
                                             Icons.broken_image,
                                             size: 40,
                                             color: Colors.grey,
@@ -4974,7 +4976,7 @@ class _CommunityScreenState extends State<CommunityScreen>
   Widget buildServiceListView(List<Services> services) {
     if (busnessviewmodal?.data?.services == null ||
         busnessviewmodal!.data!.services!.isEmpty) {
-      return Center();
+      return const Center();
     }
 
     return Column(
@@ -4985,7 +4987,7 @@ class _CommunityScreenState extends State<CommunityScreen>
           String imageUrl = services[index].images ?? '';
 
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+            padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey.shade300),
@@ -4994,28 +4996,22 @@ class _CommunityScreenState extends State<CommunityScreen>
               ),
               child: ListTile(
                 onTap: () {
-                  print(
-                    "service Detail ID Ave che che : ${services?[index].id ?? ''}",
-                  );
-                  print(
-                    "service Detail ID Ave che che : ${busnessviewmodal?.data?.business?.id.toString()}",
-                  );
                   Get.to(
                     () => ServiceDetailsPage(
-                      serviceID: services?[index].id.toString() ?? "",
+                      serviceID: services[index].id.toString() ?? "",
                       businessID:
                           busnessviewmodal?.data?.business?.id.toString() ?? "",
                     ),
                   );
                 },
-                contentPadding: EdgeInsets.symmetric(
+                contentPadding: const EdgeInsets.symmetric(
                   horizontal: 8,
                   vertical: 4,
                 ),
                 leading: Container(
                   width: 15.w,
                   height: 7.h,
-                  decoration: BoxDecoration(shape: BoxShape.circle),
+                  decoration: const BoxDecoration(shape: BoxShape.circle),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(30),
                     child: CachedNetworkImage(
@@ -5026,7 +5022,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                       fit: BoxFit.cover,
                       placeholder:
                           (context, url) =>
-                              Center(child: CircularProgressIndicator()),
+                              const Center(child: CircularProgressIndicator()),
                       errorWidget:
                           (context, url, error) => Icon(
                             Icons.home_repair_service,
@@ -5049,7 +5045,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
                         Text(
@@ -5060,7 +5056,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                             color: Colors.green,
                           ),
                         ),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Expanded(
                           child: Text(
                             "Price: ${services[index].price ?? 'N/A'}",
@@ -5075,7 +5071,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                         ),
                       ],
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
                         Icon(
@@ -5083,7 +5079,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                           color: Colors.blue,
                           size: 16.sp,
                         ),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Expanded(
                           child: Text(
                             "Availability: ${services[index].availability ?? 'N/A'}",
@@ -5100,7 +5096,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                     ),
                   ],
                 ),
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.arrow_forward_ios,
                   size: 16,
                   color: Colors.black54,
@@ -5116,7 +5112,7 @@ class _CommunityScreenState extends State<CommunityScreen>
   Widget buildEventListView() {
     if (busnessviewmodal?.data?.events == null ||
         busnessviewmodal!.data!.events!.isEmpty) {
-      return Center();
+      return const Center();
     }
 
     return Column(
@@ -5133,7 +5129,7 @@ class _CommunityScreenState extends State<CommunityScreen>
           return StatefulBuilder(
             builder: (context, setState) {
               void showRequestDialog() {
-                if (busnessviewmodal?.data?.events?[index]?.requestEvent
+                if (busnessviewmodal?.data?.events?[index].requestEvent
                         ?.toLowerCase() ==
                     "pending") {
                   return;
@@ -5151,7 +5147,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Container(
-                            padding: EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(16),
@@ -5168,7 +5164,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       Align(
                                         alignment: Alignment.center,
                                         child: Padding(
-                                          padding: EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                             vertical: 10,
                                           ),
                                           child: Text(
@@ -5184,7 +5180,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                           ),
                                         ),
                                       ),
-                                      Align(
+                                      const Align(
                                         alignment: Alignment.topRight,
                                         child: CloseButton(),
                                       ),
@@ -5194,39 +5190,39 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     busnessviewmodal
                                             ?.data
                                             ?.events?[index]
-                                            ?.title ??
+                                            .title ??
                                         "N/A",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontFamily: AppConstants.manrope,
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black38,
                                     ),
                                   ),
-                                  SizedBox(height: 10),
+                                  const SizedBox(height: 10),
                                   Text(
                                     busnessviewmodal
                                                 ?.data
                                                 ?.events?[index]
-                                                ?.eventDate !=
+                                                .eventDate !=
                                             null
                                         ? DateFormat.jm().format(
                                           DateTime.parse(
                                             busnessviewmodal!
                                                 .data!
-                                                .events![index]!
+                                                .events![index]
                                                 .eventDate!,
                                           ),
                                         )
                                         : "N/A",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontFamily: AppConstants.manrope,
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black38,
                                     ),
                                   ),
-                                  SizedBox(height: 12),
+                                  const SizedBox(height: 12),
                                   TextFormField(
                                     controller: requestController,
                                     maxLines: 3,
@@ -5234,38 +5230,38 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       hintText: "Enter your request...",
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
+                                        borderSide: const BorderSide(
                                           color: Colors.black26,
                                         ),
                                       ),
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
+                                        borderSide: const BorderSide(
                                           color: Colors.black26,
                                         ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
+                                        borderSide: const BorderSide(
                                           color: Colors.blue,
                                         ),
                                       ),
                                       errorBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
+                                        borderSide: const BorderSide(
                                           color: Colors.red,
                                         ),
                                       ),
                                       focusedErrorBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
+                                        borderSide: const BorderSide(
                                           color: Colors.red,
                                         ),
                                       ),
                                       fillColor: Colors.white,
                                       filled: true,
                                     ),
-                                    style: TextStyle(color: Colors.black),
+                                    style: const TextStyle(color: Colors.black),
                                     validator: (value) {
                                       if (value == null ||
                                           value.trim().isEmpty) {
@@ -5274,7 +5270,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       return null;
                                     },
                                   ),
-                                  SizedBox(height: 20),
+                                  const SizedBox(height: 20),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -5320,7 +5316,10 @@ class _CommunityScreenState extends State<CommunityScreen>
               }
 
               return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 3.0,
+                  vertical: 4.0,
+                ),
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey.shade300),
@@ -5329,8 +5328,6 @@ class _CommunityScreenState extends State<CommunityScreen>
                   ),
                   child: ListTile(
                     onTap: () {
-                      // showRequestDialog();
-                      print("Event id Aa rahi hai $eventId");
                       Get.to(
                         EventDetail(
                           eventID: eventId,
@@ -5338,19 +5335,19 @@ class _CommunityScreenState extends State<CommunityScreen>
                               busnessviewmodal
                                   ?.data
                                   ?.events?[index]
-                                  ?.requestEvent ??
+                                  .requestEvent ??
                               "",
                         ),
                       );
                     },
-                    contentPadding: EdgeInsets.symmetric(
+                    contentPadding: const EdgeInsets.symmetric(
                       horizontal: 8,
                       vertical: 4,
                     ),
                     leading: Container(
                       width: 15.w,
                       height: 7.h,
-                      decoration: BoxDecoration(shape: BoxShape.circle),
+                      decoration: const BoxDecoration(shape: BoxShape.circle),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(30),
                         child:
@@ -5363,7 +5360,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                           .events![index]
                                           .attachment!,
                                   placeholder:
-                                      (context, url) => Center(
+                                      (context, url) => const Center(
                                         child: CircularProgressIndicator(),
                                       ),
                                   errorWidget:
@@ -5397,7 +5394,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 4),
+                        const SizedBox(height: 4),
                         Row(
                           children: [
                             Icon(
@@ -5405,10 +5402,14 @@ class _CommunityScreenState extends State<CommunityScreen>
                               color: Colors.red,
                               size: 16.sp,
                             ),
-                            SizedBox(width: 4),
+                            const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                "${busnessviewmodal?.data?.events?[index].location ?? 'No Location'}",
+                                busnessviewmodal
+                                        ?.data
+                                        ?.events?[index]
+                                        .location ??
+                                    'No Location',
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   color: Colors.grey[600],
@@ -5420,7 +5421,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                             ),
                           ],
                         ),
-                        SizedBox(height: 4),
+                        const SizedBox(height: 4),
                         Row(
                           children: [
                             Icon(
@@ -5428,12 +5429,13 @@ class _CommunityScreenState extends State<CommunityScreen>
                               color: Colors.blue,
                               size: 16.sp,
                             ),
-                            SizedBox(width: 4),
+                            const SizedBox(width: 4),
                             Expanded(
                               child: Text(
                                 (String? eventDate) {
-                                  if (eventDate == null || eventDate.isEmpty)
+                                  if (eventDate == null || eventDate.isEmpty) {
                                     return "N/A";
+                                  }
                                   DateTime parsedDate = DateTime.parse(
                                     eventDate,
                                   );
@@ -5461,7 +5463,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                     ),
                     trailing:
                         isLoading
-                            ? CircularProgressIndicator(color: Colors.blue)
+                            ? const CircularProgressIndicator(
+                              color: Colors.blue,
+                            )
                             : InkWell(
                               onTap: () {
                                 showRequestDialog();
@@ -5470,17 +5474,17 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   busnessviewmodal
                                               ?.data
                                               ?.events?[index]
-                                              ?.requestEvent
+                                              .requestEvent
                                               ?.toLowerCase() ==
                                           "pending"
-                                      ? Text(
+                                      ? const Text(
                                         "Requested",
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.orange,
                                         ),
                                       )
-                                      : Icon(
+                                      : const Icon(
                                         Icons.arrow_forward_ios,
                                         size: 16,
                                         color: Colors.black54,
@@ -5499,7 +5503,7 @@ class _CommunityScreenState extends State<CommunityScreen>
   Widget buildProductList(List<Products> products) {
     if (busnessviewmodal?.data?.products == null ||
         busnessviewmodal!.data!.products!.isEmpty) {
-      return Center();
+      return const Center();
     }
 
     return Column(
@@ -5510,7 +5514,7 @@ class _CommunityScreenState extends State<CommunityScreen>
           final product = products[index];
 
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+            padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey.shade300),
@@ -5526,7 +5530,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                     ),
                   );
                 },
-                contentPadding: EdgeInsets.symmetric(
+                contentPadding: const EdgeInsets.symmetric(
                   horizontal: 8,
                   vertical: 4,
                 ),
@@ -5578,7 +5582,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
                         if (product.offerPrice != null)
@@ -5591,7 +5595,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                               fontFamily: AppConstants.manrope,
                             ),
                           ),
-                        if (product.offerPrice != null) SizedBox(width: 6),
+                        if (product.offerPrice != null)
+                          const SizedBox(width: 6),
                         Text(
                           "£${product.price}",
                           style: TextStyle(
@@ -5609,7 +5614,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                         ),
                       ],
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       product.description ?? '',
                       maxLines: 2,
@@ -5621,7 +5626,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                     ),
                   ],
                 ),
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.arrow_forward_ios,
                   size: 16,
                   color: Colors.black54,
@@ -5703,7 +5708,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     final isToday = day == _getDayName(DateTime.now().weekday);
 
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       decoration:
           isToday
               ? BoxDecoration(
@@ -5762,7 +5767,7 @@ class _CommunityScreenState extends State<CommunityScreen>
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Color(0xFFE5E5E5), width: 1),
+            border: Border.all(color: const Color(0xFFE5E5E5), width: 1),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -5794,7 +5799,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                   ],
                 ),
               ),
-              Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
+              const Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: Colors.black54,
+              ),
             ],
           ),
         ),
@@ -5839,7 +5848,7 @@ Widget buildListTile({
             ],
           ),
         ),
-        Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
+        const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
       ],
     ),
   );

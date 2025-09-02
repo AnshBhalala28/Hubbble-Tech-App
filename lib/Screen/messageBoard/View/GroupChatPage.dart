@@ -299,9 +299,7 @@
 //                               final bool isCurrentUser =
 //                                   senderId == loggedInUserId;
 //
-//                               log(
-//                                 "isCurrentUser: ${isCurrentUser ? 'true' : 'false'}",
-//                               );
+//
 //
 //                               return Padding(
 //                                 padding: EdgeInsets.only(bottom: 10),

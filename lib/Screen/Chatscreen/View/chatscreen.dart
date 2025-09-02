@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -83,9 +82,6 @@ class _ChatScreenState extends State<ChatScreen> {
       setState(() {
         AppLat = position.latitude.toString();
         AppLon = position.longitude.toString();
-        print(
-          "Latitude: ${position.latitude}, Longitude: ${position.longitude}",
-        );
       });
     }
   }
@@ -179,17 +175,17 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: Bottom_bar(selected: 3),
+      bottomNavigationBar: BottomBar(selected: 3),
       body: Container(
         width: double.infinity,
         height: Get.height,
         decoration: BoxDecoration(
-          color: Color(0xfff0f0f0),
-          borderRadius: BorderRadius.only(
+          color: const Color(0xfff0f0f0),
+          borderRadius: const BorderRadius.only(
             topRight: Radius.circular(45),
             topLeft: Radius.circular(45),
           ),
-          border: Border.all(color: Color(0xffdfe0e6), width: 1),
+          border: Border.all(color: const Color(0xffdfe0e6), width: 1),
         ),
         child: SingleChildScrollView(
           child: Padding(
@@ -207,7 +203,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Container(
                       width: 35.w,
                       height: 5.h,
@@ -224,7 +220,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: DropdownButton<String>(
                           value: selectedValue,
                           isExpanded: true,
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.keyboard_arrow_down_rounded,
                             color: Colors.grey,
                           ),
@@ -278,7 +274,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 if (selectedValue == "Businesses") ...[
                   chatStories?.data?.length == 0 ||
                           chatStories?.data?.length == null
-                      ? SizedBox()
+                      ? const SizedBox()
                       : Text(
                         "Business Spotlight",
                         style: TextStyle(
@@ -289,17 +285,17 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                   chatStories?.data?.length == 0 ||
                           chatStories?.data?.length == null
-                      ? SizedBox()
+                      ? const SizedBox()
                       : SizedBox(height: 1.h),
                   chatStories?.data?.length == 0 ||
                           chatStories?.data?.length == null
-                      ? SizedBox()
+                      ? const SizedBox()
                       : SizedBox(
                         height: 17.h,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           shrinkWrap: true,
-                          physics: ClampingScrollPhysics(),
+                          physics: const ClampingScrollPhysics(),
                           itemCount: chatStories?.data?.length,
                           itemBuilder: (context, index) {
                             final item = chatStories?.data?[index];
@@ -338,7 +334,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                             width: 9.h,
                                             fit: BoxFit.cover,
                                             placeholder:
-                                                (context, url) => Center(
+                                                (context, url) => const Center(
                                                   child:
                                                       CircularProgressIndicator(
                                                         color:
@@ -377,21 +373,23 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                   chatStories?.data?.length == 0 ||
                           chatStories?.data?.length == null
-                      ? SizedBox()
+                      ? const SizedBox()
                       : SizedBox(height: 1.h),
                   chatStories?.data?.length == 0 ||
                           chatStories?.data?.length == null
-                      ? SizedBox()
+                      ? const SizedBox()
                       : Container(
                         height: 0.14,
                         width: double.infinity,
-                        decoration: BoxDecoration(color: AppColors.batanColor),
+                        decoration: const BoxDecoration(
+                          color: AppColors.batanColor,
+                        ),
                       ),
                   SizedBox(height: 2.h),
                   if (chatModel?.data?.businessUsers == null ||
                       chatModel?.data?.businessUsers == "" ||
                       chatModel?.data?.businessUsers == 0)
-                    Center(
+                    const Center(
                       child: CircularProgressIndicator(
                         color: AppColors.maincolor,
                       ),
@@ -453,12 +451,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                               user.business?.chatStatus ?? 0,
                                         ),
                                       );
-                                      log(
-                                        "Tapped Business User ID: ${user.id.toString() ?? ''}",
-                                      );
-                                      log(
-                                        "Tapped Business User ID ${user.business?.chatStatus ?? 0}",
-                                      );
+
                                       ChatApi();
                                     },
                                     child: Stack(
@@ -477,7 +470,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                               color: Colors.grey,
                                               width: 0.5,
                                             ),
-                                            boxShadow: [
+                                            boxShadow: const [
                                               BoxShadow(
                                                 color: Colors.black12,
                                                 blurRadius: 4,
@@ -557,7 +550,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                                           user.isOnline ==
                                                                   "online"
                                                               ? Text(
-                                                                user.isOnline.toString().capitalizeFirst ??
+                                                                user.isOnline
+                                                                        .toString()
+                                                                        .capitalizeFirst ??
                                                                     "Offline",
                                                                 style: TextStyle(
                                                                   fontSize:
@@ -572,9 +567,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                                               )
                                                               : Text(
                                                                 // formatLastOnline(
-                                                                  user?.lastOnlineAt
-                                                                          .toString() ??
-                                                                      "",
+                                                                user?.lastOnlineAt
+                                                                        .toString() ??
+                                                                    "",
                                                                 // ),
                                                                 style: TextStyle(
                                                                   fontSize:
@@ -599,7 +594,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                                           FontWeight.bold,
                                                       fontFamily:
                                                           AppConstants.manrope,
-                                                      color: Color(0XFF000000),
+                                                      color: const Color(
+                                                        0XFF000000,
+                                                      ),
                                                     ),
                                                   ),
                                                   SizedBox(height: 0.5.h),
@@ -698,7 +695,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         isLoading
                             ? Container(
                               margin: EdgeInsets.only(top: 20.h),
-                              child: Center(
+                              child: const Center(
                                 child: CircularProgressIndicator(
                                   color: AppColors.maincolor,
                                 ),
@@ -756,7 +753,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
                                 return ListView.builder(
                                   shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
+                                  physics: const NeverScrollableScrollPhysics(),
                                   padding: EdgeInsets.zero,
                                   itemCount: filteredList.length,
                                   itemBuilder: (context, index) {
@@ -788,9 +785,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 'Not Available',
                                           ),
                                         );
-                                        log(
-                                          "Tapped Concierge ID: ${concierge.id.toString() ?? ''}",
-                                        );
+
                                         // ChatApi();
                                       },
                                       child: Stack(
@@ -808,7 +803,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 color: Colors.grey,
                                                 width: 0.5,
                                               ),
-                                              boxShadow: [
+                                              boxShadow: const [
                                                 BoxShadow(
                                                   color: Colors.black12,
                                                   blurRadius: 4,
@@ -961,7 +956,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                         fontFamily:
                                                             AppConstants
                                                                 .manrope,
-                                                        color: Color(
+                                                        color: const Color(
                                                           0XFF000000,
                                                         ),
                                                       ),
@@ -1021,7 +1016,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                   ],
                                                 ),
                                                 concierge.unreadCount == 0
-                                                    ? Container(
+                                                    ? const SizedBox(
                                                       height: 1,
                                                       width: 1,
                                                     )
@@ -1142,7 +1137,7 @@ class _ChatScreenState extends State<ChatScreen> {
       "latitude": AppLat,
       "longitude": AppLon,
     };
-    log("data jay che $data");
+
     checkInternet().then((internet) async {
       if (internet) {
         try {
@@ -1159,8 +1154,7 @@ class _ChatScreenState extends State<ChatScreen> {
               isLoading = false;
             });
           }
-        } catch (e, stackTrace) {
-          log("stackTracestackTracestackTracestackTrace$stackTrace");
+        } catch (e) {
           if (mounted) {
             setState(() {
               isLoading = false;
@@ -1176,6 +1170,7 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
+  @override
   void dispose() {
     _timer!.cancel();
     super.dispose();

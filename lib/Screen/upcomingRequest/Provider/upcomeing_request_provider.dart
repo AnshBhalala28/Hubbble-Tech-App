@@ -10,7 +10,7 @@ class MyRequestProvider extends ChangeNotifier {
     try {
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final dio = await DioHelper.getDio();

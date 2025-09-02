@@ -57,26 +57,26 @@ class _AppUserFriendProfileScreenState
         leading: IconButton(
           icon: Container(
             padding: EdgeInsets.all(1.w),
-            decoration: BoxDecoration(),
+            decoration: const BoxDecoration(),
             child: Icon(Icons.arrow_back, color: Colors.black87, size: 22.sp),
           ),
           onPressed: () => Get.back(),
         ),
       ),
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Stack(
           children: [
             Column(
               children: [
                 Container(
                   width: double.infinity,
-                  decoration: BoxDecoration(color: Colors.white),
+                  decoration: const BoxDecoration(color: Colors.white),
                   child: Column(
                     children: [
                       SizedBox(height: 2.h),
                       Container(
-                        padding: EdgeInsets.all(3),
+                        padding: const EdgeInsets.all(3),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
@@ -145,7 +145,7 @@ class _AppUserFriendProfileScreenState
                             ),
                           ),
                         ),
-                        Divider(),
+                        const Divider(),
                         buildProfileDetailItem(
                           Icons.email_outlined,
                           "Email",
@@ -219,7 +219,7 @@ class _AppUserFriendProfileScreenState
           elevation: 0,
           backgroundColor: Colors.transparent,
           child: Container(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
@@ -227,7 +227,7 @@ class _AppUserFriendProfileScreenState
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
                   "Remove Friend",
                   style: TextStyle(
@@ -235,14 +235,14 @@ class _AppUserFriendProfileScreenState
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Text(
                   "Are you sure you want to delete this Friend?",
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 14.sp),
                 ),
-                SizedBox(height: 20),
-                Divider(thickness: 1),
+                const SizedBox(height: 20),
+                const Divider(thickness: 1),
                 IntrinsicHeight(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -261,7 +261,7 @@ class _AppUserFriendProfileScreenState
                           ),
                         ),
                       ),
-                      VerticalDivider(thickness: 1),
+                      const VerticalDivider(thickness: 1),
                       Expanded(
                         child: TextButton(
                           onPressed: () {
@@ -353,7 +353,7 @@ class _AppUserFriendProfileScreenState
             });
 
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+              const SnackBar(
                 content: Text("Friend deleted successfully!"),
                 backgroundColor: AppColors.maincolor,
               ),

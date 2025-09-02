@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -213,7 +211,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                               setState(() {
                                 selectedType = value;
                               });
-                              print("Selected: $value");
+
                               OrderListViewApi(
                                 selectedType.toString().camelCase ?? "",
                               );
@@ -225,7 +223,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            offset: Offset(0, 45),
+                            offset: const Offset(0, 45),
                             itemBuilder:
                                 (BuildContext context) => [
                                   PopupMenuItem(
@@ -255,7 +253,9 @@ class _Order_ScreenState extends State<Order_Screen> {
                                 ],
                             child: Container(
                               alignment: Alignment.center,
-                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -432,7 +432,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                   itemCount:
                                       myOrderModel?.data?.data?.length ?? 0,
                                   shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
+                                  physics: const NeverScrollableScrollPhysics(),
                                   itemBuilder: (
                                     BuildContext context,
                                     int index,
@@ -459,9 +459,6 @@ class _Order_ScreenState extends State<Order_Screen> {
                                                   orderProduct.id?.toString() ??
                                                   "",
                                             ),
-                                          );
-                                          log(
-                                            'Order Product ID: ${orderProduct.id}',
                                           );
                                         }
                                       },
@@ -492,7 +489,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                                 children: [
                                                   Row(
                                                     children: [
-                                                      Container(
+                                                      SizedBox(
                                                         height: 15.h,
                                                         width: 30.w,
                                                         child: ClipRRect(
@@ -511,7 +508,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                                                 (
                                                                   context,
                                                                   url,
-                                                                ) => Center(
+                                                                ) => const Center(
                                                                   child:
                                                                       CircularProgressIndicator(),
                                                                 ),
@@ -520,7 +517,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                                                   context,
                                                                   url,
                                                                   error,
-                                                                ) => Image(
+                                                                ) => const Image(
                                                                   image: AssetImage(
                                                                     "assets/images/waveeLogoShort.png",
                                                                   ),
@@ -529,7 +526,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                                         ),
                                                       ),
                                                       SizedBox(width: 1.h),
-                                                      Container(
+                                                      SizedBox(
                                                         height: 15.h,
                                                         width: 55.w,
                                                         child: Column(
@@ -576,7 +573,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                                                         ?.title
                                                                         ?.capitalizeFirst ??
                                                                     "",
-                                                                style: TextStyle(
+                                                                style: const TextStyle(
                                                                   fontSize: 18,
                                                                   fontWeight:
                                                                       FontWeight
@@ -596,7 +593,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                                                       .topLeft,
                                                               child: Text(
                                                                 '#ORDERNO${order?.orderNo ?? ""}',
-                                                                style: TextStyle(
+                                                                style: const TextStyle(
                                                                   color:
                                                                       Colors
                                                                           .grey,
@@ -628,14 +625,14 @@ class _Order_ScreenState extends State<Order_Screen> {
                                                                             .manrope,
                                                                   ),
                                                                 ),
-                                                                Spacer(),
+                                                                const Spacer(),
                                                                 Text(
                                                                   formatDateTime(
                                                                     orderProduct
                                                                             ?.createdAt ??
                                                                         "",
                                                                   ),
-                                                                  style: TextStyle(
+                                                                  style: const TextStyle(
                                                                     color:
                                                                         Colors
                                                                             .grey,
@@ -675,7 +672,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                               padding: const EdgeInsets.only(top: 8.0),
                               itemCount: myOrderModel?.data?.data?.length ?? 0,
                               shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
+                              physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (BuildContext context, int index) {
                                 final order = myOrderModel?.data?.data?[index];
                                 final orderProduct =
@@ -695,9 +692,6 @@ class _Order_ScreenState extends State<Order_Screen> {
                                           orderProductID:
                                               orderProduct.id?.toString() ?? "",
                                         ),
-                                      );
-                                      log(
-                                        'OrderProduct ID: ${orderProduct.id}',
                                       );
                                     }
                                   },
@@ -723,7 +717,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                             children: [
                                               Row(
                                                 children: [
-                                                  Container(
+                                                  SizedBox(
                                                     height: 15.h,
                                                     width: 30.w,
                                                     child: ClipRRect(
@@ -742,7 +736,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                                             (
                                                               context,
                                                               url,
-                                                            ) => Center(
+                                                            ) => const Center(
                                                               child:
                                                                   CircularProgressIndicator(),
                                                             ),
@@ -751,7 +745,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                                               context,
                                                               url,
                                                               error,
-                                                            ) => Image(
+                                                            ) => const Image(
                                                               image: AssetImage(
                                                                 "assets/images/waveeLogoShort.png",
                                                               ),
@@ -760,7 +754,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                                     ),
                                                   ),
                                                   SizedBox(width: 1.h),
-                                                  Container(
+                                                  SizedBox(
                                                     height: 15.h,
                                                     width: 55.w,
                                                     child: Column(
@@ -807,7 +801,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,
-                                                              style: TextStyle(
+                                                              style: const TextStyle(
                                                                 fontSize: 18,
                                                                 fontWeight:
                                                                     FontWeight
@@ -825,7 +819,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                                               Alignment.topLeft,
                                                           child: Text(
                                                             '#ORDERNO${order?.orderNo ?? ""}',
-                                                            style: TextStyle(
+                                                            style: const TextStyle(
                                                               color:
                                                                   Colors.grey,
                                                               fontFamily:
@@ -854,14 +848,14 @@ class _Order_ScreenState extends State<Order_Screen> {
                                                                         .manrope,
                                                               ),
                                                             ),
-                                                            Spacer(),
+                                                            const Spacer(),
                                                             Text(
                                                               formatDateTime(
                                                                 orderProduct
                                                                         ?.createdAt ??
                                                                     "",
                                                               ),
-                                                              style: TextStyle(
+                                                              style: const TextStyle(
                                                                 color:
                                                                     Colors.grey,
                                                                 fontFamily:
@@ -889,7 +883,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                               },
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                         ],
                       ),
                 ],
@@ -963,7 +957,7 @@ class _Order_ScreenState extends State<Order_Screen> {
         selectedType == "services"
             ? getStatusFromServiceTab(selectedCategory)
             : getStatusFromTab(selectedCategory);
-    log("TYPE$type");
+
     setState(() {
       isLoading1 = true;
     });
@@ -989,7 +983,6 @@ class _Order_ScreenState extends State<Order_Screen> {
                   isLoading = false;
                   isLoading1 = false;
                 });
-                log("Error");
               }
             });
       } else {
@@ -1008,7 +1001,7 @@ class _Order_ScreenState extends State<Order_Screen> {
         selectedType == "services"
             ? getStatusFromServiceTab(selectedCategory)
             : getStatusFromTab(selectedCategory);
-    log("TYPE$type");
+
     setState(() {
       isLoading1 = true;
     });
@@ -1033,7 +1026,6 @@ class _Order_ScreenState extends State<Order_Screen> {
                   isLoading = false;
                   isLoading1 = false;
                 });
-                log("Error");
               }
             });
       } else {

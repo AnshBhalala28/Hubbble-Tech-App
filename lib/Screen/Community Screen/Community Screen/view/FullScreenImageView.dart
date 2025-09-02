@@ -86,7 +86,7 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          Container(
+          SizedBox(
             width: 100.w,
             height: 100.h,
             child: CachedNetworkImage(
@@ -156,12 +156,6 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
             });
 
             _saveLikeStatus(isLiked);
-
-            print(
-              isLiked
-                  ? "Image liked successfully"
-                  : "Image unliked successfully",
-            );
           } else if (response.statusCode == 429) {
             setState(() => isLikeInProgress = false);
           } else {

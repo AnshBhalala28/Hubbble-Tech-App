@@ -241,11 +241,11 @@ class LatestVisitorModal {
   LatestVisitorModal.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -293,7 +293,7 @@ class Data {
     if (json['data'] != null) {
       data = <Data1>[];
       json['data'].forEach((v) {
-        data!.add(new Data1.fromJson(v));
+        data!.add(Data1.fromJson(v));
       });
     }
     firstPageUrl = json['first_page_url'];
@@ -303,7 +303,7 @@ class Data {
     if (json['links'] != null) {
       links = <Links>[];
       json['links'].forEach((v) {
-        links!.add(new Links.fromJson(v));
+        links!.add(Links.fromJson(v));
       });
     }
     nextPageUrl = json['next_page_url'];
@@ -316,7 +316,7 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['current_page'] = this.currentPage;
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
@@ -342,7 +342,7 @@ class Data {
 class Data1 {
   int? id;
   int? userId;
-  Null? gateId;
+  Null gateId;
   int? reasonId;
   int? unitId;
   String? concigereId;
@@ -406,13 +406,12 @@ class Data1 {
     deletedAt = json['deleted_at'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
-    reason =
-        json['reason'] != null ? new Reason.fromJson(json['reason']) : null;
+    user = json['user'] != null ? User.fromJson(json['user']) : null;
+    reason = json['reason'] != null ? Reason.fromJson(json['reason']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['gate_id'] = this.gateId;
@@ -522,14 +521,12 @@ class User {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     addressh =
-        json['addressh'] != null
-            ? new Addressh.fromJson(json['addressh'])
-            : null;
+        json['addressh'] != null ? Addressh.fromJson(json['addressh']) : null;
     profilepath = json['profilepath'].cast<String>();
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['role'] = this.role;
     data['name'] = this.name;
@@ -577,7 +574,7 @@ class Addressh {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['street'] = this.street;
     data['city'] = this.city;
     data['state'] = this.state;
@@ -604,7 +601,7 @@ class Reason {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['reason'] = this.reason;
@@ -628,7 +625,7 @@ class Links {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['url'] = this.url;
     data['label'] = this.label;
     data['active'] = this.active;

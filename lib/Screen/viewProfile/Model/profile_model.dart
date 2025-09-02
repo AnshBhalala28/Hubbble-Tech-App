@@ -10,11 +10,11 @@ class ProfileModel {
   ProfileModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -59,20 +59,18 @@ class Data {
     residentType = json['resident_type'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
-    unit = json['unit'] != null ? new Unit.fromJson(json['unit']) : null;
+    user = json['user'] != null ? User.fromJson(json['user']) : null;
+    unit = json['unit'] != null ? Unit.fromJson(json['unit']) : null;
     building =
-        json['building'] != null
-            ? new Building.fromJson(json['building'])
-            : null;
+        json['building'] != null ? Building.fromJson(json['building']) : null;
     buildingDocument =
         json['building_document'] != null
-            ? new BuildingDocument.fromJson(json['building_document'])
+            ? BuildingDocument.fromJson(json['building_document'])
             : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['create_id'] = this.createId;
@@ -140,7 +138,7 @@ class User {
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     role = json['role'];
-    name = json['name'] != null ? new Name.fromJson(json['name']) : null;
+    name = json['name'] != null ? Name.fromJson(json['name']) : null;
     email = json['email'];
     emailVerifiedAt = json['email_verified_at'];
     dPassword = json['d_password'];
@@ -148,7 +146,7 @@ class User {
     gender = json['gender'];
     dateOfBirth = json['date_of_birth'];
     address =
-        json['address'] != null ? new Address.fromJson(json['address']) : null;
+        json['address'] != null ? Address.fromJson(json['address']) : null;
     fcmToken = json['fcm_token'];
     forgetPassKey = json['forget_pass_key'];
     moduleLock = json['module_lock'];
@@ -160,7 +158,7 @@ class User {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['role'] = this.role;
     if (this.name != null) {
@@ -199,7 +197,7 @@ class Name {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['first_name'] = this.firstName;
     data['last_name'] = this.lastName;
     return data;
@@ -222,7 +220,7 @@ class Address {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['address'] = this.address;
     data['city'] = this.city;
     data['country'] = this.country;
@@ -285,7 +283,7 @@ class Unit {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['building_id'] = this.buildingId;
     data['user_id'] = this.userId;
@@ -352,7 +350,7 @@ class Building {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['building_id'] = this.buildingId;

@@ -288,11 +288,11 @@ class ServiceViewModel {
   ServiceViewModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -319,13 +319,13 @@ class Data {
     if (json['data'] != null) {
       data = <Data1>[];
       json['data'].forEach((v) {
-        data!.add(new Data1.fromJson(v));
+        data!.add(Data1.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['current_page'] = this.currentPage;
     data['per_page'] = this.perPage;
     data['total'] = this.total;
@@ -383,14 +383,14 @@ class Data1 {
     if (json['orderProducts'] != null) {
       orderProducts = <OrderProducts>[];
       json['orderProducts'].forEach((v) {
-        orderProducts!.add(new OrderProducts.fromJson(v));
+        orderProducts!.add(OrderProducts.fromJson(v));
       });
     }
     randomProductImage = json['random_product_image'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['order_no'] = this.orderNo;
@@ -456,11 +456,11 @@ class OrderProducts {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     service =
-        json['service'] != null ? new Service.fromJson(json['service']) : null;
+        json['service'] != null ? Service.fromJson(json['service']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['order_id'] = this.orderId;
     data['user_id'] = this.userId;
@@ -564,7 +564,7 @@ class Service {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['category_id'] = this.categoryId;

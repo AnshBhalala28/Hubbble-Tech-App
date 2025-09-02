@@ -11,13 +11,13 @@ class MyGroupRequestModel {
     if (json['data'] != null) {
       data = <Data>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(Data.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -53,11 +53,11 @@ class Data {
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    group = json['group'] != null ? new Group.fromJson(json['group']) : null;
+    group = json['group'] != null ? Group.fromJson(json['group']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['group_id'] = this.groupId;
     data['user_id'] = this.userId;
@@ -101,7 +101,7 @@ class Group {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['created_by'] = this.createdBy;
     data['name'] = this.name;

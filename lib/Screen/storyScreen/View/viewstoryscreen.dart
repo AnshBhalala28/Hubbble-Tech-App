@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:sizer/sizer.dart';
 
 import '../../../comman/const.dart';
 
@@ -11,12 +9,12 @@ class StoryScreen extends StatelessWidget {
   final int initialIndex;
 
   const StoryScreen({
-    Key? key,
+    super.key,
     required this.storyImages,
     required this.userNames,
     required this.userProfileImages,
     this.initialIndex = 0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +49,7 @@ class StoryScreen extends StatelessWidget {
                         );
                       },
                       errorBuilder: (context, error, stackTrace) {
-                        return Center(
+                        return const Center(
                           child: Icon(Icons.error, color: Colors.red, size: 50),
                         );
                       },
@@ -70,12 +68,12 @@ class StoryScreen extends StatelessWidget {
                           ),
                           onBackgroundImageError:
                               (_, __) =>
-                                  Icon(Icons.person, color: Colors.white),
+                                  const Icon(Icons.person, color: Colors.white),
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text(
                           userNames[index],
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 16,
                             fontFamily: AppConstants.manrope,

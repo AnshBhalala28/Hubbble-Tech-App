@@ -23,7 +23,6 @@ import 'package:wavee/Screen/homePage/Provider/homescreen_provider.dart';
 import 'package:wavee/Screen/Manintenance/View/maintenance_view.dart';
 import 'package:wavee/Screen/messageBoard/Model/Localpost_model.dart';
 import 'package:wavee/Screen/messageBoard/View/messageboard.dart';
-import 'package:wavee/Screen/NotiFicationPage/Provider/notificationprovider.dart';
 import 'package:wavee/Screen/orderScreen/View/order_screen_view.dart';
 import 'package:wavee/Screen/Parcel/parcel_Screen_View/parcel_View.dart';
 import 'package:wavee/Screen/viewProfile/View/Mybuilding_Screen.dart';
@@ -39,16 +38,10 @@ import '../../../comman/const.dart';
 import '../../../comman/custom_batan.dart';
 import '../../../comman/custom_snack_bar.dart';
 import '../../../comman/input_decoration.dart';
-import '../../Authcation/Model/login_model.dart';
 import '../../Authcation/Provider/authcation_provider.dart';
 import '../../Booking/View/event_booking_screen.dart';
-import '../../Message_board/Model/Add_Post_Model.dart';
-import '../../Message_board/Provider/messsage_board_provider.dart';
-import '../../NotiFicationPage/Model/Notification_Model.dart';
-import '../../ViewProfile/Model/profile_model.dart';
-import '../../ViewProfile/Provider/profile_provider.dart';
-
-// import '../../Visitor/Model/latest_visitor_modal/latest_visitor_modal.dart';
+import '../../messageBoard/Model/Add_Post_Model.dart';
+import '../../messageBoard/Provider/messsage_board_provider.dart';
 import '../Model/chat_show_count_modal.dart';
 import '../Model/message_board_modal.dart';
 
@@ -74,8 +67,8 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController password = TextEditingController();
   bool isSending = false;
   final addPostFormkey = GlobalKey<FormState>();
-  TextEditingController _descController = TextEditingController();
-  TextEditingController _title = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
+  final TextEditingController _title = TextEditingController();
   List<XFile> _images = [];
 
   @override
@@ -91,7 +84,7 @@ class _HomePageState extends State<HomePage> {
     ChatShowCount();
     MessageBoardApi();
     localpostapi();
-    GetProfile();
+    // GetProfile();
     updateFCM1();
   }
 
@@ -122,10 +115,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey_home =
-        GlobalKey<ScaffoldState>();
+    final GlobalKey<ScaffoldState> scaffoldkeyHome = GlobalKey<ScaffoldState>();
     return Scaffold(
-      bottomNavigationBar: Bottom_bar(selected: 1),
+      bottomNavigationBar: BottomBar(selected: 1),
       backgroundColor: AppColors.white,
       body:
           isLoading
@@ -143,7 +135,7 @@ class _HomePageState extends State<HomePage> {
                           child: Container(
                             height: 222,
                             width: 222,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               image: DecorationImage(
                                 image: AssetImage(
                                   "assets/images/homescreen_map1.png",
@@ -153,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Text(
                           "Wavee Ai",
                           style: TextStyle(
@@ -337,7 +329,7 @@ class _HomePageState extends State<HomePage> {
                                       borderRadius: BorderRadius.circular(20),
                                       child: InkWell(
                                         onTap: () {
-                                          Get.to(ParcelScreen());
+                                          Get.to(const ParcelScreen());
                                         },
                                         child: Container(
                                           height: 17.h,
@@ -437,7 +429,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           child: SingleChildScrollView(
                             controller: scrollController,
-                            physics: BouncingScrollPhysics(),
+                            physics: const BouncingScrollPhysics(),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -462,7 +454,7 @@ class _HomePageState extends State<HomePage> {
                                           height: 1.h,
                                           width: 20.w,
                                           decoration: BoxDecoration(
-                                            color: Color(0xf0D9D9D9),
+                                            color: const Color(0xf0D9D9D9),
                                             borderRadius: BorderRadius.circular(
                                               10,
                                             ),
@@ -480,7 +472,7 @@ class _HomePageState extends State<HomePage> {
                                               fontSize: 20.sp,
                                             ),
                                           ),
-                                          Spacer(),
+                                          const Spacer(),
                                           // Stack(
                                           //   clipBehavior: Clip.none,
                                           //   children: [
@@ -677,13 +669,13 @@ class _HomePageState extends State<HomePage> {
                                                                       context,
                                                                       url,
                                                                     ) =>
-                                                                        CircularProgressIndicator(),
+                                                                        const CircularProgressIndicator(),
                                                                 errorWidget:
                                                                     (
                                                                       context,
                                                                       url,
                                                                       error,
-                                                                    ) => Icon(
+                                                                    ) => const Icon(
                                                                       Icons
                                                                           .error,
                                                                     ),
@@ -726,7 +718,10 @@ class _HomePageState extends State<HomePage> {
                                                             height: 0.5.h,
                                                           ),
                                                           Text(
-                                                            "${messageBoardModal?.data?[0].title ?? "Join us at The Crumpets Cafe!"}",
+                                                            messageBoardModal
+                                                                    ?.data?[0]
+                                                                    .title ??
+                                                                "Join us at The Crumpets Cafe!",
                                                             style: TextStyle(
                                                               fontSize: 16.sp,
                                                               color:
@@ -740,7 +735,10 @@ class _HomePageState extends State<HomePage> {
                                                             ),
                                                           ),
                                                           Text(
-                                                            "${messageBoardModal?.data?[0].text ?? ""}",
+                                                            messageBoardModal
+                                                                    ?.data?[0]
+                                                                    .text ??
+                                                                "",
                                                             maxLines: 4,
                                                             style: TextStyle(
                                                               fontSize: 15.sp,
@@ -807,7 +805,7 @@ class _HomePageState extends State<HomePage> {
                                                     left: 9.w,
                                                     right: 2.w,
                                                   ),
-                                                  Text(
+                                                  const Text(
                                                     "View All",
                                                     style: TextStyle(
                                                       fontWeight:
@@ -858,7 +856,7 @@ class _HomePageState extends State<HomePage> {
                                         iconName: AppConstants.building,
                                         name: "Building",
                                         onTap: () {
-                                          Get.to(MyBuilding_Screen());
+                                          Get.to(const MyBuilding_Screen());
                                         },
                                       ),
                                     ),
@@ -877,7 +875,7 @@ class _HomePageState extends State<HomePage> {
                                         iconName: AppConstants.maintance,
                                         name: "Maintenance",
                                         onTap: () {
-                                          Get.to(MaintenanceScreen());
+                                          Get.to(const MaintenanceScreen());
                                         },
                                       ),
                                     ),
@@ -890,7 +888,7 @@ class _HomePageState extends State<HomePage> {
                                         iconName: AppConstants.amenities,
                                         name: "Amenities",
                                         onTap: () {
-                                          Get.to(BookAmenities_Screen());
+                                          Get.to(const BookAmenities_Screen());
                                         },
                                       ),
                                     ),
@@ -900,7 +898,7 @@ class _HomePageState extends State<HomePage> {
                                         iconName: AppConstants.booking,
                                         name: "My Bookings",
                                         onTap: () {
-                                          Get.to(BookingScreen());
+                                          Get.to(const BookingScreen());
                                         },
                                       ),
                                     ),
@@ -910,7 +908,7 @@ class _HomePageState extends State<HomePage> {
                                   height: 0.1.h,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
-                                    color: Color(0xf0e3e3e3),
+                                    color: const Color(0xf0e3e3e3),
                                   ),
                                 ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
                                 Text(
@@ -996,7 +994,7 @@ class _HomePageState extends State<HomePage> {
                                         iconName: AppConstants.eventBooking,
                                         name: "Event Booking",
                                         onTap: () {
-                                          Get.to(EventbookingScreen());
+                                          Get.to(const EventbookingScreen());
                                         },
                                       ),
                                     ),
@@ -1021,7 +1019,7 @@ class _HomePageState extends State<HomePage> {
                                   height: 0.1.h,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
-                                    color: Color(0xf0e3e3e3),
+                                    color: const Color(0xf0e3e3e3),
                                   ),
                                 ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
                                 Text(
@@ -1247,6 +1245,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  @override
   void dispose() {
     super.dispose();
   }
@@ -1353,10 +1352,11 @@ class _HomePageState extends State<HomePage> {
             });
           }
         } catch (e) {
-          if (mounted)
+          if (mounted) {
             setState(() {
               isLoading = false;
             });
+          }
         }
       } else {
         setState(() {
@@ -1404,59 +1404,59 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void GetProfile() {
-    final Map<String, String> data = {
-      'id': loginModel?.data?.user?.id.toString() ?? '',
-    };
+  // void GetProfile() {
+  //   final Map<String, String> data = {
+  //     'id': loginModel?.data?.user?.id.toString() ?? '',
+  //   };
+  //
+  //   checkInternet().then((internet) async {
+  //     if (internet) {
+  //       ProfileProvider().profileApi(data).then((response) async {
+  //         profileModel = ProfileModel.fromJson(response.data);
+  //         if (response.statusCode == 200) {
+  //           if (mounted) {
+  //             setState(() {
+  //               isLoading = false;
+  //             });
+  //           }
+  //         } else {
+  //           setState(() {
+  //             isLoading = false;
+  //           });
+  //         }
+  //       });
+  //     } else {
+  //       setState(() {
+  //         isLoading = false;
+  //       });
+  //
+  //       buildErrorDialog(context, 'Error', "Internet Required");
+  //     }
+  //   });
+  // }
 
-    checkInternet().then((internet) async {
-      if (internet) {
-        ProfileProvider().profileApi(data).then((response) async {
-          profileModel = ProfileModel.fromJson(response.data);
-          if (response.statusCode == 200) {
-            if (mounted) {
-              setState(() {
-                isLoading = false;
-              });
-            }
-          } else {
-            setState(() {
-              isLoading = false;
-            });
-          }
-        });
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
-
-  getnotificationCount() {
-    checkInternet().then((internet) async {
-      if (internet) {
-        try {
-          final response = await NotificationProvider().notificationApi(
-            (loginModel?.data?.user?.id).toString(),
-          );
-
-          if (response.statusCode == 200) {
-            notificationmodel = NotificationModell.fromJson(response.data);
-
-            setState(() {
-              notificationCount = notificationmodel?.data?.totalCount ?? 0;
-              isLoading = false;
-            });
-          } else {}
-        } catch (e) {}
-      } else {
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
+  // getnotificationCount() {
+  //   checkInternet().then((internet) async {
+  //     if (internet) {
+  //       try {
+  //         final response = await NotificationProvider().notificationApi(
+  //           (loginModel?.data?.user?.id).toString(),
+  //         );
+  //
+  //         if (response.statusCode == 200) {
+  //           notificationmodel = NotificationModell.fromJson(response.data);
+  //
+  //           setState(() {
+  //             notificationCount = notificationmodel?.data?.totalCount ?? 0;
+  //             isLoading = false;
+  //           });
+  //         } else {}
+  //       } catch (e) {}
+  //     } else {
+  //       buildErrorDialog(context, 'Error', "Internet Required");
+  //     }
+  //   });
+  // }
 
   // getnotificationCount() {
   //   checkInternet().then((internet) async {
@@ -1482,7 +1482,7 @@ class _HomePageState extends State<HomePage> {
   // }
 
   Widget commonLoader() {
-    return SizedBox(
+    return const SizedBox(
       width: 20,
       height: 20,
       child: CircularProgressIndicator(
@@ -1493,10 +1493,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _pickImages(Function setModalState) async {
-    final ImagePicker _picker = ImagePicker();
-    final List<XFile>? pickedImages = await _picker.pickMultiImage();
+    final ImagePicker picker = ImagePicker();
+    final List<XFile> pickedImages = await picker.pickMultiImage();
 
-    if (pickedImages != null && pickedImages.isNotEmpty) {
+    if (pickedImages.isNotEmpty) {
       setModalState(() {
         _images.addAll(pickedImages);
       });
@@ -1508,7 +1508,7 @@ class _HomePageState extends State<HomePage> {
       context: context,
       backgroundColor: Colors.white,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
       ),
       builder: (context) {
@@ -1544,7 +1544,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       SizedBox(height: 2.h),
-                      Text(
+                      const Text(
                         "Title",
                         style: TextStyle(
                           fontSize: 16,
@@ -1573,7 +1573,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       SizedBox(height: 2.h),
-                      Text(
+                      const Text(
                         "Description",
                         style: TextStyle(
                           fontSize: 16,
@@ -1615,8 +1615,8 @@ class _HomePageState extends State<HomePage> {
                         iconData: Icons.image,
                         fontsize: 17.sp,
                       ),
-                      SizedBox(height: 8),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       if (_images.isNotEmpty)
                         const Text(
                           "Selected Images",
@@ -1626,7 +1626,7 @@ class _HomePageState extends State<HomePage> {
                             fontFamily: AppConstants.manrope,
                           ),
                         ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       if (_images.isNotEmpty)
                         SizedBox(
                           height: 100,
@@ -1683,7 +1683,7 @@ class _HomePageState extends State<HomePage> {
                             },
                           ),
                         ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Container(
                         height: 6.h,
                         decoration: BoxDecoration(
@@ -1786,77 +1786,12 @@ class _HomePageState extends State<HomePage> {
               isLoading = false;
             });
           }
-        } catch (e, stackTrace) {
-          setState(() {
-            isLoading = false;
-          });
-        }
-      } else {
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
-
-  void updateFCM() async {
-    setState(() {
-      isLoading = true;
-    });
-
-    // Fetch the FCM token
-    String? fcmToken = await FirebaseMessaging.instance.getToken();
-
-    if (fcmToken == null) {
-      showSnackBar(
-        title: "FCM Error",
-        message: "Unable to fetch FCM token",
-        backgoundColor: Colors.red,
-        ColorText: Colors.white,
-      );
-      setState(() {
-        isLoading = false;
-      });
-      return;
-    }
-
-    final Map<String, String> data = {
-      "user_id": loginModel?.data?.user?.id.toString() ?? "",
-      "fcm_token": fcmToken,
-    };
-    print("fcm changes$data");
-    checkInternet().then((internet) async {
-      if (internet) {
-        try {
-          var response = await AuthProvider().updateFCM(data);
-
-          if (response.statusCode == 200) {
-          } else if (response.statusCode == 422) {
-            showSnackBar(
-              title: "Sorry",
-              message: "Please Enter valid email and password",
-              backgoundColor: AppColors.redColor,
-              ColorText: AppColors.white,
-            );
-          } else {
-            throw Exception(
-              "Failed to login with status code: ${response.statusCode}",
-            );
-          }
         } catch (e) {
-          showSnackBar(
-            title: "Error",
-            message: "Something went wrong during login",
-            backgoundColor: Colors.red,
-            ColorText: Colors.white,
-          );
-        } finally {
           setState(() {
             isLoading = false;
           });
         }
       } else {
-        setState(() {
-          isLoading = false;
-        });
         buildErrorDialog(context, 'Error', "Internet Required");
       }
     });
@@ -1880,7 +1815,7 @@ class _HomePageState extends State<HomePage> {
     final Map<String, String> data = {};
     data["user_id"] = loginModel?.data?.user?.id.toString() ?? "";
     data["fcm_token"] = fcmToken;
-    print("Data adasdads$data");
+
     checkInternet().then((internet) async {
       if (internet) {
         try {

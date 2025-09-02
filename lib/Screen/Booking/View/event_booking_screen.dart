@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -143,9 +141,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                                   EventDetailApi(
                                     booking?.eventId.toString() ?? "",
                                   );
-                                  log(
-                                    "event id ave che che ${booking?.eventId.toString() ?? ""}",
-                                  );
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -156,7 +151,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                                         color: Colors.grey.withOpacity(0.2),
                                         spreadRadius: 2,
                                         blurRadius: 5,
-                                        offset: Offset(0, 3),
+                                        offset: const Offset(0, 3),
                                       ),
                                     ],
                                   ),
@@ -181,18 +176,19 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                                                   formatDate(
                                                     booking?.eventDate ?? "",
                                                   ),
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     fontSize: 13,
                                                     fontWeight: FontWeight.w600,
                                                     color: Colors.black54,
                                                   ),
                                                 ),
-                                                Spacer(),
+                                                const Spacer(),
                                                 Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                    horizontal: 10,
-                                                    vertical: 4,
-                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 4,
+                                                      ),
                                                   decoration: BoxDecoration(
                                                     color: getStatusColor(
                                                       booking?.status ?? '',
@@ -210,7 +206,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                                                       booking?.rsvp,
                                                       booking?.isAttended,
                                                     ),
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontSize: 12,
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -225,7 +221,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                                             SizedBox(height: 1.h),
                                             Text(
                                               booking?.eventName ?? '',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
                                                 fontFamily:
@@ -236,18 +232,18 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                                             SizedBox(height: 1.5.h),
                                             Row(
                                               children: [
-                                                Icon(
+                                                const Icon(
                                                   Icons.location_on,
                                                   size: 16,
                                                   color: Colors.black45,
                                                 ),
-                                                SizedBox(width: 4),
+                                                const SizedBox(width: 4),
                                                 SizedBox(
                                                   width: 70.w,
                                                   child: Text(
                                                     booking?.eventLocation ??
                                                         "",
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontSize: 13,
                                                       color: Colors.black54,
                                                     ),
@@ -392,7 +388,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
               isLoading = false;
             });
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
           setState(() {
             isLoading = false;
           });
@@ -432,7 +428,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
               isDetailLoading = false;
             });
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
           if (mounted) {
             setState(() {
               isDetailLoading = false;
@@ -477,7 +473,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                 child: Container(
                   height: 4,
                   width: 20.w,
-                  margin: EdgeInsets.only(bottom: 16),
+                  margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
                     color: Colors.grey[300],
                     borderRadius: BorderRadius.circular(10),
@@ -508,7 +504,10 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                 child: InkWell(
                   onTap: () {
                     Get.to(
-                      EventDetail(eventID: event?.eventId.toString() ?? "",status: event?.status??"",),
+                      EventDetail(
+                        eventID: event?.eventId.toString() ?? "",
+                        status: event?.status ?? "",
+                      ),
                     );
                   },
                   child: Text(
@@ -521,7 +520,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               if (hideAttendBatan(event))
                 batan(
                   title: _getActionButtonTitle(event),
@@ -584,10 +583,6 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
               todayDate.isAtSameMomentAs(eventDate) ||
               todayDate.isAfter(eventDate);
 
-          print(
-            "Today: $todayDate, Event: $eventDate => showAttend: $showAttend",
-          );
-
           return showAttend;
         }
       }
@@ -632,7 +627,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
             borderRadius: BorderRadius.circular(20),
           ),
           backgroundColor: Colors.white,
-          insetPadding: EdgeInsets.symmetric(horizontal: 24),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 24),
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
@@ -641,24 +636,24 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                 CircleAvatar(
                   backgroundColor: AppColors.maincolor.withOpacity(0.1),
                   radius: 32,
-                  child: Icon(
+                  child: const Icon(
                     Icons.how_to_reg,
                     color: AppColors.maincolor,
                     size: 36,
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Text(
                   "${loginModel?.data?.user?.name?.firstName ?? " "} ${loginModel?.data?.user?.name?.lastName ?? ""}",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     fontFamily: AppConstants.manrope,
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
-                  "Do you want to mark yourself as attended for\n$eventName\?",
+                  "Do you want to mark yourself as attended for\n$eventName?",
                   style: TextStyle(
                     fontSize: 15.sp,
                     color: Colors.black54,
@@ -666,7 +661,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Row(
                   children: [
                     Expanded(
@@ -681,7 +676,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          padding: EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                         child: const Text(
                           "No",
@@ -693,7 +688,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
@@ -706,9 +701,9 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          padding: EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
-                        child: Text(
+                        child: const Text(
                           "Yes",
                           style: TextStyle(
                             color: Colors.white,
@@ -738,7 +733,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
             flex: 2,
             child: Text(
               "$title:",
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: AppConstants.manrope,
                 fontSize: 15,
@@ -772,7 +767,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
             borderRadius: BorderRadius.circular(20),
           ),
           elevation: 8,
-          insetPadding: EdgeInsets.symmetric(horizontal: 20),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 20),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -781,14 +776,14 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                 CircleAvatar(
                   radius: 32,
                   backgroundColor: AppColors.maincolor.withOpacity(0.1),
-                  child: Icon(
+                  child: const Icon(
                     Icons.event_available,
                     color: AppColors.maincolor,
                     size: 36,
                   ),
                 ),
-                SizedBox(height: 16),
-                Text(
+                const SizedBox(height: 16),
+                const Text(
                   "You're Invited!",
                   style: TextStyle(
                     fontSize: 20,
@@ -796,8 +791,8 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                     fontFamily: AppConstants.manrope,
                   ),
                 ),
-                SizedBox(height: 8),
-                Text(
+                const SizedBox(height: 8),
+                const Text(
                   "Would you like to RSVP for",
                   style: TextStyle(
                     fontSize: 14,
@@ -805,7 +800,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                     fontFamily: AppConstants.manrope,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
                   "\"$eventName\"",
                   textAlign: TextAlign.center,
@@ -816,7 +811,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                     fontFamily: AppConstants.manrope,
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Row(
                   children: [
                     Expanded(
@@ -829,12 +824,12 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey[300],
                           foregroundColor: Colors.black87,
-                          padding: EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        child: Column(
+                        child: const Column(
                           children: [
                             Icon(Icons.help_outline),
                             SizedBox(height: 4),
@@ -843,7 +838,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
@@ -854,12 +849,12 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red.shade100,
                           foregroundColor: Colors.red.shade700,
-                          padding: EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        child: Column(
+                        child: const Column(
                           children: [
                             Icon(Icons.cancel_outlined),
                             SizedBox(height: 4),
@@ -868,7 +863,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
@@ -879,12 +874,12 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.maincolor,
                           foregroundColor: Colors.white,
-                          padding: EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        child: Column(
+                        child: const Column(
                           children: [
                             Icon(Icons.check_circle_outline),
                             SizedBox(height: 4),
@@ -927,7 +922,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
               isRsvpLoading = false;
             });
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
           setState(() {
             isRsvpLoading = false;
           });
@@ -968,7 +963,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
               isRsvpLoading = false;
             });
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
           setState(() {
             isRsvpLoading = false;
           });

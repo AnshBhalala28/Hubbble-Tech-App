@@ -6,13 +6,15 @@ import 'package:wavee/comman/responses.dart';
 import 'package:wavee/comman/store_local.dart';
 
 class ProductProvider extends ChangeNotifier {
-  Future<Response> productDetailApi(String UserId,
-      String productid,
-      String type,) async {
+  Future<Response> productDetailApi(
+    String UserId,
+    String productid,
+    String type,
+  ) async {
     try {
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final dio = await DioHelper.getDio();
@@ -48,7 +50,7 @@ class ProductProvider extends ChangeNotifier {
     try {
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final dio = await DioHelper.getDio();

@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -17,7 +16,7 @@ class ProfileProvider extends ChangeNotifier {
     try {
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
       final dio = await DioHelper.getDio();
       final response = await dio.post(
@@ -28,7 +27,6 @@ class ProfileProvider extends ChangeNotifier {
       );
       return response;
     } on DioException catch (e) {
-      log("Error is coming $e");
       throw Exception(handleDioError(e));
     }
   }
@@ -37,7 +35,7 @@ class ProfileProvider extends ChangeNotifier {
     try {
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
       final dio = await DioHelper.getDio();
       final response = await dio.post(
@@ -56,7 +54,7 @@ class ProfileProvider extends ChangeNotifier {
     Map<String, String> bodyData,
     File? imageFile,
   ) async {
-    String url = '${ApiEndpoint.updateProfile}';
+    String url = ApiEndpoint.updateProfile;
     String? token = await SaveDataLocal.getToken();
 
     try {
@@ -80,23 +78,19 @@ class ProfileProvider extends ChangeNotifier {
       }
 
       Dio dio = Dio();
-      log('dadadddadformDataformDataformDataformData$url');
-      log('dadadddadformDataformDataformDataformData${formData.files}');
-      log('dadadddadformDataformDataformDataformData${imageFile}');
+
       final response = await dio.post(
         url,
         data: formData,
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
       );
 
-      print("Successful response: ${response.data}");
       return response;
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.connectionTimeout ||
-          e.type == DioErrorType.receiveTimeout) {
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
         throw Exception("Connection Timeout");
       } else if (e.response != null) {
-        print("Failed response: ${e.response?.statusCode}");
         throw Exception("Server responded with error: ${e.response?.data}");
       } else {
         throw Exception("Dio error: ${e.message}");
@@ -105,5 +99,4 @@ class ProfileProvider extends ChangeNotifier {
       throw Exception("Unexpected error: $e");
     }
   }
-
 }

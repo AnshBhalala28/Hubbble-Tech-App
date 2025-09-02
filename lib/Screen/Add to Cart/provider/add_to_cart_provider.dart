@@ -10,7 +10,7 @@ class CartProvider extends ChangeNotifier {
     try {
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final dio = await DioHelper.getDio();
@@ -31,7 +31,7 @@ class CartProvider extends ChangeNotifier {
       final dio = await DioHelper.getDio();
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final response = await dio.post(
@@ -51,7 +51,7 @@ class CartProvider extends ChangeNotifier {
       final dio = await DioHelper.getDio();
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': '$token'};
+        Map<String, String> headers = {'X-Auth-Token': token};
       }
 
       final response = await dio.post(

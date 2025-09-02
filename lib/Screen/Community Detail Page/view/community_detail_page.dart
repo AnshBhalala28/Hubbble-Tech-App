@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -83,6 +82,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
 
   final TextEditingController searchController = TextEditingController();
 
+  @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
@@ -137,9 +137,12 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                       padding: EdgeInsets.symmetric(vertical: 2.h),
                       height: 90.h,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Color(0xffdedfe5), width: 1),
+                        border: Border.all(
+                          color: const Color(0xffdedfe5),
+                          width: 1,
+                        ),
                         color: AppColors.white,
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(45),
                           topRight: Radius.circular(45),
                         ),
@@ -168,9 +171,9 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                             child: Container(
                                               height: 28,
                                               width: 28,
-                                              decoration: BoxDecoration(),
+                                              decoration: const BoxDecoration(),
                                               alignment: Alignment.center,
-                                              child: Icon(
+                                              child: const Icon(
                                                 Icons.arrow_back,
                                                 color: AppColors.maincolor,
                                                 size: 20,
@@ -304,7 +307,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(20),
                                         border: Border.all(
-                                          color: Color(0xffc7c7c7),
+                                          color: const Color(0xffc7c7c7),
                                         ),
                                       ),
                                       child: TextField(
@@ -330,10 +333,11 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                           ),
                                           border: InputBorder.none,
                                           isDense: true,
-                                          contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 10,
-                                          ),
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                horizontal: 12,
+                                                vertical: 10,
+                                              ),
                                           prefixIcon: Icon(
                                             Icons.search,
                                             color: Colors.grey[600],
@@ -354,7 +358,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                   )
                                                   : null,
                                         ),
-                                        style: TextStyle(fontSize: 14),
+                                        style: const TextStyle(fontSize: 14),
                                       ),
                                     ),
                                   ],
@@ -391,7 +395,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                     children: [
                                       Container(
                                         height: 5.h,
-                                        padding: EdgeInsets.symmetric(
+                                        padding: const EdgeInsets.symmetric(
                                           horizontal: 12,
                                         ),
                                         decoration: BoxDecoration(
@@ -403,7 +407,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                           borderRadius: BorderRadius.circular(
                                             20,
                                           ),
-                                          boxShadow: [
+                                          boxShadow: const [
                                             BoxShadow(
                                               color: Colors.black12,
                                               blurRadius: 2,
@@ -415,10 +419,12 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                           borderRadius: BorderRadius.circular(
                                             10,
                                           ),
-                                          hint: Text("Select option"),
+                                          hint: const Text("Select option"),
                                           underline: Container(),
                                           value: selectedOption,
-                                          icon: Icon(Icons.keyboard_arrow_down),
+                                          icon: const Icon(
+                                            Icons.keyboard_arrow_down,
+                                          ),
                                           items:
                                               categoryOptions
                                                   .map(
@@ -466,7 +472,8 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                             ?.products
                                             ?.length ??
                                         0,
-                                    physics: NeverScrollableScrollPhysics(),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     gridDelegate:
                                         SliverGridDelegateWithFixedCrossAxisCount(
@@ -486,7 +493,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                             ProductDetailPage(
                                               type: "product",
                                               productID:
-                                                  product?.id.toString() ?? "",
+                                                  product.id.toString() ?? "",
                                             ),
                                           );
                                         },
@@ -514,7 +521,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                             12,
                                                           ),
                                                       border: Border.all(
-                                                        color: Color(
+                                                        color: const Color(
                                                           0xffc7c7c7,
                                                         ),
                                                         width: 1,
@@ -526,7 +533,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                       children: [
                                                         ClipRRect(
                                                           borderRadius:
-                                                              BorderRadius.only(
+                                                              const BorderRadius.only(
                                                                 topLeft:
                                                                     Radius.circular(
                                                                       12,
@@ -588,12 +595,13 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                   Colors.white,
                                                               border: Border.all(
                                                                 width: 1,
-                                                                color: Color(
-                                                                  0xffc7c7c7,
-                                                                ),
+                                                                color:
+                                                                    const Color(
+                                                                      0xffc7c7c7,
+                                                                    ),
                                                               ),
                                                               borderRadius:
-                                                                  BorderRadius.only(
+                                                                  const BorderRadius.only(
                                                                     topRight:
                                                                         Radius.circular(
                                                                           10,
@@ -646,14 +654,14 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                     fontFamily:
                                                                         AppConstants
                                                                             .manrope,
-                                                                    color: Color(
+                                                                    color: const Color(
                                                                       0xffa1a1a1,
                                                                     ),
                                                                   ),
                                                                 ),
-                                                                (product?.offerPrice !=
+                                                                (product.offerPrice !=
                                                                             null &&
-                                                                        product!.offerPrice !=
+                                                                        product.offerPrice !=
                                                                             "0.00" &&
                                                                         product.offerPrice !=
                                                                             product.price)
@@ -700,7 +708,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                               .end,
                                                                       children: [
                                                                         Text(
-                                                                          "£${product?.price ?? ""}",
+                                                                          "£${product.price ?? ""}",
                                                                           style: TextStyle(
                                                                             fontSize:
                                                                                 14.sp,
@@ -714,9 +722,9 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                         ),
                                                                       ],
                                                                     ),
-                                                                product?.quantity ==
+                                                                product.quantity ==
                                                                             0 ||
-                                                                        product?.quantity ==
+                                                                        product.quantity ==
                                                                             null
                                                                     ? Text(
                                                                       "Out of Stock",
@@ -731,7 +739,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                             Colors.red,
                                                                       ),
                                                                     )
-                                                                    : SizedBox(),
+                                                                    : const SizedBox(),
                                                               ],
                                                             ),
                                                           ),
@@ -742,9 +750,9 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                           child: GestureDetector(
                                                             onTap: () {
                                                               bool isBlocked =
-                                                                  product?.quantity ==
+                                                                  product.quantity ==
                                                                       0 ||
-                                                                  product?.quantity ==
+                                                                  product.quantity ==
                                                                       null;
                                                               int?
                                                               productStatus =
@@ -752,9 +760,6 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                       ?.data
                                                                       ?.business
                                                                       ?.productStatus;
-                                                              log(
-                                                                "dsadsadsdadasd$productStatus",
-                                                              );
 
                                                               if (productStatus ==
                                                                   0) {
@@ -777,7 +782,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                 ScaffoldMessenger.of(
                                                                   context,
                                                                 ).showSnackBar(
-                                                                  SnackBar(
+                                                                  const SnackBar(
                                                                     content: Text(
                                                                       'Product is out of stock.',
                                                                     ),
@@ -829,7 +834,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                         }
                                                                       }
                                                                       AddCartProductApi(
-                                                                        product?.id.toString() ??
+                                                                        product.id.toString() ??
                                                                             "",
                                                                       );
                                                                     },
@@ -842,7 +847,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                         ?.data
                                                                         ?.businessId) {
                                                                   AddCartProductApi(
-                                                                    product?.id
+                                                                    product.id
                                                                             .toString() ??
                                                                         "",
                                                                   );
@@ -879,7 +884,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                         }
                                                                       }
                                                                       AddCartProductApi(
-                                                                        product?.id.toString() ??
+                                                                        product.id.toString() ??
                                                                             "",
                                                                       );
                                                                     },
@@ -887,7 +892,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                 }
                                                               } else {
                                                                 AddCartProductApi(
-                                                                  product?.id
+                                                                  product.id
                                                                           .toString() ??
                                                                       "",
                                                                 );
@@ -910,7 +915,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                 shape:
                                                                     BoxShape
                                                                         .rectangle,
-                                                                boxShadow: [
+                                                                boxShadow: const [
                                                                   BoxShadow(
                                                                     color:
                                                                         Colors
@@ -926,14 +931,14 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                 ],
                                                               ),
                                                               child: Icon(
-                                                                product?.quantity ==
+                                                                product.quantity ==
                                                                         "0"
                                                                     ? Icons
                                                                         .block
                                                                     : Icons.add,
                                                                 size: 17.sp,
                                                                 color:
-                                                                    product?.quantity ==
+                                                                    product.quantity ==
                                                                             "0"
                                                                         ? AppColors
                                                                             .redColor
@@ -970,19 +975,19 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                     vertical: 1.h,
                                   ),
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
+                                    borderRadius: const BorderRadius.only(
                                       topRight: Radius.circular(45),
                                       topLeft: Radius.circular(45),
                                     ),
                                     border: Border.all(
-                                      color: Color(0xffc7c7c7),
+                                      color: const Color(0xffc7c7c7),
                                       width: 1,
                                     ),
-                                    color: Color(0xfff2f2f2),
+                                    color: const Color(0xfff2f2f2),
                                   ),
                                   child: SingleChildScrollView(
                                     controller: scrollController,
-                                    physics: BouncingScrollPhysics(),
+                                    physics: const BouncingScrollPhysics(),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -992,7 +997,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                             height: 1.h,
                                             width: 20.w,
                                             decoration: BoxDecoration(
-                                              color: Color(0xf0D9D9D9),
+                                              color: const Color(0xf0D9D9D9),
                                               borderRadius:
                                                   BorderRadius.circular(10),
                                             ),
@@ -1207,7 +1212,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                           ),
                                                       color: Colors.white,
                                                       border: Border.all(
-                                                        color: Color(
+                                                        color: const Color(
                                                           0xffc0c0c0,
                                                         ),
                                                         width: 1,
@@ -1251,7 +1256,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                           ),
                                                       color: Colors.white,
                                                       border: Border.all(
-                                                        color: Color(
+                                                        color: const Color(
                                                           0xffc0c0c0,
                                                         ),
                                                         width: 1,
@@ -1295,7 +1300,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                   ],
                 ),
               ),
-      bottomNavigationBar: Bottom_bar(selected: 0),
+      bottomNavigationBar: BottomBar(selected: 0),
     );
   }
 
@@ -1323,17 +1328,13 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                 setState(() {
                   isSending = false;
                 });
-                await Future.delayed(Duration(milliseconds: 100));
+                await Future.delayed(const Duration(milliseconds: 100));
                 BussinessViewProfile();
               } else if (response.statusCode == 429) {
                 setState(() {
                   isSending = false;
                 });
-              } else {
-                print(
-                  "Internal Server Error - Status Code: ${response.statusCode}",
-                );
-              }
+              } else {}
             })
             .catchError((error, stackTrace) {});
       } else {
@@ -1373,14 +1374,6 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
             .then((response) async {
               busnessviewmodal = BusnessViewModal.fromJson(response.data);
               if (response.statusCode == 200) {
-                log(
-                  "widget.businessID.toString()${widget.businessID.toString()}",
-                );
-                log("widget.businessID.toString()${widget.long}");
-                log("widget.businessID.toString()${widget.lat}");
-                log(
-                  "asddfssdfadfssdfasadfsdfafsddfsa${(busnessviewmodal?.data?.distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
-                );
                 setState(() {
                   isLoading = false;
                 });

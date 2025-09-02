@@ -11,13 +11,13 @@ class AmentitesModel {
     if (json['data'] != null) {
       data = <Data>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(Data.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -67,7 +67,7 @@ class Data {
     rulesNotice = json['rules_notice'];
     operatingHours =
         json['operating_hours'] != null
-            ? new OperatingHours.fromJson(json['operating_hours'])
+            ? OperatingHours.fromJson(json['operating_hours'])
             : null;
     durationOptions = json['duration_options'].cast<String>();
     capacity = json['capacity'];
@@ -78,7 +78,7 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['name'] = this.name;
@@ -104,12 +104,11 @@ class OperatingHours {
   OperatingHours({this.monday});
 
   OperatingHours.fromJson(Map<String, dynamic> json) {
-    monday =
-        json['monday'] != null ? new Monday.fromJson(json['monday']) : null;
+    monday = json['monday'] != null ? Monday.fromJson(json['monday']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (this.monday != null) {
       data['monday'] = this.monday!.toJson();
     }
@@ -129,7 +128,7 @@ class Monday {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['open'] = this.open;
     data['close'] = this.close;
     return data;

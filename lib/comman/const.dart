@@ -90,8 +90,7 @@ const String jsonString = "assets/google_pay.json";
 String formatDateTime(String? createdAt) {
   if (createdAt == null || createdAt.isEmpty) return "N/A";
   DateTime parsedDate = DateTime.parse(createdAt);
-  return "${DateFormat('dd MMM yyyy').format(parsedDate)}, ${DateFormat(
-      'hh:mm a').format(parsedDate)}";
+  return "${DateFormat('dd MMM yyyy').format(parsedDate)}, ${DateFormat('hh:mm a').format(parsedDate)}";
 }
 
 class AppConstants {
@@ -209,4 +208,4 @@ CategoryDetailModal? categoryDetailModal;
 OrdersendMessageModel? ordersendmessagemodel;
 SearchProductModel? searchproductmodel;
 ChatStoryModal? chatStories;
-EventDetailModal?eventDetailModal;
+EventDetailModal? eventDetailModal;

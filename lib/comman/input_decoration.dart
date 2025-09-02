@@ -39,23 +39,23 @@ InputDecoration inputDecoration({
       borderRadius: BorderRadius.circular(30),
     ),
     errorBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.red, width: 1),
+      borderSide: const BorderSide(color: Colors.red, width: 1),
       borderRadius: BorderRadius.circular(30),
     ),
     enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: AppColors.maincolor, width: 1),
+      borderSide: const BorderSide(color: AppColors.maincolor, width: 1),
       borderRadius: BorderRadius.circular(30),
     ),
     focusedErrorBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.red, width: 1),
+      borderSide: const BorderSide(color: Colors.red, width: 1),
       borderRadius: BorderRadius.circular(30),
     ),
     focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: AppColors.maincolor, width: 1),
+      borderSide: const BorderSide(color: AppColors.maincolor, width: 1),
       borderRadius: BorderRadius.circular(30),
     ),
     border: OutlineInputBorder(
-      borderSide: BorderSide(color: AppColors.maincolor, width: 1),
+      borderSide: const BorderSide(color: AppColors.maincolor, width: 1),
       borderRadius: BorderRadius.circular(30),
     ),
   );
