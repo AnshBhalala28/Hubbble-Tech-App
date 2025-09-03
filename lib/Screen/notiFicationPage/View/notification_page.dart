@@ -168,7 +168,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 ),
               );
             } else if (type == "visitor") {
-              Get.to(() => VisitorScreen());
+              Get.to(() => const VisitorScreen());
             } else if (type == "order") {
               Get.to(
                 () => Orderdetail_Screen(

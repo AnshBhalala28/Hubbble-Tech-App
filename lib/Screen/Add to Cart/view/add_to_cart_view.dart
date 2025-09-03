@@ -98,7 +98,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                     _buildEmptyBasketView()
                   else
                     ListView(
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       children: [
 
                         Container(
@@ -171,7 +171,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                           },
                         ),
 
-                        if (cartDetailsModel?.data?[0]?.type == "product") ...[
+                        if (cartDetailsModel?.data?[0].type == "product") ...[
                           const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12),
                             child: Text(
@@ -223,7 +223,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                   icon: Icons.receipt,
                                   child: Column(
                                     children: [
-                                      if (cartDetailsModel?.data?[0]?.type ==
+                                      if (cartDetailsModel?.data?[0].type ==
                                           "product")
                                         _buildSummaryRow(
                                           "Subtotal",
@@ -234,10 +234,10 @@ class _AddToCartViewState extends State<AddToCartView> {
                                           "Subtotal",
                                           getSubtotal1(),
                                         ),
-                                      if (cartDetailsModel?.data?[0]?.type ==
+                                      if (cartDetailsModel?.data?[0].type ==
                                           "product" &&
                                           (cartDetailsModel?.data?[0]
-                                              ?.loyaltyDetails
+                                              .loyaltyDetails
                                               ?.willGetLoyaltyDiscountOnCurrentOrder ??
                                               false))
                                         _buildSummaryRow(
@@ -246,7 +246,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                           isDiscount: true,
                                         ),
                                       Divider(height: 3.h, thickness: 1),
-                                      if (cartDetailsModel?.data?[0]?.type ==
+                                      if (cartDetailsModel?.data?[0].type ==
                                           "product")
                                         _buildSummaryRow(
                                           "Total",

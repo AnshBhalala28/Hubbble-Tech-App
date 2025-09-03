@@ -122,7 +122,7 @@ class _AllNotificationPageState extends State<AllNotificationPage> {
                     ),
                   );
                 } else if (type == "visitor") {
-                  Get.to(() => VisitorScreen());
+                  Get.to(() => const VisitorScreen());
                 } else if (type == "order") {
                   Get.to(
                     () => Orderdetail_Screen(
