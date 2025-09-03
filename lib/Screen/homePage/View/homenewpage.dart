@@ -248,7 +248,7 @@ class _HomePageState extends State<HomePage> {
                                       borderRadius: BorderRadius.circular(20),
                                       child: InkWell(
                                         onTap: () {
-                                          Get.to(VisitorScreen());
+                                          Get.to(const VisitorScreen());
                                         },
                                         child: Container(
                                           height: 17.h,
