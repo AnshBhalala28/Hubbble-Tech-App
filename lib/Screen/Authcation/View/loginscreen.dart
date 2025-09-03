@@ -29,7 +29,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
 
-  // rtfgvb
   @override
   Widget build(BuildContext context) {
     return Scaffold(
