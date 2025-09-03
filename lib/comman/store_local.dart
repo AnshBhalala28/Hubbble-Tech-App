@@ -1,20 +1,18 @@
 import 'dart:convert';
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../Screen/Authcation/Model/login_model.dart';
 
 class SaveDataLocal {
   static const String userData = 'UserData';
   static const String userToken = 'UserToken';
-  static final FlutterSecureStorage _secureStorage =
-      const FlutterSecureStorage();
 
+  static const FlutterSecureStorage _secureStorage = FlutterSecureStorage();
+
+  /// Save login data (user details + token)
   static Future<void> saveLogInData(LoginModel loginModel) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Save whole user model securely
     String json = jsonEncode(loginModel.toJson());
-    await prefs.setString(userData, json);
+    await _secureStorage.write(key: userData, value: json);
 
     // Save token securely
     String? token = loginModel.data?.token;
@@ -23,9 +21,9 @@ class SaveDataLocal {
     }
   }
 
+  /// Get full login model from secure storage
   static Future<LoginModel?> getDataFromLocal() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userString = prefs.getString(userData);
+    String? userString = await _secureStorage.read(key: userData);
     if (userString != null) {
       Map<String, dynamic> userMap = jsonDecode(userString);
       return LoginModel.fromJson(userMap);
@@ -38,8 +36,7 @@ class SaveDataLocal {
   }
 
   static Future<void> clearUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove(userData);
+    await _secureStorage.delete(key: userData);
     await _secureStorage.delete(key: userToken);
   }
 }
