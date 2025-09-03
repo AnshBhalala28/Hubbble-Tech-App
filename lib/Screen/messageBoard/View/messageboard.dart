@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -151,7 +152,7 @@ class _MessageboardState extends State<Messageboard> {
       _loadAllLikesLocal();
       _loadAllLikes();
     });
-    initPendingRequests();
+
   }
 
   @override
@@ -169,7 +170,7 @@ class _MessageboardState extends State<Messageboard> {
       });
     }
   }
-
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
   Future<void> loadGroups() async {
     setState(() {
       isSending = true;
@@ -184,64 +185,66 @@ class _MessageboardState extends State<Messageboard> {
 
   Future<void> _loadAllLikes() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
       final userId = loginModel?.data?.user?.id.toString() ?? '';
-
       final totalPosts = messageBoardModal?.data?.length ?? 0;
 
       isLikedList = List.generate(totalPosts, (index) => false);
       isLikeInProgressList = List.generate(totalPosts, (index) => false);
 
       for (int i = 0; i < totalPosts; i++) {
-        if (i < isLikedList.length &&
-            messageBoardModal?.data?.length != null &&
-            i < messageBoardModal!.data!.length) {
+        if (i < isLikedList.length && i < (messageBoardModal?.data?.length ?? 0)) {
           final postId = messageBoardModal?.data?[i].id.toString();
           if (postId != null) {
             final key = 'image_like_${postId}_$userId';
-            isLikedList[i] = prefs.getBool(key) ?? false;
+            final value = await secureStorage.read(key: key);
+            isLikedList[i] = value == 'true';
           }
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      print("Error loading likes: $e");
+    }
   }
+
 
   Future<void> _loadAllLikesLocal() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
       final userId = loginModel?.data?.user?.id.toString() ?? '';
-
       final totalPosts = localpost_model?.data?.data?.length ?? 0;
 
       isLikedListLocal = List.generate(totalPosts, (index) => false);
       isLikeInProgressListLocal = List.generate(totalPosts, (index) => false);
 
       for (int i = 0; i < totalPosts; i++) {
-        if (i < isLikedListLocal.length &&
-            localpost_model?.data?.data?.length != null &&
-            i < localpost_model!.data!.data!.length) {
+        if (i < isLikedListLocal.length && i < (localpost_model?.data?.data?.length ?? 0)) {
           final postId = localpost_model?.data?.data?[i].id.toString();
           if (postId != null) {
             final key = 'image_like_${postId}_$userId';
-            isLikedListLocal[i] = prefs.getBool(key) ?? false;
+            final value = await secureStorage.read(key: key);
+            isLikedListLocal[i] = value == 'true';
           }
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      print("Error loading local likes: $e");
+    }
   }
 
   Future<void> _saveLikeStatus(int index, bool liked) async {
-    final prefs = await SharedPreferences.getInstance();
     final userId = loginModel?.data?.user?.id.toString() ?? '';
-    final key = 'image_like_${messageBoardModal?.data?[index].id}_$userId';
-    await prefs.setBool(key, liked);
+    final postId = messageBoardModal?.data?[index].id.toString();
+    if (postId != null) {
+      final key = 'image_like_${postId}_$userId';
+      await secureStorage.write(key: key, value: liked.toString());
+    }
   }
-
   Future<void> _saveLikeStatusLocal(int index, bool liked) async {
-    final prefs = await SharedPreferences.getInstance();
     final userId = loginModel?.data?.user?.id.toString() ?? '';
-    final key = 'image_like_${localpost_model?.data?.data?[index].id}_$userId';
-    await prefs.setBool(key, liked);
+    final postId = localpost_model?.data?.data?[index].id.toString();
+    if (postId != null) {
+      final key = 'image_like_${postId}_$userId';
+      await secureStorage.write(key: key, value: liked.toString());
+    }
   }
 
   void handleLikeToggle(
@@ -287,39 +290,6 @@ class _MessageboardState extends State<Messageboard> {
   List<String> options = ['All', 'My Building', 'Local', 'Friends', 'Group'];
   String selectedOption = 'My Building';
 
-  Future<void> initPendingRequests() async {
-    final prefs = await SharedPreferences.getInstance();
-    final storedRequests = prefs.getStringList('pendingFriendRequests') ?? [];
-    pendingFriendRequests = storedRequests;
-  }
-
-  Future<void> savePendingRequests() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList('pendingFriendRequests', pendingFriendRequests);
-  }
-
-  Future<void> checkAcceptedRequests(List<dynamic> friendsList) async {
-    bool hasChanges = false;
-    List<String> updatedPendingRequests = List.from(pendingFriendRequests);
-
-    for (String requestId in pendingFriendRequests) {
-      bool isNowFriend = friendsList.any(
-        (friend) =>
-            friend.user?.id.toString() == requestId &&
-            friend.status == 'accepted',
-      );
-
-      if (isNowFriend) {
-        updatedPendingRequests.remove(requestId);
-        hasChanges = true;
-      }
-    }
-
-    if (hasChanges) {
-      pendingFriendRequests = updatedPendingRequests;
-      await savePendingRequests();
-    }
-  }
 
   int cartCount = cartDetailsModel?.data?.length ?? 0;
 
@@ -2601,171 +2571,7 @@ class _MessageboardState extends State<Messageboard> {
     });
   }
 
-  // creategrouplistdAp() {
-  //   final Map<String, String> data = {
-  //     'created_by': (loginModel?.data?.user?.id).toString(),
-  //     'name': groupNameController.text.toString(),
-  //     'details': "",
-  //   };
-  //
-  //   checkInternet().then((internet) async {
-  //     if (internet) {
-  //       MessageBoardProvider()
-  //           .createGroupApi(
-  //             bodyData: data,
-  //             memberIds: selectedMembers,
-  //             images: selectedImage != null ? [XFile(selectedImage!.path)] : [],
-  //           )
-  //           .then((response) async {
-  //             if (response.statusCode == 200) {
-  //               creategroupmodel = CreateGroupModel.fromJson(response.data);
-  //
-  //               await refreshGroupList();
-  //               groupNameController.clear();
-  //               selectedMembers.clear();
-  //               selectedImage = null;
-  //               imagePath = '';
-  //               setState(() {
-  //                 isLoading = false;
-  //               });
-  //             } else if (response.statusCode == 422) {
-  //               setState(() {
-  //                 isLoading = false;
-  //               });
-  //             } else {
-  //               setState(() {
-  //                 isLoading = false;
-  //               });
-  //             }
-  //           });
-  //     } else {
-  //       buildErrorDialog(context, 'Error', "Internet Required");
-  //     }
-  //   });
-  // }
 
-  // makefriendapi(dynamic receiverId) {
-  //   final Map<String, String> data = {
-  //     'sender_id': (loginModel?.data?.user?.id).toString(),
-  //     'receiver_id': receiverId.toString(),
-  //   };
-  //
-  //   checkInternet().then((internet) async {
-  //     if (internet) {
-  //       MessageBoardProvider()
-  //           .friendRequestApi(data)
-  //           .then((response) async {
-  //             if (response.statusCode == 200) {
-  //               createfriendModel = CreateFriendModel.fromJson(response.data);
-  //             } else if (response.statusCode == 429) {
-  //               Get.snackbar(
-  //                 'Error',
-  //                 'Too many requests. Please try again later.',
-  //                 backgroundColor: Colors.red.withOpacity(0.7),
-  //                 colorText: Colors.white,
-  //                 snackPosition: SnackPosition.BOTTOM,
-  //               );
-  //             } else {
-  //               Get.snackbar(
-  //                 'Error',
-  //                 'Too many requests. Please try again later.',
-  //                 backgroundColor: Colors.red.withOpacity(0.7),
-  //                 colorText: Colors.white,
-  //                 snackPosition: SnackPosition.BOTTOM,
-  //               );
-  //             }
-  //           })
-  //           .catchError((error) {});
-  //     } else {
-  //       buildErrorDialog(context, 'Error', "Internet Required");
-  //     }
-  //   });
-  // }
-
-  // getfriendlistdAp() {
-  //   final Map<String, String> data = {
-  //     'user_id': (loginModel?.data?.user?.id).toString(),
-  //   };
-  //
-  //   setState(() {
-  //     isSending = true;
-  //   });
-  //   checkInternet().then((internet) async {
-  //     if (internet) {
-  //       MessageBoardProvider().groupFriendRequestApi(data).then((
-  //         response,
-  //       ) async {
-  //         if (response.statusCode == 200) {
-  //           getfriendListModel = GetFriendListModel.fromJson(response.data);
-  //
-  //           setState(() {
-  //             isSending = false;
-  //           });
-  //         } else if (response.statusCode == 429) {
-  //           setState(() {
-  //             isSending = false;
-  //           });
-  //         } else {
-  //           setState(() {
-  //             isSending = false;
-  //           });
-  //           Get.snackbar(
-  //             'Error',
-  //             'Internal Server Error',
-  //             backgroundColor: Colors.red.withOpacity(0.7),
-  //             colorText: Colors.white,
-  //             snackPosition: SnackPosition.BOTTOM,
-  //           );
-  //         }
-  //       });
-  //     } else {
-  //       setState(() {
-  //         isSending = false;
-  //       });
-  //       buildErrorDialog(context, 'Error', "Internet Required");
-  //     }
-  //   });
-  // }
-
-  // Future<void> refreshGroupList() async {
-  //   final Map<String, String> data = {
-  //     'created_by': (loginModel?.data?.user?.id).toString(),
-  //   };
-  //
-  //   setState(() {
-  //     isSending = true;
-  //   });
-  //
-  //   try {
-  //     bool internet = await checkInternet();
-  //     if (internet) {
-  //       final response = await MessageBoardProvider().getGroupApi(data);
-  //       getgrouplistmodel = GetGroupListModel.fromJson(response.data);
-  //
-  //       if (response.statusCode == 200) {
-  //         setState(() {
-  //           isSending = false;
-  //         });
-  //         setState(() {});
-  //
-  //         return;
-  //       } else if (response.statusCode == 429) {
-  //         setState(() {
-  //           isSending = false;
-  //         });
-  //       } else {
-  //         setState(() {
-  //           isSending = false;
-  //         });
-  //       }
-  //     } else {
-  //       setState(() {
-  //         isSending = false;
-  //       });
-  //       buildErrorDialog(context, 'Error', "Internet Required");
-  //     }
-  //   } catch (e) {}
-  // }
 
   void postslikeap(int index, VoidCallback onComplete) {
     final Map<String, String> data = {
