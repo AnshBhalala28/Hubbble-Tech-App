@@ -151,7 +151,6 @@ class _MessageboardState extends State<Messageboard> {
       _loadAllLikesLocal();
       _loadAllLikes();
     });
-
   }
 
   @override
@@ -169,7 +168,9 @@ class _MessageboardState extends State<Messageboard> {
       });
     }
   }
+
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+
   Future<void> loadGroups() async {
     setState(() {
       isSending = true;
@@ -191,7 +192,8 @@ class _MessageboardState extends State<Messageboard> {
       isLikeInProgressList = List.generate(totalPosts, (index) => false);
 
       for (int i = 0; i < totalPosts; i++) {
-        if (i < isLikedList.length && i < (messageBoardModal?.data?.length ?? 0)) {
+        if (i < isLikedList.length &&
+            i < (messageBoardModal?.data?.length ?? 0)) {
           final postId = messageBoardModal?.data?[i].id.toString();
           if (postId != null) {
             final key = 'image_like_${postId}_$userId';
@@ -205,7 +207,6 @@ class _MessageboardState extends State<Messageboard> {
     }
   }
 
-
   Future<void> _loadAllLikesLocal() async {
     try {
       final userId = loginModel?.data?.user?.id.toString() ?? '';
@@ -215,7 +216,8 @@ class _MessageboardState extends State<Messageboard> {
       isLikeInProgressListLocal = List.generate(totalPosts, (index) => false);
 
       for (int i = 0; i < totalPosts; i++) {
-        if (i < isLikedListLocal.length && i < (localpost_model?.data?.data?.length ?? 0)) {
+        if (i < isLikedListLocal.length &&
+            i < (localpost_model?.data?.data?.length ?? 0)) {
           final postId = localpost_model?.data?.data?[i].id.toString();
           if (postId != null) {
             final key = 'image_like_${postId}_$userId';
@@ -237,6 +239,7 @@ class _MessageboardState extends State<Messageboard> {
       await secureStorage.write(key: key, value: liked.toString());
     }
   }
+
   Future<void> _saveLikeStatusLocal(int index, bool liked) async {
     final userId = loginModel?.data?.user?.id.toString() ?? '';
     final postId = localpost_model?.data?.data?[index].id.toString();
@@ -288,7 +291,6 @@ class _MessageboardState extends State<Messageboard> {
 
   List<String> options = ['All', 'My Building', 'Local', 'Friends', 'Group'];
   String selectedOption = 'My Building';
-
 
   int cartCount = cartDetailsModel?.data?.length ?? 0;
 
@@ -347,7 +349,7 @@ class _MessageboardState extends State<Messageboard> {
                       ),
                       SizedBox(height: 1.h),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
                             height: 5.h,
@@ -402,6 +404,252 @@ class _MessageboardState extends State<Messageboard> {
                               ),
                             ),
                           ),
+                          selectedOption == "Local"
+                              ? GestureDetector(
+                                onTap: () {
+                                  final List<String> buildingNames =
+                                      (localpost_model?.data?.data ?? [])
+                                          .map(
+                                            (item) =>
+                                                item.users?.isNotEmpty == true
+                                                    ? item
+                                                            .users![0]
+                                                            .buildingName ??
+                                                        ""
+                                                    : "",
+                                          )
+                                          .where((name) => name.isNotEmpty)
+                                          .toList();
+                                  final uniqueBuildings =
+                                      buildingNames.toSet().toList();
+
+                                  showDialog(
+                                    context: context,
+                                    builder:
+                                        (context) => AlertDialog(
+                                          backgroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                          title: Row(
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.all(6),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.maincolor
+                                                      .withOpacity(0.15),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Icon(
+                                                  Icons.info_rounded,
+                                                  color: AppColors.maincolor,
+                                                  size: 24,
+                                                ),
+                                              ),
+                                              SizedBox(width: 10),
+                                              Text(
+                                                "Information",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w700,
+                                                  fontFamily:
+                                                      AppConstants.manrope,
+                                                  fontSize: 18.sp,
+                                                  color: AppColors.blackColor,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          content: SingleChildScrollView(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "The buildings within your neighbourhood using Wavee Ai are:",
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                        AppConstants.manrope,
+                                                    fontSize: 15.5.sp,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.black87,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 2.h),
+                                                Container(
+                                                  height: 15.h,
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      children: [
+                                                        ...uniqueBuildings.map(
+                                                          (name) => Card(
+                                                            elevation: 1,
+                                                            color:
+                                                                AppColors.white,
+                                                            shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    12,
+                                                                  ),
+                                                            ),
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                  bottom: 8,
+                                                                ),
+                                                            child: Padding(
+                                                              padding:
+                                                                  EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        5.w,
+                                                                    vertical:
+                                                                        1.h,
+                                                                  ),
+                                                              child: Row(
+                                                                children: [
+                                                                  Icon(
+                                                                    Icons
+                                                                        .location_city,
+                                                                    size: 20.sp,
+                                                                    color:
+                                                                        AppColors
+                                                                            .maincolor,
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 8,
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: Text(
+                                                                      name,
+                                                                      style: TextStyle(
+                                                                        fontFamily:
+                                                                            AppConstants.manrope,
+                                                                        fontSize:
+                                                                            15.sp,
+                                                                        fontWeight:
+                                                                            FontWeight.w400,
+                                                                        color:
+                                                                            Colors.black87,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                // ...uniqueBuildings.map(
+                                                //   (name) => Card(
+                                                //     elevation: 1,
+                                                //     color: AppColors.white,
+                                                //     shape: RoundedRectangleBorder(
+                                                //       borderRadius:
+                                                //           BorderRadius.circular(
+                                                //             12,
+                                                //           ),
+                                                //     ),
+                                                //     margin: EdgeInsets.only(
+                                                //       bottom: 8,
+                                                //     ),
+                                                //     child: Padding(
+                                                //       padding:
+                                                //           EdgeInsets.symmetric(
+                                                //             horizontal: 5.w,
+                                                //             vertical: 1.h,
+                                                //           ),
+                                                //       child: Row(
+                                                //         children: [
+                                                //           Icon(
+                                                //             Icons.location_city,
+                                                //             size: 20.sp,
+                                                //             color:
+                                                //                 AppColors
+                                                //                     .maincolor,
+                                                //           ),
+                                                //           SizedBox(width: 8),
+                                                //           Expanded(
+                                                //             child: Text(
+                                                //               name,
+                                                //               style: TextStyle(
+                                                //                 fontFamily:
+                                                //                     AppConstants
+                                                //                         .manrope,
+                                                //                 fontSize: 15.sp,
+                                                //                 fontWeight:
+                                                //                     FontWeight
+                                                //                         .w400,
+                                                //                 color:
+                                                //                     Colors
+                                                //                         .black87,
+                                                //               ),
+                                                //             ),
+                                                //           ),
+                                                //         ],
+                                                //       ),
+                                                //     ),
+                                                //   ),
+                                                // ),
+                                              ],
+                                            ),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              style: TextButton.styleFrom(
+                                                foregroundColor: Colors.white,
+                                                backgroundColor:
+                                                    AppColors.maincolor,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                              ),
+                                              onPressed:
+                                                  () => Navigator.pop(context),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 16,
+                                                      vertical: 6,
+                                                    ),
+                                                child: Text(
+                                                  "Close",
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                        AppConstants.manrope,
+                                                    fontSize: 15.sp,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                  );
+                                },
+                                child: Material(
+                                  elevation: 1,
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: AppColors.white,
+                                  child: Container(
+                                    padding: EdgeInsets.all(6),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: AppColors.white.withOpacity(0.1),
+                                    ),
+                                    child: Icon(
+                                      Icons.info_outline_rounded,
+                                      color: AppColors.maincolor,
+                                      size: 19.sp,
+                                    ),
+                                  ),
+                                ),
+                              ).paddingOnly(right: 13.w, left: 1.w)
+                              : const SizedBox(),
+
                           selectedOption == "My Building"
                               ? const SizedBox()
                               : GestureDetector(
@@ -456,7 +704,9 @@ class _MessageboardState extends State<Messageboard> {
                               ),
                         ],
                       ),
-                      SizedBox(height: 2.h),
+                      SizedBox(height: 0.5.h),
+
+                      SizedBox(height: 1.h),
 
                       selectedOption == "My Building"
                           ? messageBoardModal?.data?.length == 0 ||
@@ -1122,23 +1372,23 @@ class _MessageboardState extends State<Messageboard> {
                                               color: AppColors.maincolor,
                                             ),
                                           ),
-                                          localpost_model
-                                                      ?.data
-                                                      ?.data?[index]
-                                                      .users?[0]
-                                                      .areaName ==
-                                                  null
-                                              ? const SizedBox()
-                                              : Text(
-                                                "Area: ${localpost_model?.data?.data?[index].users?[0].areaName ?? ""}",
-                                                style: TextStyle(
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                  fontSize: 16.sp,
-                                                  fontWeight: FontWeight.normal,
-                                                  color: Colors.grey,
-                                                ),
-                                              ),
+                                          // localpost_model
+                                          //             ?.data
+                                          //             ?.data?[index]
+                                          //             .users?[0]
+                                          //             .areaName ==
+                                          //         null
+                                          //     ? const SizedBox()
+                                          //     : Text(
+                                          //       "Area: ${localpost_model?.data?.data?[index].users?[0].areaName ?? ""}",
+                                          //       style: TextStyle(
+                                          //         fontFamily:
+                                          //             AppConstants.manrope,
+                                          //         fontSize: 16.sp,
+                                          //         fontWeight: FontWeight.normal,
+                                          //         color: Colors.grey,
+                                          //       ),
+                                          //     ),
                                           localpost_model
                                                       ?.data
                                                       ?.data?[index]
@@ -2569,8 +2819,6 @@ class _MessageboardState extends State<Messageboard> {
       }
     });
   }
-
-
 
   void postslikeap(int index, VoidCallback onComplete) {
     final Map<String, String> data = {
