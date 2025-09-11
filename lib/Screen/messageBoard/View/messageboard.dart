@@ -478,7 +478,7 @@ class _MessageboardState extends State<Messageboard> {
                                                 ),
                                                 SizedBox(height: 2.h),
                                                 Container(
-                                                  height: 15.h,
+                                                  height: 18.h,
                                                   child: SingleChildScrollView(
                                                     child: Column(
                                                       children: [
@@ -647,7 +647,7 @@ class _MessageboardState extends State<Messageboard> {
                                     ),
                                   ),
                                 ),
-                              ).paddingOnly(right: 13.w, left: 1.w)
+                              ).paddingOnly(right: 9.w, left: 1.w)
                               : const SizedBox(),
 
                           selectedOption == "My Building"
@@ -1389,23 +1389,23 @@ class _MessageboardState extends State<Messageboard> {
                                           //         color: Colors.grey,
                                           //       ),
                                           //     ),
-                                          localpost_model
-                                                      ?.data
-                                                      ?.data?[index]
-                                                      .users?[0]
-                                                      .buildingName ==
-                                                  null
-                                              ? const SizedBox()
-                                              : Text(
-                                                "Building:${localpost_model?.data?.data?[index].users?[0].buildingName ?? ""}",
-                                                style: TextStyle(
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                  fontSize: 16.sp,
-                                                  fontWeight: FontWeight.normal,
-                                                  color: Colors.grey,
-                                                ),
-                                              ),
+                                          // localpost_model
+                                          //             ?.data
+                                          //             ?.data?[index]
+                                          //             .users?[0]
+                                          //             .buildingName ==
+                                          //         null
+                                          //     ? const SizedBox()
+                                          //     : Text(
+                                          //       "Building:${localpost_model?.data?.data?[index].users?[0].buildingName ?? ""}",
+                                          //       style: TextStyle(
+                                          //         fontFamily:
+                                          //             AppConstants.manrope,
+                                          //         fontSize: 16.sp,
+                                          //         fontWeight: FontWeight.normal,
+                                          //         color: Colors.grey,
+                                          //       ),
+                                          //     ),
 
                                           ReadMoreText(
                                             localpost_model

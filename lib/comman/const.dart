@@ -123,6 +123,7 @@ class AppConstants {
   static const String terms = "${path}terms.svg";
   static const String messageBoard = "${path}messageboard.svg";
   static const String eventBooking = "${path}eventbookin.svg";
+  static const String waveePet = "${path}waveePet.svg";
 }
 
 LoginModel? loginModel;

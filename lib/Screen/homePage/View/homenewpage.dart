@@ -17,17 +17,17 @@ import 'package:wavee/Screen/Booking/View/booking_screen.dart';
 import 'package:wavee/Screen/Chatscreen/View/chatscreen.dart';
 import 'package:wavee/Screen/Community%20Screen/Community%20Screen/view/community_screen.dart';
 import 'package:wavee/Screen/Event/View/event_screen.dart';
+import 'package:wavee/Screen/Manintenance/View/maintenance_view.dart';
+import 'package:wavee/Screen/Parcel/parcel_Screen_View/parcel_View.dart';
+import 'package:wavee/Screen/Visitor/View/visitorscreen.dart';
 import 'package:wavee/Screen/homePage/Model/parcel_show_count.dart';
 import 'package:wavee/Screen/homePage/Model/visitor_show_count_model.dart';
 import 'package:wavee/Screen/homePage/Provider/homescreen_provider.dart';
-import 'package:wavee/Screen/Manintenance/View/maintenance_view.dart';
 import 'package:wavee/Screen/messageBoard/Model/Localpost_model.dart';
 import 'package:wavee/Screen/messageBoard/View/messageboard.dart';
 import 'package:wavee/Screen/orderScreen/View/order_screen_view.dart';
-import 'package:wavee/Screen/Parcel/parcel_Screen_View/parcel_View.dart';
 import 'package:wavee/Screen/viewProfile/View/Mybuilding_Screen.dart';
 import 'package:wavee/Screen/viewProfile/View/viewprofile.dart';
-import 'package:wavee/Screen/Visitor/View/visitorscreen.dart';
 import 'package:wavee/comman/bottom_bar.dart';
 import 'package:wavee/comman/check_inernet_connecty.dart';
 import 'package:wavee/comman/error_dialog.dart';
@@ -1097,6 +1097,21 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ],
                                 ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: HomeProfileCard(
+                                        iconName: AppConstants.waveePet,
+                                        name: "Wavee Pet",
+                                        onTap: () {
+                                          launchStore();
+                                        },
+                                      ),
+                                    ),
+                                    SizedBox(width: 5.w),
+                                    Expanded(child: Container()),
+                                  ],
+                                ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
                                 SizedBox(height: 3.h),
                               ],
                             ),
@@ -1124,6 +1139,17 @@ class _HomePageState extends State<HomePage> {
 
   void launchPrivacyPolicyUrl() async {
     final Uri url = Uri.parse("https://www.wavee.ai/privacy-policy");
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      throw 'Could not launch $url';
+    }
+  }
+
+  void launchStore() async {
+    final Uri url = Uri.parse(
+      Platform.isIOS
+          ? 'https://apps.apple.com/in/app/wavee-pet/id6746203457'
+          : 'https://play.google.com/store/apps/details?id=com.pets.wavee',
+    );
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       throw 'Could not launch $url';
     }
