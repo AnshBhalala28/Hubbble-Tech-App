@@ -436,19 +436,21 @@ class _MessageboardState extends State<Messageboard> {
                                           title: Row(
                                             children: [
                                               Container(
-                                                padding: EdgeInsets.all(6),
+                                                padding: const EdgeInsets.all(
+                                                  6,
+                                                ),
                                                 decoration: BoxDecoration(
                                                   color: AppColors.maincolor
                                                       .withOpacity(0.15),
                                                   shape: BoxShape.circle,
                                                 ),
-                                                child: Icon(
+                                                child: const Icon(
                                                   Icons.info_rounded,
                                                   color: AppColors.maincolor,
                                                   size: 24,
                                                 ),
                                               ),
-                                              SizedBox(width: 10),
+                                              const SizedBox(width: 10),
                                               Text(
                                                 "Information",
                                                 style: TextStyle(
@@ -477,7 +479,7 @@ class _MessageboardState extends State<Messageboard> {
                                                   ),
                                                 ),
                                                 SizedBox(height: 2.h),
-                                                Container(
+                                                SizedBox(
                                                   height: 18.h,
                                                   child: SingleChildScrollView(
                                                     child: Column(
@@ -494,7 +496,7 @@ class _MessageboardState extends State<Messageboard> {
                                                                   ),
                                                             ),
                                                             margin:
-                                                                EdgeInsets.only(
+                                                                const EdgeInsets.only(
                                                                   bottom: 8,
                                                                 ),
                                                             child: Padding(
@@ -515,7 +517,7 @@ class _MessageboardState extends State<Messageboard> {
                                                                         AppColors
                                                                             .maincolor,
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 8,
                                                                   ),
                                                                   Expanded(
@@ -635,7 +637,7 @@ class _MessageboardState extends State<Messageboard> {
                                   borderRadius: BorderRadius.circular(20),
                                   color: AppColors.white,
                                   child: Container(
-                                    padding: EdgeInsets.all(6),
+                                    padding: const EdgeInsets.all(6),
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       color: AppColors.white.withOpacity(0.1),
@@ -1372,6 +1374,7 @@ class _MessageboardState extends State<Messageboard> {
                                               color: AppColors.maincolor,
                                             ),
                                           ),
+
                                           // localpost_model
                                           //             ?.data
                                           //             ?.data?[index]
@@ -1406,7 +1409,6 @@ class _MessageboardState extends State<Messageboard> {
                                           //         color: Colors.grey,
                                           //       ),
                                           //     ),
-
                                           ReadMoreText(
                                             localpost_model
                                                             ?.data

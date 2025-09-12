@@ -4992,7 +4992,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                       (context, url) =>
                           const Center(child: CircularProgressIndicator()),
                   errorWidget:
-                      (context, url, error) => Icon(
+                      (context, url, error) => const Icon(
                         Icons.home_repair_service,
                         color: Colors.grey,
                         size: 24,

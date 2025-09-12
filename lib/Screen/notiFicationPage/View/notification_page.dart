@@ -3,8 +3,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Screen/messageScreen/View/messageScreen.dart';
 import 'package:wavee/Screen/NotiFicationPage/Model/ReadNotificationModel.dart';
+import 'package:wavee/Screen/messageScreen/View/messageScreen.dart';
 import 'package:wavee/Screen/notiFicationPage/Provider/notificationprovider.dart';
 import 'package:wavee/Screen/notiFicationPage/View/all_notifications_page.dart';
 
@@ -13,11 +13,11 @@ import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
 import '../../../comman/error_dialog.dart';
+import '../../Parcel/parcel_Screen_View/parcel_View.dart';
+import '../../Visitor/View/visitorscreen.dart';
 import '../../homePage/View/homenewpage.dart';
 import '../../messageBoard/View/messageboard.dart';
 import '../../orderScreen/View/orderdetailscreen.dart';
-import '../../Parcel/parcel_Screen_View/parcel_View.dart';
-import '../../Visitor/View/visitorscreen.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});

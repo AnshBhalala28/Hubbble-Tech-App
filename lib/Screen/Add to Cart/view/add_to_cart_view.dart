@@ -36,7 +36,6 @@ class AddToCartView extends StatefulWidget {
 }
 
 class _AddToCartViewState extends State<AddToCartView> {
-
   bool isLoading = false;
   bool isUpdateQuantity = false;
 
@@ -92,7 +91,7 @@ class _AddToCartViewState extends State<AddToCartView> {
               child: Stack(
                 children: [
                   if (isLoading)
-                     Center(child: Loader())
+                    Center(child: Loader())
                   else if (cartDetailsModel?.data == null ||
                       (cartDetailsModel?.data?.length ?? 0) == 0)
                     _buildEmptyBasketView()
@@ -100,7 +99,6 @@ class _AddToCartViewState extends State<AddToCartView> {
                     ListView(
                       padding: const EdgeInsets.all(8.0),
                       children: [
-
                         Container(
                           margin: EdgeInsets.all(2.w),
                           decoration: BoxDecoration(
@@ -152,24 +150,23 @@ class _AddToCartViewState extends State<AddToCartView> {
                             ),
                           ),
                         ),
-                        ...List.generate(
-                          cartDetailsModel!.data!.length,
-                              (index) {
-                            final item = cartDetailsModel!.data![index];
-                            return Column(
-                              children: [
-                                _buildCartItem(item),
-                                if (index != cartDetailsModel!.data!.length - 1)
-                                  Divider(
-                                    height: 1,
-                                    color: const Color(0xFFF5F5F5),
-                                    indent: 4.w,
-                                    endIndent: 4.w,
-                                  ),
-                              ],
-                            );
-                          },
-                        ),
+                        ...List.generate(cartDetailsModel!.data!.length, (
+                          index,
+                        ) {
+                          final item = cartDetailsModel!.data![index];
+                          return Column(
+                            children: [
+                              _buildCartItem(item),
+                              if (index != cartDetailsModel!.data!.length - 1)
+                                Divider(
+                                  height: 1,
+                                  color: const Color(0xFFF5F5F5),
+                                  indent: 4.w,
+                                  endIndent: 4.w,
+                                ),
+                            ],
+                          );
+                        }),
 
                         if (cartDetailsModel?.data?[0].type == "product") ...[
                           const Padding(
@@ -189,7 +186,8 @@ class _AddToCartViewState extends State<AddToCartView> {
                       ],
                     ),
 
-                  if (!isLoading && (cartDetailsModel?.data?.isNotEmpty ?? false))
+                  if (!isLoading &&
+                      (cartDetailsModel?.data?.isNotEmpty ?? false))
                     Positioned(
                       top: 10.h,
                       left: 0,
@@ -235,10 +233,11 @@ class _AddToCartViewState extends State<AddToCartView> {
                                           getSubtotal1(),
                                         ),
                                       if (cartDetailsModel?.data?[0].type ==
-                                          "product" &&
-                                          (cartDetailsModel?.data?[0]
-                                              .loyaltyDetails
-                                              ?.willGetLoyaltyDiscountOnCurrentOrder ??
+                                              "product" &&
+                                          (cartDetailsModel
+                                                  ?.data?[0]
+                                                  .loyaltyDetails
+                                                  ?.willGetLoyaltyDiscountOnCurrentOrder ??
                                               false))
                                         _buildSummaryRow(
                                           "Loyalty Discount (-${getLoyaltyDiscountPercentage().toStringAsFixed(0)}%)",
@@ -268,7 +267,6 @@ class _AddToCartViewState extends State<AddToCartView> {
                         },
                       ),
                     ),
-
 
                   if (!isLoading &&
                       (cartDetailsModel?.data?.isNotEmpty ?? false))
@@ -303,7 +301,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                   if (isUpdateQuantity)
                     Container(
                       color: Colors.white,
-                      child:  Center(child: Loader()),
+                      child: Center(child: Loader()),
                     ),
                 ],
               ),
@@ -314,6 +312,7 @@ class _AddToCartViewState extends State<AddToCartView> {
       bottomNavigationBar: BottomBar(selected: 4),
     );
   }
+
   Widget _buildEmptyBasketView() {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -415,20 +414,22 @@ class _AddToCartViewState extends State<AddToCartView> {
               height: 18.w,
               color: const Color(0xFFF8F8F8),
               child: CachedNetworkImage(
-                imageUrl: (product.image != null && (product.image as String).isNotEmpty)
-                    ? product.image
-                    : (product.images != null && (product.images as List).isNotEmpty)
-                    ? product.images.first
-                    : "",
+                imageUrl:
+                    (product.image != null &&
+                            (product.image as String).isNotEmpty)
+                        ? product.image
+                        : (product.images != null &&
+                            (product.images as List).isNotEmpty)
+                        ? product.images.first
+                        : "",
                 fit: BoxFit.cover,
-                placeholder: (context, url) =>  Center(
-                  child: Loader(),
-                ),
-                errorWidget: (context, url, error) => Icon(
-                  Icons.image_outlined,
-                  color: Colors.grey[400],
-                  size: 8.w,
-                ),
+                placeholder: (context, url) => Center(child: Loader()),
+                errorWidget:
+                    (context, url, error) => Icon(
+                      Icons.image_outlined,
+                      color: Colors.grey[400],
+                      size: 8.w,
+                    ),
               ),
             ),
           ),
@@ -437,7 +438,6 @@ class _AddToCartViewState extends State<AddToCartView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Row(
                   children: [
                     Expanded(
@@ -453,7 +453,10 @@ class _AddToCartViewState extends State<AddToCartView> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        RemoveFromCartApi(item.productId ?? 0, item.type ?? "product");
+                        RemoveFromCartApi(
+                          item.productId ?? 0,
+                          item.type ?? "product",
+                        );
                       },
                       child: Container(
                         padding: EdgeInsets.all(1.w),
@@ -495,16 +498,13 @@ class _AddToCartViewState extends State<AddToCartView> {
     );
   }
 
-
   Widget _buildQuantityControl(dynamic item) {
     int qty = (item.quantity ?? 1) as int;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: const Color(0xff969696),
-        ),
+        border: Border.all(color: const Color(0xff969696)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -515,7 +515,11 @@ class _AddToCartViewState extends State<AddToCartView> {
                 setState(() {
                   item.quantity = qty - 1;
                 });
-                updateQuantityApi(item.productId ?? 0, item.quantity ?? 1, item.type ?? "");
+                updateQuantityApi(
+                  item.productId ?? 0,
+                  item.quantity ?? 1,
+                  item.type ?? "",
+                );
               } else {
                 RemoveFromCartApi(item.productId ?? 0, item.type ?? "product");
               }
@@ -547,22 +551,25 @@ class _AddToCartViewState extends State<AddToCartView> {
                 setState(() {
                   item.quantity = (item.quantity ?? 1) + 1;
                 });
-                updateQuantityApi(item.productId ?? 0, item.quantity ?? 1, item.type ?? "");
+                updateQuantityApi(
+                  item.productId ?? 0,
+                  item.quantity ?? 1,
+                  item.type ?? "",
+                );
               }
             },
-            child: Icon(
-              Icons.add,
-              color: Colors.black,
-              size: 16.sp,
-            ),
+            child: Icon(Icons.add, color: Colors.black, size: 16.sp),
           ),
         ],
       ),
     );
   }
 
-
-  Widget _buildSectionCard({required String title, required IconData icon, required Widget child}) {
+  Widget _buildSectionCard({
+    required String title,
+    required IconData icon,
+    required Widget child,
+  }) {
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -577,7 +584,10 @@ class _AddToCartViewState extends State<AddToCartView> {
                 SizedBox(width: 2.w),
                 Text(
                   title,
-                  style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ],
             ),
@@ -626,7 +636,6 @@ class _AddToCartViewState extends State<AddToCartView> {
       }
     });
   }
-
 
   Widget summaryTile(String title, String amount, {bool isTotal = false}) {
     return Padding(

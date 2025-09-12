@@ -3,12 +3,12 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Screen/messageBoard/View/messageboard.dart';
-import 'package:wavee/Screen/messageScreen/View/messageScreen.dart';
 import 'package:wavee/Screen/NotiFicationPage/Model/ReadNotificationModel.dart';
 import 'package:wavee/Screen/NotiFicationPage/Provider/notificationprovider.dart';
 import 'package:wavee/Screen/Parcel/parcel_Screen_View/parcel_View.dart';
 import 'package:wavee/Screen/Visitor/View/visitorscreen.dart';
+import 'package:wavee/Screen/messageBoard/View/messageboard.dart';
+import 'package:wavee/Screen/messageScreen/View/messageScreen.dart';
 
 import '../../../comman/Custom_AppBar.dart';
 import '../../../comman/check_inernet_connecty.dart';
