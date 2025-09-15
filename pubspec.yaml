@@ -119,7 +119,8 @@ flutter:
     - assets/
     - assets/images/
     - assets/Svg/
-    - assets/certificates/wavee_cert.pem
+#    - assets/certificates/wavee_cert.pem
+    - assets/certificates/api_cert3.pem
     - .env
     # - images/a_dot_ham.jpeg
 

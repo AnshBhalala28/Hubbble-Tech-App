@@ -326,6 +326,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                       fontsize: 17.sp,
                       radius: 12.0,
                     ),
+                    SizedBox(height: 5.h,)
                   ],
                 ),
               ).paddingOnly(right: 3.w, left: 3.w),
@@ -464,22 +465,20 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
         ProfileProvider().profileApi(data).then((response) async {
           if (response.statusCode == 200) {
             setState(() {
-              var profileModel = ProfileModel.fromJson(response.data);
-              if (profileModel.status == 200) {
-                var user = profileModel.data?.user;
-                var unit = profileModel.data?.unit;
+              profileModel = ProfileModel.fromJson(response.data); // ✅ class level update
+              if (profileModel?.status == 200) {
+                var user = profileModel?.data?.user;
+                var unit = profileModel?.data?.unit;
 
                 if (user != null) {
                   var address = user.address;
 
-                  /// Function to check valid string (not null, not empty, not "N/A")
                   bool isValid(String? value) {
                     return value != null &&
                         value.trim().isNotEmpty &&
                         value != "N/A";
                   }
 
-                  /// Build Address Parts
                   List<String> addressParts = [];
 
                   if (isValid(unit?.blockNumber)) {
@@ -504,7 +503,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                   fullAddressController.text = addressParts.join(', ');
 
                   KeyWaiversController.text =
-                      isValid(unit?.keyWaiver) ? unit!.keyWaiver! : "";
+                  isValid(unit?.keyWaiver) ? unit!.keyWaiver! : "";
 
                   propertydetailsController.text = [
                     if (isValid(unit?.blockNumber)) unit!.blockNumber!,
@@ -519,6 +518,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
 
               isLoading = false;
             });
+
           } else {
             setState(() {
               isLoading = false;

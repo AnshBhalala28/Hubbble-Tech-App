@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -28,8 +29,9 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
   final GlobalKey<ScaffoldState> Mybuilding = GlobalKey<ScaffoldState>();
   TextEditingController myBuilingname = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController genderController = TextEditingController();
+  TextEditingController conciergeInfoController = TextEditingController();
+  TextEditingController parkingInfoController = TextEditingController();
+  TextEditingController fitnessController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController countryController = TextEditingController();
@@ -92,22 +94,14 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                     SizedBox(height: 1.h),
                     profileField(
                       "Building Name",
-                      TextEditingController(
-                        text: capitalizeWords(
-                          profileModel?.data?.buildingDocument?.buildingName ??
-                              "",
-                        ),
-                      ),
+                      myBuilingname,
                       Icons.apartment,
                       false,
                     ),
 
                     profileField(
                       "Address",
-                      TextEditingController(
-                        text:
-                            profileModel?.data?.buildingDocument?.address ?? "",
-                      ),
+                      addressController,
                       Icons.location_on,
                       false,
                     ),
@@ -148,40 +142,19 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                     ),
                     profileField(
                       "Parking Info",
-                      TextEditingController(
-                        text:
-                            profileModel
-                                ?.data
-                                ?.buildingDocument
-                                ?.parkingInformation ??
-                            "",
-                      ),
+                      parkingInfoController,
                       Icons.local_parking,
                       false,
                     ),
                     profileField(
                       "Concierge Info",
-                      TextEditingController(
-                        text:
-                            profileModel
-                                ?.data
-                                ?.buildingDocument
-                                ?.conciergeInformation ??
-                            "",
-                      ),
+                      conciergeInfoController,
                       Icons.support_agent,
                       false,
                     ),
                     profileField(
                       "Fitness Centre",
-                      TextEditingController(
-                        text:
-                            profileModel
-                                ?.data
-                                ?.buildingDocument
-                                ?.fitnessCentreInformation ??
-                            "",
-                      ),
+                      fitnessController,
                       Icons.fitness_center,
                       false,
                     ),
@@ -195,22 +168,14 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                     SizedBox(height: 1.h),
                     profileField(
                       "Building Name",
-                      TextEditingController(
-                        text: capitalizeWords(
-                          profileModel?.data?.buildingDocument?.buildingName ??
-                              "",
-                        ),
-                      ),
+                      myBuilingname,
                       Icons.apartment,
                       false,
                     ),
 
                     profileField(
                       "Address",
-                      TextEditingController(
-                        text:
-                            profileModel?.data?.buildingDocument?.address ?? "",
-                      ),
+                      addressController,
                       Icons.location_on,
                       false,
                     ),
@@ -251,43 +216,23 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                     ),
                     profileField(
                       "Parking Info",
-                      TextEditingController(
-                        text:
-                            profileModel
-                                ?.data
-                                ?.buildingDocument
-                                ?.parkingInformation ??
-                            "",
-                      ),
+                      parkingInfoController,
                       Icons.local_parking,
                       false,
                     ),
                     profileField(
                       "Concierge Info",
-                      TextEditingController(
-                        text:
-                            profileModel
-                                ?.data
-                                ?.buildingDocument
-                                ?.conciergeInformation ??
-                            "",
-                      ),
+                      conciergeInfoController,
                       Icons.support_agent,
                       false,
                     ),
                     profileField(
                       "Fitness Centre",
-                      TextEditingController(
-                        text:
-                            profileModel
-                                ?.data
-                                ?.buildingDocument
-                                ?.fitnessCentreInformation ??
-                            "",
-                      ),
+                      fitnessController,
                       Icons.fitness_center,
                       false,
                     ),
+
                     if ((profileModel!
                             .data!
                             .buildingDocument!
@@ -314,6 +259,7 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                                     .buildingDocument!
                                     .emergencyNumbers!
                                     .length,
+                            padding: EdgeInsets.zero,
                             itemBuilder: (context, index) {
                               final number =
                                   profileModel!
@@ -337,11 +283,11 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                                           .buildingDocument!
                                           .emergencyCaptions![index]
                                       : "Emergency ${index + 1}";
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 4,
-                                ),
-                                child: Text("$caption: $number"),
+                              return profileField(
+                                  caption,
+                                TextEditingController(),
+                                Icons.phone,
+                                true,
                               );
                             },
                           ),
@@ -505,20 +451,35 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
         ProfileProvider().profileApi(data).then((response) async {
           if (response.statusCode == 200) {
             setState(() {
-              var profileModel = ProfileModel.fromJson(response.data);
-              landline.text = profileModel.data?.building?.landline ?? "";
-              number.text = profileModel.data?.building?.mobile ?? "";
+              profileModel = ProfileModel.fromJson(
+                response.data,
+              ); // ✅ class level update
 
-              if (profileModel.status == 200) {
-                var user = profileModel.data?.user;
-                var building = profileModel.data?.buildingDocument;
-                if (user != null) {
-                  myBuilingname.text = building?.buildingName ?? "";
-                }
+              landline.text = profileModel?.data?.building?.landline ?? "";
+              number.text = profileModel?.data?.building?.mobile ?? "";
+              addressController.text =
+                  profileModel?.data?.buildingDocument?.address ?? "";
+              parkingInfoController.text =
+                  profileModel?.data?.buildingDocument?.parkingInformation ??
+                  "";
+              conciergeInfoController.text =
+                  profileModel?.data?.buildingDocument?.conciergeInformation ??
+                  "";
+              fitnessController.text =
+                  profileModel
+                      ?.data
+                      ?.buildingDocument
+                      ?.fitnessCentreInformation ??
+                  "";
+
+              if (profileModel?.status == 200) {
+                var building = profileModel?.data?.buildingDocument;
+                myBuilingname.text = building?.buildingName ?? "";
               }
 
               isLoading = false;
             });
+            log("Response Data is now coming${response.data}");
           } else {
             setState(() {
               isLoading = false;

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -27,6 +28,8 @@ class ProfileProvider extends ChangeNotifier {
       );
       return response;
     } on DioException catch (e) {
+      log("error in profileApi${e.response?.data}");
+      log("error in profileApi${e.message}");
       throw Exception(handleDioError(e));
     }
   }

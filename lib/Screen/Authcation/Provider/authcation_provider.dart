@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:wavee/comman/apiEndpoint.dart';
@@ -11,8 +13,12 @@ class AuthProvider extends ChangeNotifier {
     try {
       final dio = await DioHelper.getDio();
       final response = await dio.post(ApiEndpoint.login, data: bodyData);
+      log("Login Error in fuild ${     ApiEndpoint.login}");
       return response;
     } on DioException catch (e) {
+      log("Login Error in fuild ${ ApiEndpoint.login}");
+      log("Login Error in fuild ${e.message}");
+      log("Login Error in fuild ${e.response?.data}");
       throw Exception('error $e');
     }
   }

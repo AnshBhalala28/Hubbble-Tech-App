@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -269,7 +271,7 @@ class _LoginScreenState extends State<LoginScreen> {
       'role': '4',
       "fcm_token": fcmToken,
     };
-
+    log('dadadadad$data');
     checkInternet().then((internet) async {
       if (internet) {
         try {
@@ -304,7 +306,9 @@ class _LoginScreenState extends State<LoginScreen> {
               "Failed to login with status code: ${response.statusCode}",
             );
           }
-        } catch (e) {
+        } catch (e, stackTrace) {
+          log("Error is coming $e");
+          log("Error is coming $stackTrace");
           showSnackBar(
             title: "Error",
             message: "Something went wrong during login",
