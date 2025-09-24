@@ -311,7 +311,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response = await AuthProvider().SignUpApi(data);
+          final response = await AuthProvider1().SignUpApi(data);
 
           Map<String, dynamic> responseData;
           try {

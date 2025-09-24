@@ -1,12 +1,19 @@
+import 'dart:developer';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/comman/check_inernet_connecty.dart';
 import 'package:wavee/comman/colors.dart';
 import 'package:wavee/comman/const.dart';
+import 'package:wavee/comman/custom_snack_bar.dart';
+import 'package:wavee/comman/error_dialog.dart';
 import 'package:wavee/comman/store_local.dart';
 
 import '../comman/custom_batan.dart';
+import 'Authcation/Provider/authcation_provider.dart';
 import 'Authcation/View/loginscreen.dart';
 import 'homePage/View/homenewpage.dart';
 
@@ -20,6 +27,7 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
+    getdataAndUpdateFCM();
     _requestLocationPermission();
     getdata();
     super.initState();
@@ -129,4 +137,62 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       ),
     );
   }
+
+  bool isLoading = false;
+  Future<void> getdataAndUpdateFCM() async {
+    loginModel = await SaveDataLocal.getDataFromLocal();
+
+    if (loginModel != null) {
+
+      updateFCM1();
+
+    }
+  }
+  void updateFCM1() async {
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+
+    if (fcmToken == null) {
+      showSnackBar(
+        title: "FCM Error",
+        message: "Unable to fetch FCM token",
+        backgoundColor: Colors.red,
+        ColorText: Colors.white,
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+    final Map<String, String> data = {};
+    data["user_id"] = loginModel?.data?.user?.id.toString() ?? "";
+    data["fcm_token"] = fcmToken;
+    log("datadatadata$data");
+    checkInternet().then((internet) async {
+      if (internet) {
+        try {
+          var response = await AuthProvider().updateFCM(data);
+          if (response.statusCode == 200) {
+            setState(() {
+              isLoading = false;
+            });
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+          }
+        } catch (e) {
+          setState(() {
+            isLoading = false;
+          });
+        }
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+
 }
