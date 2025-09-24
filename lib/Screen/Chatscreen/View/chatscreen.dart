@@ -145,7 +145,7 @@ class _ChatScreenState extends State<ChatScreen> {
         }
       }
     } catch (e) {
-      return "";
+      return "Offline";
     }
   }
 
@@ -1044,7 +1044,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                           ),
                                                         ),
                                                       ),
-                                                    ),
+                                                    ).paddingOnly(top: 2.h),
                                               ],
                                             ),
                                           ),

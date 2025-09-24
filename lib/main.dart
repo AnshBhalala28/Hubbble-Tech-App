@@ -1,153 +1,3 @@
-// import 'dart:developer';
-// import 'package:awesome_notifications/awesome_notifications.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:sizer/sizer.dart';
-// import 'Screen/Authcation/Model/login_model.dart';
-// import 'Screen/welcome_screen.dart';
-// import 'comman/colors.dart';
-// import 'firebase_options.dart';
-//
-// String? myDeviceToken;
-//
-// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   await Firebase.initializeApp();
-//
-//
-//
-//   if (message.data['sender_token'] != myDeviceToken) {
-//     _showAwesomeNotification(message);
-//   }
-// }
-//
-// void _showAwesomeNotification(RemoteMessage message) {
-//   String? title = message.notification?.title ?? message.data['title'] ?? '';
-//   String? body = message.notification?.body ?? message.data['body'] ?? '';
-//
-//
-//
-//   AwesomeNotifications().createNotification(
-//     content: NotificationContent(
-//       id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-//       channelKey: 'basic_channel',
-//       title: title,
-//       body: body,
-//       notificationLayout: NotificationLayout.Default,
-//     ),
-//   );
-// }
-//
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-//   AwesomeNotifications().initialize(null, [
-//     NotificationChannel(
-//       channelKey: 'basic_channel',
-//       channelName: 'Basic Notifications',
-//       channelDescription: 'Used for basic notifications',
-//       defaultColor: AppColors.maincolor,
-//       ledColor: Colors.white,
-//       importance: NotificationImportance.High,
-//     ),
-//   ], debug: true);
-//   FirebaseMessaging messaging = FirebaseMessaging.instance;
-//   NotificationSettings settings = await messaging.requestPermission(
-//     alert: true,
-//     badge: true,
-//     sound: true,
-//     announcement: true,
-//     carPlay: true,
-//     criticalAlert: true,
-//     provisional: false,
-//   );
-//
-//   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-//
-//   } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-//
-//   } else {
-//
-//   }
-//   bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
-//   if (!isAllowed) {
-//
-//     AwesomeNotifications().requestPermissionToSendNotifications();
-//   } else {
-//
-//   }
-//   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-//   runApp(MyApp());
-// }
-//
-// class MyApp extends StatefulWidget {
-//   final LoginModel? loginModel;
-//
-//   const MyApp({super.key, this.loginModel});
-//
-//   @override
-//   State<MyApp> createState() => _MyAppState();
-// }
-//
-// class _MyAppState extends State<MyApp> {
-//   @override
-//   void initState() {
-//     super.initState();
-//
-//     // Get device token
-//     FirebaseMessaging.instance.getToken().then((token) {
-//       myDeviceToken = token;
-//
-//     });
-//     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-//
-//
-//
-//       if (Theme.of(context).platform == TargetPlatform.iOS) {
-//         if (message.data['sender_token'] != myDeviceToken &&
-//             message.notification == null) {
-//           _showAwesomeNotification(message);
-//         }
-//       } else {
-//         if (message.data['sender_token'] != myDeviceToken) {
-//           _showAwesomeNotification(message);
-//         }
-//       }
-//     });
-//
-//     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-//
-//     });
-//     checkInitialMessage();
-//   }
-//
-//   Future<void> checkInitialMessage() async {
-//     RemoteMessage? initialMessage =
-//         await FirebaseMessaging.instance.getInitialMessage();
-//     if (initialMessage != null &&
-//         initialMessage.data['sender_token'] != myDeviceToken) {
-//       _showAwesomeNotification(initialMessage);
-//     }
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Sizer(
-//       builder: (context, orientation, screenType) {
-//         return GetMaterialApp(
-//           debugShowCheckedModeBanner: false,
-//           title: 'Wavee Ai',
-//           theme: ThemeData(
-//             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-//             useMaterial3: true,
-//           ),
-//           home: WelcomeScreen(),
-//         );
-//       },
-//     );
-//   }
-// }
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -166,6 +16,7 @@ String? myDeviceToken;
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 
+  // Background ma notification show karvi
   if (message.data['sender_token'] != myDeviceToken) {
     _showAwesomeNotification(message);
   }
@@ -174,9 +25,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 /// Show notification if allowed
 void _showAwesomeNotification(RemoteMessage message) async {
   bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
-  if (!isAllowed) {
-    return;
-  }
+  if (!isAllowed) return;
 
   String? title = message.notification?.title ?? message.data['title'] ?? '';
   String? body = message.notification?.body ?? message.data['body'] ?? '';
@@ -197,40 +46,31 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Initialize Awesome Notifications
-  AwesomeNotifications().initialize(null, [
-    NotificationChannel(
-      channelKey: 'basic_channel',
-      channelName: 'Basic Notifications',
-      channelDescription: 'Used for basic notifications',
-      defaultColor: AppColors.maincolor,
-      ledColor: Colors.white,
-      importance: NotificationImportance.High,
-    ),
-  ], debug: true);
+  AwesomeNotifications().initialize(
+    null,
+    [
+      NotificationChannel(
+        channelKey: 'basic_channel',
+        channelName: 'Basic Notifications',
+        channelDescription: 'Used for basic notifications',
+        defaultColor: AppColors.maincolor,
+        ledColor: Colors.white,
+        importance: NotificationImportance.High,
+      ),
+    ],
+    debug: true,
+  );
+
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-  NotificationSettings settings = await messaging.requestPermission(
+  // Request notification permission
+  await messaging.requestPermission(
     alert: true,
     badge: true,
     sound: true,
-    announcement: true,
-    carPlay: true,
-    criticalAlert: true,
-    provisional: false,
   );
 
-  switch (settings.authorizationStatus) {
-    case AuthorizationStatus.authorized:
-      break;
-    case AuthorizationStatus.provisional:
-      break;
-    case AuthorizationStatus.denied:
-    case AuthorizationStatus.notDetermined:
-      break;
-  }
-  bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
-  if (!isAllowed) {
-  } else {}
+  // Background message handler
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   runApp(const MyApp());
@@ -249,23 +89,33 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+
     FirebaseMessaging.instance.getToken().then((token) {
       myDeviceToken = token;
     });
+
+    /// Foreground ma notification **show nathi karvi**
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      if (message.data['sender_token'] != myDeviceToken) {
-        _showAwesomeNotification(message);
-      }
+      debugPrint("Foreground message received: ${message.data}");
+      // 🔴 NO _showAwesomeNotification() here
+      // If you want, show a custom snackbar / dialog instead
     });
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {});
+
+    /// Background / terminated ma notification tap thi app open thay
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      debugPrint("Message opened app: ${message.data}");
+    });
+
     checkInitialMessage();
   }
 
   Future<void> checkInitialMessage() async {
     RemoteMessage? initialMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
+    await FirebaseMessaging.instance.getInitialMessage();
+
     if (initialMessage != null &&
         initialMessage.data['sender_token'] != myDeviceToken) {
+      // Terminated state ma notification show karvi
       _showAwesomeNotification(initialMessage);
     }
   }
