@@ -1138,13 +1138,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   void launchTermsUrl() async {
-    final Uri url = Uri.parse("https://www.wavee.ai/terms-of-service");
+    final Uri url = Uri.parse("https://wavee.ai/legal/terms-of-service");
+    // final Uri url = Uri.parse("https://www.wavee.ai/terms-of-service");
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       throw 'Could not launch $url';
     }
   }
 
   void launchPrivacyPolicyUrl() async {
+    // final Uri url = Uri.parse("https://wavee.ai/legal/privacy-security");
     final Uri url = Uri.parse("https://wavee.ai/legal/privacy-security");
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       throw 'Could not launch $url';
