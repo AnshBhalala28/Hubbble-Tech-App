@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,12 +30,12 @@ import 'package:wavee/Screen/messageBoard/View/messageboard.dart';
 import 'package:wavee/Screen/orderScreen/View/order_screen_view.dart';
 import 'package:wavee/Screen/viewProfile/View/Mybuilding_Screen.dart';
 import 'package:wavee/Screen/viewProfile/View/viewprofile.dart';
-import 'package:wavee/Screen/waveePet/screen/waveePetRegistration.dart';
+import 'package:wavee/Screen/waveePet/provider/waveePetProvider.dart';
 import 'package:wavee/comman/bottom_bar.dart';
 import 'package:wavee/comman/check_inernet_connecty.dart';
 import 'package:wavee/comman/error_dialog.dart';
-import 'package:wavee/comman/in_web_view.dart';
 import 'package:wavee/comman/loader.dart';
+import 'package:wavee/comman/store_local.dart';
 
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
@@ -62,6 +63,7 @@ class _HomePageState extends State<HomePage> {
   String? fullName;
   int sel = 0;
   bool isLoading = false;
+  bool isRegistration = false;
   int parcelCount = 0;
   int visitorCount = 0;
   int chatCount = 0;
@@ -80,7 +82,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       isLoading = true;
     });
-
+    getdataloginData();
     // getnotificationCount();
     ParcelShowCount();
     VisitorShowCount();
@@ -618,7 +620,7 @@ class _HomePageState extends State<HomePage> {
                                                     ],
                                                   ).paddingOnly(bottom: 1.h),
                                                   Container(
-                                                    height: 20.5.h,
+                                                    height: 20.9.h,
                                                     width: 75.w,
                                                     decoration: BoxDecoration(
                                                       color:
@@ -725,6 +727,7 @@ class _HomePageState extends State<HomePage> {
                                                                     ?.data?[0]
                                                                     .title ??
                                                                 "Join us at The Crumpets Cafe!",
+                                                            maxLines: 1,
                                                             style: TextStyle(
                                                               fontSize: 16.sp,
                                                               color:
@@ -732,6 +735,9 @@ class _HomePageState extends State<HomePage> {
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
+                                                              overflow:
+                                                              TextOverflow
+                                                                  .ellipsis,
                                                               fontFamily:
                                                                   AppConstants
                                                                       .manrope,
@@ -749,7 +755,7 @@ class _HomePageState extends State<HomePage> {
                                                                   Colors.black,
                                                               fontFamily:
                                                                   AppConstants
-                                                                      .AlbertSansLight,
+                                                                     .AlbertSansLight,
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,
@@ -1128,6 +1134,11 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   if (isSending)
+                    Container(
+                      color: Colors.black.withOpacity(0.3),
+                      child: Center(child: Loader()),
+                    ),
+                  if (isRegistration)
                     Container(
                       color: Colors.black.withOpacity(0.3),
                       child: Center(child: Loader()),
@@ -1975,12 +1986,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         onPressed: () {
                           Get.back();
-                          Get.to(
-                            SignUpScreen(
-                              loginId:
-                                  loginModel?.data?.user?.id.toString() ?? "",
-                            ),
-                          );
+                          SignupApi();
                         },
                         child: Text(
                           "Yes",
@@ -2036,5 +2042,125 @@ class _HomePageState extends State<HomePage> {
         );
       }
     }
+  }
+
+  getdataloginData() async {
+    Map<String, String?> credentials =
+        await SaveDataLocal.getEmailAndPassword();
+    String? savedEmail = credentials['email'];
+    String? savedPassword = credentials['password'];
+    String? savedName = credentials['name'];
+    print('Saved Email: $savedEmail');
+    print('Saved Password: $savedPassword');
+    print('Saved Password: $savedName');
+  }
+
+  Future<void> SignupApi() async {
+    String? savedEmail = await SaveDataLocal.getEmail();
+    String? savedPassword = await SaveDataLocal.getPassword();
+    final Map<String, String> data = {
+      'name': loginModel?.data?.user?.fullName ?? "",
+      'email': savedEmail.toString(),
+      'password': savedPassword.toString(),
+      'role': '4',
+    };
+
+    setState(() {
+      isRegistration = true;
+    });
+    log("datadatadatadatadatadatadata$data");
+    checkInternet().then((internet) async {
+      if (internet) {
+        try {
+          final response = await AuthProvider1().SignUpApi(data);
+
+          Map<String, dynamic> responseData;
+          try {
+            responseData = jsonDecode(response.body);
+
+            int apiStatus = responseData['status'] ?? 0;
+            String apiMessage = responseData['message'] ?? "Unknown error";
+
+            if (response.statusCode == 200 && apiStatus == 200) {
+              showSnackBar(
+                title: "SignUp",
+                message: "Registration Successful \nYou can now login to Wavee Pets using your credentials.",
+                backgoundColor: AppColors.maincolor,
+                ColorText: AppColors.white,
+                IconColor: AppColors.white,
+                IconName: Icons.check_circle,
+              );
+
+            } else {
+              if (responseData.containsKey('data') &&
+                  responseData['data'] is Map) {
+                Map<String, dynamic> errorData = responseData['data'];
+
+                String errorMessage = apiMessage;
+                if (errorData.containsKey('email') &&
+                    errorData['email'] is List &&
+                    errorData['email'].isNotEmpty) {
+                  errorMessage = errorData['email'][0];
+                } else if (errorData.containsKey('name') &&
+                    errorData['name'] is List &&
+                    errorData['name'].isNotEmpty) {
+                  errorMessage = errorData['name'][0];
+                } else if (errorData.containsKey('password') &&
+                    errorData['password'] is List &&
+                    errorData['password'].isNotEmpty) {
+                  errorMessage = errorData['password'][0];
+                }
+
+                showSnackBar(
+                  title: "Sorry",
+                  message: errorMessage,
+                  backgoundColor: AppColors.maincolor,
+                  ColorText: AppColors.white,
+                );
+              } else {
+                showSnackBar(
+                  title: "Sorry",
+                  message: apiMessage,
+                  backgoundColor: AppColors.redColor,
+                  ColorText: AppColors.white,
+                );
+              }
+            }
+          } catch (jsonError) {
+            showSnackBar(
+              title: "Sorry",
+              message: "Invalid response from server. Please try again.",
+              backgoundColor: AppColors.redColor,
+              ColorText: AppColors.white,
+            );
+          }
+        } catch (e) {
+          if (e.toString().contains("No Internet connection")) {
+            showSnackBar(
+              title: "Sorry",
+              message: "No internet connection. Please check your network.",
+              backgoundColor: Colors.red.shade400,
+              ColorText: Colors.white,
+            );
+          } else {
+            showSnackBar(
+              title: "Sorry",
+              message: "Registration failed. Please try again.",
+              backgoundColor: Colors.red.shade400,
+              ColorText: Colors.white,
+            );
+          }
+        } finally {
+          setState(() {
+            isRegistration = false;
+          });
+        }
+      } else {
+        setState(() {
+          isRegistration = false;
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
   }
 }

@@ -281,7 +281,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
           if (response.statusCode == 200 && loginModel?.status == 200) {
             if (loginModel?.data?.user?.role == 4) {
-              await SaveDataLocal.saveLogInData(loginModel!);
+              await SaveDataLocal.saveLogInData(
+                loginModel!,
+                email: email.text,
+                password: password.text,
+              );
               showSnackBar(
                 title: "Login",
                 message: "Login Successful.",
@@ -294,6 +298,9 @@ class _LoginScreenState extends State<LoginScreen> {
               email.clear();
               password.clear();
             }
+            log(
+              "123123123${loginModel?.data?.user?.name?.firstName ?? ""} ${loginModel?.data?.user?.name?.lastName ?? ""}",
+            );
           } else if (response.statusCode == 422) {
             showSnackBar(
               title: "Sorry",

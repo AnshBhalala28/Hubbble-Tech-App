@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
-class AuthProvider extends ChangeNotifier {
+class AuthProvider1 extends ChangeNotifier {
   Future<http.Response> SignUpApi(Map<String, String> bodyData) async {
     const url = 'https://pets.wavee.ai/api/app_register';
 
