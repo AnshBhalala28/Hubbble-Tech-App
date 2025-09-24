@@ -245,7 +245,7 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                           Text(
                             "Emergency Numbers",
                             style: TextStyle(
-                              fontSize: 16.sp,
+                              fontSize: 18.sp,
                               fontWeight: FontWeight.bold,
                               fontFamily: AppConstants.manrope,
                             ),
@@ -285,9 +285,9 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                                       : "Emergency ${index + 1}";
                               return profileField(
                                   caption,
-                                TextEditingController(),
+                                TextEditingController(text: number),
                                 Icons.phone,
-                                true,
+                                false,
                               );
                             },
                           ),
@@ -419,7 +419,7 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
             label,
             style: TextStyle(
               fontFamily: AppConstants.manrope,
-              fontSize: 18.sp,
+              fontSize: 17.sp,
               fontWeight: FontWeight.bold,
             ),
           ),

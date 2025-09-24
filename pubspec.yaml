@@ -87,7 +87,6 @@ dependencies:
   infinite_scroll_pagination: ^4.0.0
 
 
-
   path_provider: any
   webview_flutter_android: any
   path: any

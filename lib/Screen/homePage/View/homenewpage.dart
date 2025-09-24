@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -28,9 +29,11 @@ import 'package:wavee/Screen/messageBoard/View/messageboard.dart';
 import 'package:wavee/Screen/orderScreen/View/order_screen_view.dart';
 import 'package:wavee/Screen/viewProfile/View/Mybuilding_Screen.dart';
 import 'package:wavee/Screen/viewProfile/View/viewprofile.dart';
+import 'package:wavee/Screen/waveePet/screen/waveePetRegistration.dart';
 import 'package:wavee/comman/bottom_bar.dart';
 import 'package:wavee/comman/check_inernet_connecty.dart';
 import 'package:wavee/comman/error_dialog.dart';
+import 'package:wavee/comman/in_web_view.dart';
 import 'package:wavee/comman/loader.dart';
 
 import '../../../comman/colors.dart';
@@ -856,7 +859,11 @@ class _HomePageState extends State<HomePage> {
                                         iconName: AppConstants.building,
                                         name: "Building",
                                         onTap: () {
-                                          Get.to(const MyBuilding_Screen());
+                                          Get.to(
+                                            MyBuilding_Screen(
+                                              id: loginModel?.data?.user?.id,
+                                            ),
+                                          );
                                         },
                                       ),
                                     ),
@@ -1104,7 +1111,7 @@ class _HomePageState extends State<HomePage> {
                                         iconName: AppConstants.waveePet,
                                         name: "Wavee Pet",
                                         onTap: () {
-                                          launchStore();
+                                          showWaveePet(context: context);
                                         },
                                       ),
                                     ),
@@ -1138,7 +1145,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void launchPrivacyPolicyUrl() async {
-    final Uri url = Uri.parse("https://www.wavee.ai/privacy-policy");
+    final Uri url = Uri.parse("https://wavee.ai/legal/privacy-security");
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       throw 'Could not launch $url';
     }
@@ -1306,9 +1313,11 @@ class _HomePageState extends State<HomePage> {
             });
           }
         } catch (e) {
-          setState(() {
-            isLoading = false;
-          });
+          if (mounted) {
+            setState(() {
+              isLoading = false;
+            });
+          }
         }
       } else {
         setState(() {
@@ -1867,5 +1876,163 @@ class _HomePageState extends State<HomePage> {
         buildErrorDialog(context, 'Error', "Internet Required");
       }
     });
+  }
+
+  Future<void> showWaveePet({required BuildContext context}) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          elevation: 16,
+          backgroundColor: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // 🐾 Icon or image on top
+                CircleAvatar(
+                  radius: 30,
+                  backgroundColor: AppColors.maincolor.withOpacity(0.2),
+                  child: Icon(
+                    Icons.pets,
+                    color: AppColors.maincolor,
+                    size: 25.sp,
+                  ),
+                ),
+                SizedBox(height: 2.h),
+
+                // Title
+                Text(
+                  "Wavee Pet",
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87,
+                    fontFamily: AppConstants.manrope,
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                // Subtitle / Description
+                Text(
+                  "Do you want to create an account on Wavee Pets?",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    color: Colors.black54,
+                    fontFamily: AppConstants.manrope,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 25),
+
+                // Buttons Row
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.white,
+                          foregroundColor: Colors.black,
+                          elevation: 2,
+                          padding: EdgeInsets.symmetric(vertical: 1.5.h),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: BorderSide(color: Colors.grey.shade300),
+                          ),
+                        ),
+                        onPressed: () {
+                          Get.back();
+                        },
+                        child: Text(
+                          "No",
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: AppConstants.manrope,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 2.w),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.maincolor,
+                          foregroundColor: Colors.white,
+                          elevation: 2,
+                          padding: EdgeInsets.symmetric(vertical: 1.5.h),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                          Get.back();
+                          Get.to(
+                            SignUpScreen(
+                              loginId:
+                                  loginModel?.data?.user?.id.toString() ?? "",
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Yes",
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: AppConstants.manrope,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> launchAppOrStore() async {
+    const packageName = "com.wavee.comunity";
+
+    if (Platform.isAndroid) {
+      final Uri intentUri = Uri.parse(
+        "intent://#Intent;package=$packageName;end",
+      );
+
+      if (await launchUrl(intentUri, mode: LaunchMode.externalApplication)) {
+        return; // App launched successfully
+      } else {
+        // Fallback: Play Store
+        final Uri storeUri = Uri.parse(
+          "https://play.google.com/store/apps/details?id=$packageName",
+        );
+        await launchUrl(storeUri, mode: LaunchMode.externalApplication);
+      }
+    } else if (Platform.isIOS) {
+      const String customScheme = "wavee://home"; // iOS app ma set karvu padse
+      const String appStoreUrl =
+          "https://apps.apple.com/in/app/wavee-pet/id6746203457";
+
+      if (await canLaunchUrl(Uri.parse(customScheme))) {
+        await launchUrl(
+          Uri.parse(customScheme),
+          mode: LaunchMode.externalApplication,
+        );
+      } else {
+        await launchUrl(
+          Uri.parse(appStoreUrl),
+          mode: LaunchMode.externalApplication,
+        );
+      }
+    }
   }
 }
