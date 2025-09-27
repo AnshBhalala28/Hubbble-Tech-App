@@ -43,7 +43,9 @@
 //   }
 // }
 import 'dart:convert';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import '../Screen/Authcation/Model/login_model.dart';
 
 class SaveDataLocal {
@@ -55,7 +57,11 @@ class SaveDataLocal {
   static const FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
   /// Save login data (user details + token + email + password)
-  static Future<void> saveLogInData(LoginModel loginModel, {required String email, required String password}) async {
+  static Future<void> saveLogInData(
+    LoginModel loginModel, {
+    required String email,
+    required String password,
+  }) async {
     // Save whole user model securely
     String json = jsonEncode(loginModel.toJson());
     await _secureStorage.write(key: userData, value: json);
@@ -107,9 +113,6 @@ class SaveDataLocal {
   static Future<Map<String, String?>> getEmailAndPassword() async {
     String? email = await _secureStorage.read(key: userEmail);
     String? password = await _secureStorage.read(key: userPassword);
-    return {
-      'email': email,
-      'password': password,
-    };
+    return {'email': email, 'password': password};
   }
 }

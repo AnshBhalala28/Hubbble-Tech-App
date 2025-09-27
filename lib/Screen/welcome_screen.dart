@@ -139,15 +139,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   bool isLoading = false;
+
   Future<void> getdataAndUpdateFCM() async {
     loginModel = await SaveDataLocal.getDataFromLocal();
 
     if (loginModel != null) {
-
       updateFCM1();
-
     }
   }
+
   void updateFCM1() async {
     String? fcmToken = await FirebaseMessaging.instance.getToken();
 
@@ -193,6 +193,4 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       }
     });
   }
-
-
 }

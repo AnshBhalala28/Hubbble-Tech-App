@@ -883,7 +883,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    "${aneminitiesDataModel?.data?.data?[0].name}",
+                                                    "${booking?.name ?? "N/A"}",
                                                     style: TextStyle(
                                                       fontSize: 17.sp,
                                                       fontWeight:
@@ -1009,6 +1009,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                   ?.operatingHours,
                                                             ),
                                                             calendar1SelectedDateStr,
+                                                            "${booking?.name ?? "N/A"}",
                                                           );
                                                         },
                                                         child: Container(
@@ -2111,7 +2112,7 @@ class _Form_ScreenState extends State<Form_Screen> {
     }
   }
 
-  Future<bool> AddBookingApi(String time, date) async {
+  Future<bool> AddBookingApi(String time, date, name) async {
     Map<String, String> data = {
       "user_id": loginModel?.data?.user?.id.toString() ?? "",
       "amenity_id": widget.amenites_id ?? '',
@@ -2140,7 +2141,7 @@ class _Form_ScreenState extends State<Form_Screen> {
         showTornTicketDialog(
           attendeeInitials: 'NP',
           context: context,
-          location: aneminitiesDataModel?.data?.data?[0].name ?? "",
+          location: name,
           selectedDate: selectedDate.toString(),
           selectedTime: time,
         );

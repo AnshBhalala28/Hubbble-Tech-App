@@ -260,6 +260,7 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                                     .emergencyNumbers!
                                     .length,
                             padding: EdgeInsets.zero,
+                            physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               final number =
                                   profileModel!
@@ -284,7 +285,7 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                                           .emergencyCaptions![index]
                                       : "Emergency ${index + 1}";
                               return profileField(
-                                  caption,
+                                caption,
                                 TextEditingController(text: number),
                                 Icons.phone,
                                 false,

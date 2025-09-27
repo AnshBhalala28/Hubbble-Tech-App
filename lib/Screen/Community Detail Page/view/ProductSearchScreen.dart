@@ -82,21 +82,21 @@ class _SearchScreenState extends State<SearchScreen> {
                       size: 20,
                     ),
                     suffixIcon:
-                        searchController.text.isNotEmpty
-                            ? IconButton(
-                              icon: Icon(
-                                Icons.close,
-                                color: Colors.grey[600],
-                                size: 18,
-                              ),
-                              onPressed: () {
-                                searchController.clear();
-                                setState(() {
-                                  searchResults.clear();
-                                });
-                              },
-                            )
-                            : null,
+                    searchController.text.isNotEmpty
+                        ? IconButton(
+                      icon: Icon(
+                        Icons.close,
+                        color: Colors.grey[600],
+                        size: 18,
+                      ),
+                      onPressed: () {
+                        searchController.clear();
+                        setState(() {
+                          searchResults.clear();
+                        });
+                      },
+                    )
+                        : null,
                   ),
                   style: const TextStyle(fontSize: 14),
                 ),
@@ -106,213 +106,216 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
       body:
-          isLoading
-              ? const Center(
-                child: CircularProgressIndicator(color: AppColors.maincolor),
-              )
-              : searchResults.isEmpty
-              ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.search, size: 60, color: Colors.grey[300]),
-                    const SizedBox(height: 16),
-                    Text(
-                      "Search for products",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[500],
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+      isLoading
+          ? const Center(
+        child: CircularProgressIndicator(color: AppColors.maincolor),
+      )
+          : searchResults.isEmpty
+          ? Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.search, size: 60, color: Colors.grey[300]),
+            const SizedBox(height: 16),
+            Text(
+              "Search for products",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[500],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      )
+          : ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: searchResults.length,
+        itemBuilder: (context, index) {
+          final product = searchResults[index];
+          return Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
                 ),
-              )
-              : ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: searchResults.length,
-                itemBuilder: (context, index) {
-                  final product = searchResults[index];
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        Get.to(
-                          () => ProductDetailPage(
-                            productID: product.id.toString() ?? "",
-                            type: "product",
+              ],
+            ),
+            child: InkWell(
+              onTap: () {
+                Get.to(
+                      () =>
+                      ProductDetailPage(
+                        productID: product.id.toString() ?? "",
+                        type: "product",
+                      ),
+                );
+              },
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      product.image ?? '',
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          width: 60,
+                          height: 60,
+                          color: Colors.grey[200],
+                          child: Icon(
+                            Icons.image,
+                            color: Colors.grey[400],
                           ),
                         );
                       },
-                      child: Row(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              product.image ?? '',
-                              width: 60,
-                              height: 60,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  width: 60,
-                                  height: 60,
-                                  color: Colors.grey[200],
-                                  child: Icon(
-                                    Icons.image,
-                                    color: Colors.grey[400],
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                Get.to(
-                                  () => ProductDetailPage(
-                                    productID: product.id.toString() ?? "",
-                                    type: "product",
-                                  ),
-                                );
-                              },
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    product.name ?? '',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black87,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: [
-                                      if (product.offerPrice != null &&
-                                          product.offerPrice != product.price)
-                                        Text(
-                                          "£${product.price}",
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey[500],
-                                            decoration:
-                                                TextDecoration.lineThrough,
-                                          ),
-                                        ),
-                                      if (product.offerPrice != null &&
-                                          product.offerPrice != product.price)
-                                        const SizedBox(width: 8),
-                                      Text(
-                                        "£${product.offerPrice ?? product.price}",
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColors.maincolor,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-      bottomNavigationBar:
-          searchResults.any((product) => getProductQuantity(product.id!) > 0)
-              ? Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, -2),
-                    ),
-                  ],
-                ),
-                child: GestureDetector(
-                  onTap:
-                      () => Get.off(
-                        AddToCartView(type: 'product', fromBottomBar: false),
-                      ),
-                  child: Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.maincolor,
-                          AppColors.maincolor.withOpacity(0.8),
-                        ],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.maincolor.withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "${getTotalItems()}",
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        const Text(
-                          "View Basket",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          "£${getTotalPrice().toStringAsFixed(2)}",
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
                     ),
                   ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Get.to(
+                              () =>
+                              ProductDetailPage(
+                                productID: product.id.toString() ?? "",
+                                type: "product",
+                              ),
+                        );
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            product.name ?? '',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              if (product.offerPrice != null &&
+                                  product.offerPrice != product.price)
+                                Text(
+                                  "£${product.price}",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[500],
+                                    decoration:
+                                    TextDecoration.lineThrough,
+                                  ),
+                                ),
+                              if (product.offerPrice != null &&
+                                  product.offerPrice != product.price)
+                                const SizedBox(width: 8),
+                              Text(
+                                "£${product.offerPrice ?? product.price}",
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.maincolor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+      bottomNavigationBar:
+      searchResults.any((product) => getProductQuantity(product.id!) > 0)
+          ? Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: GestureDetector(
+          onTap:
+              () =>
+              Get.off(
+                AddToCartView(type: 'product', fromBottomBar: false),
+              ),
+          child: Container(
+            height: 50,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.maincolor,
+                  AppColors.maincolor.withOpacity(0.8),
+                ],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.maincolor.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
                 ),
-              )
-              : null,
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "${getTotalItems()}",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Text(
+                  "View Basket",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  "£${getTotalPrice().toStringAsFixed(2)}",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      )
+          : null,
     );
   }
 
@@ -375,21 +378,21 @@ class _SearchScreenState extends State<SearchScreen> {
         ProductProvider()
             .AddToCart(addToCartData)
             .then((response) async {
-              if (response.statusCode == 200) {
-                updateQuantityApi(int.parse(productID), quantity, "product");
-              } else {
-                setState(() {
-                  isUpdateQuantity = false;
-                  isAddtoCart = false;
-                });
-              }
-            })
-            .catchError((error) {
-              setState(() {
-                isUpdateQuantity = false;
-                isAddtoCart = false;
-              });
+          if (response.statusCode == 200) {
+            updateQuantityApi(int.parse(productID), quantity, "product");
+          } else {
+            setState(() {
+              isUpdateQuantity = false;
+              isAddtoCart = false;
             });
+          }
+        })
+            .catchError((error) {
+          setState(() {
+            isUpdateQuantity = false;
+            isAddtoCart = false;
+          });
+        });
       } else {
         setState(() {
           isAddtoCart = false;
@@ -413,19 +416,18 @@ class _SearchScreenState extends State<SearchScreen> {
         CartProvider()
             .updateCartQuantityApi(data)
             .then((response) async {
-              if (response.statusCode == 200) {
-              } else {}
-              setState(() {
-                isUpdateQuantity = false;
-                isAddtoCart = false;
-              });
-            })
+          if (response.statusCode == 200) {} else {}
+          setState(() {
+            isUpdateQuantity = false;
+            isAddtoCart = false;
+          });
+        })
             .catchError((error) {
-              setState(() {
-                isUpdateQuantity = false;
-                isAddtoCart = false;
-              });
-            });
+          setState(() {
+            isUpdateQuantity = false;
+            isAddtoCart = false;
+          });
+        });
       } else {
         setState(() {
           isUpdateQuantity = false;

@@ -12,7 +12,6 @@ import 'firebase_options.dart';
 
 String? myDeviceToken;
 
-
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 
@@ -112,7 +111,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> checkInitialMessage() async {
     RemoteMessage? initialMessage =
-    await FirebaseMessaging.instance.getInitialMessage();
+        await FirebaseMessaging.instance.getInitialMessage();
     if (initialMessage != null &&
         initialMessage.data['sender_token'] != myDeviceToken) {
       _showAwesomeNotification(initialMessage);

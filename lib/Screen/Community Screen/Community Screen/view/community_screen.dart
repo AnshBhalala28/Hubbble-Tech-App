@@ -951,14 +951,14 @@ class _CommunityScreenState extends State<CommunityScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: BottomBar(selected: 2),
-      body: WillPopScope(
-        onWillPop: () async {
-          Get.offAll(() => HomePage(selected: 1, userName: ""));
-          return false;
-        },
-        child: Stack(
+    return WillPopScope(
+      onWillPop: () async {
+        Get.offAll(() => HomePage(selected: 1, userName: ""));
+        return false;
+      },
+      child: Scaffold(
+        bottomNavigationBar: BottomBar(selected: 2),
+        body: Stack(
           children: [
             isLocationFetched
                 ? GoogleMap(

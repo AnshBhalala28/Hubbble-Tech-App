@@ -56,260 +56,266 @@ class _AddToCartViewState extends State<AddToCartView> {
   @override
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: Column(
-        children: [
-          SizedBox(height: 6.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 2.w),
-            child: TitleBar(
-              back: () {
-                if (widget.fromBottomBar) {
-                  Get.offAll(HomePage(userName: ""));
-                } else {
-                  Get.back();
-                }
-              },
-              title: "Your Basket",
-              drawerCallback: () {},
-            ),
-          ),
-          SizedBox(height: 5.h),
-
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 2.h),
-              decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xffdedfe5), width: 1),
-                color: AppColors.white,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(45),
-                  topRight: Radius.circular(45),
-                ),
+    return WillPopScope(
+      onWillPop: () async {
+        Get.offAll(() => HomePage(selected: 1,userName: '',));
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        body: Column(
+          children: [
+            SizedBox(height: 6.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 2.w),
+              child: TitleBar(
+                back: () {
+                  if (widget.fromBottomBar) {
+                    Get.offAll(HomePage(userName: ""));
+                  } else {
+                    Get.back();
+                  }
+                },
+                title: "Your Basket",
+                drawerCallback: () {},
               ),
-              child: Stack(
-                children: [
-                  if (isLoading)
-                    Center(child: Loader())
-                  else if (cartDetailsModel?.data == null ||
-                      (cartDetailsModel?.data?.length ?? 0) == 0)
-                    _buildEmptyBasketView()
-                  else
-                    ListView(
-                      padding: const EdgeInsets.all(8.0),
-                      children: [
-                        Container(
-                          margin: EdgeInsets.all(2.w),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 10,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(3.w),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "My Cart",
-                                  style: TextStyle(
-                                    fontSize: 22.sp,
-                                    color: Colors.black,
-                                    fontFamily: AppConstants.manrope,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+            ),
+            SizedBox(height: 5.h),
+      
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 2.h),
+                decoration: BoxDecoration(
+                  border: Border.all(color: const Color(0xffdedfe5), width: 1),
+                  color: AppColors.white,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(45),
+                    topRight: Radius.circular(45),
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    if (isLoading)
+                      Center(child: Loader())
+                    else if (cartDetailsModel?.data == null ||
+                        (cartDetailsModel?.data?.length ?? 0) == 0)
+                      _buildEmptyBasketView()
+                    else
+                      ListView(
+                        padding: const EdgeInsets.all(8.0),
+                        children: [
+                          Container(
+                            margin: EdgeInsets.all(2.w),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 2),
                                 ),
-                                SizedBox(height: 1.h),
-                                Container(
-                                  width: 12.w,
-                                  height: 1.h,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                SizedBox(height: 0.5.h),
-                                Text(
-                                  "Items (${cartDetailsModel?.data?.length ?? 0})",
-                                  style: TextStyle(
-                                    fontSize: 18.sp,
-                                    color: const Color(0xFF969696),
-                                    fontFamily: AppConstants.manrope,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                SizedBox(height: 1.h),
                               ],
                             ),
+                            child: Padding(
+                              padding: EdgeInsets.all(3.w),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "My Cart",
+                                    style: TextStyle(
+                                      fontSize: 22.sp,
+                                      color: Colors.black,
+                                      fontFamily: AppConstants.manrope,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(height: 1.h),
+                                  Container(
+                                    width: 12.w,
+                                    height: 1.h,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  SizedBox(height: 0.5.h),
+                                  Text(
+                                    "Items (${cartDetailsModel?.data?.length ?? 0})",
+                                    style: TextStyle(
+                                      fontSize: 18.sp,
+                                      color: const Color(0xFF969696),
+                                      fontFamily: AppConstants.manrope,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  SizedBox(height: 1.h),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                        ...List.generate(cartDetailsModel!.data!.length, (
-                          index,
-                        ) {
-                          final item = cartDetailsModel!.data![index];
-                          return Column(
-                            children: [
-                              _buildCartItem(item),
-                              if (index != cartDetailsModel!.data!.length - 1)
-                                Divider(
-                                  height: 1,
-                                  color: const Color(0xFFF5F5F5),
-                                  indent: 4.w,
-                                  endIndent: 4.w,
+                          ...List.generate(cartDetailsModel!.data!.length, (
+                            index,
+                          ) {
+                            final item = cartDetailsModel!.data![index];
+                            return Column(
+                              children: [
+                                _buildCartItem(item),
+                                if (index != cartDetailsModel!.data!.length - 1)
+                                  Divider(
+                                    height: 1,
+                                    color: const Color(0xFFF5F5F5),
+                                    indent: 4.w,
+                                    endIndent: 4.w,
+                                  ),
+                              ],
+                            );
+                          }),
+      
+                          if (cartDetailsModel?.data?[0].type == "product") ...[
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 12),
+                              child: Text(
+                                "People also added",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                            ],
-                          );
-                        }),
-
-                        if (cartDetailsModel?.data?[0].type == "product") ...[
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 12),
+                              ),
+                            ),
+                            _buildSuggestedList(),
+                          ],
+      
+                          SizedBox(height: 50.h),
+                        ],
+                      ),
+      
+                    if (!isLoading &&
+                        (cartDetailsModel?.data?.isNotEmpty ?? false))
+                      Positioned(
+                        top: 10.h,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: DraggableScrollableSheet(
+                          initialChildSize: 0.65,
+                          minChildSize: 0.60,
+                          builder: (context, scrollController) {
+                            return Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 3.w,
+                                vertical: 1.h,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                  topRight: Radius.circular(45),
+                                  topLeft: Radius.circular(45),
+                                ),
+                                border: Border.all(
+                                  color: const Color(0xffc7c7c7),
+                                  width: 1,
+                                ),
+                                color: const Color(0xfff2f2f2),
+                              ),
+                              child: ListView(
+                                controller: scrollController,
+                                children: [
+                                  _buildSectionCard(
+                                    title: "Order Summary",
+                                    icon: Icons.receipt,
+                                    child: Column(
+                                      children: [
+                                        if (cartDetailsModel?.data?[0].type ==
+                                            "product")
+                                          _buildSummaryRow(
+                                            "Subtotal",
+                                            getSubtotal(),
+                                          )
+                                        else
+                                          _buildSummaryRow(
+                                            "Subtotal",
+                                            getSubtotal1(),
+                                          ),
+                                        if (cartDetailsModel?.data?[0].type ==
+                                                "product" &&
+                                            (cartDetailsModel
+                                                    ?.data?[0]
+                                                    .loyaltyDetails
+                                                    ?.willGetLoyaltyDiscountOnCurrentOrder ??
+                                                false))
+                                          _buildSummaryRow(
+                                            "Loyalty Discount (-${getLoyaltyDiscountPercentage().toStringAsFixed(0)}%)",
+                                            getLoyaltyDiscountAmount(),
+                                            isDiscount: true,
+                                          ),
+                                        Divider(height: 3.h, thickness: 1),
+                                        if (cartDetailsModel?.data?[0].type ==
+                                            "product")
+                                          _buildSummaryRow(
+                                            "Total",
+                                            getFinalTotal(),
+                                            isTotal: true,
+                                          )
+                                        else
+                                          _buildSummaryRow(
+                                            "Total",
+                                            getSubtotal1(),
+                                            isTotal: true,
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+      
+                    if (!isLoading &&
+                        (cartDetailsModel?.data?.isNotEmpty ?? false))
+                      Positioned(
+                        top: 60.h,
+                        left: 35.w,
+                        child: InkWell(
+                          onTap: _handleCheckoutTap,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 7.w,
+                              vertical: 1.h,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: Colors.white,
+                              border: Border.all(color: const Color(0xffd9d9d9)),
+                            ),
                             child: Text(
-                              "People also added",
+                              "Checkout",
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 18.sp,
+                                color: Colors.black,
+                                fontFamily: AppConstants.manrope,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
-                          _buildSuggestedList(),
-                        ],
-
-                        SizedBox(height: 50.h),
-                      ],
-                    ),
-
-                  if (!isLoading &&
-                      (cartDetailsModel?.data?.isNotEmpty ?? false))
-                    Positioned(
-                      top: 10.h,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: DraggableScrollableSheet(
-                        initialChildSize: 0.65,
-                        minChildSize: 0.60,
-                        builder: (context, scrollController) {
-                          return Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 3.w,
-                              vertical: 1.h,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(45),
-                                topLeft: Radius.circular(45),
-                              ),
-                              border: Border.all(
-                                color: const Color(0xffc7c7c7),
-                                width: 1,
-                              ),
-                              color: const Color(0xfff2f2f2),
-                            ),
-                            child: ListView(
-                              controller: scrollController,
-                              children: [
-                                _buildSectionCard(
-                                  title: "Order Summary",
-                                  icon: Icons.receipt,
-                                  child: Column(
-                                    children: [
-                                      if (cartDetailsModel?.data?[0].type ==
-                                          "product")
-                                        _buildSummaryRow(
-                                          "Subtotal",
-                                          getSubtotal(),
-                                        )
-                                      else
-                                        _buildSummaryRow(
-                                          "Subtotal",
-                                          getSubtotal1(),
-                                        ),
-                                      if (cartDetailsModel?.data?[0].type ==
-                                              "product" &&
-                                          (cartDetailsModel
-                                                  ?.data?[0]
-                                                  .loyaltyDetails
-                                                  ?.willGetLoyaltyDiscountOnCurrentOrder ??
-                                              false))
-                                        _buildSummaryRow(
-                                          "Loyalty Discount (-${getLoyaltyDiscountPercentage().toStringAsFixed(0)}%)",
-                                          getLoyaltyDiscountAmount(),
-                                          isDiscount: true,
-                                        ),
-                                      Divider(height: 3.h, thickness: 1),
-                                      if (cartDetailsModel?.data?[0].type ==
-                                          "product")
-                                        _buildSummaryRow(
-                                          "Total",
-                                          getFinalTotal(),
-                                          isTotal: true,
-                                        )
-                                      else
-                                        _buildSummaryRow(
-                                          "Total",
-                                          getSubtotal1(),
-                                          isTotal: true,
-                                        ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-
-                  if (!isLoading &&
-                      (cartDetailsModel?.data?.isNotEmpty ?? false))
-                    Positioned(
-                      top: 60.h,
-                      left: 35.w,
-                      child: InkWell(
-                        onTap: _handleCheckoutTap,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 7.w,
-                            vertical: 1.h,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Colors.white,
-                            border: Border.all(color: const Color(0xffd9d9d9)),
-                          ),
-                          child: Text(
-                            "Checkout",
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              color: Colors.black,
-                              fontFamily: AppConstants.manrope,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
                         ),
                       ),
-                    ),
-
-                  if (isUpdateQuantity)
-                    Container(
-                      color: Colors.white,
-                      child: Center(child: Loader()),
-                    ),
-                ],
+      
+                    if (isUpdateQuantity)
+                      Container(
+                        color: Colors.white,
+                        child: Center(child: Loader()),
+                      ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
+        bottomNavigationBar: BottomBar(selected: 4),
       ),
-      bottomNavigationBar: BottomBar(selected: 4),
     );
   }
 

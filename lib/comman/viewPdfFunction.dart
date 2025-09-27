@@ -175,7 +175,7 @@ class _PdfViewState extends State<PdfView> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 4.w),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
                     onPressed: () => Get.back(),
@@ -185,6 +185,7 @@ class _PdfViewState extends State<PdfView> {
                       size: 20.sp,
                     ),
                   ),
+                  SizedBox(width: 25.w,),
                   Text(
                     'View File',
                     style: TextStyle(
@@ -195,30 +196,30 @@ class _PdfViewState extends State<PdfView> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  IconButton(
-                    onPressed:
-                        () => downloadFile(
-                          widget.link ?? '',
-                          context,
-                          ((widget.link ?? '')
-                                  .split('/')
-                                  .last
-                                  .split('.')
-                                  .first ??
-                              ''),
-                          ((widget.link ?? '')
-                                  .split('/')
-                                  .last
-                                  .split('.')
-                                  .last ??
-                              ''),
-                        ),
-                    icon: Icon(
-                      Icons.file_download,
-                      size: 19.sp,
-                      color: Colors.white,
-                    ),
-                  ),
+                  // IconButton(
+                  //   onPressed:
+                  //       () => downloadFile(
+                  //         widget.link ?? '',
+                  //         context,
+                  //         ((widget.link ?? '')
+                  //                 .split('/')
+                  //                 .last
+                  //                 .split('.')
+                  //                 .first ??
+                  //             ''),
+                  //         ((widget.link ?? '')
+                  //                 .split('/')
+                  //                 .last
+                  //                 .split('.')
+                  //                 .last ??
+                  //             ''),
+                  //       ),
+                  //   icon: Icon(
+                  //     Icons.file_download,
+                  //     size: 19.sp,
+                  //     color: Colors.white,
+                  //   ),
+                  // ),
                 ],
               ),
             ),

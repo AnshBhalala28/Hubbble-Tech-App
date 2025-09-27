@@ -107,7 +107,9 @@ class _HomePageState extends State<HomePage> {
     );
     final nowDay = DateTime(nowUk.year, nowUk.month, nowUk.day);
 
-    final difference = nowDay.difference(postDateDay).inDays;
+    final difference = nowDay
+        .difference(postDateDay)
+        .inDays;
 
     if (difference == 0) {
       return "Today";
@@ -125,1026 +127,1030 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomBar(selected: 1),
       backgroundColor: AppColors.white,
       body:
-          isLoading
-              ? Loader()
-              : Stack(
-                children: [
-                  Positioned(
-                    top: 8.h,
-                    bottom: 10,
-                    right: 0,
-                    left: 0.w,
-                    child: Column(
+      isLoading
+          ? Loader()
+          : Stack(
+        children: [
+          Positioned(
+            top: 8.h,
+            bottom: 10,
+            right: 0,
+            left: 0.w,
+            child: Column(
+              children: [
+                Center(
+                  child: Container(
+                    height: 222,
+                    width: 222,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(
+                          "assets/images/homescreen_map1.png",
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Wavee Ai",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 22.sp,
+                    fontFamily: AppConstants.manrope,
+                  ),
+                ),
+                SizedBox(height: 2.h),
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Center(
-                          child: Container(
-                            height: 222,
-                            width: 222,
-                            decoration: const BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(
-                                  "assets/images/homescreen_map1.png",
+                        Stack(
+                          children: [
+                            Material(
+                              elevation: 2,
+                              borderRadius: BorderRadius.circular(20),
+                              child: InkWell(
+                                onTap: () {
+                                  Get.to(ChatScreen(selected: 3));
+                                },
+                                child: Container(
+                                  height: 17.h,
+                                  width: 28.w,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.blackColor,
+                                    borderRadius: BorderRadius.circular(
+                                      20,
+                                    ),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: 7.h,
+                                        width: 15.w,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(12),
+                                          color: AppColors.white,
+                                        ),
+                                        child: Center(
+                                          child: SvgPicture.asset(
+                                            AppConstants.chat,
+                                            height: 4.5.h,
+                                            width: 4.5.h,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 1.h),
+                                      Text(
+                                        "Chat",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily:
+                                          AppConstants.manrope,
+                                          color: AppColors.white,
+                                          fontSize: 18.sp,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                fit: BoxFit.cover,
                               ),
                             ),
-                          ),
+                            Positioned(
+                              right: 5,
+                              top: 0.3.h,
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: 7.w,
+                                width: 7.w,
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(
+                                    20,
+                                  ),
+                                ),
+                                child: Text(
+                                  "$chatCount",
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    color: AppColors.black,
+                                    fontFamily: AppConstants.manrope,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 10),
-                        Text(
-                          "Wavee Ai",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 22.sp,
-                            fontFamily: AppConstants.manrope,
-                          ),
-                        ),
-                        SizedBox(height: 2.h),
-                        Column(
+                        Stack(
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Stack(
-                                  children: [
-                                    Material(
-                                      elevation: 2,
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: InkWell(
-                                        onTap: () {
-                                          Get.to(ChatScreen(selected: 3));
-                                        },
-                                        child: Container(
-                                          height: 17.h,
-                                          width: 28.w,
-                                          decoration: BoxDecoration(
-                                            color: AppColors.blackColor,
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                height: 7.h,
-                                                width: 15.w,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                  color: AppColors.white,
-                                                ),
-                                                child: Center(
-                                                  child: SvgPicture.asset(
-                                                    AppConstants.chat,
-                                                    height: 4.5.h,
-                                                    width: 4.5.h,
-                                                    fit: BoxFit.contain,
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(height: 1.h),
-                                              Text(
-                                                "Chat",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                  color: AppColors.white,
-                                                  fontSize: 18.sp,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
+                            Material(
+                              elevation: 2,
+                              borderRadius: BorderRadius.circular(20),
+                              child: InkWell(
+                                onTap: () {
+                                  Get.to(const VisitorScreen());
+                                },
+                                child: Container(
+                                  height: 17.h,
+                                  width: 28.w,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.blackColor,
+                                    borderRadius: BorderRadius.circular(
+                                      20,
                                     ),
-                                    Positioned(
-                                      right: 5,
-                                      top: 0.3.h,
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        height: 7.w,
-                                        width: 7.w,
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: 7.h,
+                                        width: 15.w,
                                         decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(12),
                                           color: AppColors.white,
-                                          borderRadius: BorderRadius.circular(
-                                            20,
-                                          ),
                                         ),
-                                        child: Text(
-                                          "$chatCount",
-                                          style: TextStyle(
-                                            fontSize: 15.sp,
-                                            color: AppColors.black,
-                                            fontFamily: AppConstants.manrope,
-                                            fontWeight: FontWeight.bold,
+                                        child: Center(
+                                          child: SvgPicture.asset(
+                                            AppConstants.visitor,
+                                            height: 4.5.h,
+                                            width: 4.5.h,
+                                            fit: BoxFit.contain,
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                      SizedBox(height: 1.h),
+                                      Text(
+                                        "Visitors",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily:
+                                          AppConstants.manrope,
+                                          color: AppColors.white,
+                                          fontSize: 18.sp,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                Stack(
-                                  children: [
-                                    Material(
-                                      elevation: 2,
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: InkWell(
-                                        onTap: () {
-                                          Get.to(const VisitorScreen());
-                                        },
-                                        child: Container(
-                                          height: 17.h,
-                                          width: 28.w,
-                                          decoration: BoxDecoration(
-                                            color: AppColors.blackColor,
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                height: 7.h,
-                                                width: 15.w,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                  color: AppColors.white,
-                                                ),
-                                                child: Center(
-                                                  child: SvgPicture.asset(
-                                                    AppConstants.visitor,
-                                                    height: 4.5.h,
-                                                    width: 4.5.h,
-                                                    fit: BoxFit.contain,
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(height: 1.h),
-                                              Text(
-                                                "Visitors",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                  color: AppColors.white,
-                                                  fontSize: 18.sp,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
+                              ),
+                            ),
+                            Positioned(
+                              right: 5,
+                              top: 0.3.h,
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: 7.w,
+                                width: 7.w,
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(
+                                    20,
+                                  ),
+                                ),
+                                child: Text(
+                                  "$visitorCount",
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    color: AppColors.black,
+                                    fontFamily: AppConstants.manrope,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Stack(
+                          children: [
+                            Material(
+                              elevation: 2,
+                              borderRadius: BorderRadius.circular(20),
+                              child: InkWell(
+                                onTap: () {
+                                  Get.to(const ParcelScreen());
+                                },
+                                child: Container(
+                                  height: 17.h,
+                                  width: 28.w,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.blackColor,
+                                    borderRadius: BorderRadius.circular(
+                                      20,
                                     ),
-                                    Positioned(
-                                      right: 5,
-                                      top: 0.3.h,
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        height: 7.w,
-                                        width: 7.w,
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: 7.h,
+                                        width: 15.w,
                                         decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(12),
                                           color: AppColors.white,
-                                          borderRadius: BorderRadius.circular(
-                                            20,
-                                          ),
                                         ),
-                                        child: Text(
-                                          "$visitorCount",
-                                          style: TextStyle(
-                                            fontSize: 15.sp,
-                                            color: AppColors.black,
-                                            fontFamily: AppConstants.manrope,
-                                            fontWeight: FontWeight.bold,
+                                        child: Center(
+                                          child: SvgPicture.asset(
+                                            AppConstants.parcel,
+                                            height: 4.5.h,
+                                            width: 4.5.h,
+                                            fit: BoxFit.contain,
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                Stack(
-                                  children: [
-                                    Material(
-                                      elevation: 2,
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: InkWell(
-                                        onTap: () {
-                                          Get.to(const ParcelScreen());
-                                        },
-                                        child: Container(
-                                          height: 17.h,
-                                          width: 28.w,
-                                          decoration: BoxDecoration(
-                                            color: AppColors.blackColor,
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                height: 7.h,
-                                                width: 15.w,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                  color: AppColors.white,
-                                                ),
-                                                child: Center(
-                                                  child: SvgPicture.asset(
-                                                    AppConstants.parcel,
-                                                    height: 4.5.h,
-                                                    width: 4.5.h,
-                                                    fit: BoxFit.contain,
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(height: 1.h),
-                                              Text(
-                                                "Parcels",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                  color: AppColors.white,
-                                                  fontSize: 18.sp,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      right: 5,
-                                      top: 0.3.h,
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        height: 7.w,
-                                        width: 7.w,
-                                        decoration: BoxDecoration(
+                                      SizedBox(height: 1.h),
+                                      Text(
+                                        "Parcels",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily:
+                                          AppConstants.manrope,
                                           color: AppColors.white,
-                                          borderRadius: BorderRadius.circular(
-                                            20,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          "$parcelCount",
-                                          style: TextStyle(
-                                            fontSize: 15.sp,
-                                            color: AppColors.black,
-                                            fontFamily: AppConstants.manrope,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                          fontSize: 18.sp,
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ],
+                              ),
+                            ),
+                            Positioned(
+                              right: 5,
+                              top: 0.3.h,
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: 7.w,
+                                width: 7.w,
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(
+                                    20,
+                                  ),
+                                ),
+                                child: Text(
+                                  "$parcelCount",
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    color: AppColors.black,
+                                    fontFamily: AppConstants.manrope,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
                       ],
                     ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            top: 5.h,
+            left: 0,
+            right: 0,
+            bottom: 0.h,
+            child: DraggableScrollableSheet(
+              initialChildSize: 0.35,
+              minChildSize: 0.34,
+              builder: (context, scrollController) {
+                return Container(
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(45),
+                      topLeft: Radius.circular(45),
+                    ),
+                    color: Colors.white,
                   ),
-                  Positioned(
-                    top: 5.h,
-                    left: 0,
-                    right: 0,
-                    bottom: 0.h,
-                    child: DraggableScrollableSheet(
-                      initialChildSize: 0.35,
-                      minChildSize: 0.34,
-                      builder: (context, scrollController) {
-                        return Container(
+                  child: SingleChildScrollView(
+                    controller: scrollController,
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 45.h,
+                          width: double.infinity,
                           decoration: const BoxDecoration(
                             borderRadius: BorderRadius.only(
                               topRight: Radius.circular(45),
                               topLeft: Radius.circular(45),
+                              bottomLeft: Radius.circular(45),
+                              bottomRight: Radius.circular(45),
                             ),
-                            color: Colors.white,
+                            color: AppColors.bottomSheetBG,
                           ),
-                          child: SingleChildScrollView(
-                            controller: scrollController,
-                            physics: const BouncingScrollPhysics(),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: 45.h,
-                                  width: double.infinity,
-                                  decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(45),
-                                      topLeft: Radius.circular(45),
-                                      bottomLeft: Radius.circular(45),
-                                      bottomRight: Radius.circular(45),
+                          child: Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                child: Container(
+                                  height: 1.h,
+                                  width: 20.w,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xf0D9D9D9),
+                                    borderRadius: BorderRadius.circular(
+                                      10,
                                     ),
-                                    color: AppColors.bottomSheetBG,
+                                  ),
+                                ).paddingOnly(top: 2.h, bottom: 2.h),
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "Message Board",
+                                    style: TextStyle(
+                                      color: AppColors.black,
+                                      fontFamily: AppConstants.manrope,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.sp,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  // Stack(
+                                  //   clipBehavior: Clip.none,
+                                  //   children: [
+                                  //     InkWell(
+                                  //       onTap: () {
+                                  //         Get.to(NotificationPage());
+                                  //       },
+                                  //       child: Icon(
+                                  //         Icons
+                                  //             .notifications_none_outlined,
+                                  //         color: AppColors.blackColor,
+                                  //         size: 22.sp,
+                                  //       ),
+                                  //     ),
+                                  //     Positioned(
+                                  //       right: -5,
+                                  //       top: -3,
+                                  //       child: Container(
+                                  //         padding: EdgeInsets.all(4),
+                                  //         decoration: BoxDecoration(
+                                  //           color: AppColors.borderColor,
+                                  //           shape: BoxShape.circle,
+                                  //         ),
+                                  //         constraints: BoxConstraints(
+                                  //           minWidth: 18,
+                                  //           minHeight: 18,
+                                  //         ),
+                                  //         child: Center(
+                                  //           child: Text(
+                                  //             notificationCount
+                                  //                     .toString() ??
+                                  //                 "0",
+                                  //             style: TextStyle(
+                                  //               color: Colors.black,
+                                  //               fontSize: 12.sp,
+                                  //               fontFamily:
+                                  //                   AppConstants.manrope,
+                                  //               fontWeight:
+                                  //                   FontWeight.bold,
+                                  //             ),
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   ],
+                                  // ),
+                                ],
+                              ).paddingOnly(bottom: 1.h),
+                              messageBoardModal?.data != null &&
+                                  messageBoardModal!
+                                      .data!
+                                      .isNotEmpty
+                                  ? Container(
+                                height: 28.h,
+                                decoration: BoxDecoration(
+                                  color: AppColors.offWhite,
+                                  borderRadius:
+                                  BorderRadius.circular(15),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(
+                                    8.0,
                                   ),
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
                                     children: [
-                                      Center(
-                                        child: Container(
-                                          height: 1.h,
-                                          width: 20.w,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xf0D9D9D9),
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                          ),
-                                        ).paddingOnly(top: 2.h, bottom: 2.h),
-                                      ),
                                       Row(
                                         children: [
                                           Text(
-                                            "Message Board",
+                                            "Building Message Board",
                                             style: TextStyle(
-                                              color: AppColors.black,
-                                              fontFamily: AppConstants.manrope,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20.sp,
+                                              fontSize: 18.sp,
+                                              fontWeight:
+                                              FontWeight.w500,
+                                              fontFamily:
+                                              AppConstants
+                                                  .manrope,
                                             ),
                                           ),
-                                          const Spacer(),
-                                          // Stack(
-                                          //   clipBehavior: Clip.none,
-                                          //   children: [
-                                          //     InkWell(
-                                          //       onTap: () {
-                                          //         Get.to(NotificationPage());
-                                          //       },
-                                          //       child: Icon(
-                                          //         Icons
-                                          //             .notifications_none_outlined,
-                                          //         color: AppColors.blackColor,
-                                          //         size: 22.sp,
+                                          // Spacer(),
+                                          // InkWell(
+                                          //   onTap: () {
+                                          //     addpostsheet(
+                                          //       context,
+                                          //       loginModel
+                                          //               ?.data
+                                          //               ?.user
+                                          //               ?.id
+                                          //               .toString() ??
+                                          //           "",
+                                          //     );
+                                          //   },
+                                          //   child: Container(
+                                          //     height: 4.h,
+                                          //     width: 40.w,
+                                          //     decoration: BoxDecoration(
+                                          //       borderRadius:
+                                          //           BorderRadius.circular(
+                                          //             15,
+                                          //           ),
+                                          //       border: Border.all(
+                                          //         color:
+                                          //             AppColors
+                                          //                 .bottomSheetBG,
+                                          //         width: 1,
                                           //       ),
                                           //     ),
-                                          //     Positioned(
-                                          //       right: -5,
-                                          //       top: -3,
-                                          //       child: Container(
-                                          //         padding: EdgeInsets.all(4),
-                                          //         decoration: BoxDecoration(
-                                          //           color: AppColors.borderColor,
-                                          //           shape: BoxShape.circle,
-                                          //         ),
-                                          //         constraints: BoxConstraints(
-                                          //           minWidth: 18,
-                                          //           minHeight: 18,
-                                          //         ),
-                                          //         child: Center(
-                                          //           child: Text(
-                                          //             notificationCount
-                                          //                     .toString() ??
-                                          //                 "0",
+                                          //     child: Padding(
+                                          //       padding:
+                                          //           const EdgeInsets.all(
+                                          //             4.0,
+                                          //           ),
+                                          //       child: Row(
+                                          //         children: [
+                                          //           Text(
+                                          //             "Post New Message",
                                           //             style: TextStyle(
-                                          //               color: Colors.black,
-                                          //               fontSize: 12.sp,
-                                          //               fontFamily:
-                                          //                   AppConstants.manrope,
+                                          //               fontSize:
+                                          //                   15.sp,
                                           //               fontWeight:
-                                          //                   FontWeight.bold,
+                                          //                   FontWeight
+                                          //                       .bold,
+                                          //               fontFamily:
+                                          //                   AppConstants
+                                          //                       .manrope,
                                           //             ),
                                           //           ),
-                                          //         ),
+                                          //           Icon(
+                                          //             Icons
+                                          //                 .add_circle_outline_outlined,
+                                          //             size: 19.sp,
+                                          //             color:
+                                          //                 Colors
+                                          //                     .black,
+                                          //           ),
+                                          //         ],
                                           //       ),
                                           //     ),
-                                          //   ],
+                                          //   ),
                                           // ),
                                         ],
                                       ).paddingOnly(bottom: 1.h),
-                                      messageBoardModal?.data != null &&
-                                              messageBoardModal!
-                                                  .data!
-                                                  .isNotEmpty
-                                          ? Container(
-                                            height: 28.h,
-                                            decoration: BoxDecoration(
-                                              color: AppColors.offWhite,
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(
-                                                8.0,
-                                              ),
-                                              child: Column(
+                                      Container(
+                                        height: 20.9.h,
+                                        width: 75.w,
+                                        decoration: BoxDecoration(
+                                          color:
+                                          AppColors
+                                              .bottomSheetBG,
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                            15,
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding:
+                                          const EdgeInsets.all(
+                                            12.0,
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment
+                                                .start,
+                                            children: [
+                                              Row(
                                                 children: [
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        "Building Message Board",
-                                                        style: TextStyle(
-                                                          fontSize: 18.sp,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontFamily:
-                                                              AppConstants
-                                                                  .manrope,
+                                                  CachedNetworkImage(
+                                                    imageUrl:
+                                                    messageBoardModal
+                                                        ?.data?[0]
+                                                        .user
+                                                        ?.conciergeImage ??
+                                                        "",
+                                                    imageBuilder:
+                                                        (context,
+                                                        imageProvider,) =>
+                                                        Container(
+                                                          width: 40,
+                                                          height:
+                                                          40,
+                                                          decoration: BoxDecoration(
+                                                            shape:
+                                                            BoxShape.circle,
+                                                            image: DecorationImage(
+                                                              image:
+                                                              imageProvider,
+                                                              fit:
+                                                              BoxFit.cover,
+                                                            ),
+                                                          ),
                                                         ),
-                                                      ),
-                                                      // Spacer(),
-                                                      // InkWell(
-                                                      //   onTap: () {
-                                                      //     addpostsheet(
-                                                      //       context,
-                                                      //       loginModel
-                                                      //               ?.data
-                                                      //               ?.user
-                                                      //               ?.id
-                                                      //               .toString() ??
-                                                      //           "",
-                                                      //     );
-                                                      //   },
-                                                      //   child: Container(
-                                                      //     height: 4.h,
-                                                      //     width: 40.w,
-                                                      //     decoration: BoxDecoration(
-                                                      //       borderRadius:
-                                                      //           BorderRadius.circular(
-                                                      //             15,
-                                                      //           ),
-                                                      //       border: Border.all(
-                                                      //         color:
-                                                      //             AppColors
-                                                      //                 .bottomSheetBG,
-                                                      //         width: 1,
-                                                      //       ),
-                                                      //     ),
-                                                      //     child: Padding(
-                                                      //       padding:
-                                                      //           const EdgeInsets.all(
-                                                      //             4.0,
-                                                      //           ),
-                                                      //       child: Row(
-                                                      //         children: [
-                                                      //           Text(
-                                                      //             "Post New Message",
-                                                      //             style: TextStyle(
-                                                      //               fontSize:
-                                                      //                   15.sp,
-                                                      //               fontWeight:
-                                                      //                   FontWeight
-                                                      //                       .bold,
-                                                      //               fontFamily:
-                                                      //                   AppConstants
-                                                      //                       .manrope,
-                                                      //             ),
-                                                      //           ),
-                                                      //           Icon(
-                                                      //             Icons
-                                                      //                 .add_circle_outline_outlined,
-                                                      //             size: 19.sp,
-                                                      //             color:
-                                                      //                 Colors
-                                                      //                     .black,
-                                                      //           ),
-                                                      //         ],
-                                                      //       ),
-                                                      //     ),
-                                                      //   ),
-                                                      // ),
-                                                    ],
-                                                  ).paddingOnly(bottom: 1.h),
-                                                  Container(
-                                                    height: 20.9.h,
-                                                    width: 75.w,
-                                                    decoration: BoxDecoration(
-                                                      color:
-                                                          AppColors
-                                                              .bottomSheetBG,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            15,
-                                                          ),
-                                                    ),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                            12.0,
-                                                          ),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Row(
-                                                            children: [
-                                                              CachedNetworkImage(
-                                                                imageUrl:
-                                                                    messageBoardModal
-                                                                        ?.data?[0]
-                                                                        .user
-                                                                        ?.conciergeImage ??
-                                                                    "",
-                                                                imageBuilder:
-                                                                    (
-                                                                      context,
-                                                                      imageProvider,
-                                                                    ) => Container(
-                                                                      width: 40,
-                                                                      height:
-                                                                          40,
-                                                                      decoration: BoxDecoration(
-                                                                        shape:
-                                                                            BoxShape.circle,
-                                                                        image: DecorationImage(
-                                                                          image:
-                                                                              imageProvider,
-                                                                          fit:
-                                                                              BoxFit.cover,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                placeholder:
-                                                                    (
-                                                                      context,
-                                                                      url,
-                                                                    ) =>
-                                                                        const CircularProgressIndicator(),
-                                                                errorWidget:
-                                                                    (
-                                                                      context,
-                                                                      url,
-                                                                      error,
-                                                                    ) => const Icon(
-                                                                      Icons
-                                                                          .error,
-                                                                    ),
-                                                              ),
-                                                              SizedBox(
-                                                                width: 2.w,
-                                                              ),
-                                                              Text(
-                                                                "${messageBoardModal?.data?[0].user?.firstName ?? ""} ${messageBoardModal?.data?[0].user?.lastName ?? ""}",
-                                                                style: TextStyle(
-                                                                  fontFamily:
-                                                                      AppConstants
-                                                                          .manrope,
-                                                                  fontSize:
-                                                                      15.sp,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
-                                                              SizedBox(
-                                                                width: 2.w,
-                                                              ),
-                                                              Text(
-                                                                "•${formatPostDate(messageBoardModal?.data?[0].createdAt)}",
-                                                                style: TextStyle(
-                                                                  fontSize:
-                                                                      14.sp,
-                                                                  color:
-                                                                      Colors
-                                                                          .grey,
-                                                                  fontFamily:
-                                                                      AppConstants
-                                                                          .manrope,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          SizedBox(
-                                                            height: 0.5.h,
-                                                          ),
-                                                          Text(
-                                                            messageBoardModal
-                                                                    ?.data?[0]
-                                                                    .title ??
-                                                                "Join us at The Crumpets Cafe!",
-                                                            maxLines: 1,
-                                                            style: TextStyle(
-                                                              fontSize: 16.sp,
-                                                              color:
-                                                                  Colors.black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              overflow:
-                                                              TextOverflow
-                                                                  .ellipsis,
-                                                              fontFamily:
-                                                                  AppConstants
-                                                                      .manrope,
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            messageBoardModal
-                                                                    ?.data?[0]
-                                                                    .text ??
-                                                                "",
-                                                            maxLines: 4,
-                                                            style: TextStyle(
-                                                              fontSize: 15.sp,
-                                                              color:
-                                                                  Colors.black,
-                                                              fontFamily:
-                                                                  AppConstants
-                                                                     .AlbertSansLight,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
+                                                    placeholder:
+                                                        (context,
+                                                        url,) =>
+                                                    const CircularProgressIndicator(),
+                                                    errorWidget:
+                                                        (context,
+                                                        url,
+                                                        error,) =>
+                                                    const Icon(
+                                                      Icons
+                                                          .error,
                                                     ),
                                                   ),
-                                                ],
-                                              ),
-                                            ),
-                                          ).paddingOnly(bottom: 1.h)
-                                          : Center(
-                                            child: Text(
-                                              "No messages found.",
-                                              style: TextStyle(
-                                                fontSize: 17.sp,
-                                                color: Colors.grey,
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                              ),
-                                            ),
-                                          ).paddingOnly(
-                                            top: 15.h,
-                                            bottom: 10.h,
-                                          ),
-                                      InkWell(
-                                        onTap: () {
-                                          Get.to(() => Messageboard());
-                                        },
-                                        child: Center(
-                                          child: Container(
-                                            height: 4.h,
-                                            width: 45.w,
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              border: Border.all(
-                                                color: AppColors.borderColor,
-                                                width: 1,
-                                              ),
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(
-                                                4.0,
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  SvgPicture.asset(
-                                                    AppConstants.messageBoard,
-                                                    width: 20,
-                                                    height: 20,
-                                                  ).paddingOnly(
-                                                    left: 9.w,
-                                                    right: 2.w,
+                                                  SizedBox(
+                                                    width: 2.w,
                                                   ),
-                                                  const Text(
-                                                    "View All",
+                                                  Text(
+                                                    "${messageBoardModal
+                                                        ?.data?[0].user
+                                                        ?.firstName ??
+                                                        ""} ${messageBoardModal
+                                                        ?.data?[0].user
+                                                        ?.lastName ?? ""}",
                                                     style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
                                                       fontFamily:
-                                                          AppConstants.manrope,
+                                                      AppConstants
+                                                          .manrope,
+                                                      fontSize:
+                                                      15.sp,
+                                                      fontWeight:
+                                                      FontWeight
+                                                          .bold,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 2.w,
+                                                  ),
+                                                  Text(
+                                                    "•${formatPostDate(
+                                                        messageBoardModal
+                                                            ?.data?[0]
+                                                            .createdAt)}",
+                                                    style: TextStyle(
+                                                      fontSize:
+                                                      14.sp,
+                                                      color:
+                                                      Colors
+                                                          .grey,
+                                                      fontFamily:
+                                                      AppConstants
+                                                          .manrope,
                                                     ),
                                                   ),
                                                 ],
                                               ),
-                                            ),
+                                              SizedBox(
+                                                height: 0.5.h,
+                                              ),
+                                              Text(
+                                                messageBoardModal
+                                                    ?.data?[0]
+                                                    .title ??
+                                                    "Join us at The Crumpets Cafe!",
+                                                maxLines: 1,
+                                                style: TextStyle(
+                                                  fontSize: 16.sp,
+                                                  color:
+                                                  Colors.black,
+                                                  fontWeight:
+                                                  FontWeight
+                                                      .bold,
+                                                  overflow:
+                                                  TextOverflow
+                                                      .ellipsis,
+                                                  fontFamily:
+                                                  AppConstants
+                                                      .manrope,
+                                                ),
+                                              ),
+                                              Text(
+                                                messageBoardModal
+                                                    ?.data?[0]
+                                                    .text ??
+                                                    "",
+                                                maxLines: 4,
+                                                style: TextStyle(
+                                                  fontSize: 15.sp,
+                                                  color:
+                                                  Colors.black,
+                                                  fontFamily:
+                                                  AppConstants
+                                                      .AlbertSansLight,
+                                                  overflow:
+                                                  TextOverflow
+                                                      .ellipsis,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ).paddingOnly(bottom: 1.h),
+                                        ),
                                       ),
                                     ],
-                                  ).paddingOnly(left: 5.w, right: 5.w),
+                                  ),
                                 ),
-                                Text(
-                                  "My Home",
+                              ).paddingOnly(bottom: 1.h)
+                                  : Center(
+                                child: Text(
+                                  "No messages found.",
                                   style: TextStyle(
-                                    color: AppColors.black,
-                                    fontFamily: AppConstants.manrope,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.sp,
+                                    fontSize: 17.sp,
+                                    color: Colors.grey,
+                                    fontFamily:
+                                    AppConstants.manrope,
                                   ),
-                                ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
-                                Container(
-                                  height: 0.6.h,
-                                  width: 18.w,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.blackColor,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ).paddingOnly(left: 5.w, right: 5.w),
-                                Text(
-                                  "Explore your building, submit maintenance requests and make bookings.",
-                                  style: TextStyle(
-                                    color: AppColors.black,
-                                    fontFamily: AppConstants.AlbertSansLight,
-                                    fontWeight: FontWeight.w200,
-                                    fontSize: 16.sp,
-                                  ),
-                                ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: homeCard(
-                                        iconName: AppConstants.building,
-                                        name: "Building",
-                                        onTap: () {
-                                          Get.to(
-                                            MyBuilding_Screen(
-                                              id: loginModel?.data?.user?.id,
+                                ),
+                              ).paddingOnly(
+                                top: 15.h,
+                                bottom: 10.h,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Get.to(() => Messageboard());
+                                },
+                                child: Center(
+                                  child: Container(
+                                    height: 4.h,
+                                    width: 45.w,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius.circular(15),
+                                      border: Border.all(
+                                        color: AppColors.borderColor,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(
+                                        4.0,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                            AppConstants.messageBoard,
+                                            width: 20,
+                                            height: 20,
+                                          ).paddingOnly(
+                                            left: 9.w,
+                                            right: 2.w,
+                                          ),
+                                          const Text(
+                                            "View All",
+                                            style: TextStyle(
+                                              fontWeight:
+                                              FontWeight.w600,
+                                              fontFamily:
+                                              AppConstants.manrope,
                                             ),
-                                          );
-                                        },
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    SizedBox(width: 5.w),
-                                    // Expanded(
-                                    //   child: homeCard(
-                                    //     iconName: AppConstants.booking,
-                                    //     name: "My Bookings",
-                                    //     onTap: () {
-                                    //       Get.to(BookingScreen());
-                                    //     },
-                                    //   ),
-                                    // ),
-                                    Expanded(
-                                      child: homeCard(
-                                        iconName: AppConstants.maintance,
-                                        name: "Maintenance",
-                                        onTap: () {
-                                          Get.to(const MaintenanceScreen());
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: homeCard(
-                                        iconName: AppConstants.amenities,
-                                        name: "Amenities",
-                                        onTap: () {
-                                          Get.to(const BookAmenities_Screen());
-                                        },
-                                      ),
-                                    ),
-                                    SizedBox(width: 5.w),
-                                    Expanded(
-                                      child: homeCard(
-                                        iconName: AppConstants.booking,
-                                        name: "My Bookings",
-                                        onTap: () {
-                                          Get.to(const BookingScreen());
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
-                                Container(
-                                  height: 0.1.h,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: const Color(0xf0e3e3e3),
                                   ),
-                                ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
-                                Text(
-                                  "Business Overview",
-                                  style: TextStyle(
-                                    color: AppColors.black,
-                                    fontFamily: AppConstants.manrope,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.sp,
-                                  ),
-                                ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
-                                Container(
-                                  height: 0.6.h,
-                                  width: 18.w,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.blackColor,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ).paddingOnly(left: 5.w, right: 5.w),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: homeCard(
-                                        iconName: AppConstants.myOrder,
-                                        name: "My Orders",
-                                        onTap: () {
-                                          Get.to(Order_Screen());
-                                        },
-                                      ),
-                                    ),
-                                    SizedBox(width: 5.w),
-                                    // Expanded(
-                                    //   child: homeCard(
-                                    //     iconName: AppConstants.maintance,
-                                    //     name: "My Service Bookings",
-                                    //     onTap: () {
-                                    //       Get.to(ServiceBookingScreen());
-                                    //     },
-                                    //   ),
-                                    // ),
-                                    Expanded(
-                                      child: homeCard(
-                                        iconName: AppConstants.shopping,
-                                        name: "Shopping",
-                                        onTap: () {
-                                          Get.to(CommunityScreen());
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
-                                Row(
-                                  children: [
-                                    // Expanded(
-                                    //   child: homeCard(
-                                    //     iconName: AppConstants.shopping,
-                                    //     name: "Shopping",
-                                    //     onTap: () {
-                                    //       Get.to(CommunityScreen());
-                                    //     },
-                                    //   ),
-                                    // ),
-                                    Expanded(
-                                      child: homeCard(
-                                        iconName: AppConstants.events,
-                                        name: "Events",
-                                        onTap: () {
-                                          Get.to(
-                                            EventScreen(
-                                              userId:
-                                                  loginModel?.data?.user?.id
-                                                      .toString() ??
-                                                  "",
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    SizedBox(width: 5.w),
-
-                                    Expanded(
-                                      child: homeCard(
-                                        iconName: AppConstants.eventBooking,
-                                        name: "Event Booking",
-                                        onTap: () {
-                                          Get.to(const EventbookingScreen());
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
-                                // Row(
-                                //   children: [
-                                //     Expanded(
-                                //       child: homeCard(
-                                //         iconName: AppConstants.eventBooking,
-                                //         name: "Event Booking",
-                                //         onTap: () {
-                                //           Get.to(EventbookingScreen());
-                                //         },
-                                //       ),
-                                //     ),
-                                //     SizedBox(width: 5.w),
-                                //     Expanded(child: Container()),
-                                //   ],
-                                // ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
-                                Container(
-                                  height: 0.1.h,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: const Color(0xf0e3e3e3),
-                                  ),
-                                ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
-                                Text(
-                                  "Information",
-                                  style: TextStyle(
-                                    color: AppColors.black,
-                                    fontFamily: AppConstants.manrope,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.sp,
-                                  ),
-                                ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
-                                Container(
-                                  height: 0.6.h,
-                                  width: 18.w,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.blackColor,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ).paddingOnly(left: 5.w, right: 5.w),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: HomeProfileCard(
-                                        iconName: AppConstants.profile,
-                                        name: "Profile",
-                                        onTap: () {
-                                          Get.to(
-                                            ViewProfile(
-                                              id:
-                                                  loginModel?.data?.user?.id ??
-                                                  0,
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    SizedBox(width: 5.w),
-                                    Expanded(
-                                      child: HomeProfileCard(
-                                        iconName: AppConstants.settings,
-                                        name: "Settings",
-                                        onTap: () {
-                                          Get.to(
-                                            ViewProfile(
-                                              id:
-                                                  loginModel?.data?.user?.id ??
-                                                  0,
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: HomeProfileCard(
-                                        iconName: AppConstants.Privacy,
-                                        name: "Privacy Policy",
-                                        onTap: () {
-                                          launchPrivacyPolicyUrl();
-                                        },
-                                      ),
-                                    ),
-                                    SizedBox(width: 5.w),
-                                    Expanded(
-                                      child: HomeProfileCard(
-                                        iconName: AppConstants.terms,
-                                        name: "Terms & Conditions",
-                                        onTap: () {
-                                          launchTermsUrl();
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: HomeProfileCard(
-                                        iconName: AppConstants.waveePet,
-                                        name: "Wavee Pet",
-                                        onTap: () {
-                                          showWaveePet(context: context);
-                                        },
-                                      ),
-                                    ),
-                                    SizedBox(width: 5.w),
-                                    Expanded(child: Container()),
-                                  ],
-                                ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
-                                SizedBox(height: 3.h),
-                              ],
-                            ),
+                                ).paddingOnly(bottom: 1.h),
+                              ),
+                            ],
+                          ).paddingOnly(left: 5.w, right: 5.w),
+                        ),
+                        Text(
+                          "My Home",
+                          style: TextStyle(
+                            color: AppColors.black,
+                            fontFamily: AppConstants.manrope,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.sp,
                           ),
-                        );
-                      },
+                        ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
+                        Container(
+                          height: 0.6.h,
+                          width: 18.w,
+                          decoration: BoxDecoration(
+                            color: AppColors.blackColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ).paddingOnly(left: 5.w, right: 5.w),
+                        Text(
+                          "Explore your building, submit maintenance requests and make bookings.",
+                          style: TextStyle(
+                            color: AppColors.black,
+                            fontFamily: AppConstants.AlbertSansLight,
+                            fontWeight: FontWeight.w200,
+                            fontSize: 16.sp,
+                          ),
+                        ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: homeCard(
+                                iconName: AppConstants.building,
+                                name: "Building",
+                                onTap: () {
+                                  Get.to(
+                                    MyBuilding_Screen(
+                                      id: loginModel?.data?.user?.id,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 5.w),
+                            // Expanded(
+                            //   child: homeCard(
+                            //     iconName: AppConstants.booking,
+                            //     name: "My Bookings",
+                            //     onTap: () {
+                            //       Get.to(BookingScreen());
+                            //     },
+                            //   ),
+                            // ),
+                            Expanded(
+                              child: homeCard(
+                                iconName: AppConstants.maintance,
+                                name: "Maintenance",
+                                onTap: () {
+                                  Get.to(const MaintenanceScreen());
+                                },
+                              ),
+                            ),
+                          ],
+                        ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: homeCard(
+                                iconName: AppConstants.amenities,
+                                name: "Amenities",
+                                onTap: () {
+                                  Get.to(const BookAmenities_Screen());
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 5.w),
+                            Expanded(
+                              child: homeCard(
+                                iconName: AppConstants.booking,
+                                name: "My Bookings",
+                                onTap: () {
+                                  Get.to(const BookingScreen());
+                                },
+                              ),
+                            ),
+                          ],
+                        ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
+                        Container(
+                          height: 0.1.h,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: const Color(0xf0e3e3e3),
+                          ),
+                        ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
+                        Text(
+                          "Business Overview",
+                          style: TextStyle(
+                            color: AppColors.black,
+                            fontFamily: AppConstants.manrope,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.sp,
+                          ),
+                        ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
+                        Container(
+                          height: 0.6.h,
+                          width: 18.w,
+                          decoration: BoxDecoration(
+                            color: AppColors.blackColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ).paddingOnly(left: 5.w, right: 5.w),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: homeCard(
+                                iconName: AppConstants.myOrder,
+                                name: "My Orders",
+                                onTap: () {
+                                  Get.to(Order_Screen());
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 5.w),
+                            // Expanded(
+                            //   child: homeCard(
+                            //     iconName: AppConstants.maintance,
+                            //     name: "My Service Bookings",
+                            //     onTap: () {
+                            //       Get.to(ServiceBookingScreen());
+                            //     },
+                            //   ),
+                            // ),
+                            Expanded(
+                              child: homeCard(
+                                iconName: AppConstants.shopping,
+                                name: "Shopping",
+                                onTap: () {
+                                  Get.to(CommunityScreen());
+                                },
+                              ),
+                            ),
+                          ],
+                        ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
+                        Row(
+                          children: [
+                            // Expanded(
+                            //   child: homeCard(
+                            //     iconName: AppConstants.shopping,
+                            //     name: "Shopping",
+                            //     onTap: () {
+                            //       Get.to(CommunityScreen());
+                            //     },
+                            //   ),
+                            // ),
+                            Expanded(
+                              child: homeCard(
+                                iconName: AppConstants.events,
+                                name: "Events",
+                                onTap: () {
+                                  Get.to(
+                                    EventScreen(
+                                      userId:
+                                      loginModel?.data?.user?.id
+                                          .toString() ??
+                                          "",
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 5.w),
+
+                            Expanded(
+                              child: homeCard(
+                                iconName: AppConstants.eventBooking,
+                                name: "Event Booking",
+                                onTap: () {
+                                  Get.to(const EventbookingScreen());
+                                },
+                              ),
+                            ),
+                          ],
+                        ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
+                        // Row(
+                        //   children: [
+                        //     Expanded(
+                        //       child: homeCard(
+                        //         iconName: AppConstants.eventBooking,
+                        //         name: "Event Booking",
+                        //         onTap: () {
+                        //           Get.to(EventbookingScreen());
+                        //         },
+                        //       ),
+                        //     ),
+                        //     SizedBox(width: 5.w),
+                        //     Expanded(child: Container()),
+                        //   ],
+                        // ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
+                        Container(
+                          height: 0.1.h,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: const Color(0xf0e3e3e3),
+                          ),
+                        ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
+                        Text(
+                          "Information",
+                          style: TextStyle(
+                            color: AppColors.black,
+                            fontFamily: AppConstants.manrope,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.sp,
+                          ),
+                        ).paddingOnly(left: 5.w, right: 5.w, top: 1.h),
+                        Container(
+                          height: 0.6.h,
+                          width: 18.w,
+                          decoration: BoxDecoration(
+                            color: AppColors.blackColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ).paddingOnly(left: 5.w, right: 5.w),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: HomeProfileCard(
+                                iconName: AppConstants.profile,
+                                name: "Profile",
+                                onTap: () {
+                                  Get.to(
+                                    ViewProfile(
+                                      id:
+                                      loginModel?.data?.user?.id ??
+                                          0,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 5.w),
+                            Expanded(
+                              child: HomeProfileCard(
+                                iconName: AppConstants.settings,
+                                name: "Settings",
+                                onTap: () {
+                                  Get.to(
+                                    ViewProfile(
+                                      id:
+                                      loginModel?.data?.user?.id ??
+                                          0,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: HomeProfileCard(
+                                iconName: AppConstants.Privacy,
+                                name: "Privacy Policy",
+                                onTap: () {
+                                  launchPrivacyPolicyUrl();
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 5.w),
+                            Expanded(
+                              child: HomeProfileCard(
+                                iconName: AppConstants.terms,
+                                name: "Terms & Conditions",
+                                onTap: () {
+                                  launchTermsUrl();
+                                },
+                              ),
+                            ),
+                          ],
+                        ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: HomeProfileCard(
+                                iconName: AppConstants.waveePet,
+                                name: "Wavee Pet",
+                                onTap: () {
+                                  showWaveePet(context: context);
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 5.w),
+                            Expanded(child: Container()),
+                          ],
+                        ).paddingOnly(left: 5.w, right: 5.w, top: 2.h),
+                        SizedBox(height: 3.h),
+                      ],
                     ),
                   ),
-                  if (isSending)
-                    Container(
-                      color: Colors.black.withOpacity(0.3),
-                      child: Center(child: Loader()),
-                    ),
-                  if (isRegistration)
-                    Container(
-                      color: Colors.black.withOpacity(0.3),
-                      child: Center(child: Loader()),
-                    ),
-                ],
-              ),
+                );
+              },
+            ),
+          ),
+          if (isSending)
+            Container(
+              color: Colors.black.withOpacity(0.3),
+              child: Center(child: Loader()),
+            ),
+          if (isRegistration)
+            Container(
+              color: Colors.black.withOpacity(0.3),
+              child: Center(child: Loader()),
+            ),
+        ],
+      ),
     );
   }
 
@@ -1157,7 +1163,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void launchPrivacyPolicyUrl() async {
-    // final Uri url = Uri.parse("https://wavee.ai/legal/privacy-security");
+    // final Uri url = Uri.parse("https://wavee.ai/privacy-security");
     final Uri url = Uri.parse("https://wavee.ai/legal/privacy-security");
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       throw 'Could not launch $url';
@@ -1573,7 +1579,10 @@ class _HomePageState extends State<HomePage> {
                 left: 16,
                 right: 16,
                 top: 16,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+                bottom: MediaQuery
+                    .of(context)
+                    .viewInsets
+                    .bottom + 16,
               ),
               child: Form(
                 key: addPostFormkey,
@@ -1785,18 +1794,17 @@ class _HomePageState extends State<HomePage> {
           MessageBoardProvider()
               .addPostApiWithImages(bodyData: data, images: _images)
               .then((response) async {
-                if (response.statusCode == 200) {
-                  add_Post_Model = Add_Post_Model.fromJson(response.data);
-                  _descController.clear();
-                  _images = [];
-                } else if (response.statusCode == 429) {
-                } else {}
-                if (mounted) {
-                  setState(() {
-                    isSending = false;
-                  });
-                }
+            if (response.statusCode == 200) {
+              add_Post_Model = Add_Post_Model.fromJson(response.data);
+              _descController.clear();
+              _images = [];
+            } else if (response.statusCode == 429) {} else {}
+            if (mounted) {
+              setState(() {
+                isSending = false;
               });
+            }
+          });
         } else {
           setState(() {
             isSending = false;
@@ -1878,9 +1886,11 @@ class _HomePageState extends State<HomePage> {
             });
           }
         } catch (e) {
-          setState(() {
-            isLoading = false;
-          });
+          if (mounted) {
+            setState(() {
+              isLoading = false;
+            });
+          }
         }
       } else {
         setState(() {
@@ -2046,7 +2056,7 @@ class _HomePageState extends State<HomePage> {
 
   getdataloginData() async {
     Map<String, String?> credentials =
-        await SaveDataLocal.getEmailAndPassword();
+    await SaveDataLocal.getEmailAndPassword();
     String? savedEmail = credentials['email'];
     String? savedPassword = credentials['password'];
     String? savedName = credentials['name'];
@@ -2084,13 +2094,13 @@ class _HomePageState extends State<HomePage> {
             if (response.statusCode == 200 && apiStatus == 200) {
               showSnackBar(
                 title: "SignUp",
-                message: "Registration Successful \nYou can now login to Wavee Pets using your credentials.",
+                message:
+                "Registration Successful \nYou can now login to Wavee Pets using your credentials.",
                 backgoundColor: AppColors.maincolor,
                 ColorText: AppColors.white,
                 IconColor: AppColors.white,
                 IconName: Icons.check_circle,
               );
-
             } else {
               if (responseData.containsKey('data') &&
                   responseData['data'] is Map) {

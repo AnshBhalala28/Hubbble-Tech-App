@@ -10,7 +10,7 @@ class DioHelper {
 
   static Future<Dio> getDio() async {
     if (_dio != null) return _dio!;
-    final sslCert = await rootBundle.load('assets/certificates/api_cert3.pem') ;
+    final sslCert = await rootBundle.load('assets/certificates/api_cert3.pem');
     print("✅ Loaded SSL cert length: ${sslCert.lengthInBytes} bytes");
     SecurityContext context = SecurityContext(withTrustedRoots: false);
     context.setTrustedCertificatesBytes(sslCert.buffer.asUint8List());
