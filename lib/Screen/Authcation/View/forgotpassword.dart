@@ -26,6 +26,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 4.h),
@@ -53,13 +54,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                   ),
                 ],
-              ).paddingOnly(bottom: 2.h, top: 0.h),
+              ).paddingOnly(bottom: 0.h, top: 1.h),
+              SizedBox(height: 5.h),
+
               Center(
                 child: Image.asset(
                   "assets/images/Applogo_remove_background.png",
-                  height: 30.h,
-                  width: 65.w,
-                  fit: BoxFit.cover,
+                  height: 25.h,
+                  // width: 65.w,
+                  // fit: BoxFit.cover,
                 ),
               ),
               SizedBox(height: 2.h),

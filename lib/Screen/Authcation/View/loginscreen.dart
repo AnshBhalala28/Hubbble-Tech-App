@@ -44,13 +44,14 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 7.h),
                 Center(
                   child: Container(
                     child: Image.asset(
                       "assets/images/Applogo_remove_background.png",
-                      height: 30.h,
-                      width: 65.w,
-                      fit: BoxFit.cover,
+                      height: 25.h,
+                      // width: 65.w,
+                      // fit: BoxFit.fill,
                     ),
                   ),
                 ),
