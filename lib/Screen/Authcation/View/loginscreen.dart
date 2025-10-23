@@ -85,20 +85,37 @@ class _LoginScreenState extends State<LoginScreen> {
                     cursorColor: AppColors.black,
                     controller: email,
                     keyboardType: TextInputType.emailAddress,
+                    // validator: (value) {
+                    //   if (value == null || value.isEmpty) {
+                    //     return "Please enter your email";
+                    //   }
+                    //
+                    //   // Check if it's a valid email
+                    //   bool isEmail = RegExp(
+                    //     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+$",
+                    //   ).hasMatch(value);
+                    //   if (!isEmail) {
+                    //     return "Please enter a valid email";
+                    //   }
+                    //   return null;
+                    // },
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
+                      if (value == null || value.trim().isEmpty) {
                         return "Please enter your email";
                       }
 
-                      // Check if it's a valid email
-                      bool isEmail = RegExp(
-                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+$",
-                      ).hasMatch(value);
-                      if (!isEmail) {
-                        return "Please enter a valid email";
-                      }
+                      // final emailRegex = RegExp(
+                      //   r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~\-]+@[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z]{2,})+$",
+                      // );
+                      //
+                      // if (!emailRegex.hasMatch(value.trim())) {
+                      //   return "Please enter a valid email address";
+                      // }
+
                       return null;
                     },
+
+
                     decoration: inputDecoration(
                       hintText: 'Enter your Email',
                       searchIcon: Icon(

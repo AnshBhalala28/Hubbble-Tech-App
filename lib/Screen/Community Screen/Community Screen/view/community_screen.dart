@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
@@ -10,7 +9,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -18,6 +16,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'package:readmore/readmore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wavee/Screen/Community%20Detail%20Page/view/community_detail_page.dart';
@@ -72,7 +71,7 @@ class _CommunityScreenState extends State<CommunityScreen>
   String AppLat = '';
   String AppLon = '';
   final CustomInfoWindowController _customInfoWindowController =
-      CustomInfoWindowController();
+  CustomInfoWindowController();
   int sel = 0;
   bool isLoading = true;
   bool isProfileLoaded = false;
@@ -217,17 +216,20 @@ class _CommunityScreenState extends State<CommunityScreen>
   Future<void> _loadSelectedUserMarker() async {
     if (businessprofileModel?.data == null ||
         businessprofileModel!.data!.isEmpty ||
-        selectedUserId.isEmpty) {
+        selectedUserId == null ||
+        selectedUserId!.isEmpty) {
       setState(() => isMapLoading = false);
       return;
     }
 
     Data1? selectedUser = businessprofileModel!.data!.firstWhere(
-      (data) => data.id.toString() == selectedUserId,
+          (data) => data.id.toString() == selectedUserId,
       orElse: () => Data1(),
     );
 
-    if (selectedUser.latitude == null || selectedUser.longitude == null) {
+    if (selectedUser == null ||
+        selectedUser.latitude == null ||
+        selectedUser.longitude == null) {
       _loadMarkers();
       return;
     }
@@ -255,7 +257,7 @@ class _CommunityScreenState extends State<CommunityScreen>
           markerId: MarkerId("selected_$selectedUserId"),
           position: LatLng(lat, lon),
           icon: icon,
-          anchor: hasStory ? const Offset(0.5, 0.8) : const Offset(0.5, 0.5),
+          anchor: hasStory ? Offset(0.5, 0.8) : Offset(0.5, 0.5),
           onTap: () => _handleMarkerTap(selectedUser),
         ),
       };
@@ -314,11 +316,11 @@ class _CommunityScreenState extends State<CommunityScreen>
 
     final int batchSize = 5;
     final List<MapEntry<String, List<Data1>>> entries =
-        locationGroups.entries.toList();
+    locationGroups.entries.toList();
 
     int processedCount = 0;
     int currentBatchSize =
-        (entries.length < batchSize) ? entries.length : batchSize;
+    (entries.length < batchSize) ? entries.length : batchSize;
 
     List<Future<Marker>> firstBatchFutures = [];
 
@@ -335,7 +337,7 @@ class _CommunityScreenState extends State<CommunityScreen>
       );
       bool hasStory = profiles.first.featuredPosts?.isNotEmpty == true;
       String? storyPreviewUrl =
-          hasStory ? profiles.first.featuredPosts?.first.file : null;
+      hasStory ? profiles.first.featuredPosts?.first.file : null;
 
       firstBatchFutures.add(
         Future(() async {
@@ -343,11 +345,11 @@ class _CommunityScreenState extends State<CommunityScreen>
             profiles.length > 1
                 ? _getClusterMarker(profiles.length, profileImage)
                 : getCustomMarker(
-                  profileImage,
-                  size: 100,
-                  hasStory: hasStory,
-                  storyPreviewUrl: storyPreviewUrl,
-                ),
+              profileImage,
+              size: 100,
+              hasStory: hasStory,
+              storyPreviewUrl: storyPreviewUrl,
+            ),
           ];
 
           final results = await Future.wait(iconFutures);
@@ -376,7 +378,7 @@ class _CommunityScreenState extends State<CommunityScreen>
       List<Future<Marker>> batchFutures = [];
       int remainingCount = entries.length - processedCount;
       int nextBatchSize =
-          (remainingCount < batchSize) ? remainingCount : batchSize;
+      (remainingCount < batchSize) ? remainingCount : batchSize;
 
       for (int i = 0; i < nextBatchSize; i++) {
         final entry = entries[processedCount + i];
@@ -391,7 +393,7 @@ class _CommunityScreenState extends State<CommunityScreen>
         );
         bool hasStory = profiles.first.featuredPosts?.isNotEmpty == true;
         String? storyPreviewUrl =
-            hasStory ? profiles.first.featuredPosts?.first.file : null;
+        hasStory ? profiles.first.featuredPosts?.first.file : null;
 
         batchFutures.add(
           Future(() async {
@@ -399,11 +401,11 @@ class _CommunityScreenState extends State<CommunityScreen>
               profiles.length > 1
                   ? _getClusterMarker(profiles.length, profileImage)
                   : getCustomMarker(
-                    profileImage,
-                    size: 100,
-                    hasStory: hasStory,
-                    storyPreviewUrl: storyPreviewUrl,
-                  ),
+                profileImage,
+                size: 100,
+                hasStory: hasStory,
+                storyPreviewUrl: storyPreviewUrl,
+              ),
             ];
 
             final results = await Future.wait(iconFutures);
@@ -426,7 +428,7 @@ class _CommunityScreenState extends State<CommunityScreen>
 
       processedCount += nextBatchSize;
 
-      await Future.delayed(const Duration(milliseconds: 10));
+      await Future.delayed(Duration(milliseconds: 10));
     }
   }
 
@@ -439,9 +441,9 @@ class _CommunityScreenState extends State<CommunityScreen>
   }
 
   Future<BitmapDescriptor> _getClusterMarker(
-    int count,
-    String profileImageUrl,
-  ) async {
+      int count,
+      String profileImageUrl,
+      ) async {
     const int size = 120;
     final ui.PictureRecorder recorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(recorder);
@@ -454,7 +456,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     );
     final ui.FrameInfo frameInfo = await codec.getNextFrame();
     final ui.Image image = frameInfo.image;
-    canvas.drawImage(image, const Offset(0, 0), paint);
+    canvas.drawImage(image, Offset(0, 0), paint);
 
     double countCircleX = size - 30;
     double countCircleY = 17;
@@ -495,7 +497,7 @@ class _CommunityScreenState extends State<CommunityScreen>
       double offsetLat = lat + 0.0001 * cos(angle);
       double offsetLon = lon + 0.0001 * sin(angle);
       int profileSize =
-          (selectedUserId == profiles[i].id.toString()) ? 300 : 150;
+      (selectedUserId == profiles[i].id.toString()) ? 300 : 150;
 
       String profileImage = _getBusinessLogoForProfile(
         profiles[i].id,
@@ -503,7 +505,7 @@ class _CommunityScreenState extends State<CommunityScreen>
       );
       bool hasStory = profiles[i].featuredPosts?.isNotEmpty == true;
       String? storyPreviewUrl =
-          hasStory ? profiles[i].featuredPosts?.first.file : null;
+      hasStory ? profiles[i].featuredPosts?.first.file : null;
 
       BitmapDescriptor combinedIcon = await getCustomMarker(
         profileImage,
@@ -533,13 +535,13 @@ class _CommunityScreenState extends State<CommunityScreen>
   }
 
   Future<BitmapDescriptor> getCustomMarker(
-    String imageUrl, {
-    int size = 100,
-    bool hasStory = false,
-    String? storyPreviewUrl,
-    bool showOnlyStory = false,
-    bool showOnlyProfile = false,
-  }) async {
+      String imageUrl, {
+        int size = 100,
+        bool hasStory = false,
+        String? storyPreviewUrl,
+        bool showOnlyStory = false,
+        bool showOnlyProfile = false,
+      }) async {
     try {
       final Uint8List markerIcon = await getBytesFromCanvas(
         imageUrl,
@@ -556,13 +558,13 @@ class _CommunityScreenState extends State<CommunityScreen>
   }
 
   Future<Uint8List> getBytesFromCanvas(
-    String url,
-    int size, {
-    bool hasStory = false,
-    String? storyPreviewUrl,
-    bool showOnlyStory = false,
-    bool showOnlyProfile = false,
-  }) async {
+      String url,
+      int size, {
+        bool hasStory = false,
+        String? storyPreviewUrl,
+        bool showOnlyStory = false,
+        bool showOnlyProfile = false,
+      }) async {
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
     final Paint paint = Paint();
@@ -575,7 +577,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     final double verticalSpacing = size * 0.15;
 
     final double canvasHeight =
-        hasStory ? (size + storySize + verticalSpacing) : size.toDouble();
+    hasStory ? (size + storySize + verticalSpacing) : size.toDouble();
     final double canvasWidth = size.toDouble();
 
     final Offset logoCenter = Offset(
@@ -584,9 +586,9 @@ class _CommunityScreenState extends State<CommunityScreen>
     );
 
     final Offset storyCenter =
-        hasStory
-            ? Offset(size / 2, storySize * 0.5)
-            : Offset(size / 2, logoRadius);
+    hasStory
+        ? Offset(size / 2, storySize * 0.5)
+        : Offset(size / 2, logoRadius);
 
     paint.color = Colors.white;
     canvas.drawCircle(logoCenter, logoRadius, paint);
@@ -603,9 +605,9 @@ class _CommunityScreenState extends State<CommunityScreen>
 
       canvas.save();
       final Path logoPath =
-          Path()..addOval(
-            Rect.fromCircle(center: logoCenter, radius: logoRadius - 3),
-          );
+      Path()..addOval(
+        Rect.fromCircle(center: logoCenter, radius: logoRadius - 3),
+      );
       canvas.clipPath(logoPath);
 
       canvas.drawImage(
@@ -638,9 +640,9 @@ class _CommunityScreenState extends State<CommunityScreen>
 
         canvas.save();
         final Path storyPath =
-            Path()..addOval(
-              Rect.fromCircle(center: storyCenter, radius: storyRadius - 5),
-            );
+        Path()..addOval(
+          Rect.fromCircle(center: storyCenter, radius: storyRadius - 5),
+        );
         canvas.clipPath(storyPath);
 
         canvas.drawImage(
@@ -750,7 +752,7 @@ class _CommunityScreenState extends State<CommunityScreen>
           context,
           title: "Location Services",
           message:
-              "To provide full functionality and show nearby building services, Wavee AI requires access to your location. You can enable location in Settings.",
+          "To provide full functionality and show nearby building services, Wavee AI requires access to your location. You can enable location in Settings.",
           openSettings: true,
           showCancel: true,
         );
@@ -763,7 +765,7 @@ class _CommunityScreenState extends State<CommunityScreen>
         context,
         title: "Location Services",
         message:
-            "To provide full functionality and show nearby building services, Wavee AI requires access to your location. You can enable location in Settings.",
+        "To provide full functionality and show nearby building services, Wavee AI requires access to your location. You can enable location in Settings.",
         openSettings: true,
         showCancel: true,
       );
@@ -788,7 +790,7 @@ class _CommunityScreenState extends State<CommunityScreen>
         context,
         title: "Location Services",
         message:
-            "To provide full functionality and show nearby building services, Wavee AI requires access to your location. You can enable location in Settings.",
+        "To provide full functionality and show nearby building services, Wavee AI requires access to your location. You can enable location in Settings.",
         showCancel: true,
       );
     }
@@ -799,12 +801,12 @@ class _CommunityScreenState extends State<CommunityScreen>
   }
 
   void _showPermissionDialog(
-    BuildContext context, {
-    required String title,
-    required String message,
-    bool openSettings = false,
-    bool showCancel = false,
-  }) {
+      BuildContext context, {
+        required String title,
+        required String message,
+        bool openSettings = false,
+        bool showCancel = false,
+      }) {
     if (_isDialogVisible) return;
 
     _isDialogVisible = true;
@@ -814,13 +816,13 @@ class _CommunityScreenState extends State<CommunityScreen>
       barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
-          contentPadding: const EdgeInsets.only(
+          contentPadding: EdgeInsets.only(
             top: 16,
             left: 24,
             right: 24,
             bottom: 16,
           ),
-          titlePadding: const EdgeInsets.only(top: 16, left: 24, right: 0),
+          titlePadding: EdgeInsets.only(top: 16, left: 24, right: 0),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -837,7 +839,7 @@ class _CommunityScreenState extends State<CommunityScreen>
               CircleAvatar(
                 backgroundColor: Colors.white,
                 child: IconButton(
-                  icon: const Icon(Icons.close),
+                  icon: Icon(Icons.close),
                   onPressed: () {
                     Navigator.of(context).pop();
                     _isDialogVisible = false;
@@ -851,11 +853,7 @@ class _CommunityScreenState extends State<CommunityScreen>
             message,
             style: TextStyle(fontFamily: AppConstants.manrope, fontSize: 16.sp),
           ),
-          actionsPadding: const EdgeInsets.only(
-            bottom: 12,
-            left: 16,
-            right: 16,
-          ),
+          actionsPadding: EdgeInsets.only(bottom: 12, left: 16, right: 16),
           actions: [
             Row(
               children: [
@@ -876,7 +874,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                       width: double.infinity,
                     ),
                   ),
-                if (openSettings && showCancel) const SizedBox(width: 12),
+                if (openSettings && showCancel) SizedBox(width: 12),
                 if (openSettings)
                   Expanded(
                     child: batan(
@@ -887,11 +885,11 @@ class _CommunityScreenState extends State<CommunityScreen>
 
                         await Geolocator.openAppSettings();
                         await Future.delayed(
-                          const Duration(seconds: 1),
+                          Duration(seconds: 1),
                         ); // give time to apply
 
                         LocationPermission permission =
-                            await Geolocator.checkPermission();
+                        await Geolocator.checkPermission();
                       },
                       color: AppColors.maincolor,
                       fontcolor: AppColors.white,
@@ -951,48 +949,46 @@ class _CommunityScreenState extends State<CommunityScreen>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Get.offAll(() => HomePage(selected: 1, userName: ""));
-        return false;
-      },
-      child: Scaffold(
-        bottomNavigationBar: BottomBar(selected: 2),
-        body: Stack(
+    return Scaffold(
+      bottomNavigationBar: BottomBar(selected: 2),
+      body: WillPopScope(
+        onWillPop: () async {
+          Get.offAll(() => HomePage(selected: 1, userName: ""));
+          return false;
+        },
+        child: Stack(
           children: [
             isLocationFetched
                 ? GoogleMap(
-                  onMapCreated: (GoogleMapController controller) {
-                    mapController = controller;
-                    _customInfoWindowController.googleMapController =
-                        controller;
+              onMapCreated: (GoogleMapController controller) {
+                mapController = controller;
+                _customInfoWindowController.googleMapController =
+                    controller;
 
-                    mapController.setMapStyle(_mapStyle);
-                  },
-                  onCameraIdle: _onCameraIdle,
-                  myLocationButtonEnabled: false,
-                  zoomControlsEnabled: false,
-                  compassEnabled: false,
-                  indoorViewEnabled: true,
-                  mapToolbarEnabled: false,
-                  myLocationEnabled: false,
-                  zoomGesturesEnabled: true,
-                  mapType: MapType.normal,
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(double.parse(AppLat), double.parse(AppLon)),
-                    zoom: 14.0,
-                  ),
-                  markers: _markers,
-                  onTap: (_) {
-                    _customInfoWindowController.hideInfoWindow!();
-                  },
-                  onCameraMove: (position) {
-                    _customInfoWindowController.onCameraMove!();
-                  },
-                )
-                : const Center(
-                  child: CircularProgressIndicator(),
-                ), // or fallback UI
+                mapController.setMapStyle(_mapStyle);
+              },
+              onCameraIdle: _onCameraIdle,
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
+              compassEnabled: false,
+              indoorViewEnabled: true,
+              mapToolbarEnabled: false,
+              myLocationEnabled: false,
+              zoomGesturesEnabled: true,
+              mapType: MapType.normal,
+              initialCameraPosition: CameraPosition(
+                target: LatLng(double.parse(AppLat), double.parse(AppLon)),
+                zoom: 14.0,
+              ),
+              markers: _markers,
+              onTap: (_) {
+                _customInfoWindowController.hideInfoWindow!();
+              },
+              onCameraMove: (position) {
+                _customInfoWindowController.onCameraMove!();
+              },
+            )
+                : Center(child: CircularProgressIndicator()), // or fallback UI
 
             CustomInfoWindow(
               controller: _customInfoWindowController,
@@ -1016,52 +1012,52 @@ class _CommunityScreenState extends State<CommunityScreen>
                         imageUrl: profileModel?.data?.user?.profile ?? '',
                         imageBuilder:
                             (context, imageProvider) => Container(
-                              width: 10.w,
-                              height: 10.w,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
+                          width: 10.w,
+                          height: 10.w,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
                             ),
+                          ),
+                        ),
                         placeholder:
                             (context, url) => Container(
-                              width: 10.w,
-                              height: 10.w,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.grey.shade200,
-                              ),
-                              child: SizedBox(
-                                width: 20.sp,
-                                height: 20.sp,
-                                child: const CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    AppColors.maincolor,
-                                  ),
-                                ),
+                          width: 10.w,
+                          height: 10.w,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey.shade200,
+                          ),
+                          child: SizedBox(
+                            width: 20.sp,
+                            height: 20.sp,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.maincolor,
                               ),
                             ),
+                          ),
+                        ),
                         errorWidget:
                             (context, url, error) => Container(
-                              width: 10.w,
-                              height: 10.w,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.grey.shade200,
-                                image: const DecorationImage(
-                                  image: AssetImage(
-                                    "assets/images/waveeLogoShort.png",
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
+                          width: 10.w,
+                          height: 10.w,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey.shade200,
+                            image: DecorationImage(
+                              image: AssetImage(
+                                "assets/images/waveeLogoShort.png",
                               ),
+                              fit: BoxFit.cover,
                             ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -1099,7 +1095,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                             shape: BoxShape.circle,
                             color: Colors.grey[200],
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.search,
                             color: Colors.black87,
                             size: 25,
@@ -1113,11 +1109,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                           getlikeapi();
                         },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          padding: EdgeInsets.symmetric(horizontal: 5),
                           width: 33.w,
                           height: 5.h,
                           decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
+                            borderRadius: BorderRadius.all(
                               ui.Radius.circular(20),
                             ),
                             color: Colors.grey[200],
@@ -1133,7 +1129,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   size: 17.sp,
                                 ),
                               ),
-                              const SizedBox(width: 10),
+                              SizedBox(width: 10),
                               Text(
                                 "Favourites",
                                 style: TextStyle(fontSize: 16.sp),
@@ -1148,11 +1144,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                           getvisitedapi();
                         },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          padding: EdgeInsets.symmetric(horizontal: 5),
                           width: 29.w,
                           height: 5.h,
                           decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
+                            borderRadius: BorderRadius.all(
                               ui.Radius.circular(20),
                             ),
                             color: Colors.grey[200],
@@ -1168,7 +1164,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   size: 17.sp,
                                 ),
                               ),
-                              const SizedBox(width: 10),
+                              SizedBox(width: 10),
                               Text(
                                 "Visited",
                                 style: TextStyle(fontSize: 16.sp),
@@ -1183,18 +1179,18 @@ class _CommunityScreenState extends State<CommunityScreen>
                         runSpacing: 7,
                         children: [
                           for (
-                            int i = 0;
-                            i < (categoriesModel?.data?.length ?? 0);
-                            i++
+                          int i = 0;
+                          i < (categoriesModel?.data?.length ?? 0);
+                          i++
                           )
                             GestureDetector(
                               onTap: () {
                                 String categoryId =
                                     categoriesModel?.data?[i].id.toString() ??
-                                    "";
+                                        "";
                                 String categoryName =
                                     categoriesModel?.data?[i].categoryName ??
-                                    "";
+                                        "";
                                 String categoryImage =
                                     categoriesModel?.data?[i].img ?? "";
 
@@ -1205,9 +1201,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                 );
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 10),
                                 height: 5.h,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
@@ -1223,8 +1217,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                                         shape: BoxShape.circle,
                                         color: getCategoryColor(
                                           categoriesModel
-                                                  ?.data?[i]
-                                                  .categoryName ??
+                                              ?.data?[i]
+                                              .categoryName ??
                                               "",
                                         ),
                                       ),
@@ -1259,7 +1253,7 @@ class _CommunityScreenState extends State<CommunityScreen>
             if (isMapLoading)
               Positioned.fill(
                 child: Container(
-                  child: const Center(
+                  child: Center(
                     child: CircularProgressIndicator(
                       color: AppColors.maincolor,
                     ),
@@ -1268,12 +1262,12 @@ class _CommunityScreenState extends State<CommunityScreen>
               ),
             isSending
                 ? Positioned.fill(
-                  child: Container(
-                    color: Colors.black.withOpacity(0.4),
-                    child: Center(child: Loader()),
-                  ),
-                )
-                : const SizedBox(),
+              child: Container(
+                color: Colors.black.withOpacity(0.4),
+                child: Center(child: Loader()),
+              ),
+            )
+                : SizedBox(),
           ],
         ),
       ),
@@ -1318,7 +1312,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
@@ -1331,10 +1325,10 @@ class _CommunityScreenState extends State<CommunityScreen>
             return StatefulBuilder(
               builder: (context, setState) {
                 return Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppColors.bgcolor,
-                    borderRadius: const BorderRadius.vertical(
+                    borderRadius: BorderRadius.vertical(
                       top: Radius.circular(20),
                     ),
                   ),
@@ -1351,24 +1345,24 @@ class _CommunityScreenState extends State<CommunityScreen>
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
                             children: [
-                              const CircleAvatar(
+                              CircleAvatar(
                                 backgroundColor: Colors.pink,
                                 child: Icon(
                                   Icons.favorite,
                                   color: Colors.white,
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              SizedBox(width: 8),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                  Text(
                                     "Favourites",
                                     style: TextStyle(
                                       fontSize: 16,
@@ -1377,7 +1371,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   ),
                                   Text(
                                     "${getlikeModal?.data?.length ?? "No"} Favourites",
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Colors.grey,
                                       fontSize: 14,
                                     ),
@@ -1404,166 +1398,158 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   Get.back();
                                 },
                                 padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
+                                constraints: BoxConstraints(),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 10),
                       Expanded(
                         child:
-                            (getlikeModal?.data == null ||
-                                    getlikeModal!.data!.isEmpty)
-                                ? const Center(
-                                  child: Text(
-                                    "No Favourites Added!",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                )
-                                : ListView.builder(
-                                  controller: scrollController,
-                                  padding: EdgeInsets.zero,
-                                  itemCount: getlikeModal?.data?.length ?? 0,
-                                  itemBuilder: (context, index) {
-                                    bool isFirst = index == 0;
-                                    bool isLast =
-                                        index ==
-                                        (getlikeModal?.data?.length ?? 1) - 1;
+                        (getlikeModal?.data == null ||
+                            getlikeModal!.data!.isEmpty)
+                            ? Center(
+                          child: Text(
+                            "No Favourites Added!",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        )
+                            : ListView.builder(
+                          controller: scrollController,
+                          padding: EdgeInsets.zero,
+                          itemCount: getlikeModal?.data?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            bool isFirst = index == 0;
+                            bool isLast =
+                                index ==
+                                    (getlikeModal?.data?.length ?? 1) - 1;
 
-                                    return Column(
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            Get.back();
-                                            BussinessViewProfile(
-                                              (getlikeModal
-                                                      ?.data?[index]
-                                                      .businessId)
-                                                  .toString(),
-                                            );
-                                          },
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 10,
-                                              horizontal: 10,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.only(
-                                                topLeft:
-                                                    isFirst
-                                                        ? const Radius.circular(
-                                                          15,
-                                                        )
-                                                        : Radius.zero,
-                                                topRight:
-                                                    isFirst
-                                                        ? const Radius.circular(
-                                                          15,
-                                                        )
-                                                        : Radius.zero,
-                                                bottomLeft:
-                                                    isLast
-                                                        ? const Radius.circular(
-                                                          15,
-                                                        )
-                                                        : Radius.zero,
-                                                bottomRight:
-                                                    isLast
-                                                        ? const Radius.circular(
-                                                          15,
-                                                        )
-                                                        : Radius.zero,
-                                              ),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                CircleAvatar(
-                                                  radius: 30,
-                                                  backgroundColor:
-                                                      Colors.grey[200],
-                                                  backgroundImage:
-                                                      (getlikeModal
-                                                                  ?.data?[index]
-                                                                  .business
-                                                                  ?.logo
-                                                                  ?.isEmpty ??
-                                                              true)
-                                                          ? const AssetImage(
-                                                            "assets/images/waveeLogoShort.png",
-                                                          )
-                                                          : CachedNetworkImageProvider(
-                                                                getlikeModal
-                                                                        ?.data?[index]
-                                                                        .business
-                                                                        ?.logo ??
-                                                                    "",
-                                                              )
-                                                              as ImageProvider,
-                                                ),
-                                                const SizedBox(width: 15),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        getlikeModal
-                                                                ?.data?[index]
-                                                                .business
-                                                                ?.businessName ??
-                                                            "N/A",
-                                                        style: const TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors.black87,
-                                                        ),
-                                                        maxLines: 1,
-                                                        overflow:
-                                                            TextOverflow
-                                                                .ellipsis,
-                                                      ),
-                                                      const SizedBox(height: 3),
-                                                      Text(
-                                                        "${(getlikeModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
-                                                        style: const TextStyle(
-                                                          fontSize: 14,
-                                                          color: Colors.black54,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    unlikeBusiness(index);
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.favorite,
-                                                    color: Colors.red,
-                                                    size: 28,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        if (!isLast)
-                                          Divider(
-                                            color: Colors.grey[300],
-                                            thickness: 1,
-                                            height: 0,
-                                          ),
-                                      ],
+                            return Column(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Get.back();
+                                    BussinessViewProfile(
+                                      (getlikeModal
+                                          ?.data?[index]
+                                          .businessId)
+                                          .toString(),
                                     );
                                   },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 10,
+                                      horizontal: 10,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.only(
+                                        topLeft:
+                                        isFirst
+                                            ? Radius.circular(15)
+                                            : Radius.zero,
+                                        topRight:
+                                        isFirst
+                                            ? Radius.circular(15)
+                                            : Radius.zero,
+                                        bottomLeft:
+                                        isLast
+                                            ? Radius.circular(15)
+                                            : Radius.zero,
+                                        bottomRight:
+                                        isLast
+                                            ? Radius.circular(15)
+                                            : Radius.zero,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 30,
+                                          backgroundColor:
+                                          Colors.grey[200],
+                                          backgroundImage:
+                                          (getlikeModal
+                                              ?.data?[index]
+                                              .business
+                                              ?.logo
+                                              ?.isEmpty ??
+                                              true)
+                                              ? const AssetImage(
+                                            "assets/images/waveeLogoShort.png",
+                                          )
+                                              : CachedNetworkImageProvider(
+                                            getlikeModal
+                                                ?.data?[index]
+                                                .business
+                                                ?.logo ??
+                                                "",
+                                          )
+                                          as ImageProvider,
+                                        ),
+                                        SizedBox(width: 15),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment
+                                                .start,
+                                            children: [
+                                              Text(
+                                                getlikeModal
+                                                    ?.data?[index]
+                                                    .business
+                                                    ?.businessName ??
+                                                    "N/A",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight:
+                                                  FontWeight.bold,
+                                                  color: Colors.black87,
+                                                ),
+                                                maxLines: 1,
+                                                overflow:
+                                                TextOverflow
+                                                    .ellipsis,
+                                              ),
+                                              SizedBox(height: 3),
+                                              Text(
+                                                "${(getlikeModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black54,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            unlikeBusiness(index);
+                                          },
+                                          child: Icon(
+                                            Icons.favorite,
+                                            color: Colors.red,
+                                            size: 28,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
+                                if (!isLast)
+                                  Divider(
+                                    color: Colors.grey[300],
+                                    thickness: 1,
+                                    height: 0,
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -1586,7 +1572,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
@@ -1599,10 +1585,10 @@ class _CommunityScreenState extends State<CommunityScreen>
             return StatefulBuilder(
               builder: (context, setState) {
                 return Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: AppColors.bgcolor,
-                    borderRadius: const BorderRadius.vertical(
+                    borderRadius: BorderRadius.vertical(
                       top: Radius.circular(20),
                     ),
                   ),
@@ -1619,24 +1605,24 @@ class _CommunityScreenState extends State<CommunityScreen>
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
                             children: [
-                              const CircleAvatar(
+                              CircleAvatar(
                                 backgroundColor: Colors.purpleAccent,
                                 child: Icon(
                                   Icons.location_on,
                                   color: Colors.white,
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              SizedBox(width: 8),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                  Text(
                                     "Recently Visited",
                                     style: TextStyle(
                                       fontSize: 16,
@@ -1645,7 +1631,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   ),
                                   Text(
                                     "${getvisitedModal?.data?.length ?? "No"}  Recently Visited",
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Colors.grey,
                                       fontSize: 14,
                                     ),
@@ -1672,157 +1658,149 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   Get.back();
                                 },
                                 padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
+                                constraints: BoxConstraints(),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 10),
                       Expanded(
                         child:
-                            (getvisitedModal?.data == null ||
-                                    getvisitedModal!.data!.isEmpty)
-                                ? const Center(
-                                  child: Text(
-                                    "No Businesses Found!",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                )
-                                : ListView.builder(
-                                  controller: scrollController,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 4,
-                                    vertical: 2,
-                                  ),
-                                  itemCount: getvisitedModal?.data?.length ?? 0,
-                                  itemBuilder: (context, index) {
-                                    bool isFirst = index == 0;
-                                    bool isLast =
-                                        index ==
-                                        (getvisitedModal?.data?.length ?? 1) -
-                                            1;
+                        (getvisitedModal?.data == null ||
+                            getvisitedModal!.data!.isEmpty)
+                            ? Center(
+                          child: Text(
+                            "No Businesses Found!",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        )
+                            : ListView.builder(
+                          controller: scrollController,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: 2,
+                          ),
+                          itemCount: getvisitedModal?.data?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            bool isFirst = index == 0;
+                            bool isLast =
+                                index ==
+                                    (getvisitedModal?.data?.length ?? 1) -
+                                        1;
 
-                                    return Column(
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            Get.back();
-                                            BussinessViewProfile(
-                                              (getvisitedModal
-                                                      ?.data?[index]
-                                                      .businessId)
-                                                  .toString(),
-                                            );
-                                          },
-                                          child: Container(
-                                            padding: const EdgeInsets.all(12),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.only(
-                                                topLeft:
-                                                    isFirst
-                                                        ? const Radius.circular(
-                                                          15,
-                                                        )
-                                                        : Radius.zero,
-                                                topRight:
-                                                    isFirst
-                                                        ? const Radius.circular(
-                                                          15,
-                                                        )
-                                                        : Radius.zero,
-                                                bottomLeft:
-                                                    isLast
-                                                        ? const Radius.circular(
-                                                          15,
-                                                        )
-                                                        : Radius.zero,
-                                                bottomRight:
-                                                    isLast
-                                                        ? const Radius.circular(
-                                                          15,
-                                                        )
-                                                        : Radius.zero,
-                                              ),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                CircleAvatar(
-                                                  radius: 28,
-                                                  backgroundColor:
-                                                      Colors.grey[200],
-                                                  backgroundImage:
-                                                      (getvisitedModal
-                                                                  ?.data?[index]
-                                                                  .business
-                                                                  ?.logo
-                                                                  ?.isEmpty ??
-                                                              true)
-                                                          ? const AssetImage(
-                                                            "assets/images/waveeLogoShort.png",
-                                                          )
-                                                          : CachedNetworkImageProvider(
-                                                                getvisitedModal
-                                                                        ?.data?[index]
-                                                                        .business
-                                                                        ?.logo ??
-                                                                    "",
-                                                              )
-                                                              as ImageProvider,
-                                                ),
-                                                const SizedBox(width: 15),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        getvisitedModal
-                                                                ?.data?[index]
-                                                                .business
-                                                                ?.businessName ??
-                                                            "N/A",
-                                                        style: const TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors.black87,
-                                                        ),
-                                                        maxLines: 1,
-                                                        overflow:
-                                                            TextOverflow
-                                                                .ellipsis,
-                                                      ),
-                                                      const SizedBox(height: 3),
-                                                      Text(
-                                                        "${(getvisitedModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
-                                                        style: const TextStyle(
-                                                          fontSize: 14,
-                                                          color: Colors.black54,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        if (!isLast)
-                                          Divider(
-                                            color: Colors.grey[300],
-                                            thickness: 1,
-                                            height: 1,
-                                          ),
-                                      ],
+                            return Column(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Get.back();
+                                    BussinessViewProfile(
+                                      (getvisitedModal
+                                          ?.data?[index]
+                                          .businessId)
+                                          .toString(),
                                     );
                                   },
+                                  child: Container(
+                                    padding: EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.only(
+                                        topLeft:
+                                        isFirst
+                                            ? Radius.circular(15)
+                                            : Radius.zero,
+                                        topRight:
+                                        isFirst
+                                            ? Radius.circular(15)
+                                            : Radius.zero,
+                                        bottomLeft:
+                                        isLast
+                                            ? Radius.circular(15)
+                                            : Radius.zero,
+                                        bottomRight:
+                                        isLast
+                                            ? Radius.circular(15)
+                                            : Radius.zero,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 28,
+                                          backgroundColor:
+                                          Colors.grey[200],
+                                          backgroundImage:
+                                          (getvisitedModal
+                                              ?.data?[index]
+                                              .business
+                                              ?.logo
+                                              ?.isEmpty ??
+                                              true)
+                                              ? AssetImage(
+                                            "assets/images/waveeLogoShort.png",
+                                          )
+                                              : CachedNetworkImageProvider(
+                                            getvisitedModal
+                                                ?.data?[index]
+                                                .business
+                                                ?.logo ??
+                                                "",
+                                          )
+                                          as ImageProvider,
+                                        ),
+                                        SizedBox(width: 15),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment
+                                                .start,
+                                            children: [
+                                              Text(
+                                                getvisitedModal
+                                                    ?.data?[index]
+                                                    .business
+                                                    ?.businessName ??
+                                                    "N/A",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight:
+                                                  FontWeight.bold,
+                                                  color: Colors.black87,
+                                                ),
+                                                maxLines: 1,
+                                                overflow:
+                                                TextOverflow
+                                                    .ellipsis,
+                                              ),
+                                              SizedBox(height: 3),
+                                              Text(
+                                                "${(getvisitedModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black54,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
+                                if (!isLast)
+                                  Divider(
+                                    color: Colors.grey[300],
+                                    thickness: 1,
+                                    height: 1,
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -1838,10 +1816,10 @@ class _CommunityScreenState extends State<CommunityScreen>
   }
 
   Future<void> _showcategoriesdBottomSheet(
-    ViewCategoriesModel? viewcategoriesmodel,
-    String categoryName,
-    String categoryImage,
-  ) async {
+      ViewCategoriesModel? viewcategoriesmodel,
+      String categoryName,
+      String categoryImage,
+      ) async {
     if (_isBottomSheetOpen) return;
 
     _isBottomSheetOpen = true;
@@ -1849,7 +1827,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
@@ -1862,10 +1840,10 @@ class _CommunityScreenState extends State<CommunityScreen>
             return StatefulBuilder(
               builder: (context, setState) {
                 return Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppColors.bgcolor,
-                    borderRadius: const BorderRadius.vertical(
+                    borderRadius: BorderRadius.vertical(
                       top: Radius.circular(20),
                     ),
                   ),
@@ -1882,7 +1860,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -1900,35 +1878,35 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   child: Center(
                                     child: ClipOval(
                                       child:
-                                          categoryImage.isNotEmpty
-                                              ? Image.network(
-                                                categoryImage,
-                                                height: 3.h,
-                                                width: 3.h,
-                                                fit: BoxFit.cover,
-                                              )
-                                              : const Icon(
-                                                Icons.category_rounded,
-                                                color: Colors.white,
-                                              ),
+                                      categoryImage.isNotEmpty
+                                          ? Image.network(
+                                        categoryImage,
+                                        height: 3.h,
+                                        width: 3.h,
+                                        fit: BoxFit.cover,
+                                      )
+                                          : Icon(
+                                        Icons.category_rounded,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              SizedBox(width: 8),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     categoryName,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   Text(
                                     "${viewcategoriesmodel?.data?.length ?? "No"} $categoryName",
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Colors.grey,
                                       fontSize: 14,
                                     ),
@@ -1955,144 +1933,147 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   Get.back();
                                 },
                                 padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
+                                constraints: BoxConstraints(),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 10),
                       Expanded(
                         child:
-                            (viewcategoriesmodel?.data == null ||
-                                    viewcategoriesmodel!.data!.isEmpty)
-                                ? const Center(
-                                  child: Text(
-                                    "No Businesses Found!",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                )
-                                : ListView.builder(
-                                  controller: scrollController,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 4,
-                                    vertical: 2,
-                                  ),
-                                  itemCount:
-                                      viewcategoriesmodel.data?.length ?? 0,
-                                  itemBuilder: (context, index) {
-                                    bool isFirstItem = index == 0;
-                                    bool isLastItem =
-                                        index ==
-                                        (viewcategoriesmodel.data?.length ??
-                                                0) -
-                                            1;
+                        (viewcategoriesmodel?.data == null ||
+                            viewcategoriesmodel!.data!.isEmpty)
+                            ? Center(
+                          child: Text(
+                            "No Businesses Found!",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        )
+                            : ListView.builder(
+                          controller: scrollController,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: 2,
+                          ),
+                          itemCount:
+                          viewcategoriesmodel?.data?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            bool isFirstItem = index == 0;
+                            bool isLastItem =
+                                index ==
+                                    (viewcategoriesmodel?.data?.length ??
+                                        0) -
+                                        1;
 
-                                    return Column(
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            Get.back();
-                                            BussinessViewProfile(
-                                              (viewcategoriesmodel
-                                                      .data?[index]
-                                                      .id)
-                                                  .toString(),
-                                            );
-                                          },
-                                          child: Container(
-                                            padding: const EdgeInsets.all(12),
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(
-                                                  isFirstItem ? 15 : 0,
-                                                ),
-                                                topRight: Radius.circular(
-                                                  isFirstItem ? 15 : 0,
-                                                ),
-                                                bottomLeft: Radius.circular(
-                                                  isLastItem ? 15 : 0,
-                                                ),
-                                                bottomRight: Radius.circular(
-                                                  isLastItem ? 15 : 0,
-                                                ),
-                                              ),
-                                              color: Colors.white,
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                CircleAvatar(
-                                                  radius: 28,
-                                                  backgroundColor:
-                                                      Colors.grey[200],
-                                                  backgroundImage:
-                                                      (viewcategoriesmodel
-                                                                  .data?[index]
-                                                                  .logo
-                                                                  ?.isEmpty ??
-                                                              true)
-                                                          ? const AssetImage(
-                                                            "assets/images/waveeLogoShort.png",
-                                                          )
-                                                          : CachedNetworkImageProvider(
-                                                                viewcategoriesmodel
-                                                                        .data?[index]
-                                                                        .logo ??
-                                                                    "",
-                                                              )
-                                                              as ImageProvider,
-                                                ),
-                                                const SizedBox(width: 15),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        viewcategoriesmodel
-                                                                .data?[index]
-                                                                .businessName ??
-                                                            "N/A",
-                                                        style: const TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors.black87,
-                                                        ),
-                                                        maxLines: 1,
-                                                        overflow:
-                                                            TextOverflow
-                                                                .ellipsis,
-                                                      ),
-                                                      const SizedBox(height: 3),
-                                                      Text(
-                                                        "${(viewcategoriesmodel.data?[index].distance ?? 0).toStringAsFixed(2)} Miles",
-                                                        style: const TextStyle(
-                                                          fontSize: 14,
-                                                          color: Colors.black54,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        if (!isLastItem)
-                                          Divider(
-                                            color: Colors.grey[300],
-                                            thickness: 1,
-                                            height: 1,
-                                          ),
-                                      ],
+                            return Column(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Get.back();
+                                    BussinessViewProfile(
+                                      (viewcategoriesmodel
+                                          ?.data?[index]
+                                          .id)
+                                          .toString(),
+                                    );
+                                    print(
+                                      "viewcategoriesmodel?.data?[index].id${viewcategoriesmodel?.data?[index].id}",
                                     );
                                   },
+                                  child: Container(
+                                    padding: EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(
+                                          isFirstItem ? 15 : 0,
+                                        ),
+                                        topRight: Radius.circular(
+                                          isFirstItem ? 15 : 0,
+                                        ),
+                                        bottomLeft: Radius.circular(
+                                          isLastItem ? 15 : 0,
+                                        ),
+                                        bottomRight: Radius.circular(
+                                          isLastItem ? 15 : 0,
+                                        ),
+                                      ),
+                                      color: Colors.white,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 28,
+                                          backgroundColor:
+                                          Colors.grey[200],
+                                          backgroundImage:
+                                          (viewcategoriesmodel
+                                              ?.data?[index]
+                                              ?.logo
+                                              ?.isEmpty ??
+                                              true)
+                                              ? const AssetImage(
+                                            "assets/images/waveeLogoShort.png",
+                                          )
+                                              : CachedNetworkImageProvider(
+                                            viewcategoriesmodel
+                                                ?.data?[index]
+                                                ?.logo ??
+                                                "",
+                                          )
+                                          as ImageProvider,
+                                        ),
+                                        SizedBox(width: 15),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment
+                                                .start,
+                                            children: [
+                                              Text(
+                                                viewcategoriesmodel
+                                                    ?.data?[index]
+                                                    .businessName ??
+                                                    "N/A",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight:
+                                                  FontWeight.bold,
+                                                  color: Colors.black87,
+                                                ),
+                                                maxLines: 1,
+                                                overflow:
+                                                TextOverflow
+                                                    .ellipsis,
+                                              ),
+                                              SizedBox(height: 3),
+                                              Text(
+                                                "${(viewcategoriesmodel?.data?[index].distance ?? 0).toStringAsFixed(2)} Miles",
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black54,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
+                                if (!isLastItem)
+                                  Divider(
+                                    color: Colors.grey[300],
+                                    thickness: 1,
+                                    height: 1,
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -2116,7 +2097,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
@@ -2129,10 +2110,10 @@ class _CommunityScreenState extends State<CommunityScreen>
               expand: false,
               builder: (context, scrollController) {
                 return Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppColors.bgcolor,
-                    borderRadius: const BorderRadius.vertical(
+                    borderRadius: BorderRadius.vertical(
                       top: Radius.circular(20),
                     ),
                   ),
@@ -2162,7 +2143,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     fontFamily: AppConstants.manrope,
                                     fontSize: 16.sp,
                                   ),
-                                  prefixIcon: const Icon(
+                                  prefixIcon: Icon(
                                     Icons.search,
                                     color: Colors.black87,
                                   ),
@@ -2190,67 +2171,67 @@ class _CommunityScreenState extends State<CommunityScreen>
 
                                       filteredList =
                                           businessprofileModel?.data?.where((
-                                            businessData,
-                                          ) {
+                                              businessData,
+                                              ) {
                                             String businessName =
-                                                (businessData.businessName ??
-                                                        "")
-                                                    .toLowerCase();
+                                            (businessData.businessName ??
+                                                "")
+                                                .toLowerCase();
 
                                             String categoryName =
-                                                (businessData
-                                                            .category
-                                                            ?.categoryName ??
-                                                        "")
-                                                    .toLowerCase();
+                                            (businessData
+                                                .category
+                                                ?.categoryName ??
+                                                "")
+                                                .toLowerCase();
                                             bool categoryMatch = categoryName
                                                 .contains(searchText);
 
                                             String subCategoryName =
-                                                (businessData
-                                                            .subCategory
-                                                            ?.subCategoryName ??
-                                                        "")
-                                                    .toLowerCase();
+                                            (businessData
+                                                .subCategory
+                                                ?.subCategoryName ??
+                                                "")
+                                                .toLowerCase();
                                             bool subCategoryMatch =
-                                                subCategoryName.contains(
-                                                  searchText,
-                                                );
+                                            subCategoryName.contains(
+                                              searchText,
+                                            );
 
                                             bool tagMatch =
                                                 businessData.tags?.any(
-                                                  (tag) =>
-                                                      tag.name
-                                                          ?.toLowerCase()
-                                                          .contains(
-                                                            searchText,
-                                                          ) ??
+                                                      (tag) =>
+                                                  tag.name
+                                                      ?.toLowerCase()
+                                                      .contains(
+                                                    searchText,
+                                                  ) ??
                                                       false,
                                                 ) ??
-                                                false;
+                                                    false;
 
                                             String distanceString =
-                                                (businessData.distance ?? 0.0)
-                                                    .toStringAsFixed(1);
+                                            (businessData.distance ?? 0.0)
+                                                .toStringAsFixed(1);
                                             bool distanceMatch = distanceString
                                                 .contains(searchText);
 
                                             return businessName.contains(
-                                                  searchText,
-                                                ) ||
+                                              searchText,
+                                            ) ||
                                                 categoryMatch ||
                                                 subCategoryMatch ||
                                                 tagMatch ||
                                                 distanceMatch;
                                           }).toList() ??
-                                          [];
+                                              [];
                                     }
                                   });
                                 },
                               ),
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          SizedBox(width: 8),
                           Container(
                             width: 8.w,
                             height: 8.w,
@@ -2276,7 +2257,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   Get.back();
                                 },
                                 padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
+                                constraints: BoxConstraints(),
                               ),
                             ),
                           ),
@@ -2293,7 +2274,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                 _filterButtons(
                                   "Favourites",
                                   Icons.favorite,
-                                  () {
+                                      () {
                                     Get.back();
                                     getlikeapi();
                                   },
@@ -2304,7 +2285,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                 _filterButtons(
                                   "Visited",
                                   Icons.location_on,
-                                  () {
+                                      () {
                                     Get.back();
                                     getvisitedapi();
                                   },
@@ -2317,25 +2298,30 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   runSpacing: 6.0,
                                   children: [
                                     for (
-                                      int i = 0;
-                                      i < (categoriesModel?.data?.length ?? 0);
-                                      i++
+                                    int i = 0;
+                                    i < (categoriesModel?.data?.length ?? 0);
+                                    i++
                                     )
                                       GestureDetector(
                                         onTap: () {
                                           String categoryId =
                                               categoriesModel?.data?[i].id
                                                   .toString() ??
-                                              "";
+                                                  "";
                                           String categoryName =
                                               categoriesModel
                                                   ?.data?[i]
                                                   .categoryName ??
-                                              "";
+                                                  "";
                                           String categoryImage =
                                               categoriesModel?.data?[i].img ??
-                                              "";
-
+                                                  "";
+                                          print(
+                                            "categoryIdcategoryId : ${categoryId}",
+                                          );
+                                          print(
+                                            "Selected Category Name: $categoryName",
+                                          );
                                           Get.back();
                                           CategoriesProfileView(
                                             categoryId,
@@ -2344,7 +2330,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                           );
                                         },
                                         child: Container(
-                                          padding: const EdgeInsets.symmetric(
+                                          padding: EdgeInsets.symmetric(
                                             horizontal: 8,
                                             vertical: 4,
                                           ),
@@ -2364,23 +2350,23 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                   backgroundColor: Colors.blue,
                                                   backgroundImage: NetworkImage(
                                                     categoriesModel
-                                                            ?.data?[i]
-                                                            .img ??
+                                                        ?.data?[i]
+                                                        .img ??
                                                         "",
                                                   ),
                                                 ),
-                                                const SizedBox(width: 4),
+                                                SizedBox(width: 4),
                                                 Text(
                                                   categoriesModel
-                                                          ?.data?[i]
-                                                          .categoryName ??
+                                                      ?.data?[i]
+                                                      .categoryName ??
                                                       "",
                                                   style: TextStyle(
                                                     fontSize: 14.sp,
                                                     fontWeight: FontWeight.w600,
                                                     color: AppColors.black,
                                                     fontFamily:
-                                                        AppConstants.manrope,
+                                                    AppConstants.manrope,
                                                   ),
                                                 ),
                                               ],
@@ -2396,322 +2382,325 @@ class _CommunityScreenState extends State<CommunityScreen>
                         ),
                       Expanded(
                         child:
-                            isLoading
-                                ? const Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                                : (filteredList.isEmpty)
-                                ? Container(
-                                  margin: EdgeInsets.only(top: 6.h),
-                                  child: Text(
-                                    "No business found",
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey,
+                        isLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : (filteredList.isEmpty)
+                            ? Container(
+                          margin: EdgeInsets.only(top: 6.h),
+                          child: Text(
+                            "No business found",
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        )
+                            : ListView.builder(
+                          controller: scrollController,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 1.5.h,
+                          ),
+                          itemCount: filteredList.length,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () {
+                                String businessId =
+                                filteredList.isEmpty
+                                    ? BussinessViewProfile(
+                                  (businessprofileModel
+                                      ?.data?[index]
+                                      .id)
+                                      .toString(),
+                                ) ??
+                                    ""
+                                    : filteredList[index].id
+                                    .toString();
+
+                                print(
+                                  "businessId from filteredList: $businessId",
+                                );
+
+                                Get.back();
+                                BussinessViewProfile(businessId);
+
+                                print(
+                                  "Navigating to business details with ID: $businessId",
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(1.w),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(
+                                      index == 0 ? 15 : 0,
+                                    ),
+                                    topRight: Radius.circular(
+                                      index == 0 ? 15 : 0,
+                                    ),
+                                    bottomLeft: Radius.circular(
+                                      index == filteredList.length - 1
+                                          ? 15
+                                          : 0,
+                                    ),
+                                    bottomRight: Radius.circular(
+                                      index == filteredList.length - 1
+                                          ? 15
+                                          : 0,
                                     ),
                                   ),
-                                )
-                                : ListView.builder(
-                                  controller: scrollController,
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 1.5.h,
-                                  ),
-                                  itemCount: filteredList.length,
-                                  itemBuilder: (context, index) {
-                                    return InkWell(
-                                      onTap: () {
-                                        String businessId =
-                                            filteredList.isEmpty
-                                                ? BussinessViewProfile(
-                                                      (businessprofileModel
-                                                              ?.data?[index]
-                                                              .id)
-                                                          .toString(),
-                                                    ) ??
-                                                    ""
-                                                : filteredList[index].id
-                                                    .toString();
-
-                                        Get.back();
-                                        BussinessViewProfile(businessId);
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(1.w),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(
-                                              index == 0 ? 15 : 0,
+                                ),
+                                child: Stack(
+                                  children: [
+                                    ListTile(
+                                      leading: ClipRRect(
+                                        borderRadius:
+                                        BorderRadius.circular(20),
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                          (filteredList[index]
+                                              .profile
+                                              ?.isNotEmpty ??
+                                              false)
+                                              ? filteredList[index]
+                                              .profile
+                                              .toString()
+                                              : "",
+                                          width: 40,
+                                          height: 40,
+                                          fit: BoxFit.cover,
+                                          placeholder:
+                                              (context, url) =>
+                                          const CircularProgressIndicator(),
+                                          errorWidget:
+                                              (
+                                              context,
+                                              url,
+                                              error,
+                                              ) => const Image(
+                                            image: AssetImage(
+                                              "assets/images/waveeLogoShort.png",
                                             ),
-                                            topRight: Radius.circular(
-                                              index == 0 ? 15 : 0,
-                                            ),
-                                            bottomLeft: Radius.circular(
-                                              index == filteredList.length - 1
-                                                  ? 15
-                                                  : 0,
-                                            ),
-                                            bottomRight: Radius.circular(
-                                              index == filteredList.length - 1
-                                                  ? 15
-                                                  : 0,
-                                            ),
+                                            fit: BoxFit.cover,
+                                            width: 40,
+                                            height: 40,
                                           ),
                                         ),
-                                        child: Stack(
-                                          children: [
-                                            ListTile(
-                                              leading: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                child: CachedNetworkImage(
-                                                  imageUrl:
-                                                      (filteredList[index]
-                                                                  .profile
-                                                                  ?.isNotEmpty ??
-                                                              false)
-                                                          ? filteredList[index]
-                                                              .profile
-                                                              .toString()
-                                                          : "",
-                                                  width: 40,
-                                                  height: 40,
-                                                  fit: BoxFit.cover,
-                                                  placeholder:
-                                                      (context, url) =>
-                                                          const CircularProgressIndicator(),
-                                                  errorWidget:
-                                                      (
-                                                        context,
-                                                        url,
-                                                        error,
-                                                      ) => const Image(
-                                                        image: AssetImage(
-                                                          "assets/images/waveeLogoShort.png",
-                                                        ),
-                                                        fit: BoxFit.cover,
-                                                        width: 40,
-                                                        height: 40,
-                                                      ),
-                                                ),
-                                              ),
-                                              title: Text(
-                                                filteredList[index]
-                                                        .businessName ??
-                                                    "N/A",
-                                                style: TextStyle(
-                                                  fontSize: 15.sp,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                  color: Colors.black87,
-                                                ),
-                                              ),
-                                              subtitle: Row(
-                                                children: [
-                                                  Text(
-                                                    (businessprofileModel
-                                                            ?.data?[index]
-                                                            .subStatus
-                                                            ?.capitalizeFirst ??
-                                                        ""),
-                                                    style: TextStyle(
-                                                      fontSize: 13.sp,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 3.w),
-                                                  Text(
-                                                    "${(filteredList[index].distance ?? 0.0).toStringAsFixed(2)} Miles",
-                                                    style: TextStyle(
-                                                      fontSize: 13.sp,
-                                                      color:
-                                                          Colors.grey.shade600,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              trailing: Container(
-                                                width: 10.w,
-                                                height: 10.w,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Colors.grey[100],
-                                                ),
-                                                child: IconButton(
-                                                  icon: Icon(
-                                                    Icons.location_on,
-                                                    color: Colors.black,
-                                                    size: 5.w,
-                                                  ),
-                                                  onPressed: () {
-                                                    AppLat =
-                                                        filteredList[index]
-                                                            .latitude
-                                                            .toString();
-                                                    AppLon =
-                                                        filteredList[index]
-                                                            .longitude
-                                                            .toString();
-                                                    selectedUserId =
-                                                        filteredList[index].id
-                                                            .toString();
-                                                    Get.back();
-                                                    moveToLocation();
-                                                  },
-                                                  padding: EdgeInsets.zero,
-                                                  constraints:
-                                                      const BoxConstraints(),
-                                                ),
-                                              ),
-                                            ),
-                                            filteredList[index].tags == null ||
-                                                    (filteredList[index]
-                                                            .tags
-                                                            ?.isEmpty ??
-                                                        true)
-                                                ? const SizedBox.shrink()
-                                                : Container(
-                                                  margin: EdgeInsets.only(
-                                                    top: 8.h,
-                                                  ),
-                                                  height: 5.h,
-                                                  child: ListView.builder(
-                                                    scrollDirection:
-                                                        Axis.horizontal,
-                                                    padding: EdgeInsets.only(
-                                                      left: 2.w,
-                                                    ),
-                                                    itemCount:
-                                                        businessprofileModel
-                                                            ?.data?[index]
-                                                            .tags
-                                                            ?.length ??
-                                                        0,
-                                                    itemBuilder: (
-                                                      context,
-                                                      tagIndex,
-                                                    ) {
-                                                      final tag =
-                                                          businessprofileModel
-                                                              ?.data?[index]
-                                                              .tags?[tagIndex];
-
-                                                      return Row(
-                                                        children: [
-                                                          Container(
-                                                            padding:
-                                                                EdgeInsets.symmetric(
-                                                                  horizontal:
-                                                                      2.w,
-                                                                  vertical:
-                                                                      0.5.h,
-                                                                ),
-                                                            decoration: BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    15,
-                                                                  ),
-                                                              border: Border.all(
-                                                                color:
-                                                                    Colors
-                                                                        .grey
-                                                                        .shade200,
-                                                              ),
-                                                            ),
-                                                            child: Row(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              children: [
-                                                                Container(
-                                                                  height: 2.5.h,
-                                                                  width: 2.5.h,
-                                                                  decoration: const BoxDecoration(
-                                                                    shape:
-                                                                        BoxShape
-                                                                            .circle,
-                                                                  ),
-                                                                  child: ClipOval(
-                                                                    child: CachedNetworkImage(
-                                                                      imageUrl:
-                                                                          tag?.img ??
-                                                                          "",
-                                                                      height:
-                                                                          3.h,
-                                                                      width:
-                                                                          3.h,
-                                                                      fit:
-                                                                          BoxFit
-                                                                              .cover,
-                                                                      placeholder:
-                                                                          (
-                                                                            context,
-                                                                            url,
-                                                                          ) => const CircularProgressIndicator(
-                                                                            color:
-                                                                                AppColors.maincolor,
-                                                                          ),
-                                                                      errorWidget:
-                                                                          (
-                                                                            context,
-                                                                            url,
-                                                                            error,
-                                                                          ) => Image.asset(
-                                                                            'assets/images/waveeLogoShort.png',
-                                                                            height:
-                                                                                3.h,
-                                                                            width:
-                                                                                3.h,
-                                                                            fit:
-                                                                                BoxFit.cover,
-                                                                          ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 1.w,
-                                                                ),
-                                                                Text(
-                                                                  tag?.name ??
-                                                                      "No Tags",
-                                                                  style: TextStyle(
-                                                                    color:
-                                                                        AppColors
-                                                                            .black,
-                                                                    fontSize:
-                                                                        16.sp,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w400,
-                                                                    fontFamily:
-                                                                        AppConstants
-                                                                            .manrope,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          SizedBox(width: 2.w),
-                                                        ],
-                                                      );
-                                                    },
-                                                  ),
-                                                ),
-                                            if (index != 0)
-                                              Divider(
-                                                thickness: 1,
-                                                color: Colors.grey.shade300,
-                                              ),
-                                          ],
+                                      ),
+                                      title: Text(
+                                        filteredList[index]
+                                            .businessName ??
+                                            "N/A",
+                                        style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily:
+                                          AppConstants.manrope,
+                                          color: Colors.black87,
                                         ),
                                       ),
-                                    );
-                                  },
+                                      subtitle: Row(
+                                        children: [
+                                          Text(
+                                            "${(businessprofileModel?.data?[index].subStatus?.capitalizeFirst ?? "")}",
+                                            style: TextStyle(
+                                              fontSize: 13.sp,
+                                              fontWeight:
+                                              FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          SizedBox(width: 3.w),
+                                          Text(
+                                            "${(filteredList[index].distance ?? 0.0).toStringAsFixed(2)} Miles",
+                                            style: TextStyle(
+                                              fontSize: 13.sp,
+                                              color:
+                                              Colors.grey.shade600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      trailing: Container(
+                                        width: 10.w,
+                                        height: 10.w,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.grey[100],
+                                        ),
+                                        child: IconButton(
+                                          icon: Icon(
+                                            Icons.location_on,
+                                            color: Colors.black,
+                                            size: 5.w,
+                                          ),
+                                          onPressed: () {
+                                            AppLat =
+                                                filteredList[index]
+                                                    .latitude
+                                                    .toString();
+                                            AppLon =
+                                                filteredList[index]
+                                                    .longitude
+                                                    .toString();
+                                            selectedUserId =
+                                                filteredList[index].id
+                                                    .toString();
+                                            Get.back();
+                                            moveToLocation();
+                                          },
+                                          padding: EdgeInsets.zero,
+                                          constraints: BoxConstraints(),
+                                        ),
+                                      ),
+                                    ),
+                                    filteredList[index].tags == null ||
+                                        (filteredList[index]
+                                            .tags
+                                            ?.isEmpty ??
+                                            true)
+                                        ? const SizedBox.shrink()
+                                        : Container(
+                                      margin: EdgeInsets.only(
+                                        top: 8.h,
+                                      ),
+                                      height: 5.h,
+                                      child: ListView.builder(
+                                        scrollDirection:
+                                        Axis.horizontal,
+                                        padding: EdgeInsets.only(
+                                          left: 2.w,
+                                        ),
+                                        itemCount:
+                                        businessprofileModel
+                                            ?.data?[index]
+                                            .tags
+                                            ?.length ??
+                                            0,
+                                        itemBuilder: (
+                                            context,
+                                            tagIndex,
+                                            ) {
+                                          final tag =
+                                          businessprofileModel
+                                              ?.data?[index]
+                                              .tags?[tagIndex];
+                                          print(
+                                            "tag ave che knau @${tag?.img}",
+                                          );
+                                          return Row(
+                                            children: [
+                                              Container(
+                                                padding:
+                                                EdgeInsets.symmetric(
+                                                  horizontal:
+                                                  2.w,
+                                                  vertical:
+                                                  0.5.h,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                  BorderRadius.circular(
+                                                    15,
+                                                  ),
+                                                  border: Border.all(
+                                                    color:
+                                                    Colors
+                                                        .grey
+                                                        .shade200,
+                                                  ),
+                                                ),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                  MainAxisSize
+                                                      .min,
+                                                  children: [
+                                                    Container(
+                                                      height: 2.5.h,
+                                                      width: 2.5.h,
+                                                      decoration: BoxDecoration(
+                                                        shape:
+                                                        BoxShape
+                                                            .circle,
+                                                      ),
+                                                      child: ClipOval(
+                                                        child: CachedNetworkImage(
+                                                          imageUrl:
+                                                          tag?.img ??
+                                                              "",
+                                                          height:
+                                                          3.h,
+                                                          width:
+                                                          3.h,
+                                                          fit:
+                                                          BoxFit
+                                                              .cover,
+                                                          placeholder:
+                                                              (
+                                                              context,
+                                                              url,
+                                                              ) => CircularProgressIndicator(
+                                                            color:
+                                                            AppColors.maincolor,
+                                                          ),
+                                                          errorWidget:
+                                                              (
+                                                              context,
+                                                              url,
+                                                              error,
+                                                              ) => Image.asset(
+                                                            'assets/images/waveeLogoShort.png',
+                                                            height:
+                                                            3.h,
+                                                            width:
+                                                            3.h,
+                                                            fit:
+                                                            BoxFit.cover,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 1.w,
+                                                    ),
+                                                    Text(
+                                                      tag?.name ??
+                                                          "No Tags",
+                                                      style: TextStyle(
+                                                        color:
+                                                        AppColors
+                                                            .black,
+                                                        fontSize:
+                                                        16.sp,
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .w400,
+                                                        fontFamily:
+                                                        AppConstants
+                                                            .manrope,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              SizedBox(width: 2.w),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    if (index != 0)
+                                      Divider(
+                                        thickness: 1,
+                                        color: Colors.grey.shade300,
+                                      ),
+                                  ],
                                 ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -2727,19 +2716,19 @@ class _CommunityScreenState extends State<CommunityScreen>
   }
 
   Widget _filterButtons(
-    String text,
-    IconData icon,
-    VoidCallback onTap,
-    Color iconColor,
-    Color textColor,
-  ) {
+      String text,
+      IconData icon,
+      VoidCallback onTap,
+      Color iconColor,
+      Color textColor,
+      ) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(20),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 7),
+          padding: EdgeInsets.symmetric(horizontal: 7, vertical: 7),
           decoration: BoxDecoration(
             color: Colors.grey[200],
             borderRadius: BorderRadius.circular(18),
@@ -2774,1489 +2763,1494 @@ class _CommunityScreenState extends State<CommunityScreen>
       backgroundColor: AppColors.bgcolor,
       builder:
           (context) => DraggableScrollableSheet(
-            initialChildSize: 0.7,
-            minChildSize: 0.5,
-            maxChildSize: 0.95,
-            expand: false,
-            builder: (context, scrollController) {
-              return StatefulBuilder(
-                builder: (context, setState) {
-                  return Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.bgcolor,
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(20),
-                      ),
-                    ),
-                    child: SingleChildScrollView(
-                      controller: scrollController,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Material(
-                            color: Colors.white70,
+        initialChildSize: 0.7,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.bgcolor,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
+                ),
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Material(
+                        color: Colors.white70,
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 1.h),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 1.h),
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Column(
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.center,
                                 children: [
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 40,
-                                        backgroundImage:
-                                            (busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.logo
-                                                        ?.isNotEmpty ??
-                                                    false)
-                                                ? CachedNetworkImageProvider(
-                                                  busnessviewmodal!
-                                                      .data!
-                                                      .business!
-                                                      .logo!,
-                                                )
-                                                : const AssetImage(
-                                                      "assets/images/waveeLogoShort.png",
-                                                    )
-                                                    as ImageProvider,
-                                      ).paddingOnly(right: 2.5.w, top: 1.h),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
+                                  CircleAvatar(
+                                    radius: 40,
+                                    backgroundImage:
+                                    (busnessviewmodal
+                                        ?.data
+                                        ?.business
+                                        ?.logo
+                                        ?.isNotEmpty ??
+                                        false)
+                                        ? CachedNetworkImageProvider(
+                                      busnessviewmodal!
+                                          .data!
+                                          .business!
+                                          .logo!,
+                                    )
+                                        : AssetImage(
+                                      "assets/images/waveeLogoShort.png",
+                                    )
+                                    as ImageProvider,
+                                  ).paddingOnly(right: 2.5.w, top: 1.h),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          busnessviewmodal
+                                              ?.data
+                                              ?.business
+                                              ?.businessName ??
+                                              "N/A",
+                                          style: TextStyle(
+                                            fontSize: 18.sp,
+                                            fontWeight: FontWeight.w900,
+                                            fontFamily:
+                                            AppConstants.manrope,
+                                          ),
+                                        ),
+                                        SizedBox(height: 0.5.h),
+                                        Text(
+                                          "${(busnessviewmodal?.data?.distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontFamily:
+                                            AppConstants.manrope,
+                                          ),
+                                        ),
+                                        SizedBox(height: 0.5.h),
+                                        busnessviewmodal
+                                            ?.data
+                                            ?.business
+                                            ?.user
+                                            ?.address ==
+                                            null ||
+                                            busnessviewmodal
+                                                ?.data
+                                                ?.business
+                                                ?.user
+                                                ?.address ==
+                                                0 ||
+                                            busnessviewmodal
+                                                ?.data
+                                                ?.business
+                                                ?.user
+                                                ?.address ==
+                                                ""
+                                            ? Container()
+                                            : Text(
+                                          busnessviewmodal
+                                              ?.data
+                                              ?.business
+                                              ?.user
+                                              ?.address
+                                              ?.city !=
+                                              null &&
                                               busnessviewmodal
+                                                  ?.data
+                                                  ?.business
+                                                  ?.user
+                                                  ?.address
+                                                  ?.country !=
+                                                  null
+                                              ? "${busnessviewmodal?.data?.business?.user?.address?.city}, ${busnessviewmodal?.data?.business?.user?.address?.country}"
+                                              : "N/A",
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontFamily:
+                                            AppConstants.manrope,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Container(
+                                        width: 8.w,
+                                        height: 8.w,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade300,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Center(
+                                          child: IconButton(
+                                            icon: Icon(
+                                              Icons.close_rounded,
+                                              color: Colors.black,
+                                              size: 18.sp,
+                                            ),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            padding: EdgeInsets.zero,
+                                            constraints: BoxConstraints(),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ).paddingOnly(left: 2.w),
+                              Container(
+                                margin: EdgeInsets.only(top: 1.5.h),
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.start,
+                                  children: [
+                                    for (
+                                    int i = 0;
+                                    i <
+                                        (busnessviewmodal
+                                            ?.data
+                                            ?.business
+                                            ?.tags
+                                            ?.length ??
+                                            0);
+                                    i++
+                                    ) ...[
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 2.w,
+                                          vertical: 0.5.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(15),
+                                          border: Border.all(
+                                            color: Colors.grey.shade200,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                              height: 2.h,
+                                              width: 2.h,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: ClipOval(
+                                                child: CachedNetworkImage(
+                                                  imageUrl:
+                                                  busnessviewmodal
                                                       ?.data
                                                       ?.business
-                                                      ?.businessName ??
-                                                  "N/A",
-                                              style: TextStyle(
-                                                fontSize: 18.sp,
-                                                fontWeight: FontWeight.w900,
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                              ),
-                                            ),
-                                            SizedBox(height: 0.5.h),
-                                            Text(
-                                              "${(busnessviewmodal?.data?.distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
-                                              style: TextStyle(
-                                                fontSize: 15.sp,
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                              ),
-                                            ),
-                                            SizedBox(height: 0.5.h),
-                                            busnessviewmodal
-                                                            ?.data
-                                                            ?.business
-                                                            ?.user
-                                                            ?.address ==
-                                                        null ||
-                                                    busnessviewmodal
-                                                            ?.data
-                                                            ?.business
-                                                            ?.user
-                                                            ?.address ==
-                                                        0 ||
-                                                    busnessviewmodal
-                                                            ?.data
-                                                            ?.business
-                                                            ?.user
-                                                            ?.address ==
-                                                        ""
-                                                ? Container()
-                                                : Text(
-                                                  busnessviewmodal
-                                                                  ?.data
-                                                                  ?.business
-                                                                  ?.user
-                                                                  ?.address
-                                                                  ?.city !=
-                                                              null &&
-                                                          busnessviewmodal
-                                                                  ?.data
-                                                                  ?.business
-                                                                  ?.user
-                                                                  ?.address
-                                                                  ?.country !=
-                                                              null
-                                                      ? "${busnessviewmodal?.data?.business?.user?.address?.city}, ${busnessviewmodal?.data?.business?.user?.address?.country}"
-                                                      : "N/A",
-                                                  style: TextStyle(
-                                                    fontSize: 15.sp,
-                                                    fontFamily:
-                                                        AppConstants.manrope,
+                                                      ?.tags?[i]
+                                                      .img ??
+                                                      "",
+                                                  height: 3.h,
+                                                  width: 3.h,
+                                                  fit: BoxFit.cover,
+                                                  placeholder:
+                                                      (
+                                                      context,
+                                                      url,
+                                                      ) => Center(
+                                                    child:
+                                                    CircularProgressIndicator(
+                                                      strokeWidth:
+                                                      1,
+                                                    ),
+                                                  ),
+                                                  errorWidget:
+                                                      (
+                                                      context,
+                                                      url,
+                                                      error,
+                                                      ) => Image(
+                                                    image: AssetImage(
+                                                      "assets/images/waveeLogoShort.png",
+                                                    ),
                                                   ),
                                                 ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 1.w),
+                                            Text(
+                                              busnessviewmodal
+                                                  ?.data
+                                                  ?.business
+                                                  ?.tags?[i]
+                                                  .name ??
+                                                  "No Tags",
+                                              style: TextStyle(
+                                                color: AppColors.black,
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w400,
+                                                fontFamily:
+                                                AppConstants.manrope,
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Container(
-                                            width: 8.w,
-                                            height: 8.w,
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey.shade300,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Center(
-                                              child: IconButton(
-                                                icon: Icon(
-                                                  Icons.close_rounded,
-                                                  color: Colors.black,
-                                                  size: 18.sp,
-                                                ),
-                                                onPressed: () {
-                                                  Get.back();
-                                                },
-                                                padding: EdgeInsets.zero,
-                                                constraints:
-                                                    const BoxConstraints(),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
+                                      SizedBox(width: 2.w),
                                     ],
-                                  ).paddingOnly(left: 2.w),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 1.5.h),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        for (
-                                          int i = 0;
-                                          i <
-                                              (busnessviewmodal
-                                                      ?.data
-                                                      ?.business
-                                                      ?.tags
-                                                      ?.length ??
-                                                  0);
-                                          i++
-                                        ) ...[
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 2.w,
-                                              vertical: 0.5.h,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              border: Border.all(
-                                                color: Colors.grey.shade200,
-                                              ),
-                                            ),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Container(
-                                                  height: 2.h,
-                                                  width: 2.h,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                  child: ClipOval(
-                                                    child: CachedNetworkImage(
-                                                      imageUrl:
-                                                          busnessviewmodal
-                                                              ?.data
-                                                              ?.business
-                                                              ?.tags?[i]
-                                                              .img ??
-                                                          "",
-                                                      height: 3.h,
-                                                      width: 3.h,
-                                                      fit: BoxFit.cover,
-                                                      placeholder:
-                                                          (
-                                                            context,
-                                                            url,
-                                                          ) => const Center(
-                                                            child:
-                                                                CircularProgressIndicator(
-                                                                  strokeWidth:
-                                                                      1,
-                                                                ),
-                                                          ),
-                                                      errorWidget:
-                                                          (
-                                                            context,
-                                                            url,
-                                                            error,
-                                                          ) => const Image(
-                                                            image: AssetImage(
-                                                              "assets/images/waveeLogoShort.png",
-                                                            ),
-                                                          ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(width: 1.w),
-                                                Text(
-                                                  busnessviewmodal
-                                                          ?.data
-                                                          ?.business
-                                                          ?.tags?[i]
-                                                          .name ??
-                                                      "No Tags",
-                                                  style: TextStyle(
-                                                    color: AppColors.black,
-                                                    fontSize: 14.sp,
-                                                    fontWeight: FontWeight.w400,
-                                                    fontFamily:
-                                                        AppConstants.manrope,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(width: 2.w),
-                                        ],
-                                      ],
-                                    ).paddingOnly(left: 2.w, bottom: 1.h),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ).paddingOnly(bottom: 1.h),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(left: 2.w),
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    if (busnessviewmodal?.data?.business?.id !=
-                                        null) {
-                                      await handleLikeTap();
-                                    } else {}
-                                  },
-                                  child: Container(
-                                    height: 4.5.h,
-                                    width: 27.w,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 5,
-                                      vertical: 5,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.shade300,
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          busnessviewmodal?.data?.isLiked ==
-                                                  true
-                                              ? Icons.favorite
-                                              : Icons.favorite_outline,
-                                          color:
-                                              busnessviewmodal?.data?.isLiked ==
-                                                      true
-                                                  ? Colors.red
-                                                  : Colors.black,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {},
-                                child: Container(
-                                  height: 4.5.h,
-                                  width: 27.w,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 5,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade300,
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.location_on,
-                                      color: Colors.black,
-                                      size: 6.w,
-                                    ),
-                                    onPressed: () {
-                                      if (busnessviewmodal?.data?.business !=
-                                          null) {
-                                        AppLat =
-                                            busnessviewmodal!
-                                                .data!
-                                                .business!
-                                                .latitude
-                                                .toString();
-                                        AppLon =
-                                            busnessviewmodal
-                                                .data!
-                                                .business!
-                                                .longitude
-                                                .toString();
-                                        selectedUserId =
-                                            busnessviewmodal.data!.business!.id
-                                                .toString();
-
-                                        Get.back();
-                                        moveToLocation();
-                                      } else {}
-                                    },
-                                    padding: EdgeInsets.zero,
-                                    constraints: const BoxConstraints(),
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {},
-                                child: Container(
-                                  height: 4.5.h,
-                                  width: 27.w,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 5,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade300,
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: IconButton(
-                                    icon: Icon(
-                                      CupertinoIcons.chat_bubble_text,
-                                      color: AppColors.black,
-                                      size: 5.w,
-                                    ),
-                                    onPressed: () {
-                                      Get.to(
-                                        MessageScreen(
-                                          type: "business",
-                                          chatName:
-                                              busnessviewmodal
-                                                  ?.data
-                                                  ?.business
-                                                  ?.businessName ??
-                                              "N/A",
-                                          conciergeID:
-                                              (busnessviewmodal
-                                                      ?.data
-                                                      ?.business
-                                                      ?.user
-                                                      ?.id)
-                                                  .toString(),
-                                          image:
-                                              busnessviewmodal
-                                                  ?.data
-                                                  ?.business
-                                                  ?.logo ??
-                                              "",
-                                          chatStatus:
-                                              busnessviewmodal
-                                                  ?.data
-                                                  ?.business
-                                                  ?.chatStatus,
-                                        ),
-                                      );
-                                    },
-                                    padding: EdgeInsets.zero,
-                                    constraints: const BoxConstraints(),
-                                  ),
-                                ),
+                                  ],
+                                ).paddingOnly(left: 2.w, bottom: 1.h),
                               ),
                             ],
                           ),
-                          SizedBox(height: 1.h),
-                          if ((busnessviewmodal?.data?.posts ?? [])
-                                  .isNotEmpty ||
-                              (busnessviewmodal?.data?.events ?? [])
-                                  .isNotEmpty ||
-                              (busnessviewmodal?.data?.offerPromotions ?? [])
-                                  .isNotEmpty ||
-                              (busnessviewmodal?.data?.services ?? [])
-                                  .isNotEmpty ||
-                              (busnessviewmodal?.data?.products ?? [])
-                                  .isNotEmpty)
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if ((busnessviewmodal?.data?.posts ?? [])
-                                    .isNotEmpty) ...[
-                                  SizedBox(height: 1.h),
-                                  buildMediaListView(
-                                    busnessviewmodal?.data?.posts ?? [],
-                                  ),
-                                ],
-                                if ((busnessviewmodal?.data?.events ?? [])
-                                    .isNotEmpty) ...[
-                                  SizedBox(height: 2.h),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0,
-                                    ),
-                                    child: Text(
-                                      "Events",
-                                      style: TextStyle(
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 1.h),
-                                  buildEventListView(),
-                                ],
-                                if ((busnessviewmodal?.data?.offerPromotions ??
-                                        [])
-                                    .isNotEmpty) ...[
-                                  SizedBox(height: 2.h),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0,
-                                    ),
-                                    child: Text(
-                                      "Offers & Promotions",
-                                      style: TextStyle(
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 1.h),
-                                  buildListView(
-                                    busnessviewmodal?.data?.offerPromotions
-                                            ?.map((e) => e.files ?? "")
-                                            .toList() ??
-                                        [],
-                                    busnessviewmodal?.data?.offerPromotions
-                                            ?.map((e) => e.url ?? "")
-                                            .toList() ??
-                                        [],
-                                    busnessviewmodal?.data?.offerPromotions
-                                            ?.map((e) => e.title ?? "No Title")
-                                            .toList() ??
-                                        [],
-                                  ),
-                                ],
-                                if ((busnessviewmodal?.data?.services ?? [])
-                                    .isNotEmpty) ...[
-                                  SizedBox(height: 2.h),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0,
-                                    ),
-                                    child: Text(
-                                      "Services",
-                                      style: TextStyle(
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 1.h),
-                                  buildServiceListView(
-                                    busnessviewmodal?.data?.services ?? [],
-                                  ),
-                                ],
-                                if ((busnessviewmodal?.data?.products ?? [])
-                                    .isNotEmpty) ...[
-                                  SizedBox(height: 2.h),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0,
-                                    ),
-                                    child: Text(
-                                      "Products",
-                                      style: TextStyle(
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 1.h),
-                                  buildViewShopTile(
-                                    icon: Icons.store,
-                                    title: "View Shop",
-                                    subtitle:
-                                        (busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.loyaltyInfo ==
-                                                    null ||
-                                                busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.loyaltyInfo
-                                                        ?.loyaltyOrderThreshold ==
-                                                    null ||
-                                                busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.loyaltyInfo
-                                                        ?.loyaltyOrderThreshold ==
-                                                    0)
-                                            ? "Order 5 times to get 20% discount behind the scenes"
-                                            : "You're getting closer to an exclusive reward! Complete "
-                                                "${busnessviewmodal?.data?.business?.loyaltyInfo?.loyaltyOrderThreshold} "
-                                                "more orders to unlock a ${busnessviewmodal?.data?.business?.loyaltyInfo?.loyaltyDiscountPercentage?.replaceAll(RegExp(r'\\.0+\$'), '')}% discount on your next purchase.",
-                                    onTap: () {
-                                      Get.to(
-                                        BusinessDetailPage(
-                                          businessID:
-                                              busnessviewmodal
-                                                  ?.data
-                                                  ?.business
-                                                  ?.id
-                                                  .toString() ??
-                                              "",
-                                          userID:
-                                              loginModel?.data?.user?.id
-                                                  .toString() ??
-                                              "",
-                                          long: AppLon,
-                                          lat: AppLat,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ],
-                            ),
-                          SizedBox(height: 2.h),
+                        ),
+                      ).paddingOnly(bottom: 1.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
                           Container(
-                            width: 110.w,
-                            padding: EdgeInsets.symmetric(vertical: 2.h),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: Colors.grey.shade300,
-                                width: 1,
+                            margin: EdgeInsets.only(left: 2.w),
+                            child: GestureDetector(
+                              onTap: () async {
+                                if (busnessviewmodal?.data?.business?.id !=
+                                    null) {
+                                  await handleLikeTap();
+                                } else {}
+                              },
+                              child: Container(
+                                height: 4.5.h,
+                                width: 27.w,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 5,
+                                  vertical: 5,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade300,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      busnessviewmodal?.data?.isLiked ==
+                                          true
+                                          ? Icons.favorite
+                                          : Icons.favorite_outline,
+                                      color:
+                                      busnessviewmodal?.data?.isLiked ==
+                                          true
+                                          ? Colors.red
+                                          : Colors.black,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    final address =
-                                        busnessviewmodal
-                                            ?.data
-                                            ?.business
-                                            ?.user
-                                            ?.address;
-                                    if (address != null &&
-                                        address.address != null &&
-                                        address.city != null &&
-                                        address.country != null &&
-                                        address.address!.isNotEmpty &&
-                                        address.city!.isNotEmpty &&
-                                        address.country!.isNotEmpty) {
-                                      final fullAddress =
-                                          "${address.address}, ${address.city}, ${address.country}";
-                                      showModalBottomSheet(
-                                        context: context,
-                                        shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
+                          ),
+                          GestureDetector(
+                            onTap: () {},
+                            child: Container(
+                              height: 4.5.h,
+                              width: 27.w,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade300,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.location_on,
+                                  color: Colors.black,
+                                  size: 6.w,
+                                ),
+                                onPressed: () {
+                                  if (busnessviewmodal?.data?.business !=
+                                      null) {
+                                    AppLat =
+                                        busnessviewmodal!
+                                            .data!
+                                            .business!
+                                            .latitude
+                                            .toString();
+                                    AppLon =
+                                        busnessviewmodal!
+                                            .data!
+                                            .business!
+                                            .longitude
+                                            .toString();
+                                    selectedUserId =
+                                        busnessviewmodal!.data!.business!.id
+                                            .toString();
+
+                                    Get.back();
+                                    moveToLocation();
+                                  } else {}
+                                },
+                                padding: EdgeInsets.zero,
+                                constraints: BoxConstraints(),
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {},
+                            child: Container(
+                              height: 4.5.h,
+                              width: 27.w,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade300,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: IconButton(
+                                icon: Icon(
+                                  CupertinoIcons.chat_bubble_text,
+                                  color: AppColors.black,
+                                  size: 5.w,
+                                ),
+                                onPressed: () {
+                                  print(
+                                    'Hello Id ${busnessviewmodal?.data?.business?.user?.id}',
+                                  );
+                                  print(
+                                    'Mine Id ${loginModel?.data?.user?.id}',
+                                  );
+                                  print(
+                                    'Image is ${busnessviewmodal?.data?.business?.logo}',
+                                  );
+                                  Get.to(
+                                    MessageScreen(
+                                      type: "business",
+                                      chatName:
+                                      busnessviewmodal
+                                          ?.data
+                                          ?.business
+                                          ?.businessName ??
+                                          "N/A",
+                                      conciergeID:
+                                      (busnessviewmodal
+                                          ?.data
+                                          ?.business
+                                          ?.user
+                                          ?.id)
+                                          .toString(),
+                                      image:
+                                      busnessviewmodal
+                                          ?.data
+                                          ?.business
+                                          ?.logo ??
+                                          "",
+                                      chatStatus:
+                                      busnessviewmodal
+                                          ?.data
+                                          ?.business
+                                          ?.chatStatus,
+                                    ),
+                                  );
+                                },
+                                padding: EdgeInsets.zero,
+                                constraints: BoxConstraints(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 1.h),
+                      if ((busnessviewmodal?.data?.posts ?? [])
+                          .isNotEmpty ||
+                          (busnessviewmodal?.data?.events ?? [])
+                              .isNotEmpty ||
+                          (busnessviewmodal?.data?.offerPromotions ?? [])
+                              .isNotEmpty ||
+                          (busnessviewmodal?.data?.services ?? [])
+                              .isNotEmpty ||
+                          (busnessviewmodal?.data?.products ?? [])
+                              .isNotEmpty)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if ((busnessviewmodal?.data?.posts ?? [])
+                                .isNotEmpty) ...[
+                              SizedBox(height: 1.h),
+                              buildMediaListView(
+                                busnessviewmodal?.data?.posts ?? [],
+                              ),
+                            ],
+                            if ((busnessviewmodal?.data?.events ?? [])
+                                .isNotEmpty) ...[
+                              SizedBox(height: 2.h),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                ),
+                                child: Text(
+                                  "Events",
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              buildEventListView(),
+                            ],
+                            if ((busnessviewmodal?.data?.offerPromotions ??
+                                [])
+                                .isNotEmpty) ...[
+                              SizedBox(height: 2.h),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                ),
+                                child: Text(
+                                  "Offers & Promotions",
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              buildListView(
+                                busnessviewmodal?.data?.offerPromotions
+                                    ?.map((e) => e.files ?? "")
+                                    .toList() ??
+                                    [],
+                                busnessviewmodal?.data?.offerPromotions
+                                    ?.map((e) => e.url ?? "")
+                                    .toList() ??
+                                    [],
+                                busnessviewmodal?.data?.offerPromotions
+                                    ?.map((e) => e.title ?? "No Title")
+                                    .toList() ??
+                                    [],
+                              ),
+                            ],
+                            if ((busnessviewmodal?.data?.services ?? [])
+                                .isNotEmpty) ...[
+                              SizedBox(height: 2.h),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                ),
+                                child: Text(
+                                  "Services",
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              buildServiceListView(
+                                busnessviewmodal?.data?.services ?? [],
+                              ),
+                            ],
+                            if ((busnessviewmodal?.data?.products ?? [])
+                                .isNotEmpty) ...[
+                              SizedBox(height: 2.h),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                ),
+                                child: Text(
+                                  "Products",
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              buildViewShopTile(
+                                icon: Icons.store,
+                                title: "View Shop",
+                                subtitle:
+                                (busnessviewmodal
+                                    ?.data
+                                    ?.business
+                                    ?.loyaltyInfo ==
+                                    null ||
+                                    busnessviewmodal
+                                        ?.data
+                                        ?.business
+                                        ?.loyaltyInfo
+                                        ?.loyaltyOrderThreshold ==
+                                        null ||
+                                    busnessviewmodal
+                                        ?.data
+                                        ?.business
+                                        ?.loyaltyInfo
+                                        ?.loyaltyOrderThreshold ==
+                                        0)
+                                    ? "Order 5 times to get 20% discount behind the scenes"
+                                    : "You're getting closer to an exclusive reward! Complete "
+                                    "${busnessviewmodal?.data?.business?.loyaltyInfo?.loyaltyOrderThreshold} "
+                                    "more orders to unlock a ${busnessviewmodal?.data?.business?.loyaltyInfo?.loyaltyDiscountPercentage?.replaceAll(RegExp(r'\\.0+\$'), '')}% discount on your next purchase.",
+                                onTap: () {
+                                  Get.to(
+                                    BusinessDetailPage(
+                                      businessID:
+                                      busnessviewmodal
+                                          ?.data
+                                          ?.business
+                                          ?.id
+                                          .toString() ??
+                                          "",
+                                      userID:
+                                      loginModel?.data?.user?.id
+                                          .toString() ??
+                                          "",
+                                      long: AppLon,
+                                      lat: AppLat,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ],
+                        ),
+                      SizedBox(height: 2.h),
+                      Container(
+                        width: 110.w,
+                        padding: EdgeInsets.symmetric(vertical: 2.h),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.grey.shade300,
+                            width: 1,
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                final address =
+                                    busnessviewmodal
+                                        ?.data
+                                        ?.business
+                                        ?.user
+                                        ?.address;
+                                if (address != null &&
+                                    address.address != null &&
+                                    address.city != null &&
+                                    address.country != null &&
+                                    address.address!.isNotEmpty &&
+                                    address.city!.isNotEmpty &&
+                                    address.country!.isNotEmpty) {
+                                  final fullAddress =
+                                      "${address.address}, ${address.city}, ${address.country}";
+                                  showModalBottomSheet(
+                                    context: context,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(20),
+                                      ),
+                                    ),
+                                    builder: (BuildContext context) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                          BorderRadius.vertical(
                                             top: Radius.circular(20),
                                           ),
                                         ),
-                                        builder: (BuildContext context) {
-                                          return Container(
-                                            decoration: const BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.vertical(
-                                                    top: Radius.circular(20),
-                                                  ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                              width: 40,
+                                              height: 3,
+                                              margin: EdgeInsets.only(
+                                                top: 12,
+                                                bottom: 20,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                  2,
+                                                ),
+                                              ),
                                             ),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Container(
-                                                  width: 40,
-                                                  height: 3,
-                                                  margin: const EdgeInsets.only(
-                                                    top: 12,
-                                                    bottom: 20,
-                                                  ),
-                                                  decoration: BoxDecoration(
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 20,
+                                              ),
+                                              child: Align(
+                                                alignment:
+                                                Alignment.centerLeft,
+                                                child: Text(
+                                                  "Get There",
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                    FontWeight.w600,
                                                     color: Colors.black,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          2,
-                                                        ),
                                                   ),
                                                 ),
-                                                const Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                    horizontal: 20,
-                                                  ),
-                                                  child: Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Text(
-                                                      "Get There",
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                  ),
+                                              ),
+                                            ),
+                                            SizedBox(height: 0.5.h),
+                                            Container(
+                                              margin: EdgeInsets.symmetric(
+                                                horizontal: 16,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                  14,
                                                 ),
-                                                SizedBox(height: 0.5.h),
-                                                Container(
-                                                  margin:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 16,
-                                                      ),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          14,
-                                                        ),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.black
-                                                            .withOpacity(0.05),
-                                                        blurRadius: 10,
-                                                        offset: const Offset(
-                                                          0,
-                                                          2,
-                                                        ),
-                                                      ),
-                                                    ],
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.05),
+                                                    blurRadius: 10,
+                                                    offset: Offset(0, 2),
                                                   ),
-                                                  child: Column(
-                                                    children: [
-                                                      Platform.isIOS
-                                                          ? Container(
-                                                            child: ListTile(
-                                                              contentPadding:
-                                                                  const EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                        16,
-                                                                    vertical: 6,
-                                                                  ),
-                                                              leading: SizedBox(
-                                                                width: 32,
-                                                                height: 30,
-                                                                child: ClipRRect(
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        6,
-                                                                      ),
-                                                                  child: Image.asset(
-                                                                    'assets/images/applemap.jpg',
-                                                                    width: 32,
-                                                                    height: 32,
-                                                                    fit:
-                                                                        BoxFit
-                                                                            .cover,
-                                                                    errorBuilder: (
-                                                                      context,
-                                                                      error,
-                                                                      stackTrace,
-                                                                    ) {
-                                                                      return Container(
-                                                                        width:
-                                                                            32,
-                                                                        height:
-                                                                            32,
-                                                                        decoration: BoxDecoration(
-                                                                          color:
-                                                                              Colors.blue,
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(
-                                                                                6,
-                                                                              ),
-                                                                        ),
-                                                                        child: const Icon(
-                                                                          Icons
-                                                                              .map,
-                                                                          color:
-                                                                              Colors.white,
-                                                                          size:
-                                                                              18,
-                                                                        ),
-                                                                      );
-                                                                    },
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              title: const Text(
-                                                                "Open in Apple Maps",
-                                                                style: TextStyle(
-                                                                  fontSize: 17,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  color:
-                                                                      Colors
-                                                                          .black,
-                                                                ),
-                                                              ),
-                                                              trailing: Icon(
-                                                                Icons
-                                                                    .chevron_right,
-                                                                color:
-                                                                    Colors
-                                                                        .grey[400],
-                                                                size: 20,
-                                                              ),
-                                                              onTap: () {
-                                                                Get.back();
-                                                                final query =
-                                                                    Uri.encodeComponent(
-                                                                      fullAddress,
-                                                                    );
-                                                                final appleMapsUrl =
-                                                                    Uri.parse(
-                                                                      "https://maps.apple.com/?q=$query",
-                                                                    );
-                                                                launchUrl(
-                                                                  appleMapsUrl,
-                                                                  mode:
-                                                                      LaunchMode
-                                                                          .externalApplication,
-                                                                );
-                                                              },
-                                                            ),
-                                                          )
-                                                          : const SizedBox(),
-                                                      Container(
-                                                        height: 0.5,
-                                                        color: Colors.grey[300],
+                                                ],
+                                              ),
+                                              child: Column(
+                                                children: [
+                                                  Platform.isIOS
+                                                      ? Container(
+                                                    child: ListTile(
+                                                      contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                        horizontal:
+                                                        16,
+                                                        vertical: 6,
                                                       ),
-                                                      Container(
-                                                        child: ListTile(
-                                                          contentPadding:
-                                                              const EdgeInsets.symmetric(
-                                                                horizontal: 16,
-                                                                vertical: 6,
-                                                              ),
-                                                          leading: SizedBox(
+                                                      leading: Container(
+                                                        width: 32,
+                                                        height: 30,
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                          child: Image.asset(
+                                                            'assets/images/applemap.jpg',
                                                             width: 32,
-                                                            height: 30,
-                                                            child: ClipRRect(
-                                                              borderRadius:
+                                                            height: 32,
+                                                            fit:
+                                                            BoxFit
+                                                                .cover,
+                                                            errorBuilder: (
+                                                                context,
+                                                                error,
+                                                                stackTrace,
+                                                                ) {
+                                                              return Container(
+                                                                width:
+                                                                32,
+                                                                height:
+                                                                32,
+                                                                decoration: BoxDecoration(
+                                                                  color:
+                                                                  Colors.blue,
+                                                                  borderRadius:
                                                                   BorderRadius.circular(
                                                                     6,
                                                                   ),
-                                                              child: Image.asset(
-                                                                'assets/images/gogglemap.jpg',
+                                                                ),
+                                                                child: Icon(
+                                                                  Icons
+                                                                      .map,
+                                                                  color:
+                                                                  Colors.white,
+                                                                  size:
+                                                                  18,
+                                                                ),
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      title: Text(
+                                                        "Open in Apple Maps",
+                                                        style: TextStyle(
+                                                          fontSize: 17,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w400,
+                                                          color:
+                                                          Colors
+                                                              .black,
+                                                        ),
+                                                      ),
+                                                      trailing: Icon(
+                                                        Icons
+                                                            .chevron_right,
+                                                        color:
+                                                        Colors
+                                                            .grey[400],
+                                                        size: 20,
+                                                      ),
+                                                      onTap: () {
+                                                        Get.back();
+                                                        final query =
+                                                        Uri.encodeComponent(
+                                                          fullAddress,
+                                                        );
+                                                        final appleMapsUrl =
+                                                        Uri.parse(
+                                                          "https://maps.apple.com/?q=$query",
+                                                        );
+                                                        launchUrl(
+                                                          appleMapsUrl,
+                                                          mode:
+                                                          LaunchMode
+                                                              .externalApplication,
+                                                        );
+                                                      },
+                                                    ),
+                                                  )
+                                                      : SizedBox(),
+                                                  Container(
+                                                    height: 0.5,
+                                                    color: Colors.grey[300],
+                                                  ),
+                                                  Container(
+                                                    child: ListTile(
+                                                      contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                        horizontal: 16,
+                                                        vertical: 6,
+                                                      ),
+                                                      leading: Container(
+                                                        width: 32,
+                                                        height: 30,
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                          child: Image.asset(
+                                                            'assets/images/gogglemap.jpg',
+                                                            width: 32,
+                                                            height: 32,
+                                                            fit:
+                                                            BoxFit
+                                                                .cover,
+                                                            errorBuilder: (
+                                                                context,
+                                                                error,
+                                                                stackTrace,
+                                                                ) {
+                                                              return Container(
                                                                 width: 32,
                                                                 height: 32,
-                                                                fit:
-                                                                    BoxFit
-                                                                        .cover,
-                                                                errorBuilder: (
-                                                                  context,
-                                                                  error,
-                                                                  stackTrace,
-                                                                ) {
-                                                                  return Container(
-                                                                    width: 32,
-                                                                    height: 32,
-                                                                    decoration: BoxDecoration(
-                                                                      color:
-                                                                          Colors
-                                                                              .red,
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                            6,
-                                                                          ),
-                                                                    ),
-                                                                    child: const Icon(
-                                                                      Icons
-                                                                          .location_on,
-                                                                      color:
-                                                                          Colors
-                                                                              .white,
-                                                                      size: 18,
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ),
-                                                            ),
+                                                                decoration: BoxDecoration(
+                                                                  color:
+                                                                  Colors
+                                                                      .red,
+                                                                  borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    6,
+                                                                  ),
+                                                                ),
+                                                                child: Icon(
+                                                                  Icons
+                                                                      .location_on,
+                                                                  color:
+                                                                  Colors
+                                                                      .white,
+                                                                  size: 18,
+                                                                ),
+                                                              );
+                                                            },
                                                           ),
-                                                          title: const Text(
-                                                            "Open in Google Maps",
+                                                        ),
+                                                      ),
+                                                      title: Text(
+                                                        "Open in Google Maps",
+                                                        style: TextStyle(
+                                                          fontSize: 17,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w400,
+                                                          color:
+                                                          Colors.black,
+                                                        ),
+                                                      ),
+                                                      trailing: Icon(
+                                                        Icons.chevron_right,
+                                                        color:
+                                                        Colors
+                                                            .grey[400],
+                                                        size: 20,
+                                                      ),
+                                                      onTap: () {
+                                                        Get.back();
+                                                        final query =
+                                                        Uri.encodeComponent(
+                                                          fullAddress,
+                                                        );
+                                                        final googleMapsUrl =
+                                                        Uri.parse(
+                                                          "https://www.google.com/maps/search/?api=1&query=$query",
+                                                        );
+                                                        launchUrl(
+                                                          googleMapsUrl,
+                                                          mode:
+                                                          LaunchMode
+                                                              .externalApplication,
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    height: 0.5,
+                                                    color: Colors.grey[300],
+                                                  ),
+                                                  Container(
+                                                    child: ListTile(
+                                                      contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                        horizontal: 16,
+                                                        vertical: 6,
+                                                      ),
+                                                      leading: Container(
+                                                        width: 32,
+                                                        height: 30,
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                          child: Image.asset(
+                                                            'assets/images/copyimage.jpg',
+                                                            width: 32,
+                                                            height: 32,
+                                                            fit:
+                                                            BoxFit
+                                                                .cover,
+                                                            errorBuilder: (
+                                                                context,
+                                                                error,
+                                                                stackTrace,
+                                                                ) {
+                                                              return Container(
+                                                                width: 32,
+                                                                height: 32,
+                                                                decoration: BoxDecoration(
+                                                                  color:
+                                                                  Colors
+                                                                      .grey[200],
+                                                                  borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    6,
+                                                                  ),
+                                                                ),
+                                                                child: Icon(
+                                                                  Icons
+                                                                      .content_copy,
+                                                                  color:
+                                                                  Colors
+                                                                      .grey[600],
+                                                                  size: 18,
+                                                                ),
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      title: Column(
+                                                        crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                        children: [
+                                                          Text(
+                                                            "Copy Address",
                                                             style: TextStyle(
                                                               fontSize: 17,
                                                               fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
+                                                              FontWeight
+                                                                  .w400,
                                                               color:
-                                                                  Colors.black,
+                                                              Colors
+                                                                  .black,
                                                             ),
                                                           ),
-                                                          trailing: Icon(
-                                                            Icons.chevron_right,
-                                                            color:
-                                                                Colors
-                                                                    .grey[400],
-                                                            size: 20,
+                                                          SizedBox(
+                                                            height: 2,
                                                           ),
-                                                          onTap: () {
-                                                            Get.back();
-                                                            final query =
-                                                                Uri.encodeComponent(
-                                                                  fullAddress,
-                                                                );
-                                                            final googleMapsUrl =
-                                                                Uri.parse(
-                                                                  "https://www.google.com/maps/search/?api=1&query=$query",
-                                                                );
-                                                            launchUrl(
-                                                              googleMapsUrl,
-                                                              mode:
-                                                                  LaunchMode
-                                                                      .externalApplication,
-                                                            );
-                                                          },
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        height: 0.5,
-                                                        color: Colors.grey[300],
-                                                      ),
-                                                      Container(
-                                                        child: ListTile(
-                                                          contentPadding:
-                                                              const EdgeInsets.symmetric(
-                                                                horizontal: 16,
-                                                                vertical: 6,
-                                                              ),
-                                                          leading: SizedBox(
-                                                            width: 32,
-                                                            height: 30,
-                                                            child: ClipRRect(
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    6,
-                                                                  ),
-                                                              child: Image.asset(
-                                                                'assets/images/copyimage.jpg',
-                                                                width: 32,
-                                                                height: 32,
-                                                                fit:
-                                                                    BoxFit
-                                                                        .cover,
-                                                                errorBuilder: (
-                                                                  context,
-                                                                  error,
-                                                                  stackTrace,
-                                                                ) {
-                                                                  return Container(
-                                                                    width: 32,
-                                                                    height: 32,
-                                                                    decoration: BoxDecoration(
-                                                                      color:
-                                                                          Colors
-                                                                              .grey[200],
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                            6,
-                                                                          ),
-                                                                    ),
-                                                                    child: Icon(
-                                                                      Icons
-                                                                          .content_copy,
-                                                                      color:
-                                                                          Colors
-                                                                              .grey[600],
-                                                                      size: 18,
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ),
+                                                          Text(
+                                                            fullAddress,
+                                                            style: TextStyle(
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .w400,
+                                                              color:
+                                                              Colors
+                                                                  .grey[600],
                                                             ),
+                                                            maxLines: 2,
+                                                            overflow:
+                                                            TextOverflow
+                                                                .ellipsis,
                                                           ),
-                                                          title: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              const Text(
-                                                                "Copy Address",
-                                                                style: TextStyle(
-                                                                  fontSize: 17,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  color:
-                                                                      Colors
-                                                                          .black,
-                                                                ),
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 2,
-                                                              ),
-                                                              Text(
-                                                                fullAddress,
-                                                                style: TextStyle(
-                                                                  fontSize: 13,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  color:
-                                                                      Colors
-                                                                          .grey[600],
-                                                                ),
-                                                                maxLines: 2,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                            ],
+                                                        ],
+                                                      ),
+                                                      onTap: () {
+                                                        Clipboard.setData(
+                                                          ClipboardData(
+                                                            text:
+                                                            fullAddress,
                                                           ),
-                                                          onTap: () {
-                                                            Clipboard.setData(
-                                                              ClipboardData(
-                                                                text:
-                                                                    fullAddress,
-                                                              ),
-                                                            );
-                                                            Get.back();
+                                                        );
+                                                        Get.back();
 
-                                                            ScaffoldMessenger.of(
-                                                              context,
-                                                            ).showSnackBar(
-                                                              SnackBar(
-                                                                content: const Text(
-                                                                  "Address copied to clipboard",
-                                                                ),
-                                                                duration:
-                                                                    const Duration(
-                                                                      seconds:
-                                                                          2,
-                                                                    ),
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .green,
-                                                                behavior:
-                                                                    SnackBarBehavior
-                                                                        .floating,
-                                                                margin: EdgeInsets.only(
-                                                                  bottom:
-                                                                      MediaQuery.of(
-                                                                        context,
-                                                                      ).size.height -
-                                                                      150,
-                                                                  left: 20,
-                                                                  right: 20,
-                                                                ),
-                                                              ),
-                                                            );
-                                                          },
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(height: 0.5.h),
-                                                Container(
-                                                  width: double.infinity,
-                                                  margin:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 16,
-                                                      ),
-                                                  child: ElevatedButton(
-                                                    onPressed: () {
-                                                      Get.back();
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                      backgroundColor:
-                                                          Colors.white,
-                                                      foregroundColor:
-                                                          Colors.black,
-                                                      elevation: 0,
-                                                      padding:
-                                                          const EdgeInsets.symmetric(
-                                                            vertical: 12,
-                                                          ),
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              14,
+                                                        ScaffoldMessenger.of(
+                                                          context,
+                                                        ).showSnackBar(
+                                                          SnackBar(
+                                                            content: Text(
+                                                              "Address copied to clipboard",
                                                             ),
-                                                        side: BorderSide(
-                                                          color:
-                                                              Colors.grey[300]!,
-                                                          width: 0.5,
-                                                        ),
-                                                      ),
+                                                            duration:
+                                                            Duration(
+                                                              seconds:
+                                                              2,
+                                                            ),
+                                                            backgroundColor:
+                                                            Colors
+                                                                .green,
+                                                            behavior:
+                                                            SnackBarBehavior
+                                                                .floating,
+                                                            margin: EdgeInsets.only(
+                                                              bottom:
+                                                              MediaQuery.of(
+                                                                context,
+                                                              ).size.height -
+                                                                  150,
+                                                              left: 20,
+                                                              right: 20,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
                                                     ),
-                                                    child: const Text(
-                                                      "Done",
-                                                      style: TextStyle(
-                                                        fontSize: 17,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(height: 0.5.h),
+                                            Container(
+                                              width: double.infinity,
+                                              margin: EdgeInsets.symmetric(
+                                                horizontal: 16,
+                                              ),
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  Get.back();
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                  Colors.white,
+                                                  foregroundColor:
+                                                  Colors.black,
+                                                  elevation: 0,
+                                                  padding:
+                                                  EdgeInsets.symmetric(
+                                                    vertical: 12,
+                                                  ),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.circular(
+                                                      14,
+                                                    ),
+                                                    side: BorderSide(
+                                                      color:
+                                                      Colors.grey[300]!,
+                                                      width: 0.5,
                                                     ),
                                                   ),
                                                 ),
-                                                SizedBox(height: 1.h),
-                                              ],
+                                                child: Text(
+                                                  "Done",
+                                                  style: TextStyle(
+                                                    fontSize: 17,
+                                                    fontWeight:
+                                                    FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
                                             ),
-                                          );
-                                        },
+                                            SizedBox(height: 1.h),
+                                          ],
+                                        ),
                                       );
-                                    }
-                                  },
-                                  child: buildListTile(
-                                    icon: Icons.location_on,
-                                    title: "Address",
-                                    subtitle:
-                                        (busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.user
-                                                        ?.address
-                                                        ?.address ==
-                                                    null ||
-                                                busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.user
-                                                        ?.address
-                                                        ?.address ==
-                                                    "" ||
-                                                busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.user
-                                                        ?.address
-                                                        ?.city ==
-                                                    null ||
-                                                busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.user
-                                                        ?.address
-                                                        ?.city ==
-                                                    "" ||
-                                                busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.user
-                                                        ?.address
-                                                        ?.country ==
-                                                    null ||
-                                                busnessviewmodal
-                                                        ?.data
-                                                        ?.business
-                                                        ?.user
-                                                        ?.address
-                                                        ?.country ==
-                                                    "")
-                                            ? "N/A"
-                                            : "${busnessviewmodal?.data?.business?.user?.address?.address}, "
-                                                "${busnessviewmodal?.data?.business?.user?.address?.city}, "
-                                                "${busnessviewmodal?.data?.business?.user?.address?.country}",
-                                  ),
+                                    },
+                                  );
+                                }
+                              },
+                              child: buildListTile(
+                                icon: Icons.location_on,
+                                title: "Address",
+                                subtitle:
+                                (busnessviewmodal
+                                    ?.data
+                                    ?.business
+                                    ?.user
+                                    ?.address
+                                    ?.address ==
+                                    null ||
+                                    busnessviewmodal
+                                        ?.data
+                                        ?.business
+                                        ?.user
+                                        ?.address
+                                        ?.address ==
+                                        "" ||
+                                    busnessviewmodal
+                                        ?.data
+                                        ?.business
+                                        ?.user
+                                        ?.address
+                                        ?.city ==
+                                        null ||
+                                    busnessviewmodal
+                                        ?.data
+                                        ?.business
+                                        ?.user
+                                        ?.address
+                                        ?.city ==
+                                        "" ||
+                                    busnessviewmodal
+                                        ?.data
+                                        ?.business
+                                        ?.user
+                                        ?.address
+                                        ?.country ==
+                                        null ||
+                                    busnessviewmodal
+                                        ?.data
+                                        ?.business
+                                        ?.user
+                                        ?.address
+                                        ?.country ==
+                                        "")
+                                    ? "N/A"
+                                    : "${busnessviewmodal?.data?.business?.user?.address?.address}, "
+                                    "${busnessviewmodal?.data?.business?.user?.address?.city}, "
+                                    "${busnessviewmodal?.data?.business?.user?.address?.country}",
+                              ),
+                            ),
+                            Divider(color: Colors.grey.shade300),
+                            InkWell(
+                              onTap: () {
+                                final phone =
+                                    busnessviewmodal
+                                        ?.data
+                                        ?.business
+                                        ?.user
+                                        ?.mobileNo;
+                                if (phone != null &&
+                                    phone.toString().isNotEmpty) {
+                                  final telUrl = Uri.parse(
+                                    "tel:0${phone.toString()}",
+                                  );
+                                  launchUrl(
+                                    telUrl,
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                }
+                              },
+                              child: buildListTile(
+                                icon: Icons.phone,
+                                title: "Phone",
+                                subtitle:
+                                busnessviewmodal
+                                    ?.data
+                                    ?.business
+                                    ?.user
+                                    ?.mobileNo ==
+                                    null
+                                    ? "N/A"
+                                    : "0${(busnessviewmodal?.data?.business?.user?.mobileNo).toString()}",
+                              ),
+                            ),
+                            Divider(color: Colors.grey.shade300),
+                            ExpansionTile(
+                              leading: Icon(
+                                Icons.access_time,
+                                color: Colors.grey,
+                              ),
+                              title: Text(
+                                "Opening Hours",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
                                 ),
-                                Divider(color: Colors.grey.shade300),
-                                InkWell(
-                                  onTap: () {
-                                    final phone =
+                              ),
+                              subtitle: Text(
+                                _getCurrentDayStatus(),
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                              shape: Border(),
+                              collapsedShape: Border(),
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 8,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      _buildHoursRow(
+                                        "Monday",
                                         busnessviewmodal
                                             ?.data
                                             ?.business
-                                            ?.user
-                                            ?.mobileNo;
-                                    if (phone != null &&
-                                        phone.toString().isNotEmpty) {
-                                      final telUrl = Uri.parse(
-                                        "tel:0${phone.toString()}",
-                                      );
-                                      launchUrl(
-                                        telUrl,
-                                        mode: LaunchMode.externalApplication,
-                                      );
-                                    }
-                                  },
-                                  child: buildListTile(
-                                    icon: Icons.phone,
-                                    title: "Phone",
-                                    subtitle:
+                                            ?.openingHours
+                                            ?.monday,
+                                      ),
+                                      _buildHoursRow(
+                                        "Tuesday",
                                         busnessviewmodal
-                                                    ?.data
-                                                    ?.business
-                                                    ?.user
-                                                    ?.mobileNo ==
-                                                null
-                                            ? "N/A"
-                                            : "0${(busnessviewmodal?.data?.business?.user?.mobileNo).toString()}",
+                                            ?.data
+                                            ?.business
+                                            ?.openingHours
+                                            ?.tuesday,
+                                      ),
+                                      _buildHoursRow(
+                                        "Wednesday",
+                                        busnessviewmodal
+                                            ?.data
+                                            ?.business
+                                            ?.openingHours
+                                            ?.wednesday,
+                                      ),
+                                      _buildHoursRow(
+                                        "Thursday",
+                                        busnessviewmodal
+                                            ?.data
+                                            ?.business
+                                            ?.openingHours
+                                            ?.thursday,
+                                      ),
+                                      _buildHoursRow(
+                                        "Friday",
+                                        busnessviewmodal
+                                            ?.data
+                                            ?.business
+                                            ?.openingHours
+                                            ?.friday,
+                                      ),
+                                      _buildHoursRow(
+                                        "Saturday",
+                                        busnessviewmodal
+                                            ?.data
+                                            ?.business
+                                            ?.openingHours
+                                            ?.saturday,
+                                      ),
+                                      _buildHoursRow(
+                                        "Sunday",
+                                        busnessviewmodal
+                                            ?.data
+                                            ?.business
+                                            ?.openingHours
+                                            ?.sunday,
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Divider(color: Colors.grey.shade300),
-                                ExpansionTile(
-                                  leading: const Icon(
-                                    Icons.access_time,
-                                    color: Colors.grey,
-                                  ),
-                                  title: const Text(
-                                    "Opening Hours",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
+                              ],
+                            ),
+                            Divider(color: Colors.grey.shade300),
+                            InkWell(
+                              onTap: () {
+                                final website =
+                                    busnessviewmodal
+                                        ?.data
+                                        ?.business
+                                        ?.website;
+                                if (website != null && website.isNotEmpty) {
+                                  String url = website;
+                                  if (!url.startsWith('http://') &&
+                                      !url.startsWith('https://')) {
+                                    url = 'https://$url';
+                                  }
+                                  final websiteUrl = Uri.parse(url);
+                                  launchUrl(
+                                    websiteUrl,
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                }
+                              },
+                              child: buildListTile(
+                                icon: Icons.language,
+                                title: "Website",
+                                subtitle:
+                                busnessviewmodal
+                                    ?.data
+                                    ?.business
+                                    ?.website
+                                    ?.isNotEmpty ==
+                                    true
+                                    ? busnessviewmodal!
+                                    .data!
+                                    .business!
+                                    .website!
+                                    : "N/A",
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 2.h),
+                      Text(
+                        "You May Also Like",
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          fontFamily: AppConstants.manrope,
+                        ),
+                      ),
+                      SizedBox(height: 1.h),
+                      Column(
+                        children: [
+                          for (
+                          int i = 0;
+                          i <
+                              (busnessviewmodal
+                                  ?.data
+                                  ?.nearbyBusinesses
+                                  ?.length ??
+                                  0) &&
+                              i < 5;
+                          i++
+                          ) ...[
+                            InkWell(
+                              onTap: () {
+                                Get.back();
+                                print(
+                                  "Business Chceck ID: ${busnessviewmodal?.data?.nearbyBusinesses?[i].id}",
+                                );
+                                BussinessViewProfile(
+                                  (busnessviewmodal
+                                      ?.data
+                                      ?.nearbyBusinesses?[i]
+                                      .id)
+                                      .toString(),
+                                );
+                              },
+                              child: Container(
+                                width: 110.w,
+                                margin: EdgeInsets.symmetric(vertical: 4),
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 2,
+                                      offset: Offset(0, 2),
                                     ),
-                                  ),
-                                  subtitle: Text(
-                                    _getCurrentDayStatus(),
-                                    style: TextStyle(color: Colors.grey[600]),
-                                  ),
-                                  shape: const Border(),
-                                  collapsedShape: const Border(),
+                                  ],
+                                ),
+                                child: Row(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 8,
+                                    InkWell(
+                                      onTap: () {
+                                        print(
+                                          "Business ID: ${busnessviewmodal?.data?.nearbyBusinesses?[i].id}",
+                                        );
+                                        BussinessViewProfile(
+                                          (busnessviewmodal
+                                              ?.data
+                                              ?.nearbyBusinesses?[i]
+                                              .id)
+                                              .toString(),
+                                        );
+                                      },
+                                      child: CircleAvatar(
+                                        radius: 20,
+                                        backgroundImage: NetworkImage(
+                                          busnessviewmodal
+                                              ?.data
+                                              ?.nearbyBusinesses?[i]
+                                              .logo ??
+                                              "https://randomuser.me/api/portraits/men/1.jpg",
+                                        ),
                                       ),
+                                    ),
+                                    SizedBox(width: 12),
+                                    Expanded(
                                       child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                         children: [
-                                          _buildHoursRow(
-                                            "Monday",
+                                          Text(
                                             busnessviewmodal
                                                 ?.data
-                                                ?.business
-                                                ?.openingHours
-                                                ?.monday,
+                                                ?.nearbyBusinesses?[i]
+                                                .businessName
+                                                ?.isNotEmpty ==
+                                                true
+                                                ? busnessviewmodal!
+                                                .data!
+                                                .nearbyBusinesses![i]
+                                                .businessName!
+                                                : "N/A",
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily:
+                                              AppConstants.manrope,
+                                            ),
                                           ),
-                                          _buildHoursRow(
-                                            "Tuesday",
-                                            busnessviewmodal
-                                                ?.data
-                                                ?.business
-                                                ?.openingHours
-                                                ?.tuesday,
+                                          SizedBox(height: 4),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                              BorderRadius.circular(10),
+                                            ),
+                                            child: ReadMoreText(
+                                              busnessviewmodal
+                                                  ?.data
+                                                  ?.nearbyBusinesses?[i]
+                                                  .description
+                                                  ?.isNotEmpty ==
+                                                  true
+                                                  ? busnessviewmodal!
+                                                  .data!
+                                                  .nearbyBusinesses![i]
+                                                  .description!
+                                                  : "N/A",
+                                              trimLines: 3,
+                                              colorClickableText:
+                                              Colors.blue,
+                                              trimMode: TrimMode.Line,
+                                              trimCollapsedText:
+                                              ' Show more',
+                                              trimExpandedText:
+                                              ' Show less',
+                                              moreStyle: TextStyle(
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily:
+                                                AppConstants.manrope,
+                                                letterSpacing: 1,
+                                                color: AppColors.maincolor,
+                                              ),
+                                              lessStyle: TextStyle(
+                                                fontSize: 15.sp,
+                                                fontFamily:
+                                                AppConstants.manrope,
+                                                fontWeight: FontWeight.bold,
+                                                letterSpacing: 1,
+                                                color: AppColors.maincolor,
+                                              ),
+                                              style: TextStyle(
+                                                fontSize: 16.sp,
+                                                color: Colors.grey.shade500,
+                                                fontWeight:
+                                                FontWeight.normal,
+                                                fontFamily:
+                                                AppConstants.manrope,
+                                              ),
+                                            ),
                                           ),
-                                          _buildHoursRow(
-                                            "Wednesday",
-                                            busnessviewmodal
-                                                ?.data
-                                                ?.business
-                                                ?.openingHours
-                                                ?.wednesday,
-                                          ),
-                                          _buildHoursRow(
-                                            "Thursday",
-                                            busnessviewmodal
-                                                ?.data
-                                                ?.business
-                                                ?.openingHours
-                                                ?.thursday,
-                                          ),
-                                          _buildHoursRow(
-                                            "Friday",
-                                            busnessviewmodal
-                                                ?.data
-                                                ?.business
-                                                ?.openingHours
-                                                ?.friday,
-                                          ),
-                                          _buildHoursRow(
-                                            "Saturday",
-                                            busnessviewmodal
-                                                ?.data
-                                                ?.business
-                                                ?.openingHours
-                                                ?.saturday,
-                                          ),
-                                          _buildHoursRow(
-                                            "Sunday",
-                                            busnessviewmodal
-                                                ?.data
-                                                ?.business
-                                                ?.openingHours
-                                                ?.sunday,
+                                          SizedBox(height: 4),
+                                          RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: "Distance :- ",
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                    FontWeight.bold,
+                                                    fontSize: 14,
+                                                    fontFamily:
+                                                    AppConstants
+                                                        .manrope,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text:
+                                                  (busnessviewmodal
+                                                      ?.data
+                                                      ?.nearbyBusinesses?[i]
+                                                      .distance !=
+                                                      null)
+                                                      ? "${busnessviewmodal!.data!.nearbyBusinesses![i].distance!.toStringAsFixed(2)} Miles"
+                                                      : "N/A",
+                                                  style: TextStyle(
+                                                    color: Colors.green,
+                                                    fontWeight:
+                                                    FontWeight.bold,
+                                                    fontSize: 14.sp,
+                                                    fontFamily:
+                                                    AppConstants
+                                                        .manrope,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ],
                                       ),
                                     ),
                                   ],
                                 ),
-                                Divider(color: Colors.grey.shade300),
-                                InkWell(
-                                  onTap: () {
-                                    final website =
-                                        busnessviewmodal
-                                            ?.data
-                                            ?.business
-                                            ?.website;
-                                    if (website != null && website.isNotEmpty) {
-                                      String url = website;
-                                      if (!url.startsWith('http://') &&
-                                          !url.startsWith('https://')) {
-                                        url = 'https://$url';
-                                      }
-                                      final websiteUrl = Uri.parse(url);
-                                      launchUrl(
-                                        websiteUrl,
-                                        mode: LaunchMode.externalApplication,
-                                      );
-                                    }
-                                  },
-                                  child: buildListTile(
-                                    icon: Icons.language,
-                                    title: "Website",
-                                    subtitle:
-                                        busnessviewmodal
-                                                    ?.data
-                                                    ?.business
-                                                    ?.website
-                                                    ?.isNotEmpty ==
-                                                true
-                                            ? busnessviewmodal!
-                                                .data!
-                                                .business!
-                                                .website!
-                                            : "N/A",
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 2.h),
-                          Text(
-                            "You May Also Like",
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                              fontFamily: AppConstants.manrope,
-                            ),
-                          ),
-                          SizedBox(height: 1.h),
-                          Column(
-                            children: [
-                              for (
-                                int i = 0;
-                                i <
-                                        (busnessviewmodal
-                                                ?.data
-                                                ?.nearbyBusinesses
-                                                ?.length ??
-                                            0) &&
-                                    i < 5;
-                                i++
-                              ) ...[
-                                InkWell(
-                                  onTap: () {
-                                    Get.back();
-
-                                    BussinessViewProfile(
-                                      (busnessviewmodal
-                                              ?.data
-                                              ?.nearbyBusinesses?[i]
-                                              .id)
-                                          .toString(),
-                                    );
-                                  },
-                                  child: Container(
-                                    width: 110.w,
-                                    margin: const EdgeInsets.symmetric(
-                                      vertical: 4,
-                                    ),
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(12),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Colors.black12,
-                                          blurRadius: 2,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            BussinessViewProfile(
-                                              (busnessviewmodal
-                                                      ?.data
-                                                      ?.nearbyBusinesses?[i]
-                                                      .id)
-                                                  .toString(),
-                                            );
-                                          },
-                                          child: CircleAvatar(
-                                            radius: 20,
-                                            backgroundImage: NetworkImage(
-                                              busnessviewmodal
-                                                      ?.data
-                                                      ?.nearbyBusinesses?[i]
-                                                      .logo ??
-                                                  "https://randomuser.me/api/portraits/men/1.jpg",
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                busnessviewmodal
-                                                            ?.data
-                                                            ?.nearbyBusinesses?[i]
-                                                            .businessName
-                                                            ?.isNotEmpty ==
-                                                        true
-                                                    ? busnessviewmodal!
-                                                        .data!
-                                                        .nearbyBusinesses![i]
-                                                        .businessName!
-                                                    : "N/A",
-                                                style: const TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                child: ReadMoreText(
-                                                  busnessviewmodal
-                                                              ?.data
-                                                              ?.nearbyBusinesses?[i]
-                                                              .description
-                                                              ?.isNotEmpty ==
-                                                          true
-                                                      ? busnessviewmodal!
-                                                          .data!
-                                                          .nearbyBusinesses![i]
-                                                          .description!
-                                                      : "N/A",
-                                                  trimLines: 3,
-                                                  colorClickableText:
-                                                      Colors.blue,
-                                                  trimMode: TrimMode.Line,
-                                                  trimCollapsedText:
-                                                      ' Show more',
-                                                  trimExpandedText:
-                                                      ' Show less',
-                                                  moreStyle: TextStyle(
-                                                    fontSize: 15.sp,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily:
-                                                        AppConstants.manrope,
-                                                    letterSpacing: 1,
-                                                    color: AppColors.maincolor,
-                                                  ),
-                                                  lessStyle: TextStyle(
-                                                    fontSize: 15.sp,
-                                                    fontFamily:
-                                                        AppConstants.manrope,
-                                                    fontWeight: FontWeight.bold,
-                                                    letterSpacing: 1,
-                                                    color: AppColors.maincolor,
-                                                  ),
-                                                  style: TextStyle(
-                                                    fontSize: 16.sp,
-                                                    color: Colors.grey.shade500,
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                    fontFamily:
-                                                        AppConstants.manrope,
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              RichText(
-                                                text: TextSpan(
-                                                  children: [
-                                                    const TextSpan(
-                                                      text: "Distance :- ",
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 14,
-                                                        fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                      ),
-                                                    ),
-                                                    TextSpan(
-                                                      text:
-                                                          (busnessviewmodal
-                                                                      ?.data
-                                                                      ?.nearbyBusinesses?[i]
-                                                                      .distance !=
-                                                                  null)
-                                                              ? "${busnessviewmodal!.data!.nearbyBusinesses![i].distance!.toStringAsFixed(2)} Miles"
-                                                              : "N/A",
-                                                      style: TextStyle(
-                                                        color: Colors.green,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 14.sp,
-                                                        fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
+                          ],
                         ],
                       ),
-                    ),
-                  );
-                },
+                    ],
+                  ),
+                ),
               );
             },
-          ),
+          );
+        },
+      ),
     ).whenComplete(() {
       _isBottomSheetOpen = false;
     });
@@ -4302,6 +4296,7 @@ class _CommunityScreenState extends State<CommunityScreen>
 
       DateTime endTime = DateTime.now();
       Duration totalTime = endTime.difference(startTime);
+    } catch (e, stackTrace) {
     } finally {
       if (mounted) {
         setState(() {
@@ -4320,8 +4315,8 @@ class _CommunityScreenState extends State<CommunityScreen>
     checkInternet().then((internet) async {
       if (internet) {
         CommunityProvider().businessProfileViewApi(id, AppLat, AppLon).then((
-          response,
-        ) async {
+            response,
+            ) async {
           busnessviewmodal = BusnessViewModal.fromJson(response.data);
           if (response.statusCode == 200) {
             setState(() {
@@ -4366,27 +4361,31 @@ class _CommunityScreenState extends State<CommunityScreen>
         CommunityProvider()
             .businessLikeApi(data)
             .then((response) async {
-              if (response.statusCode == 200) {
-                bussinesslikemodel = BussinessLikeModel.fromJson(response.data);
+          if (response.statusCode == 200) {
+            bussinesslikemodel = BussinessLikeModel.fromJson(response.data);
 
-                setState(() {
-                  isSending = true;
-                });
+            setState(() {
+              isSending = true;
+            });
 
-                request.clear();
-                final String businessId =
-                    (busnessviewmodal?.data?.business?.id).toString();
-                Get.back();
-                await Future.delayed(const Duration(milliseconds: 100));
-                BussinessViewProfile(businessId);
-              } else if (response.statusCode == 429) {
-                setState(() {
-                  isSending = true;
-                });
-              } else {
-                EasyLoading.showError("Internal Server Error");
-              }
-            })
+            request.clear();
+            final String businessId =
+            (busnessviewmodal?.data?.business?.id).toString();
+            Get.back();
+            await Future.delayed(Duration(milliseconds: 100));
+            BussinessViewProfile(businessId);
+          } else if (response.statusCode == 429) {
+            setState(() {
+              isSending = true;
+            });
+          } else {
+            print(
+              "Internal Server Error - Status Code: ${response.statusCode}",
+            );
+
+            EasyLoading.showError("Internal Server Error");
+          }
+        })
             .catchError((error, stackTrace) {});
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");
@@ -4394,16 +4393,9 @@ class _CommunityScreenState extends State<CommunityScreen>
     });
   }
 
-  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-
   Future<void> saveLikeStatus(String businessId, bool isLiked) async {
-    // read existing liked businesses
-    String? likedData = await secureStorage.read(key: 'likedBusinesses');
-    List<String> likedBusinesses = [];
-
-    if (likedData != null) {
-      likedBusinesses = List<String>.from(jsonDecode(likedData));
-    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> likedBusinesses = prefs.getStringList('likedBusinesses') ?? [];
 
     if (isLiked) {
       if (!likedBusinesses.contains(businessId)) {
@@ -4413,18 +4405,12 @@ class _CommunityScreenState extends State<CommunityScreen>
       likedBusinesses.remove(businessId);
     }
 
-    // save back securely
-    await secureStorage.write(
-      key: 'likedBusinesses',
-      value: jsonEncode(likedBusinesses),
-    );
+    await prefs.setStringList('likedBusinesses', likedBusinesses);
   }
 
   Future<bool> getLikeStatus(String businessId) async {
-    String? likedData = await secureStorage.read(key: 'likedBusinesses');
-    if (likedData == null) return false;
-
-    List<String> likedBusinesses = List<String>.from(jsonDecode(likedData));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> likedBusinesses = prefs.getStringList('likedBusinesses') ?? [];
     return likedBusinesses.contains(businessId);
   }
 
@@ -4551,30 +4537,30 @@ class _CommunityScreenState extends State<CommunityScreen>
         CommunityProvider()
             .businessLikeApi(data)
             .then((response) async {
-              if (response.statusCode == 200) {
-                setState(() {
-                  getlikeModal?.data?.removeAt(index);
-                });
-
-                setState(() {
-                  isSending = false;
-                });
-
-                Get.back();
-
-                await Future.delayed(const Duration(milliseconds: 500));
-                _showFavouriteBottomSheet();
-              } else {
-                setState(() {
-                  isSending = false;
-                });
-              }
-            })
-            .catchError((error) {
-              setState(() {
-                isSending = false;
-              });
+          if (response.statusCode == 200) {
+            setState(() {
+              getlikeModal?.data?.removeAt(index);
             });
+
+            setState(() {
+              isSending = false;
+            });
+
+            Get.back();
+
+            await Future.delayed(Duration(milliseconds: 500));
+            _showFavouriteBottomSheet();
+          } else {
+            setState(() {
+              isSending = false;
+            });
+          }
+        })
+            .catchError((error) {
+          setState(() {
+            isSending = false;
+          });
+        });
       } else {
         EasyLoading.dismiss();
         buildErrorDialog(context, 'Error', "Internet Required");
@@ -4601,11 +4587,55 @@ class _CommunityScreenState extends State<CommunityScreen>
     });
   }
 
+  // CategoriesProfileView(String id, String categoryName, String categoryImage) {
+  //   setState(() {
+  //     isSending = true;
+  //   });
+  //
+  //   checkInternet().then((internet) async {
+  //     if (internet) {
+  //       CommunityProvider()
+  //           .categoryViewApi(
+  //             (loginModel?.data?.user?.id).toString(),
+  //             AppLon,
+  //             AppLat,
+  //             id,
+  //           )
+  //           .then((response) async {
+  //             viewcategoriesmodel = ViewCategoriesModel.fromJson(response.data);
+  //             if (response.statusCode == 200) {
+  //               setState(() {
+  //                 isSending = false;
+  //               });
+  //
+  //               await _showcategoriesdBottomSheet(
+  //                 viewcategoriesmodel,
+  //                 categoryName,
+  //                 categoryImage,
+  //               );
+  //             } else if (response.statusCode == 422) {
+  //               setState(() {
+  //                 isSending = false;
+  //               });
+  //             } else {
+  //               setState(() {
+  //                 isSending = false;
+  //               });
+  //             }
+  //           });
+  //     } else {
+  //       setState(() {
+  //         isSending = false;
+  //       });
+  //       buildErrorDialog(context, 'Error', "Internet Required");
+  //     }
+  //   });
+  // }
   void CategoriesProfileView(
-    String id,
-    String categoryName,
-    String categoryImage,
-  ) {
+      String id,
+      String categoryName,
+      String categoryImage,
+      ) {
     setState(() {
       isSending = true;
     });
@@ -4674,7 +4704,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     final Map<String, String> data = {
       'user_id': (loginModel?.data?.user?.id).toString(),
       'offerPromotion_id':
-          (busnessviewmodal?.data?.offerPromotions?[0].id).toString(),
+      (busnessviewmodal?.data?.offerPromotions?[0].id).toString(),
     };
 
     checkInternet().then((internet) async {
@@ -4707,27 +4737,27 @@ class _CommunityScreenState extends State<CommunityScreen>
         EventProvider()
             .sendeventapi(data)
             .then((response) async {
-              sendeventModel = SendeventModel.fromJson(response.data);
+          sendeventModel = SendeventModel.fromJson(response.data);
 
-              if (response.statusCode == 200 || sendeventModel?.data == 200) {
-              } else if (response.statusCode == 422) {
-                load = false;
-              } else {
-                EasyLoading.showError("Internal Server Error");
-              }
+          if (response.statusCode == 200 || sendeventModel?.data == 200) {
+          } else if (response.statusCode == 422) {
+            load = false;
+          } else {
+            EasyLoading.showError("Internal Server Error");
+          }
 
-              setState(() {
-                isLoading = false;
-              });
-              return false;
-            })
+          setState(() {
+            isLoading = false;
+          });
+          return false;
+        })
             .catchError((error) {
-              setState(() {
-                isLoading = false;
-              });
-              EasyLoading.showError("Request Failed");
-              return false;
-            });
+          setState(() {
+            isLoading = false;
+          });
+          EasyLoading.showError("Request Failed");
+          return false;
+        });
       } else {
         setState(() {
           isLoading = false;
@@ -4739,151 +4769,157 @@ class _CommunityScreenState extends State<CommunityScreen>
   }
 
   Widget buildListView(
-    List<String?> items,
-    List<String?> links,
-    List<String?> titles,
-  ) {
+      List<String?> items,
+      List<String?> links,
+      List<String?> titles,
+      ) {
     if (busnessviewmodal?.data?.offerPromotions == null ||
-        busnessviewmodal!.data!.offerPromotions!.isEmpty) {
-      return const SizedBox(); // empty state
-    }
+        busnessviewmodal!.data!.offerPromotions!.isEmpty) {}
 
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: items.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 8),
-      itemBuilder: (context, index) {
-        final String? linkUrl = links[index]?.trim();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ...List.generate(items.length, (index) {
+          String? linkUrl = links[index]?.trim();
 
-        String displayUrl = '';
-        if (linkUrl != null && linkUrl.isNotEmpty) {
-          try {
-            Uri uri = Uri.parse(linkUrl);
-            displayUrl = uri.host;
-            if (displayUrl.length > 30) {
-              displayUrl = '${displayUrl.substring(0, 27)}...';
-            }
-          } catch (e) {
-            displayUrl = linkUrl;
-            if (displayUrl.length > 30) {
-              displayUrl = '${displayUrl.substring(0, 27)}...';
+          String displayUrl = '';
+          if (linkUrl != null && linkUrl.isNotEmpty) {
+            try {
+              Uri uri = Uri.parse(linkUrl);
+              displayUrl = uri.host;
+
+              if (displayUrl.length > 30) {
+                displayUrl = displayUrl.substring(0, 27) + '...';
+              }
+            } catch (e) {
+              displayUrl = linkUrl;
+              if (displayUrl.length > 30) {
+                displayUrl = displayUrl.substring(0, 27) + '...';
+              }
             }
           }
-        }
 
-        return Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300),
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: ListTile(
-            onTap: () async {
-              OfferPromoAsViewedApi();
-              if (linkUrl != null && linkUrl.isNotEmpty) {
-                Uri uri = Uri.parse(linkUrl);
-                if (await canLaunchUrl(uri)) {
-                  await launchUrl(uri, mode: LaunchMode.externalApplication);
-                }
-              }
-            },
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 4,
-            ),
-            leading: Container(
-              width: 15.w,
-              height: 7.h,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 3,
-                    spreadRadius: 1,
-                  ),
-                ],
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade300),
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(8),
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(30),
-                child: CachedNetworkImage(
-                  imageUrl: items[index] ?? '',
-                  placeholder:
-                      (context, url) =>
-                          const Center(child: CircularProgressIndicator()),
-                  errorWidget:
-                      (context, url, error) => const Image(
-                        image: AssetImage("assets/images/waveeLogoShort.png"),
-                      ),
-                  fit: BoxFit.cover,
+              child: ListTile(
+                onTap: () async {
+                  OfferPromoAsViewedApi();
+                  if (linkUrl != null && linkUrl.isNotEmpty) {
+                    Uri uri = Uri.parse(linkUrl);
+
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(
+                        uri,
+                        mode: LaunchMode.externalApplication,
+                      );
+                    } else {}
+                  } else {}
+                },
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
                 ),
-              ),
-            ),
-            title: Text(
-              titles[index] ?? "No Title",
-              style: TextStyle(
-                fontSize: 15.sp,
-                fontWeight: FontWeight.bold,
-                fontFamily: AppConstants.manrope,
-              ),
-            ),
-            subtitle: Row(
-              children: [
-                Icon(Icons.link, size: 16.sp, color: Colors.blue),
-                const SizedBox(width: 4),
-                Expanded(
-                  child: Text(
-                    displayUrl.isNotEmpty ? displayUrl : "No link available",
-                    style: TextStyle(
-                      fontFamily: AppConstants.manrope,
-                      fontSize: 14.sp,
-                      color: Colors.blue,
-                      decoration:
+                leading: Container(
+                  width: 15.w,
+                  height: 7.h,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 3,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: CachedNetworkImage(
+                      imageUrl: items[index] ?? '',
+                      placeholder:
+                          (context, url) =>
+                          Center(child: CircularProgressIndicator()),
+                      errorWidget:
+                          (context, url, error) => Image(
+                        image: AssetImage(
+                          "assets/images/waveeLogoShort.png",
+                        ),
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                title: Text(
+                  titles[index] ?? "No Title",
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: AppConstants.manrope,
+                  ),
+                ),
+                subtitle: Row(
+                  children: [
+                    Icon(Icons.link, size: 16.sp, color: Colors.blue),
+                    SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        displayUrl.isNotEmpty
+                            ? displayUrl
+                            : "No link available",
+                        style: TextStyle(
+                          fontFamily: AppConstants.manrope,
+                          fontSize: 14.sp,
+                          color: Colors.blue,
+                          decoration:
                           linkUrl != null && linkUrl.isNotEmpty
                               ? TextDecoration.underline
                               : TextDecoration.none,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  ],
                 ),
-              ],
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: Colors.black54,
+                ),
+              ),
             ),
-            trailing: const Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: Colors.black54,
-            ),
-          ),
-        );
-      },
+          );
+        }),
+      ],
     );
   }
 
   Widget buildMediaListView(List<Posts> mediaItems) {
-    if (mediaItems.isEmpty) {
-      return const SizedBox.shrink(); // avoid empty widget tree
-    }
-
     return SizedBox(
       height: 35.h,
       child: InViewNotifierList(
         scrollDirection: Axis.horizontal,
-        itemCount: mediaItems.length,
         isInViewPortCondition: (deltaTop, deltaBottom, viewPortDimension) {
           return deltaTop < (0.5 * viewPortDimension) &&
               deltaBottom > (0.5 * viewPortDimension);
         },
+        itemCount: mediaItems.length,
         builder: (context, index) {
           final item = mediaItems[index];
-
           return InViewNotifierWidget(
             id: '$index',
             builder: (context, isInView, _) {
               return Container(
                 width: 44.w,
-                margin: const EdgeInsets.symmetric(horizontal: 4),
+                height: 30.h,
+                margin: EdgeInsets.symmetric(horizontal: 4),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: Colors.grey.shade300, width: 1.5),
@@ -4891,49 +4927,41 @@ class _CommunityScreenState extends State<CommunityScreen>
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child:
-                      item.type == 'video'
-                          ? VideoWidget(
-                            videoUrl: item.file ?? '',
-                            play: isInView,
-                            postId: item.id ?? 0,
-                          )
-                          : GestureDetector(
-                            onTap: () {
-                              if (item.file?.isNotEmpty ?? false) {
-                                Get.to(
-                                  () => FullScreenImageView(
-                                    imageUrl: item.file!,
-                                    postId: item.id ?? 0,
-                                  ),
-                                );
-                              }
-                            },
-                            child:
-                                item.file == null || item.file!.isEmpty
-                                    ? Container(
-                                      color: Colors.grey.shade200,
-                                      child: const Icon(
-                                        Icons.image_not_supported,
-                                        color: Colors.grey,
-                                      ),
-                                    )
-                                    : CachedNetworkImage(
-                                      imageUrl: item.file!,
-                                      fit: BoxFit.cover,
-                                      placeholder:
-                                          (context, url) => const Center(
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                            ),
-                                          ),
-                                      errorWidget:
-                                          (context, url, error) => const Icon(
-                                            Icons.broken_image,
-                                            size: 40,
-                                            color: Colors.grey,
-                                          ),
-                                    ),
-                          ),
+                  item.type == 'video'
+                      ? VideoWidget(
+                    videoUrl: item.file ?? '',
+                    play: isInView,
+                    postId: item.id ?? 0,
+                  )
+                      : GestureDetector(
+                    onTap: () {
+                      Get.to(
+                            () => FullScreenImageView(
+                          imageUrl: item.file ?? '',
+                          postId: item.id ?? 0,
+                        ),
+                      );
+                    },
+                    child:
+                    item.file == null || item.file!.isEmpty
+                        ? Center(child: CircularProgressIndicator())
+                        : CachedNetworkImage(
+                      imageUrl: item.file!,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity,
+                      placeholder:
+                          (context, url) => Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      errorWidget:
+                          (context, url, error) => Icon(
+                        Icons.broken_image,
+                        size: 40,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
                 ),
               );
             },
@@ -4943,317 +4971,666 @@ class _CommunityScreenState extends State<CommunityScreen>
     );
   }
 
-  /// ---------------- Services ----------------
   Widget buildServiceListView(List<Services> services) {
     if (busnessviewmodal?.data?.services == null ||
         busnessviewmodal!.data!.services!.isEmpty) {
-      return const SizedBox.shrink();
+      return Center();
     }
 
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: services.length,
-      itemBuilder: (context, index) {
-        final service = services[index];
-        final imageUrl = service.images ?? '';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ...List.generate(services.length, (index) {
+          String imageUrl = services[index].images ?? '';
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade300),
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: ListTile(
-              onTap: () {
-                Get.to(
-                  () => ServiceDetailsPage(
-                    serviceID: service.id?.toString() ?? "",
-                    businessID:
-                        busnessviewmodal?.data?.business?.id.toString() ?? "",
-                  ),
-                );
-              },
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 4,
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade300),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
               ),
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(30),
-                child: CachedNetworkImage(
-                  imageUrl:
+              child: ListTile(
+                onTap: () {
+                  print(
+                    "service Detail ID Ave che che : ${services?[index].id ?? ''}",
+                  );
+                  print(
+                    "service Detail ID Ave che che : ${busnessviewmodal?.data?.business?.id.toString()}",
+                  );
+                  Get.to(
+                        () => ServiceDetailsPage(
+                      serviceID: services?[index].id.toString() ?? "",
+                      businessID:
+                      busnessviewmodal?.data?.business?.id.toString() ?? "",
+                    ),
+                  );
+                },
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
+                leading: Container(
+                  width: 15.w,
+                  height: 7.h,
+                  decoration: BoxDecoration(shape: BoxShape.circle),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: CachedNetworkImage(
+                      imageUrl:
                       imageUrl.isNotEmpty
                           ? imageUrl
-                          : 'https://media.hswstatic.com/...', // fallback
-                  fit: BoxFit.cover,
-                  placeholder:
-                      (context, url) =>
-                          const Center(child: CircularProgressIndicator()),
-                  errorWidget:
-                      (context, url, error) => const Icon(
+                          : 'https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL3BsYXlcLzBiN2Y0ZTliLWY1OWMtNDAyNC05ZjA2LWIzZGMxMjg1MGFiNy0xOTIwLTEwODAuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0=',
+                      fit: BoxFit.cover,
+                      placeholder:
+                          (context, url) =>
+                          Center(child: CircularProgressIndicator()),
+                      errorWidget:
+                          (context, url, error) => Icon(
                         Icons.home_repair_service,
                         color: Colors.grey,
-                        size: 24,
+                        size: 8.w,
                       ),
-                ),
-              ),
-              title: Text(
-                service.title ?? "Service Name",
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: AppConstants.manrope,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 4),
-                  Text(
-                    "£ ${service.price ?? 'N/A'}",
-                    style: TextStyle(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green[700],
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.event_available,
-                        color: Colors.blue,
-                        size: 16.sp,
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          "Availability: ${service.availability ?? 'N/A'}",
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            color: Colors.blue[700],
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
+                ),
+                title: Text(
+                  services[index].title ?? "Service Name",
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: AppConstants.manrope,
                   ),
-                ],
-              ),
-              trailing: const Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: Colors.black54,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Text(
+                          "£",
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
+                        SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            "Price: ${services[index].price ?? 'N/A'}",
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              color: Colors.green[700],
+                              fontFamily: AppConstants.manrope,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.event_available,
+                          color: Colors.blue,
+                          size: 16.sp,
+                        ),
+                        SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            "Availability: ${services[index].availability ?? 'N/A'}",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colors.blue[700],
+                              fontFamily: AppConstants.manrope,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: Colors.black54,
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        }),
+      ],
     );
   }
 
-  /// ---------------- Events ----------------
   Widget buildEventListView() {
-    final events = busnessviewmodal?.data?.events ?? [];
-    if (events.isEmpty) return const SizedBox.shrink();
+    if (busnessviewmodal?.data?.events == null ||
+        busnessviewmodal!.data!.events!.isEmpty) {
+      return Center();
+    }
 
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: events.length,
-      itemBuilder: (context, index) {
-        final event = events[index];
-        final eventId = event.id?.toString() ?? "";
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ...List.generate(busnessviewmodal!.data!.events!.length, (index) {
+          String eventId =
+              busnessviewmodal?.data?.events?[index].id?.toString() ?? "";
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade300),
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: ListTile(
-              onTap: () {
-                Get.to(
-                  EventDetail(
-                    eventID: eventId,
-                    status: event.requestEvent ?? "",
-                  ),
+          bool isRequestSent = sentEventIds.contains(eventId);
+          bool isLoading = false;
+
+          return StatefulBuilder(
+            builder: (context, setState) {
+              void showRequestDialog() {
+                if (busnessviewmodal?.data?.events?[index]?.requestEvent
+                    ?.toLowerCase() ==
+                    "pending") {
+                  return;
+                }
+
+                requestController.clear();
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return StatefulBuilder(
+                      builder: (context, setDialogState) {
+                        return Dialog(
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Form(
+                              key: _formKey,
+                              autovalidateMode:
+                              AutovalidateMode.onUserInteraction,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Stack(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 10,
+                                          ),
+                                          child: Text(
+                                            "${profileModel?.data?.user?.name?.firstName.toString().capitalizeFirst ?? ""} "
+                                                "${profileModel?.data?.user?.name?.lastName.toString().capitalizeFirst ?? ""}",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 18.sp,
+                                              fontFamily: AppConstants.manrope,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.topRight,
+                                        child: CloseButton(),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    busnessviewmodal
+                                        ?.data
+                                        ?.events?[index]
+                                        ?.title ??
+                                        "N/A",
+                                    style: TextStyle(
+                                      fontFamily: AppConstants.manrope,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black38,
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    busnessviewmodal
+                                        ?.data
+                                        ?.events?[index]
+                                        ?.eventDate !=
+                                        null
+                                        ? DateFormat.jm().format(
+                                      DateTime.parse(
+                                        busnessviewmodal!
+                                            .data!
+                                            .events![index]!
+                                            .eventDate!,
+                                      ),
+                                    )
+                                        : "N/A",
+                                    style: TextStyle(
+                                      fontFamily: AppConstants.manrope,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black38,
+                                    ),
+                                  ),
+                                  SizedBox(height: 12),
+                                  TextFormField(
+                                    controller: requestController,
+                                    maxLines: 3,
+                                    decoration: InputDecoration(
+                                      hintText: "Enter your request...",
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.black26,
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.black26,
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.blue,
+                                        ),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                    ),
+                                    style: TextStyle(color: Colors.black),
+                                    validator: (value) {
+                                      if (value == null ||
+                                          value.trim().isEmpty) {
+                                        return "Please enter your request";
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  SizedBox(height: 20),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      batan(
+                                        title: "Send Request",
+                                        route: () async {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            setDialogState(() {
+                                              isLoading = true;
+                                            });
+                                            setState(() {
+                                              busnessviewmodal!
+                                                  .data!
+                                                  .events![index]
+                                                  .requestEvent = "pending";
+                                            });
+                                            await sendlistap(eventId);
+                                            setDialogState(() {
+                                              isLoading = false;
+                                            });
+                                            Get.back();
+                                          }
+                                        },
+                                        radius: 4.0.w,
+                                        color: AppColors.maincolor,
+                                        fontcolor: AppColors.white,
+                                        height: 5.h,
+                                        width: 72.w,
+                                        fontsize: 17.sp,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
                 );
-              },
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(30),
-                child:
-                    event.attachment != null
-                        ? CachedNetworkImage(
-                          imageUrl: event.attachment!,
-                          fit: BoxFit.cover,
+              }
+
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade300),
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: ListTile(
+                    onTap: () {
+                      // showRequestDialog();
+                      print("Event id Aa rahi hai $eventId");
+                      Get.to(
+                        EventDetail(
+                          eventID: eventId,
+                          status:
+                          busnessviewmodal
+                              ?.data
+                              ?.events?[index]
+                              ?.requestEvent ??
+                              "",
+                        ),
+                      );
+                    },
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    leading: Container(
+                      width: 15.w,
+                      height: 7.h,
+                      decoration: BoxDecoration(shape: BoxShape.circle),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child:
+                        busnessviewmodal?.data?.events?[index].attachment !=
+                            null
+                            ? CachedNetworkImage(
+                          imageUrl:
+                          busnessviewmodal!
+                              .data!
+                              .events![index]
+                              .attachment!,
                           placeholder:
-                              (c, _) => const Center(
-                                child: CircularProgressIndicator(),
-                              ),
+                              (context, url) => Center(
+                            child: CircularProgressIndicator(),
+                          ),
                           errorWidget:
-                              (c, _, __) => Image.asset(
-                                "assets/images/waveeLogoShort.png",
-                              ),
+                              (context, url, error) => Image.asset(
+                            "assets/images/waveeLogoShort.png",
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: double.infinity,
+                          ),
+                          fit: BoxFit.cover,
                         )
-                        : Image.asset("assets/images/waveeLogoShort.png"),
-              ),
-              title: Text(
-                event.title ?? "No Title",
-                style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold),
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.location_on, color: Colors.red, size: 16.sp),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          event.location ?? "No Location",
-                          style: TextStyle(fontSize: 14.sp),
+                            : Image.asset(
+                          "assets/images/waveeLogoShort.png",
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
                         ),
                       ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.access_time, color: Colors.blue, size: 16.sp),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          event.eventDate != null
-                              ? DateFormat(
-                                'yyyy-MM-dd hh:mm a',
-                              ).format(DateTime.parse(event.eventDate!))
-                              : "N/A",
-                          style: TextStyle(fontSize: 12.sp),
-                        ),
+                    ),
+                    title: Text(
+                      busnessviewmodal?.data?.events?[index].title ??
+                          "No Title",
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppConstants.manrope,
                       ),
-                    ],
-                  ),
-                ],
-              ),
-              trailing:
-                  (event.requestEvent?.toLowerCase() == "pending")
-                      ? const Text(
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.location_on,
+                              color: Colors.red,
+                              size: 16.sp,
+                            ),
+                            SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                "${busnessviewmodal?.data?.events?[index].location ?? 'No Location'}",
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: Colors.grey[600],
+                                  fontFamily: AppConstants.manrope,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.access_time,
+                              color: Colors.blue,
+                              size: 16.sp,
+                            ),
+                            SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                    (String? eventDate) {
+                                  if (eventDate == null || eventDate.isEmpty)
+                                    return "N/A";
+                                  DateTime parsedDate = DateTime.parse(
+                                    eventDate,
+                                  );
+                                  return DateFormat(
+                                    'yyyy-MM-dd hh:mm a',
+                                  ).format(parsedDate);
+                                }(
+                                  busnessviewmodal
+                                      ?.data
+                                      ?.events?[index]
+                                      .eventDate ??
+                                      "",
+                                ),
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: Colors.grey[700],
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    trailing:
+                    isLoading
+                        ? CircularProgressIndicator(color: Colors.blue)
+                        : InkWell(
+                      onTap: () {
+                        showRequestDialog();
+                      },
+                      child:
+                      busnessviewmodal
+                          ?.data
+                          ?.events?[index]
+                          ?.requestEvent
+                          ?.toLowerCase() ==
+                          "pending"
+                          ? Text(
                         "Requested",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.orange,
                         ),
                       )
-                      : const Icon(
+                          : Icon(
                         Icons.arrow_forward_ios,
                         size: 16,
                         color: Colors.black54,
                       ),
-            ),
-          ),
-        );
-      },
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        }),
+      ],
     );
   }
 
-  /// ---------------- Products ----------------
   Widget buildProductList(List<Products> products) {
-    if (products.isEmpty) return const SizedBox.shrink();
+    if (busnessviewmodal?.data?.products == null ||
+        busnessviewmodal!.data!.products!.isEmpty) {
+      return Center();
+    }
 
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: products.length,
-      itemBuilder: (context, index) {
-        final product = products[index];
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade300),
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: ListTile(
-              onTap: () {
-                Get.to(
-                  () => ProductDetailPage(
-                    productID: product.id?.toString() ?? "",
-                    type: "product",
-                  ),
-                );
-              },
-              leading: ClipRRect(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ...List.generate(products.length, (index) {
+          final product = products[index];
+
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade300),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
-                child:
-                    (product.image != null && product.image!.isNotEmpty)
-                        ? CachedNetworkImage(
-                          imageUrl: product.image!,
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.cover,
-                        )
-                        : Image.asset(
-                          "assets/images/waveeLogoShort.png",
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.cover,
+              ),
+              child: ListTile(
+                onTap: () {
+                  Get.to(
+                        () => ProductDetailPage(
+                      productID: product.id.toString() ?? "",
+                      type: "product",
+                    ),
+                  );
+                },
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child:
+                  (product.image != null && product.image!.isNotEmpty)
+                      ? CachedNetworkImage(
+                    imageUrl: product.image!,
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.cover,
+                    placeholder:
+                        (context, url) => Container(
+                      width: 60,
+                      height: 60,
+                      color: Colors.grey[300],
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
                         ),
-              ),
-              title: Text(
-                product.name ?? '',
-                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (product.offerPrice != null)
-                    Text(
-                      "£${product.offerPrice}",
-                      style: TextStyle(
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
                       ),
                     ),
-                  Text(
-                    "£${product.price}",
-                    style: TextStyle(
-                      fontSize: 15.sp,
-                      color:
-                          product.offerPrice != null
-                              ? Colors.grey
-                              : Colors.black,
-                      decoration:
-                          product.offerPrice != null
-                              ? TextDecoration.lineThrough
-                              : TextDecoration.none,
+                    errorWidget:
+                        (context, url, error) => Image.asset(
+                      'assets/images/waveeLogoShort.png',
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
                     ),
+                  )
+                      : Image.asset(
+                    'assets/images/waveeLogoShort.png',
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.cover,
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    product.description ?? '',
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                ),
+                title: Text(
+                  product.name ?? '',
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: AppConstants.manrope,
                   ),
-                ],
-              ),
-              trailing: const Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: Colors.black54,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 4),
+                    Row(
+                      children: [
+                        if (product.offerPrice != null)
+                          Text(
+                            "£${product.offerPrice}",
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                              fontFamily: AppConstants.manrope,
+                            ),
+                          ),
+                        if (product.offerPrice != null) SizedBox(width: 6),
+                        Text(
+                          "£${product.price}",
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            color:
+                            product.offerPrice != null
+                                ? Colors.grey
+                                : Colors.black,
+                            decoration:
+                            product.offerPrice != null
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none,
+                            fontFamily: AppConstants.manrope,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      product.description ?? '',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        fontFamily: AppConstants.manrope,
+                      ),
+                    ),
+                  ],
+                ),
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: Colors.black54,
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        }),
+      ],
     );
   }
 
@@ -5326,14 +5703,14 @@ class _CommunityScreenState extends State<CommunityScreen>
     final isToday = day == _getDayName(DateTime.now().weekday);
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: EdgeInsets.symmetric(vertical: 6),
       decoration:
-          isToday
-              ? BoxDecoration(
-                color: Colors.blue.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(6),
-              )
-              : null,
+      isToday
+          ? BoxDecoration(
+        color: Colors.blue.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(6),
+      )
+          : null,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: isToday ? 8 : 0),
         child: Row(
@@ -5385,7 +5762,7 @@ class _CommunityScreenState extends State<CommunityScreen>
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFE5E5E5), width: 1),
+            border: Border.all(color: Color(0xFFE5E5E5), width: 1),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -5417,11 +5794,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                   ],
                 ),
               ),
-              const Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: Colors.black54,
-              ),
+              Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
             ],
           ),
         ),
@@ -5466,7 +5839,7 @@ Widget buildListTile({
             ],
           ),
         ),
-        const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
+        Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
       ],
     ),
   );
