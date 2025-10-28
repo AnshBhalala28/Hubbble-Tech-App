@@ -88,6 +88,25 @@ class _EventDetailState extends State<EventDetail> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  InkWell(
+                                    onTap: () => Get.back(),
+                                    borderRadius: BorderRadius.circular(
+                                      16,
+                                    ),
+                                    child: Container(
+                                      height: 28,
+                                      width: 28,
+                                      decoration: const BoxDecoration(),
+                                      alignment: Alignment.center,
+                                      child:  Icon(
+                                        Icons.arrow_back,
+                                        color: AppColors.maincolor,
+                                        size: 20.sp,
+                                      ),
+                                    ),
+                                  ).paddingOnly(top: 1.h),
+                                  SizedBox(height: 2.h),
+
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
                                     child: CachedNetworkImage(
@@ -127,7 +146,7 @@ class _EventDetailState extends State<EventDetail> {
                                     eventDetailModal?.data?.title ?? "",
                                     style: TextStyle(
                                       color: AppColors.maincolor,
-                                      fontSize: 20.sp,
+                                      fontSize: 19.sp,
                                       fontFamily: AppConstants.manrope,
                                       fontWeight: FontWeight.bold,
                                     ),

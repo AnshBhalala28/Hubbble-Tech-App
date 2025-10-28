@@ -578,6 +578,8 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                   ),
                                                   child: DropdownButtonHideUnderline(
                                                     child: DropdownButton<int>(
+                                                      dropdownColor: Colors.white,
+                                                      borderRadius: BorderRadius.circular(12),
                                                       padding: EdgeInsets.zero,
                                                       value:
                                                           calendar1SelectedMonthIndex,
@@ -1168,7 +1170,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                   const SnackBar(
                                     duration: Duration(milliseconds: 800),
                                     content: Text(
-                                      "Selected amenities status was inactive",
+                                      "This amenity is not available for booking at the moment.",
                                     ),
                                   ),
                                 );

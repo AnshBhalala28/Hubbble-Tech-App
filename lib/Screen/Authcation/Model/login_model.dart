@@ -1,3 +1,4 @@
+
 // class LoginModel {
 //   int? status;
 //   String? message;
@@ -8,11 +9,11 @@
 //   LoginModel.fromJson(Map<String, dynamic> json) {
 //     status = json['status'];
 //     message = json['message'];
-//     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+//     data = json['data'] != null ? Data.fromJson(json['data']) : null;
 //   }
 //
 //   Map<String, dynamic> toJson() {
-//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     final Map<String, dynamic> data = <String, dynamic>{};
 //     data['status'] = this.status;
 //     data['message'] = this.message;
 //     if (this.data != null) {
@@ -21,117 +22,33 @@
 //     return data;
 //   }
 // }
-//
-// class Data {
-//   User? user;
-//   String? token;
-//   Map<String, dynamic>? validationErrors;
-//
-//   Data({this.user, this.token, this.validationErrors});
-//
-//   Data.fromJson(Map<String, dynamic> json) {
-//     user = json['user'] != null ? User.fromJson(json['user']) : null;
-//     token = json['token'];
-//     validationErrors = json.containsKey('email') ? json : null;
-//   }
-//
-//   Map<String, dynamic> toJson() {
-//     final Map<String, dynamic> data = {};
-//     if (user != null) {
-//       data['user'] = user!.toJson();
-//     }
-//     data['token'] = token;
-//     data.addAll(validationErrors ?? {});
-//     return data;
-//   }
-// }
-//
-// class User {
-//   int? id;
-//   int? role;
-//   String? name;
-//   String? email;
-//   var emailVerifiedAt;
-//   String? dPassword;
-//   int? mobileNo;
-//   String? gender;
-//   String? address;
-//   var fcmToken;
-//   var forgetPassKey;
-//   String? status;
-//   String? profile;
-//   String? createdAt;
-//   String? updatedAt;
-//
-//   User(
-//       {this.id,
-//         this.role,
-//         this.name,
-//         this.email,
-//         this.emailVerifiedAt,
-//         this.dPassword,
-//         this.mobileNo,
-//         this.gender,
-//         this.address,
-//         this.fcmToken,
-//         this.forgetPassKey,
-//         this.status,
-//         this.profile,
-//         this.createdAt,
-//         this.updatedAt});
-//
-//   User.fromJson(Map<String, dynamic> json) {
-//     id = json['id'];
-//     role = json['role'];
-//     name = json['name'];
-//     email = json['email'];
-//     emailVerifiedAt = json['email_verified_at'];
-//     dPassword = json['d_password'];
-//     mobileNo = json['mobile_no'];
-//     gender = json['gender'];
-//     address = json['address'];
-//     fcmToken = json['fcm_token'];
-//     forgetPassKey = json['forget_pass_key'];
-//     status = json['status'];
-//     profile = json['profile'];
-//     createdAt = json['created_at'];
-//     updatedAt = json['updated_at'];
-//   }
-//
-//   Map<String, dynamic> toJson() {
-//     final Map<String, dynamic> data = new Map<String, dynamic>();
-//     data['id'] = this.id;
-//     data['role'] = this.role;
-//     data['name'] = this.name;
-//     data['email'] = this.email;
-//     data['email_verified_at'] = this.emailVerifiedAt;
-//     data['d_password'] = this.dPassword;
-//     data['mobile_no'] = this.mobileNo;
-//     data['gender'] = this.gender;
-//     data['address'] = this.address;
-//     data['fcm_token'] = this.fcmToken;
-//     data['forget_pass_key'] = this.forgetPassKey;
-//     data['status'] = this.status;
-//     data['profile'] = this.profile;
-//     data['created_at'] = this.createdAt;
-//     data['updated_at'] = this.updatedAt;
-//     return data;
-//   }
-// }
-//
-//
-//
 class LoginModel {
   int? status;
   String? message;
   Data? data;
+  Map<String, dynamic>? validationErrors;
 
-  LoginModel({this.status, this.message, this.data});
+  LoginModel({this.status, this.message, this.data, this.validationErrors});
 
   LoginModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? Data.fromJson(json['data']) : null;
+
+    // Check if response has validation errors (422 status)
+    if (json['data'] != null && json['data'] is Map<String, dynamic>) {
+      if (json['data'].containsKey('email') || json['data'].containsKey('password')) {
+        // This is a validation error response
+        validationErrors = json['data'];
+        data = null;
+      } else {
+        // This is a successful response
+        data = Data.fromJson(json['data']);
+        validationErrors = null;
+      }
+    } else {
+      data = null;
+      validationErrors = null;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -141,10 +58,12 @@ class LoginModel {
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
+    if (this.validationErrors != null) {
+      data['data'] = this.validationErrors;
+    }
     return data;
   }
 }
-
 class Data {
   User? user;
   String? token;

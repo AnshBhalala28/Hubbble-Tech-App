@@ -54,7 +54,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
             SizedBox(height: 4.h),
             TitleBar(
               back: () => Get.back(),
-              title: 'Parcel',
+              title: "Parcels",
               drawerCallback: () {},
             ),
             SizedBox(height: 3.h),

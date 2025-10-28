@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:wavee/comman/apiConfig.dart';
@@ -49,9 +51,15 @@ class CommunityProvider extends ChangeNotifier {
         "${ApiEndpoint.businessProfileView}${loginModel?.data?.user?.id.toString()}/$id?latitude=$lat&longitude=$lon",
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
       );
+      log(
+        "URL AVE CHE CEHE${ApiEndpoint.businessProfileView}${loginModel?.data?.user?.id.toString()}/$id?latitude=$lat&longitude=$lon",
+      );
 
       return response;
     } on DioException catch (e) {
+      log(
+        "URL AVE CHE CEHE${ApiEndpoint.businessProfileView}${loginModel?.data?.user?.id.toString()}/$id?latitude=$lat&longitude=$lon",
+      );
       throw Exception(handleDioError(e));
     }
   }

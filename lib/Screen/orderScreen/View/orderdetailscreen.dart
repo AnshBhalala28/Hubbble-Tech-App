@@ -127,11 +127,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                               ),
                                             ),
                                         errorWidget:
-                                            (
-                                              context,
-                                              url,
-                                              error,
-                                            ) => const Image(
+                                            (context, url, error) => Image(
                                               image: AssetImage(
                                                 'assets/images/Applogo_remove_background.png',
                                               ),
@@ -261,7 +257,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                           fontSize: 15.sp,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black,
-                                          fontFamily: AppConstants.manrope,
+                                          fontFamily: AppConstants.manropeBold,
                                         ),
                                       ),
                                     ],
@@ -277,7 +273,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                           fontSize: 15.sp,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black,
-                                          fontFamily: AppConstants.manrope,
+                                          fontFamily: AppConstants.manropeBold,
                                         ),
                                       ),
                                     ],
@@ -305,7 +301,8 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                               fontSize: 15.sp,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.black,
-                                              fontFamily: AppConstants.manrope,
+                                              fontFamily:
+                                                  AppConstants.manropeBold,
                                             ),
                                           ),
                                         ],
@@ -347,7 +344,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                                     .capitalizeFirst ??
                                                 "",
                                           ),
-                                          fontFamily: AppConstants.manrope,
+                                          fontFamily: AppConstants.manropeBold,
                                         ),
                                       ),
                                     ],
@@ -514,18 +511,18 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              orderDetailModel!
+                              (orderDetailModel!
                                               .data!
                                               .products!
                                               .product!
                                               .images ==
-                                          [] ||
+                                          null ||
                                       orderDetailModel!
-                                              .data!
-                                              .products!
-                                              .product!
-                                              .images ==
-                                          null
+                                          .data!
+                                          .products!
+                                          .product!
+                                          .images!
+                                          .isEmpty)
                                   ? Container(
                                     height: 25.h,
                                     width: double.infinity,
@@ -543,8 +540,8 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                                 .data!
                                                 .products!
                                                 .product!
-                                                .image ??
-                                            "https://portal.wavee.ai/public/business/img/logos/waveeLogoShort.png",
+                                                .image
+                                                .toString(),
                                         fit: BoxFit.fill,
                                         placeholder:
                                             (context, url) => const Center(
@@ -559,7 +556,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                               error,
                                             ) => const Image(
                                               image: AssetImage(
-                                                'assets/images/waveeLogoShort.png',
+                                                'assets/images/Applogo_remove_background.png',
                                               ),
                                             ),
                                       ),
@@ -589,48 +586,47 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                                 builder: (
                                                   BuildContext context,
                                                 ) {
-                                                  return Stack(
-                                                    children: [
-                                                      ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              10,
-                                                            ),
-                                                        child: CachedNetworkImage(
-                                                          imageUrl: imageUrl,
-                                                          fit: BoxFit.cover,
-                                                          width:
-                                                              double.infinity,
-                                                          placeholder:
-                                                              (
-                                                                context,
-                                                                url,
-                                                              ) => const Center(
-                                                                child: CircularProgressIndicator(
-                                                                  color:
-                                                                      AppColors
-                                                                          .maincolor,
-                                                                ),
-                                                              ),
-                                                          errorWidget:
-                                                              (
-                                                                context,
-                                                                url,
-                                                                error,
-                                                              ) => const Center(
-                                                                child: Icon(
-                                                                  Icons.error,
-                                                                ),
-                                                              ),
+                                                  return ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
                                                         ),
-                                                      ),
-                                                    ],
+                                                    child: CachedNetworkImage(
+                                                      imageUrl: imageUrl,
+                                                      fit: BoxFit.cover,
+                                                      width: double.infinity,
+                                                      placeholder:
+                                                          (
+                                                            context,
+                                                            url,
+                                                          ) => const Center(
+                                                            child: CircularProgressIndicator(
+                                                              color:
+                                                                  AppColors
+                                                                      .maincolor,
+                                                            ),
+                                                          ),
+                                                      errorWidget:
+                                                          (
+                                                            context,
+                                                            url,
+                                                            error,
+                                                          ) => const Center(
+                                                            child: Icon(
+                                                              Icons.error,
+                                                              color:
+                                                                  AppColors
+                                                                      .maincolor,
+                                                            ),
+                                                          ),
+                                                    ),
                                                   );
                                                 },
                                               );
                                             })
                                             .toList(),
                                   ),
+
                               SizedBox(height: 1.h),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -687,7 +683,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                           fontSize: 15.sp,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black,
-                                          fontFamily: AppConstants.manrope,
+                                          fontFamily: AppConstants.manropeBold,
                                         ),
                                       ),
                                     ],
@@ -703,7 +699,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                           fontSize: 15.sp,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black,
-                                          fontFamily: AppConstants.manrope,
+                                          fontFamily: AppConstants.manropeBold,
                                         ),
                                       ),
                                     ],
@@ -839,7 +835,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                               Text(
                                 "Payment Method",
                                 style: TextStyle(
-                                  fontSize: 18.sp,
+                                  fontSize: 19.sp,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: AppConstants.manrope,
                                   color: AppColors.maincolor,
@@ -892,7 +888,18 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                   )
                                   : const SizedBox(),
                               SizedBox(height: 1.h),
-                              _buildOrderManagementSection(),
+                              orderDetailModel?.data?.order?.status ==
+                                          "collected" ||
+                                      orderDetailModel?.data?.order?.status ==
+                                          "Collected" ||
+                                      orderDetailModel?.data?.order?.status
+                                              ?.toLowerCase() ==
+                                          "declined" ||
+                                      orderDetailModel?.data?.order?.status
+                                              ?.toLowerCase() ==
+                                          "cancelled"
+                                  ? SizedBox()
+                                  : _buildOrderManagementSection(),
                               SizedBox(height: 10.h),
                             ],
                           ),
@@ -944,6 +951,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                           title: _getStatusMessage(
                             orderDetailModel?.data?.order?.status,
                           ),
+                          fontFamily: AppConstants.manropeBold,
                           route: () {},
                           color: getStatusColor(
                             orderDetailModel?.data?.order?.status.toString() ??
@@ -1450,7 +1458,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                           "Where's my order?",
                           style: TextStyle(
                             fontSize: 18.sp,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.normal,
                             fontFamily: AppConstants.manrope,
                           ),
                         ),
@@ -1460,7 +1468,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                           style: TextStyle(
                             fontSize: 16.sp,
                             color: Colors.grey,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.normal,
                             fontFamily: AppConstants.manrope,
                           ),
                         ),
@@ -1545,7 +1553,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
           title,
           style: TextStyle(
             fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.normal,
             fontFamily: AppConstants.manrope,
           ),
         ),
@@ -1554,7 +1562,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
           style: TextStyle(
             fontSize: 16.sp,
             color: Colors.grey,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.normal,
             fontFamily: AppConstants.manrope,
           ),
         ),

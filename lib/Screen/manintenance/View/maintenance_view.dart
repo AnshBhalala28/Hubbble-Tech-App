@@ -125,7 +125,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                         maintenanceModel?.data?.data?.length == 0
                     ? Center(
                       child: Text(
-                        "No Maintenance Avaiable",
+                        "No Maintenance Available",
                         style: TextStyle(
                           fontSize: 17.sp,
                           fontWeight: FontWeight.bold,

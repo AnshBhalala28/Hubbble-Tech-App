@@ -68,17 +68,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
-          isLoading
-              ? Center(child: Loader())
-              : Column(
+        Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 10.h),
-                  isLoading
-                      ? Loader().paddingOnly(top: 30.h)
-                      : Container(
+                  Container(
                         padding: EdgeInsets.symmetric(
                           vertical: 2.h,
                           horizontal: 3.w,
@@ -98,16 +95,45 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         child: SizedBox(
                           height: MediaQuery.of(context).size.height * 0.7,
                           child: SingleChildScrollView(
-                            child: Column(
+                            child:  isLoading
+                                ? Loader().paddingOnly(top: 30.h)
+                                :Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  productViewModel?.data?.businessName ?? "",
-                                  style: TextStyle(
-                                    fontFamily: AppConstants.manrope,
-                                    fontSize: 20.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () => Get.back(),
+                                      borderRadius: BorderRadius.circular(
+                                        16,
+                                      ),
+                                      child: Container(
+                                        height: 28,
+                                        width: 28,
+                                        decoration: const BoxDecoration(),
+                                        alignment: Alignment.center,
+                                        child:  Icon(
+                                          Icons.arrow_back,
+                                          color: AppColors.maincolor,
+                                          size: 20.sp,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 2.w),
+
+                                    SizedBox(
+                                      width: 80.w,
+
+                                      child: Text(
+                                        productViewModel?.data?.businessName ?? "",
+                                        style: TextStyle(
+                                          fontFamily: AppConstants.manrope,
+                                          fontSize: 20.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 SizedBox(height: 2.h),
                                 Container(
@@ -336,14 +362,54 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "£ ${productViewModel?.data?.price ?? "0.00"}",
-                                      style: TextStyle(
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
-                                    ),
+                                    (productViewModel?.data?.offerPrice !=
+                                                null &&
+                                            productViewModel
+                                                    ?.data
+                                                    ?.offerPrice !=
+                                                "0.00" &&
+                                            productViewModel
+                                                    ?.data
+                                                    ?.offerPrice !=
+                                                productViewModel?.data?.price)
+                                        ? Row(
+                                          children: [
+                                            Text(
+                                              "£${productViewModel?.data?.price}",
+                                              style: TextStyle(
+                                                fontSize:
+                                                18.sp,
+                                                fontWeight:
+                                                FontWeight.normal,
+                                                fontFamily:
+                                                AppConstants.manrope,
+                                                color:
+                                                Colors.grey,
+                                                decoration:
+                                                TextDecoration.lineThrough,
+                                                decorationColor:
+                                                AppColors.maincolor,
+                                              ),
+                                            ),
+                                            SizedBox(width: 2.w,),
+                                            Text(
+                                              "£ ${productViewModel?.data?.offerPrice ?? "0.00"}",
+                                              style: TextStyle(
+                                                fontSize: 18.sp,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily: AppConstants.manrope,
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                        : Text(
+                                          "£ ${productViewModel?.data?.price ?? "0.00"}",
+                                          style: TextStyle(
+                                            fontSize: 18.sp,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: AppConstants.manrope,
+                                          ),
+                                        ),
                                   ],
                                 ),
                                 SizedBox(height: 1.h),

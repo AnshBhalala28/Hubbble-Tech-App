@@ -47,7 +47,7 @@ Container TitleBar({
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontFamily: AppConstants.manrope,
-              fontSize: 20.sp,
+              fontSize: 19.sp,
               color: Colors.black,
             ),
           ),

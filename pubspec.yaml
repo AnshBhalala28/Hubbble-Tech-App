@@ -143,9 +143,15 @@ flutter:
     - family: Manrope
       fonts:
         - asset: assets/fonts/Manrope-Regular.ttf
+    - family: Manrope-Bold
+      fonts:
+        - asset: assets/fonts/Manrope-Bold.ttf
     - family: AlbertSans
       fonts:
         - asset: assets/fonts/AlbertSans-Regular.ttf
+    - family: AlbertSans-Bold
+      fonts:
+        - asset: assets/fonts/AlbertSans-Bold.ttf
     - family: AlbertSans-Light
       fonts:
         - asset: assets/fonts/AlbertSans-Light.ttf

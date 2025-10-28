@@ -64,11 +64,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
-          isLoading
-              ? Center(child: Loader())
-              : Column(
+         Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 4.h),
@@ -98,13 +97,38 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  servicedetailsmodel?.data?.businessName ?? "",
-                                  style: TextStyle(
-                                    fontFamily: AppConstants.manrope,
-                                    fontSize: 20.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () => Get.back(),
+                                      borderRadius: BorderRadius.circular(
+                                        16,
+                                      ),
+                                      child: Container(
+                                        height: 28,
+                                        width: 28,
+                                        decoration: const BoxDecoration(),
+                                        alignment: Alignment.center,
+                                        child:  Icon(
+                                          Icons.arrow_back,
+                                          color: AppColors.maincolor,
+                                          size: 20.sp,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 2.w),
+                                    SizedBox(
+                                      width: 80.w,
+                                      child: Text(
+                                        servicedetailsmodel?.data?.businessName ?? "",
+                                        style: TextStyle(
+                                          fontFamily: AppConstants.manrope,
+                                          fontSize: 20.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 SizedBox(height: 2.h),
                                 Container(
@@ -335,10 +359,63 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                   ),
                                 ),
                                 SizedBox(height: 0.8.h),
+                                // Column(
+                                //   crossAxisAlignment: CrossAxisAlignment.start,
+                                //   children: [
+                                //     Text(
+                                //       "£ ${servicedetailsmodel?.data?.price ?? "0.00"}",
+                                //       style: TextStyle(
+                                //         fontSize: 18.sp,
+                                //         fontWeight: FontWeight.bold,
+                                //         fontFamily: AppConstants.manrope,
+                                //       ),
+                                //     ),
+                                //   ],
+                                // ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    (servicedetailsmodel?.data?.offerPrice !=
+                                        null &&
+                                        servicedetailsmodel
+                                            ?.data
+                                            ?.offerPrice !=
+                                            "0.00" &&
+                                        servicedetailsmodel
+                                            ?.data
+                                            ?.offerPrice !=
+                                            productViewModel?.data?.price)
+                                        ? Row(
+                                      children: [
+                                        Text(
+                                          "£${servicedetailsmodel?.data?.price}",
+                                          style: TextStyle(
+                                            fontSize:
+                                            18.sp,
+                                            fontWeight:
+                                            FontWeight.normal,
+                                            fontFamily:
+                                            AppConstants.manrope,
+                                            color:
+                                            Colors.grey,
+                                            decoration:
+                                            TextDecoration.lineThrough,
+                                            decorationColor:
+                                            AppColors.maincolor,
+                                          ),
+                                        ),
+                                        SizedBox(width: 2.w,),
+                                        Text(
+                                          "£ ${servicedetailsmodel?.data?.offerPrice ?? "0.00"}",
+                                          style: TextStyle(
+                                            fontSize: 18.sp,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: AppConstants.manrope,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                        : Text(
                                       "£ ${servicedetailsmodel?.data?.price ?? "0.00"}",
                                       style: TextStyle(
                                         fontSize: 18.sp,
@@ -348,6 +425,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                     ),
                                   ],
                                 ),
+
                                 SizedBox(height: 1.h),
                                 Container(
                                   width: 92.w,
@@ -439,6 +517,122 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                           ),
                         ),
                       ),
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Material(
+                          elevation: 1,
+                          borderRadius: BorderRadius.circular(12),
+                          child: batan(
+                            title: "Add to Cart",
+                            route: () {
+                              int? serviceStatus =
+                                  busnessviewmodal?.data?.business?.serviceStatus;
+
+                              if (serviceStatus == 0) {
+                                showOnlineOrderDisabledDialog(
+                                  context: context,
+                                  businessName:
+                                  busnessviewmodal
+                                      ?.data
+                                      ?.business
+                                      ?.businessName ??
+                                      "",
+                                  isProduct: false,
+                                );
+                                return;
+                              }
+
+                              if (cartDetailsModel?.data != null &&
+                                  cartDetailsModel!.data!.isNotEmpty) {
+                                if (cartDetailsModel!.data![0].type ==
+                                    "product") {
+                                  ShowAddCart(
+                                    context: context,
+                                    businessName:
+                                    busnessviewmodal
+                                        ?.data
+                                        ?.business
+                                        ?.businessName ??
+                                        "",
+                                    isProduct: true,
+                                    onContinue: () async {
+                                      for (
+                                      int i = 0;
+                                      i < cartDetailsModel!.data!.length;
+                                      i++
+                                      ) {
+                                        final itemId =
+                                            cartDetailsModel!
+                                                .data![i]
+                                                .itemDetails
+                                                ?.id;
+                                        if (itemId != null) {
+                                          await RemoveFromCartApi(
+                                            itemId,
+                                            "product",
+                                          );
+                                        }
+                                      }
+                                      AddCartServiceApi();
+                                    },
+                                  );
+                                } else if (cartDetailsModel!
+                                    .data![0]
+                                    .itemDetails
+                                    ?.businessId ==
+                                    servicedetailsmodel?.data?.businessId) {
+                                  AddCartServiceApi();
+                                } else {
+                                  ShowAddCart(
+                                    context: context,
+                                    businessName:
+                                    busnessviewmodal
+                                        ?.data
+                                        ?.business
+                                        ?.businessName ??
+                                        "",
+                                    isProduct: true,
+                                    onContinue: () async {
+                                      for (
+                                      int i = 0;
+                                      i < cartDetailsModel!.data!.length;
+                                      i++
+                                      ) {
+                                        final itemId =
+                                            cartDetailsModel!
+                                                .data![i]
+                                                .itemDetails
+                                                ?.id;
+                                        if (itemId != null) {
+                                          await RemoveFromCartApi(
+                                            itemId,
+                                            "product",
+                                          );
+                                        }
+                                      }
+                                      AddCartServiceApi();
+                                    },
+                                  );
+                                }
+                              } else {
+                                AddCartServiceApi();
+                              }
+                            },
+                            color: AppColors.white,
+                            fontcolor: AppColors.maincolor,
+                            height: 5.h,
+                            fontsize: 15.sp,
+                            iconData: Icons.add_shopping_cart_outlined,
+                            radius: 12.0,
+                            width: 0,
+                          ),
+                        ),
+                      ),
+
+                    ],
+                  ),
                 ],
               ).paddingOnly(left: 2.w, right: 2.w),
           if (isAddReviewLoading)
@@ -448,142 +642,142 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
             ),
         ],
       ),
-      floatingActionButtonLocation:
-          isLoading ? null : FloatingActionButtonLocation.centerDocked,
-      floatingActionButton:
-          isLoading
-              ? null
-              : Container(
-                width: double.infinity * 0.5,
-                padding: EdgeInsets.symmetric(horizontal: 25.w),
-                margin: EdgeInsets.only(bottom: 2.h),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 10,
-                      offset: Offset(0, -2),
-                    ),
-                  ],
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Material(
-                        elevation: 1,
-                        borderRadius: BorderRadius.circular(12),
-                        child: batan(
-                          title: "Add to Cart",
-                          route: () {
-                            int? serviceStatus =
-                                busnessviewmodal?.data?.business?.serviceStatus;
-
-                            if (serviceStatus == 0) {
-                              showOnlineOrderDisabledDialog(
-                                context: context,
-                                businessName:
-                                    busnessviewmodal
-                                        ?.data
-                                        ?.business
-                                        ?.businessName ??
-                                    "",
-                                isProduct: false,
-                              );
-                              return;
-                            }
-
-                            if (cartDetailsModel?.data != null &&
-                                cartDetailsModel!.data!.isNotEmpty) {
-                              if (cartDetailsModel!.data![0].type ==
-                                  "product") {
-                                ShowAddCart(
-                                  context: context,
-                                  businessName:
-                                      busnessviewmodal
-                                          ?.data
-                                          ?.business
-                                          ?.businessName ??
-                                      "",
-                                  isProduct: true,
-                                  onContinue: () async {
-                                    for (
-                                      int i = 0;
-                                      i < cartDetailsModel!.data!.length;
-                                      i++
-                                    ) {
-                                      final itemId =
-                                          cartDetailsModel!
-                                              .data![i]
-                                              .itemDetails
-                                              ?.id;
-                                      if (itemId != null) {
-                                        await RemoveFromCartApi(
-                                          itemId,
-                                          "product",
-                                        );
-                                      }
-                                    }
-                                    AddCartServiceApi();
-                                  },
-                                );
-                              } else if (cartDetailsModel!
-                                      .data![0]
-                                      .itemDetails
-                                      ?.businessId ==
-                                  servicedetailsmodel?.data?.businessId) {
-                                AddCartServiceApi();
-                              } else {
-                                ShowAddCart(
-                                  context: context,
-                                  businessName:
-                                      busnessviewmodal
-                                          ?.data
-                                          ?.business
-                                          ?.businessName ??
-                                      "",
-                                  isProduct: true,
-                                  onContinue: () async {
-                                    for (
-                                      int i = 0;
-                                      i < cartDetailsModel!.data!.length;
-                                      i++
-                                    ) {
-                                      final itemId =
-                                          cartDetailsModel!
-                                              .data![i]
-                                              .itemDetails
-                                              ?.id;
-                                      if (itemId != null) {
-                                        await RemoveFromCartApi(
-                                          itemId,
-                                          "product",
-                                        );
-                                      }
-                                    }
-                                    AddCartServiceApi();
-                                  },
-                                );
-                              }
-                            } else {
-                              AddCartServiceApi();
-                            }
-                          },
-                          color: AppColors.white,
-                          fontcolor: AppColors.maincolor,
-                          height: 5.h,
-                          fontsize: 15.sp,
-                          iconData: Icons.add_shopping_cart_outlined,
-                          radius: 12.0,
-                          width: 0,
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 4.w),
-                  ],
-                ),
-              ),
+      // floatingActionButtonLocation:
+      //     isLoading ? null : FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton:
+      //     isLoading
+      //         ? null
+      //         : Container(
+      //           width: double.infinity * 0.5,
+      //           padding: EdgeInsets.symmetric(horizontal: 25.w),
+      //           margin: EdgeInsets.only(bottom: 2.h),
+      //           decoration: const BoxDecoration(
+      //             color: Colors.white,
+      //             boxShadow: [
+      //               BoxShadow(
+      //                 color: Colors.black12,
+      //                 blurRadius: 10,
+      //                 offset: Offset(0, -2),
+      //               ),
+      //             ],
+      //             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      //           ),
+      //           child: Row(
+      //             children: [
+      //               Expanded(
+      //                 child: Material(
+      //                   elevation: 1,
+      //                   borderRadius: BorderRadius.circular(12),
+      //                   child: batan(
+      //                     title: "Add to Cart",
+      //                     route: () {
+      //                       int? serviceStatus =
+      //                           busnessviewmodal?.data?.business?.serviceStatus;
+      //
+      //                       if (serviceStatus == 0) {
+      //                         showOnlineOrderDisabledDialog(
+      //                           context: context,
+      //                           businessName:
+      //                               busnessviewmodal
+      //                                   ?.data
+      //                                   ?.business
+      //                                   ?.businessName ??
+      //                               "",
+      //                           isProduct: false,
+      //                         );
+      //                         return;
+      //                       }
+      //
+      //                       if (cartDetailsModel?.data != null &&
+      //                           cartDetailsModel!.data!.isNotEmpty) {
+      //                         if (cartDetailsModel!.data![0].type ==
+      //                             "product") {
+      //                           ShowAddCart(
+      //                             context: context,
+      //                             businessName:
+      //                                 busnessviewmodal
+      //                                     ?.data
+      //                                     ?.business
+      //                                     ?.businessName ??
+      //                                 "",
+      //                             isProduct: true,
+      //                             onContinue: () async {
+      //                               for (
+      //                                 int i = 0;
+      //                                 i < cartDetailsModel!.data!.length;
+      //                                 i++
+      //                               ) {
+      //                                 final itemId =
+      //                                     cartDetailsModel!
+      //                                         .data![i]
+      //                                         .itemDetails
+      //                                         ?.id;
+      //                                 if (itemId != null) {
+      //                                   await RemoveFromCartApi(
+      //                                     itemId,
+      //                                     "product",
+      //                                   );
+      //                                 }
+      //                               }
+      //                               AddCartServiceApi();
+      //                             },
+      //                           );
+      //                         } else if (cartDetailsModel!
+      //                                 .data![0]
+      //                                 .itemDetails
+      //                                 ?.businessId ==
+      //                             servicedetailsmodel?.data?.businessId) {
+      //                           AddCartServiceApi();
+      //                         } else {
+      //                           ShowAddCart(
+      //                             context: context,
+      //                             businessName:
+      //                                 busnessviewmodal
+      //                                     ?.data
+      //                                     ?.business
+      //                                     ?.businessName ??
+      //                                 "",
+      //                             isProduct: true,
+      //                             onContinue: () async {
+      //                               for (
+      //                                 int i = 0;
+      //                                 i < cartDetailsModel!.data!.length;
+      //                                 i++
+      //                               ) {
+      //                                 final itemId =
+      //                                     cartDetailsModel!
+      //                                         .data![i]
+      //                                         .itemDetails
+      //                                         ?.id;
+      //                                 if (itemId != null) {
+      //                                   await RemoveFromCartApi(
+      //                                     itemId,
+      //                                     "product",
+      //                                   );
+      //                                 }
+      //                               }
+      //                               AddCartServiceApi();
+      //                             },
+      //                           );
+      //                         }
+      //                       } else {
+      //                         AddCartServiceApi();
+      //                       }
+      //                     },
+      //                     color: AppColors.white,
+      //                     fontcolor: AppColors.maincolor,
+      //                     height: 5.h,
+      //                     fontsize: 15.sp,
+      //                     iconData: Icons.add_shopping_cart_outlined,
+      //                     radius: 12.0,
+      //                     width: 0,
+      //                   ),
+      //                 ),
+      //               ),
+      //               SizedBox(width: 4.w),
+      //             ],
+      //           ),
+      //         ),
     );
   }
 

@@ -1074,12 +1074,12 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
                           )
                           : GestureDetector(
                             onTap: () {
-                              Get.to(
-                                () => FullScreenImageView(
-                                  imageUrl: item.file ?? '',
-                                  postId: item.id ?? 0,
-                                ),
-                              );
+                              // Get.to(
+                              //   () => FullScreenImageView(
+                              //     imageUrl: item.file ?? '',
+                              //     postId: item.id ?? 0,
+                              //   ),
+                              // );
                             },
                             child:
                                 item.file == null || item.file!.isEmpty

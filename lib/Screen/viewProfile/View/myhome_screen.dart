@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,363 +28,99 @@ class MyHome_Screen extends StatefulWidget {
 
 class _MyHome_ScreenState extends State<MyHome_Screen> {
   final GlobalKey<ScaffoldState> Myhome = GlobalKey<ScaffoldState>();
-  TextEditingController fullAddressController = TextEditingController();
-  TextEditingController propertydetailsController = TextEditingController();
-  TextEditingController KeyWaiversController = TextEditingController();
-  TextEditingController documentsController = TextEditingController();
+  TextEditingController keyWaiversController = TextEditingController();
   bool isLoading = true;
-  File? selectedImage;
-  String profileImage = "";
   bool isEditing = false;
-  File? selectedPdf;
-  String? pdfFileName;
+  ProfileModel? profileModel;
+  String fullAddress = "";
+  String propertyDetails = "";
 
-  Future<void> pickPDF() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf'],
-    );
+  List<Map<String, String>> _getFilteredDocuments(
+    List<String>? documents,
+    List<String>? labels,
+  ) {
+    if (documents == null) return [];
 
-    if (result != null) {
-      setState(() {
-        selectedPdf = File(result.files.single.path!);
-        pdfFileName = result.files.single.name;
-      });
+    List<Map<String, String>> filteredDocs = [];
+    for (int i = 0; i < documents.length; i++) {
+      if (documents[i].isNotEmpty) {
+        String label =
+            (labels != null && i < labels.length && labels[i].isNotEmpty)
+                ? labels[i]
+                : 'Document ${filteredDocs.length + 1}';
+        filteredDocs.add({'url': documents[i], 'label': label});
+      }
     }
+    return filteredDocs;
   }
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      isLoading = true;
-    });
     GetProfile();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+  Future<void> GetProfile() async {
+    setState(() => isLoading = true);
+    final Map<String, String> data = {'id': widget.id.toString()};
 
-      body: Stack(
-        children: [
-          isLoading
-              ? Center(child: Loader())
-              : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(height: 6.h),
-                    TitleBar(
-                      back: () {
-                        Get.back();
-                      },
-                      title: "My Home",
-                      drawerCallback: () {},
-                    ),
-                    SizedBox(height: 3.h),
-                    profileField(
-                      "Property Address",
-                      fullAddressController,
-                      Icons.location_on,
-                      false,
-                    ),
-                    profileField(
-                      "Key Waivers",
-                      KeyWaiversController,
-                      Icons.vpn_key,
-                      true,
-                    ),
-                    SizedBox(height: 0.5.h),
-                    profileModel?.data?.unit?.documentsFiles?.length == null ||
-                            profileModel?.data?.unit?.documentsFiles?.length ==
-                                0
-                        ? const SizedBox()
-                        : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Apartment Documents",
-                                style: TextStyle(
-                                  fontFamily: AppConstants.manrope,
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 2.h),
-                            GridView.builder(
-                              shrinkWrap: true,
-                              padding: EdgeInsets.zero,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                    crossAxisSpacing: 10,
-                                    mainAxisSpacing: 15,
-                                    childAspectRatio: 0.8,
-                                  ),
-                              itemCount:
-                                  profileModel
-                                      ?.data
-                                      ?.unit
-                                      ?.documentsFiles
-                                      ?.length ??
-                                  0,
-                              itemBuilder: (context, index) {
-                                final documentUrl =
-                                    profileModel!
-                                        .data!
-                                        .unit!
-                                        .documentsFiles![index];
-                                final labels =
-                                    profileModel!
-                                        .data!
-                                        .unit!
-                                        .documentsFilesLabel;
+    checkInternet().then((internet) async {
+      if (!internet) {
+        setState(() => isLoading = false);
+        Get.snackbar(
+          "Error",
+          "Internet Required",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return;
+      }
 
-                                String label =
-                                    (labels != null && index < labels.length)
-                                        ? labels[index]
-                                        : 'Document ${index + 1}';
+      final response = await ProfileProvider().profileApi(data);
+      if (response.statusCode == 200) {
+        setState(() {
+          profileModel = ProfileModel.fromJson(response.data);
+          if (profileModel?.status == 200) {
+            var user = profileModel?.data?.user;
+            var unit = profileModel?.data?.unit;
 
-                                String finalLabel =
-                                    label.isNotEmpty
-                                        ? label[0].toUpperCase() +
-                                            label.substring(1)
-                                        : 'Document ${index + 1}';
+            bool isValid(String? value) =>
+                value != null && value.trim().isNotEmpty && value != "N/A";
 
-                                return GestureDetector(
-                                  onTap: () {
-                                    if (documentUrl.isNotEmpty) {
-                                      Get.to(PdfView(link: documentUrl));
-                                    }
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        height: 7.h,
-                                        width: 15.w,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                          border: Border.all(
-                                            width: 1,
-                                            color: AppColors.maincolor,
-                                          ),
-                                        ),
-                                        child: Icon(
-                                          Icons.picture_as_pdf,
-                                          color: AppColors.maincolor,
-                                          size: 30.sp,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Expanded(
-                                        child: Text(
-                                          finalLabel,
-                                          textAlign: TextAlign.center,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                          style: TextStyle(fontSize: 15.sp),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+            List<String> addressParts = [];
+            if (isValid(unit?.blockNumber))
+              addressParts.add(unit!.blockNumber!);
+            if (isValid(unit?.flatNumber)) addressParts.add(unit!.flatNumber!);
+            if (isValid(user?.address?.address))
+              addressParts.add(user!.address!.address!);
+            if (isValid(user?.address?.city))
+              addressParts.add(user!.address!.city!);
+            if (isValid(user?.address?.country))
+              addressParts.add(user!.address!.country!);
+            if (isValid(user?.address?.zipCode))
+              addressParts.add(user!.address!.zipCode!);
 
-                    profileModel
-                                    ?.data
-                                    ?.buildingDocument
-                                    ?.documentsFiles
-                                    ?.length ==
-                                null ||
-                            profileModel
-                                    ?.data
-                                    ?.buildingDocument
-                                    ?.documentsFiles
-                                    ?.length ==
-                                0
-                        ? const SizedBox()
-                        : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Building Documents",
-                                style: TextStyle(
-                                  fontFamily: AppConstants.manrope,
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 2.h),
-                            GridView.builder(
-                              shrinkWrap: true,
-                              padding: EdgeInsets.zero,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                    crossAxisSpacing: 10,
-                                    mainAxisSpacing: 15,
-                                    childAspectRatio: 0.8,
-                                  ),
-                              itemCount:
-                                  profileModel
-                                      ?.data
-                                      ?.buildingDocument
-                                      ?.documentsFiles
-                                      ?.length ??
-                                  0,
-                              itemBuilder: (context, index) {
-                                final documentUrl =
-                                    profileModel!
-                                        .data!
-                                        .buildingDocument!
-                                        .documentsFiles![index];
-                                final labels =
-                                    profileModel!
-                                        .data!
-                                        .buildingDocument!
-                                        .documentsFilesLabel;
+            fullAddress = addressParts.join(', ');
+            propertyDetails = [
+              if (isValid(unit?.blockNumber)) unit!.blockNumber!,
+              if (isValid(unit?.flatNumber)) unit!.flatNumber!,
+            ].join(" - ");
 
-                                if (documentUrl.isEmpty) {
-                                  return const SizedBox();
-                                }
-
-                                String label =
-                                    (labels != null && index < labels.length)
-                                        ? labels[index]
-                                        : 'Document ${index + 1}';
-
-                                String finalLabel =
-                                    label.isNotEmpty
-                                        ? label[0].toUpperCase() +
-                                            label.substring(1)
-                                        : 'Document ${index + 1}';
-
-                                return GestureDetector(
-                                  onTap: () {
-                                    Get.to(PdfView(link: documentUrl));
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        height: 7.h,
-                                        width: 15.w,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                          border: Border.all(
-                                            width: 1,
-                                            color: AppColors.maincolor,
-                                          ),
-                                        ),
-                                        child: Icon(
-                                          Icons.picture_as_pdf,
-                                          color: AppColors.maincolor,
-                                          size: 30.sp,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Expanded(
-                                        child: Text(
-                                          finalLabel,
-                                          textAlign: TextAlign.center,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                          style: TextStyle(fontSize: 15.sp),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                    batan(
-                      title: "Save Home",
-                      route: () {
-                        EditProfile();
-                      },
-                      color: AppColors.maincolor,
-                      fontcolor: Colors.white,
-                      height: 5.5.h,
-                      fontsize: 17.sp,
-                      radius: 12.0,
-                    ),
-                    SizedBox(height: 5.h),
-                  ],
-                ),
-              ).paddingOnly(right: 3.w, left: 3.w),
-          if (isEditing)
-            //
-            Container(
-              color: Colors.black.withOpacity(0.3),
-              child: Center(child: Loader()),
-            ),
-        ],
-      ),
-    );
+            keyWaiversController.text =
+                isValid(unit?.keyWaiver) ? unit!.keyWaiver! : "";
+          }
+          isLoading = false;
+        });
+      } else {
+        setState(() => isLoading = false);
+      }
+    });
   }
 
-  Widget profileField(
-    String label,
-    TextEditingController controller,
-    IconData icon,
-    bool isEditable, {
-    TextInputType keyboardType = TextInputType.text,
-    List<TextInputFormatter>? inputFormatters,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Align(
-          alignment: Alignment.topLeft,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontFamily: AppConstants.manrope,
-              fontSize: 18.sp,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        SizedBox(height: 2.h),
-        TextFormField(
-          controller: controller,
-          readOnly: !isEditable,
-          textCapitalization: TextCapitalization.words,
-          keyboardType: keyboardType,
-          inputFormatters: inputFormatters,
-          decoration: inputDecoration(hintText: label).copyWith(
-            prefixIcon: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Icon(icon, size: 20.sp, color: AppColors.maincolor),
-            ),
-          ),
-        ),
-        SizedBox(height: 2.h),
-      ],
-    );
-  }
-
-  void EditProfile() {
+  void EditProfile() async {
     final Map<String, String> data = {
       'update_id': profileModel?.data?.id.toString() ?? '',
-      "keywaivers": KeyWaiversController.text.trim(),
+      "keywaivers": keyWaiversController.text.trim(),
       "apartment_number": profileModel?.data?.unitsId.toString() ?? '',
     };
 
@@ -400,19 +135,14 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
         return;
       }
 
-      setState(() {
-        isEditing = true;
-      });
-
+      setState(() => isEditing = true);
       try {
         final response = await ProfileProvider().updateProfile(data);
 
         if (response.statusCode == 200) {
-          var profileModel = ProfileModel.fromJson(response.data);
-
-          if (profileModel.status == 200) {
+          var updatedModel = ProfileModel.fromJson(response.data);
+          if (updatedModel.status == 200) {
             Get.offAll(HomePage(userName: ""));
-
             Get.snackbar(
               "Success",
               "Home Updated Successfully",
@@ -422,22 +152,15 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
           } else {
             Get.snackbar(
               "Error",
-              "Failed to update profile: ${profileModel.message}",
+              updatedModel.message ?? "Update failed",
               backgroundColor: Colors.red,
               colorText: Colors.white,
             );
           }
-        } else if (response.statusCode == 422) {
-          Get.snackbar(
-            "Error",
-            "Validation Error: ${response.data['message']}",
-            backgroundColor: Colors.orange,
-            colorText: Colors.white,
-          );
         } else {
           Get.snackbar(
             "Error",
-            "Server error, please try again",
+            "Server Error",
             backgroundColor: Colors.red,
             colorText: Colors.white,
           );
@@ -450,87 +173,373 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
           colorText: Colors.white,
         );
       } finally {
-        setState(() {
-          isEditing = false;
-        });
+        setState(() => isEditing = false);
       }
     });
   }
 
-  void GetProfile() {
-    final Map<String, String> data = {'id': widget.id.toString()};
+  @override
+  Widget build(BuildContext context) {
+    final apartmentDocs = _getFilteredDocuments(
+      profileModel?.data?.unit?.documentsFiles,
+      profileModel?.data?.unit?.documentsFilesLabel,
+    );
 
-    checkInternet().then((internet) async {
-      if (internet) {
-        ProfileProvider().profileApi(data).then((response) async {
-          if (response.statusCode == 200) {
-            setState(() {
-              profileModel = ProfileModel.fromJson(
-                response.data,
-              ); // ✅ class level update
-              if (profileModel?.status == 200) {
-                var user = profileModel?.data?.user;
-                var unit = profileModel?.data?.unit;
+    final buildingDocs = _getFilteredDocuments(
+      profileModel?.data?.buildingDocument?.documentsFiles,
+      profileModel?.data?.buildingDocument?.documentsFilesLabel,
+    );
 
-                if (user != null) {
-                  var address = user.address;
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          isLoading
+              ? Center(child: Loader())
+              : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 6.h),
+                  TitleBar(
+                    back: () => Get.back(),
+                    title: "My Home",
+                    drawerCallback: () {},
+                  ),
+                  SizedBox(height: 3.h),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          infoCard(
+                            "Property Address",
+                            fullAddress,
+                            Icons.location_on,
+                          ),
+                          infoCard(
+                            "Property Details",
+                            propertyDetails,
+                            Icons.apartment,
+                          ),
 
-                  bool isValid(String? value) {
-                    return value != null &&
-                        value.trim().isNotEmpty &&
-                        value != "N/A";
-                  }
+                          // 🔑 Key Waivers (Premium Editable Card)
+                          Material(
+                            elevation: 1,
+                            borderRadius: BorderRadius.circular(16),
 
-                  List<String> addressParts = [];
+                            child: Container(
+                              // margin: EdgeInsets.only(bottom: 2.h),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.5.h),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          width: 11.w,
+                                          height: 11.w,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.maincolor,
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Icon(Icons.vpn_key_rounded, color: Colors.white, size: 20.sp),
+                                        ),
+                                        SizedBox(width: 3.w),
+                                        Text(
+                                          "Key Waivers",
+                                          style: TextStyle(
+                                            fontFamily: AppConstants.manrope,
+                                            fontSize: 17.sp,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.maincolor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 2.h),
+                                    Text(
+                                      "You can edit your key waiver information below:",
+                                      style: TextStyle(
+                                        fontFamily: AppConstants.manrope,
+                                        fontSize: 15.sp,
+                                        color: Colors.grey.shade700,
+                                      ),
+                                    ),
+                                    SizedBox(height: 1.5.h),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade100,
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(color: Colors.grey.shade300, width: 1),
+                                      ),
+                                      child: TextField(
+                                        controller: keyWaiversController,
+                                        textCapitalization: TextCapitalization.sentences,
+                                        maxLines: 2,
+                                        cursorColor: AppColors.maincolor,
+                                        style: TextStyle(
+                                          fontFamily: AppConstants.manrope,
+                                          fontSize: 15.sp,
+                                          color: Colors.black87,
+                                        ),
+                                        decoration: InputDecoration(
+                                          hintText: "Enter your key waiver details...",
+                                          hintStyle: TextStyle(
+                                            color: Colors.grey.shade500,
+                                            fontSize: 15.sp,
+                                            fontFamily: AppConstants.manrope,
+                                          ),
+                                          border: InputBorder.none,
+                                          contentPadding:
+                                          EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 1.5.h),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: GestureDetector(
+                                        onTap: EditProfile,
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.2.h),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.maincolor,
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(Icons.save_rounded, color: Colors.white, size: 16.sp),
+                                              SizedBox(width: 1.w),
+                                              Text(
+                                                "Save",
+                                                style: TextStyle(
+                                                  fontFamily: AppConstants.manrope,
+                                                  fontSize: 15.sp,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ).marginOnly(bottom: 1.h),
 
-                  if (isValid(unit?.blockNumber)) {
-                    addressParts.add(unit!.blockNumber!);
-                  }
-                  if (isValid(unit?.flatNumber)) {
-                    addressParts.add(unit!.flatNumber!);
-                  }
-                  if (isValid(address?.address)) {
-                    addressParts.add(address!.address!);
-                  }
-                  if (isValid(address?.city)) {
-                    addressParts.add(address!.city!);
-                  }
-                  if (isValid(address?.country)) {
-                    addressParts.add(address!.country!);
-                  }
-                  if (isValid(address?.zipCode)) {
-                    addressParts.add(address!.zipCode!);
-                  }
+                          SizedBox(height: 1.h),
+                          if (apartmentDocs.isNotEmpty) ...[
+                            Text(
+                              "Apartment Documents",
+                              style: TextStyle(
+                                fontFamily: AppConstants.manrope,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
 
-                  fullAddressController.text = addressParts.join(', ');
+                            GridView.builder(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 15,
+                                    childAspectRatio: 0.8,
+                                  ),
+                              itemCount: apartmentDocs.length,
+                              itemBuilder: (context, index) {
+                                final doc = apartmentDocs[index];
+                                return GestureDetector(
+                                  onTap:
+                                      () => Get.to(PdfView(link: doc['url']!)),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: 7.h,
+                                        width: 15.w,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          border: Border.all(
+                                            width: 1,
+                                            color: AppColors.maincolor,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          Icons.picture_as_pdf,
+                                          color: AppColors.maincolor,
+                                          size: 30.sp,
+                                        ),
+                                      ),
+                                      SizedBox(height: 1.h),
+                                      Expanded(
+                                        child: Text(
+                                          doc['label']!,
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          style: TextStyle(fontSize: 14.sp),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ).paddingOnly(top: 1.5.h);
+                              },
+                            ),
 
-                  KeyWaiversController.text =
-                      isValid(unit?.keyWaiver) ? unit!.keyWaiver! : "";
+                          ],
 
-                  propertydetailsController.text = [
-                    if (isValid(unit?.blockNumber)) unit!.blockNumber!,
-                    if (isValid(unit?.flatNumber)) unit!.flatNumber!,
-                  ].join(" - ");
+                          /// 🏢 Building Documents
+                          if (buildingDocs.isNotEmpty) ...[
+                            Text(
+                              "Building Documents",
+                              style: TextStyle(
+                                fontFamily: AppConstants.manrope,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 2.h),
+                            GridView.builder(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
 
-                  if (user.profile != null && user.profile!.isNotEmpty) {
-                    profileImage = user.profile!;
-                  }
-                }
-              }
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 15,
+                                    childAspectRatio: 0.8,
+                                  ),
+                              itemCount: buildingDocs.length,
+                              itemBuilder: (context, index) {
+                                final doc = buildingDocs[index];
+                                return GestureDetector(
+                                  onTap:
+                                      () => Get.to(PdfView(link: doc['url']!)),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: 7.h,
+                                        width: 15.w,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          border: Border.all(
+                                            width: 1,
+                                            color: AppColors.maincolor,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          Icons.picture_as_pdf,
+                                          color: AppColors.maincolor,
+                                          size: 30.sp,
+                                        ),
+                                      ),
+                                      SizedBox(height: 1.h),
+                                      Expanded(
+                                        child: Text(
+                                          doc['label']!,
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          style: TextStyle(fontSize: 14.sp),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
 
-              isLoading = false;
-            });
-          } else {
-            setState(() {
-              isLoading = false;
-            });
-          }
-        });
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    });
+                          ],
+
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  /// 💾 Save Button
+
+                  SizedBox(height: 5.h),
+                ],
+              ).paddingOnly(left: 3.w, right: 3.w),
+          if (isEditing)
+            Container(
+              color: Colors.black.withOpacity(0.3),
+              child: Center(child: Loader()),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget infoCard(String label, String value, IconData icon) {
+    return Material(
+      elevation: 1,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.5.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 11.w,
+              height: 11.w,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: AppColors.maincolor,
+              ),
+              child: Icon(icon, size: 18.sp, color: Colors.white),
+            ),
+            SizedBox(width: 3.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontFamily: AppConstants.manrope,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16.sp,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  SizedBox(height: 0.6.h),
+                  Text(
+                    value.isNotEmpty ? value : "—",
+                    style: TextStyle(
+                      fontFamily: AppConstants.manrope,
+                      fontSize: 15.sp,
+                      color: Colors.grey.shade700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    ).marginOnly(bottom: 1.5.h);
   }
 }

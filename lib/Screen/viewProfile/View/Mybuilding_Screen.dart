@@ -1,24 +1,19 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/comman/loader.dart';
-import 'package:wavee/comman/viewPdfFunction.dart';
-
 import '../../../comman/Custom_AppBar.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/const.dart';
-import '../../../comman/input_decoration.dart';
 import '../Model/profile_model.dart';
 import '../Provider/profile_provider.dart';
+import 'package:wavee/comman/viewPdfFunction.dart';
 
 class MyBuilding_Screen extends StatefulWidget {
   final int? id;
-
   const MyBuilding_Screen({super.key, this.id});
 
   @override
@@ -28,469 +23,240 @@ class MyBuilding_Screen extends StatefulWidget {
 class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
   final GlobalKey<ScaffoldState> Mybuilding = GlobalKey<ScaffoldState>();
   TextEditingController myBuilingname = TextEditingController();
-  TextEditingController emailController = TextEditingController();
   TextEditingController conciergeInfoController = TextEditingController();
   TextEditingController parkingInfoController = TextEditingController();
   TextEditingController fitnessController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  TextEditingController cityController = TextEditingController();
-  TextEditingController countryController = TextEditingController();
-  TextEditingController zipCodeController = TextEditingController();
-  TextEditingController fullAddressController = TextEditingController();
   TextEditingController landline = TextEditingController();
   TextEditingController number = TextEditingController();
   bool isLoading = false;
-  String profileImage = "";
-  bool isEditing = false;
-  File? selectedPdf;
-  String? pdfFileName;
-  File? selectedImage;
+  ProfileModel? profileModel;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      isLoading = true;
-    });
+    isLoading = true;
     GetProfile();
-  }
-
-  String capitalizeWords(String input) {
-    if (input.isEmpty) return "";
-    return input
-        .split(" ")
-        .map(
-          (word) =>
-              word.isNotEmpty
-                  ? word[0].toUpperCase() + word.substring(1).toLowerCase()
-                  : "",
-        )
-        .join(" ");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      body: isLoading
+          ? Center(child: Loader().paddingOnly(top: 25.h))
+          : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 6.h),
+              TitleBar(
+                back: () => Get.back(),
+                title: "My Building",
+                drawerCallback: () {},
+              ),
+              SizedBox(height: 2.h),
 
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: 6.h),
-            TitleBar(
-              back: () {
-                Get.back();
-              },
-              title: "My Building",
-              drawerCallback: () {},
-            ),
-            SizedBox(height: 2.h),
-            isLoading
-                ? Center(child: Loader().paddingOnly(top: 25.h))
-                : profileModel?.data?.buildingDocument == null
-                ? Column(
+            Expanded(child: SingleChildScrollView(child: Column(children: [
+              infoCard("Building Name", myBuilingname.text, Icons.apartment),
+              infoCard("Address", addressController.text, Icons.location_on),
+              infoCard("Landline Number", landline.text, Icons.phone),
+              infoCard("Additional Number", number.text, Icons.phone),
+              infoCard("Parking Info", parkingInfoController.text, Icons.local_parking),
+              infoCard("Concierge Info", conciergeInfoController.text, Icons.support_agent),
+              infoCard("Fitness Centre", fitnessController.text, Icons.fitness_center),
+
+              if ((profileModel?.data?.buildingDocument?.emergencyNumbers?.isNotEmpty ?? false))
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 1.h),
-                    profileField(
-                      "Building Name",
-                      myBuilingname,
-                      Icons.apartment,
-                      false,
-                    ),
-
-                    profileField(
-                      "Address",
-                      addressController,
-                      Icons.location_on,
-                      false,
-                    ),
-                    // profileField(
-                    //   "Total Floors",
-                    //   TextEditingController(
-                    //     text:
-                    //         profileModel?.data?.buildingDocument?.totalFloors
-                    //             ?.toString() ??
-                    //         "",
-                    //   ),
-                    //   Icons.stairs,
-                    //   false,
-                    // ),
-                    // profileField(
-                    //   "Total Units",
-                    //   TextEditingController(
-                    //     text:
-                    //         profileModel?.data?.buildingDocument?.totalUnits
-                    //             ?.toString() ??
-                    //         "",
-                    //   ),
-                    //   Icons.house,
-                    //   false,
-                    // ),
-                    profileField(
-                      "Landline Number",
-                      landline,
-
-                      Icons.phone,
-                      false,
-                    ),
-                    profileField(
-                      "Additional Number",
-                      number,
-                      Icons.phone,
-                      false,
-                    ),
-                    profileField(
-                      "Parking Info",
-                      parkingInfoController,
-                      Icons.local_parking,
-                      false,
-                    ),
-                    profileField(
-                      "Concierge Info",
-                      conciergeInfoController,
-                      Icons.support_agent,
-                      false,
-                    ),
-                    profileField(
-                      "Fitness Centre",
-                      fitnessController,
-                      Icons.fitness_center,
-                      false,
-                    ),
-
-                    SizedBox(height: 3.h),
-                  ],
-                )
-                : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 1.h),
-                    profileField(
-                      "Building Name",
-                      myBuilingname,
-                      Icons.apartment,
-                      false,
-                    ),
-
-                    profileField(
-                      "Address",
-                      addressController,
-                      Icons.location_on,
-                      false,
-                    ),
-                    // profileField(
-                    //   "Total Floors",
-                    //   TextEditingController(
-                    //     text:
-                    //         profileModel?.data?.buildingDocument?.totalFloors
-                    //             ?.toString() ??
-                    //         "",
-                    //   ),
-                    //   Icons.stairs,
-                    //   false,
-                    // ),
-                    // profileField(
-                    //   "Total Units",
-                    //   TextEditingController(
-                    //     text:
-                    //         profileModel?.data?.buildingDocument?.totalUnits
-                    //             ?.toString() ??
-                    //         "",
-                    //   ),
-                    //   Icons.house,
-                    //   false,
-                    // ),
-                    profileField(
-                      "Landline Number",
-                      landline,
-
-                      Icons.phone,
-                      false,
-                    ),
-                    profileField(
-                      "Additional Number",
-                      number,
-                      Icons.phone,
-                      false,
-                    ),
-                    profileField(
-                      "Parking Info",
-                      parkingInfoController,
-                      Icons.local_parking,
-                      false,
-                    ),
-                    profileField(
-                      "Concierge Info",
-                      conciergeInfoController,
-                      Icons.support_agent,
-                      false,
-                    ),
-                    profileField(
-                      "Fitness Centre",
-                      fitnessController,
-                      Icons.fitness_center,
-                      false,
-                    ),
-
-                    if ((profileModel!
-                            .data!
-                            .buildingDocument!
-                            .emergencyNumbers
-                            ?.isNotEmpty ??
-                        false))
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Emergency Numbers",
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: AppConstants.manrope,
-                            ),
-                          ),
-                          SizedBox(height: 1.h),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            itemCount:
-                                profileModel!
-                                    .data!
-                                    .buildingDocument!
-                                    .emergencyNumbers!
-                                    .length,
-                            padding: EdgeInsets.zero,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              final number =
-                                  profileModel!
-                                      .data!
-                                      .buildingDocument!
-                                      .emergencyNumbers![index];
-                              final caption =
-                                  profileModel!
-                                                  .data!
-                                                  .buildingDocument!
-                                                  .emergencyCaptions !=
-                                              null &&
-                                          index <
-                                              profileModel!
-                                                  .data!
-                                                  .buildingDocument!
-                                                  .emergencyCaptions!
-                                                  .length
-                                      ? profileModel!
-                                          .data!
-                                          .buildingDocument!
-                                          .emergencyCaptions![index]
-                                      : "Emergency ${index + 1}";
-                              return profileField(
-                                caption,
-                                TextEditingController(text: number),
-                                Icons.phone,
-                                false,
-                              );
-                            },
-                          ),
-                        ],
-                      ),
                     SizedBox(height: 2.h),
-                    if (profileModel!.data!.buildingDocument!.documentsFiles !=
-                            null &&
-                        profileModel!.data!.buildingDocument!.documentsFiles!
-                            .any((url) => url.isNotEmpty))
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Building Documents",
-                            style: TextStyle(
-                              fontFamily: AppConstants.manrope,
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 1.h),
-                          GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 15,
-                                  childAspectRatio: 0.8,
-                                ),
-                            itemCount:
-                                profileModel
-                                    ?.data
-                                    ?.buildingDocument
-                                    ?.documentsFiles
-                                    ?.length ??
-                                0,
-                            itemBuilder: (context, index) {
-                              final documentUrl =
-                                  profileModel!
-                                      .data!
-                                      .buildingDocument!
-                                      .documentsFiles![index];
-                              final labels =
-                                  profileModel!
-                                      .data!
-                                      .buildingDocument!
-                                      .documentsFilesLabel;
-
-                              if (documentUrl.isEmpty) {
-                                return const SizedBox();
-                              }
-
-                              String label =
-                                  (labels != null && index < labels.length)
-                                      ? labels[index]
-                                      : 'Document ${index + 1}';
-
-                              String finalLabel =
-                                  label.isNotEmpty
-                                      ? label[0].toUpperCase() +
-                                          label.substring(1)
-                                      : 'Document ${index + 1}';
-
-                              return GestureDetector(
-                                onTap: () {
-                                  Get.to(PdfView(link: documentUrl));
-                                },
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      height: 7.h,
-                                      width: 15.w,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(
-                                          width: 1,
-                                          color: AppColors.maincolor,
-                                        ),
-                                      ),
-                                      child: Icon(
-                                        Icons.picture_as_pdf,
-                                        color: AppColors.maincolor,
-                                        size: 30.sp,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Expanded(
-                                      child: Text(
-                                        finalLabel,
-                                        textAlign: TextAlign.center,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                        style: TextStyle(fontSize: 15.sp),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        ],
+                    Text(
+                      "Emergency Numbers",
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppConstants.manrope,
                       ),
-                    SizedBox(height: 3.h),
+                    ),
+                    SizedBox(height: 1.h),
+                    ...List.generate(
+                      profileModel!.data!.buildingDocument!.emergencyNumbers!.length,
+                          (index) {
+                        final number = profileModel!.data!.buildingDocument!.emergencyNumbers![index];
+                        final caption = (profileModel!.data!.buildingDocument!.emergencyCaptions != null &&
+                            index < profileModel!.data!.buildingDocument!.emergencyCaptions!.length)
+                            ? profileModel!.data!.buildingDocument!.emergencyCaptions![index]
+                            : "Emergency ${index + 1}";
+                        return infoCard(caption, number, Icons.phone);
+                      },
+                    ),
                   ],
                 ),
+
+              if (profileModel?.data?.buildingDocument?.documentsFiles != null &&
+                  profileModel!.data!.buildingDocument!.documentsFiles!.any((url) => url.isNotEmpty))
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 3.h),
+                    Text(
+                      "Building Documents",
+                      style: TextStyle(
+                        fontFamily: AppConstants.manrope,
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 1.h),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 15,
+                        childAspectRatio: 0.8,
+                      ),
+                      itemCount: profileModel!.data!.buildingDocument!.documentsFiles!.length,
+                      itemBuilder: (context, index) {
+                        final documentUrl = profileModel!.data!.buildingDocument!.documentsFiles![index];
+                        final labels = profileModel!.data!.buildingDocument!.documentsFilesLabel;
+                        if (documentUrl.isEmpty) return const SizedBox();
+
+                        String label = (labels != null && index < labels.length)
+                            ? labels[index]
+                            : 'Document ${index + 1}';
+                        String finalLabel =
+                        label.isNotEmpty ? label[0].toUpperCase() + label.substring(1) : 'Document ${index + 1}';
+
+                        return GestureDetector(
+                          onTap: () => Get.to(PdfView(link: documentUrl)),
+                          child: Column(
+                            children: [
+                              Container(
+                                height: 7.h,
+                                width: 15.w,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: AppColors.maincolor, width: 1),
+                                ),
+                                child: Icon(Icons.picture_as_pdf, color: AppColors.maincolor, size: 26.sp),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                finalLabel,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                style: TextStyle(fontSize: 14.sp, fontFamily: AppConstants.manrope),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              SizedBox(height: 3.h),
+            ],),)),
+
+            ],
+          ).paddingOnly(left: 3.w,right: 3.w),
+    );
+  }
+
+  // ========== REUSABLE INFO CARD ==============
+  Widget infoCard(String label, String value, IconData icon) {
+    return Material(
+      borderRadius: BorderRadius.circular(12),
+      elevation: 0.5,
+      child: Container(
+        // margin: EdgeInsets.only(bottom: 1.5.h),
+        padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.5.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left icon box
+            Container(
+              width: 11.w,
+              height: 11.w,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: AppColors.maincolor,
+              ),
+              child: Icon(
+                icon,
+                size: 18.sp,
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(width: 3.w),
+
+            // Label and value
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontFamily: AppConstants.manrope,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16.sp,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  SizedBox(height: 0.6.h),
+                  Text(
+                    value.isNotEmpty ? value : "—",
+                    style: TextStyle(
+                      fontFamily: AppConstants.manrope,
+                      fontSize: 16.sp,
+                      color: Colors.grey.shade700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
-      ).paddingOnly(right: 3.w, left: 3.w),
-    );
+      ),
+    ).marginOnly(bottom: 1.h);
   }
 
-  Widget profileField(
-    String label,
-    TextEditingController controller,
-    IconData icon,
-    bool isEditable, {
-    TextInputType keyboardType = TextInputType.text,
-    List<TextInputFormatter>? inputFormatters,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Align(
-          alignment: Alignment.topLeft,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontFamily: AppConstants.manrope,
-              fontSize: 17.sp,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        SizedBox(height: 2.h),
-        TextFormField(
-          controller: controller,
-          readOnly: !isEditable,
-          textCapitalization: TextCapitalization.words,
-          keyboardType: keyboardType,
-          inputFormatters: inputFormatters,
-          decoration: inputDecoration(hintText: label).copyWith(
-            prefixIcon: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Icon(icon, size: 20.sp, color: AppColors.maincolor),
-            ),
-          ),
-        ),
-        SizedBox(height: 2.h),
-      ],
-    );
-  }
 
+  // ========== FETCH PROFILE DATA ==========
   void GetProfile() {
     final Map<String, String> data = {'id': widget.id.toString()};
-
     checkInternet().then((internet) async {
       if (internet) {
         ProfileProvider().profileApi(data).then((response) async {
           if (response.statusCode == 200) {
             setState(() {
-              profileModel = ProfileModel.fromJson(
-                response.data,
-              ); // ✅ class level update
+              profileModel = ProfileModel.fromJson(response.data);
+              final building = profileModel?.data?.buildingDocument;
 
+              myBuilingname.text = building?.buildingName ?? "";
+              addressController.text = building?.address ?? "";
+              parkingInfoController.text = building?.parkingInformation ?? "";
+              conciergeInfoController.text = building?.conciergeInformation ?? "";
+              fitnessController.text = building?.fitnessCentreInformation ?? "";
               landline.text = profileModel?.data?.building?.landline ?? "";
               number.text = profileModel?.data?.building?.mobile ?? "";
-              addressController.text =
-                  profileModel?.data?.buildingDocument?.address ?? "";
-              parkingInfoController.text =
-                  profileModel?.data?.buildingDocument?.parkingInformation ??
-                  "";
-              conciergeInfoController.text =
-                  profileModel?.data?.buildingDocument?.conciergeInformation ??
-                  "";
-              fitnessController.text =
-                  profileModel
-                      ?.data
-                      ?.buildingDocument
-                      ?.fitnessCentreInformation ??
-                  "";
-
-              if (profileModel?.status == 200) {
-                var building = profileModel?.data?.buildingDocument;
-                myBuilingname.text = building?.buildingName ?? "";
-              }
-
               isLoading = false;
             });
-            log("Response Data is now coming${response.data}");
           } else {
-            setState(() {
-              isLoading = false;
-            });
+            isLoading = false;
           }
         });
       } else {
-        setState(() {
-          isLoading = false;
-        });
+        isLoading = false;
       }
     });
   }

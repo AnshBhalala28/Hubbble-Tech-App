@@ -269,7 +269,7 @@ class _BookingScreenState extends State<BookingScreen> {
                   : nonEmptyBookings.isEmpty || nonEmptyBookings.isEmpty
                   ? Center(
                     child: Text(
-                      "No Bookings found",
+                      "No Bookings Found",
                       style: TextStyle(
                         fontSize: 17.sp,
                         fontWeight: FontWeight.bold,

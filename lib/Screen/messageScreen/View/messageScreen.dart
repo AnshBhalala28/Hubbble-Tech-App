@@ -1,13 +1,16 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Screen/Community%20Detail%20Page/view/community_detail_page.dart';
 import 'package:wavee/Screen/messageScreen/View/videourlscreen.dart';
 import 'package:wavee/comman/const.dart';
 import 'package:wavee/comman/viewPdfFunction.dart';
@@ -35,6 +38,7 @@ class MessageScreen extends StatefulWidget {
   final String? dob;
   final String? email;
   String? orderproductID;
+  String? businessID;
 
   MessageScreen({
     super.key,
@@ -48,6 +52,7 @@ class MessageScreen extends StatefulWidget {
     this.email,
     this.senderid,
     this.orderproductID,
+    this.businessID,
     this.chatStatus,
   });
 
@@ -81,6 +86,9 @@ class _MessageScreenState extends State<MessageScreen> {
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       MessageApi();
     });
+    log("Business ID AVE CE ${widget.conciergeID}");
+    log("Business ID AVE CE ${widget.senderid}");
+    log("Business ID AVE CE ${widget.businessID}");
   }
 
   String formatDateTime(String? dateTime) {
@@ -175,6 +183,13 @@ class _MessageScreenState extends State<MessageScreen> {
                           Get.to(
                             () => AppUserFriendProfileScreen(id: friendid),
                           );
+                        }else if(widget.type=="business"){
+                          Get.to(BusinessDetailPage(
+                            businessID:widget.businessID ,
+                            lat: AppLat,
+                            long: AppLon,
+                          )
+                          );
                         }
                       },
                       child: Row(
@@ -186,7 +201,7 @@ class _MessageScreenState extends State<MessageScreen> {
                               size: 30,
                             ),
                             onPressed: () {
-                              Get.back(result: 'refresh');
+                              Get.back();
                             },
                           ),
                           InkWell(
@@ -238,13 +253,17 @@ class _MessageScreenState extends State<MessageScreen> {
                             ),
                           ),
                           const SizedBox(width: 12),
-                          Text(
-                            widget.chatName ?? "",
-                            style: TextStyle(
-                              fontFamily: AppConstants.manrope,
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
+                          SizedBox(
+                            width: 70.w,
+                            child: Text(
+                              widget.chatName ?? "",
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontFamily: AppConstants.manrope,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
                             ),
                           ),
                         ],
@@ -1035,7 +1054,8 @@ class _MessageScreenState extends State<MessageScreen> {
       },
     );
   }
-
+  String AppLat = '';
+  String AppLon = '';
   void SendOrderChatApi() {
     setState(() {
       isSending = true;
@@ -1101,6 +1121,46 @@ class _MessageScreenState extends State<MessageScreen> {
         buildErrorDialog(context, 'Error', "Internet Required");
       }
     });
+  }
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    if (mounted) {
+      setState(() {
+        AppLat = position.latitude.toString();
+        AppLon = position.longitude.toString();
+      });
+    }
   }
 
   @override

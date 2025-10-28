@@ -126,7 +126,9 @@ class _MyAppState extends State<MyApp> {
           debugShowCheckedModeBanner: false,
           title: 'Wavee Ai',
           theme: ThemeData(
+            // scaffoldBackgroundColor: Colors.white,
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+
             useMaterial3: true,
           ),
           home: const WelcomeScreen(),

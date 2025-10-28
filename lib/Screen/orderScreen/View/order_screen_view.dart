@@ -184,7 +184,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                               color: Colors.black,
                               fontSize: 18.sp,
                               fontWeight: FontWeight.w600,
-                              fontFamily: AppConstants.manrope,
+                              fontFamily: AppConstants.manropeBold,
                             ),
                           ),
                           SizedBox(width: 2.w),
@@ -223,6 +223,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
+
                             offset: const Offset(0, 45),
                             itemBuilder:
                                 (BuildContext context) => [
@@ -233,7 +234,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 16.sp,
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.w500,
                                         fontFamily: AppConstants.manrope,
                                       ),
                                     ),
@@ -245,7 +246,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 16.sp,
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.w500,
                                         fontFamily: AppConstants.manrope,
                                       ),
                                     ),
@@ -265,7 +266,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 16.sp,
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.w500,
                                       fontFamily: AppConstants.manrope,
                                     ),
                                   ),
@@ -323,13 +324,13 @@ class _Order_ScreenState extends State<Order_Screen> {
                                 child: Text(
                                   serviceCategories[index],
                                   style: TextStyle(
-                                    fontSize: 15.sp,
+                                    fontSize: 16.sp,
                                     color:
                                         selectedCategory == index
                                             ? Colors.white
                                             : Colors.black,
                                     fontFamily: AppConstants.manrope,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w500,
                                     letterSpacing: 1,
                                   ),
                                 ),
@@ -377,13 +378,13 @@ class _Order_ScreenState extends State<Order_Screen> {
                                 child: Text(
                                   categories[index],
                                   style: TextStyle(
-                                    fontSize: 15.sp,
+                                    fontSize: 16.sp,
                                     color:
                                         selectedCategory == index
                                             ? Colors.white
                                             : Colors.black,
                                     fontFamily: AppConstants.manrope,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w500,
                                     letterSpacing: 1,
                                   ),
                                 ),

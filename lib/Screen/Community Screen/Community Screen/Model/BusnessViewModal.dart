@@ -720,14 +720,16 @@ class Posts {
   String? type;
   String? file;
   String? status;
+  int? order;
 
-  Posts({this.id, this.type, this.file, this.status});
+  Posts({this.id, this.type, this.file, this.status,this.order});
 
   Posts.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     type = json['type'];
     file = json['file'];
     status = json['status'];
+    order = json['order'];
   }
 
   Map<String, dynamic> toJson() {
@@ -736,6 +738,7 @@ class Posts {
     data['type'] = this.type;
     data['file'] = this.file;
     data['status'] = this.status;
+    data['order'] = this.order;
     return data;
   }
 }

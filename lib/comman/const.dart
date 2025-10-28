@@ -94,10 +94,12 @@ String formatDateTime(String? createdAt) {
 }
 
 class AppConstants {
-  static String BASEURL = "https://portal.wavee.ai/api/";
+  // static String BASEURL = "https://portal.wavee.ai/api/";
+  static String BASEURL = "https://staging-portal.wavee.ai/api/";
 
   static const String path = "assets/Svg/";
   static const String manrope1 = "Manrope";
+  static const String manropeBold = "AlbertSans-Bold";
   static const String manrope = "AlbertSans";
   static const String AlbertSansLight = "AlbertSans-Light";
 

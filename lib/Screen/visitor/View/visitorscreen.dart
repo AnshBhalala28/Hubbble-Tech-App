@@ -404,6 +404,13 @@ class _VisitorScreenState extends State<VisitorScreen> {
       return "Invalid Date";
     }
   }
+  String capitalizeEachWord(String? s) {
+    if (s == null || s.isEmpty) return '';
+    return s.split(' ').map((word) {
+      if (word.isEmpty) return word;
+      return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    }).join(' ');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -446,7 +453,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                   style: TextStyle(
                                     fontSize: 16.5.sp,
                                     color: Colors.green,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.normal,
                                     fontFamily: AppConstants.manrope,
                                   ),
                                 ),
@@ -456,9 +463,10 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                     child: Text(
                                       "Checked Out: ${_formatCheckIn(visitor.checkOutDate, visitor.checkOutTime)}",
                                       style: TextStyle(
+                                        letterSpacing: 1,
+                                        color: AppColors.redColor,
                                         fontSize: 16.5.sp,
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.normal,
                                         fontFamily: AppConstants.manrope,
                                       ),
                                     ),
@@ -474,7 +482,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                       ),
                                       SizedBox(width: 2.w),
                                       Text(
-                                        "Name: ${visitor.visitorName?.capitalizeFirst ?? ''}",
+                                        "Name: ${capitalizeEachWord(visitor.visitorName?.capitalizeFirst ?? '')}",
                                         style: TextStyle(
                                           fontSize: 16.5.sp,
                                           fontWeight: FontWeight.w500,
@@ -496,7 +504,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                         ),
                                         SizedBox(width: 2.w),
                                         Text(
-                                          "Type: ${visitor.isContractors}",
+                                          "Type: ${capitalizeEachWord(visitor.isContractors)}",
                                           style: TextStyle(
                                             fontSize: 16.5.sp,
                                             fontWeight: FontWeight.w500,

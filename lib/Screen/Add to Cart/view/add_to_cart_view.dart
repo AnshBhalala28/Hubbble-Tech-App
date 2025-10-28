@@ -76,7 +76,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                     Get.back();
                   }
                 },
-                title: "Your Basket",
+                title: "Your Cart",
                 drawerCallback: () {},
               ),
             ),
@@ -109,13 +109,13 @@ class _AddToCartViewState extends State<AddToCartView> {
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
+                              // boxShadow: [
+                              //   BoxShadow(
+                              //     color: Colors.black.withOpacity(0.05),
+                              //     blurRadius: 10,
+                              //     offset: const Offset(0, 2),
+                              //   ),
+                              // ],
                             ),
                             child: Padding(
                               padding: EdgeInsets.all(3.w),
@@ -341,7 +341,7 @@ class _AddToCartViewState extends State<AddToCartView> {
             ),
             SizedBox(height: 3.h),
             Text(
-              "Your basket is empty",
+              "Your cart is empty",
               style: TextStyle(
                 fontFamily: AppConstants.manrope,
                 fontSize: 20.sp,
@@ -384,7 +384,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                   color: AppColors.maincolor,
                   fontcolor: Colors.white,
                   height: 5.h,
-                  fontsize: 16.sp,
+                  fontsize: 16.5.sp,
                   radius: 12.0,
                   width: 40.w,
                   fontWeight: FontWeight.bold,
@@ -578,6 +578,7 @@ class _AddToCartViewState extends State<AddToCartView> {
   }) {
     return Card(
       elevation: 0,
+      color: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: EdgeInsets.all(3.w),

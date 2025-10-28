@@ -68,7 +68,7 @@ class MessageProvider extends ChangeNotifier {
 
       formData.files.add(
         MapEntry(
-          'files',
+          'files[]',
           await MultipartFile.fromFile(
             filePath,
             contentType: MediaType.parse(mimeType),

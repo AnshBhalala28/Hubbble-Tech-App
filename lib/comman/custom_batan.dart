@@ -17,6 +17,7 @@ InkWell batan({
   double? iconsize,
   iconsize1,
   radius,
+  String fontFamily = AppConstants.manrope,
 }) {
   return InkWell(
     onTap: route,
@@ -39,7 +40,7 @@ InkWell batan({
           Text(
             title.toString(),
             style: TextStyle(
-              fontFamily: AppConstants.manrope,
+              fontFamily: fontFamily,
               color: fontcolor,
               fontWeight: fontWeight,
               letterSpacing: 1,

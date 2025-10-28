@@ -197,7 +197,58 @@ class _CommunityScreenState extends State<CommunityScreen>
       }
     }
   }
+  void _addCurrentLocationMarker() {
+    if (AppLat.isNotEmpty && AppLon.isNotEmpty) {
+      double latitude = double.tryParse(AppLat) ?? 0.0;
+      double longitude = double.tryParse(AppLon) ?? 0.0;
 
+      if (latitude != 0.0 && longitude != 0.0) {
+        Marker currentLocationMarker = Marker(
+          markerId: MarkerId("current_location"),
+          position: LatLng(latitude, longitude),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+          infoWindow: InfoWindow(
+            title: "My Location",
+            snippet: "You are here",
+          ),
+        );
+
+        setState(() {
+          _markers.add(currentLocationMarker);
+        });
+      }
+    }
+  }
+
+  void _addCustomCurrentLocationMarker() async {
+    if (AppLat.isNotEmpty && AppLon.isNotEmpty) {
+      double latitude = double.tryParse(AppLat) ?? 0.0;
+      double longitude = double.tryParse(AppLon) ?? 0.0;
+
+      if (latitude != 0.0 && longitude != 0.0) {
+        // Custom marker icon બનાવો
+        BitmapDescriptor customIcon = await BitmapDescriptor.fromAssetImage(
+          ImageConfiguration(size: Size(48, 48)),
+          'assets/images/current_location_marker.png', // તમારું custom icon
+        );
+
+        Marker currentLocationMarker = Marker(
+          markerId: MarkerId("current_location"),
+          position: LatLng(latitude, longitude),
+          icon: customIcon,
+          anchor: Offset(0.5, 0.5),
+          infoWindow: InfoWindow(
+            title: "My Current Location",
+            snippet: "This is where I am",
+          ),
+        );
+
+        setState(() {
+          _markers.add(currentLocationMarker);
+        });
+      }
+    }
+  }
   void moveToLocation() {
     if (AppLat.isNotEmpty && AppLon.isNotEmpty) {
       double latitude = double.tryParse(AppLat) ?? 0.0;
@@ -299,12 +350,31 @@ class _CommunityScreenState extends State<CommunityScreen>
       setState(() => isMapLoading = false);
       return;
     }
+
     setState(() {
       isMapLoading = false;
     });
 
     Set<Marker> markers = {};
     Map<String, List<Data1>> locationGroups = {};
+
+    // Current location marker ને directly _markers માં ઉમેરો
+    if (AppLat.isNotEmpty && AppLon.isNotEmpty) {
+      double currentLat = double.tryParse(AppLat) ?? 0.0;
+      double currentLon = double.tryParse(AppLon) ?? 0.0;
+
+      if (currentLat != 0.0 && currentLon != 0.0) {
+        _markers.add(
+          Marker(
+            markerId: MarkerId("current_location"),
+            position: LatLng(currentLat, currentLon),
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
+            infoWindow: InfoWindow(title: "My Location",),
+            zIndex: 1,
+          ),
+        );
+      }
+    }
 
     for (var data in businessprofileModel!.data!) {
       if (data.latitude != null && data.longitude != null) {
@@ -360,6 +430,7 @@ class _CommunityScreenState extends State<CommunityScreen>
             position: LatLng(lat, lon),
             icon: finalIcon,
             onTap: () => _expandMarkers(lat, lon, profiles),
+            zIndex: 2, // Business markers have lower zIndex
           );
         }),
       );
@@ -370,7 +441,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     final firstBatchMarkers = await Future.wait(firstBatchFutures);
     if (mounted) {
       setState(() {
-        _markers = firstBatchMarkers.toSet();
+        _markers.addAll(firstBatchMarkers); // Add to existing markers instead of replacing
       });
     }
 
@@ -416,6 +487,7 @@ class _CommunityScreenState extends State<CommunityScreen>
               position: LatLng(lat, lon),
               icon: finalIcon,
               onTap: () => _expandMarkers(lat, lon, profiles),
+              zIndex: 2,
             );
           }),
         );
@@ -431,7 +503,35 @@ class _CommunityScreenState extends State<CommunityScreen>
       await Future.delayed(Duration(milliseconds: 10));
     }
   }
+  void _addStyledCurrentLocationMarker() {
+    if (AppLat.isNotEmpty && AppLon.isNotEmpty) {
+      double latitude = double.tryParse(AppLat) ?? 0.0;
+      double longitude = double.tryParse(AppLon) ?? 0.0;
 
+      if (latitude != 0.0 && longitude != 0.0) {
+        Marker currentLocationMarker = Marker(
+          markerId: MarkerId("current_location"),
+          position: LatLng(latitude, longitude),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
+          consumeTapEvents: true,
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("This is your current location")),
+            );
+          },
+          infoWindow: InfoWindow(
+            title: "📍 My Location",
+            snippet: "You are here",
+          ),
+          zIndex: 2, // બીજા markers ઉપર દેખાવા માટે
+        );
+
+        setState(() {
+          _markers.add(currentLocationMarker);
+        });
+      }
+    }
+  }
   void _onCameraIdle() {
     mapController.getZoomLevel().then((zoom) {
       if (zoom < 16.0) {
@@ -783,7 +883,7 @@ class _CommunityScreenState extends State<CommunityScreen>
       setState(() {
         isLocationFetched = true;
       });
-
+      _addCurrentLocationMarker();
       getCityName(position.latitude, position.longitude);
     } catch (e) {
       _showPermissionDialog(
@@ -951,6 +1051,7 @@ class _CommunityScreenState extends State<CommunityScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomBar(selected: 2),
+      backgroundColor: AppColors.white,
       body: WillPopScope(
         onWillPop: () async {
           Get.offAll(() => HomePage(selected: 1, userName: ""));
@@ -3148,6 +3249,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   Get.to(
                                     MessageScreen(
                                       type: "business",
+                                      businessID: busnessviewmodal
+                                          ?.data
+                                          ?.business?.id.toString()??"" ,
                                       chatName:
                                       busnessviewmodal
                                           ?.data
@@ -3316,7 +3420,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                         0)
                                     ? "Order 5 times to get 20% discount behind the scenes"
                                     : "You're getting closer to an exclusive reward! Complete "
-                                    "${busnessviewmodal?.data?.business?.loyaltyInfo?.loyaltyOrderThreshold} "
+                                    "${busnessviewmodal?.data?.business?.loyaltyInfo?.ordersCompletedWithBusiness} "
                                     "more orders to unlock a ${busnessviewmodal?.data?.business?.loyaltyInfo?.loyaltyDiscountPercentage?.replaceAll(RegExp(r'\\.0+\$'), '')}% discount on your next purchase.",
                                 onTap: () {
                                   Get.to(
@@ -4200,7 +4304,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                             text: TextSpan(
                                               children: [
                                                 TextSpan(
-                                                  text: "Distance :- ",
+                                                  text: "Distance : ",
                                                   style: TextStyle(
                                                     color: Colors.black,
                                                     fontWeight:
@@ -4927,21 +5031,19 @@ class _CommunityScreenState extends State<CommunityScreen>
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child:
-                  item.type == 'video'
-                      ? VideoWidget(
-                    videoUrl: item.file ?? '',
-                    play: isInView,
-                    postId: item.id ?? 0,
-                  )
-                      : GestureDetector(
+                 GestureDetector(
                     onTap: () {
-                      Get.to(
-                            () => FullScreenImageView(
-                          imageUrl: item.file ?? '',
-                          postId: item.id ?? 0,
-                        ),
-                      );
+                      Get.to(() => FullScreenMediaView(
+                        postId: item.id ?? 0,
+                        posts: mediaItems.map((e) => {
+                          'id': e.id,
+                          'type': e.type,
+                          'file': e.file,
+                        }).toList(),
+                        initialIndex: index, // 👈 Add this new field
+                      ));
                     },
+
                     child:
                     item.file == null || item.file!.isEmpty
                         ? Center(child: CircularProgressIndicator())
@@ -4971,11 +5073,16 @@ class _CommunityScreenState extends State<CommunityScreen>
     );
   }
 
+
+
   Widget buildServiceListView(List<Services> services) {
     if (busnessviewmodal?.data?.services == null ||
         busnessviewmodal!.data!.services!.isEmpty) {
-      return Center();
+      return const Center();
     }
+
+    // Get today’s weekday name (like Monday, Tuesday, etc.)
+    String todayWeekday = DateFormat('EEEE').format(DateTime.now());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -4983,127 +5090,142 @@ class _CommunityScreenState extends State<CommunityScreen>
       children: [
         ...List.generate(services.length, (index) {
           String imageUrl = services[index].images ?? '';
+          String? availabilityStr = services[index].availability;
 
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: ListTile(
-                onTap: () {
-                  print(
-                    "service Detail ID Ave che che : ${services?[index].id ?? ''}",
-                  );
-                  print(
-                    "service Detail ID Ave che che : ${busnessviewmodal?.data?.business?.id.toString()}",
-                  );
-                  Get.to(
-                        () => ServiceDetailsPage(
-                      serviceID: services?[index].id.toString() ?? "",
-                      businessID:
-                      busnessviewmodal?.data?.business?.id.toString() ?? "",
-                    ),
-                  );
-                },
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
-                leading: Container(
-                  width: 15.w,
-                  height: 7.h,
-                  decoration: BoxDecoration(shape: BoxShape.circle),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: CachedNetworkImage(
-                      imageUrl:
-                      imageUrl.isNotEmpty
-                          ? imageUrl
-                          : 'https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL3BsYXlcLzBiN2Y0ZTliLWY1OWMtNDAyNC05ZjA2LWIzZGMxMjg1MGFiNy0xOTIwLTEwODAuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0=',
-                      fit: BoxFit.cover,
-                      placeholder:
-                          (context, url) =>
-                          Center(child: CircularProgressIndicator()),
-                      errorWidget:
-                          (context, url, error) => Icon(
-                        Icons.home_repair_service,
-                        color: Colors.grey,
-                        size: 8.w,
+          // Split comma-separated days
+          List<String> availableDays = [];
+          if (availabilityStr != null && availabilityStr.isNotEmpty) {
+            availableDays = availabilityStr
+                .split(',')
+                .map((e) => e.trim().toLowerCase())
+                .toList();
+          }
+
+          // Check if today's day exists in the list
+          bool isAvailableToday =
+          availableDays.contains(todayWeekday.toLowerCase());
+
+          return Opacity(
+            opacity: isAvailableToday ? 1.0 : 0.5, // dim unavailable
+            child: IgnorePointer(
+              ignoring: !isAvailableToday, // disable tap if unavailable
+              child: Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 3.0, vertical: 4.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade300),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: ListTile(
+                    onTap: () {
+                      print(
+                          "Service ID: ${services[index].id}, Business ID: ${busnessviewmodal?.data?.business?.id}");
+                      Get.to(
+                            () => ServiceDetailsPage(
+                          serviceID: services[index].id.toString(),
+                          businessID:
+                          busnessviewmodal?.data?.business?.id.toString() ??
+                              "",
+                        ),
+                      );
+                    },
+                    contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    leading: Container(
+                      width: 15.w,
+                      height: 7.h,
+                      decoration: const BoxDecoration(shape: BoxShape.circle),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: CachedNetworkImage(
+                          imageUrl: imageUrl.isNotEmpty
+                              ? imageUrl
+                              : 'https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL3BsYXlcLzBiN2Y0ZTliLWY1OWMtNDAyNC05ZjA2LWIzZGMxMjg1MGFiNy0xOTIwLTEwODAuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0=',
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) =>
+                          const Center(child: CircularProgressIndicator()),
+                          errorWidget: (context, url, error) => Icon(
+                            Icons.home_repair_service,
+                            color: Colors.grey,
+                            size: 8.w,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                title: Text(
-                  services[index].title ?? "Service Name",
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: AppConstants.manrope,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 4),
-                    Row(
+                    title: Text(
+                      services[index].title ?? "Service Name",
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppConstants.manrope,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "£",
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green,
-                          ),
-                        ),
-                        SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            "Price: ${services[index].price ?? 'N/A'}",
-                            style: TextStyle(
-                              fontSize: 15.sp,
-                              color: Colors.green[700],
-                              fontFamily: AppConstants.manrope,
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Text(
+                              "£",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                              ),
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                "Price: ${services[index].price ?? 'N/A'}",
+                                style: TextStyle(
+                                  fontSize: 15.sp,
+                                  color: Colors.green[700],
+                                  fontFamily: AppConstants.manrope,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.event_available,
+                              color: isAvailableToday ? Colors.blue : Colors.grey,
+                              size: 16.sp,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                "Availability: ${services[index].availability ?? 'N/A'}",
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: isAvailableToday
+                                      ? Colors.blue[700]
+                                      : Colors.grey,
+                                  fontFamily: AppConstants.manrope,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.event_available,
-                          color: Colors.blue,
-                          size: 16.sp,
-                        ),
-                        SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            "Availability: ${services[index].availability ?? 'N/A'}",
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              color: Colors.blue[700],
-                              fontFamily: AppConstants.manrope,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
+                    trailing: const Icon(
+                      Icons.arrow_forward_ios,
+                      size: 16,
+                      color: Colors.black54,
                     ),
-                  ],
-                ),
-                trailing: Icon(
-                  Icons.arrow_forward_ios,
-                  size: 16,
-                  color: Colors.black54,
+                  ),
                 ),
               ),
             ),
@@ -5112,6 +5234,9 @@ class _CommunityScreenState extends State<CommunityScreen>
       ],
     );
   }
+
+
+
 
   Widget buildEventListView() {
     if (busnessviewmodal?.data?.events == null ||

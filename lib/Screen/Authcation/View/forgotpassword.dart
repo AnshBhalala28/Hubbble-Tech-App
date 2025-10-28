@@ -28,86 +28,83 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 4.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: Container(
-                      height: 12.w,
-                      width: 12.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color: AppColors.maincolor,
-                      ),
-                      child: Icon(
-                        Icons.arrow_back,
-                        size: 20.sp,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ).paddingOnly(bottom: 0.h, top: 1.h),
-              SizedBox(height: 5.h),
-
-              Center(
-                child: Image.asset(
-                  "assets/images/Applogo_remove_background.png",
-                  height: 25.h,
-                  // width: 65.w,
-                  // fit: BoxFit.cover,
-                ),
-              ),
-              SizedBox(height: 2.h),
-              SizedBox(
-                width: 100.w,
-                child: Text(
-                  "To reset your password, please get in touch with your concierge team.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: AppConstants.manrope,
-                    color: AppColors.maincolor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.sp,
-                  ),
-                ),
-              ),
-              SizedBox(height: 4.h),
-              Container(
-                height: 7.h,
-                decoration: BoxDecoration(
-                  color: AppColors.maincolor,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: InkWell(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                GestureDetector(
                   onTap: () {
-                    Get.to(const LoginScreen());
+                    Get.back();
                   },
-                  borderRadius: BorderRadius.circular(5),
-                  child: const Center(
-                    child: Text(
-                      "Back To Login",
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: AppConstants.manrope,
-                      ),
+                  child: Container(
+                    height: 12.w,
+                    width: 12.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: AppColors.maincolor,
+                    ),
+                    child: Icon(
+                      Icons.arrow_back,
+                      size: 20.sp,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ).paddingOnly(bottom: 0.h, top: 3.h),
+            SizedBox(height: 5.h),
+
+            Center(
+              child: Image.asset(
+                "assets/images/Applogo_remove_background.png",
+                height: 25.h,
+                // width: 65.w,
+                // fit: BoxFit.cover,
+              ),
+            ),
+            SizedBox(height: 2.h),
+            SizedBox(
+              width: 100.w,
+              child: Text(
+                "To reset your password, please get in touch with your concierge team.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: AppConstants.manrope,
+                  color: AppColors.maincolor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.sp,
+                ),
+              ),
+            ),
+            SizedBox(height: 4.h),
+            Container(
+              height: 6.h,
+              decoration: BoxDecoration(
+                color: AppColors.maincolor,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: InkWell(
+                onTap: () {
+                  Get.to(const LoginScreen());
+                },
+                borderRadius: BorderRadius.circular(5),
+                child: const Center(
+                  child: Text(
+                    "Back To Login",
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: AppConstants.manrope,
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ),
+      ).paddingOnly(top: 4.h, left: 3.w, right: 3.w),
     );
   }
 

@@ -30,6 +30,7 @@ class Data {
   var slug;
   String? description;
   String? price;
+  String? offerPrice;
   String? pricingType;
   String? duration;
   String? images;
@@ -63,6 +64,7 @@ class Data {
     this.pricingType,
     this.duration,
     this.images,
+    this.offerPrice,
     this.galleryImages,
     this.features,
     this.benefits,
@@ -88,6 +90,7 @@ class Data {
     categoryId = json['category_id'];
     title = json['title'];
     slug = json['slug'];
+    offerPrice = json['offer_price'];
     description = json['description'];
     price = json['price'];
     pricingType = json['pricing_type'];
@@ -133,6 +136,7 @@ class Data {
     data['price'] = this.price;
     data['pricing_type'] = this.pricingType;
     data['duration'] = this.duration;
+    data['offer_price'] = this.offerPrice;
     data['images'] = this.images;
     data['gallery_images'] = this.galleryImages;
     data['features'] = this.features;

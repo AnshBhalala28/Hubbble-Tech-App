@@ -9,20 +9,38 @@ import '../../../comman/responses.dart';
 import '../../../comman/store_local.dart';
 
 class AuthProvider extends ChangeNotifier {
-  Future<Response> loginApi(Map<String, String> bodyData) async {
+  // Future<Response> loginApi(Map<String, String> bodyData) async {
+  //   try {
+  //     final dio = await DioHelper.getDio();
+  //     final response = await dio.post(ApiEndpoint.login, data: bodyData);
+  //     log("Login Error in fuild ${ApiEndpoint.login}");
+  //     return response;
+  //   } on DioException catch (e) {
+  //     log("Login Error in fuild ${ApiEndpoint.login}");
+  //     log("Login Error in fuild ${e.message}");
+  //     log("Login Error in fuild ${e.response?.data}");
+  //     throw Exception('error $e');
+  //   }
+  // }
+  Future<dynamic> loginApi(Map<String, String> data) async {
     try {
-      final dio = await DioHelper.getDio();
-      final response = await dio.post(ApiEndpoint.login, data: bodyData);
-      log("Login Error in fuild ${ApiEndpoint.login}");
+      var response = await Dio().post(
+        '${ApiEndpoint.login}',
+        data: data,
+        options: Options(
+
+          validateStatus: (status) {
+            return status == 200 || status == 422;
+          },
+        ),
+      );
       return response;
-    } on DioException catch (e) {
+    } catch (e) {
       log("Login Error in fuild ${ApiEndpoint.login}");
-      log("Login Error in fuild ${e.message}");
-      log("Login Error in fuild ${e.response?.data}");
-      throw Exception('error $e');
+      log("Login Error in fuild $e");
+      rethrow;
     }
   }
-
   Future<Response> forgetPasswordApi(Map<String, String> bodyData) async {
     String? token = await SaveDataLocal.getToken();
 

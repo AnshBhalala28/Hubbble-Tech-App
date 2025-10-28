@@ -198,7 +198,7 @@ class _ViewProfileState extends State<ViewProfile> {
             ),
             SizedBox(height: 2.h),
             batan(
-              title: "Logout",
+              title: "Log out",
               route: () {
                 showDialog(
                   context: context,
@@ -225,7 +225,7 @@ class _ViewProfileState extends State<ViewProfile> {
                               children: [
                                 SizedBox(height: 2.h),
                                 Text(
-                                  "Logout",
+                                  "Log out",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 18.sp,
@@ -236,7 +236,7 @@ class _ViewProfileState extends State<ViewProfile> {
                                 ),
                                 SizedBox(height: 1.5.h),
                                 Text(
-                                  'Are You Sure Want to Logout Your Account',
+                                  'Are You Sure Want to Log out Your Account?',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 15.sp,
@@ -245,16 +245,7 @@ class _ViewProfileState extends State<ViewProfile> {
                                   ),
                                 ),
                                 SizedBox(height: 2.h),
-                                isLoading
-                                    ? Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 2.h,
-                                      ),
-                                      child: const CircularProgressIndicator(
-                                        color: AppColors.maincolor,
-                                      ),
-                                    )
-                                    : Row(
+                                Row(
                                       children: [
                                         Expanded(
                                           child: Material(

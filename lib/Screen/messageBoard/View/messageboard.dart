@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io' as io;
 import 'dart:io';
 
@@ -305,1467 +306,1425 @@ class _MessageboardState extends State<Messageboard> {
       backgroundColor: AppColors.white,
       body: Stack(
         children: [
-          SingleChildScrollView(
+          // SizedBox(height: 10.h),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 2.h),
+            margin: EdgeInsets.symmetric(horizontal: 0.5.w),
+            height: 95.h,
+            decoration: BoxDecoration(
+              color: AppColors.bgcolor,
+              border: const Border(
+                top: BorderSide(color: Colors.grey),
+                left: BorderSide(color: Colors.grey),
+                right: BorderSide(color: Colors.grey),
+              ),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(45),
+                topRight: Radius.circular(45),
+              ),
+            ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 10.h),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 2.h),
-                  margin: EdgeInsets.symmetric(horizontal: 0.5.w),
-                  height: 95.h,
-                  decoration: BoxDecoration(
-                    color: AppColors.bgcolor,
-                    border: const Border(
-                      top: BorderSide(color: Colors.grey),
-                      left: BorderSide(color: Colors.grey),
-                      right: BorderSide(color: Colors.grey),
-                    ),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(45),
-                      topRight: Radius.circular(45),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 2.h),
-                      Text(
-                        "Message Board",
-                        style: TextStyle(
-                          fontFamily: AppConstants.manrope,
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      Container(
-                        height: 0.5.h,
-                        width: 23.w,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(35),
-                          color: AppColors.maincolor,
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      Row(
-                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            height: 5.h,
-                            width: 40.w,
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(color: Colors.grey.shade300),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                dropdownColor: AppColors.white,
-                                borderRadius: BorderRadius.circular(10),
-
-                                hint: Text(
-                                  "Select option",
-                                  style: TextStyle(
-                                    fontFamily: AppConstants.manrope,
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                value: selectedOption,
-                                icon: const Icon(Icons.keyboard_arrow_down),
-                                items:
-                                    ['My Building', 'Local']
-                                        .map(
-                                          (option) => DropdownMenuItem(
-                                            value: option,
-                                            child: Container(
-                                              child: Text(
-                                                option,
-                                                style: TextStyle(
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                  fontSize: 16.sp,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Colors.grey,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                        .toList(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedOption = value!;
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                          selectedOption == "Local"
-                              ? GestureDetector(
-                                onTap: () {
-                                  final List<String> buildingNames =
-                                      (localpost_model?.data?.data ?? [])
-                                          .map(
-                                            (item) =>
-                                                item.users?.isNotEmpty == true
-                                                    ? item
-                                                            .users![0]
-                                                            .buildingName ??
-                                                        ""
-                                                    : "",
-                                          )
-                                          .where((name) => name.isNotEmpty)
-                                          .toList();
-                                  final uniqueBuildings =
-                                      buildingNames.toSet().toList();
-
-                                  showDialog(
-                                    context: context,
-                                    builder:
-                                        (context) => AlertDialog(
-                                          backgroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                          title: Row(
-                                            children: [
-                                              Container(
-                                                padding: const EdgeInsets.all(
-                                                  6,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  color: AppColors.maincolor
-                                                      .withOpacity(0.15),
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                child: const Icon(
-                                                  Icons.info_rounded,
-                                                  color: AppColors.maincolor,
-                                                  size: 24,
-                                                ),
-                                              ),
-                                              const SizedBox(width: 10),
-                                              Text(
-                                                "Information",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w700,
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                  fontSize: 18.sp,
-                                                  color: AppColors.blackColor,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          content: SingleChildScrollView(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "The buildings within your neighbourhood using Wavee Ai are:",
-                                                  style: TextStyle(
-                                                    fontFamily:
-                                                        AppConstants.manrope,
-                                                    fontSize: 15.5.sp,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: Colors.black87,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 2.h),
-                                                SizedBox(
-                                                  height: 18.h,
-                                                  child: SingleChildScrollView(
-                                                    child: Column(
-                                                      children: [
-                                                        ...uniqueBuildings.map(
-                                                          (name) => Card(
-                                                            elevation: 1,
-                                                            color:
-                                                                AppColors.white,
-                                                            shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    12,
-                                                                  ),
-                                                            ),
-                                                            margin:
-                                                                const EdgeInsets.only(
-                                                                  bottom: 8,
-                                                                ),
-                                                            child: Padding(
-                                                              padding:
-                                                                  EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                        5.w,
-                                                                    vertical:
-                                                                        1.h,
-                                                                  ),
-                                                              child: Row(
-                                                                children: [
-                                                                  Icon(
-                                                                    Icons
-                                                                        .location_city,
-                                                                    size: 20.sp,
-                                                                    color:
-                                                                        AppColors
-                                                                            .maincolor,
-                                                                  ),
-                                                                  const SizedBox(
-                                                                    width: 8,
-                                                                  ),
-                                                                  Expanded(
-                                                                    child: Text(
-                                                                      name,
-                                                                      style: TextStyle(
-                                                                        fontFamily:
-                                                                            AppConstants.manrope,
-                                                                        fontSize:
-                                                                            15.sp,
-                                                                        fontWeight:
-                                                                            FontWeight.w400,
-                                                                        color:
-                                                                            Colors.black87,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                // ...uniqueBuildings.map(
-                                                //   (name) => Card(
-                                                //     elevation: 1,
-                                                //     color: AppColors.white,
-                                                //     shape: RoundedRectangleBorder(
-                                                //       borderRadius:
-                                                //           BorderRadius.circular(
-                                                //             12,
-                                                //           ),
-                                                //     ),
-                                                //     margin: EdgeInsets.only(
-                                                //       bottom: 8,
-                                                //     ),
-                                                //     child: Padding(
-                                                //       padding:
-                                                //           EdgeInsets.symmetric(
-                                                //             horizontal: 5.w,
-                                                //             vertical: 1.h,
-                                                //           ),
-                                                //       child: Row(
-                                                //         children: [
-                                                //           Icon(
-                                                //             Icons.location_city,
-                                                //             size: 20.sp,
-                                                //             color:
-                                                //                 AppColors
-                                                //                     .maincolor,
-                                                //           ),
-                                                //           SizedBox(width: 8),
-                                                //           Expanded(
-                                                //             child: Text(
-                                                //               name,
-                                                //               style: TextStyle(
-                                                //                 fontFamily:
-                                                //                     AppConstants
-                                                //                         .manrope,
-                                                //                 fontSize: 15.sp,
-                                                //                 fontWeight:
-                                                //                     FontWeight
-                                                //                         .w400,
-                                                //                 color:
-                                                //                     Colors
-                                                //                         .black87,
-                                                //               ),
-                                                //             ),
-                                                //           ),
-                                                //         ],
-                                                //       ),
-                                                //     ),
-                                                //   ),
-                                                // ),
-                                              ],
-                                            ),
-                                          ),
-                                          actions: [
-                                            TextButton(
-                                              style: TextButton.styleFrom(
-                                                foregroundColor: Colors.white,
-                                                backgroundColor:
-                                                    AppColors.maincolor,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                ),
-                                              ),
-                                              onPressed:
-                                                  () => Navigator.pop(context),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 16,
-                                                      vertical: 6,
-                                                    ),
-                                                child: Text(
-                                                  "Close",
-                                                  style: TextStyle(
-                                                    fontFamily:
-                                                        AppConstants.manrope,
-                                                    fontSize: 15.sp,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                  );
-                                },
-                                child: Material(
-                                  elevation: 1,
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: AppColors.white,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(6),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: AppColors.white.withOpacity(0.1),
-                                    ),
-                                    child: Icon(
-                                      Icons.info_outline_rounded,
-                                      color: AppColors.maincolor,
-                                      size: 19.sp,
-                                    ),
-                                  ),
-                                ),
-                              ).paddingOnly(right: 9.w, left: 1.w)
-                              : const SizedBox(),
-
-                          selectedOption == "My Building"
-                              ? const SizedBox()
-                              : GestureDetector(
-                                onTap: () {},
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 4.w,
-                                    vertical: 0.8.h,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                      color: Colors.grey.shade300,
-                                    ),
-                                  ),
-                                  child:
-                                      selectedOption == "My Building"
-                                          ? const SizedBox()
-                                          : selectedOption == "Local"
-                                          ? InkWell(
-                                            onTap: () {
-                                              addpostsheet(
-                                                context,
-                                                (loginModel?.data?.user?.id)
-                                                    .toString(),
-                                              );
-                                            },
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  "Add Post",
-                                                  style: TextStyle(
-                                                    fontFamily:
-                                                        AppConstants.manrope,
-                                                    fontSize: 15.sp,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                                SizedBox(width: 2.w),
-                                                const Icon(
-                                                  Icons
-                                                      .add_circle_outline_rounded,
-                                                  color: Colors.grey,
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                          : const SizedBox(),
-                                ),
-                              ),
-                        ],
-                      ),
-                      SizedBox(height: 0.5.h),
-
-                      SizedBox(height: 1.h),
-
-                      selectedOption == "My Building"
-                          ? messageBoardModal?.data?.length == 0 ||
-                                  messageBoardModal?.data?.length == null
-                              ? Center(
-                                child: SizedBox(
-                                  height: 70.h,
-                                  child: Text(
-                                    "No Posts available",
-                                    style: TextStyle(
-                                      fontSize: 17.sp,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.normal,
-                                      fontFamily: AppConstants.manrope,
-                                    ),
-                                  ),
-                                ),
-                              )
-                              : SizedBox(
-                                height: 60.h,
-                                child: ListView.builder(
-                                  padding: EdgeInsets.zero,
-                                  itemCount: messageBoardModal?.data?.length,
-                                  itemBuilder: (context, index) {
-                                    final post =
-                                        messageBoardModal?.data?[index];
-                                    return Container(
-                                      margin: EdgeInsets.symmetric(
-                                        vertical: 0.5.h,
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 3.w,
-                                        vertical: 2.h,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.black12,
-                                          width: 0.2.w,
-                                        ),
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(20),
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Colors.black12,
-                                            blurRadius: 1,
-                                            offset: Offset(0, 1),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                height: 9.w,
-                                                width: 9.w,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                    color: AppColors.maincolor,
-                                                    width: 1,
-                                                  ),
-                                                  image: DecorationImage(
-                                                    image: NetworkImage(
-                                                      messageBoardModal
-                                                                  ?.data?[index]
-                                                                  .user
-                                                                  ?.conciergeImage ==
-                                                              null
-                                                          ? "https://portal.wavee.ai/public/desktop/front/company_logo/Screenshot+2025-06-07+at+11.07.09.png"
-                                                          : messageBoardModal
-                                                                  ?.data?[index]
-                                                                  .user
-                                                                  ?.conciergeImage ??
-                                                              "",
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(width: 2.w),
-                                              Text(
-                                                "${messageBoardModal?.data?[index].user?.firstName ?? ""} ${messageBoardModal?.data?[index].user?.lastName ?? ""}",
-                                                style: TextStyle(
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                  fontSize: 15.sp,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              SizedBox(width: 2.w),
-                                              Text(
-                                                "•${formatPostDate(messageBoardModal?.data?[index].createdAt)}",
-                                                style: TextStyle(
-                                                  fontSize: 14.sp,
-                                                  color: Colors.grey,
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-
-                                              const Spacer(),
-                                              InkWell(
-                                                onTap: () {
-                                                  showBlockUserDialog(
-                                                    context,
-                                                    supportUrl,
-                                                  );
-                                                },
-                                                child: const Icon(
-                                                  Icons.more_vert_outlined,
-                                                ).paddingOnly(right: 2.w),
-                                              ),
-                                            ],
-                                          ),
-                                          Text(
-                                            messageBoardModal
-                                                    ?.data?[index]
-                                                    .title ??
-                                                "",
-                                            style: TextStyle(
-                                              fontFamily: AppConstants.manrope,
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.maincolor,
-                                            ),
-                                          ),
-                                          ReadMoreText(
-                                            messageBoardModal
-                                                            ?.data?[index]
-                                                            .text ==
-                                                        null ||
-                                                    messageBoardModal
-                                                            ?.data?[index]
-                                                            .text ==
-                                                        ""
-                                                ? "N/A"
-                                                : "${messageBoardModal?.data?[index].text}",
-                                            trimLines: 4,
-                                            trimLength: 146,
-                                            colorClickableText: Colors.blue,
-                                            trimMode: TrimMode.Length,
-                                            trimCollapsedText: ' Show more',
-                                            trimExpandedText: ' Show less',
-                                            moreStyle: TextStyle(
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: AppConstants.manrope,
-                                              letterSpacing: 1,
-                                              color: AppColors.maincolor,
-                                            ),
-                                            lessStyle: TextStyle(
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: AppConstants.manrope,
-                                              letterSpacing: 1,
-                                              color: AppColors.maincolor,
-                                            ),
-                                            style: TextStyle(
-                                              fontSize: 16.sp,
-                                              color: Colors.grey.shade500,
-                                              fontWeight: FontWeight.normal,
-                                              fontFamily: AppConstants.manrope,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                              vertical: 1.h,
-                                              horizontal: 2.5.w,
-                                            ),
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              child:
-                                                  post?.file?.isNotEmpty == true
-                                                      ? (post!.file![0]
-                                                              .toLowerCase()
-                                                              .endsWith('.pdf')
-                                                          ? GestureDetector(
-                                                            onTap: () async {
-                                                              final url =
-                                                                  post.file![0];
-                                                              final uri =
-                                                                  Uri.parse(
-                                                                    url,
-                                                                  );
-                                                              Get.to(
-                                                                PdfView(
-                                                                  link:
-                                                                      uri.toString(),
-                                                                ),
-                                                              );
-                                                              // if (await canLaunchUrl(uri)) {
-                                                              //   final launched = await launchUrl(
-                                                              //     uri,
-                                                              //     mode: LaunchMode.externalApplication,
-                                                              //   );
-                                                              //   if (!launched) {
-                                                              //     ScaffoldMessenger.of(context).showSnackBar(
-                                                              //       SnackBar(content: Text("Failed to open externally")),
-                                                              //     );
-                                                              //   }
-                                                              // } else {
-                                                              //   ScaffoldMessenger.of(context).showSnackBar(
-                                                              //     SnackBar(content: Text("Cannot open PDF")),
-                                                              //   );
-                                                              // }
-                                                            },
-
-                                                            child: Container(
-                                                              width:
-                                                                  double
-                                                                      .infinity,
-                                                              height: 8.h,
-                                                              color:
-                                                                  Colors
-                                                                      .grey
-                                                                      .shade200,
-                                                              child: Center(
-                                                                child: Row(
-                                                                  mainAxisSize:
-                                                                      MainAxisSize
-                                                                          .min,
-                                                                  children: [
-                                                                    Icon(
-                                                                      Icons
-                                                                          .picture_as_pdf,
-                                                                      color:
-                                                                          Colors
-                                                                              .red,
-                                                                      size:
-                                                                          25.sp,
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width:
-                                                                          2.w,
-                                                                    ),
-                                                                    Text(
-                                                                      "View PDF",
-                                                                      style: TextStyle(
-                                                                        fontSize:
-                                                                            16.sp,
-                                                                        fontFamily:
-                                                                            AppConstants.manrope,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          )
-                                                          : CachedNetworkImage(
-                                                            imageUrl:
-                                                                post.file![0],
-                                                            placeholder:
-                                                                (
-                                                                  context,
-                                                                  url,
-                                                                ) => SizedBox(
-                                                                  height: 30.h,
-                                                                  width:
-                                                                      double
-                                                                          .infinity,
-                                                                  child: const Center(
-                                                                    child:
-                                                                        CircularProgressIndicator(),
-                                                                  ),
-                                                                ),
-                                                            errorWidget:
-                                                                (
-                                                                  context,
-                                                                  url,
-                                                                  error,
-                                                                ) => Icon(
-                                                                  Icons.error,
-                                                                  size: 24.sp,
-                                                                ),
-                                                            width:
-                                                                double.infinity,
-                                                            height: 30.h,
-                                                            fit: BoxFit.cover,
-                                                          ))
-                                                      : SizedBox(height: 0.h),
-                                            ),
-                                          ),
-                                          SizedBox(height: 1.5.h),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    "${messageBoardModal?.data?[index].totalComments} Replies",
-                                                    style: TextStyle(
-                                                      fontFamily:
-                                                          AppConstants.manrope,
-                                                      fontSize: 16.sp,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: const Color(
-                                                        0XFF3E3E3E,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 2.w),
-                                                  Text(
-                                                    "${messageBoardModal?.data?[index].totalLikes} Likes",
-                                                    style: TextStyle(
-                                                      fontFamily:
-                                                          AppConstants.manrope,
-                                                      fontSize: 16.sp,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: const Color(
-                                                        0XFF3E3E3E,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  StatefulBuilder(
-                                                    builder: (
-                                                      context,
-                                                      localSetState,
-                                                    ) {
-                                                      bool isLiked =
-                                                          index <
-                                                                  isLikedList
-                                                                      .length
-                                                              ? isLikedList[index]
-                                                              : false;
-                                                      bool isInProgress =
-                                                          index <
-                                                                  isLikeInProgressList
-                                                                      .length
-                                                              ? isLikeInProgressList[index]
-                                                              : false;
-
-                                                      return GestureDetector(
-                                                        onTap:
-                                                            isInProgress
-                                                                ? null
-                                                                : () {
-                                                                  if (index <
-                                                                          isLikedList
-                                                                              .length &&
-                                                                      index <
-                                                                          isLikeInProgressList
-                                                                              .length) {
-                                                                    localSetState(() {
-                                                                      isLikedList[index] =
-                                                                          !isLikedList[index];
-                                                                      isLikeInProgressList[index] =
-                                                                          true;
-                                                                    });
-                                                                    _saveLikeStatus(
-                                                                      index,
-                                                                      isLikedList[index],
-                                                                    );
-                                                                    postslikeap(
-                                                                      index,
-                                                                      () {
-                                                                        localSetState(() {
-                                                                          isLikeInProgressList[index] =
-                                                                              false;
-                                                                        });
-                                                                      },
-                                                                    );
-                                                                  }
-                                                                },
-                                                        child: Text(
-                                                          "Like",
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manrope,
-                                                            fontSize: 16.sp,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color:
-                                                                isLiked
-                                                                    ? Colors.red
-                                                                    : const Color(
-                                                                      0XFF3E3E3E,
-                                                                    ),
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                  ),
-                                                  SizedBox(width: 2.w),
-                                                  Container(
-                                                    height: 2.h,
-                                                    width: 0.5.w,
-                                                    decoration: BoxDecoration(
-                                                      color: const Color(
-                                                        0XFF3E3E3E,
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            20,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 2.w),
-                                                  InkWell(
-                                                    onTap: () async {
-                                                      await getComments(
-                                                        context,
-                                                        (post?.id).toString(),
-                                                      );
-                                                    },
-                                                    child: Text(
-                                                      "Comment",
-                                                      style: TextStyle(
-                                                        fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                        fontSize: 16.sp,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: const Color(
-                                                          0XFF3E3E3E,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              )
-                          : selectedOption == "Local"
-                          ? localpost_model?.data?.data?.length == null ||
-                                  localpost_model?.data?.data?.length == 0
-                              ? Center(
-                                child: SizedBox(
-                                  height: 70.h,
-                                  child: Text(
-                                    "No Posts available",
-                                    style: TextStyle(
-                                      fontSize: 17.sp,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.normal,
-                                      fontFamily: AppConstants.manrope,
-                                    ),
-                                  ),
-                                ),
-                              )
-                              : SizedBox(
-                                height: 58.5.h,
-                                child: ListView.builder(
-                                  controller: _scrollController,
-                                  padding: EdgeInsets.zero,
-                                  itemCount:
-                                      localpost_model?.data?.data?.length,
-                                  itemBuilder: (context, index) {
-                                    final post =
-                                        localpost_model?.data?.data?[index];
-                                    return Container(
-                                      margin: EdgeInsets.symmetric(
-                                        vertical: 0.5.h,
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 3.w,
-                                        vertical: 2.h,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.black12,
-                                          width: 0.2.w,
-                                        ),
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(20),
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Colors.black12,
-                                            blurRadius: 1,
-                                            offset: Offset(0, 1),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                height: 9.w,
-                                                width: 9.w,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                    color: AppColors.maincolor,
-                                                    width: 1,
-                                                  ),
-                                                  image: DecorationImage(
-                                                    image:
-                                                        (localpost_model
-                                                                    ?.data
-                                                                    ?.data?[index]
-                                                                    .users?[0]
-                                                                    .profiles
-                                                                    ?.isNotEmpty ??
-                                                                false)
-                                                            ? CachedNetworkImageProvider(
-                                                              localpost_model!
-                                                                  .data!
-                                                                  .data![index]
-                                                                  .users![0]
-                                                                  .profiles!,
-                                                            )
-                                                            : const AssetImage(
-                                                                  'assets/images/waveeLogoShort.png',
-                                                                )
-                                                                as ImageProvider,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ),
-
-                                              SizedBox(width: 2.w),
-                                              Text(
-                                                localpost_model
-                                                        ?.data
-                                                        ?.data?[index]
-                                                        .users?[0]
-                                                        .name ??
-                                                    "",
-                                                style: TextStyle(
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                  fontSize: 15.sp,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              SizedBox(width: 2.w),
-                                              Text(
-                                                "•${formatPostDate(localpost_model?.data?.data?[index].createdAt)}",
-                                                style: TextStyle(
-                                                  fontSize: 14.sp,
-                                                  color: Colors.grey,
-                                                  fontFamily:
-                                                      AppConstants.manrope,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              const Spacer(),
-                                              loginModel?.data?.user?.id ==
-                                                      post?.userId
-                                                  ? PopupMenuButton<String>(
-                                                    icon: const Icon(
-                                                      Icons.more_vert,
-                                                      color: Colors.black87,
-                                                    ),
-                                                    onSelected: (value) {
-                                                      if (value == 'edit') {
-                                                        UpdatePostData(
-                                                          context,
-                                                          post,
-                                                        );
-                                                      } else if (value ==
-                                                          'delete') {
-                                                        showCancelConfirmationDialog(
-                                                          context: context,
-                                                          post!.id.toString() ??
-                                                              "",
-                                                        );
-                                                      } else if (value ==
-                                                          'report') {
-                                                        showBlockUserDialog(
-                                                          context,
-                                                          supportUrl,
-                                                        );
-                                                      }
-                                                    },
-                                                    itemBuilder:
-                                                        (
-                                                          BuildContext context,
-                                                        ) => [
-                                                          PopupMenuItem(
-                                                            value: 'edit',
-                                                            child: Text(
-                                                              'Edit',
-                                                              style: TextStyle(
-                                                                fontSize: 16.sp,
-                                                                fontFamily:
-                                                                    AppConstants
-                                                                        .manrope,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          PopupMenuItem(
-                                                            value: 'delete',
-                                                            child: Text(
-                                                              'Delete',
-                                                              style: TextStyle(
-                                                                fontSize: 16.sp,
-                                                                fontFamily:
-                                                                    AppConstants
-                                                                        .manrope,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          PopupMenuItem(
-                                                            value: 'report',
-                                                            child: Text(
-                                                              'Report',
-                                                              style: TextStyle(
-                                                                fontSize: 16.sp,
-                                                                fontFamily:
-                                                                    AppConstants
-                                                                        .manrope,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                  )
-                                                  : InkWell(
-                                                    onTap: () {
-                                                      showBlockUserDialog(
-                                                        context,
-                                                        supportUrl,
-                                                      );
-                                                    },
-                                                    child: const Icon(
-                                                      Icons.more_vert_outlined,
-                                                    ).paddingOnly(right: 2.w),
-                                                  ),
-                                            ],
-                                          ),
-                                          Text(
-                                            localpost_model
-                                                    ?.data
-                                                    ?.data?[index]
-                                                    .title ??
-                                                "",
-                                            style: TextStyle(
-                                              fontFamily: AppConstants.manrope,
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.maincolor,
-                                            ),
-                                          ),
-
-                                          // localpost_model
-                                          //             ?.data
-                                          //             ?.data?[index]
-                                          //             .users?[0]
-                                          //             .areaName ==
-                                          //         null
-                                          //     ? const SizedBox()
-                                          //     : Text(
-                                          //       "Area: ${localpost_model?.data?.data?[index].users?[0].areaName ?? ""}",
-                                          //       style: TextStyle(
-                                          //         fontFamily:
-                                          //             AppConstants.manrope,
-                                          //         fontSize: 16.sp,
-                                          //         fontWeight: FontWeight.normal,
-                                          //         color: Colors.grey,
-                                          //       ),
-                                          //     ),
-                                          // localpost_model
-                                          //             ?.data
-                                          //             ?.data?[index]
-                                          //             .users?[0]
-                                          //             .buildingName ==
-                                          //         null
-                                          //     ? const SizedBox()
-                                          //     : Text(
-                                          //       "Building:${localpost_model?.data?.data?[index].users?[0].buildingName ?? ""}",
-                                          //       style: TextStyle(
-                                          //         fontFamily:
-                                          //             AppConstants.manrope,
-                                          //         fontSize: 16.sp,
-                                          //         fontWeight: FontWeight.normal,
-                                          //         color: Colors.grey,
-                                          //       ),
-                                          //     ),
-                                          ReadMoreText(
-                                            localpost_model
-                                                            ?.data
-                                                            ?.data?[index]
-                                                            .text ==
-                                                        null ||
-                                                    localpost_model
-                                                            ?.data
-                                                            ?.data?[index]
-                                                            .text ==
-                                                        ""
-                                                ? "N/A"
-                                                : "${localpost_model?.data?.data?[index].text}",
-                                            trimLines: 4,
-                                            trimLength: 146,
-                                            colorClickableText: Colors.blue,
-                                            trimMode: TrimMode.Length,
-                                            trimCollapsedText: ' Show more',
-                                            trimExpandedText: ' Show less',
-                                            moreStyle: TextStyle(
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: AppConstants.manrope,
-                                              letterSpacing: 1,
-                                              color: AppColors.maincolor,
-                                            ),
-                                            lessStyle: TextStyle(
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: AppConstants.manrope,
-                                              letterSpacing: 1,
-                                              color: AppColors.maincolor,
-                                            ),
-                                            style: TextStyle(
-                                              fontSize: 16.sp,
-                                              color: Colors.grey.shade500,
-                                              fontWeight: FontWeight.normal,
-                                              fontFamily: AppConstants.manrope,
-                                            ),
-                                          ),
-                                          post?.file?.length == 0 ||
-                                                  post?.file?.length == null
-                                              ? const SizedBox()
-                                              : Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                  vertical: 1.h,
-                                                  horizontal: 2.5.w,
-                                                ),
-                                                child: StatefulBuilder(
-                                                  builder: (context, setState) {
-                                                    final pageCount =
-                                                        post?.file?.length ?? 0;
-                                                    return SizedBox(
-                                                      height: 35.h,
-                                                      child: Stack(
-                                                        children: [
-                                                          PageView.builder(
-                                                            controller:
-                                                                _pageController,
-                                                            itemCount:
-                                                                pageCount,
-                                                            onPageChanged: (
-                                                              index,
-                                                            ) {
-                                                              setState(
-                                                                () =>
-                                                                    _currentPage =
-                                                                        index,
-                                                              );
-                                                            },
-                                                            itemBuilder: (
-                                                              context,
-                                                              index,
-                                                            ) {
-                                                              final imageUrl =
-                                                                  post?.file?[index] ??
-                                                                  "";
-                                                              return ClipRRect(
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      10,
-                                                                    ),
-                                                                child: CachedNetworkImage(
-                                                                  imageUrl:
-                                                                      imageUrl,
-                                                                  placeholder:
-                                                                      (
-                                                                        context,
-                                                                        url,
-                                                                      ) => const Center(
-                                                                        child:
-                                                                            CircularProgressIndicator(),
-                                                                      ),
-                                                                  errorWidget:
-                                                                      (
-                                                                        context,
-                                                                        url,
-                                                                        error,
-                                                                      ) => Image.asset(
-                                                                        "assets/images/waveeLogoShort.png",
-                                                                        fit:
-                                                                            BoxFit.cover,
-                                                                      ),
-                                                                  width:
-                                                                      double
-                                                                          .infinity,
-                                                                  height: 35.h,
-                                                                  fit:
-                                                                      BoxFit
-                                                                          .cover,
-                                                                ),
-                                                              ).marginOnly(
-                                                                right: 1.w,
-                                                              );
-                                                            },
-                                                          ),
-                                                          Positioned(
-                                                            top: 8,
-                                                            right: 16,
-                                                            child: Container(
-                                                              padding:
-                                                                  const EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                        10,
-                                                                    vertical: 4,
-                                                                  ),
-                                                              decoration: BoxDecoration(
-                                                                color: Colors
-                                                                    .black
-                                                                    .withOpacity(
-                                                                      0.6,
-                                                                    ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      20,
-                                                                    ),
-                                                              ),
-                                                              child: Text(
-                                                                '${_currentPage + 1}/$pageCount',
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      Colors
-                                                                          .white,
-                                                                  fontSize:
-                                                                      12.sp,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                          SizedBox(height: 1.5.h),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    "${localpost_model?.data?.data?[index].totalComments} Replies",
-                                                    style: TextStyle(
-                                                      fontFamily:
-                                                          AppConstants.manrope,
-                                                      fontSize: 16.sp,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: const Color(
-                                                        0XFF3E3E3E,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 2.w),
-                                                  Text(
-                                                    "${localpost_model?.data?.data?[index].totalLikes} Likes",
-                                                    style: TextStyle(
-                                                      fontFamily:
-                                                          AppConstants.manrope,
-                                                      fontSize: 16.sp,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: const Color(
-                                                        0XFF3E3E3E,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 2.w),
-                                                  // GestureDetector(
-                                                  //   onTap: () {
-                                                  //     try {
-                                                  //       final imageUrl =
-                                                  //           messageBoardModal
-                                                  //               ?.data?[
-                                                  //                   index]
-                                                  //               ?.file
-                                                  //               .toString();
-                                                  //       final linkToShare = (imageUrl ==
-                                                  //                   null ||
-                                                  //               imageUrl
-                                                  //                   .isEmpty)
-                                                  //           ? "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png"
-                                                  //           : imageUrl;
-                                                  //       shareConciergeImage(
-                                                  //           linkToShare);
-                                                  //     } catch (e) {
-                                                  //
-                                                  //     }
-                                                  //   },
-                                                  //   child: Icon(
-                                                  //     Icons
-                                                  //         .share_outlined,
-                                                  //     size: 18.sp,
-                                                  //     color: Color(
-                                                  //         0XFF3E3E3E),
-                                                  //   ),
-                                                  // ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  StatefulBuilder(
-                                                    builder: (
-                                                      context,
-                                                      localSetState,
-                                                    ) {
-                                                      bool isLiked =
-                                                          index <
-                                                                  isLikedListLocal
-                                                                      .length
-                                                              ? isLikedListLocal[index]
-                                                              : false;
-                                                      bool isInProgress =
-                                                          index <
-                                                                  isLikeInProgressListLocal
-                                                                      .length
-                                                              ? isLikeInProgressListLocal[index]
-                                                              : false;
-
-                                                      return GestureDetector(
-                                                        onTap:
-                                                            isInProgress
-                                                                ? null
-                                                                : () {
-                                                                  if (index <
-                                                                          isLikedListLocal
-                                                                              .length &&
-                                                                      index <
-                                                                          isLikeInProgressListLocal
-                                                                              .length) {
-                                                                    localSetState(() {
-                                                                      isLikedListLocal[index] =
-                                                                          !isLikedListLocal[index];
-                                                                      isLikeInProgressListLocal[index] =
-                                                                          true;
-                                                                    });
-                                                                    _saveLikeStatusLocal(
-                                                                      index,
-                                                                      isLikedListLocal[index],
-                                                                    );
-                                                                    postslikelocalap(
-                                                                      index,
-                                                                      () {
-                                                                        localSetState(() {
-                                                                          isLikeInProgressListLocal[index] =
-                                                                              false;
-                                                                        });
-                                                                      },
-                                                                    );
-                                                                  }
-                                                                },
-                                                        child: Text(
-                                                          "Like",
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manrope,
-                                                            fontSize: 16.sp,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color:
-                                                                isLiked
-                                                                    ? Colors.red
-                                                                    : const Color(
-                                                                      0XFF3E3E3E,
-                                                                    ),
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                  ),
-                                                  SizedBox(width: 2.w),
-                                                  Container(
-                                                    height: 2.h,
-                                                    width: 0.5.w,
-                                                    decoration: BoxDecoration(
-                                                      color: const Color(
-                                                        0XFF3E3E3E,
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            20,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 2.w),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      getComments1(
-                                                        context,
-                                                        post?.id?.toString() ??
-                                                            "",
-                                                      );
-                                                    },
-                                                    child: Text(
-                                                      "Comment",
-                                                      style: TextStyle(
-                                                        fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                        fontSize: 16.sp,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: const Color(
-                                                          0XFF3E3E3E,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          if (isLoadingMore)
-                                            const Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: CircularProgressIndicator(
-                                                color: AppColors.blackColor,
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              )
-                          : const SizedBox(),
-                    ],
+                SizedBox(height: 2.h),
+                Text(
+                  "Message Board",
+                  style: TextStyle(
+                    fontFamily: AppConstants.manrope,
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 10.h),
+                SizedBox(height: 1.h),
+                Container(
+                  height: 0.5.h,
+                  width: 23.w,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(35),
+                    color: AppColors.maincolor,
+                  ),
+                ),
+                SizedBox(height: 1.h),
+                Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      height: 5.h,
+                      width: 40.w,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          dropdownColor: AppColors.white,
+                          borderRadius: BorderRadius.circular(10),
+
+                          hint: Text(
+                            "Select option",
+                            style: TextStyle(
+                              fontFamily: AppConstants.manrope,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          value: selectedOption,
+                          icon: const Icon(Icons.keyboard_arrow_down),
+                          items:
+                              ['My Building', 'Local']
+                                  .map(
+                                    (option) => DropdownMenuItem(
+                                      value: option,
+                                      child: Container(
+                                        child: Text(
+                                          option,
+                                          style: TextStyle(
+                                            fontFamily:
+                                                AppConstants.manrope,
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedOption = value!;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    selectedOption == "Local"
+                        ?GestureDetector(
+                      onTap: () {
+                        final List<String> buildingNames =
+                        (localpost_model?.data?.data ?? [])
+                            .map(
+                              (item) =>
+                          item.users?.isNotEmpty == true
+                              ? item.users![0].buildingName ?? ""
+                              : "",
+                        )
+                            .where((name) => name.isNotEmpty)
+                            .toList();
+                        final uniqueBuildings = buildingNames.toSet().toList();
+
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            title: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.maincolor.withOpacity(0.15),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.info_rounded,
+                                    color: AppColors.maincolor,
+                                    size: 24,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  "Information",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: AppConstants.manrope,
+                                    fontSize: 18.sp,
+                                    color: AppColors.blackColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            content: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    uniqueBuildings.isEmpty
+                                        ? "No posts available yet in your neighbourhood"
+                                        : "The following buildings in your neighbourhood posted on Wavee Ai:",
+                                    style: TextStyle(
+                                      fontFamily: AppConstants.manrope,
+                                      fontSize: 15.5.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  SizedBox(height: 2.h),
+                                  uniqueBuildings.isEmpty
+                                      ? Container(
+                                    padding: EdgeInsets.all(2.h),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade100,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        "No buildings found",
+                                        style: TextStyle(
+                                          fontFamily: AppConstants.manrope,
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.grey.shade600,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                      : SizedBox(
+                                    height: 18.h,
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          ...uniqueBuildings.map(
+                                                (name) => Card(
+                                              elevation: 1,
+                                              color: AppColors.white,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(12),
+                                              ),
+                                              margin: const EdgeInsets.only(bottom: 8),
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 5.w,
+                                                  vertical: 1.h,
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.location_city,
+                                                      size: 20.sp,
+                                                      color: AppColors.maincolor,
+                                                    ),
+                                                    const SizedBox(width: 8),
+                                                    Expanded(
+                                                      child: Text(
+                                                        name,
+                                                        style: TextStyle(
+                                                          fontFamily: AppConstants.manrope,
+                                                          fontSize: 15.sp,
+                                                          fontWeight: FontWeight.w400,
+                                                          color: Colors.black87,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: AppColors.maincolor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                onPressed: () => Navigator.pop(context),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                                  child: Text(
+                                    "Close",
+                                    style: TextStyle(
+                                      fontFamily: AppConstants.manrope,
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      child: Material(
+                        elevation: 1,
+                        borderRadius: BorderRadius.circular(20),
+                        color: AppColors.white,
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.white.withOpacity(0.1),
+                          ),
+                          child: Icon(
+                            Icons.info_outline_rounded,
+                            color: AppColors.maincolor,
+                            size: 19.sp,
+                          ),
+                        ),
+                      ),
+                    ).paddingOnly(right: 9.w, left: 1.w)
+                        : const SizedBox(),
+
+                    selectedOption == "My Building"
+                        ? const SizedBox()
+                        : GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 4.w,
+                              vertical: 0.8.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: Colors.grey.shade300,
+                              ),
+                            ),
+                            child:
+                                selectedOption == "My Building"
+                                    ? const SizedBox()
+                                    : selectedOption == "Local"
+                                    ? InkWell(
+                                      onTap: () {
+                                        addpostsheet(
+                                          context,
+                                          (loginModel?.data?.user?.id)
+                                              .toString(),
+                                        );
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            "Add Post",
+                                            style: TextStyle(
+                                              fontFamily:
+                                                  AppConstants.manrope,
+                                              fontSize: 15.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          SizedBox(width: 2.w),
+                                          const Icon(
+                                            Icons
+                                                .add_circle_outline_rounded,
+                                            color: Colors.grey,
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                    : const SizedBox(),
+                          ),
+                        ),
+                  ],
+                ),
+                SizedBox(height: 0.5.h),
+
+                SizedBox(height: 1.h),
+          Expanded(child: SingleChildScrollView(child: Column(children: [
+            selectedOption == "My Building"
+                ? messageBoardModal?.data?.length == 0 ||
+                messageBoardModal?.data?.length == null
+                ? Center(
+              child: SizedBox(
+                height: 70.h,
+                child: Text(
+                  "No Posts available",
+                  style: TextStyle(
+                    fontSize: 17.sp,
+                    color: Colors.black,
+                    fontWeight: FontWeight.normal,
+                    fontFamily: AppConstants.manrope,
+                  ),
+                ),
+              ),
+            )
+                : SizedBox(
+              height: 60.h,
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                itemCount: messageBoardModal?.data?.length,
+                itemBuilder: (context, index) {
+                  final post =
+                  messageBoardModal?.data?[index];
+                  return Container(
+                    margin: EdgeInsets.symmetric(
+                      vertical: 0.5.h,
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 3.w,
+                      vertical: 2.h,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black12,
+                        width: 0.2.w,
+                      ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 1,
+                          offset: Offset(0, 1),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment:
+                      MainAxisAlignment.start,
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.center,
+                          children: [
+                            // Profile Image
+                            CachedNetworkImage(
+                              imageUrl:
+                              messageBoardModal
+                                  ?.data?[0]
+                                  .user
+                                  ?.conciergeImage ??
+                                  "",
+                              imageBuilder:
+                                  (
+                                  context,
+                                  imageProvider,
+                                  ) => Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              placeholder:
+                                  (
+                                  context,
+                                  url,
+                                  ) => const SizedBox(
+                                width: 40,
+                                height: 40,
+                                child: Center(
+                                  child:
+                                  CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              ),
+                              errorWidget:
+                                  (context, url, error) =>
+                              const Icon(
+                                Icons.error,
+                                size: 40,
+                              ),
+                            ),
+
+                            SizedBox(width: 2.w),
+
+                            // Text container that adapts to screen width
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  // User name
+                                  Flexible(
+                                    child: Text(
+                                      "${messageBoardModal?.data?[0].user?.firstName ?? ""} ${messageBoardModal?.data?[0].user?.lastName ?? ""}",
+                                      overflow:
+                                      TextOverflow
+                                          .ellipsis,
+                                      style: TextStyle(
+                                        fontFamily:
+                                        AppConstants
+                                            .manrope,
+                                        fontSize: 15.sp,
+                                        fontWeight:
+                                        FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+
+                                  SizedBox(width: 1.w),
+
+                                  // Dot and time
+                                  Flexible(
+                                    child: Text(
+                                      "• ${formatPostDate(messageBoardModal?.data?[0].createdAt)}",
+                                      overflow:
+                                      TextOverflow
+                                          .ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        color: Colors.grey,
+                                        fontFamily:
+                                        AppConstants
+                                            .manrope,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        Text(
+                          messageBoardModal
+                              ?.data?[index]
+                              .title ??
+                              "",
+                          style: TextStyle(
+                            fontFamily: AppConstants.manrope,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.maincolor,
+                          ),
+                        ),
+                        ReadMoreText(
+                          messageBoardModal
+                              ?.data?[index]
+                              .text ==
+                              null ||
+                              messageBoardModal
+                                  ?.data?[index]
+                                  .text ==
+                                  ""
+                              ? "N/A"
+                              : "${messageBoardModal?.data?[index].text}",
+                          trimLines: 4,
+                          trimLength: 146,
+                          colorClickableText: Colors.blue,
+                          trimMode: TrimMode.Length,
+                          trimCollapsedText: ' Show more',
+                          trimExpandedText: ' Show less',
+                          moreStyle: TextStyle(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: AppConstants.manrope,
+                            letterSpacing: 1,
+                            color: AppColors.maincolor,
+                          ),
+                          lessStyle: TextStyle(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: AppConstants.manrope,
+                            letterSpacing: 1,
+                            color: AppColors.maincolor,
+                          ),
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: Colors.grey.shade500,
+                            fontWeight: FontWeight.normal,
+                            fontFamily: AppConstants.manrope,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 1.h,
+                            horizontal: 2.5.w,
+                          ),
+                          child: ClipRRect(
+                            borderRadius:
+                            BorderRadius.circular(10),
+                            child:
+                            post?.file?.isNotEmpty == true
+                                ? (post!.file![0]
+                                .toLowerCase()
+                                .endsWith('.pdf')
+                                ? GestureDetector(
+                              onTap: () async {
+                                final url =
+                                post.file![0];
+                                final uri =
+                                Uri.parse(
+                                  url,
+                                );
+                                Get.to(
+                                  PdfView(
+                                    link:
+                                    uri.toString(),
+                                  ),
+                                );
+                                // if (await canLaunchUrl(uri)) {
+                                //   final launched = await launchUrl(
+                                //     uri,
+                                //     mode: LaunchMode.externalApplication,
+                                //   );
+                                //   if (!launched) {
+                                //     ScaffoldMessenger.of(context).showSnackBar(
+                                //       SnackBar(content: Text("Failed to open externally")),
+                                //     );
+                                //   }
+                                // } else {
+                                //   ScaffoldMessenger.of(context).showSnackBar(
+                                //     SnackBar(content: Text("Cannot open PDF")),
+                                //   );
+                                // }
+                              },
+
+                              child: Container(
+                                width:
+                                double
+                                    .infinity,
+                                height: 8.h,
+                                color:
+                                Colors
+                                    .grey
+                                    .shade200,
+                                child: Center(
+                                  child: Row(
+                                    mainAxisSize:
+                                    MainAxisSize
+                                        .min,
+                                    children: [
+                                      Icon(
+                                        Icons
+                                            .picture_as_pdf,
+                                        color:
+                                        Colors
+                                            .red,
+                                        size:
+                                        25.sp,
+                                      ),
+                                      SizedBox(
+                                        width:
+                                        2.w,
+                                      ),
+                                      Text(
+                                        "View PDF",
+                                        style: TextStyle(
+                                          fontSize:
+                                          16.sp,
+                                          fontFamily:
+                                          AppConstants.manrope,
+                                          fontWeight:
+                                          FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                                : CachedNetworkImage(
+                              imageUrl:
+                              post.file![0],
+                              placeholder:
+                                  (
+                                  context,
+                                  url,
+                                  ) => SizedBox(
+                                height: 30.h,
+                                width:
+                                double
+                                    .infinity,
+                                child: const Center(
+                                  child:
+                                  CircularProgressIndicator(),
+                                ),
+                              ),
+                              errorWidget:
+                                  (
+                                  context,
+                                  url,
+                                  error,
+                                  ) => Icon(
+                                Icons.error,
+                                size: 24.sp,
+                              ),
+                              width:
+                              double.infinity,
+                              height: 30.h,
+                              fit: BoxFit.cover,
+                            ))
+                                : SizedBox(height: 0.h),
+                          ),
+                        ),
+                        SizedBox(height: 1.5.h),
+                        Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  "${messageBoardModal?.data?[index].totalComments} Replies",
+                                  style: TextStyle(
+                                    fontFamily:
+                                    AppConstants.manrope,
+                                    fontSize: 16.sp,
+                                    fontWeight:
+                                    FontWeight.bold,
+                                    color: const Color(
+                                      0XFF3E3E3E,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 2.w),
+                                Text(
+                                  "${messageBoardModal?.data?[index].totalLikes} Likes",
+                                  style: TextStyle(
+                                    fontFamily:
+                                    AppConstants.manrope,
+                                    fontSize: 16.sp,
+                                    fontWeight:
+                                    FontWeight.bold,
+                                    color: const Color(
+                                      0XFF3E3E3E,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                StatefulBuilder(
+                                  builder: (
+                                      context,
+                                      localSetState,
+                                      ) {
+                                    bool isLiked =
+                                    index <
+                                        isLikedList
+                                            .length
+                                        ? isLikedList[index]
+                                        : false;
+                                    bool isInProgress =
+                                    index <
+                                        isLikeInProgressList
+                                            .length
+                                        ? isLikeInProgressList[index]
+                                        : false;
+
+                                    return GestureDetector(
+                                      onTap:
+                                      isInProgress
+                                          ? null
+                                          : () {
+                                        if (index <
+                                            isLikedList
+                                                .length &&
+                                            index <
+                                                isLikeInProgressList
+                                                    .length) {
+                                          localSetState(() {
+                                            isLikedList[index] =
+                                            !isLikedList[index];
+                                            isLikeInProgressList[index] =
+                                            true;
+                                          });
+                                          _saveLikeStatus(
+                                            index,
+                                            isLikedList[index],
+                                          );
+                                          postslikeap(
+                                            index,
+                                                () {
+                                              localSetState(() {
+                                                isLikeInProgressList[index] =
+                                                false;
+                                              });
+                                            },
+                                          );
+                                        }
+                                      },
+                                      child: Text(
+                                        "Like",
+                                        style: TextStyle(
+                                          fontFamily:
+                                          AppConstants
+                                              .manrope,
+                                          fontSize: 16.sp,
+                                          fontWeight:
+                                          FontWeight.bold,
+                                          color:
+                                          isLiked
+                                              ? Colors.red
+                                              : const Color(
+                                            0XFF3E3E3E,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                SizedBox(width: 2.w),
+                                Container(
+                                  height: 2.h,
+                                  width: 0.5.w,
+                                  decoration: BoxDecoration(
+                                    color: const Color(
+                                      0XFF3E3E3E,
+                                    ),
+                                    borderRadius:
+                                    BorderRadius.circular(
+                                      20,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 2.w),
+                                InkWell(
+                                  onTap: () async {
+                                    await getComments(
+                                      context,
+                                      (post?.id).toString(),
+                                    );
+                                  },
+                                  child: Text(
+                                    "Comment",
+                                    style: TextStyle(
+                                      fontFamily:
+                                      AppConstants
+                                          .manrope,
+                                      fontSize: 16.sp,
+                                      fontWeight:
+                                      FontWeight.bold,
+                                      color: const Color(
+                                        0XFF3E3E3E,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            )
+                : selectedOption == "Local"
+                ? localpost_model?.data?.data?.length == null ||
+                localpost_model?.data?.data?.length == 0
+                ? Center(
+              child: SizedBox(
+                height: 70.h,
+                child: Text(
+                  "No Posts available",
+                  style: TextStyle(
+                    fontSize: 17.sp,
+                    color: Colors.black,
+                    fontWeight: FontWeight.normal,
+                    fontFamily: AppConstants.manrope,
+                  ),
+                ),
+              ),
+            )
+                : SizedBox(
+              height: 58.5.h,
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: EdgeInsets.zero,
+                itemCount:
+                localpost_model?.data?.data?.length,
+                itemBuilder: (context, index) {
+                  final post =
+                  localpost_model?.data?.data?[index];
+                  return Container(
+                    margin: EdgeInsets.symmetric(
+                      vertical: 0.5.h,
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 3.w,
+                      vertical: 2.h,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black12,
+                        width: 0.2.w,
+                      ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 1,
+                          offset: Offset(0, 1),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment:
+                      MainAxisAlignment.start,
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 9.w,
+                              width: 9.w,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: AppColors.maincolor,
+                                  width: 1,
+                                ),
+                                image: DecorationImage(
+                                  image:
+                                  (localpost_model
+                                      ?.data
+                                      ?.data?[index]
+                                      .users?[0]
+                                      .profiles
+                                      ?.isNotEmpty ??
+                                      false)
+                                      ? CachedNetworkImageProvider(
+                                    localpost_model!
+                                        .data!
+                                        .data![index]
+                                        .users![0]
+                                        .profiles!,
+                                  )
+                                      : const AssetImage(
+                                    'assets/images/waveeLogoShort.png',
+                                  )
+                                  as ImageProvider,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(width: 2.w),
+                            Text(
+                              localpost_model
+                                  ?.data
+                                  ?.data?[index]
+                                  .users?[0]
+                                  .name ??
+                                  "",
+                              style: TextStyle(
+                                fontFamily:
+                                AppConstants.manrope,
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(width: 2.w),
+                            Text(
+                              "•${formatPostDate(localpost_model?.data?.data?[index].createdAt)}",
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: Colors.grey,
+                                fontFamily:
+                                AppConstants.manrope,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const Spacer(),
+                            loginModel?.data?.user?.id ==
+                                post?.userId
+                                ? PopupMenuButton<String>(
+                              color: Colors.white,
+                              icon: const Icon(
+                                Icons.more_vert,
+                                color: Colors.black87,
+                              ),
+                              onSelected: (value) {
+                                if (value == 'edit') {
+                                  UpdatePostData(
+                                    context,
+                                    post,
+                                  );
+                                } else if (value ==
+                                    'delete') {
+                                  showCancelConfirmationDialog(
+                                    context: context,
+                                    post!.id.toString() ??
+                                        "",
+                                  );
+                                }
+                                // else if (value ==
+                                //     'report') {
+                                //   showBlockUserDialog(
+                                //     context,
+                                //     supportUrl,
+                                //   );
+                                // }
+                              },
+                              itemBuilder:
+                                  (
+                                  BuildContext context,
+                                  ) => [
+                                PopupMenuItem(
+                                  value: 'edit',
+                                  child: Text(
+                                    'Edit',
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontFamily:
+                                      AppConstants
+                                          .manrope,
+                                    ),
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 'delete',
+                                  child: Text(
+                                    'Delete',
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontFamily:
+                                      AppConstants
+                                          .manrope,
+                                    ),
+                                  ),
+                                ),
+                                // PopupMenuItem(
+                                //   value: 'report',
+                                //   child: Text(
+                                //     'Report',
+                                //     style: TextStyle(
+                                //       fontSize: 16.sp,
+                                //       fontFamily:
+                                //       AppConstants
+                                //           .manrope,
+                                //     ),
+                                //   ),
+                                // ),
+                              ],
+                            )
+                                : InkWell(
+                              onTap: () {
+                                showBlockUserDialog(
+                                  context,
+                                  supportUrl,
+                                );
+                              },
+                              child: const Icon(
+                                Icons.more_vert_outlined,
+                              ).paddingOnly(right: 2.w),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          localpost_model
+                              ?.data
+                              ?.data?[index]
+                              .title ??
+                              "",
+                          style: TextStyle(
+                            fontFamily: AppConstants.manrope,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.maincolor,
+                          ),
+                        ),
+
+                        // localpost_model
+                        //             ?.data
+                        //             ?.data?[index]
+                        //             .users?[0]
+                        //             .areaName ==
+                        //         null
+                        //     ? const SizedBox()
+                        //     : Text(
+                        //       "Area: ${localpost_model?.data?.data?[index].users?[0].areaName ?? ""}",
+                        //       style: TextStyle(
+                        //         fontFamily:
+                        //             AppConstants.manrope,
+                        //         fontSize: 16.sp,
+                        //         fontWeight: FontWeight.normal,
+                        //         color: Colors.grey,
+                        //       ),
+                        //     ),
+                        // localpost_model
+                        //             ?.data
+                        //             ?.data?[index]
+                        //             .users?[0]
+                        //             .buildingName ==
+                        //         null
+                        //     ? const SizedBox()
+                        //     : Text(
+                        //       "Building:${localpost_model?.data?.data?[index].users?[0].buildingName ?? ""}",
+                        //       style: TextStyle(
+                        //         fontFamily:
+                        //             AppConstants.manrope,
+                        //         fontSize: 16.sp,
+                        //         fontWeight: FontWeight.normal,
+                        //         color: Colors.grey,
+                        //       ),
+                        //     ),
+                        ReadMoreText(
+                          localpost_model
+                              ?.data
+                              ?.data?[index]
+                              .text ==
+                              null ||
+                              localpost_model
+                                  ?.data
+                                  ?.data?[index]
+                                  .text ==
+                                  ""
+                              ? "N/A"
+                              : "${localpost_model?.data?.data?[index].text}",
+                          trimLines: 4,
+                          trimLength: 146,
+                          colorClickableText: Colors.blue,
+                          trimMode: TrimMode.Length,
+                          trimCollapsedText: ' Show more',
+                          trimExpandedText: ' Show less',
+                          moreStyle: TextStyle(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: AppConstants.manrope,
+                            letterSpacing: 1,
+                            color: AppColors.maincolor,
+                          ),
+                          lessStyle: TextStyle(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: AppConstants.manrope,
+                            letterSpacing: 1,
+                            color: AppColors.maincolor,
+                          ),
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: Colors.grey.shade500,
+                            fontWeight: FontWeight.normal,
+                            fontFamily: AppConstants.manrope,
+                          ),
+                        ),
+                        post?.file?.length == 0 ||
+                            post?.file?.length == null
+                            ? const SizedBox()
+                            : Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 1.h,
+                            horizontal: 2.5.w,
+                          ),
+                          child: StatefulBuilder(
+                            builder: (context, setState) {
+                              final pageCount =
+                                  post?.file?.length ?? 0;
+                              return SizedBox(
+                                height: 35.h,
+                                child: Stack(
+                                  children: [
+                                    PageView.builder(
+                                      controller:
+                                      _pageController,
+                                      itemCount:
+                                      pageCount,
+                                      onPageChanged: (
+                                          index,
+                                          ) {
+                                        setState(
+                                              () =>
+                                          _currentPage =
+                                              index,
+                                        );
+                                      },
+                                      itemBuilder: (
+                                          context,
+                                          index,
+                                          ) {
+                                        final imageUrl =
+                                            post?.file?[index] ??
+                                                "";
+                                        return ClipRRect(
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                            10,
+                                          ),
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                            imageUrl,
+                                            placeholder:
+                                                (
+                                                context,
+                                                url,
+                                                ) => const Center(
+                                              child:
+                                              CircularProgressIndicator(),
+                                            ),
+                                            errorWidget:
+                                                (
+                                                context,
+                                                url,
+                                                error,
+                                                ) => Image.asset(
+                                              "assets/images/waveeLogoShort.png",
+                                              fit:
+                                              BoxFit.cover,
+                                            ),
+                                            width:
+                                            double
+                                                .infinity,
+                                            height: 35.h,
+                                            fit:
+                                            BoxFit
+                                                .cover,
+                                          ),
+                                        ).marginOnly(
+                                          right: 1.w,
+                                        );
+                                      },
+                                    ),
+                                    Positioned(
+                                      top: 8,
+                                      right: 16,
+                                      child: Container(
+                                        padding:
+                                        const EdgeInsets.symmetric(
+                                          horizontal:
+                                          10,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors
+                                              .black
+                                              .withOpacity(
+                                            0.6,
+                                          ),
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          '${_currentPage + 1}/$pageCount',
+                                          style: TextStyle(
+                                            color:
+                                            Colors
+                                                .white,
+                                            fontSize:
+                                            12.sp,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        SizedBox(height: 1.5.h),
+                        Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  "${localpost_model?.data?.data?[index].totalComments} Replies",
+                                  style: TextStyle(
+                                    fontFamily:
+                                    AppConstants.manrope,
+                                    fontSize: 16.sp,
+                                    fontWeight:
+                                    FontWeight.bold,
+                                    color: const Color(
+                                      0XFF3E3E3E,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 2.w),
+                                Text(
+                                  "${localpost_model?.data?.data?[index].totalLikes} Likes",
+                                  style: TextStyle(
+                                    fontFamily:
+                                    AppConstants.manrope,
+                                    fontSize: 16.sp,
+                                    fontWeight:
+                                    FontWeight.bold,
+                                    color: const Color(
+                                      0XFF3E3E3E,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 2.w),
+                                // GestureDetector(
+                                //   onTap: () {
+                                //     try {
+                                //       final imageUrl =
+                                //           messageBoardModal
+                                //               ?.data?[
+                                //                   index]
+                                //               ?.file
+                                //               .toString();
+                                //       final linkToShare = (imageUrl ==
+                                //                   null ||
+                                //               imageUrl
+                                //                   .isEmpty)
+                                //           ? "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png"
+                                //           : imageUrl;
+                                //       shareConciergeImage(
+                                //           linkToShare);
+                                //     } catch (e) {
+                                //
+                                //     }
+                                //   },
+                                //   child: Icon(
+                                //     Icons
+                                //         .share_outlined,
+                                //     size: 18.sp,
+                                //     color: Color(
+                                //         0XFF3E3E3E),
+                                //   ),
+                                // ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                StatefulBuilder(
+                                  builder: (
+                                      context,
+                                      localSetState,
+                                      ) {
+                                    bool isLiked =
+                                    index <
+                                        isLikedListLocal
+                                            .length
+                                        ? isLikedListLocal[index]
+                                        : false;
+                                    bool isInProgress =
+                                    index <
+                                        isLikeInProgressListLocal
+                                            .length
+                                        ? isLikeInProgressListLocal[index]
+                                        : false;
+
+                                    return GestureDetector(
+                                      onTap:
+                                      isInProgress
+                                          ? null
+                                          : () {
+                                        if (index <
+                                            isLikedListLocal
+                                                .length &&
+                                            index <
+                                                isLikeInProgressListLocal
+                                                    .length) {
+                                          localSetState(() {
+                                            isLikedListLocal[index] =
+                                            !isLikedListLocal[index];
+                                            isLikeInProgressListLocal[index] =
+                                            true;
+                                          });
+                                          _saveLikeStatusLocal(
+                                            index,
+                                            isLikedListLocal[index],
+                                          );
+                                          postslikelocalap(
+                                            index,
+                                                () {
+                                              localSetState(() {
+                                                isLikeInProgressListLocal[index] =
+                                                false;
+                                              });
+                                            },
+                                          );
+                                        }
+                                      },
+                                      child: Text(
+                                        "Like",
+                                        style: TextStyle(
+                                          fontFamily:
+                                          AppConstants
+                                              .manrope,
+                                          fontSize: 16.sp,
+                                          fontWeight:
+                                          FontWeight.bold,
+                                          color:
+                                          isLiked
+                                              ? Colors.red
+                                              : const Color(
+                                            0XFF3E3E3E,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                SizedBox(width: 2.w),
+                                Container(
+                                  height: 2.h,
+                                  width: 0.5.w,
+                                  decoration: BoxDecoration(
+                                    color: const Color(
+                                      0XFF3E3E3E,
+                                    ),
+                                    borderRadius:
+                                    BorderRadius.circular(
+                                      20,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 2.w),
+                                InkWell(
+                                  onTap: () {
+                                    getComments1(
+                                      context,
+                                      post?.id?.toString() ??
+                                          "",
+                                    );
+                                  },
+                                  child: Text(
+                                    "Comment",
+                                    style: TextStyle(
+                                      fontFamily:
+                                      AppConstants
+                                          .manrope,
+                                      fontSize: 16.sp,
+                                      fontWeight:
+                                      FontWeight.bold,
+                                      color: const Color(
+                                        0XFF3E3E3E,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        if (isLoadingMore)
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: CircularProgressIndicator(
+                              color: AppColors.blackColor,
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            )
+                : const SizedBox(),
+          ],))),
+
               ],
             ),
-          ),
-          if (isSending1)
+          ).paddingOnly(top: 10.h),
+           if (isSending1)
             Container(
               color: Colors.black.withOpacity(0.3),
               child: Center(child: Loader()),
@@ -2504,12 +2463,15 @@ class _MessageboardState extends State<Messageboard> {
                             if (addPostFormkey.currentState!.validate()) {
                               String updatedDesc =
                                   descUpdateController.text.trim();
+                              String title =
+                              titleUpdate.text.trim();
                               List<String> updatedImages = [...existingImages];
                               List<XFile> newImages = newImages0;
 
                               updatepostapi(
                                 post.id.toString(),
                                 updatedDesc,
+                                title,
                                 updatedImages,
                                 newImages,
                               );
@@ -2663,8 +2625,9 @@ class _MessageboardState extends State<Messageboard> {
                       child: batan(
                         title: "Yes",
                         route: () {
-                          DeleteLocalPost(PostId);
                           Get.back();
+                          DeleteLocalPost(PostId);
+
                         },
                         width: 30.w,
                         color: AppColors.maincolor,
@@ -2736,51 +2699,9 @@ class _MessageboardState extends State<Messageboard> {
     });
   }
 
-  EditPost() {
-    final Map<String, String> data = {
-      'residentType': "residents",
-      'user_id': loginModel?.data?.user?.id.toString() ?? '',
-    };
 
-    setState(() {
-      isSending = true;
-    });
 
-    checkInternet().then((internet) async {
-      if (internet) {
-        try {
-          final response = await MessageBoardProvider().localPostApi(data);
-          if (response.statusCode == 200) {
-            localpost_model = Localpost_model.fromJson(response.data);
-            _descController.text =
-                localpost_model?.data?.data?[0].text.toString() ?? "";
-
-            if (mounted) {
-              setState(() {
-                isSending = false;
-              });
-            }
-          } else if (response.statusCode == 429 || response.statusCode == 500) {
-            setState(() {
-              isSending = false;
-            });
-          } else {
-            setState(() {
-              isSending = false;
-            });
-          }
-        } catch (e) {
-          setState(() {
-            isSending = false;
-          });
-        }
-      } else {
-        buildErrorDialog(context, 'Error', "Internet Required");
-      }
-    });
-  }
-
-  DeleteLocalPost(String id) {
+  void DeleteLocalPost(String id) {
     final Map<String, String> data = {'id': id};
 
     setState(() {
@@ -2790,37 +2711,63 @@ class _MessageboardState extends State<Messageboard> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          final response = await MessageBoardProvider().localPostDeleteApi(
-            data,
-          );
+          final response = await MessageBoardProvider().localPostDeleteApi(data);
           if (response.statusCode == 200) {
-            localpostapi();
-            _pagingController.refresh();
+            // Remove the deleted post from the local list immediately
+            if (mounted) {
+              setState(() {
+                // localpost_model?.data?.data?.removeWhere((post) => post.id.toString() == id);
+                isSending1 = false;
+              });
+            }
 
+
+            await localpostapi(page: 1, );
+
+            // Show success message
+            Get.snackbar(
+              'Success',
+              'Post deleted successfully',
+              backgroundColor: Colors.green,
+              colorText: Colors.white,
+            );
+          } else {
             if (mounted) {
               setState(() {
                 isSending1 = false;
               });
             }
-          } else if (response.statusCode == 429 || response.statusCode == 500) {
-            setState(() {
-              isSending1 = false;
-            });
-          } else {
+            Get.snackbar(
+              'Error',
+              'Failed to delete post',
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+            );
+          }
+        } catch (e) {
+          if (mounted) {
             setState(() {
               isSending1 = false;
             });
           }
-        } catch (e) {
+          Get.snackbar(
+            'Error',
+            'An error occurred while deleting post',
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        }
+      } else {
+        if (mounted) {
           setState(() {
             isSending1 = false;
           });
         }
-      } else {
         buildErrorDialog(context, 'Error', "Internet Required");
       }
     });
   }
+
 
   void postslikeap(int index, VoidCallback onComplete) {
     final Map<String, String> data = {
@@ -2928,16 +2875,18 @@ class _MessageboardState extends State<Messageboard> {
   void updatepostapi(
     String postId,
     String description,
+    String title,
     List<String> existingImageUrls,
     List<XFile> newImages,
   ) {
     final Map<String, String> data = {
       'post_id': postId,
       'description': description,
+      'title': title,
     };
 
     setState(() {
-      isSending = true;
+      isSending1 = true;
     });
 
     checkInternet().then((internet) async {
@@ -2949,6 +2898,11 @@ class _MessageboardState extends State<Messageboard> {
                 localpostapi();
                 _descController.clear();
                 _images = [];
+                if (mounted) {
+                  setState(() {
+                    isSending1 = false;
+                  });
+                }
               } else if (response.statusCode == 429) {
                 Get.snackbar(
                   'Error',
@@ -2957,6 +2911,11 @@ class _MessageboardState extends State<Messageboard> {
                   colorText: Colors.white,
                   snackPosition: SnackPosition.BOTTOM,
                 );
+                if (mounted) {
+                  setState(() {
+                    isSending1 = false;
+                  });
+                }
               } else {
                 Get.snackbar(
                   'Error',
@@ -2969,13 +2928,13 @@ class _MessageboardState extends State<Messageboard> {
 
               if (mounted) {
                 setState(() {
-                  isSending = false;
+                  isSending1 = false;
                 });
               }
             });
       } else {
         setState(() {
-          isSending = false;
+          isSending1 = false;
         });
         buildErrorDialog(context, 'Error', "Internet Required");
       }
@@ -3147,14 +3106,7 @@ class _MessageboardState extends State<Messageboard> {
                       ),
                     ),
                     SizedBox(height: 2.h),
-                    isLoading
-                        ? Padding(
-                          padding: EdgeInsets.symmetric(vertical: 2.h),
-                          child: const CircularProgressIndicator(
-                            color: AppColors.maincolor,
-                          ),
-                        )
-                        : Row(
+                   Row(
                           children: [
                             Expanded(
                               child: Material(
@@ -3182,26 +3134,8 @@ class _MessageboardState extends State<Messageboard> {
                                 child: batan(
                                   title: "Yes",
                                   route: () async {
-                                    setState(() => isLoading = true);
-
-                                    final Uri url = Uri.parse(supportUrl);
-                                    if (await canLaunchUrl(url)) {
-                                      await launchUrl(
-                                        url,
-                                        mode: LaunchMode.externalApplication,
-                                      );
-                                    } else {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        const SnackBar(
-                                          content: Text("Could not launch URL"),
-                                        ),
-                                      );
-                                    }
-
-                                    setState(() => isLoading = false);
-                                    Navigator.of(context).pop();
+                                    Get.back();
+                                    launchTermsUrl();
                                   },
                                   color: AppColors.maincolor,
                                   fontcolor: Colors.white,
@@ -3223,5 +3157,32 @@ class _MessageboardState extends State<Messageboard> {
         );
       },
     );
+  }
+
+  void launchTermsUrl() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final Uri url = Uri.parse("https://wavee.ai/contact");
+      final bool launched = await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication,
+      );
+
+      if (!launched) {
+        throw 'Could not launch $url';
+      }
+    } catch (e) {
+      log("Error launching URL: $e");
+      // You can show an error message here if needed
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 }

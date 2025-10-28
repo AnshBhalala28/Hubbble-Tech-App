@@ -129,13 +129,12 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
       body:
           isLoading
               ? Loader()
-              : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(height: 10.h),
-                    Container(
+              : Column(
+                children: [
+                  SizedBox(height: 10.h),
+                  Expanded(
+                    child: Container(
                       padding: EdgeInsets.symmetric(vertical: 2.h),
-                      height: 90.h,
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: const Color(0xffdedfe5),
@@ -149,11 +148,12 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                       ),
                       child: Stack(
                         children: [
-                          CustomScrollView(
+                          SingleChildScrollView(
                             controller: _scrollController,
-                            slivers: [
-                              SliverToBoxAdapter(
-                                child: Padding(
+                            child: Column(
+                              children: [
+                                // Header Section
+                                Padding(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: 3.w,
                                   ),
@@ -173,10 +173,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                               width: 28,
                                               decoration: const BoxDecoration(),
                                               alignment: Alignment.center,
-                                              child: const Icon(
+                                              child:  Icon(
                                                 Icons.arrow_back,
                                                 color: AppColors.maincolor,
-                                                size: 20,
+                                                size: 20.sp,
                                               ),
                                             ),
                                           ),
@@ -266,9 +266,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                     ],
                                   ),
                                 ),
-                              ),
-                              SliverToBoxAdapter(
-                                child: Padding(
+                                SizedBox(height: 1.h),
+
+                                // Divider line
+                                Padding(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: 10.w,
                                   ),
@@ -287,86 +288,76 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                     ],
                                   ),
                                 ),
-                              ),
-                              SliverToBoxAdapter(
-                                child: SizedBox(height: 0.5.h),
-                              ),
-                              SliverToBoxAdapter(child: SizedBox(height: 1.h)),
-                              SliverToBoxAdapter(
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 2.w,
-                                      ),
-                                      height: 5.h,
-                                      margin: EdgeInsets.symmetric(
-                                        horizontal: 2.w,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(
-                                          color: const Color(0xffc7c7c7),
-                                        ),
-                                      ),
-                                      child: TextField(
-                                        onTap: () {
-                                          Get.to(
-                                            SearchScreen(
-                                              businessID: widget.businessID,
-                                              addStatus:
-                                                  busnessviewmodal
-                                                      ?.data
-                                                      ?.business
-                                                      ?.productStatus,
-                                            ),
-                                          );
-                                        },
-                                        controller: searchController,
-                                        decoration: InputDecoration(
-                                          hintText:
-                                              "Search Products or services",
-                                          hintStyle: TextStyle(
-                                            color: Colors.grey[600],
-                                            fontSize: 14,
-                                          ),
-                                          border: InputBorder.none,
-                                          isDense: true,
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                horizontal: 12,
-                                                vertical: 10,
-                                              ),
-                                          prefixIcon: Icon(
-                                            Icons.search,
-                                            color: Colors.grey[600],
-                                            size: 20,
-                                          ),
-                                          suffixIcon:
-                                              searchController.text.isNotEmpty
-                                                  ? IconButton(
-                                                    icon: Icon(
-                                                      Icons.close,
-                                                      color: Colors.grey[600],
-                                                      size: 18,
-                                                    ),
-                                                    onPressed: () {
-                                                      searchController.clear();
-                                                      setState(() {});
-                                                    },
-                                                  )
-                                                  : null,
-                                        ),
-                                        style: const TextStyle(fontSize: 14),
-                                      ),
+                                SizedBox(height: 1.h),
+
+                                // Search Bar
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 2.w,
+                                  ),
+                                  height: 5.h,
+                                  margin: EdgeInsets.symmetric(horizontal: 2.w),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: const Color(0xffc7c7c7),
                                     ),
-                                  ],
+                                  ),
+                                  child: TextField(
+                                    onTap: () {
+                                      Get.to(
+                                        SearchScreen(
+                                          businessID: widget.businessID,
+                                          addStatus:
+                                              busnessviewmodal
+                                                  ?.data
+                                                  ?.business
+                                                  ?.productStatus,
+                                        ),
+                                      );
+                                    },
+                                    controller: searchController,
+                                    decoration: InputDecoration(
+                                      hintText: "Search Products or services",
+                                      hintStyle: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize: 14,
+                                      ),
+                                      border: InputBorder.none,
+                                      isDense: true,
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 10,
+                                          ),
+                                      prefixIcon: Icon(
+                                        Icons.search,
+                                        color: Colors.grey[600],
+                                        size: 20,
+                                      ),
+                                      suffixIcon:
+                                          searchController.text.isNotEmpty
+                                              ? IconButton(
+                                                icon: Icon(
+                                                  Icons.close,
+                                                  color: Colors.grey[600],
+                                                  size: 18,
+                                                ),
+                                                onPressed: () {
+                                                  searchController.clear();
+                                                  setState(() {});
+                                                },
+                                              )
+                                              : null,
+                                    ),
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
                                 ),
-                              ),
-                              SliverToBoxAdapter(child: SizedBox(height: 1.h)),
-                              SliverToBoxAdapter(
-                                child: Padding(
+                                SizedBox(height: 1.h),
+
+                                // All Products Title
+                                Padding(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: 4.w,
                                   ),
@@ -384,10 +375,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                     ],
                                   ),
                                 ),
-                              ),
-                              SliverToBoxAdapter(child: SizedBox(height: 1.h)),
-                              SliverToBoxAdapter(
-                                child: Padding(
+                                SizedBox(height: 1.h),
+
+                                // Category Dropdown
+                                Padding(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: 3.w,
                                   ),
@@ -416,10 +407,17 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                           ],
                                         ),
                                         child: DropdownButton<String>(
+                                          dropdownColor: Colors.white,
                                           borderRadius: BorderRadius.circular(
                                             10,
                                           ),
-                                          hint: const Text("Select option"),
+                                          hint: Text(
+                                            "Select option",
+                                            style: TextStyle(
+                                              fontFamily: AppConstants.manrope,
+                                              fontSize: 16.sp,
+                                            ),
+                                          ),
                                           underline: Container(),
                                           value: selectedOption,
                                           icon: const Icon(
@@ -459,9 +457,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                     ],
                                   ),
                                 ),
-                              ),
-                              SliverToBoxAdapter(
-                                child: Container(
+                                SizedBox(height: 1.h),
+
+                                // Products Grid
+                                Container(
                                   margin: EdgeInsets.symmetric(horizontal: 3.w),
                                   padding: EdgeInsets.symmetric(vertical: 2.h),
                                   child: GridView.builder(
@@ -956,10 +955,12 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                     },
                                   ),
                                 ),
-                              ),
-                              SliverToBoxAdapter(child: SizedBox(height: 50.h)),
-                            ],
+                                SizedBox(height: 50.h),
+                              ],
+                            ),
                           ),
+
+                          // Draggable Bottom Sheet
                           Positioned(
                             top: 11.h,
                             left: 0,
@@ -1060,7 +1061,6 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                         SizedBox(width: 2.w),
                                                         Text(
                                                           "${(busnessviewmodal?.data?.distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
-                                                          //
                                                           style: TextStyle(
                                                             fontSize: 15.sp,
                                                             fontWeight:
@@ -1297,13 +1297,14 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
       bottomNavigationBar: BottomBar(selected: 0),
     );
   }
 
+  // Rest of your methods remain the same...
   handleLikeTap() {
     bool isCurrentlyLiked = busnessviewmodal?.data?.isLiked ?? false;
     String newLikeStatus = isCurrentlyLiked ? "0" : "1";

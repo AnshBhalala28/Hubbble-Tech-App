@@ -116,7 +116,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                         eventBookingModal?.data?.length == 0
                     ? Center(
                       child: Text(
-                        "No Booking Available",
+                        "No Bookings Available",
                         style: TextStyle(
                           fontSize: 17.sp,
                           fontWeight: FontWeight.bold,
@@ -454,6 +454,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),

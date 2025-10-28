@@ -31,6 +31,10 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
 
+  // Error messages for specific fields
+  String? emailError;
+  String? generalError;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,26 +54,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Image.asset(
                       "assets/images/Applogo_remove_background.png",
                       height: 25.h,
-                      // width: 65.w,
-                      // fit: BoxFit.fill,
                     ),
                   ),
                 ),
                 SizedBox(height: 2.h),
-                // Center(
-                //   child: Text(
-                //     "Wavee",
-                //     style: TextStyle(
-                //       color: AppColors.maincolor,
-                //       fontWeight: FontWeight.bold,
-                //       fontFamily: AppConstants.manrope,
-                //       fontSize: 24.sp,
-                //     ),
-                //   ),
-                // ),
                 Center(
                   child: Text(
-                    "Login to your application",
+                    "Log in to your application",
                     style: TextStyle(
                       color: AppColors.maincolor,
                       fontWeight: FontWeight.bold,
@@ -79,96 +70,105 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: 2.h),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: TextFormField(
-                    cursorColor: AppColors.black,
-                    controller: email,
-                    keyboardType: TextInputType.emailAddress,
-                    // validator: (value) {
-                    //   if (value == null || value.isEmpty) {
-                    //     return "Please enter your email";
-                    //   }
-                    //
-                    //   // Check if it's a valid email
-                    //   bool isEmail = RegExp(
-                    //     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+$",
-                    //   ).hasMatch(value);
-                    //   if (!isEmail) {
-                    //     return "Please enter a valid email";
-                    //   }
-                    //   return null;
-                    // },
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Please enter your email";
-                      }
-
-                      // final emailRegex = RegExp(
-                      //   r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~\-]+@[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z]{2,})+$",
-                      // );
-                      //
-                      // if (!emailRegex.hasMatch(value.trim())) {
-                      //   return "Please enter a valid email address";
-                      // }
-
-                      return null;
-                    },
-
-
-                    decoration: inputDecoration(
-                      hintText: 'Enter your Email',
-                      searchIcon: Icon(
-                        Icons.contact_mail,
-                        size: 20.sp,
-                        color: AppColors.black,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: TextFormField(
+                        cursorColor: AppColors.black,
+                        controller: email,
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return "Please enter your email";
+                          }
+                          return null;
+                        },
+                        decoration: inputDecoration(
+                          hintText: 'Enter Your Email',
+                          searchIcon: Icon(
+                            Icons.contact_mail,
+                            size: 20.sp,
+                            color: AppColors.black,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    if (emailError != null)
+                      Padding(
+                        padding: EdgeInsets.only(top: 0.5.h,left: 3.w),
+                        child: Text(
+                          emailError!,
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 14.sp,
+                            fontFamily: AppConstants.manrope,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
                 SizedBox(height: 2.h),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: TextFormField(
-                    cursorColor: AppColors.maincolor,
-                    controller: password,
-                    keyboardType: TextInputType.visiblePassword,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Please enter your password";
-                      }
-                      return null;
-                    },
-                    obscureText: _obscurePassword,
-                    decoration: inputDecoration(
-                      hintText: 'Enter your Password',
-                      searchIcon: Icon(
-                        Icons.key,
-                        size: 20.sp,
-                        color: AppColors.black,
-                      ),
-                      ico: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _obscurePassword = !_obscurePassword;
-                          });
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: TextFormField(
+                        cursorColor: AppColors.maincolor,
+                        controller: password,
+                        keyboardType: TextInputType.visiblePassword,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Please enter your password";
+                          }
+                          return null;
                         },
-                        icon:
-                            _obscurePassword
+                        obscureText: _obscurePassword,
+                        decoration: inputDecoration(
+                          hintText: 'Enter Your Password',
+                          searchIcon: Icon(
+                            Icons.key,
+                            size: 20.sp,
+                            color: AppColors.black,
+                          ),
+                          ico: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
+                            icon: _obscurePassword
                                 ? Icon(
-                                  Icons.visibility,
-                                  size: 20.sp,
-                                  color: AppColors.black,
-                                )
+                              Icons.visibility,
+                              size: 20.sp,
+                              color: AppColors.black,
+                            )
                                 : Icon(
-                                  Icons.visibility_off,
-                                  size: 20.sp,
-                                  color: AppColors.black,
-                                ),
+                              Icons.visibility_off,
+                              size: 20.sp,
+                              color: AppColors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                // General error message (for both email and password errors)
+                if (generalError != null)
+                  Padding(
+                    padding: EdgeInsets.only(top: 1.h,left: 3.w),
+                    child: Text(
+                      generalError!,
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 14.sp,
+                        fontFamily: AppConstants.manrope,
                       ),
                     ),
                   ),
-                ),
                 SizedBox(height: 3.h),
                 Align(
                   alignment: Alignment.centerRight,
@@ -190,68 +190,44 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 3.h),
                 isLoading == true
                     ? const Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.maincolor,
-                      ),
-                    )
+                  child: CircularProgressIndicator(
+                    color: AppColors.maincolor,
+                  ),
+                )
                     : Container(
-                      height: 7.h,
-                      decoration: BoxDecoration(
-                        color: AppColors.maincolor,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          if (_formKey.currentState!.validate()) {
-                            setState(() {
-                              isLoading = true;
-                            });
-                            FocusScope.of(context).unfocus();
-                            LoginApi();
-                          }
-                        },
-                        borderRadius: BorderRadius.circular(5),
-                        child: const Center(
-                          child: Text(
-                            "Login",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: AppConstants.manrope,
-                            ),
-                          ),
+                  height: 6.h,
+                  decoration: BoxDecoration(
+                    color: AppColors.maincolor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      if (_formKey.currentState!.validate()) {
+                        setState(() {
+                          isLoading = true;
+                          // Clear previous errors
+                          emailError = null;
+                          generalError = null;
+                        });
+                        FocusScope.of(context).unfocus();
+                        LoginApi();
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(5),
+                    child: const Center(
+                      child: Text(
+                        "Log in",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: AppConstants.manrope,
                         ),
                       ),
                     ),
+                  ),
+                ),
                 SizedBox(height: 2.h),
-                // Center(
-                //   child: RichText(
-                //     text: TextSpan(
-                //       text: "Don't have any account? ",
-                //       style: TextStyle(
-                //         fontSize: 17.sp,
-                //         color: Colors.black87,
-                //         fontWeight: FontWeight.bold,
-                //         fontFamily: AppConstants.manrope,
-                //       ),
-                //       children: [
-                //         TextSpan(
-                //           text: "Sign in",
-                //           style: TextStyle(
-                //             color: Colors.blue,
-                //             fontWeight: FontWeight.bold,
-                //             fontFamily: AppConstants.manrope,
-                //           ),
-                //           recognizer: TapGestureRecognizer()
-                //             ..onTap = () {
-                //               Get.to(SignInScreen());
-                //             },
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // )
               ],
             ),
           ),
@@ -263,96 +239,124 @@ class _LoginScreenState extends State<LoginScreen> {
   String? usertoken, userrole, userId;
 
   void LoginApi() async {
-    setState(() {
-      isLoading = true;
-    });
-
-    // Fetch the FCM token
-    String? fcmToken = await FirebaseMessaging.instance.getToken();
-
-    if (fcmToken == null) {
-      showSnackBar(
-        title: "FCM Error",
-        message: "Unable to fetch FCM token",
-        backgoundColor: Colors.red,
-        ColorText: Colors.white,
-      );
+    try {
       setState(() {
-        isLoading = false;
+        isLoading = true;
+        emailError = null;
+        generalError = null;
       });
-      return;
-    }
 
-    final Map<String, String> data = {
-      'email': email.text.trim(),
-      'password': password.text.trim(),
-      'role': '4',
-      "fcm_token": fcmToken,
-    };
-    log('dadadadad$data');
-    checkInternet().then((internet) async {
-      if (internet) {
-        try {
-          var response = await AuthProvider().loginApi(data);
+      // Fetch the FCM token
+      String? fcmToken = await FirebaseMessaging.instance.getToken();
 
-          loginModel = LoginModel.fromJson(response.data);
+      if (fcmToken == null) {
+        setState(() {
+          isLoading = false;
+          generalError = "Unable to fetch FCM token";
+        });
+        return;
+      }
 
-          if (response.statusCode == 200 && loginModel?.status == 200) {
-            if (loginModel?.data?.user?.role == 4) {
-              await SaveDataLocal.saveLogInData(
-                loginModel!,
-                email: email.text,
-                password: password.text,
-              );
-              showSnackBar(
-                title: "Login",
-                message: "Login Successful.",
-                backgoundColor: AppColors.maincolor,
-                ColorText: AppColors.white,
-                IconColor: AppColors.white,
-                IconName: Icons.check_circle,
-              );
-              await Get.offAll(() => HomePage(selected: 1, userName: ""));
-              email.clear();
-              password.clear();
-            }
-            log(
-              "123123123${loginModel?.data?.user?.name?.firstName ?? ""} ${loginModel?.data?.user?.name?.lastName ?? ""}",
-            );
-          } else if (response.statusCode == 422) {
-            showSnackBar(
-              title: "Sorry",
-              message: "Please Enter valid email and password",
-              backgoundColor: AppColors.redColor,
-              ColorText: AppColors.white,
-            );
-          } else {
-            throw Exception(
-              "Failed to login with status code: ${response.statusCode}",
-            );
-          }
-        } catch (e, stackTrace) {
-          log("Error is coming $e");
-          log("Error is coming $stackTrace");
-          showSnackBar(
-            title: "Error",
-            message: "Something went wrong during login",
-            backgoundColor: Colors.red,
-            ColorText: Colors.white,
+      final Map<String, String> data = {
+        'email': email.text.trim(),
+        'password': password.text.trim(),
+        'role': '4',
+        "fcm_token": fcmToken,
+      };
+
+      log('Login data: $data');
+
+      bool internet = await checkInternet();
+
+      if (!internet) {
+        setState(() {
+          isLoading = false;
+          generalError = "Internet connection required";
+        });
+        return;
+      }
+
+      var response = await AuthProvider().loginApi(data);
+      log('Login response status: ${response.statusCode}');
+      log('Login response data: ${response.data}');
+      Map<String, dynamic> responseData = response.data is Map ? response.data : {};
+
+      if (response.statusCode == 200) {
+        loginModel = LoginModel.fromJson(responseData);
+
+        if (loginModel?.status == 200 && loginModel?.data?.user?.role == 4) {
+          await SaveDataLocal.saveLogInData(
+            loginModel!,
+            email: email.text,
+            password: password.text,
           );
-        } finally {
-          if (mounted) {
+          showSnackBar(
+            title: "Login",
+            message: "Login Successful.",
+            backgoundColor: AppColors.maincolor,
+            ColorText: AppColors.white,
+            IconColor: AppColors.white,
+            IconName: Icons.check_circle,
+          );
+          await Get.offAll(() => HomePage(selected: 1, userName: ""));
+          email.clear();
+          password.clear();
+        } else {
+          setState(() {
+            generalError = loginModel?.message ?? "Login failed";
+          });
+        }
+      } else if (response.statusCode == 422) {
+        // Handle validation errors
+        log('Validation error response: $responseData');
+
+        if (responseData['data'] != null && responseData['data'] is Map) {
+          Map<String, dynamic> errorData = responseData['data'];
+
+          if (errorData.containsKey('email')) {
+            // Email validation error
+            String emailErrorMsg = errorData['email'] is List
+                ? errorData['email'][0]
+                : "The selected email is invalid.";
+
             setState(() {
-              isLoading = false;
+              emailError = emailErrorMsg;
+            });
+          } else {
+            // General validation error
+            setState(() {
+              generalError = responseData['message'] ?? "Invalid credentials";
             });
           }
+        } else if (responseData['message'] == "Invalid Credentials") {
+          // Invalid credentials error
+          setState(() {
+            generalError = "Invalid credentials for email or password";
+          });
+        } else {
+          // Other validation errors
+          setState(() {
+            generalError = responseData['message'] ?? "Validation failed";
+          });
         }
       } else {
+        // Other status codes
+        setState(() {
+          generalError = responseData['message'] ?? "Login failed. Please try again.";
+        });
+      }
+    } catch (e, stackTrace) {
+      log("Error during login: $e");
+      log("Stack trace: $stackTrace");
+      setState(() {
+        generalError = "Something went wrong during login";
+      });
+    } finally {
+      if (mounted) {
         setState(() {
           isLoading = false;
         });
-        buildErrorDialog(context, 'Error', "Internet Required");
       }
-    });
+    }
   }
 }

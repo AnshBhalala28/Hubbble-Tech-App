@@ -167,6 +167,7 @@ class _BuyProductViewState extends State<BuyProductView> {
   Widget build(BuildContext context) {
     double subtotal = getSubtotal();
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           Padding(
