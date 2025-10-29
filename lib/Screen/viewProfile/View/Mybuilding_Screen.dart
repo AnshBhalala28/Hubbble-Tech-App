@@ -43,9 +43,7 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: isLoading
-          ? Center(child: Loader().paddingOnly(top: 25.h))
-          : Column(
+      body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 6.h),
@@ -56,7 +54,9 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
               ),
               SizedBox(height: 2.h),
 
-            Expanded(child: SingleChildScrollView(child: Column(children: [
+              isLoading
+                  ? Center(child: Loader().paddingOnly(top: 20.h))
+                  :   Expanded(child: SingleChildScrollView(child: Column(children: [
               infoCard("Building Name", myBuilingname.text, Icons.apartment),
               infoCard("Address", addressController.text, Icons.location_on),
               infoCard("Landline Number", landline.text, Icons.phone),
@@ -103,7 +103,7 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                       "Building Documents",
                       style: TextStyle(
                         fontFamily: AppConstants.manrope,
-                        fontSize: 18.sp,
+                        fontSize: 19.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -208,13 +208,15 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                     style: TextStyle(
                       fontFamily: AppConstants.manrope,
                       fontWeight: FontWeight.w600,
-                      fontSize: 16.sp,
+                      fontSize: 17.sp,
                       color: Colors.black87,
                     ),
                   ),
                   SizedBox(height: 0.6.h),
                   Text(
-                    value.isNotEmpty ? value : "—",
+                    value.isNotEmpty
+                        ? '${value[0].toUpperCase()}${value.substring(1)}'
+                        : "—",
                     style: TextStyle(
                       fontFamily: AppConstants.manrope,
                       fontSize: 16.sp,

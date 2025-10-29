@@ -754,7 +754,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                                     .capitalizeFirst ??
                                                 "",
                                           ),
-                                          fontFamily: AppConstants.manrope,
+                                          fontFamily: AppConstants.manropeBold,
                                         ),
                                       ),
                                     ],
@@ -1720,6 +1720,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
+          backgroundColor: Colors.white,
           title: Row(
             children: [
               Container(
@@ -1738,7 +1739,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
               Text(
                 "Amend Order",
                 style: TextStyle(
-                  fontSize: 20.sp,
+                  fontSize: 19.sp,
                   fontWeight: FontWeight.bold,
                   fontFamily: AppConstants.manrope,
                   color: Colors.black,
@@ -1769,7 +1770,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                       child: Text(
                         "Order Modification",
                         style: TextStyle(
-                          fontSize: 16.sp,
+                          fontSize: 17.sp,
                           fontWeight: FontWeight.w600,
                           color: Colors.orange[700],
                           fontFamily: AppConstants.manrope,
@@ -1848,6 +1849,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
+          backgroundColor: Colors.white,
           title: Row(
             children: [
               Container(
@@ -1866,7 +1868,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
               Text(
                 "Cancel Order",
                 style: TextStyle(
-                  fontSize: 20.sp,
+                  fontSize: 19.sp,
                   fontWeight: FontWeight.bold,
                   fontFamily: AppConstants.manrope,
                   color: Colors.black,
@@ -1893,7 +1895,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                       child: Text(
                         "Cancellation Not Allowed",
                         style: TextStyle(
-                          fontSize: 15.sp,
+                          fontSize: 17.sp,
                           fontWeight: FontWeight.w600,
                           color: Colors.red[700],
                           fontFamily: AppConstants.manrope,

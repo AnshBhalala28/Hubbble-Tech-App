@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
     VisitorShowCount();
     ParcelShowCount();
     ChatShowCount();
-    startPolling();
+    // startPolling();
     getdataloginData();
     // getnotificationCount();
 
@@ -101,13 +101,7 @@ class _HomePageState extends State<HomePage> {
     updateFCM1();
   }
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      startPolling();
-    } else if (state == AppLifecycleState.paused) {
-      _timer?.cancel();
-    }
-  }
+
 
   String formatPostDate(String? createdAt) {
     if (createdAt == null) return "";
@@ -816,7 +810,6 @@ class _HomePageState extends State<HomePage> {
                                         iconName: AppConstants.building,
                                         name: "Building",
                                         onTap: () {
-                                          _timer!.cancel();
                                           Get.to(
                                             MyBuilding_Screen(
                                               id: loginModel?.data?.user?.id,
@@ -1238,13 +1231,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _timer!.cancel();
-  }
 
-  int cartCount = cartDetailsModel?.data?.length ?? 0;
 
   String formatDateTime(String? createdAt) {
     if (createdAt == null || createdAt.isEmpty) return "N/A";
@@ -1336,16 +1323,7 @@ class _HomePageState extends State<HomePage> {
   }
   DateTime? lastCallTime;
   bool isPausedForRateLimit = false;
-  void startPolling() {
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
-      if (!isPausedForRateLimit) {
-        ChatShowCount();
-        VisitorShowCount();
-        ParcelShowCount();
-      }
-    });
-  }
+
   Future<void> ChatShowCount() async {
     if (lastCallTime != null &&
         DateTime.now().difference(lastCallTime!) < const Duration(seconds: 2)) {
@@ -1910,37 +1888,39 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> launchAppOrStore() async {
-    const packageName = "com.wavee.comunity";
+    // Deep link that your app handles (make sure this scheme is registered in AndroidManifest & Info.plist)
+    const String customScheme = "wavee://home";
 
-    if (Platform.isAndroid) {
-      final Uri intentUri = Uri.parse(
-        "intent://#Intent;package=$packageName;end",
-      );
+    // Store URLs
+    const String playStoreUrl = "https://play.google.com/store/apps/details?id=com.pets.wavee&hl=en_IN";
+    const String appStoreUrl = "https://apps.apple.com/in/app/wavee-pet/id6746203457";
 
-      if (await launchUrl(intentUri, mode: LaunchMode.externalApplication)) {
-        return; // App launched successfully
-      } else {
-        // Fallback: Play Store
-        final Uri storeUri = Uri.parse(
-          "https://play.google.com/store/apps/details?id=$packageName",
-        );
-        await launchUrl(storeUri, mode: LaunchMode.externalApplication);
+    try {
+      if (Platform.isAndroid) {
+        final Uri appUri = Uri.parse(customScheme);
+        final Uri playUri = Uri.parse(playStoreUrl);
+
+        if (await canLaunchUrl(appUri)) {
+          await launchUrl(appUri, mode: LaunchMode.externalApplication);
+        } else {
+          await launchUrl(playUri, mode: LaunchMode.externalApplication);
+        }
+      } else if (Platform.isIOS) {
+        final Uri appUri = Uri.parse(customScheme);
+        final Uri storeUri = Uri.parse(appStoreUrl);
+
+        if (await canLaunchUrl(appUri)) {
+          await launchUrl(appUri, mode: LaunchMode.externalApplication);
+        } else {
+          await launchUrl(storeUri, mode: LaunchMode.externalApplication);
+        }
       }
-    } else if (Platform.isIOS) {
-      const String customScheme = "wavee://home"; // iOS app ma set karvu padse
-      const String appStoreUrl =
-          "https://apps.apple.com/in/app/wavee-pet/id6746203457";
-
-      if (await canLaunchUrl(Uri.parse(customScheme))) {
-        await launchUrl(
-          Uri.parse(customScheme),
-          mode: LaunchMode.externalApplication,
-        );
-      } else {
-        await launchUrl(
-          Uri.parse(appStoreUrl),
-          mode: LaunchMode.externalApplication,
-        );
+    } catch (e) {
+      // If anything fails, open respective store
+      if (Platform.isAndroid) {
+        await launchUrl(Uri.parse(playStoreUrl), mode: LaunchMode.externalApplication);
+      } else if (Platform.isIOS) {
+        await launchUrl(Uri.parse(appStoreUrl), mode: LaunchMode.externalApplication);
       }
     }
   }
@@ -1992,6 +1972,9 @@ class _HomePageState extends State<HomePage> {
                 IconColor: AppColors.white,
                 IconName: Icons.check_circle,
               );
+              await Future.delayed(const Duration(seconds: 3));
+
+              launchAppOrStore();
             } else {
               if (responseData.containsKey('data') &&
                   responseData['data'] is Map) {

@@ -367,7 +367,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                         "All Products",
                                         style: TextStyle(
                                           color: Colors.black,
-                                          fontSize: 20.sp,
+                                          fontSize: 19.sp,
                                           fontWeight: FontWeight.bold,
                                           fontFamily: AppConstants.manrope,
                                         ),
@@ -1108,7 +1108,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                               ? "Closes at $closeTime"
                                                               : "Closed today",
                                                           style: TextStyle(
-                                                            fontSize: 15.sp,
+                                                            fontSize: 14.6.sp,
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                             color: Colors.black,

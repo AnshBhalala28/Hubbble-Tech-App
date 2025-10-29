@@ -64,7 +64,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
                 scrollDirection: Axis.horizontal,
                 itemCount: categories.length,
                 itemBuilder: (context, index) {
-                  return InkWell(
+                  return GestureDetector(
                     onTap: () {
                       if (selectedCategory != index) {
                         setState(() {
@@ -166,7 +166,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                   ? '${parcel.comment![0].toUpperCase()}${parcel.comment!.substring(1)}'
                                   : '',
                               style: TextStyle(
-                                fontSize: 18.sp,
+                                fontSize: 17.sp,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: AppConstants.manrope,
                               ),

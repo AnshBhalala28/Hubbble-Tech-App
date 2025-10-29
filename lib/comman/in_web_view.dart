@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
@@ -85,6 +87,7 @@ class _StripeWebViewState extends State<StripeWebView> {
         return true;
       },
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: Column(
           children: [
             SizedBox(height: 5.5.h),
@@ -129,7 +132,7 @@ class _StripeWebViewState extends State<StripeWebView> {
       "session_id": placeOrderModel?.data?.sessionId.toString() ?? "",
       "is_finalizing": "true",
     };
-
+log("adadasdadasdadadasdadadsasd  $data");
     checkInternet().then((internet) async {
       if (internet) {
         CheckoutProvider().productCheckoutApi(data).then((response) async {

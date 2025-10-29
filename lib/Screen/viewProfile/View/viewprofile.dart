@@ -334,8 +334,8 @@ class _ViewProfileState extends State<ViewProfile> {
         leading: Icon(icon, color: AppColors.maincolor, size: 30),
         title: Text(
           title,
-          style: const TextStyle(
-            fontSize: 18,
+          style:  TextStyle(
+            fontSize: 17.sp,
             fontWeight: FontWeight.w600,
             fontFamily: AppConstants.manrope,
           ),

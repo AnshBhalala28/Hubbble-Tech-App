@@ -181,9 +181,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             });
           }
         } catch (e) {
+          if(mounted){
           setState(() {
             isLoading = false;
-          });
+          });}
         }
       } else {
         setState(() {

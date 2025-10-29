@@ -42,9 +42,10 @@ class _BottomBarState extends State<BottomBar> with WidgetsBindingObserver {
 
   void startPolling() {
     timer?.cancel();
-    timer = Timer.periodic(const Duration(seconds: 3), (_) {
+    timer = Timer.periodic(const Duration(seconds: 2), (_) {
       if (!isPausedForRateLimit) {
         ChatShowCount();
+        log("isPausedForRateLimitisPausedForRateLimitisPausedForRateLimitisPausedForRateLimit");
       }
     });
   }
@@ -244,7 +245,7 @@ class _BottomBarState extends State<BottomBar> with WidgetsBindingObserver {
   Future<void> ChatShowCount() async {
     if (lastCallTime != null &&
         DateTime.now().difference(lastCallTime!) < const Duration(seconds: 2)) {
-      return; // Prevent rapid repeat
+      return;
     }
     lastCallTime = DateTime.now();
 
@@ -284,3 +285,4 @@ class _BottomBarState extends State<BottomBar> with WidgetsBindingObserver {
     }
   }
 }
+

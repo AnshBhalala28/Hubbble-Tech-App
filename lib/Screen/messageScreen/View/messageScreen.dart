@@ -89,6 +89,8 @@ class _MessageScreenState extends State<MessageScreen> {
     log("Business ID AVE CE ${widget.conciergeID}");
     log("Business ID AVE CE ${widget.senderid}");
     log("Business ID AVE CE ${widget.businessID}");
+    log("Business ID AVE CE ${widget.businessID==null?widget.businessID:widget.senderid}");
+
   }
 
   String formatDateTime(String? dateTime) {
@@ -260,8 +262,8 @@ class _MessageScreenState extends State<MessageScreen> {
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontFamily: AppConstants.manrope,
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w600,
+                                fontSize: 19.sp,
+                                fontWeight: FontWeight.normal,
                                 color: Colors.black,
                               ),
                             ),
@@ -533,10 +535,7 @@ class _MessageScreenState extends State<MessageScreen> {
                             const SizedBox(width: 8),
                             Expanded(
                               child: Container(
-                                height: 50,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                ),
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(25),
@@ -552,15 +551,19 @@ class _MessageScreenState extends State<MessageScreen> {
                                   ],
                                 ),
                                 child: TextField(
+                                  controller: _messageController,
+                                  textInputAction: TextInputAction.newline, // For multiline typing
+                                  keyboardType: TextInputType.multiline,
+                                  minLines: 1, // Start with one line
+                                  maxLines: 5, // Expand up to 5 lines (you can increase if needed)
                                   onSubmitted: (text) {
                                     if (text.isNotEmpty) {
                                       setState(() {
                                         messages.add(text);
+                                        _messageController.clear();
                                       });
                                     }
                                   },
-                                  controller: _messageController,
-                                  textInputAction: TextInputAction.send,
                                   decoration: const InputDecoration(
                                     hintText: "Type a message...",
                                     hintStyle: TextStyle(color: Colors.grey),
@@ -574,6 +577,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                 ),
                               ),
                             ),
+
                             const SizedBox(width: 8),
                             CircleAvatar(
                               backgroundColor: AppColors.maincolor,
@@ -668,12 +672,12 @@ class _MessageScreenState extends State<MessageScreen> {
       case '3':
         return GestureDetector(
           onTap: () {
-            Get.to(VideoPlayerScreen(videoUrl: message.file ?? ""));
+            Get.to(VideoView(videoUrl: message.file ?? ""));
           },
-          child: const Column(
+          child:  Column(
             children: [
-              Icon(Icons.play_circle_fill, size: 50, color: Colors.blue),
-              Text("Play Video", style: TextStyle(color: Colors.white)),
+              Icon(Icons.play_circle_fill, size: 50, color: Colors.black),
+              Text("Play Video", style: TextStyle(color: Colors.black,fontFamily: AppConstants.manrope,fontWeight: FontWeight.bold)),
             ],
           ),
         );

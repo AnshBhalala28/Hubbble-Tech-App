@@ -53,6 +53,8 @@ void main() async {
       defaultColor: AppColors.maincolor,
       ledColor: Colors.white,
       importance: NotificationImportance.High,
+      channelShowBadge: true,
+
     ),
   ], debug: true);
   FirebaseMessaging messaging = FirebaseMessaging.instance;

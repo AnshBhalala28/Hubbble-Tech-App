@@ -373,6 +373,8 @@ class _AddToCartViewState extends State<AddToCartView> {
                   fontsize: 16.sp,
                   radius: 12.0,
                   width: 43.5.w,
+                  fontFamily: AppConstants.manropeBold,
+
                   fontWeight: FontWeight.bold,
                 ),
                 SizedBox(width: 4.w),
@@ -387,6 +389,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                   fontsize: 16.5.sp,
                   radius: 12.0,
                   width: 40.w,
+                  fontFamily: AppConstants.manropeBold,
                   fontWeight: FontWeight.bold,
                 ),
               ],

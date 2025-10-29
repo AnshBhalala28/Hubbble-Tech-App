@@ -2064,6 +2064,9 @@ class _EventScreenState extends State<EventScreen> with TickerProviderStateMixin
   }
 
   projectlistap() {
+    setState(() {
+      load=true;
+    });
     final Map<String, String> data = {};
     data['user_id'] = loginModel?.data?.user?.id.toString() ?? "";
     data['date'] = selectedDate.toString() ?? "";

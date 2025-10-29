@@ -155,7 +155,7 @@ class _Form_ScreenState extends State<Form_Screen> {
         return true;
       },
       child: Scaffold(
-        backgroundColor: AppColors.bgcolor,
+        backgroundColor: AppColors.white,
         body: Stack(
           children: [
             isLoading
@@ -333,7 +333,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                         style: TextStyle(
                                           color: AppColors.black,
                                           fontFamily: AppConstants.manrope,
-                                          fontSize: 18.sp,
+                                          fontSize: 19,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -394,11 +394,12 @@ class _Form_ScreenState extends State<Form_Screen> {
                                               decoration: BoxDecoration(
                                                 color:
                                                     booking?.status == "active"
-                                                        ? Colors.white
-                                                        : booking?.status ==
+                                                        ?                                                AppColors.bgcolor
+
+                                                            : booking?.status ==
                                                             "inactive"
                                                         ? Colors.red
-                                                        : Colors.white,
+                                                        :   AppColors.bgcolor,
                                                 borderRadius:
                                                     BorderRadius.circular(12),
                                               ),
@@ -451,7 +452,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                 vertical: 1.h,
                                               ),
                                               decoration: BoxDecoration(
-                                                color: Colors.white,
+                                                color: AppColors.bgcolor,
                                                 borderRadius:
                                                     BorderRadius.circular(12),
                                               ),
@@ -492,7 +493,8 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                 vertical: 1.h,
                                               ),
                                               decoration: BoxDecoration(
-                                                color: Colors.white,
+                                                color: AppColors.bgcolor,
+
                                                 borderRadius:
                                                     BorderRadius.circular(12),
                                               ),
@@ -525,7 +527,8 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                 vertical: 1.h,
                                               ),
                                               decoration: BoxDecoration(
-                                                color: Colors.white,
+                                                color: AppColors.bgcolor,
+
                                                 borderRadius:
                                                     BorderRadius.circular(12),
                                               ),
@@ -570,7 +573,8 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                         horizontal: 8,
                                                       ),
                                                   decoration: BoxDecoration(
-                                                    color: Colors.white,
+                                                    color: AppColors.bgcolor,
+
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                           12,
@@ -801,72 +805,77 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                         AppConstants.manrope,
                                                   ),
                                                 ),
-                                            SingleChildScrollView(
-                                              scrollDirection: Axis.horizontal,
-                                              child: Row(
+
+                                              Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
                                                         .spaceAround,
                                                 children: [
-                                                  Material(
-                                                    color: Colors.transparent,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          12,
-                                                        ),
-                                                    child: Container(
-                                                      height: 5.h,
-                                                      width: 12.h,
-                                                      decoration: BoxDecoration(
-                                                        color:
-                                                            AppColors.maincolor,
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              12,
-                                                            ),
-                                                      ),
+                                                  // Material(
+                                                  //   color: Colors.transparent,
+                                                  //   borderRadius:
+                                                  //       BorderRadius.circular(
+                                                  //         12,
+                                                  //       ),
+                                                  //   child: Container(
+                                                  //     height: 5.h,
+                                                  //     width: 12.h,
+                                                  //     decoration: BoxDecoration(
+                                                  //       color:
+                                                  //           AppColors.maincolor,
+                                                  //       borderRadius:
+                                                  //           BorderRadius.circular(
+                                                  //             12,
+                                                  //           ),
+                                                  //     ),
+                                                  //   ),
+                                                  // ),
+
+                                                  Expanded(
+                                                    child: buildSlotBox(
+                                                      label: 'Total',
+                                                      value:
+                                                          amenitiesModel
+                                                              ?.data
+                                                              ?.data?[0]
+                                                              .totalBookingSlots
+                                                              .toString() ??
+                                                          "0",
+                                                      color: Colors.blue,
                                                     ),
                                                   ),
                                                   const SizedBox(width: 6),
-                                                  buildSlotBox(
-                                                    label: 'Total',
-                                                    value:
-                                                        amenitiesModel
-                                                            ?.data
-                                                            ?.data?[0]
-                                                            .totalBookingSlots
-                                                            .toString() ??
-                                                        "0",
-                                                    color: Colors.blue,
+                                                  Expanded(
+                                                    child: buildSlotBox(
+                                                      label: 'Booked',
+                                                      value:
+                                                          amenitiesModel
+                                                              ?.data
+                                                              ?.data?[0]
+                                                              .bookedSlots
+                                                              .toString() ??
+                                                          "0",
+                                                      color: Colors.red,
+                                                    ),
                                                   ),
                                                   const SizedBox(width: 6),
-                                                  buildSlotBox(
-                                                    label: 'Booked',
-                                                    value:
-                                                        amenitiesModel
-                                                            ?.data
-                                                            ?.data?[0]
-                                                            .bookedSlots
-                                                            .toString() ??
-                                                        "0",
-                                                    color: Colors.red,
-                                                  ),
-                                                  const SizedBox(width: 6),
-                                                  buildSlotBox(
-                                                    label: 'Available',
-                                                    value:
-                                                        amenitiesModel
-                                                            ?.data
-                                                            ?.data?[0]
-                                                            .availableSlots
-                                                            .toString() ??
-                                                        "0",
-                                                    color: Colors.green,
+                                                  Expanded(
+                                                    child: buildSlotBox(
+                                                      label: 'Available',
+                                                      value:
+                                                          amenitiesModel
+                                                              ?.data
+                                                              ?.data?[0]
+                                                              .availableSlots
+                                                              .toString() ??
+                                                          "0",
+                                                      color: Colors.green,
+                                                    ),
                                                   ),
                                                   const SizedBox(width: 6),
                                                 ],
                                               ),
-                                            ),
+
                                             SizedBox(height: 2.h),
                                           ],
                                           if (showBookingDetails) ...[
@@ -926,7 +935,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                       .bold,
                                                               fontFamily:
                                                                   AppConstants
-                                                                      .manrope,
+                                                                      .manropeBold,
                                                             ),
                                                           ),
                                                         ],
@@ -955,7 +964,8 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                   Colors.black,
                                                               fontFamily:
                                                                   AppConstants
-                                                                      .manrope,
+                                                                      .manropeBold,
+
                                                             ),
                                                           ),
                                                         ],
@@ -981,7 +991,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                   Colors.black,
                                                               fontFamily:
                                                                   AppConstants
-                                                                      .manrope,
+                                                                      .manropeBold,
                                                             ),
                                                           ),
                                                         ],
@@ -1275,11 +1285,11 @@ class _Form_ScreenState extends State<Form_Screen> {
         children: [
           const SizedBox(height: 4),
           Text(
-            "$label: ",
+            "$label : ",
             style: TextStyle(
-              fontSize: 14.5.sp,
+              fontSize: 15.sp,
               color: Colors.black87,
-              fontFamily: AppConstants.manrope,
+              fontFamily: AppConstants.manropeBold,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -1288,7 +1298,7 @@ class _Form_ScreenState extends State<Form_Screen> {
             value,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 14.sp,
+              fontSize: 15.sp,
               fontFamily: AppConstants.manrope,
               fontWeight: FontWeight.w600,
               color: color,

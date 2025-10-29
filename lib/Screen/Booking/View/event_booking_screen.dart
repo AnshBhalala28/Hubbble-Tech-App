@@ -61,54 +61,56 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                 SizedBox(height: 2.h),
                 SizedBox(
                   height: 6.h,
-                  child: ListView.builder(
+                  child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    itemCount: categories.length,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          if (selectedCategory != index) {
-                            setState(() {
-                              selectedCategory = index;
-                              isLoading = true;
-                            });
-                            BookEventStatus();
-                          }
-                        },
-                        child: Container(
-                          height: 6.h,
-                          padding: EdgeInsets.symmetric(
-                            vertical: 1.h,
-                            horizontal: 5.w,
-                          ),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 0.5, color: Colors.grey),
-                            color:
-                                selectedCategory == index
-                                    ? AppColors.maincolor
-                                    : Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          margin: EdgeInsets.symmetric(horizontal: 1.2.w),
-                          child: Text(
-                            categories[index],
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              color:
-                                  selectedCategory == index
-                                      ? Colors.white
-                                      : Colors.black,
-                              fontFamily: AppConstants.manrope,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1,
+                    child: Row(
+                      children: List.generate(categories.length, (index) {
+                        return GestureDetector(
+                          onTap: () {
+                            if (selectedCategory != index) {
+                              setState(() {
+                                selectedCategory = index;
+                                isLoading = true;
+                              });
+                              BookEventStatus();
+                            }
+                          },
+                          child: Container(
+                            height: 6.h,
+                            padding: EdgeInsets.symmetric(
+                              vertical: 1.h,
+                              horizontal: 5.w,
+                            ),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 0.5, color: Colors.grey),
+                              color: selectedCategory == index
+                                  ? AppColors.maincolor
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            margin: EdgeInsets.symmetric(horizontal: 1.2.w),
+                            child: Text(
+                              categories[index],
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                color: selectedCategory == index
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontFamily: selectedCategory == index
+                                    ? AppConstants.manropeBold
+                                    : AppConstants.manrope,
+                                fontWeight: FontWeight.w500,
+                                letterSpacing: 1,
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      }),
+                    ),
                   ),
                 ),
+
                 SizedBox(height: 2.h),
                 isLoading
                     ? Center(child: Loader()).paddingOnly(top: 25.h)
@@ -502,7 +504,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                 ),
               ).paddingOnly(bottom: 1.h),
               Center(
-                child: InkWell(
+                child: GestureDetector(
                   onTap: () {
                     Get.to(
                       EventDetail(
@@ -784,10 +786,10 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Text(
+                 Text(
                   "You're Invited!",
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 19.sp,
                     fontWeight: FontWeight.bold,
                     fontFamily: AppConstants.manrope,
                   ),

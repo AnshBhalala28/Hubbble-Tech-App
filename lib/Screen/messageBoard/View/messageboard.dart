@@ -331,7 +331,7 @@ class _MessageboardState extends State<Messageboard> {
                   "Message Board",
                   style: TextStyle(
                     fontFamily: AppConstants.manrope,
-                    fontSize: 20.sp,
+                    fontSize: 19.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
                   ),
@@ -386,7 +386,7 @@ class _MessageboardState extends State<Messageboard> {
                                             fontFamily:
                                                 AppConstants.manrope,
                                             fontSize: 16.sp,
-                                            fontWeight: FontWeight.w600,
+                                            fontWeight: FontWeight.w500,
                                             color: Colors.grey,
                                           ),
                                         ),
@@ -614,7 +614,7 @@ class _MessageboardState extends State<Messageboard> {
                                             "Add Post",
                                             style: TextStyle(
                                               fontFamily:
-                                                  AppConstants.manrope,
+                                                  AppConstants.manrope1,
                                               fontSize: 15.sp,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.grey,
@@ -757,7 +757,7 @@ class _MessageboardState extends State<Messageboard> {
                                       style: TextStyle(
                                         fontFamily:
                                         AppConstants
-                                            .manrope,
+                                            .manrope1,
                                         fontSize: 15.sp,
                                         fontWeight:
                                         FontWeight.bold,
@@ -795,8 +795,8 @@ class _MessageboardState extends State<Messageboard> {
                               .title ??
                               "",
                           style: TextStyle(
-                            fontFamily: AppConstants.manrope,
-                            fontSize: 16.sp,
+                            fontFamily: AppConstants.manrope1,
+                            fontSize: 15.sp,
                             fontWeight: FontWeight.bold,
                             color: AppColors.maincolor,
                           ),
@@ -1220,7 +1220,7 @@ class _MessageboardState extends State<Messageboard> {
                                   "",
                               style: TextStyle(
                                 fontFamily:
-                                AppConstants.manrope,
+                                AppConstants.manrope1,
                                 fontSize: 15.sp,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -1329,7 +1329,7 @@ class _MessageboardState extends State<Messageboard> {
                               .title ??
                               "",
                           style: TextStyle(
-                            fontFamily: AppConstants.manrope,
+                            fontFamily: AppConstants.manrope1,
                             fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
                             color: AppColors.maincolor,
@@ -2031,11 +2031,11 @@ class _MessageboardState extends State<Messageboard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Center(
+                       Center(
                         child: Text(
                           "Add Post",
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 19.sp,
                             fontWeight: FontWeight.bold,
                             fontFamily: AppConstants.manrope,
                           ),

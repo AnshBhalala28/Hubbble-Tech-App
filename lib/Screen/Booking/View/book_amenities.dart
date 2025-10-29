@@ -531,7 +531,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
-                                              fontSize: 16.sp,
+                                              fontSize: 17.sp,
                                               fontWeight: FontWeight.bold,
                                               fontFamily: AppConstants.manrope,
                                             ),

@@ -13,6 +13,7 @@ import 'package:wavee/Screen/homePage/View/homenewpage.dart';
 import 'package:wavee/Screen/viewProfile/Model/profile_model.dart';
 import 'package:wavee/comman/bottom_bar.dart';
 import 'package:wavee/comman/const.dart';
+import 'package:wavee/comman/loader.dart';
 
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
@@ -157,6 +158,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    ChatApi();
     initializeData();
   }
 
@@ -424,10 +426,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                     if (chatModel?.data?.businessUsers == null ||
                         chatModel?.data?.businessUsers == "" ||
                         chatModel?.data?.businessUsers == 0)
-                      const Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.maincolor,
-                        ),
+                       Center(
+                        child: Loader(),
                       ).paddingOnly(bottom: 2.h)
                     else ...[
                       Builder(
@@ -449,9 +449,9 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                           if (filteredList.isEmpty) {
                             return Center(
                               child: Text(
-                                "No Chats found",
+                                "No Chats Found",
                                 style: TextStyle(
-                                  fontSize: 16.sp,
+                                  fontSize: 16.8.sp,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.grey,
                                   fontFamily: AppConstants.manrope,
@@ -481,6 +481,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                             type: "business",
                                             chatStatus:
                                             user.business?.chatStatus ?? 0,
+                                            businessID: user.business?.id.toString()??"",
                                           ),
                                         )?.then((value) {
                                           // Restart timer when returning from MessageScreen
@@ -604,7 +605,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                     Text(
                                                       displayName,
                                                       style: TextStyle(
-                                                        fontSize: 16.sp,
+                                                        fontSize: 16.8.sp,
                                                         fontWeight: FontWeight.bold,
                                                         fontFamily:
                                                         AppConstants.manrope,
@@ -624,7 +625,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                           fontFamily:
                                                           AppConstants.manrope,
                                                           color: Colors.grey,
-                                                          fontSize: 15.sp,
+                                                          fontSize: 14.5.sp,
                                                         ),
                                                       ),
                                                     ),
@@ -685,9 +686,9 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       child: isLoading
                           ? Container(
                         margin: EdgeInsets.only(top: 20.h),
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.maincolor,
+                        child:  Center(
+                          child: Loader(
+
                           ),
                         ),
                       )
@@ -901,7 +902,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                   "${concierge.firstName ?? ""} ${concierge.lastName ?? ""}",
                                                   overflow: TextOverflow.ellipsis,
                                                   style: TextStyle(
-                                                    fontSize: 16.sp,
+                                                    fontSize: 16.8.sp,
 
                                                     fontWeight:
                                                     FontWeight.bold,
@@ -925,7 +926,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                     fontFamily:
                                                     AppConstants.manrope,
                                                     color: Colors.grey,
-                                                    fontSize: 15.sp,
+                                                    fontSize: 14.5.sp,
                                                   ),
                                                 ),
                                               ),

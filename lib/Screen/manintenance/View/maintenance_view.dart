@@ -70,54 +70,56 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                 SizedBox(height: 2.h),
                 SizedBox(
                   height: 5.5.h,
-                  child: ListView.builder(
+                  child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    itemCount: categories.length,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          if (selectedCategory != index) {
-                            setState(() {
-                              selectedCategory = index;
-                              isLoading = true;
-                            });
-                            AllMaintenanceApi();
-                          }
-                        },
-                        child: Container(
-                          height: 6.h,
-                          padding: EdgeInsets.symmetric(
-                            vertical: 1.h,
-                            horizontal: 5.w,
-                          ),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 0.5, color: Colors.grey),
-                            color:
-                                selectedCategory == index
-                                    ? AppColors.maincolor
-                                    : Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          margin: EdgeInsets.symmetric(horizontal: 1.2.w),
-                          child: Text(
-                            categories[index],
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              color:
-                                  selectedCategory == index
-                                      ? Colors.white
-                                      : Colors.black,
-                              fontFamily: AppConstants.manrope,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1,
+                    child: Row(
+                      children: List.generate(categories.length, (index) {
+                        return InkWell(
+                          onTap: () {
+                            if (selectedCategory != index) {
+                              setState(() {
+                                selectedCategory = index;
+                                isLoading = true;
+                              });
+                              AllMaintenanceApi();
+                            }
+                          },
+                          child: Container(
+                            height: 6.h,
+                            padding: EdgeInsets.symmetric(
+                              vertical: 1.h,
+                              horizontal: 5.w,
+                            ),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 0.5, color: Colors.grey),
+                              color: selectedCategory == index
+                                  ? AppColors.maincolor
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            margin: EdgeInsets.symmetric(horizontal: 1.2.w),
+                            child: Text(
+                              categories[index],
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                color: selectedCategory == index
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontFamily: selectedCategory == index
+                                    ? AppConstants.manropeBold
+                                    : AppConstants.manrope,
+                                fontWeight: FontWeight.w500,
+                                letterSpacing: 1,
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      }),
+                    ),
                   ),
                 ),
+
                 SizedBox(height: 2.h),
                 isLoading
                     ? Loader().paddingOnly(top: 20.h)
@@ -309,9 +311,9 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.black,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                           fontSize: 15.sp,
-                          fontFamily: AppConstants.manrope,
+                          fontFamily: AppConstants.manropeBold,
                         ),
                       ),
                     ),
@@ -920,7 +922,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
-                      fontFamily: AppConstants.manrope,
+                      fontFamily: AppConstants.manropeBold,
                     ),
                   ),
                   SizedBox(height: 2.h),
@@ -1028,10 +1030,10 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
             flex: 2,
             child: Text(
               "$title:",
-              style: const TextStyle(
+              style:  TextStyle(
                 fontWeight: FontWeight.w600,
-                fontFamily: AppConstants.manrope,
-                fontSize: 15,
+                fontFamily: AppConstants.manropeBold,
+                fontSize: 15.sp,
               ),
             ),
           ),
