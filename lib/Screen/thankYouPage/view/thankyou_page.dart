@@ -111,9 +111,7 @@ import '../../../comman/custom_batan.dart';
 import '../../Community Screen/Community Screen/view/community_screen.dart';
 
 class ThankYouPage extends StatefulWidget {
-
-
-  const ThankYouPage({super.key, });
+  const ThankYouPage({super.key});
 
   @override
   State<ThankYouPage> createState() => _ThankYouPageState();
@@ -131,9 +129,8 @@ class _ThankYouPageState extends State<ThankYouPage>
   void initState() {
     super.initState();
     orderNumber =
-    "#ORD${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}";
+        "#ORD${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}";
     collectionCode = Random().nextInt(9999).toString().padLeft(6, '0');
-
 
     _controller = AnimationController(
       vsync: this,
@@ -169,49 +166,51 @@ class _ThankYouPageState extends State<ThankYouPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.white, Colors.grey.shade200],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+    return WillPopScope(
+      onWillPop: () async => false,
+
+      child: Scaffold(
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.white, Colors.grey.shade200],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
-        ),
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 6.w),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildSuccessCircle(),
-                SizedBox(height: 3.h),
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 6.w),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildSuccessCircle(),
+                  SizedBox(height: 3.h),
 
-                // Title
-                Text(
-                 "Order Placed Successfully!",
-                  style: TextStyle(
-                    fontSize: 22.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontFamily: AppConstants.manrope,
+                  // Title
+                  Text(
+                    "Order Placed Successfully!",
+                    style: TextStyle(
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontFamily: AppConstants.manropeBold,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
 
-                SizedBox(height: 3.h),
-                Column(
-                  children: [
-
+                  SizedBox(height: 3.h),
+                  Column(
+                    children: [
                       Text(
                         "Order Number: $orderNumber",
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
                           color: Colors.black,
-                          fontFamily: AppConstants.manrope,
+                          fontFamily: AppConstants.manropeBold,
                         ),
                       ),
                       SizedBox(height: 1.h),
@@ -221,30 +220,29 @@ class _ThankYouPageState extends State<ThankYouPage>
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
                           color: AppColors.maincolor,
-                          fontFamily: AppConstants.manrope,
+                          fontFamily: AppConstants.manropeBold,
                         ),
                       ),
+                    ],
+                  ),
 
+                  SizedBox(height: 6.h),
 
-                  ],
-                ),
-
-                SizedBox(height: 6.h),
-
-                // Button
-                batan(
-                  title: "Continue Shopping",
-                  route: () {
-                    Get.offAll(CommunityScreen());
-                  },
-                  color: Colors.black,
-                  fontcolor: Colors.white,
-                  height: 5.5.h,
-                  fontsize: 17.sp,
-                  width: double.infinity,
-                  radius: 12.0,
-                ),
-              ],
+                  // Button
+                  batan(
+                    title: "Continue Shopping",
+                    route: () {
+                      Get.offAll(CommunityScreen());
+                    },
+                    color: Colors.black,
+                    fontcolor: Colors.white,
+                    height: 5.5.h,
+                    fontsize: 17.sp,
+                    width: double.infinity,
+                    radius: 12.0,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -261,17 +259,17 @@ class _CheckPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Paint circlePaint =
-    Paint()
-      ..style = PaintingStyle.stroke
-      ..color = Colors.black
-      ..strokeWidth = 5;
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..color = Colors.black
+          ..strokeWidth = 5;
 
     final Paint checkPaint =
-    Paint()
-      ..style = PaintingStyle.stroke
-      ..color = Colors.black
-      ..strokeWidth = 6
-      ..strokeCap = StrokeCap.round;
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..color = Colors.black
+          ..strokeWidth = 6
+          ..strokeCap = StrokeCap.round;
 
     // Draw circle
     canvas.drawCircle(size.center(Offset.zero), size.width / 2.2, circlePaint);

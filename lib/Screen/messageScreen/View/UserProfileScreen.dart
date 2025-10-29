@@ -77,10 +77,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           padding: const EdgeInsets.all(3),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.blue.shade100,
-                              width: 2,
-                            ),
+                            // border: Border.all(
+                            //   color: Colors.blue.shade100,
+                            //   width: 2,
+                            // ),
                           ),
                           child: CircleAvatar(
                             radius: 35.sp,
@@ -97,7 +97,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                           .data!
                                           .conciergeImage!,
                                     )
-                                    : const AssetImage("assets/images/bg.jpg")
+                                    : const AssetImage("assets/images/Applogo_remove_background.png")
                                         as ImageProvider<Object>,
                           ),
                         ),
@@ -106,7 +106,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           "${userpersonalInfoModel?.data?.firstName} ${userpersonalInfoModel?.data?.lastName}",
                           style: TextStyle(
                             fontSize: 18.sp,
-                            fontFamily: AppConstants.manrope,
+                            fontFamily: AppConstants.manropeBold,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
@@ -415,10 +415,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             Container(
               padding: EdgeInsets.all(2.w),
               decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.1),
+                color: AppColors.maincolor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, color: Colors.blue.shade700, size: 17.sp),
+              child: Icon(icon, color: AppColors.maincolor, size: 17.sp),
             ),
             SizedBox(width: 4.w),
             Expanded(

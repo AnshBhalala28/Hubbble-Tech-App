@@ -231,90 +231,90 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
             ),
             border: Border.all(color: const Color(0xffdfe0e6), width: 1),
           ),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(top: 7.h, left: 5.5.w, right: 5.5.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "$selectedValue Chat",
-                        style: TextStyle(
-                          fontSize: 20.sp,
-                          fontFamily: AppConstants.manrope,
-                          fontWeight: FontWeight.bold,
+          child: Padding(
+            padding: EdgeInsets.only(top: 7.h, left: 5.5.w, right: 5.5.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "$selectedValue Chat",
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontFamily: AppConstants.manrope,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    Container(
+                      width: 35.w,
+                      height: 5.h,
+                      padding: EdgeInsets.symmetric(horizontal: 3.w),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                        border: Border.all(
+                          color: AppColors.borderColor,
+                          width: 1,
                         ),
                       ),
-                      const Spacer(),
-                      Container(
-                        width: 35.w,
-                        height: 5.h,
-                        padding: EdgeInsets.symmetric(horizontal: 3.w),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(25),
-                          border: Border.all(
-                            color: AppColors.borderColor,
-                            width: 1,
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          dropdownColor: Colors.white,
+                          borderRadius: BorderRadius.circular(15),
+                          value: selectedValue,
+                          isExpanded: true,
+                          icon: const Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            color: Colors.grey,
                           ),
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            dropdownColor: Colors.white,
-                            borderRadius: BorderRadius.circular(15),
-                            value: selectedValue,
-                            isExpanded: true,
-                            icon: const Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              color: Colors.grey,
-                            ),
-                            style: TextStyle(
-                              fontFamily: AppConstants.manrope,
-                              fontSize: 12.sp,
-                              color: Colors.black,
-                            ),
-                            items: options.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 1.2.h,
-                                  ),
-                                  child: Text(
-                                    value,
-                                    style: TextStyle(
-                                      fontSize: 17.sp,
-                                      color: value == 'Select option'
-                                          ? Colors.grey
-                                          : Colors.black,
-                                      fontFamily: AppConstants.manrope,
-                                    ),
+                          style: TextStyle(
+                            fontFamily: AppConstants.manrope,
+                            fontSize: 12.sp,
+                            color: Colors.black,
+                          ),
+                          items: options.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 1.2.h,
+                                ),
+                                child: Text(
+                                  value,
+                                  style: TextStyle(
+                                    fontSize: 17.sp,
+                                    color: value == 'Select option'
+                                        ? Colors.grey
+                                        : Colors.black,
+                                    fontFamily: AppConstants.manrope,
                                   ),
                                 ),
-                              );
-                            }).toList(),
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedValue = newValue!;
-                              });
-                            },
-                          ),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedValue = newValue!;
+                            });
+                          },
                         ),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 1.5.h),
-                  Container(
-                    height: 0.6.h,
-                    width: 18.w,
-                    decoration: BoxDecoration(
-                      color: AppColors.blackColor,
-                      borderRadius: BorderRadius.circular(10),
                     ),
+                  ],
+                ),
+                SizedBox(height: 1.5.h),
+                Container(
+                  height: 0.6.h,
+                  width: 18.w,
+                  decoration: BoxDecoration(
+                    color: AppColors.blackColor,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  SizedBox(height: 3.h),
+                ),
+                SizedBox(height: 1.h),
+                Expanded(child: SingleChildScrollView(child: Column(children: [
                   if (selectedValue == "Businesses") ...[
                     chatStories?.data?.length == 0 ||
                         chatStories?.data?.length == null
@@ -376,7 +376,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                       imageUrl: item?.logo ?? '',
                                       height: 9.h,
                                       width: 9.h,
-                                      fit: BoxFit.cover,
+                                      fit: BoxFit.contain,
                                       placeholder: (context, url) =>
                                       const Center(
                                         child: CircularProgressIndicator(
@@ -388,7 +388,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                             'assets/images/waveeLogoShort.png',
                                             height: 9.h,
                                             width: 9.h,
-                                            fit: BoxFit.cover,
+                                            fit: BoxFit.contain,
                                           ),
                                     ),
                                   ),
@@ -426,7 +426,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                     if (chatModel?.data?.businessUsers == null ||
                         chatModel?.data?.businessUsers == "" ||
                         chatModel?.data?.businessUsers == 0)
-                       Center(
+                      Center(
                         child: Loader(),
                       ).paddingOnly(bottom: 2.h)
                     else ...[
@@ -535,11 +535,11 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                           'assets/images/waveeLogoShort.png',
                                                           height: 9.h,
                                                           width: 9.h,
-                                                          fit: BoxFit.cover,
+                                                          fit: BoxFit.contain,
                                                         ),
                                                     width: 60,
                                                     height: 60,
-                                                    fit: BoxFit.cover,
+                                                    fit: BoxFit.contain,
                                                   ),
                                                 ),
                                                 SizedBox(width: 3.w),
@@ -824,11 +824,11 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                     'assets/images/waveeLogoShort.png',
                                                     height: 9.h,
                                                     width: 9.h,
-                                                    fit: BoxFit.cover,
+                                                    fit: BoxFit.contain,
                                                   ),
                                               width: 60,
                                               height: 60,
-                                              fit: BoxFit.cover,
+                                              fit: BoxFit.contain,
                                             ),
                                           ),
                                           SizedBox(width: 3.w),
@@ -988,8 +988,9 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       ),
                     ),
                   ],
-                ],
-              ),
+                ],),)),
+
+              ],
             ),
           ),
         ).paddingOnly(top: 8.h),

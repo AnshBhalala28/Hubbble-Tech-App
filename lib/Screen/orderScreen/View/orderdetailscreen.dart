@@ -18,6 +18,26 @@ import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/error_dialog.dart';
 import '../Model/order_detail_model.dart';
 import '../Provider/order_screen_provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:readmore/readmore.dart';
+import 'package:sizer/sizer.dart';
+import 'package:wavee/Screen/messageScreen/View/messageScreen.dart';
+import 'package:wavee/Screen/orderScreen/Model/service_order_model.dart';
+import 'package:wavee/Screen/orderScreen/View/order_screen_view.dart';
+import 'package:wavee/comman/Custom_AppBar.dart';
+import 'package:wavee/comman/colors.dart';
+import 'package:wavee/comman/const.dart';
+import 'package:wavee/comman/custom_button.dart';
+import 'package:wavee/comman/loader.dart';
+
+import '../../../comman/check_inernet_connecty.dart';
+import '../../../comman/error_dialog.dart';
+import '../Model/order_detail_model.dart';
+import '../Provider/order_screen_provider.dart';
 
 class Orderdetail_Screen extends StatefulWidget {
   String? orderid;
@@ -705,22 +725,6 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                     ],
                                   ),
                                   SizedBox(height: 1.h),
-                                  // Row(
-                                  //   children: [
-                                  //     Icon(Icons.timer, size: 18.sp),
-                                  //     SizedBox(width: 2.w),
-                                  //     Text(
-                                  //       "Pickup Time: ${orderDetailModel?.data?.order?.pickupTime}",
-                                  //       style: TextStyle(
-                                  //         fontSize: 15.sp,
-                                  //         fontWeight: FontWeight.bold,
-                                  //         color: Colors.black,
-                                  //         fontFamily: AppConstants.manrope,
-                                  //       ),
-                                  //     ),
-                                  //   ],
-                                  // ),
-                                  // SizedBox(height: 1.h),
                                   Row(
                                     children: [
                                       Icon(
@@ -1075,31 +1079,39 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                 Row(
                   children: [
                     Expanded(
-                      child: batan(
-                        title: "No, Keep It",
-                        route: () {
-                          Get.back();
-                        },
-                        color: AppColors.white,
-                        fontcolor: Colors.black,
-                        height: 5.h,
-                        fontsize: 16.sp,
-                        radius: 12.0,
+                      child: Material(
+                        elevation: 1,
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: batan(
+                          title: "No, Keep It",
+                          route: () {
+                            Get.back();
+                          },
+                          color: AppColors.white,
+                          fontcolor: Colors.black,
+                          height: 5.h,
+                          fontsize: 16.sp,
+                          radius: 12.0,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: batan(
-                        title: "Yes, Cancel",
-                        route: () {
-                          onConfirm();
-                          Get.back();
-                        },
-                        color: AppColors.maincolor,
-                        fontcolor: Colors.white,
-                        height: 5.h,
-                        fontsize: 16.sp,
-                        radius: 12.0,
+                      child: Material(
+                        elevation: 1,
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: batan(
+                          title: "Yes, Cancel",
+                          route: () {
+                            onConfirm();
+                            Get.back();
+                          },
+                          color: AppColors.maincolor,
+                          fontcolor: Colors.white,
+                          height: 5.h,
+                          fontsize: 16.sp,
+                          radius: 12.0,
+                        ),
                       ),
                     ),
                   ],
@@ -1155,7 +1167,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                       child: batan(
                         title: "Yes",
                         route: () {
-                          Get.back();
+                          Get.to(Order_Screen());
                         },
                         color: AppColors.maincolor,
                         fontcolor: Colors.white,
@@ -1250,7 +1262,6 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
             )
             .then((response) async {
               orderDetailModel = OrderDetailModel.fromJson(response.data);
-              // serviceOrderDetail = ServiceOrderDetail.fromJson(response.data);
               if (response.statusCode == 200) {
                 setState(() {
                   isLoading = false;
@@ -1286,7 +1297,6 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
           var response = await OrderProvider().cancleOrderApi(data);
 
           if (response.statusCode == 200) {
-            Get.to(Order_Screen());
             setState(() {
               isCancleOrder = false;
             });
@@ -1576,143 +1586,14 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
     );
   }
 
-  Widget _buildOrderSteps() {
+  void _showAmendOrderDialog() {
     String currentStatus =
         orderDetailModel?.data?.order?.status?.toLowerCase() ?? "";
+    bool isPendingApproval = currentStatus == "pending approval";
+    bool isOrderPlaced = currentStatus == "order placed";
 
-    List<Map<String, dynamic>> steps = [
-      {"title": "Order Placed", "status": "order placed", "time": ""},
-      {"title": "Pending Approval", "status": "pending approval", "time": ""},
-      {"title": "Packing Your Bag", "status": "packing your bag", "time": ""},
-      {
-        "title": "Ready for Collection",
-        "status": "ready for collection",
-        "time": "",
-      },
-      {"title": "Collected", "status": "collected", "time": ""},
-    ];
+    bool canAmend = isPendingApproval || isOrderPlaced;
 
-    int currentStatusIndex = -1;
-    for (int i = 0; i < steps.length; i++) {
-      if (steps[i]['status'] == currentStatus) {
-        currentStatusIndex = i;
-        break;
-      }
-    }
-
-    return Column(
-      children:
-          steps.map((step) {
-            int index = steps.indexOf(step);
-            bool isLast = index == steps.length - 1;
-            bool isCompleted = index <= currentStatusIndex;
-            bool isActive = index == currentStatusIndex;
-
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  children: [
-                    Container(
-                      width: 20,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color:
-                            isActive
-                                ? AppColors.maincolor
-                                : isCompleted
-                                ? AppColors.maincolor.withOpacity(0.7)
-                                : Colors.grey[300],
-                        border:
-                            isActive
-                                ? Border.all(
-                                  color: AppColors.maincolor,
-                                  width: 2,
-                                )
-                                : null,
-                      ),
-                      child:
-                          isCompleted
-                              ? Icon(
-                                isActive
-                                    ? getStatusIconData(currentStatus)
-                                    : Icons.check,
-                                color: Colors.white,
-                                size: isActive ? 12 : 10,
-                              )
-                              : Container(),
-                    ),
-                    if (!isLast)
-                      Container(
-                        width: 2,
-                        height: 30,
-                        color:
-                            index < currentStatusIndex
-                                ? AppColors.maincolor.withOpacity(0.5)
-                                : Colors.grey[300],
-                        margin: const EdgeInsets.symmetric(vertical: 2),
-                      ),
-                  ],
-                ),
-                SizedBox(width: 3.w),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: isLast ? 0 : 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          step['title'],
-                          style: TextStyle(
-                            fontSize: isActive ? 17.5.sp : 16.5.sp,
-                            fontWeight:
-                                isActive
-                                    ? FontWeight.bold
-                                    : isCompleted
-                                    ? FontWeight.w600
-                                    : FontWeight.normal,
-                            color:
-                                isActive
-                                    ? AppColors.maincolor
-                                    : isCompleted
-                                    ? Colors.black
-                                    : Colors.grey[600],
-                            fontFamily: AppConstants.manrope,
-                          ),
-                        ),
-                        if (isActive)
-                          Container(
-                            margin: EdgeInsets.only(top: 1.h),
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 2.w,
-                              vertical: 1.w,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.maincolor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              "● Live Status",
-                              style: TextStyle(
-                                fontSize: 13.sp,
-                                color: AppColors.maincolor,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: AppConstants.manrope,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }).toList(),
-    );
-  }
-
-  void _showAmendOrderDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1754,25 +1635,30 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
               Container(
                 padding: EdgeInsets.all(3.w),
                 decoration: BoxDecoration(
-                  color: Colors.orange[50],
+                  color: canAmend ? Colors.blue[50] : Colors.orange[50],
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.orange[200]!),
+                  border: Border.all(
+                    color: canAmend ? Colors.blue[200]! : Colors.orange[200]!,
+                  ),
                 ),
                 child: Row(
                   children: [
                     Icon(
-                      Icons.info_outline,
-                      color: Colors.orange[600],
+                      canAmend ? Icons.info_outline : Icons.warning_amber,
+                      color: canAmend ? Colors.blue[600] : Colors.orange[600],
                       size: 20.sp,
                     ),
                     SizedBox(width: 2.w),
                     Expanded(
                       child: Text(
-                        "Order Modification",
+                        canAmend
+                            ? "Order Modification Available"
+                            : "Order Modification Restricted",
                         style: TextStyle(
                           fontSize: 17.sp,
                           fontWeight: FontWeight.w600,
-                          color: Colors.orange[700],
+                          color:
+                              canAmend ? Colors.blue[700] : Colors.orange[700],
                           fontFamily: AppConstants.manrope,
                         ),
                       ),
@@ -1781,59 +1667,104 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                 ),
               ),
               SizedBox(height: 2.h),
-              Text(
-                "Unfortunately, orders cannot be modified once they have been placed and confirmed by the store.",
-                style: TextStyle(
-                  fontSize: 15.sp,
-                  color: Colors.grey[700],
-                  fontFamily: AppConstants.manrope,
-                  height: 1.5,
+              if (canAmend)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Your order can be modified since it's still in the ${isPendingApproval ? 'pending approval' : 'order placed'} stage.",
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        color: Colors.grey[700],
+                        fontFamily: AppConstants.manrope,
+                        height: 1.5,
+                      ),
+                    ),
+                    SizedBox(height: 1.h),
+                    Text(
+                      "You can:",
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                        fontFamily: AppConstants.manrope,
+                      ),
+                    ),
+                    SizedBox(height: 0.5.h),
+                    Text(
+                      "• Change item quantities\n• Add or remove items\n• Modify delivery preferences",
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        color: Colors.grey[600],
+                        fontFamily: AppConstants.manrope,
+                      ),
+                    ),
+                  ],
+                )
+              else
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Unfortunately, orders cannot be modified once they have been confirmed by the store and are being prepared.",
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        color: Colors.grey[700],
+                        fontFamily: AppConstants.manrope,
+                        height: 1.5,
+                      ),
+                    ),
+                    SizedBox(height: 1.h),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "• Items cannot be added or removed",
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Colors.grey[600],
+                            fontFamily: AppConstants.manrope,
+                          ),
+                        ),
+                        Text(
+                          "• Quantities cannot be changed",
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Colors.grey[600],
+                            fontFamily: AppConstants.manrope,
+                          ),
+                        ),
+                        Text(
+                          "• Delivery address cannot be modified",
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Colors.grey[600],
+                            fontFamily: AppConstants.manrope,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(height: 1.h),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "• Items cannot be added or removed",
-                    style: TextStyle(
-                      fontSize: 15.sp,
-                      color: Colors.grey[600],
-                      fontFamily: AppConstants.manrope,
-                    ),
-                  ),
-                  Text(
-                    "• Quantities cannot be changed",
-                    style: TextStyle(
-                      fontSize: 15.sp,
-                      color: Colors.grey[600],
-                      fontFamily: AppConstants.manrope,
-                    ),
-                  ),
-                  Text(
-                    "• Delivery address cannot be modified",
-                    style: TextStyle(
-                      fontSize: 15.sp,
-                      color: Colors.grey[600],
-                      fontFamily: AppConstants.manrope,
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
           actions: [
             batan(
-              title: "Ok",
+              title: canAmend ? "Modify Order" : "Ok",
               route: () {
                 Get.back();
+                if (canAmend) {
+                  // Add your amend order logic here
+                  // For example: Get.to(AmendOrderScreen());
+                }
               },
-              color: AppColors.maincolor,
+              color: canAmend ? AppColors.maincolor : Colors.grey[600]!,
               fontcolor: Colors.white,
               height: 5.h,
               width: double.infinity,
               fontsize: 18,
               radius: 12.0,
+              fontFamily: AppConstants.manropeBold,
             ),
           ],
         );
@@ -1842,6 +1773,13 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
   }
 
   void _showCancelOrderDialog() {
+    String currentStatus =
+        orderDetailModel?.data?.order?.status?.toLowerCase() ?? "";
+    bool isPendingApproval = currentStatus == "pending approval";
+    bool isOrderPlaced = currentStatus == "order placed";
+
+    bool canCancel = isPendingApproval || isOrderPlaced;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1883,21 +1821,29 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
               Container(
                 padding: EdgeInsets.all(3.w),
                 decoration: BoxDecoration(
-                  color: Colors.red[50],
+                  color: canCancel ? Colors.blue[50] : Colors.red[50],
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.red[200]!),
+                  border: Border.all(
+                    color: canCancel ? Colors.blue[200]! : Colors.red[200]!,
+                  ),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.block, color: Colors.red[600], size: 20.sp),
+                    Icon(
+                      canCancel ? Icons.info_outline : Icons.block,
+                      color: canCancel ? Colors.blue[600] : Colors.red[600],
+                      size: 20.sp,
+                    ),
                     SizedBox(width: 2.w),
                     Expanded(
                       child: Text(
-                        "Cancellation Not Allowed",
+                        canCancel
+                            ? "Cancellation Available"
+                            : "Cancellation Not Allowed",
                         style: TextStyle(
                           fontSize: 17.sp,
                           fontWeight: FontWeight.w600,
-                          color: Colors.red[700],
+                          color: canCancel ? Colors.blue[700] : Colors.red[700],
                           fontFamily: AppConstants.manrope,
                         ),
                       ),
@@ -1906,40 +1852,128 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                 ),
               ),
               SizedBox(height: 2.h),
-              Text(
-                "Sorry, this order cannot be cancelled as it has already been confirmed by the store and is being prepared.",
-                style: TextStyle(
-                  fontSize: 15.sp,
-                  color: Colors.grey[700],
-                  fontFamily: AppConstants.manrope,
-                  height: 1.5,
+              if (canCancel)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Your order can be cancelled since it's still in the ${isPendingApproval ? 'pending approval' : 'order placed'} stage.",
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        color: Colors.grey[700],
+                        fontFamily: AppConstants.manrope,
+                        height: 1.5,
+                      ),
+                    ),
+                    SizedBox(height: 1.h),
+                    Text(
+                      "If you proceed with cancellation:",
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                        fontFamily: AppConstants.manrope,
+                      ),
+                    ),
+                    SizedBox(height: 0.5.h),
+                    Text(
+                      "• You will receive a full refund\n• The cancellation will be immediate\n• You can place a new order anytime",
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        color: Colors.grey[600],
+                        fontFamily: AppConstants.manrope,
+                      ),
+                    ),
+                  ],
+                )
+              else
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Sorry, this order cannot be cancelled as it has already been confirmed by the store and is being prepared.",
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        color: Colors.grey[700],
+                        fontFamily: AppConstants.manrope,
+                        height: 1.5,
+                      ),
+                    ),
+                    SizedBox(height: 1.h),
+                    Text(
+                      "If you have any concerns about your order, please contact our support team through live chat.",
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        color: Colors.grey[600],
+                        fontFamily: AppConstants.manrope,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(height: 1.h),
-              Text(
-                "If you have any concerns about your order, please contact our support team through live chat.",
-                style: TextStyle(
-                  fontSize: 15.sp,
-                  color: Colors.grey[600],
-                  fontFamily: AppConstants.manrope,
-                  height: 1.4,
-                ),
-              ),
             ],
           ),
           actions: [
-            batan(
-              title: "Ok",
-              route: () {
-                Get.back();
-              },
-              color: AppColors.maincolor,
-              fontcolor: Colors.white,
-              height: 5.h,
-              width: double.infinity,
-              fontsize: 18,
-              radius: 12.0,
-            ),
+            if (canCancel)
+              Row(
+                children: [
+                  Expanded(
+                    child: Material(
+                      elevation: 1,
+                      borderRadius: BorderRadius.circular(12.0),
+
+                      child: batan(
+                        title: "No, Keep Order",
+                        route: () {
+                          Get.back();
+                        },
+                        color: Colors.white,
+                        fontcolor: Colors.black,
+                        height: 5.h,
+                        fontsize: 16.sp,
+                        radius: 12.0,
+                        fontFamily: AppConstants.manropeBold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 2.w),
+                  Expanded(
+                    child: Material(
+                      elevation: 1,
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: batan(
+                        title: "Yes, Cancel",
+                        route: () {
+                          Get.back();
+                          showCancelConfirmationDialog(
+                            context: context,
+                            onConfirm: CancleOrder,
+                          );
+                        },
+                        color: AppColors.maincolor,
+                        fontcolor: Colors.white,
+                        height: 5.h,
+                        fontsize: 16.sp,
+                        radius: 12.0,
+                        fontFamily: AppConstants.manropeBold,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            else
+              batan(
+                title: "Ok",
+                route: () {
+                  Get.back();
+                },
+                color: AppColors.maincolor,
+                fontcolor: Colors.white,
+                height: 5.h,
+                width: double.infinity,
+                fontsize: 18,
+                radius: 12.0,
+              ),
           ],
         );
       },

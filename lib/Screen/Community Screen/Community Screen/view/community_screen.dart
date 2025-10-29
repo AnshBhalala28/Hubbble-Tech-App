@@ -1240,7 +1240,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                               SizedBox(width: 10),
                               Text(
                                 "Favourites",
-                                style: TextStyle(fontSize: 16.sp),
+                                style: TextStyle(fontSize: 16.sp,fontFamily: AppConstants.manrope),
                               ),
                             ],
                           ),
@@ -1275,7 +1275,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                               SizedBox(width: 10),
                               Text(
                                 "Visited",
-                                style: TextStyle(fontSize: 16.sp),
+                                style: TextStyle(fontSize: 16.sp,fontFamily: AppConstants.manrope),
                               ),
                             ],
                           ),
@@ -1345,7 +1345,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     Text(
                                       categoriesModel?.data?[i].categoryName ??
                                           "",
-                                      style: TextStyle(fontSize: 16.sp),
+                                      style: TextStyle(fontSize: 16.sp,fontFamily: AppConstants.manrope),
                                     ),
                                   ],
                                 ),
@@ -2911,7 +2911,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                     "N/A",
                                                 style: TextStyle(
                                                   fontSize: 15.sp,
-                                                  fontWeight: FontWeight.bold,
+                                                  fontWeight: FontWeight.w500,
                                                   fontFamily:
                                                       AppConstants.manrope,
                                                   color: Colors.black87,
@@ -2926,6 +2926,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       color: Colors.grey,
+                                                      fontFamily: AppConstants.manrope
                                                     ),
                                                   ),
                                                   SizedBox(width: 3.w),
@@ -2935,6 +2936,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                       fontSize: 13.sp,
                                                       color:
                                                           Colors.grey.shade600,
+                                                        fontFamily: AppConstants.manrope
+
                                                     ),
                                                   ),
                                                 ],
@@ -3249,7 +3252,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                       ?.businessName ??
                                                   "N/A",
                                               style: TextStyle(
-                                                fontSize: 18.sp,
+                                                fontSize: 19.sp,
                                                 fontWeight: FontWeight.w900,
                                                 fontFamily:
                                                     AppConstants.manrope,
@@ -4571,12 +4574,13 @@ class _CommunityScreenState extends State<CommunityScreen>
                                           },
                                           child: CircleAvatar(
                                             radius: 20,
+                                            backgroundColor: Colors.white,
                                             backgroundImage: NetworkImage(
                                               busnessviewmodal
                                                       ?.data
                                                       ?.nearbyBusinesses?[i]
                                                       .logo ??
-                                                  "https://randomuser.me/api/portraits/men/1.jpg",
+                                                  "https://portal.wavee.ai/public/business/img/logos/waveeLogoShort.png",
                                             ),
                                           ),
                                         ),
@@ -4599,8 +4603,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                         .businessName!
                                                     : "N/A",
                                                 style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w500,
                                                   fontFamily:
                                                       AppConstants.manrope,
                                                 ),
@@ -5559,7 +5563,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                           imageUrl:
                               imageUrl.isNotEmpty
                                   ? imageUrl
-                                  : 'https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL3BsYXlcLzBiN2Y0ZTliLWY1OWMtNDAyNC05ZjA2LWIzZGMxMjg1MGFiNy0xOTIwLTEwODAuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0=',
+                                  : 'https://portal.wavee.ai/public/business/img/logos/waveeLogoShort.png',
                           fit: BoxFit.cover,
                           placeholder:
                               (context, url) => const Center(
@@ -5742,7 +5746,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                         "N/A",
                                     style: TextStyle(
                                       fontFamily: AppConstants.manrope,
-                                      fontSize: 16,
+                                      fontSize: 17.sp,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black38,
                                     ),
@@ -5931,8 +5935,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                       busnessviewmodal?.data?.events?[index].title ??
                           "No Title",
                       style: TextStyle(
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
                         fontFamily: AppConstants.manrope,
                       ),
                       maxLines: 1,
@@ -6367,7 +6371,7 @@ Widget buildListTile({
                 title,
                 style: TextStyle(
                   fontSize: 15.sp,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w500,
                   fontFamily: AppConstants.manrope,
                 ),
               ),

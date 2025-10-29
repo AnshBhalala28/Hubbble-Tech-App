@@ -37,12 +37,12 @@ class _Order_ScreenState extends State<Order_Screen> {
     'Ready for Collection',
     'Collected',
     'Declined',
+    'Cancelled',
   ];
   List<String> serviceCategories = [
     'All',
     'Pending Approval',
     "Booking Confirmed",
-    "Cancelled",
   ];
 
   @override
@@ -253,20 +253,17 @@ class _Order_ScreenState extends State<Order_Screen> {
                               ],
                           child: Container(
                             alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  selectedType.toString().capitalizeFirst ??
-                                      "",
+                                  selectedType.toString().capitalizeFirst ?? "",
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w500,
-                                    fontFamily: AppConstants.manrope,
+                                    fontFamily: AppConstants.manropeBold,
                                   ),
                                 ),
                                 SizedBox(width: 2.w),
@@ -328,8 +325,10 @@ class _Order_ScreenState extends State<Order_Screen> {
                                       selectedCategory == index
                                           ? Colors.white
                                           : Colors.black,
-                                  fontFamily: selectedCategory == index
-                                      ?AppConstants.manropeBold:AppConstants.manrope,
+                                  fontFamily:
+                                      selectedCategory == index
+                                          ? AppConstants.manropeBold
+                                          : AppConstants.manrope,
                                   fontWeight: FontWeight.w500,
                                   letterSpacing: 1,
                                 ),
@@ -384,8 +383,10 @@ class _Order_ScreenState extends State<Order_Screen> {
                                       selectedCategory == index
                                           ? Colors.white
                                           : Colors.black,
-                                  fontFamily:selectedCategory == index
-                                      ?AppConstants.manropeBold:AppConstants.manrope,
+                                  fontFamily:
+                                      selectedCategory == index
+                                          ? AppConstants.manropeBold
+                                          : AppConstants.manrope,
                                   fontWeight: FontWeight.w500,
                                   letterSpacing: 1,
                                 ),
@@ -396,501 +397,545 @@ class _Order_ScreenState extends State<Order_Screen> {
                       ),
                     ),
                 SizedBox(height: 2.h),
-                Expanded(child: SingleChildScrollView(child: Column(children: [
-                  isLoading
-                      ? Loader().paddingOnly(top: 30.h)
-                      : (myOrderModel?.data?.data?.isNotEmpty != true ||
-                      myOrderModel!
-                          .data!
-                          .data![0]
-                          .orderProducts
-                          ?.isNotEmpty !=
-                          true)
-                      ? Text(
-                    "No Orders Found",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17.sp,
-                      fontFamily: AppConstants.manrope,
-                    ),
-                  ).paddingOnly(top: 30.h)
-                      : myOrderModel!.data!.data![0].orderProducts![0].type ==
-                      'service'
-                      ? (serviceViewModel?.data == null ||
-                      serviceViewModel!.data!.data!.isEmpty)
-                      ? Text(
-                    "No Service Orders",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17.sp,
-                      fontFamily: AppConstants.manrope,
-                    ),
-                  ).paddingOnly(top: 30.h)
-                      : isLoading1
-                      ? Loader().paddingOnly(top: 30.h)
-                      : Column(
-                    children: [
-                      Container(
-                        child: ListView.builder(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          itemCount:
-                          myOrderModel?.data?.data?.length ?? 0,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (
-                              BuildContext context,
-                              int index,
-                              ) {
-                            final order =
-                            serviceViewModel?.data?.data?[index];
-                            final orderProduct =
-                            order?.orderProducts?.isNotEmpty == true
-                                ? order!.orderProducts!.first
-                                : null;
-
-                            String status = order?.status ?? "";
-                            Color statusColor = getStatusColor(status);
-
-                            return GestureDetector(
-                              onTap: () {
-                                if (order != null &&
-                                    orderProduct != null) {
-                                  Get.to(
-                                    Orderdetail_Screen(
-                                      orderid:
-                                      order.id?.toString() ?? "",
-                                      orderProductID:
-                                      orderProduct.id?.toString() ??
-                                          "",
-                                    ),
-                                  );
-                                }
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(
-                                    color: Colors.grey.shade100,
-                                    width: 1,
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        isLoading
+                            ? Loader().paddingOnly(top: 30.h)
+                            : (myOrderModel?.data?.data?.isNotEmpty != true ||
+                                myOrderModel!
+                                        .data!
+                                        .data![0]
+                                        .orderProducts
+                                        ?.isNotEmpty !=
+                                    true)
+                            ? Text(
+                              "No Orders Found",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17.sp,
+                                fontFamily: AppConstants.manrope,
+                              ),
+                            ).paddingOnly(top: 30.h)
+                            : myOrderModel!
+                                    .data!
+                                    .data![0]
+                                    .orderProducts![0]
+                                    .type ==
+                                'service'
+                            ? (serviceViewModel?.data == null ||
+                                    serviceViewModel!.data!.data!.isEmpty)
+                                ? Text(
+                                  "No Service Orders",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17.sp,
+                                    fontFamily: AppConstants.manrope,
                                   ),
-                                  borderRadius: BorderRadius.circular(
-                                    20,
-                                  ),
-                                ),
-                                margin: const EdgeInsets.only(
-                                  bottom: 7,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment
-                                            .spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              SizedBox(
-                                                height: 15.h,
-                                                width: 30.w,
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                  BorderRadius.circular(
-                                                    10,
-                                                  ),
-                                                  child: CachedNetworkImage(
-                                                    imageUrl:
-                                                    orderProduct
-                                                        ?.service
-                                                        ?.images ??
+                                ).paddingOnly(top: 30.h)
+                                : isLoading1
+                                ? Loader().paddingOnly(top: 30.h)
+                                : Column(
+                                  children: [
+                                    Container(
+                                      child: ListView.builder(
+                                        padding: const EdgeInsets.only(
+                                          top: 8.0,
+                                        ),
+                                        itemCount:
+                                            myOrderModel?.data?.data?.length ??
+                                            0,
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemBuilder: (
+                                          BuildContext context,
+                                          int index,
+                                        ) {
+                                          final order =
+                                              serviceViewModel
+                                                  ?.data
+                                                  ?.data?[index];
+                                          final orderProduct =
+                                              order
+                                                          ?.orderProducts
+                                                          ?.isNotEmpty ==
+                                                      true
+                                                  ? order!.orderProducts!.first
+                                                  : null;
+
+                                          String status = order?.status ?? "";
+                                          Color statusColor = getStatusColor(
+                                            status,
+                                          );
+
+                                          return GestureDetector(
+                                            onTap: () {
+                                              if (order != null &&
+                                                  orderProduct != null) {
+                                                Get.to(
+                                                  Orderdetail_Screen(
+                                                    orderid:
+                                                        order.id?.toString() ??
                                                         "",
-                                                    fit: BoxFit.cover,
-                                                    placeholder:
-                                                        (
-                                                        context,
-                                                        url,
-                                                        ) => const Center(
-                                                      child:
-                                                      CircularProgressIndicator(),
-                                                    ),
-                                                    errorWidget:
-                                                        (
-                                                        context,
-                                                        url,
-                                                        error,
-                                                        ) => const Image(
-                                                      image: AssetImage(
-                                                        "assets/images/waveeLogoShort.png",
-                                                      ),
-                                                    ),
+                                                    orderProductID:
+                                                        orderProduct.id
+                                                            ?.toString() ??
+                                                        "",
                                                   ),
+                                                );
+                                              }
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                border: Border.all(
+                                                  color: Colors.grey.shade100,
+                                                  width: 1,
                                                 ),
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
                                               ),
-                                              SizedBox(width: 1.h),
-                                              SizedBox(
-                                                height: 15.h,
-                                                width: 55.w,
+                                              margin: const EdgeInsets.only(
+                                                bottom: 7,
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                  10,
+                                                ),
                                                 child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: [
-                                                        Icon(
-                                                          Icons
-                                                              .pending_rounded,
-                                                          color:
-                                                          getStatusColor(
-                                                            status,
-                                                          ),
-                                                          size: 18.sp,
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 8,
-                                                        ),
-                                                        Text(
-                                                          status.capitalize ??
-                                                              "",
-                                                          style: TextStyle(
-                                                            color:
-                                                            getStatusColor(
-                                                              status,
+                                                        Row(
+                                                          children: [
+                                                            SizedBox(
+                                                              height: 15.h,
+                                                              width: 30.w,
+                                                              child: ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      10,
+                                                                    ),
+                                                                child: CachedNetworkImage(
+                                                                  imageUrl:
+                                                                      orderProduct
+                                                                          ?.service
+                                                                          ?.images ??
+                                                                      "",
+                                                                  fit:
+                                                                      BoxFit
+                                                                          .cover,
+                                                                  placeholder:
+                                                                      (
+                                                                        context,
+                                                                        url,
+                                                                      ) => const Center(
+                                                                        child:
+                                                                            CircularProgressIndicator(),
+                                                                      ),
+                                                                  errorWidget:
+                                                                      (
+                                                                        context,
+                                                                        url,
+                                                                        error,
+                                                                      ) => const Image(
+                                                                        image: AssetImage(
+                                                                          "assets/images/waveeLogoShort.png",
+                                                                        ),
+                                                                      ),
+                                                                ),
+                                                              ),
                                                             ),
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .bold,
-                                                            fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Align(
-                                                      alignment:
-                                                      Alignment
-                                                          .topLeft,
-                                                      child: Text(
-                                                        orderProduct
-                                                            ?.service
-                                                            ?.title
-                                                            ?.capitalizeFirst ??
-                                                            "",
-                                                        style: const TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                          FontWeight
-                                                              .bold,
-                                                          fontFamily:
-                                                          AppConstants
-                                                              .manrope,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 0.5.h,
-                                                    ),
-                                                    Align(
-                                                      alignment:
-                                                      Alignment
-                                                          .topLeft,
-                                                      child: Text(
-                                                        '#ORDERNO${order?.orderNo ?? ""}',
-                                                        style: const TextStyle(
-                                                          color:
-                                                          Colors
-                                                              .grey,
-                                                          fontFamily:
-                                                          AppConstants
-                                                              .manrope,
-                                                          fontWeight:
-                                                          FontWeight
-                                                              .bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 0.5.h,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                          "£${orderProduct?.totalPrice ?? ""}",
-                                                          style: const TextStyle(
-                                                            color:
-                                                            Colors
-                                                                .black,
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .bold,
-                                                            fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                          ),
-                                                        ),
-                                                        const Spacer(),
-                                                        Text(
-                                                          formatDateTime(
-                                                            orderProduct
-                                                                ?.createdAt ??
-                                                                "",
-                                                          ),
-                                                          style: const TextStyle(
-                                                            color:
-                                                            Colors
-                                                                .grey,
-                                                            fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .bold,
-                                                          ),
+                                                            SizedBox(
+                                                              width: 1.h,
+                                                            ),
+                                                            SizedBox(
+                                                              height: 15.h,
+                                                              width: 55.w,
+                                                              child: Column(
+                                                                children: [
+                                                                  Row(
+                                                                    children: [
+                                                                      Icon(
+                                                                        Icons
+                                                                            .pending_rounded,
+                                                                        color: getStatusColor(
+                                                                          status,
+                                                                        ),
+                                                                        size:
+                                                                            18.sp,
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            8,
+                                                                      ),
+                                                                      Text(
+                                                                        status.capitalize ??
+                                                                            "",
+                                                                        style: TextStyle(
+                                                                          color: getStatusColor(
+                                                                            status,
+                                                                          ),
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                          fontFamily:
+                                                                              AppConstants.manrope,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  Align(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .topLeft,
+                                                                    child: Text(
+                                                                      orderProduct
+                                                                              ?.service
+                                                                              ?.title
+                                                                              ?.capitalizeFirst ??
+                                                                          "",
+                                                                      style: const TextStyle(
+                                                                        fontSize:
+                                                                            18,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                        fontFamily:
+                                                                            AppConstants.manrope,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height:
+                                                                        0.5.h,
+                                                                  ),
+                                                                  Align(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .topLeft,
+                                                                    child: Text(
+                                                                      '#ORDERNO${order?.orderNo ?? ""}',
+                                                                      style: const TextStyle(
+                                                                        color:
+                                                                            Colors.grey,
+                                                                        fontFamily:
+                                                                            AppConstants.manrope,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height:
+                                                                        0.5.h,
+                                                                  ),
+                                                                  Row(
+                                                                    children: [
+                                                                      Text(
+                                                                        "£${orderProduct?.totalPrice ?? ""}",
+                                                                        style: const TextStyle(
+                                                                          color:
+                                                                              Colors.black,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                          fontFamily:
+                                                                              AppConstants.manrope,
+                                                                        ),
+                                                                      ),
+                                                                      const Spacer(),
+                                                                      Text(
+                                                                        formatDateTime(
+                                                                          orderProduct?.createdAt ??
+                                                                              "",
+                                                                        ),
+                                                                        style: const TextStyle(
+                                                                          color:
+                                                                              Colors.grey,
+                                                                          fontFamily:
+                                                                              AppConstants.manrope,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ],
                                                     ),
                                                   ],
                                                 ),
                                               ),
-                                            ],
-                                          ),
-                                        ],
+                                            ),
+                                          );
+                                        },
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  )
-                      : isLoading1
-                      ? Loader().paddingOnly(top: 30.h)
-                      : Column(
-                    children: [
-                      Container(
-                        child: ListView.builder(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          itemCount: myOrderModel?.data?.data?.length ?? 0,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (BuildContext context, int index) {
-                            final order = myOrderModel?.data?.data?[index];
-                            final orderProduct =
-                            order?.orderProducts?.isNotEmpty == true
-                                ? order!.orderProducts!.first
-                                : null;
-
-                            String status = order?.status ?? "";
-                            Color statusColor = getStatusColor(status);
-
-                            return GestureDetector(
-                              onTap: () {
-                                if (order != null && orderProduct != null) {
-                                  Get.to(
-                                    Orderdetail_Screen(
-                                      orderid: order.id?.toString() ?? "",
-                                      orderProductID:
-                                      orderProduct.id?.toString() ?? "",
                                     ),
-                                  );
-                                }
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(
-                                    color: Colors.grey.shade100,
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                margin: const EdgeInsets.only(bottom: 7),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              SizedBox(
-                                                height: 15.h,
-                                                width: 30.w,
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                  BorderRadius.circular(
-                                                    10,
-                                                  ),
-                                                  child: CachedNetworkImage(
-                                                    imageUrl:
-                                                    orderProduct
-                                                        ?.product
-                                                        ?.image ??
-                                                        "",
-                                                    fit: BoxFit.cover,
-                                                    placeholder:
-                                                        (
-                                                        context,
-                                                        url,
-                                                        ) => const Center(
-                                                      child:
-                                                      CircularProgressIndicator(),
-                                                    ),
-                                                    errorWidget:
-                                                        (
-                                                        context,
-                                                        url,
-                                                        error,
-                                                        ) => const Image(
-                                                      image: AssetImage(
-                                                        "assets/images/waveeLogoShort.png",
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
+                                  ],
+                                )
+                            : isLoading1
+                            ? Loader().paddingOnly(top: 30.h)
+                            : Column(
+                              children: [
+                                Container(
+                                  child: ListView.builder(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    itemCount:
+                                        myOrderModel?.data?.data?.length ?? 0,
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemBuilder: (
+                                      BuildContext context,
+                                      int index,
+                                    ) {
+                                      final order =
+                                          myOrderModel?.data?.data?[index];
+                                      final orderProduct =
+                                          order?.orderProducts?.isNotEmpty ==
+                                                  true
+                                              ? order!.orderProducts!.first
+                                              : null;
+
+                                      String status = order?.status ?? "";
+                                      Color statusColor = getStatusColor(
+                                        status,
+                                      );
+
+                                      return GestureDetector(
+                                        onTap: () {
+                                          if (order != null &&
+                                              orderProduct != null) {
+                                            Get.to(
+                                              Orderdetail_Screen(
+                                                orderid:
+                                                    order.id?.toString() ?? "",
+                                                orderProductID:
+                                                    orderProduct.id
+                                                        ?.toString() ??
+                                                    "",
                                               ),
-                                              SizedBox(width: 1.h),
-                                              SizedBox(
-                                                height: 15.h,
-                                                width: 55.w,
-                                                child: Column(
+                                            );
+                                          }
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            border: Border.all(
+                                              color: Colors.grey.shade100,
+                                              width: 1,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                          margin: const EdgeInsets.only(
+                                            bottom: 7,
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
                                                   children: [
                                                     Row(
                                                       children: [
-                                                        Icon(
-                                                          Icons
-                                                              .pending_rounded,
-                                                          color:
-                                                          statusColor,
-                                                          size: 18.sp,
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 8,
-                                                        ),
-                                                        Text(
-                                                          status.capitalize ??
-                                                              "",
-                                                          style: TextStyle(
-                                                            color:
-                                                            statusColor,
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .bold,
-                                                            fontFamily:
-                                                            AppConstants
-                                                                .manrope,
+                                                        SizedBox(
+                                                          height: 15.h,
+                                                          width: 30.w,
+                                                          child: ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  10,
+                                                                ),
+                                                            child: CachedNetworkImage(
+                                                              imageUrl:
+                                                                  orderProduct
+                                                                      ?.product
+                                                                      ?.image ??
+                                                                  "",
+                                                              fit: BoxFit.cover,
+                                                              placeholder:
+                                                                  (
+                                                                    context,
+                                                                    url,
+                                                                  ) => const Center(
+                                                                    child:
+                                                                        CircularProgressIndicator(),
+                                                                  ),
+                                                              errorWidget:
+                                                                  (
+                                                                    context,
+                                                                    url,
+                                                                    error,
+                                                                  ) => const Image(
+                                                                    image: AssetImage(
+                                                                      "assets/images/waveeLogoShort.png",
+                                                                    ),
+                                                                  ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ],
-                                                    ),
-                                                    Align(
-                                                      alignment:
-                                                      Alignment.topLeft,
-                                                      child: SizedBox(
-                                                        width: 60.w,
-                                                        child: Text(
-                                                          orderProduct
-                                                              ?.product
-                                                              ?.name
-                                                              ?.capitalizeFirst ??
-                                                              "",
-                                                          overflow:
-                                                          TextOverflow
-                                                              .ellipsis,
-                                                          style: const TextStyle(
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .bold,
-                                                            fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 0.5.h),
-                                                    Align(
-                                                      alignment:
-                                                      Alignment.topLeft,
-                                                      child: Text(
-                                                        '#ORDERNO${order?.orderNo ?? ""}',
-                                                        style: const TextStyle(
-                                                          color:
-                                                          Colors.grey,
-                                                          fontFamily:
-                                                          AppConstants
-                                                              .manrope,
-                                                          fontWeight:
-                                                          FontWeight
-                                                              .bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 0.5.h),
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                          "£${orderProduct?.totalPrice ?? ""}",
-                                                          style: const TextStyle(
-                                                            color:
-                                                            Colors
-                                                                .black,
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .bold,
-                                                            fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                          ),
-                                                        ),
-                                                        const Spacer(),
-                                                        Text(
-                                                          formatDateTime(
-                                                            orderProduct
-                                                                ?.createdAt ??
-                                                                "",
-                                                          ),
-                                                          style: const TextStyle(
-                                                            color:
-                                                            Colors.grey,
-                                                            fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .bold,
+                                                        SizedBox(width: 1.h),
+                                                        SizedBox(
+                                                          height: 15.h,
+                                                          width: 55.w,
+                                                          child: Column(
+                                                            children: [
+                                                              Row(
+                                                                children: [
+                                                                  Icon(
+                                                                    Icons
+                                                                        .pending_rounded,
+                                                                    color:
+                                                                        statusColor,
+                                                                    size: 18.sp,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 8,
+                                                                  ),
+                                                                  Text(
+                                                                    status.capitalize ??
+                                                                        "",
+                                                                    style: TextStyle(
+                                                                      color:
+                                                                          statusColor,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontFamily:
+                                                                          AppConstants
+                                                                              .manrope,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Align(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .topLeft,
+                                                                child: SizedBox(
+                                                                  width: 60.w,
+                                                                  child: Text(
+                                                                    orderProduct
+                                                                            ?.product
+                                                                            ?.name
+                                                                            ?.capitalizeFirst ??
+                                                                        "",
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    style: const TextStyle(
+                                                                      fontSize:
+                                                                          18,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontFamily:
+                                                                          AppConstants
+                                                                              .manrope,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 0.5.h,
+                                                              ),
+                                                              Align(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .topLeft,
+                                                                child: Text(
+                                                                  '#ORDERNO${order?.orderNo ?? ""}',
+                                                                  style: const TextStyle(
+                                                                    color:
+                                                                        Colors
+                                                                            .grey,
+                                                                    fontFamily:
+                                                                        AppConstants
+                                                                            .manrope,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 0.5.h,
+                                                              ),
+                                                              Row(
+                                                                children: [
+                                                                  Text(
+                                                                    "£${orderProduct?.totalPrice ?? ""}",
+                                                                    style: const TextStyle(
+                                                                      color:
+                                                                          Colors
+                                                                              .black,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontFamily:
+                                                                          AppConstants
+                                                                              .manrope,
+                                                                    ),
+                                                                  ),
+                                                                  const Spacer(),
+                                                                  Text(
+                                                                    formatDateTime(
+                                                                      orderProduct
+                                                                              ?.createdAt ??
+                                                                          "",
+                                                                    ),
+                                                                    style: const TextStyle(
+                                                                      color:
+                                                                          Colors
+                                                                              .grey,
+                                                                      fontFamily:
+                                                                          AppConstants
+                                                                              .manrope,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
                                                           ),
                                                         ),
                                                       ],
                                                     ),
                                                   ],
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ],
-                                      ),
-                                    ],
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                    ],
+                                const SizedBox(height: 20),
+                              ],
+                            ),
+                      ],
+                    ),
                   ),
-                ],),))
+                ),
               ],
             ),
           ),
@@ -938,6 +983,8 @@ class _Order_ScreenState extends State<Order_Screen> {
         return "Collected";
       case 5:
         return "Declined";
+      case 6:
+        return "Cancelled";
       default:
         return "";
     }
@@ -951,6 +998,7 @@ class _Order_ScreenState extends State<Order_Screen> {
         return "Booking Confirmed";
       case 3:
         return "Cancelled";
+
       default:
         return "";
     }

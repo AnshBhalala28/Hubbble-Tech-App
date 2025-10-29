@@ -210,10 +210,10 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                                               ?.capitalizeFirst ??
                                                           '',
                                                       maxLines: 2,
-                                                      style: const TextStyle(
-                                                        fontSize: 16,
+                                                      style: TextStyle(
+                                                        fontSize: 16.sp,
                                                         fontWeight:
-                                                            FontWeight.bold,
+                                                            FontWeight.w500,
                                                         fontFamily:
                                                             AppConstants
                                                                 .manrope,
@@ -533,10 +533,10 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(
+                       Text(
                         'Add Maintenance',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 19.sp,
                           fontWeight: FontWeight.bold,
                           fontFamily: AppConstants.manrope,
                         ),
@@ -564,8 +564,9 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                           return null;
                         },
                         style: const TextStyle(
-                          fontFamily: AppConstants.manrope,
+                          fontFamily: AppConstants.manrope1,
                           fontWeight: FontWeight.bold,
+
                         ),
                         decoration: inputDecoration(
                           cr: AppColors.black,
@@ -595,7 +596,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                           return null;
                         },
                         style: const TextStyle(
-                          fontFamily: AppConstants.manrope,
+                          fontFamily: AppConstants.manrope1,
                           fontWeight: FontWeight.bold,
                         ),
                         decoration: inputDecoration(
@@ -957,7 +958,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                         Text(
                           "Attached Image",
                           style: TextStyle(
-                            fontFamily: AppConstants.manrope,
+                            fontFamily: AppConstants.manropeBold,
                             fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
                           ),

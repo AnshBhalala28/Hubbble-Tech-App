@@ -73,7 +73,7 @@ class _MessageScreenState extends State<MessageScreen> {
   int type = 0;
   bool isSending = false;
   String loadingMessage = '';
-  List<String> messages = [];
+  // List<String> messages = [];
 
   @override
   void initState() {
@@ -250,7 +250,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                     ),
                                 width: 26.sp,
                                 height: 26.sp,
-                                fit: BoxFit.cover,
+                                fit: BoxFit.contain,
                               ),
                             ),
                           ),
@@ -378,7 +378,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                           child: ClipOval(
                                             child: CachedNetworkImage(
                                               imageUrl: widget.image ?? '',
-                                              fit: BoxFit.cover,
+                                              fit: BoxFit.contain,
                                               width: 38.sp,
                                               height: 38.sp,
                                               placeholder:
@@ -393,7 +393,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                                     error,
                                                   ) => Image.asset(
                                                     'assets/images/waveeLogoShort.png',
-                                                    fit: BoxFit.cover,
+                                                    fit: BoxFit.contain,
                                                     width: 38.sp,
                                                     height: 38.sp,
                                                   ),
@@ -458,7 +458,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                                 ),
                                             width: 26.sp,
                                             height: 26.sp,
-                                            fit: BoxFit.cover,
+                                            fit: BoxFit.contain,
                                           ),
                                         ),
                                     ],
@@ -552,17 +552,46 @@ class _MessageScreenState extends State<MessageScreen> {
                                 ),
                                 child: TextField(
                                   controller: _messageController,
-                                  textInputAction: TextInputAction.newline, // For multiline typing
+                                  textInputAction: TextInputAction.send,
                                   keyboardType: TextInputType.multiline,
+
                                   minLines: 1, // Start with one line
                                   maxLines: 5, // Expand up to 5 lines (you can increase if needed)
-                                  onSubmitted: (text) {
-                                    if (text.isNotEmpty) {
+                                  // onSubmitted: (text) {
+                                  //   if (text.isNotEmpty) {
+                                  //     setState(() {
+                                  //       messages.add(text);
+                                  //       _messageController.clear();
+                                  //     });
+                                  //   }
+                                  // },
+                                  onSubmitted: (value) {
+                                    if (_messageController.text.trim().isEmpty) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                            'Message cannot be empty',
+                                          ),
+                                          backgroundColor: AppColors.redColor,
+                                          duration: Duration(seconds: 1),
+                                        ),
+                                      );
+                                    } else {
                                       setState(() {
-                                        messages.add(text);
-                                        _messageController.clear();
+                                        type = 1;
                                       });
+
+                                      if (isLoading) return;
+
+                                      if (widget.type == "order") {
+                                        SendOrderChatApi();
+                                      } else {
+                                        SendMessagApi();
+                                      }
+
+                                      _scrollToBottom();
                                     }
+
                                   },
                                   decoration: const InputDecoration(
                                     hintText: "Type a message...",

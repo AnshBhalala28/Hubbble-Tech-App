@@ -63,6 +63,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                   height: 6.h,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
+                    // physics: CarouselScrollPhysics(),
                     child: Row(
                       children: List.generate(categories.length, (index) {
                         return GestureDetector(

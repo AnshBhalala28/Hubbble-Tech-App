@@ -128,7 +128,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                         productViewModel?.data?.businessName ?? "",
                                         style: TextStyle(
                                           fontFamily: AppConstants.manrope,
-                                          fontSize: 20.sp,
+                                          fontSize: 19.sp,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -715,6 +715,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   fontcolor: AppColors.maincolor,
                                   height: 5.h,
                                   fontsize: 15.sp,
+                                  fontFamily: AppConstants.manropeBold,
                                   iconData: Icons.add_shopping_cart_outlined,
                                   radius: 12.0,
                                 ),

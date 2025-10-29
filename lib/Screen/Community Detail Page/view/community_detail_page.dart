@@ -575,7 +575,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                           .infinity,
                                                                   fit:
                                                                       BoxFit
-                                                                          .cover,
+                                                                          .contain,
                                                                 ),
                                                           ),
                                                         ),
@@ -631,7 +631,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                         16.sp,
                                                                     fontWeight:
                                                                         FontWeight
-                                                                            .w700,
+                                                                            .w500,
                                                                     fontFamily:
                                                                         AppConstants
                                                                             .manrope,
@@ -1007,7 +1007,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                         Text(
                                           "About ${business?.businessName ?? ""}",
                                           style: TextStyle(
-                                            fontSize: 20.sp,
+                                            fontSize: 19.sp,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black,
                                             fontFamily: AppConstants.manrope,

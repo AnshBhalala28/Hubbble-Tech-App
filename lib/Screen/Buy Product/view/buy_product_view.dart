@@ -965,7 +965,7 @@ class _BuyProductViewState extends State<BuyProductView> {
                   title,
                   style: TextStyle(
                     fontSize: 16.sp,
-                    fontFamily: AppConstants.manrope,
+                    fontFamily: AppConstants.manropeBold,
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
                   ),
@@ -1008,9 +1008,9 @@ class _BuyProductViewState extends State<BuyProductView> {
                     subtitle,
                     style: TextStyle(
                       fontSize: 16.sp,
-                      fontFamily: AppConstants.manrope,
+                      fontFamily: AppConstants.manropeBold,
                       color: Colors.black87,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
