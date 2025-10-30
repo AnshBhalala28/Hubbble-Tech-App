@@ -3977,6 +3977,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                   color:
                                                                       Colors
                                                                           .black,
+                                                                  fontFamily: AppConstants.manrope
                                                                 ),
                                                               ),
                                                               trailing: Icon(
@@ -4072,6 +4073,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                       .w400,
                                                               color:
                                                                   Colors.black,
+                                                                fontFamily: AppConstants.manrope
+
                                                             ),
                                                           ),
                                                           trailing: Icon(
@@ -4171,6 +4174,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                   color:
                                                                       Colors
                                                                           .black,
+                                                                    fontFamily: AppConstants.manrope
+
                                                                 ),
                                                               ),
                                                               SizedBox(

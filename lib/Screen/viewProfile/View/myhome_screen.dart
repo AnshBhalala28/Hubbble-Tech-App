@@ -142,13 +142,14 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
         if (response.statusCode == 200) {
           var updatedModel = ProfileModel.fromJson(response.data);
           if (updatedModel.status == 200) {
-            Get.offAll(HomePage(userName: ""));
             Get.snackbar(
               "Success",
               "Home Updated Successfully",
               backgroundColor: AppColors.maincolor,
               colorText: Colors.white,
             );
+            Get.offAll(HomePage(userName: ""));
+            
           } else {
             Get.snackbar(
               "Error",
