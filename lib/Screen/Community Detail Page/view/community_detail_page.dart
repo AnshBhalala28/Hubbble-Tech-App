@@ -368,8 +368,8 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 19.sp,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: AppConstants.manrope,
+                                          // fontWeight: FontWeight.bold,
+                                          fontFamily: AppConstants.manropeBold,
                                         ),
                                       ),
                                     ],
@@ -634,7 +634,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                             .w500,
                                                                     fontFamily:
                                                                         AppConstants
-                                                                            .manrope,
+                                                                            .manropeBold,
                                                                     color:
                                                                         Colors
                                                                             .black,

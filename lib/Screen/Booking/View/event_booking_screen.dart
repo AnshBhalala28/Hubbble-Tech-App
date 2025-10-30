@@ -77,7 +77,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                             }
                           },
                           child: Container(
-                            height: 6.h,
+                            height: 5.h,
                             padding: EdgeInsets.symmetric(
                               vertical: 1.h,
                               horizontal: 5.w,
@@ -215,7 +215,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                                                           FontWeight.bold,
                                                       color: Colors.white,
                                                       fontFamily:
-                                                          AppConstants.manrope,
+                                                          AppConstants.manropeBold,
                                                     ),
                                                   ),
                                                 ),
@@ -228,7 +228,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
                                                 fontFamily:
-                                                    AppConstants.manrope,
+                                                    AppConstants.manropeBold,
                                                 color: Colors.black87,
                                               ),
                                             ),
@@ -246,8 +246,9 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                                                   child: Text(
                                                     booking?.eventLocation ??
                                                         "",
-                                                    style: const TextStyle(
+                                                    style:  TextStyle(
                                                       fontSize: 13,
+                                                      fontFamily: AppConstants.manropeBold,
                                                       color: Colors.black54,
                                                     ),
                                                   ),
@@ -737,10 +738,10 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
             flex: 2,
             child: Text(
               "$title:",
-              style: const TextStyle(
+              style:  TextStyle(
                 fontWeight: FontWeight.w600,
-                fontFamily: AppConstants.manrope,
-                fontSize: 15,
+                fontFamily: AppConstants.manropeBold,
+                fontSize: 15.sp,
               ),
             ),
           ),

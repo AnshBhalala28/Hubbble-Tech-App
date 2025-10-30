@@ -155,6 +155,9 @@ flutter:
     - family: AlbertSans-Light
       fonts:
         - asset: assets/fonts/AlbertSans-Light.ttf
+    - family: AlbertSans-SemiBold
+      fonts:
+        - asset: assets/fonts/AlbertSans-SemiBold.ttf
     - family: Mulish
       fonts:
         - asset: assets/fonts/Mulish-Regular.ttf

@@ -69,7 +69,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                 ),
                 SizedBox(height: 2.h),
                 SizedBox(
-                  height: 5.5.h,
+                  height: 5.h,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
@@ -197,7 +197,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                                           FontWeight.w600,
                                                       color: Colors.black54,
                                                       fontFamily:
-                                                          AppConstants.manrope,
+                                                          AppConstants.manropeBold,
                                                     ),
                                                   ),
                                                   const SizedBox(height: 4),
@@ -216,7 +216,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                                             FontWeight.w500,
                                                         fontFamily:
                                                             AppConstants
-                                                                .manrope,
+                                                                .manropeBold,
                                                         color: Colors.black87,
                                                       ),
                                                     ),

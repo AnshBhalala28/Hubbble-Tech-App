@@ -1876,9 +1876,9 @@ class _EventScreenState extends State<EventScreen> with TickerProviderStateMixin
                       event_list_Model?.data?.data?[index].title ?? "N/A",
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 16.5.sp,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: AppConstants.manrope,
+                        fontSize: 15.sp,
+                        // fontWeight: FontWeight.bold,
+                        fontFamily: AppConstants.manropeBold,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,

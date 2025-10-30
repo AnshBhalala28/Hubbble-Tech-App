@@ -2913,7 +2913,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                   fontSize: 15.sp,
                                                   fontWeight: FontWeight.w500,
                                                   fontFamily:
-                                                      AppConstants.manrope,
+                                                      AppConstants.manropeBold,
                                                   color: Colors.black87,
                                                 ),
                                               ),
@@ -3680,7 +3680,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       style: TextStyle(
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
+                                        fontFamily: AppConstants.manropeBold,
                                       ),
                                     ),
                                   ),
@@ -3700,7 +3700,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       style: TextStyle(
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
+                                        fontFamily: AppConstants.manropeBold,
                                       ),
                                     ),
                                   ),
@@ -3732,7 +3732,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       style: TextStyle(
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
+                                        fontFamily: AppConstants.manropeBold,
                                       ),
                                     ),
                                   ),
@@ -3753,7 +3753,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       style: TextStyle(
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
+                                        fontFamily: AppConstants.manropeBold,
                                       ),
                                     ),
                                   ),
@@ -4384,11 +4384,12 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     "Opening Hours",
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
+                                      fontFamily: AppConstants.manropeBold
                                     ),
                                   ),
                                   subtitle: Text(
                                     _getCurrentDayStatus(),
-                                    style: TextStyle(color: Colors.grey[600]),
+                                    style: TextStyle(color: Colors.grey[600],  fontFamily: AppConstants.manropeBold),
                                   ),
                                   shape: Border(),
                                   collapsedShape: Border(),
@@ -5582,7 +5583,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                       services[index].title ?? "Service Name",
                       style: TextStyle(
                         fontSize: 16.sp,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w500,
+
                         fontFamily: AppConstants.manrope,
                       ),
                       maxLines: 1,
@@ -6372,7 +6374,7 @@ Widget buildListTile({
                 style: TextStyle(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w500,
-                  fontFamily: AppConstants.manrope,
+                  fontFamily: AppConstants.manropeBold,
                 ),
               ),
               SizedBox(height: 0.5.h),

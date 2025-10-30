@@ -721,7 +721,7 @@ class _MessageScreenState extends State<MessageScreen> {
             height: 60,
             child: Row(
               children: [
-                Icon(Icons.picture_as_pdf, size: 70, color: Colors.white),
+                Icon(Icons.picture_as_pdf, size: 70, color: Colors.black),
                 SizedBox(width: 8),
               ],
             ),

@@ -273,6 +273,7 @@ class _BottomBarState extends State<BottomBar> with WidgetsBindingObserver {
     } catch (e) {
       if (e is DioException && e.response?.statusCode == 429) {
         log("⚠️ Rate limit hit — pausing 10 sec...");
+        log("⚠️ Bottom Bar Erroor...");
         isPausedForRateLimit = true;
 
         // Pause polling for 10 seconds when API blocks

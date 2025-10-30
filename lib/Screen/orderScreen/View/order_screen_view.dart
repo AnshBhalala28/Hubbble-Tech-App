@@ -181,7 +181,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                           "Filter Orders By",
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 18.sp,
+                            fontSize: 17.sp,
                             fontWeight: FontWeight.w600,
                             fontFamily: AppConstants.manropeBold,
                           ),
@@ -194,7 +194,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                         ),
                       ],
                     ),
-                    SizedBox(width: 15.w),
+                 Spacer(),
                     Material(
                       elevation: 2,
                       borderRadius: BorderRadius.circular(10),
@@ -299,7 +299,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                               }
                             },
                             child: Container(
-                              height: 6.h,
+                              height: 5.h,
                               padding: EdgeInsets.symmetric(
                                 vertical: 1.h,
                                 horizontal: 7.w,

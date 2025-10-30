@@ -103,7 +103,7 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                   Text(
                     nameController.text,
                     style: TextStyle(
-                      fontSize: 18.sp,
+                      fontSize: 19.sp,
                       fontWeight: FontWeight.bold,
                       fontFamily: AppConstants.manrope,
                     ),
@@ -293,7 +293,7 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
               Get.offAll(HomePage(userName: ""));
               Get.snackbar(
                 "Success",
-                "Profile updated successfully",
+                "Profile image updated successfully",
                 backgroundColor: AppColors.maincolor,
                 colorText: Colors.white,
               );

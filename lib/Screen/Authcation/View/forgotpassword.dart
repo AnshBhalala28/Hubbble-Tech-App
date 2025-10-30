@@ -70,7 +70,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 "To reset your password, please get in touch with your concierge team.",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: AppConstants.manrope,
+                  fontFamily: AppConstants.manropeBold,
                   color: AppColors.maincolor,
                   fontWeight: FontWeight.bold,
                   fontSize: 18.sp,
@@ -91,7 +91,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 borderRadius: BorderRadius.circular(5),
                 child: const Center(
                   child: Text(
-                    "Back To Login",
+                    "Back To Log in",
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.white,

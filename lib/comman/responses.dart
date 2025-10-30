@@ -68,16 +68,16 @@ handleDioError(DioException e) {
   } else {
     message = "Something went wrong.";
   }
-  if (message != null && message.isNotEmpty) {
-    Get.snackbar(
-      "Error",
-      message,
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.red.withOpacity(0.1),
-      colorText: Colors.black,
-      margin: const EdgeInsets.all(12),
-    );
-  }
+  // if (message != null && message.isNotEmpty) {
+  //   Get.snackbar(
+  //     "Error",
+  //     message,
+  //     snackPosition: SnackPosition.BOTTOM,
+  //     backgroundColor: Colors.red.withOpacity(0.1),
+  //     colorText: Colors.black,
+  //     margin: const EdgeInsets.all(12),
+  //   );
+  // }
 }
 
 // handleDioError(DioException e) {

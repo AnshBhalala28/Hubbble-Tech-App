@@ -97,7 +97,9 @@ class _ParcelScreenState extends State<ParcelScreen> {
                               selectedCategory == index
                                   ? Colors.white
                                   : Colors.black,
-                          fontFamily: AppConstants.manrope,
+                          fontFamily:     selectedCategory == index
+                              ? AppConstants.manropeBold
+                              : AppConstants.manrope,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 1,
                         ),

@@ -486,7 +486,7 @@ class _MessageboardState extends State<Messageboard> {
                                     ),
                                   )
                                       : SizedBox(
-                                    height: 18.h,
+
                                     child: SingleChildScrollView(
                                       child: Column(
                                         children: [
@@ -700,7 +700,7 @@ class _MessageboardState extends State<Messageboard> {
                             CachedNetworkImage(
                               imageUrl:
                               messageBoardModal
-                                  ?.data?[0]
+                                  ?.data?[index]
                                   .user
                                   ?.conciergeImage ??
                                   "",
@@ -750,7 +750,7 @@ class _MessageboardState extends State<Messageboard> {
                                   // User name
                                   Flexible(
                                     child: Text(
-                                      "${messageBoardModal?.data?[0].user?.firstName ?? ""} ${messageBoardModal?.data?[0].user?.lastName ?? ""}",
+                                      "${messageBoardModal?.data?[index].user?.firstName ?? ""} ${messageBoardModal?.data?[index].user?.lastName ?? ""}",
                                       overflow:
                                       TextOverflow
                                           .ellipsis,
@@ -1761,22 +1761,13 @@ class _MessageboardState extends State<Messageboard> {
               isLoading = false;
             });
 
-            buildErrorDialog(
-              context,
-              'Error',
-              'Something went wrong. Please try again later.',
-            );
           }
         } catch (e) {
           setState(() {
             isLoading = false;
           });
 
-          buildErrorDialog(
-            context,
-            'Error',
-            'Failed to load data. Please try again.',
-          );
+
         }
       } else {
         setState(() {

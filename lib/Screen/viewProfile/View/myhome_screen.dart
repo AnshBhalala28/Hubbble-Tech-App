@@ -342,7 +342,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                               "Apartment Documents",
                               style: TextStyle(
                                 fontFamily: AppConstants.manrope,
-                                fontSize: 18.sp,
+                                fontSize: 17.sp,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -408,7 +408,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                               "Building Documents",
                               style: TextStyle(
                                 fontFamily: AppConstants.manrope,
-                                fontSize: 18.sp,
+                                fontSize: 17.sp,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -520,8 +520,8 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                     label,
                     style: TextStyle(
                       fontFamily: AppConstants.manrope,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.8.sp,
                       color: Colors.black87,
                     ),
                   ),
