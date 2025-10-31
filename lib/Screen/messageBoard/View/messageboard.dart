@@ -511,9 +511,10 @@ class _MessageboardState extends State<Messageboard> {
                                                       color: AppColors.maincolor,
                                                     ),
                                                     const SizedBox(width: 8),
+                                                    // 1129.29 2588.44
                                                     Expanded(
                                                       child: Text(
-                                                        name,
+                                                        capitalizeEachWord(  name),
                                                         style: TextStyle(
                                                           fontFamily: AppConstants.manrope,
                                                           fontSize: 15.sp,
@@ -2026,9 +2027,9 @@ class _MessageboardState extends State<Messageboard> {
                         child: Text(
                           "Add Post",
                           style: TextStyle(
-                            fontSize: 19.sp,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
-                            fontFamily: AppConstants.manrope,
+                            fontFamily: AppConstants.manropeBold,
                           ),
                         ),
                       ),
@@ -2246,13 +2247,13 @@ class _MessageboardState extends State<Messageboard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Center(
+                       Center(
                         child: Text(
                           "Edit Post",
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
-                            fontFamily: AppConstants.manrope,
+                            fontFamily: AppConstants.manropeBold,
                           ),
                         ),
                       ),
@@ -2470,14 +2471,14 @@ class _MessageboardState extends State<Messageboard> {
                               Navigator.pop(context);
                             }
                           },
-                          child: const Center(
+                          child:  Center(
                             child: Text(
                               "Update Post",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 17,
+                                fontSize: 17.sp,
                                 fontWeight: FontWeight.bold,
-                                fontFamily: AppConstants.manrope,
+                                fontFamily: AppConstants.manropeBold,
                               ),
                             ),
                           ),
@@ -3176,4 +3177,12 @@ class _MessageboardState extends State<Messageboard> {
       }
     }
   }
+  String capitalizeEachWord(String? s) {
+    if (s == null || s.isEmpty) return '';
+    return s.split(' ').map((word) {
+      if (word.isEmpty) return word;
+      return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    }).join(' ');
+  }
+
 }

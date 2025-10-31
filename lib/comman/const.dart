@@ -92,7 +92,7 @@ String formatDateTime(String? createdAt) {
   DateTime parsedDate = DateTime.parse(createdAt);
   return "${DateFormat('dd MMM yyyy').format(parsedDate)}, ${DateFormat('hh:mm a').format(parsedDate)}";
 }
-
+// 1260*2736
 class AppConstants {
   static String BASEURL = "https://portal.wavee.ai/api/";
   // static String BASEURL = "https://staging-portal.wavee.ai/api/";

@@ -155,7 +155,7 @@ class _HomePageState extends State<HomePage> {
         "user_id": loginModel?.data?.user?.id.toString() ?? "",
         "count": "visitor",
       };
-      log("_fetchVisitorCount_fetchVisitorCount$data");
+      log("_fetchVisitorCount_fetchVisitorCount  $data");
 
       final response = await HomeProvider().visitorShowCountApi(data);
       visitorShowCountModel = VisitorShowCountModel.fromJson(response.data);

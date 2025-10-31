@@ -1281,7 +1281,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                     fontSize: 15.sp,
                                                     fontWeight: FontWeight.w600,
                                                     fontFamily:
-                                                        AppConstants.manrope,
+                                                        AppConstants.manropeBold,
                                                     color: const Color(
                                                       0xFF2E3333,
                                                     ),

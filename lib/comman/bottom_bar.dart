@@ -140,7 +140,7 @@ class _BottomBarState extends State<BottomBar> with WidgetsBindingObserver {
               color:
               widget.selected == index ? AppColors.maincolor : Colors.grey,
               fontSize: 14.5.sp,
-              fontFamily: AppConstants.manrope,
+              fontFamily: widget.selected == index? AppConstants.manropeBold: AppConstants.manrope,
             ),
           ),
           SizedBox(height: 0.4.h),
@@ -194,7 +194,7 @@ class _BottomBarState extends State<BottomBar> with WidgetsBindingObserver {
                       ? AppColors.maincolor
                       : Colors.grey,
                   fontSize: 14.5.sp,
-                  fontFamily: AppConstants.manrope,
+                  fontFamily: widget.selected == index? AppConstants.manropeBold: AppConstants.manrope,
                 ),
               ),
               SizedBox(height: 0.4.h),
