@@ -32,7 +32,6 @@ import 'package:wavee/Screen/messageBoard/View/messageboard.dart';
 import 'package:wavee/Screen/orderScreen/View/order_screen_view.dart';
 import 'package:wavee/Screen/viewProfile/View/Mybuilding_Screen.dart';
 import 'package:wavee/Screen/viewProfile/View/viewprofile.dart';
-import 'package:wavee/Screen/waveePet/provider/waveePetProvider.dart';
 import 'package:wavee/comman/bottom_bar.dart';
 import 'package:wavee/comman/check_inernet_connecty.dart';
 import 'package:wavee/comman/error_dialog.dart';
@@ -48,6 +47,7 @@ import '../../Authcation/Provider/authcation_provider.dart';
 import '../../Booking/View/event_booking_screen.dart';
 import '../../messageBoard/Model/Add_Post_Model.dart';
 import '../../messageBoard/Provider/messsage_board_provider.dart';
+import '../../waveePet/provider/waveePetProvider.dart';
 import '../Model/chat_show_count_modal.dart';
 import '../Model/message_board_modal.dart';
 
