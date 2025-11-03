@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -14,12 +14,13 @@ import 'package:wavee/Screen/homePage/Model/chat_show_count_modal.dart';
 import 'package:wavee/Screen/homePage/Provider/homescreen_provider.dart';
 import 'package:wavee/comman/check_inernet_connecty.dart';
 import 'package:wavee/comman/const.dart';
-import 'package:wavee/comman/error_dialog.dart';
+
 import '../Screen/homePage/View/homenewpage.dart';
 import 'colors.dart';
 
 class BottomBar extends StatefulWidget {
   int? selected;
+
   BottomBar({super.key, this.selected});
 
   @override
@@ -37,15 +38,21 @@ class _BottomBarState extends State<BottomBar> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    startPolling();
+    // startPolling();
+    timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      // notificationap();
+      ChatShowCount();
+    });
   }
 
   void startPolling() {
     timer?.cancel();
-    timer = Timer.periodic(const Duration(seconds: 10), (_) {
+    timer = Timer.periodic(const Duration(seconds: 3), (_) {
       if (!isPausedForRateLimit) {
         ChatShowCount();
-        log("isPausedForRateLimitisPausedForRateLimitisPausedForRateLimitisPausedForRateLimit");
+        log(
+          "isPausedForRateLimitisPausedForRateLimitisPausedForRateLimitisPausedForRateLimit",
+        );
       }
     });
   }
@@ -60,7 +67,7 @@ class _BottomBarState extends State<BottomBar> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      startPolling();
+      // startPolling();
     } else if (state == AppLifecycleState.paused) {
       timer?.cancel();
     }
@@ -103,8 +110,10 @@ class _BottomBarState extends State<BottomBar> with WidgetsBindingObserver {
             svgIconPath: AppConstants.cart,
             label: "My Cart",
             index: 4,
-            onTap: () => Get.offAll(
-                    () => AddToCartView(selected: 4, fromBottomBar: true)),
+            onTap:
+                () => Get.offAll(
+                  () => AddToCartView(selected: 4, fromBottomBar: true),
+                ),
           ),
         ],
       ),
@@ -138,9 +147,12 @@ class _BottomBarState extends State<BottomBar> with WidgetsBindingObserver {
             textAlign: TextAlign.center,
             style: TextStyle(
               color:
-              widget.selected == index ? AppColors.maincolor : Colors.grey,
+                  widget.selected == index ? AppColors.maincolor : Colors.grey,
               fontSize: 14.5.sp,
-              fontFamily: widget.selected == index? AppConstants.manropeBold: AppConstants.manrope,
+              fontFamily:
+                  widget.selected == index
+                      ? AppConstants.manropeBold
+                      : AppConstants.manrope,
             ),
           ),
           SizedBox(height: 0.4.h),
@@ -149,9 +161,10 @@ class _BottomBarState extends State<BottomBar> with WidgetsBindingObserver {
             width: 11.w,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
-              color: widget.selected == index
-                  ? AppColors.maincolor
-                  : Colors.transparent,
+              color:
+                  widget.selected == index
+                      ? AppColors.maincolor
+                      : Colors.transparent,
             ),
           ),
         ],
@@ -184,17 +197,23 @@ class _BottomBarState extends State<BottomBar> with WidgetsBindingObserver {
                 height: 22.sp,
                 width: 22.sp,
                 color:
-                widget.selected == index ? AppColors.maincolor : Colors.grey,
+                    widget.selected == index
+                        ? AppColors.maincolor
+                        : Colors.grey,
               ),
               Text(
                 label,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: widget.selected == index
-                      ? AppColors.maincolor
-                      : Colors.grey,
+                  color:
+                      widget.selected == index
+                          ? AppColors.maincolor
+                          : Colors.grey,
                   fontSize: 14.5.sp,
-                  fontFamily: widget.selected == index? AppConstants.manropeBold: AppConstants.manrope,
+                  fontFamily:
+                      widget.selected == index
+                          ? AppConstants.manropeBold
+                          : AppConstants.manrope,
                 ),
               ),
               SizedBox(height: 0.4.h),
@@ -203,9 +222,10 @@ class _BottomBarState extends State<BottomBar> with WidgetsBindingObserver {
                 width: 11.w,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
-                  color: widget.selected == index
-                      ? AppColors.maincolor
-                      : Colors.transparent,
+                  color:
+                      widget.selected == index
+                          ? AppColors.maincolor
+                          : Colors.transparent,
                 ),
               ),
             ],
@@ -218,9 +238,10 @@ class _BottomBarState extends State<BottomBar> with WidgetsBindingObserver {
               child: Container(
                 padding: EdgeInsets.all(4.sp),
                 decoration: BoxDecoration(
-                  color: widget.selected == index
-                      ? AppColors.maincolor
-                      : Colors.grey,
+                  color:
+                      widget.selected == index
+                          ? AppColors.maincolor
+                          : Colors.grey,
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 1.5.sp),
                 ),
@@ -242,9 +263,9 @@ class _BottomBarState extends State<BottomBar> with WidgetsBindingObserver {
     );
   }
 
-  Future<void> ChatShowCount() async {
+  Future<void> ChatShowCount1() async {
     if (lastCallTime != null &&
-        DateTime.now().difference(lastCallTime!) < const Duration(seconds: 10)) {
+        DateTime.now().difference(lastCallTime!) < const Duration(seconds: 3)) {
       return;
     }
     lastCallTime = DateTime.now();
@@ -285,5 +306,61 @@ class _BottomBarState extends State<BottomBar> with WidgetsBindingObserver {
       }
     }
   }
-}
 
+  ChatShowCount() async {
+    final Map<String, String> bodyData = {};
+    bodyData['sender_id'] = '1';
+    bodyData['receiver_id'] = loginModel?.data?.user?.id.toString() ?? "";
+    print("dentalchatdata ${bodyData}");
+    checkInternet().then((internet) async {
+      if (internet) {
+        HomeProvider().chatCountApi(bodyData).then((response) async {
+          chatShowCountModal = ChatShowCountModal.fromJson(response.data);
+          if (response.statusCode == 200) {
+            print("Notification Count data ${response.data}");
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+                chatCount = chatShowCountModal?.data ?? 0;
+              });
+            }
+            ;
+          }
+          if (response.statusCode == 404 || response.statusCode == 429) {
+            chatShowCountModal = ChatShowCountModal.fromJson(response.data);
+            print("Notification Count data ${response.data}");
+
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+                chatCount = chatShowCountModal?.data ?? 0;
+              });
+            }
+          } else if (response.statusCode == 401) {
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
+          } else {
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
+          }
+        });
+      } else {
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+          });
+        }
+        // showCustomErrorSnackbar(
+        //   title: 'Internet Error',
+        //   message: 'Internet Required',
+        // );
+      }
+    });
+  }
+}

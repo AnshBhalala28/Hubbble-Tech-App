@@ -122,7 +122,8 @@ class _BookingScreenState extends State<BookingScreen> {
     return Scaffold(
       // drawer: SideMenu(),
       // key: _scaffoldKeyBooking,
-      backgroundColor: AppColors.bgcolor,
+      backgroundColor: AppColors.white,
+
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 2.h),

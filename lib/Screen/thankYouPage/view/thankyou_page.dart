@@ -170,6 +170,8 @@ class _ThankYouPageState extends State<ThankYouPage>
       onWillPop: () async => false,
 
       child: Scaffold(
+        backgroundColor: AppColors.white,
+
         body: Container(
           width: double.infinity,
           height: double.infinity,

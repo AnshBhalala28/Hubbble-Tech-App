@@ -243,7 +243,7 @@ class _FavouriteBusinessesPageState extends State<FavouriteBusinessesPage> {
     final GlobalKey<ScaffoldState> scaffoldKeyParcel =
         GlobalKey<ScaffoldState>();
     return Scaffold(
-      backgroundColor: AppColors.bgcolor,
+      backgroundColor: AppColors.white,
 
       body: Stack(
         children: [

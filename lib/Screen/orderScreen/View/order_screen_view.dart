@@ -61,7 +61,7 @@ class _Order_ScreenState extends State<Order_Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bgcolor,
+      backgroundColor: AppColors.white,
       body: Stack(
         children: [
           Padding(

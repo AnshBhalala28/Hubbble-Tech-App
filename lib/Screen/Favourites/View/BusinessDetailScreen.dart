@@ -150,7 +150,7 @@ class _BusinessDetailScreenState extends State<BusinessDetailScreen> {
         GlobalKey<ScaffoldState>();
 
     return Scaffold(
-      backgroundColor: AppColors.bgcolor,
+      backgroundColor: AppColors.white,
 
       body: SafeArea(
         child: Stack(
