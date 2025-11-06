@@ -260,7 +260,7 @@ class _SearchScreenState extends State<SearchScreen> {
           onTap:
               () =>
               Get.off(
-                AddToCartView(type: 'product', fromBottomBar: false),
+                AddToCartView(type: 'product', fromBottomBar: false,isAmend: false,),
               ),
           child: Container(
             height: 50,

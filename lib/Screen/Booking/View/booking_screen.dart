@@ -146,9 +146,9 @@ class _BookingScreenState extends State<BookingScreen> {
                         "Filter Status By",
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 18.sp,
+                          fontSize: 17.sp,
                           fontWeight: FontWeight.w600,
-                          fontFamily: AppConstants.manrope,
+                          fontFamily: AppConstants.manropeBold,
                         ),
                       ),
                       SizedBox(width: 2.w),
@@ -193,8 +193,9 @@ class _BookingScreenState extends State<BookingScreen> {
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: AppConstants.manropeBold,
+                                    fontWeight: FontWeight.w500,
+
+                                    fontFamily: AppConstants.manrope,
                                   ),
                                 ),
                               ),
@@ -205,8 +206,9 @@ class _BookingScreenState extends State<BookingScreen> {
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: AppConstants.manropeBold,
+                                    fontWeight: FontWeight.w500,
+
+                                    fontFamily: AppConstants.manrope,
                                   ),
                                 ),
                               ),
@@ -217,8 +219,9 @@ class _BookingScreenState extends State<BookingScreen> {
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: AppConstants.manropeBold,
+                                    fontWeight: FontWeight.w500,
+
+                                    fontFamily: AppConstants.manrope,
                                   ),
                                 ),
                               ),
@@ -229,8 +232,8 @@ class _BookingScreenState extends State<BookingScreen> {
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: AppConstants.manropeBold,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: AppConstants.manrope,
                                   ),
                                 ),
                               ),

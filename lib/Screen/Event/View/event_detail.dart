@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Screen/Booking/View/event_booking_screen.dart';
 import 'package:wavee/Screen/homePage/View/homenewpage.dart';
 import 'package:wavee/comman/custom_batan.dart';
 import 'package:wavee/comman/loader.dart';
@@ -466,7 +467,7 @@ class _EventDetailState extends State<EventDetail> {
                 setState(() {
                   isBooking = false;
                 });
-                Get.to(HomePage(userName: ""));
+                Get.to(EventbookingScreen());
                 Get.snackbar(
                   "Event Request",
                   "Event access has been requested",

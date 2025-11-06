@@ -30,8 +30,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
   bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
-
-  // Error messages for specific fields
   String? emailError;
   String? generalError;
 

@@ -45,7 +45,7 @@ showOnlineOrderDisabledDialog({
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w700,
                       color: Colors.black87,
-                      fontFamily: AppConstants.manrope,
+                      fontFamily: AppConstants.manropeBold,
                     ),
                     textAlign: TextAlign.center,
                   ),

@@ -85,6 +85,7 @@ import '../Screen/upcomingRequest/Model/OnGoing_Freind_Request_Model.dart';
 import '../Screen/upcomingRequest/Model/my_request_model.dart';
 
 const String baseUrl = "https://portal.wavee.ai/api";
+// const String baseUrl = "https://staging-portal.wavee.ai/api";
 const String jsonString = "assets/google_pay.json";
 
 String formatDateTime(String? createdAt) {
@@ -94,8 +95,8 @@ String formatDateTime(String? createdAt) {
 }
 // 1260*2736
 class AppConstants {
-  static String BASEURL = "https://portal.wavee.ai/api/";
-  // static String BASEURL = "https://staging-portal.wavee.ai/api/";
+  // static String BASEURL = "https://portal.wavee.ai/api/";
+  static String BASEURL = "https://staging-portal.wavee.ai/api/";
 
   static const String path = "assets/Svg/";
   static const String manrope1 = "AlbertSans-SemiBold";
@@ -127,6 +128,8 @@ class AppConstants {
   static const String messageBoard = "${path}messageboard.svg";
   static const String eventBooking = "${path}eventbookin.svg";
   static const String waveePet = "${path}waveePet.svg";
+
+  
 }
 
 LoginModel? loginModel;

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Screen/Add%20to%20Cart/view/add_to_cart_view.dart';
 import 'package:wavee/Screen/messageScreen/View/messageScreen.dart';
 import 'package:wavee/Screen/orderScreen/Model/service_order_model.dart';
 import 'package:wavee/Screen/orderScreen/View/order_screen_view.dart';
@@ -1692,7 +1693,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                     ),
                     SizedBox(height: 0.5.h),
                     Text(
-                      "• Change item quantities\n• Add or remove items\n• Modify delivery preferences",
+                      "• Change item quantities\n• Add or remove items\n",
                       style: TextStyle(
                         fontSize: 15.sp,
                         color: Colors.grey[600],
@@ -1756,9 +1757,10 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                 if (canAmend) {
                   // Add your amend order logic here
                   // For example: Get.to(AmendOrderScreen());
+                  Get.to(AddToCartView(isAmend: true,));
                 }
               },
-              color: canAmend ? AppColors.maincolor : Colors.grey[600]!,
+              color: canAmend ? AppColors.maincolor : AppColors.maincolor ,
               fontcolor: Colors.white,
               height: 5.h,
               width: double.infinity,

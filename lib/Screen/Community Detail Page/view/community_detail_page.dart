@@ -1414,7 +1414,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
             setState(() {
               isAddtoCart = false;
             });
-            Get.to(() => AddToCartView(type: "product", fromBottomBar: false));
+            Get.to(() => AddToCartView(type: "product", fromBottomBar: false,isAmend: false));
           } else {
             setState(() {
               isAddtoCart = false;

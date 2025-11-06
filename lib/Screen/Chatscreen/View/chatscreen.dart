@@ -15,6 +15,7 @@ import 'package:wavee/comman/bottom_bar.dart';
 import 'package:wavee/comman/const.dart';
 import 'package:wavee/comman/loader.dart';
 
+import '../../../comman/chat.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/colors.dart';
 import '../../../comman/error_dialog.dart';
@@ -153,10 +154,12 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   }
 
   Timer? _timer;
+  final GlobalCountsController countsController = Get.find();
 
   @override
   void initState() {
     super.initState();
+    ChatApi();
     WidgetsBinding.instance.addObserver(this);
     ChatApi();
     initializeData();
@@ -219,7 +222,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       },
       child: Scaffold(
         backgroundColor: Colors.white,
-        bottomNavigationBar: BottomBar(selected: 3),
+        bottomNavigationBar: Obx(() =>  BottomBar(selected: 3,chatCount: countsController.chatCount.value,)),
         body: Container(
           width: double.infinity,
           height: Get.height,
@@ -298,6 +301,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                             setState(() {
                               selectedValue = newValue!;
                             });
+
                           },
                         ),
                       ),
@@ -648,6 +652,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                     ),
                                                   ],
                                                 ),
+
+                                                SizedBox(height: 2.h,),
                                                 if (user.unreadCount != 0)
                                                   CircleAvatar(
                                                     radius: 13,

@@ -452,6 +452,8 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                 Expanded(
                   child: PagedListView<int, Data1>(
                     pagingController: _pagingController,
+                    reverse: false,
+                    padding: EdgeInsets.zero,
                     builderDelegate: PagedChildBuilderDelegate<Data1>(
                       noItemsFoundIndicatorBuilder:
                           (_) => Center(

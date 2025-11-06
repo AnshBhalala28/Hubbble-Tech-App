@@ -179,6 +179,315 @@
 //     return data;
 //   }
 // }
+// class AmenitiesModel {
+//   int? status;
+//   String? message;
+//   Data? data;
+//
+//   AmenitiesModel({this.status, this.message, this.data});
+//
+//   AmenitiesModel.fromJson(Map<String, dynamic> json) {
+//     status = json['status'];
+//     message = json['message'];
+//     data = json['data'] != null ? Data.fromJson(json['data']) : null;
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = <String, dynamic>{};
+//     data['status'] = this.status;
+//     data['message'] = this.message;
+//     if (this.data != null) {
+//       data['data'] = this.data!.toJson();
+//     }
+//     return data;
+//   }
+// }
+//
+// class Data {
+//   int? currentPage;
+//   List<Data1>? data;
+//   String? firstPageUrl;
+//   int? from;
+//   int? lastPage;
+//   String? lastPageUrl;
+//   List<Links>? links;
+//   var nextPageUrl;
+//   String? path;
+//   int? perPage;
+//   var prevPageUrl;
+//   int? to;
+//   int? total;
+//   int? totalPages;
+//
+//   Data({
+//     this.currentPage,
+//     this.data,
+//     this.firstPageUrl,
+//     this.from,
+//     this.lastPage,
+//     this.lastPageUrl,
+//     this.links,
+//     this.nextPageUrl,
+//     this.path,
+//     this.perPage,
+//     this.prevPageUrl,
+//     this.to,
+//     this.totalPages,
+//
+//     this.total,
+//   });
+//
+//   Data.fromJson(Map<String, dynamic> json) {
+//     currentPage = json['current_page'];
+//     if (json['data'] != null) {
+//       data = <Data1>[];
+//       json['data'].forEach((v) {
+//         data!.add(Data1.fromJson(v));
+//       });
+//     }
+//     firstPageUrl = json['first_page_url'];
+//     from = json['from'];
+//     lastPage = json['last_page'];
+//     lastPageUrl = json['last_page_url'];
+//     if (json['links'] != null) {
+//       links = <Links>[];
+//       json['links'].forEach((v) {
+//         links!.add(Links.fromJson(v));
+//       });
+//     }
+//     nextPageUrl = json['next_page_url'];
+//     path = json['path'];
+//     perPage = json['per_page'];
+//     prevPageUrl = json['prev_page_url'];
+//     to = json['to'];
+//     total = json['total'];
+//     totalPages = json['total_pages'];
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = <String, dynamic>{};
+//     data['current_page'] = this.currentPage;
+//     if (this.data != null) {
+//       data['data'] = this.data!.map((v) => v.toJson()).toList();
+//     }
+//     data['first_page_url'] = this.firstPageUrl;
+//     data['from'] = this.from;
+//     data['last_page'] = this.lastPage;
+//     data['last_page_url'] = this.lastPageUrl;
+//     if (this.links != null) {
+//       data['links'] = this.links!.map((v) => v.toJson()).toList();
+//     }
+//     data['next_page_url'] = this.nextPageUrl;
+//     data['path'] = this.path;
+//     data['per_page'] = this.perPage;
+//     data['prev_page_url'] = this.prevPageUrl;
+//     data['to'] = this.to;
+//     data['total'] = this.total;
+//     data['total_pages'] = this.totalPages;
+//
+//     return data;
+//   }
+// }
+//
+// class Data1 {
+//   int? id;
+//   int? userId;
+//   String? name;
+//   String? description;
+//   List<String>? imageUrl;
+//   String? rulesNotice;
+//   OperatingHours? operatingHours;
+//   String? bookingLimitDuration;
+//   List<String>? durationOptions;
+//   int? capacity;
+//   int? maxBookingPerDay;
+//   String? status;
+//   var deletedAt;
+//   String? createdAt;
+//   String? updatedAt;
+//   int? totalBookingSlots;
+//   int? bookedSlots;
+//   int? availableSlots;
+//
+//   Data1({
+//     this.id,
+//     this.userId,
+//     this.name,
+//     this.description,
+//     this.imageUrl,
+//     this.rulesNotice,
+//     this.operatingHours,
+//     this.bookingLimitDuration,
+//     this.durationOptions,
+//     this.capacity,
+//     this.maxBookingPerDay,
+//     this.status,
+//     this.deletedAt,
+//     this.createdAt,
+//     this.updatedAt,
+//     this.totalBookingSlots,
+//     this.bookedSlots,
+//     this.availableSlots,
+//   });
+//
+//   Data1.fromJson(Map<String, dynamic> json) {
+//     id = json['id'];
+//     userId = json['user_id'];
+//     name = json['name'];
+//     description = json['description'];
+//     imageUrl = json['image_url'].cast<String>();
+//     rulesNotice = json['rules_notice'];
+//     operatingHours =
+//         (json['operating_hours'] is Map)
+//             ? OperatingHours.fromJson(json['operating_hours'])
+//             : null;
+//     bookingLimitDuration = json['booking_limit_duration'];
+//     durationOptions = json['duration_options'].cast<String>();
+//     capacity = json['capacity'];
+//     maxBookingPerDay = json['max_booking_per_day'];
+//     status = json['status'];
+//     deletedAt = json['deleted_at'];
+//     createdAt = json['created_at'];
+//     updatedAt = json['updated_at'];
+//     totalBookingSlots = json['total_booking_slots'];
+//     bookedSlots = json['booked_slots'];
+//     availableSlots = json['available_slots'];
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = <String, dynamic>{};
+//     data['id'] = this.id;
+//     data['user_id'] = this.userId;
+//     data['name'] = this.name;
+//     data['description'] = this.description;
+//     data['image_url'] = this.imageUrl;
+//     data['rules_notice'] = this.rulesNotice;
+//     if (operatingHours != null) {
+//       data['operating_hours'] = operatingHours!.toJson();
+//     }
+//     data['booking_limit_duration'] = this.bookingLimitDuration;
+//     data['duration_options'] = this.durationOptions;
+//     data['capacity'] = this.capacity;
+//     data['max_booking_per_day'] = this.maxBookingPerDay;
+//     data['status'] = this.status;
+//     data['deleted_at'] = this.deletedAt;
+//     data['created_at'] = this.createdAt;
+//     data['updated_at'] = this.updatedAt;
+//     data['total_booking_slots'] = this.totalBookingSlots;
+//     data['booked_slots'] = this.bookedSlots;
+//     data['available_slots'] = this.availableSlots;
+//     return data;
+//   }
+// }
+//
+// class OperatingHours {
+//   Monday? monday;
+//   Monday? tuesday;
+//   Monday? wednesday;
+//   Monday? thursday;
+//   Monday? friday;
+//   Monday? saturday;
+//   Monday? sunday;
+//
+//   OperatingHours({
+//     this.monday,
+//     this.tuesday,
+//     this.wednesday,
+//     this.thursday,
+//     this.friday,
+//     this.saturday,
+//     this.sunday,
+//   });
+//
+//   OperatingHours.fromJson(Map<String, dynamic> json) {
+//     monday = json['monday'] != null ? Monday.fromJson(json['monday']) : null;
+//     tuesday = json['tuesday'] != null ? Monday.fromJson(json['tuesday']) : null;
+//     wednesday =
+//         json['wednesday'] != null ? Monday.fromJson(json['wednesday']) : null;
+//     thursday =
+//         json['thursday'] != null ? Monday.fromJson(json['thursday']) : null;
+//     friday = json['friday'] != null ? Monday.fromJson(json['friday']) : null;
+//     saturday =
+//         json['saturday'] != null ? Monday.fromJson(json['saturday']) : null;
+//     sunday = json['sunday'] != null ? Monday.fromJson(json['sunday']) : null;
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = {};
+//     if (monday != null) data['monday'] = monday!.toJson();
+//     if (tuesday != null) data['tuesday'] = tuesday!.toJson();
+//     if (wednesday != null) data['wednesday'] = wednesday!.toJson();
+//     if (thursday != null) data['thursday'] = thursday!.toJson();
+//     if (friday != null) data['friday'] = friday!.toJson();
+//     if (saturday != null) data['saturday'] = saturday!.toJson();
+//     if (sunday != null) data['sunday'] = sunday!.toJson();
+//     return data;
+//   }
+// }
+//
+// class Monday {
+//   String? open;
+//   String? close;
+//
+//   Monday({this.open, this.close});
+//
+//   Monday.fromJson(Map<String, dynamic> json) {
+//     open = json['open'];
+//     close = json['close'];
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = {};
+//     data['open'] = open;
+//     data['close'] = close;
+//     return data;
+//   }
+// }
+//
+// class Links {
+//   String? url;
+//   String? label;
+//   bool? active;
+//
+//   Links({this.url, this.label, this.active});
+//
+//   Links.fromJson(Map<String, dynamic> json) {
+//     url = json['url'];
+//     label = json['label'];
+//     active = json['active'];
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = <String, dynamic>{};
+//     data['url'] = this.url;
+//     data['label'] = this.label;
+//     data['active'] = this.active;
+//     return data;
+//   }
+// }
+import 'dart:convert'; // jsonDecode માટે
+
+// 1. ExistingBooking ક્લાસ (આને ફાઇલમાં સૌથી ઉપર રાખો)
+class ExistingBooking {
+  String? startTime;
+  String? endTime;
+
+  ExistingBooking({this.startTime, this.endTime});
+
+  ExistingBooking.fromJson(Map<String, dynamic> json) {
+    startTime = json['start_time'];
+    endTime = json['end_time'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['start_time'] = this.startTime;
+    data['end_time'] = this.endTime;
+    return data;
+  }
+}
+
+// 2. AmenitiesModel (તમારો મુખ્ય ક્લાસ - બરાબર છે)
 class AmenitiesModel {
   int? status;
   String? message;
@@ -203,9 +512,10 @@ class AmenitiesModel {
   }
 }
 
+// 3. Data (પેજિનેશન ડેટા - બરાબર છે)
 class Data {
   int? currentPage;
-  List<Data1>? data;
+  List<Data1>? data; // આ Data1 ની લિસ્ટ છે
   String? firstPageUrl;
   int? from;
   int? lastPage;
@@ -233,7 +543,6 @@ class Data {
     this.prevPageUrl,
     this.to,
     this.totalPages,
-
     this.total,
   });
 
@@ -284,11 +593,11 @@ class Data {
     data['to'] = this.to;
     data['total'] = this.total;
     data['total_pages'] = this.totalPages;
-
     return data;
   }
 }
 
+// 4. Data1 (એમેનિટીની મુખ્ય વિગતો - અહીં ફેરફાર કરેલ છે)
 class Data1 {
   int? id;
   int? userId;
@@ -309,6 +618,9 @@ class Data1 {
   int? bookedSlots;
   int? availableSlots;
 
+  // ▼▼▼ નવો વેરીએબલ ઉમેરેલ છે ▼▼▼
+  List<ExistingBooking>? existingBookings;
+
   Data1({
     this.id,
     this.userId,
@@ -328,6 +640,7 @@ class Data1 {
     this.totalBookingSlots,
     this.bookedSlots,
     this.availableSlots,
+    this.existingBookings, // <-- કન્સ્ટ્રક્ટરમાં ઉમેરો
   });
 
   Data1.fromJson(Map<String, dynamic> json) {
@@ -335,14 +648,30 @@ class Data1 {
     userId = json['user_id'];
     name = json['name'];
     description = json['description'];
-    imageUrl = json['image_url'].cast<String>();
+
+    // null check (જો API માંથી null આવે તો ક્રેશ ન થાય)
+    if (json['image_url'] != null) {
+      imageUrl = json['image_url'].cast<String>();
+    } else {
+      imageUrl = []; // ખાલી લિસ્ટ
+    }
+
     rulesNotice = json['rules_notice'];
-    operatingHours =
-        (json['operating_hours'] is Map)
-            ? OperatingHours.fromJson(json['operating_hours'])
-            : null;
+
+    // (json['operating_hours'] is Map) - આ ચેક સાચો છે
+    operatingHours = (json['operating_hours'] is Map)
+        ? OperatingHours.fromJson(json['operating_hours'])
+        : null;
+
     bookingLimitDuration = json['booking_limit_duration'];
-    durationOptions = json['duration_options'].cast<String>();
+
+    // null check (જો API માંથી null આવે તો ક્રેશ ન થાય)
+    if (json['duration_options'] != null) {
+      durationOptions = json['duration_options'].cast<String>();
+    } else {
+      durationOptions = []; // ખાલી લિસ્ટ
+    }
+
     capacity = json['capacity'];
     maxBookingPerDay = json['max_booking_per_day'];
     status = json['status'];
@@ -352,6 +681,17 @@ class Data1 {
     totalBookingSlots = json['total_booking_slots'];
     bookedSlots = json['booked_slots'];
     availableSlots = json['available_slots'];
+
+    // ▼▼▼ નવું લોજિક ઉમેરેલ છે ▼▼▼
+    if (json['existing_bookings'] != null) {
+      existingBookings = <ExistingBooking>[];
+      json['existing_bookings'].forEach((v) {
+        existingBookings!.add(ExistingBooking.fromJson(v));
+      });
+    } else {
+      existingBookings = []; // ખાલી લિસ્ટ
+    }
+    // ▲▲▲
   }
 
   Map<String, dynamic> toJson() {
@@ -376,10 +716,18 @@ class Data1 {
     data['total_booking_slots'] = this.totalBookingSlots;
     data['booked_slots'] = this.bookedSlots;
     data['available_slots'] = this.availableSlots;
+
+    // ▼▼▼ toJson માં ઉમેરેલ છે ▼▼▼
+    if (this.existingBookings != null) {
+      data['existing_bookings'] =
+          this.existingBookings!.map((v) => v.toJson()).toList();
+    }
+    // ▲▲▲
     return data;
   }
 }
 
+// 5. OperatingHours (તમારો કોડ બરાબર છે)
 class OperatingHours {
   Monday? monday;
   Monday? tuesday;
@@ -403,12 +751,12 @@ class OperatingHours {
     monday = json['monday'] != null ? Monday.fromJson(json['monday']) : null;
     tuesday = json['tuesday'] != null ? Monday.fromJson(json['tuesday']) : null;
     wednesday =
-        json['wednesday'] != null ? Monday.fromJson(json['wednesday']) : null;
+    json['wednesday'] != null ? Monday.fromJson(json['wednesday']) : null;
     thursday =
-        json['thursday'] != null ? Monday.fromJson(json['thursday']) : null;
+    json['thursday'] != null ? Monday.fromJson(json['thursday']) : null;
     friday = json['friday'] != null ? Monday.fromJson(json['friday']) : null;
     saturday =
-        json['saturday'] != null ? Monday.fromJson(json['saturday']) : null;
+    json['saturday'] != null ? Monday.fromJson(json['saturday']) : null;
     sunday = json['sunday'] != null ? Monday.fromJson(json['sunday']) : null;
   }
 
@@ -425,6 +773,7 @@ class OperatingHours {
   }
 }
 
+// 6. Monday (બધા દિવસો માટે - બરાબર છે)
 class Monday {
   String? open;
   String? close;
@@ -444,6 +793,7 @@ class Monday {
   }
 }
 
+// 7. Links (પેજિનેશન માટે - બરાબર છે)
 class Links {
   String? url;
   String? label;

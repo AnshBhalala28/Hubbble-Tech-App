@@ -979,7 +979,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             setState(() {
               isAddReviewLoading = false;
             });
-            Get.to(() => AddToCartView(type: "product", fromBottomBar: false));
+            Get.to(() => AddToCartView(type: "product", fromBottomBar: false,isAmend: false));
           } else {
             setState(() {
               isAddReviewLoading = false;

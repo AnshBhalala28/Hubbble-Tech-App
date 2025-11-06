@@ -522,7 +522,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           Get.to(
                             AddToCartView(
                               type: 'product',
-                              fromBottomBar: false,
+                              fromBottomBar: false,isAmend: false
                             ),
                           );
                         },
@@ -609,7 +609,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             setState(() {
               isAddtoCart = false;
             });
-            Get.to(() => AddToCartView(type: "product", fromBottomBar: false));
+            Get.to(() => AddToCartView(type: "product", fromBottomBar: false,isAmend: false));
           } else {
             setState(() {
               isAddtoCart = false;

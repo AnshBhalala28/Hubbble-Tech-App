@@ -10,6 +10,7 @@ import 'package:wavee/comman/colors.dart';
 import 'package:wavee/comman/const.dart';
 import 'package:wavee/comman/loader.dart';
 
+import '../../../comman/chat.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/custom_batan.dart';
 import '../../../comman/error_dialog.dart';
@@ -23,12 +24,14 @@ class AddToCartView extends StatefulWidget {
   String? type;
   int? selected;
   final bool fromBottomBar;
+   bool? isAmend;
 
   AddToCartView({
     super.key,
     this.type,
     this.selected,
     this.fromBottomBar = false,
+    this.isAmend = false,
   });
 
   @override
@@ -43,6 +46,7 @@ class _AddToCartViewState extends State<AddToCartView> {
   double deliveryFees = 0.0;
   bool hasShownFancySheet = false;
   bool isAddtoCart = false;
+  final GlobalCountsController countsController = Get.find();
 
   @override
   void initState() {
@@ -76,7 +80,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                     Get.back();
                   }
                 },
-                title: "Your Cart",
+                title:widget.isAmend==true?"Amend Cart": "Your Cart",
                 drawerCallback: () {},
               ),
             ),
@@ -314,7 +318,7 @@ class _AddToCartViewState extends State<AddToCartView> {
             ),
           ],
         ),
-        bottomNavigationBar: BottomBar(selected: 4),
+        bottomNavigationBar: Obx(() =>  BottomBar(selected: 4,chatCount: countsController.chatCount.value,)),
       ),
     );
   }
@@ -455,7 +459,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
-                          fontFamily: AppConstants.manrope,
+                          fontFamily: AppConstants.manropeBold,
                           color: const Color(0xFF2E3333),
                         ),
                       ),

@@ -27,6 +27,7 @@ import 'package:wavee/Screen/messageScreen/View/messageScreen.dart';
 import 'package:wavee/Screen/productDetailPage/view/product_detail_page.dart';
 import 'package:wavee/Screen/viewProfile/Model/profile_model.dart';
 import 'package:wavee/Screen/viewProfile/Provider/profile_provider.dart';
+import 'package:wavee/comman/chat.dart';
 import 'package:wavee/comman/colors.dart';
 
 import '../../../../comman/bottom_bar.dart';
@@ -63,6 +64,8 @@ class CommunityScreen extends StatefulWidget {
 
 class _CommunityScreenState extends State<CommunityScreen>
     with WidgetsBindingObserver {
+  final GlobalCountsController countsController = Get.find();
+
   final TextEditingController search = TextEditingController();
   final TextEditingController request = TextEditingController();
   late GoogleMapController mapController;
@@ -1057,7 +1060,12 @@ class _CommunityScreenState extends State<CommunityScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomBar(selected: 2),
+      bottomNavigationBar: Obx(
+        () =>  BottomBar(
+          selected: 2,
+          chatCount: countsController.chatCount.value,
+        ),
+      ),
       backgroundColor: AppColors.white,
       body: WillPopScope(
         onWillPop: () async {
@@ -1240,7 +1248,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                               SizedBox(width: 10),
                               Text(
                                 "Favourites",
-                                style: TextStyle(fontSize: 16.sp,fontFamily: AppConstants.manrope),
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontFamily: AppConstants.manrope,
+                                ),
                               ),
                             ],
                           ),
@@ -1275,7 +1286,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                               SizedBox(width: 10),
                               Text(
                                 "Visited",
-                                style: TextStyle(fontSize: 16.sp,fontFamily: AppConstants.manrope),
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontFamily: AppConstants.manrope,
+                                ),
                               ),
                             ],
                           ),
@@ -1345,7 +1359,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     Text(
                                       categoriesModel?.data?[i].categoryName ??
                                           "",
-                                      style: TextStyle(fontSize: 16.sp,fontFamily: AppConstants.manrope),
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontFamily: AppConstants.manrope,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -2926,7 +2943,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       color: Colors.grey,
-                                                      fontFamily: AppConstants.manrope
+                                                      fontFamily:
+                                                          AppConstants.manrope,
                                                     ),
                                                   ),
                                                   SizedBox(width: 3.w),
@@ -2936,8 +2954,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                       fontSize: 13.sp,
                                                       color:
                                                           Colors.grey.shade600,
-                                                        fontFamily: AppConstants.manrope
-
+                                                      fontFamily:
+                                                          AppConstants.manrope,
                                                     ),
                                                   ),
                                                 ],
@@ -3977,7 +3995,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                   color:
                                                                       Colors
                                                                           .black,
-                                                                  fontFamily: AppConstants.manrope
+                                                                  fontFamily:
+                                                                      AppConstants
+                                                                          .manrope,
                                                                 ),
                                                               ),
                                                               trailing: Icon(
@@ -4073,8 +4093,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                       .w400,
                                                               color:
                                                                   Colors.black,
-                                                                fontFamily: AppConstants.manrope
-
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manrope,
                                                             ),
                                                           ),
                                                           trailing: Icon(
@@ -4174,8 +4195,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                   color:
                                                                       Colors
                                                                           .black,
-                                                                    fontFamily: AppConstants.manrope
-
+                                                                  fontFamily:
+                                                                      AppConstants
+                                                                          .manrope,
                                                                 ),
                                                               ),
                                                               SizedBox(
@@ -4389,12 +4411,15 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     "Opening Hours",
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
-                                      fontFamily: AppConstants.manropeBold
+                                      fontFamily: AppConstants.manropeBold,
                                     ),
                                   ),
                                   subtitle: Text(
                                     _getCurrentDayStatus(),
-                                    style: TextStyle(color: Colors.grey[600],  fontFamily: AppConstants.manropeBold),
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontFamily: AppConstants.manropeBold,
+                                    ),
                                   ),
                                   shape: Border(),
                                   collapsedShape: Border(),

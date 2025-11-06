@@ -100,7 +100,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
                           fontFamily:     selectedCategory == index
                               ? AppConstants.manropeBold
                               : AppConstants.manrope,
-                          fontWeight: FontWeight.bold,
+                          // fontWeight: FontWeight.bold,
                           letterSpacing: 1,
                         ),
                       ),
