@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/Screen/Buy%20Product/view/buy_product_view.dart';
+import 'package:wavee/Screen/Community%20Detail%20Page/view/community_detail_page.dart';
 import 'package:wavee/Screen/homePage/View/homenewpage.dart';
 import 'package:wavee/comman/Custom_AppBar.dart';
 import 'package:wavee/comman/bottom_bar.dart';
@@ -14,6 +17,8 @@ import '../../../comman/chat.dart';
 import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/custom_batan.dart';
 import '../../../comman/error_dialog.dart';
+import '../../Community Screen/Community Screen/Model/BusnessViewModal.dart';
+import '../../Community Screen/Community Screen/Provider/community_provider.dart';
 import '../../Community Screen/Community Screen/view/community_screen.dart';
 import '../../orderScreen/View/order_screen_view.dart';
 import '../../productDetailPage/provider/product_provider.dart';
@@ -22,14 +27,16 @@ import '../provider/add_to_cart_provider.dart';
 
 class AddToCartView extends StatefulWidget {
   String? type;
+  String? businessID;
   int? selected;
   final bool fromBottomBar;
-   bool? isAmend;
+  bool? isAmend;
 
   AddToCartView({
     super.key,
     this.type,
     this.selected,
+    this.businessID,
     this.fromBottomBar = false,
     this.isAmend = false,
   });
@@ -37,6 +44,1495 @@ class AddToCartView extends StatefulWidget {
   @override
   State<AddToCartView> createState() => _AddToCartViewState();
 }
+
+// class _AddToCartViewState extends State<AddToCartView> {
+//   bool isLoading = false;
+//   bool isUpdateQuantity = false;
+//
+//   double otherFees = 0.0;
+//   double deliveryFees = 0.0;
+//   bool hasShownFancySheet = false;
+//   bool isAddtoCart = false;
+//   final GlobalCountsController countsController = Get.find();
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     setState(() {
+//       isLoading = true;
+//     });
+//     GetCartDetailApi();
+//   }
+//   @override
+//   Widget build(BuildContext context) {
+//     return WillPopScope(
+//       onWillPop: () async {
+//         Get.offAll(() => HomePage(selected: 1,userName: '',));
+//         return false;
+//       },
+//       child: Scaffold(
+//         backgroundColor: AppColors.white,
+//         body: Column(
+//           children: [
+//             SizedBox(height: 6.h),
+//             Padding(
+//               padding: EdgeInsets.symmetric(horizontal: 2.w),
+//               child: TitleBar(
+//                 back: () {
+//                   if (widget.fromBottomBar) {
+//                     Get.offAll(HomePage(userName: ""));
+//                   } else {
+//                     Get.back();
+//                   }
+//                 },
+//                 title:widget.isAmend==true?"Amend Cart": "Your Cart",
+//                 drawerCallback: () {},
+//               ),
+//             ),
+//             SizedBox(height: 5.h),
+//
+//             Expanded(
+//               child: Container(
+//                 padding: EdgeInsets.symmetric(vertical: 2.h),
+//                 decoration: BoxDecoration(
+//                   border: Border.all(color: const Color(0xffdedfe5), width: 1),
+//                   color: AppColors.white,
+//                   borderRadius: const BorderRadius.only(
+//                     topLeft: Radius.circular(45),
+//                     topRight: Radius.circular(45),
+//                   ),
+//                 ),
+//                 child: Stack(
+//                   children: [
+//                     if (isLoading)
+//                       Center(child: Loader())
+//                     else if (cartDetailsModel?.data == null ||
+//                         (cartDetailsModel?.data?.length ?? 0) == 0)
+//                       _buildEmptyBasketView()
+//                     else
+//                       ListView(
+//                         padding: const EdgeInsets.all(8.0),
+//                         children: [
+//                           Container(
+//                             margin: EdgeInsets.all(2.w),
+//                             decoration: BoxDecoration(
+//                               color: Colors.white,
+//                               borderRadius: BorderRadius.circular(12),
+//                               // boxShadow: [
+//                               //   BoxShadow(
+//                               //     color: Colors.black.withOpacity(0.05),
+//                               //     blurRadius: 10,
+//                               //     offset: const Offset(0, 2),
+//                               //   ),
+//                               // ],
+//                             ),
+//                             child: Padding(
+//                               padding: EdgeInsets.all(3.w),
+//                               child: Column(
+//                                 crossAxisAlignment: CrossAxisAlignment.start,
+//                                 children: [
+//                                   Text(
+//                                     "My Cart",
+//                                     style: TextStyle(
+//                                       fontSize: 22.sp,
+//                                       color: Colors.black,
+//                                       fontFamily: AppConstants.manrope,
+//                                       fontWeight: FontWeight.bold,
+//                                     ),
+//                                   ),
+//                                   SizedBox(height: 1.h),
+//                                   Container(
+//                                     width: 12.w,
+//                                     height: 1.h,
+//                                     decoration: BoxDecoration(
+//                                       borderRadius: BorderRadius.circular(10),
+//                                       color: Colors.black,
+//                                     ),
+//                                   ),
+//                                   SizedBox(height: 0.5.h),
+//                                   Text(
+//                                     "Items (${cartDetailsModel?.data?.length ?? 0})",
+//                                     style: TextStyle(
+//                                       fontSize: 18.sp,
+//                                       color: const Color(0xFF969696),
+//                                       fontFamily: AppConstants.manrope,
+//                                       fontWeight: FontWeight.w600,
+//                                     ),
+//                                   ),
+//                                   SizedBox(height: 1.h),
+//                                 ],
+//                               ),
+//                             ),
+//                           ),
+//                           ...List.generate(cartDetailsModel!.data!.length, (
+//                             index,
+//                           ) {
+//                             final item = cartDetailsModel!.data![index];
+//                             return Column(
+//                               children: [
+//                                 _buildCartItem(item),
+//                                 if (index != cartDetailsModel!.data!.length - 1)
+//                                   Divider(
+//                                     height: 1,
+//                                     color: const Color(0xFFF5F5F5),
+//                                     indent: 4.w,
+//                                     endIndent: 4.w,
+//                                   ),
+//                               ],
+//                             );
+//                           }),
+//
+//                           if (cartDetailsModel?.data?[0].type == "product") ...[
+//                             const Padding(
+//                               padding: EdgeInsets.symmetric(horizontal: 12),
+//                               child: Text(
+//                                 "People also added",
+//                                 style: TextStyle(
+//                                   fontSize: 16,
+//                                   fontWeight: FontWeight.w600,
+//                                 ),
+//                               ),
+//                             ),
+//                             _buildSuggestedList(),
+//                           ],
+//
+//                           SizedBox(height: 50.h),
+//                         ],
+//                       ),
+//
+//                     if (!isLoading &&
+//                         (cartDetailsModel?.data?.isNotEmpty ?? false))
+//                       Positioned(
+//                         top: 10.h,
+//                         left: 0,
+//                         right: 0,
+//                         bottom: 0,
+//                         child: DraggableScrollableSheet(
+//                           initialChildSize: 0.65,
+//                           minChildSize: 0.60,
+//                           builder: (context, scrollController) {
+//                             return Container(
+//                               padding: EdgeInsets.symmetric(
+//                                 horizontal: 3.w,
+//                                 vertical: 1.h,
+//                               ),
+//                               decoration: BoxDecoration(
+//                                 borderRadius: const BorderRadius.only(
+//                                   topRight: Radius.circular(45),
+//                                   topLeft: Radius.circular(45),
+//                                 ),
+//                                 border: Border.all(
+//                                   color: const Color(0xffc7c7c7),
+//                                   width: 1,
+//                                 ),
+//                                 color: const Color(0xfff2f2f2),
+//                               ),
+//                               child: ListView(
+//                                 controller: scrollController,
+//                                 children: [
+//                                   _buildSectionCard(
+//                                     title: "Order Summary",
+//                                     icon: Icons.receipt,
+//                                     child: Column(
+//                                       children: [
+//                                         if (cartDetailsModel?.data?[0].type ==
+//                                             "product")
+//                                           _buildSummaryRow(
+//                                             "Subtotal",
+//                                             getSubtotal(),
+//                                           )
+//                                         else
+//                                           _buildSummaryRow(
+//                                             "Subtotal",
+//                                             getSubtotal1(),
+//                                           ),
+//                                         if (cartDetailsModel?.data?[0].type ==
+//                                                 "product" &&
+//                                             (cartDetailsModel
+//                                                     ?.data?[0]
+//                                                     .loyaltyDetails
+//                                                     ?.willGetLoyaltyDiscountOnCurrentOrder ??
+//                                                 false))
+//                                           _buildSummaryRow(
+//                                             "Loyalty Discount (-${getLoyaltyDiscountPercentage().toStringAsFixed(0)}%)",
+//                                             getLoyaltyDiscountAmount(),
+//                                             isDiscount: true,
+//                                           ),
+//                                         Divider(height: 3.h, thickness: 1),
+//                                         if (cartDetailsModel?.data?[0].type ==
+//                                             "product")
+//                                           _buildSummaryRow(
+//                                             "Total",
+//                                             getFinalTotal(),
+//                                             isTotal: true,
+//                                           )
+//                                         else
+//                                           _buildSummaryRow(
+//                                             "Total",
+//                                             getSubtotal1(),
+//                                             isTotal: true,
+//                                           ),
+//                                       ],
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//                             );
+//                           },
+//                         ),
+//                       ),
+//
+//                     if (!isLoading &&
+//                         (cartDetailsModel?.data?.isNotEmpty ?? false))
+//                       Positioned(
+//                         top: 60.h,
+//                         left: 35.w,
+//                         child: InkWell(
+//                           onTap: _handleCheckoutTap,
+//                           child: Container(
+//                             padding: EdgeInsets.symmetric(
+//                               horizontal: 7.w,
+//                               vertical: 1.h,
+//                             ),
+//                             decoration: BoxDecoration(
+//                               borderRadius: BorderRadius.circular(15),
+//                               color: Colors.white,
+//                               border: Border.all(color: const Color(0xffd9d9d9)),
+//                             ),
+//                             child: Text(
+//                               "Checkout",
+//                               style: TextStyle(
+//                                 fontSize: 18.sp,
+//                                 color: Colors.black,
+//                                 fontFamily: AppConstants.manrope,
+//                                 fontWeight: FontWeight.w600,
+//                               ),
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//
+//                     if (isUpdateQuantity)
+//                       Container(
+//                         color: Colors.white,
+//                         child: Center(child: Loader()),
+//                       ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//         bottomNavigationBar: Obx(() =>  BottomBar(selected: 4,chatCount: countsController.chatCount.value,)),
+//       ),
+//     );
+//   }
+//
+//   Widget _buildEmptyBasketView() {
+//     return SingleChildScrollView(
+//       physics: const BouncingScrollPhysics(),
+//       child: Padding(
+//         padding: EdgeInsets.only(top: 20.h),
+//         child: Column(
+//           children: [
+//             Container(
+//               width: 25.w,
+//               height: 25.w,
+//               decoration: const BoxDecoration(
+//                 color: Color(0xFFF0F0F0),
+//                 shape: BoxShape.circle,
+//               ),
+//               child: Icon(
+//                 Icons.shopping_basket_outlined,
+//                 size: 12.w,
+//                 color: Colors.grey[400],
+//               ),
+//             ),
+//             SizedBox(height: 3.h),
+//             Text(
+//               "Your cart is empty",
+//               style: TextStyle(
+//                 fontFamily: AppConstants.manrope,
+//                 fontSize: 20.sp,
+//                 fontWeight: FontWeight.w600,
+//                 color: const Color(0xFF2E3333),
+//               ),
+//             ),
+//             SizedBox(height: 1.h),
+//             Text(
+//               "Add items to get started",
+//               style: TextStyle(
+//                 fontFamily: AppConstants.manrope,
+//                 fontSize: 14.sp,
+//                 color: Colors.grey[600],
+//               ),
+//             ),
+//             SizedBox(height: 4.h),
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               children: [
+//                 batan(
+//                   title: "Explore Community",
+//                   route: () {
+//                     Get.to(() => CommunityScreen());
+//                   },
+//                   color: AppColors.maincolor,
+//                   fontcolor: Colors.white,
+//                   height: 5.h,
+//                   fontsize: 16.sp,
+//                   radius: 12.0,
+//                   width: 43.5.w,
+//                   fontFamily: AppConstants.manropeBold,
+//
+//                   fontWeight: FontWeight.bold,
+//                 ),
+//                 SizedBox(width: 4.w),
+//                 batan(
+//                   title: "View Orders",
+//                   route: () {
+//                     Get.to(() => Order_Screen());
+//                   },
+//                   color: AppColors.maincolor,
+//                   fontcolor: Colors.white,
+//                   height: 5.h,
+//                   fontsize: 16.5.sp,
+//                   radius: 12.0,
+//                   width: 40.w,
+//                   fontFamily: AppConstants.manropeBold,
+//                   fontWeight: FontWeight.bold,
+//                 ),
+//               ],
+//             ),
+//             SizedBox(height: 5.h),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+//   Widget _buildCartItem(dynamic item) {
+//     final product = item.itemDetails;
+//     if (product == null) return const SizedBox();
+//
+//     return Container(
+//       margin: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 2.w),
+//       padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
+//       decoration: BoxDecoration(
+//         borderRadius: BorderRadius.circular(12),
+//         color: Colors.white,
+//         border: Border.all(color: const Color(0xFF969696), width: 1),
+//       ),
+//       child: Row(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           ClipRRect(
+//             borderRadius: BorderRadius.circular(8),
+//             child: Container(
+//               width: 18.w,
+//               height: 18.w,
+//               color: const Color(0xFFF8F8F8),
+//               child: CachedNetworkImage(
+//                 imageUrl:
+//                     (product.image != null &&
+//                             (product.image as String).isNotEmpty)
+//                         ? product.image
+//                         : (product.images != null &&
+//                             (product.images as List).isNotEmpty)
+//                         ? product.images.first
+//                         : "",
+//                 fit: BoxFit.cover,
+//                 placeholder: (context, url) => Center(child: Loader()),
+//                 errorWidget:
+//                     (context, url, error) => Icon(
+//                       Icons.image_outlined,
+//                       color: Colors.grey[400],
+//                       size: 8.w,
+//                     ),
+//               ),
+//             ),
+//           ),
+//           SizedBox(width: 3.w),
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Row(
+//                   children: [
+//                     Expanded(
+//                       child: Text(
+//                         product.name ?? "",
+//                         style: TextStyle(
+//                           fontSize: 16.sp,
+//                           fontWeight: FontWeight.w600,
+//                           fontFamily: AppConstants.manropeBold,
+//                           color: const Color(0xFF2E3333),
+//                         ),
+//                       ),
+//                     ),
+//                     GestureDetector(
+//                       onTap: () {
+//                         RemoveFromCartApi(
+//                           item.productId ?? 0,
+//                           item.type ?? "product",
+//                         );
+//                       },
+//                       child: Container(
+//                         padding: EdgeInsets.all(1.w),
+//                         decoration: const BoxDecoration(
+//                           color: Color(0xFFF5F5F5),
+//                           shape: BoxShape.circle,
+//                         ),
+//                         child: Icon(
+//                           Icons.delete,
+//                           color: Colors.black,
+//                           size: 18.sp,
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//                 SizedBox(height: 1.h),
+//
+//                 Row(
+//                   children: [
+//                     Text(
+//                       "£${(product.offerPrice ?? product.price)?.toString() ?? '0'}",
+//                       style: TextStyle(
+//                         fontSize: 17.sp,
+//                         fontWeight: FontWeight.w700,
+//                         fontFamily: AppConstants.manrope,
+//                         color: AppColors.maincolor,
+//                       ),
+//                     ),
+//                     const Spacer(),
+//                     _buildQuantityControl(item),
+//                   ],
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   Widget _buildQuantityControl(dynamic item) {
+//     int qty = (item.quantity ?? 1) as int;
+//     return Container(
+//       padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
+//       decoration: BoxDecoration(
+//         borderRadius: BorderRadius.circular(10),
+//         border: Border.all(color: const Color(0xff969696)),
+//       ),
+//       child: Row(
+//         mainAxisSize: MainAxisSize.min,
+//         children: [
+//           InkWell(
+//             onTap: () {
+//               if (qty > 1) {
+//                 setState(() {
+//                   item.quantity = qty - 1;
+//                 });
+//                 updateQuantityApi(
+//                   item.productId ?? 0,
+//                   item.quantity ?? 1,
+//                   item.type ?? "",
+//                 );
+//               } else {
+//                 RemoveFromCartApi(item.productId ?? 0, item.type ?? "product");
+//               }
+//             },
+//             child: Text(
+//               "-",
+//               style: TextStyle(
+//                 fontSize: 17.sp,
+//                 color: Colors.black,
+//                 fontFamily: AppConstants.manrope,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//           ),
+//           SizedBox(width: 2.w),
+//           Text(
+//             "${item.quantity ?? 1}",
+//             style: TextStyle(
+//               fontSize: 17.sp,
+//               color: Colors.black,
+//               fontFamily: AppConstants.manrope,
+//               fontWeight: FontWeight.bold,
+//             ),
+//           ),
+//           SizedBox(width: 2.w),
+//           InkWell(
+//             onTap: () {
+//               if ((item.quantity ?? 1) < 10) {
+//                 setState(() {
+//                   item.quantity = (item.quantity ?? 1) + 1;
+//                 });
+//                 updateQuantityApi(
+//                   item.productId ?? 0,
+//                   item.quantity ?? 1,
+//                   item.type ?? "",
+//                 );
+//               }
+//             },
+//             child: Icon(Icons.add, color: Colors.black, size: 16.sp),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   Widget _buildSectionCard({
+//     required String title,
+//     required IconData icon,
+//     required Widget child,
+//   }) {
+//     return Card(
+//       elevation: 0,
+//       color: Colors.white,
+//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+//       child: Padding(
+//         padding: EdgeInsets.all(3.w),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Row(
+//               children: [
+//                 Icon(icon),
+//                 SizedBox(width: 2.w),
+//                 Text(
+//                   title,
+//                   style: TextStyle(
+//                     fontSize: 16.sp,
+//                     fontWeight: FontWeight.w700,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             SizedBox(height: 2.h),
+//             child,
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+//   AddCartProductApi(String productID) {
+//     setState(() {
+//       isUpdateQuantity = true;
+//       isAddtoCart = true;
+//     });
+//     final Map<String, String> data = {
+//       "user_id": loginModel?.data?.user?.id.toString() ?? "",
+//       "id": productID.toString(),
+//       "type": "product",
+//     };
+//
+//     checkInternet().then((internet) async {
+//       if (internet) {
+//         ProductProvider().AddToCart(data).then((response) async {
+//           if (response.statusCode == 200) {
+//             await GetCartDetailApi();
+//             setState(() {
+//               isUpdateQuantity = false;
+//               isAddtoCart = false;
+//             });
+//             Get.to(() => AddToCartView(type: "product"));
+//           } else {
+//             setState(() {
+//               isUpdateQuantity = false;
+//               isAddtoCart = false;
+//             });
+//           }
+//         });
+//       } else {
+//         setState(() {
+//           isAddtoCart = false;
+//         });
+//
+//         buildErrorDialog(context, 'Error', "Internet Required");
+//       }
+//     });
+//   }
+//
+//   Widget summaryTile(String title, String amount, {bool isTotal = false}) {
+//     return Padding(
+//       padding: EdgeInsets.symmetric(vertical: 0.h),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//           Text(
+//             title,
+//             style: TextStyle(
+//               fontSize: isTotal ? 18.sp : 17.sp,
+//               fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+//               fontFamily: AppConstants.manrope,
+//             ),
+//           ),
+//           Text(
+//             "£$amount",
+//             style: TextStyle(
+//               fontSize: isTotal ? 18.sp : 17.sp,
+//               fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+//               fontFamily: AppConstants.manrope,
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   Widget _buildSummaryRow(
+//     String title,
+//     double amount, {
+//     bool isTotal = false,
+//     bool isDiscount = false,
+//   }) {
+//     return Padding(
+//       padding: EdgeInsets.symmetric(vertical: 0.5.h),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//           Text(
+//             title,
+//             style: TextStyle(
+//               fontSize: isTotal ? 18.sp : 16.5.sp,
+//               fontWeight: FontWeight.bold,
+//               fontFamily: AppConstants.manrope,
+//               color:
+//                   isDiscount
+//                       ? Colors.green[700]
+//                       : (isTotal ? Colors.black : Colors.grey[800]),
+//             ),
+//           ),
+//           Text(
+//             isDiscount
+//                 ? "-£${amount.toStringAsFixed(2)}"
+//                 : "£${amount.toStringAsFixed(2)}",
+//             style: TextStyle(
+//               fontSize: isTotal ? 18.sp : 16.5.sp,
+//               fontWeight: FontWeight.bold,
+//               fontFamily: AppConstants.manrope,
+//               color:
+//                   isDiscount
+//                       ? Colors.green[700]
+//                       : (isTotal ? AppColors.maincolor : Colors.black),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   double getSubtotal() {
+//     double total = 0.0;
+//     cartDetailsModel?.data?.forEach((item) {
+//       double price =
+//           double.tryParse(
+//             item.itemDetails?.offerPrice ?? item.itemDetails?.price ?? '0',
+//           ) ??
+//           0;
+//       total += price * (item.quantity ?? 1);
+//     });
+//     return total;
+//   }
+//
+//   double getSubtotal1() {
+//     double total = 0.0;
+//     cartDetailsModel?.data?.forEach((item) {
+//       double price =
+//           double.tryParse(
+//             item.itemDetails?.offerPrice ?? item.itemDetails?.price ?? '0',
+//           ) ??
+//           0;
+//       total += price * (item.quantity ?? 1);
+//     });
+//     return total;
+//   }
+//
+//   GetCartDetailApi() {
+//     checkInternet().then((internet) {
+//       if (internet) {
+//         CartProvider()
+//             .cartDetailApi(loginModel?.data?.user?.id.toString() ?? "")
+//             .then((response) {
+//               cartDetailsModel = CartDetailsModel.fromJson(response.data);
+//               if (response.statusCode == 200) {
+//                 setState(() {
+//                   isLoading = false;
+//                 });
+//               } else {
+//                 setState(() {
+//                   isLoading = false;
+//                 });
+//               }
+//             });
+//       } else {
+//         setState(() {
+//           isLoading = false;
+//         });
+//
+//         buildErrorDialog(context, 'Error', "Internet Required");
+//       }
+//     });
+//   }
+//
+//   updateQuantityApi(int productId, int quantity, type) {
+//     final Map<String, String> data = {
+//       "user_id": loginModel?.data?.user?.id.toString() ?? "",
+//       "product_id": productId.toString(),
+//       "quantity": quantity.toString(),
+//       "type": type.toString(),
+//     };
+//     setState(() {
+//       isUpdateQuantity = true;
+//     });
+//
+//     checkInternet().then((internet) async {
+//       if (internet) {
+//         CartProvider().updateCartQuantityApi(data).then((response) async {
+//           if (response.statusCode == 200) {
+//             setState(() {
+//               isUpdateQuantity = false;
+//             });
+//           } else {
+//             setState(() {
+//               isUpdateQuantity = false;
+//             });
+//           }
+//         });
+//       } else {
+//         setState(() {
+//           isUpdateQuantity = false;
+//         });
+//         buildErrorDialog(context, 'Error', "Internet Required");
+//       }
+//     });
+//   }
+//
+//   RemoveFromCartApi(int productId, String type) {
+//     setState(() {
+//       isUpdateQuantity = true;
+//     });
+//
+//     final Map<String, String> data = {
+//       "user_id": loginModel?.data?.user?.id.toString() ?? "",
+//       "product_id": productId.toString(),
+//       "type": type,
+//     };
+//
+//     checkInternet().then((internet) async {
+//       if (internet) {
+//         CartProvider().removeCartApi(data).then((response) async {
+//           if (response.statusCode == 200) {
+//             setState(() {
+//               isUpdateQuantity = false;
+//             });
+//             GetCartDetailApi();
+//           } else {
+//             setState(() {
+//               isUpdateQuantity = false;
+//             });
+//           }
+//         });
+//       } else {
+//         setState(() {
+//           isUpdateQuantity = false;
+//         });
+//         buildErrorDialog(context, 'Error', "Internet Required");
+//       }
+//     });
+//   }
+//
+//   double getLoyaltyDiscountPercentage() {
+//     final loyaltyDetails = cartDetailsModel?.data?[0].loyaltyDetails;
+//     if (loyaltyDetails?.willGetLoyaltyDiscountOnCurrentOrder != true) {
+//       return 0.0;
+//     }
+//     String discountStr =
+//         checkoutTotal?.data?.first.loyaltyDetails?.loyaltyDiscountPercentage ??
+//         "0";
+//     return double.tryParse(discountStr) ?? 0.0;
+//   }
+//
+//   double getLoyaltyDiscountAmount() {
+//     final loyaltyDetails = cartDetailsModel?.data?[0].loyaltyDetails;
+//     if (loyaltyDetails?.willGetLoyaltyDiscountOnCurrentOrder != true) {
+//       return 0.0;
+//     }
+//
+//     double subtotal = getSubtotal();
+//     double discountPercent = getLoyaltyDiscountPercentage();
+//
+//     return subtotal * (discountPercent / 100);
+//   }
+//
+//   double getFinalTotal() {
+//     double subtotal = getSubtotal();
+//     double loyaltyDiscount = getLoyaltyDiscountAmount();
+//     return subtotal - loyaltyDiscount;
+//   }
+//
+//   Widget _buildSuggestedList() {
+//     final List<BusinessProducts> allProducts =
+//         (cartDetailsModel?.data?.expand(
+//                   (item) => item.itemDetails?.businessProducts ?? [],
+//                 ) ??
+//                 [])
+//             .whereType<BusinessProducts>()
+//             .toList();
+//     return Container(
+//       margin: const EdgeInsets.symmetric(vertical: 8),
+//       height: 10.h,
+//       child: ListView.builder(
+//         scrollDirection: Axis.horizontal,
+//         itemCount: allProducts.length,
+//         padding: const EdgeInsets.symmetric(horizontal: 12),
+//         itemBuilder: (context, index) {
+//           final product = allProducts[index];
+//
+//           return Container(
+//             margin: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 1.w),
+//             alignment: Alignment.center,
+//             padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
+//             decoration: BoxDecoration(
+//               borderRadius: BorderRadius.circular(20),
+//               color: Colors.white,
+//               border: Border.all(color: const Color(0xFF969696), width: 1),
+//             ),
+//             child: Column(
+//               mainAxisAlignment: MainAxisAlignment.start,
+//               children: [
+//                 Row(
+//                   children: [
+//                     ClipRRect(
+//                       borderRadius: BorderRadius.circular(10),
+//                       child: CachedNetworkImage(
+//                         imageUrl:
+//                             (product.image != null && product.image!.isNotEmpty)
+//                                 ? product.image!
+//                                 : (product.images != null &&
+//                                     product.images!.isNotEmpty)
+//                                 ? product.images!.first
+//                                 : "",
+//                         fit: BoxFit.cover,
+//                         width: 14.w,
+//                         height: 14.w,
+//                         placeholder:
+//                             (context, url) => const Center(
+//                               child: CircularProgressIndicator(
+//                                 color: AppColors.maincolor,
+//                                 strokeWidth: 2,
+//                               ),
+//                             ),
+//                         errorWidget:
+//                             (context, url, error) => Icon(
+//                               Icons.image_outlined,
+//                               color: Colors.grey[400],
+//                               size: 30,
+//                             ),
+//                       ),
+//                     ),
+//                     SizedBox(width: 2.w),
+//                     Column(
+//                       mainAxisAlignment: MainAxisAlignment.start,
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Text(
+//                           product.name ?? "",
+//                           maxLines: 2,
+//                           overflow: TextOverflow.ellipsis,
+//                           style: const TextStyle(
+//                             fontSize: 14,
+//                             fontWeight: FontWeight.w600,
+//                           ),
+//                         ),
+//                         (product.offerPrice != null &&
+//                                 product.offerPrice != "0.00" &&
+//                                 product.offerPrice != product.price)
+//                             ? Row(
+//                               children: [
+//                                 Text(
+//                                   "£${product.price}",
+//                                   style: TextStyle(
+//                                     fontSize: 14.sp,
+//                                     fontWeight: FontWeight.normal,
+//                                     fontFamily: AppConstants.manrope,
+//                                     color: Colors.grey,
+//                                     decoration: TextDecoration.lineThrough,
+//                                     decorationColor: AppColors.maincolor,
+//                                   ),
+//                                 ),
+//                                 const SizedBox(width: 5),
+//                                 Text(
+//                                   "£${product.offerPrice}",
+//                                   style: TextStyle(
+//                                     fontSize: 15.sp,
+//                                     fontWeight: FontWeight.bold,
+//                                     fontFamily: AppConstants.manrope,
+//                                     color: Colors.black,
+//                                   ),
+//                                 ),
+//                                 SizedBox(width: 4.w),
+//                                 InkWell(
+//                                   onTap: () {
+//                                     AddCartProductApi(
+//                                       product.id.toString() ?? "",
+//                                     );
+//                                   },
+//                                   child: Container(
+//                                     decoration: BoxDecoration(
+//                                       borderRadius: BorderRadius.circular(3),
+//                                       color: Colors.black,
+//                                     ),
+//                                     child: Icon(
+//                                       Icons.add,
+//                                       size: 17.sp,
+//                                       color: AppColors.white,
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ],
+//                             )
+//                             : Row(
+//                               children: [
+//                                 Text(
+//                                   "£${product.price ?? ""}",
+//                                   style: TextStyle(
+//                                     fontSize: 15.sp,
+//                                     fontWeight: FontWeight.bold,
+//                                     fontFamily: AppConstants.manrope,
+//                                     color: Colors.black,
+//                                   ),
+//                                 ),
+//                                 InkWell(
+//                                   onTap: () {
+//                                     AddCartProductApi(
+//                                       product.id.toString() ?? "",
+//                                     );
+//                                   },
+//                                   child: Container(
+//                                     decoration: BoxDecoration(
+//                                       borderRadius: BorderRadius.circular(10),
+//                                       color: Colors.black,
+//                                     ),
+//                                     child: Icon(
+//                                       Icons.add,
+//                                       size: 17.sp,
+//                                       color: AppColors.white,
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ],
+//                             ),
+//                       ],
+//                     ),
+//                   ],
+//                 ),
+//               ],
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+//
+//   void _showFancyAnythingElseSheet() {
+//     final List<BusinessProducts> suggestedProducts =
+//         (cartDetailsModel?.data?.expand(
+//                   (item) => item.itemDetails?.businessProducts ?? [],
+//                 ) ??
+//                 [])
+//             .whereType<BusinessProducts>()
+//             .toList();
+//
+//     showModalBottomSheet(
+//       context: context,
+//       isScrollControlled: true,
+//       backgroundColor: Colors.transparent,
+//       builder:
+//           (context) => DraggableScrollableSheet(
+//             initialChildSize: 0.85,
+//             minChildSize: 0.4,
+//             maxChildSize: 0.95,
+//             expand: false,
+//             builder:
+//                 (_, controller) => Container(
+//                   decoration: const BoxDecoration(
+//                     color: Colors.white,
+//
+//                     borderRadius: BorderRadius.vertical(
+//                       top: Radius.circular(20),
+//                     ),
+//                   ),
+//                   child: Stack(
+//                     clipBehavior: Clip.none,
+//                     children: [
+//                       Padding(
+//                         padding: EdgeInsets.only(
+//                           bottom: 10.h,
+//                           left: 4.w,
+//                           right: 4.w,
+//                         ),
+//                         child: ListView(
+//                           controller: controller,
+//                           physics: const BouncingScrollPhysics(),
+//                           children: [
+//                             Center(
+//                               child: Container(
+//                                 margin: EdgeInsets.only(top: 1.h, bottom: 2.h),
+//                                 width: 10.w,
+//                                 height: 0.5.h,
+//                                 decoration: BoxDecoration(
+//                                   color: Colors.grey[300],
+//                                   borderRadius: BorderRadius.circular(10),
+//                                 ),
+//                               ),
+//                             ),
+//                             Row(
+//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                               children: [
+//                                 Text(
+//                                   "Fancy anything else?",
+//                                   style: TextStyle(
+//                                     fontSize: 20.sp,
+//                                     fontWeight: FontWeight.w700,
+//                                     fontFamily: AppConstants.manrope,
+//                                     color: const Color(0xFF2E3333),
+//                                   ),
+//                                 ),
+//                                 GestureDetector(
+//                                   onTap: () => Navigator.pop(context),
+//                                   child: Icon(
+//                                     Icons.close,
+//                                     size: 24.sp,
+//                                     color: Colors.grey[600],
+//                                   ),
+//                                 ),
+//                               ],
+//                             ),
+//                             SizedBox(height: 2.h),
+//                             Column(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 Text(
+//                                   "Your regulars",
+//                                   style: TextStyle(
+//                                     fontSize: 16.sp,
+//                                     fontWeight: FontWeight.w600,
+//                                     fontFamily: AppConstants.manrope,
+//                                     color: const Color(0xFF2E3333),
+//                                   ),
+//                                 ),
+//                                 SizedBox(height: 0.5.h),
+//                                 Text(
+//                                   "Forgotten anything from your regular items?",
+//                                   style: TextStyle(
+//                                     fontSize: 15.sp,
+//                                     color: Colors.grey[600],
+//                                     fontFamily: AppConstants.manrope,
+//                                   ),
+//                                 ),
+//                               ],
+//                             ),
+//                             SizedBox(height: 2.h),
+//                             if (suggestedProducts.isEmpty)
+//                               Center(
+//                                 child: Padding(
+//                                   padding: EdgeInsets.symmetric(vertical: 4.h),
+//                                   child: Text(
+//                                     "No suggested items available",
+//                                     style: TextStyle(
+//                                       fontSize: 14.sp,
+//                                       color: Colors.grey[500],
+//                                     ),
+//                                   ),
+//                                 ),
+//                               )
+//                             else
+//                               GridView.builder(
+//                                 shrinkWrap: true,
+//                                 physics: const NeverScrollableScrollPhysics(),
+//                                 itemCount: suggestedProducts.length,
+//                                 gridDelegate:
+//                                     SliverGridDelegateWithFixedCrossAxisCount(
+//                                       crossAxisCount: 3,
+//                                       childAspectRatio: 0.48,
+//                                       crossAxisSpacing: 3.w,
+//                                       mainAxisSpacing: 2.h,
+//                                     ),
+//                                 itemBuilder: (context, index) {
+//                                   final product = suggestedProducts[index];
+//                                   return Container(
+//                                     decoration: BoxDecoration(
+//                                       color: Colors.white,
+//                                       border: Border.all(
+//                                         color: const Color(0xFFE5E5E5),
+//                                         width: 1,
+//                                       ),
+//                                       borderRadius: BorderRadius.circular(12),
+//                                     ),
+//                                     child: Column(
+//                                       crossAxisAlignment:
+//                                           CrossAxisAlignment.start,
+//                                       children: [
+//                                         Stack(
+//                                           clipBehavior: Clip.none,
+//                                           children: [
+//                                             ClipRRect(
+//                                               borderRadius:
+//                                                   const BorderRadius.vertical(
+//                                                     top: Radius.circular(12),
+//                                                   ),
+//                                               child: CachedNetworkImage(
+//                                                 imageUrl:
+//                                                     (product.image != null &&
+//                                                             product
+//                                                                 .image!
+//                                                                 .isNotEmpty)
+//                                                         ? product.image!
+//                                                         : (product.images !=
+//                                                                 null &&
+//                                                             product
+//                                                                 .images!
+//                                                                 .isNotEmpty)
+//                                                         ? product.images!.first
+//                                                         : "",
+//                                                 fit: BoxFit.cover,
+//                                                 height: 14.h,
+//                                                 width: double.infinity,
+//                                                 placeholder:
+//                                                     (context, url) => Container(
+//                                                       color: const Color(
+//                                                         0xFFF8F8F8,
+//                                                       ),
+//                                                       child: const Center(
+//                                                         child:
+//                                                             CircularProgressIndicator(
+//                                                               color:
+//                                                                   AppColors
+//                                                                       .maincolor,
+//                                                               strokeWidth: 2,
+//                                                             ),
+//                                                       ),
+//                                                     ),
+//                                                 errorWidget:
+//                                                     (
+//                                                       context,
+//                                                       url,
+//                                                       error,
+//                                                     ) => Container(
+//                                                       color: const Color(
+//                                                         0xFFF8F8F8,
+//                                                       ),
+//                                                       height: 14.h,
+//                                                       child: Icon(
+//                                                         Icons.image_outlined,
+//                                                         color: Colors.grey[400],
+//                                                         size: 6.w,
+//                                                       ),
+//                                                     ),
+//                                               ),
+//                                             ),
+//                                             Positioned(
+//                                               bottom: -12,
+//                                               right: 4,
+//                                               child: GestureDetector(
+//                                                 onTap: () {
+//                                                   AddCartProductApi(
+//                                                     product.id.toString(),
+//                                                   );
+//                                                   Get.back();
+//                                                 },
+//                                                 child: Container(
+//                                                   width: 11.w,
+//                                                   height: 11.w,
+//                                                   decoration: BoxDecoration(
+//                                                     color: Colors.white,
+//                                                     shape: BoxShape.circle,
+//                                                     boxShadow: [
+//                                                       BoxShadow(
+//                                                         color: Colors.black
+//                                                             .withOpacity(0.15),
+//                                                         blurRadius: 6,
+//                                                         spreadRadius: 2,
+//                                                         offset: const Offset(
+//                                                           0,
+//                                                           2,
+//                                                         ),
+//                                                       ),
+//                                                     ],
+//                                                   ),
+//                                                   child: Icon(
+//                                                     Icons.add,
+//                                                     size: 22.sp,
+//                                                     color: AppColors.maincolor,
+//                                                   ),
+//                                                 ),
+//                                               ),
+//                                             ),
+//                                           ],
+//                                         ),
+//                                         Expanded(
+//                                           child: Padding(
+//                                             padding: EdgeInsets.all(4.w),
+//                                             child: Column(
+//                                               crossAxisAlignment:
+//                                                   CrossAxisAlignment.start,
+//                                               children: [
+//                                                 Text(
+//                                                   product.name ?? "",
+//                                                   maxLines: 3,
+//                                                   overflow:
+//                                                       TextOverflow.ellipsis,
+//                                                   style: TextStyle(
+//                                                     fontSize: 15.sp,
+//                                                     fontWeight: FontWeight.w600,
+//                                                     fontFamily:
+//                                                         AppConstants.manropeBold,
+//                                                     color: const Color(
+//                                                       0xFF2E3333,
+//                                                     ),
+//                                                   ),
+//                                                 ),
+//                                                 const Spacer(),
+//                                                 Padding(
+//                                                   padding: EdgeInsets.symmetric(
+//                                                     horizontal: 0.w,
+//                                                   ),
+//                                                   child:
+//                                                       (product.offerPrice !=
+//                                                                   null &&
+//                                                               product.offerPrice !=
+//                                                                   "0.00" &&
+//                                                               product.offerPrice !=
+//                                                                   product.price)
+//                                                           ? FittedBox(
+//                                                             fit:
+//                                                                 BoxFit
+//                                                                     .scaleDown,
+//                                                             alignment:
+//                                                                 Alignment
+//                                                                     .centerLeft,
+//                                                             child: Row(
+//                                                               children: [
+//                                                                 Text(
+//                                                                   "£${product.price}",
+//                                                                   style: TextStyle(
+//                                                                     fontSize:
+//                                                                         13.sp,
+//                                                                     fontWeight:
+//                                                                         FontWeight
+//                                                                             .normal,
+//                                                                     fontFamily:
+//                                                                         AppConstants
+//                                                                             .manrope,
+//                                                                     color:
+//                                                                         Colors
+//                                                                             .grey,
+//                                                                     decoration:
+//                                                                         TextDecoration
+//                                                                             .lineThrough,
+//                                                                     decorationColor:
+//                                                                         AppColors
+//                                                                             .maincolor,
+//                                                                   ),
+//                                                                 ),
+//                                                                 const SizedBox(
+//                                                                   width: 5,
+//                                                                 ),
+//                                                                 Text(
+//                                                                   "£${product.offerPrice}",
+//                                                                   style: TextStyle(
+//                                                                     fontSize:
+//                                                                         14.sp,
+//                                                                     fontWeight:
+//                                                                         FontWeight
+//                                                                             .bold,
+//                                                                     fontFamily:
+//                                                                         AppConstants
+//                                                                             .manrope,
+//                                                                     color:
+//                                                                         Colors
+//                                                                             .black,
+//                                                                   ),
+//                                                                 ),
+//                                                               ],
+//                                                             ),
+//                                                           )
+//                                                           : Text(
+//                                                             "£${product.price ?? ""}",
+//                                                             style: TextStyle(
+//                                                               fontSize: 14.sp,
+//                                                               fontWeight:
+//                                                                   FontWeight
+//                                                                       .bold,
+//                                                               fontFamily:
+//                                                                   AppConstants
+//                                                                       .manrope,
+//                                                               color:
+//                                                                   Colors.black,
+//                                                             ),
+//                                                           ),
+//                                                 ),
+//                                               ],
+//                                             ),
+//                                           ),
+//                                         ),
+//                                       ],
+//                                     ),
+//                                   );
+//                                 },
+//                               ),
+//                             SizedBox(height: 20.h),
+//                           ],
+//                         ),
+//                       ),
+//                       Positioned(
+//                         bottom: 0,
+//                         left: 0,
+//                         right: 0,
+//                         child: Container(
+//                           padding: EdgeInsets.all(4.w),
+//                           decoration: const BoxDecoration(
+//                             color: Colors.white,
+//                             boxShadow: [
+//                               BoxShadow(
+//                                 color: Colors.black12,
+//                                 blurRadius: 10,
+//                                 offset: Offset(0, -2),
+//                               ),
+//                             ],
+//                             borderRadius: BorderRadius.vertical(
+//                               top: Radius.circular(20),
+//                             ),
+//                           ),
+//                           child: Column(
+//                             children: [
+//                               (cartDetailsModel?.data?[0].type == "product" &&
+//                                       cartDetailsModel
+//                                               ?.data?[0]
+//                                               .loyaltyDetails
+//                                               ?.loyaltyOrderThreshold !=
+//                                           null &&
+//                                       cartDetailsModel
+//                                               ?.data?[0]
+//                                               .loyaltyDetails
+//                                               ?.loyaltyDiscountPercentage !=
+//                                           null)
+//                                   ? Container(
+//                                     width: double.infinity,
+//                                     padding: EdgeInsets.symmetric(
+//                                       horizontal: 4.w,
+//                                       vertical: 1.8.h,
+//                                     ),
+//                                     margin: EdgeInsets.only(bottom: 2.h),
+//                                     decoration: BoxDecoration(
+//                                       color: AppColors.maincolor.withOpacity(
+//                                         0.1,
+//                                       ),
+//                                       borderRadius: BorderRadius.circular(10),
+//                                     ),
+//                                     child: Row(
+//                                       children: [
+//                                         Expanded(
+//                                           child: Text(
+//                                             "You're getting closer to an exclusive reward! Complete ${cartDetailsModel?.data?[0].loyaltyDetails?.loyaltyOrderThreshold} more orders to unlock a ${cartDetailsModel?.data?[0].loyaltyDetails?.loyaltyDiscountPercentage?.replaceAll(RegExp(r'\\.0+\$'), '')}% discount on your next purchase.",
+//                                             style: TextStyle(
+//                                               fontSize: 14.sp,
+//                                               color: const Color(0xFF3C1361),
+//                                               fontFamily: AppConstants.manrope,
+//                                               fontWeight: FontWeight.w600,
+//                                             ),
+//                                           ),
+//                                         ),
+//                                         Container(
+//                                           width: 28,
+//                                           height: 28,
+//                                           decoration: const BoxDecoration(
+//                                             color: AppColors.maincolor,
+//                                             shape: BoxShape.circle,
+//                                           ),
+//                                           child: const Icon(
+//                                             Icons.card_giftcard,
+//                                             size: 16,
+//                                             color: Colors.white,
+//                                           ),
+//                                         ),
+//                                       ],
+//                                     ),
+//                                   )
+//                                   : const SizedBox(),
+//                               GestureDetector(
+//                                 onTap: () {
+//                                   Get.back();
+//                                   _navigateToCheckout();
+//                                 },
+//                                 child: Container(
+//                                   height: 6.h,
+//                                   decoration: BoxDecoration(
+//                                     color: AppColors.maincolor,
+//                                     borderRadius: BorderRadius.circular(12),
+//                                   ),
+//                                   child: Row(
+//                                     mainAxisAlignment: MainAxisAlignment.center,
+//                                     children: [
+//                                       Icon(
+//                                         Icons.shopping_cart_checkout,
+//                                         color: Colors.white,
+//                                         size: 20.sp,
+//                                       ),
+//                                       SizedBox(width: 3.w),
+//                                       Text(
+//                                         "Checkout",
+//                                         style: TextStyle(
+//                                           fontSize: 18.sp,
+//                                           color: Colors.white,
+//                                           fontFamily: AppConstants.manrope,
+//                                           fontWeight: FontWeight.w600,
+//                                         ),
+//                                       ),
+//                                       SizedBox(width: 2.w),
+//                                     ],
+//                                   ),
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//           ),
+//     );
+//   }
+//
+//   void _handleCheckoutTap() {
+//     if (cartDetailsModel?.data?[0].type == "product") {
+//       if (!hasShownFancySheet) {
+//         setState(() {
+//           hasShownFancySheet = true;
+//         });
+//         _showFancyAnythingElseSheet();
+//       } else {
+//         _navigateToCheckout();
+//       }
+//     } else {
+//       _navigateToCheckout();
+//     }
+//   }
+//
+//   void _navigateToCheckout() {
+//     Get.to(
+//       BuyProductView(
+//         bunessid: cartDetailsModel?.data?[0].itemDetails?.businessId.toString(),
+//         type: cartDetailsModel?.data?.first.type,
+//       ),
+//     );
+//   }
+// }
 
 class _AddToCartViewState extends State<AddToCartView> {
   bool isLoading = false;
@@ -48,21 +1544,70 @@ class _AddToCartViewState extends State<AddToCartView> {
   bool isAddtoCart = false;
   final GlobalCountsController countsController = Get.find();
 
+  // --- NEW STATIC DATA FOR AMEND MODE ---
+  final List<_MockCartItem> _staticAmendItems = [
+    _MockCartItem(
+      productId: 101,
+      type: 'product',
+      quantity: 2,
+      itemDetails: _MockItemDetails(
+        name: "Static Product 1",
+        price: "25.00",
+        offerPrice: "20.00",
+        image: "https://via.placeholder.com/150/FF0000/FFFFFF?Text=Static1",
+      ),
+    ),
+    _MockCartItem(
+      productId: 102,
+      type: 'product',
+      quantity: 1,
+      itemDetails: _MockItemDetails(
+        name: "Static Product 2 (No Offer)",
+        price: "30.00",
+        image: "https://via.placeholder.com/150/0000FF/FFFFFF?Text=Static2",
+      ),
+    ),
+    _MockCartItem(
+      productId: 103,
+      type: 'product',
+      quantity: 3,
+      itemDetails: _MockItemDetails(
+        name: "Static Product 3",
+        price: "15.00",
+        offerPrice: "12.50",
+        image: "https://via.placeholder.com/150/00FF00/000000?Text=Static3",
+      ),
+    ),
+  ];
+
+  // --- END OF NEW STATIC DATA ---
+
   @override
   void initState() {
     super.initState();
-    setState(() {
-      isLoading = true;
-    });
-    GetCartDetailApi();
+    log(
+      "widget.isAmendwidget.isAmendwidget.isAmendwidget.isAmend ${widget.isAmend}",
+    );
+    if (widget.isAmend == true) {
+      setState(() {
+        isLoading = true;
+      });
+      BussinessViewProfile();
+    } else {
+      // Original behavior
+      setState(() {
+        isLoading = true;
+      });
+      GetCartDetailApi();
+    }
+    // --- END OF UPDATED LOGIC ---
   }
 
-  @override
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Get.offAll(() => HomePage(selected: 1,userName: '',));
+        Get.offAll(() => HomePage(selected: 1, userName: ''));
         return false;
       },
       child: Scaffold(
@@ -80,12 +1625,11 @@ class _AddToCartViewState extends State<AddToCartView> {
                     Get.back();
                   }
                 },
-                title:widget.isAmend==true?"Amend Cart": "Your Cart",
+                title: widget.isAmend == true ? "Amend Cart" : "Your Cart",
                 drawerCallback: () {},
               ),
             ),
             SizedBox(height: 5.h),
-      
             Expanded(
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 2.h),
@@ -99,102 +1643,17 @@ class _AddToCartViewState extends State<AddToCartView> {
                 ),
                 child: Stack(
                   children: [
+                    // --- UPDATED VIEW LOGIC ---
                     if (isLoading)
                       Center(child: Loader())
+                    else if (widget.isAmend == true)
+                      _buildStaticAmendView() // Show static list if isAmend is true
                     else if (cartDetailsModel?.data == null ||
                         (cartDetailsModel?.data?.length ?? 0) == 0)
                       _buildEmptyBasketView()
                     else
-                      ListView(
-                        padding: const EdgeInsets.all(8.0),
-                        children: [
-                          Container(
-                            margin: EdgeInsets.all(2.w),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              // boxShadow: [
-                              //   BoxShadow(
-                              //     color: Colors.black.withOpacity(0.05),
-                              //     blurRadius: 10,
-                              //     offset: const Offset(0, 2),
-                              //   ),
-                              // ],
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.all(3.w),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "My Cart",
-                                    style: TextStyle(
-                                      fontSize: 22.sp,
-                                      color: Colors.black,
-                                      fontFamily: AppConstants.manrope,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(height: 1.h),
-                                  Container(
-                                    width: 12.w,
-                                    height: 1.h,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  SizedBox(height: 0.5.h),
-                                  Text(
-                                    "Items (${cartDetailsModel?.data?.length ?? 0})",
-                                    style: TextStyle(
-                                      fontSize: 18.sp,
-                                      color: const Color(0xFF969696),
-                                      fontFamily: AppConstants.manrope,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  SizedBox(height: 1.h),
-                                ],
-                              ),
-                            ),
-                          ),
-                          ...List.generate(cartDetailsModel!.data!.length, (
-                            index,
-                          ) {
-                            final item = cartDetailsModel!.data![index];
-                            return Column(
-                              children: [
-                                _buildCartItem(item),
-                                if (index != cartDetailsModel!.data!.length - 1)
-                                  Divider(
-                                    height: 1,
-                                    color: const Color(0xFFF5F5F5),
-                                    indent: 4.w,
-                                    endIndent: 4.w,
-                                  ),
-                              ],
-                            );
-                          }),
-      
-                          if (cartDetailsModel?.data?[0].type == "product") ...[
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 12),
-                              child: Text(
-                                "People also added",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                            _buildSuggestedList(),
-                          ],
-      
-                          SizedBox(height: 50.h),
-                        ],
-                      ),
-      
+                      _buildRealCartView(), // Show real cart data
+                    // --- END OF UPDATED VIEW LOGIC ---
                     if (!isLoading &&
                         (cartDetailsModel?.data?.isNotEmpty ?? false))
                       Positioned(
@@ -276,7 +1735,6 @@ class _AddToCartViewState extends State<AddToCartView> {
                           },
                         ),
                       ),
-      
                     if (!isLoading &&
                         (cartDetailsModel?.data?.isNotEmpty ?? false))
                       Positioned(
@@ -292,7 +1750,9 @@ class _AddToCartViewState extends State<AddToCartView> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
                               color: Colors.white,
-                              border: Border.all(color: const Color(0xffd9d9d9)),
+                              border: Border.all(
+                                color: const Color(0xffd9d9d9),
+                              ),
                             ),
                             child: Text(
                               "Checkout",
@@ -306,7 +1766,6 @@ class _AddToCartViewState extends State<AddToCartView> {
                           ),
                         ),
                       ),
-      
                     if (isUpdateQuantity)
                       Container(
                         color: Colors.white,
@@ -318,12 +1777,195 @@ class _AddToCartViewState extends State<AddToCartView> {
             ),
           ],
         ),
-        bottomNavigationBar: Obx(() =>  BottomBar(selected: 4,chatCount: countsController.chatCount.value,)),
+        bottomNavigationBar:  BottomBar(
+            selected: 4,
+            chatCount: countsController.chatCount.value,
+          ),
+
       ),
     );
   }
 
+  Widget _buildStaticAmendView() {
+    return Column(
+      children: [
+        // ---------- scrollable content ----------
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.all(8.0),
+            children: [
+              Container(
+                margin: EdgeInsets.all(2.w),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(3.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "My Cart", // Title is "Amend Cart" at the top
+                        style: TextStyle(
+                          fontSize: 22.sp,
+                          color: Colors.black,
+                          fontFamily: AppConstants.manrope,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 1.h),
+                      Container(
+                        width: 12.w,
+                        height: 1.h,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: 0.5.h),
+                      Text(
+                        "Items (${_staticAmendItems.length})",
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          color: const Color(0xFF969696),
+                          fontFamily: AppConstants.manrope,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 1.h),
+                    ],
+                  ),
+                ),
+              ),
+
+              // items
+              ...List.generate(_staticAmendItems.length, (index) {
+                final item = _staticAmendItems[index];
+                return Column(
+                  children: [
+                    _buildCartItem(item), // re-use your existing item widget
+                    if (index != _staticAmendItems.length - 1)
+                      Divider(
+                        height: 1,
+                        color: const Color(0xFFF5F5F5),
+                        indent: 4.w,
+                        endIndent: 4.w,
+                      ),
+                  ],
+                );
+              }),
+
+              SizedBox(height: 2.h),
+
+              // add more items CTA
+              Center(
+                child: batan(
+                  title: "Add more items",
+                  route: () => showAmendProduct(),
+                  color: AppColors.maincolor,
+                  fontcolor: AppColors.white,
+                  height: 5.h,
+                  width: 50.w,
+                  fontsize: 16.sp,
+                  radius: 12.0,
+                ),
+              ),
+
+              // give a bit of space so last content isn't hidden by bottom bar
+              SizedBox(height: 3.h),
+            ],
+          ),
+        ),
+
+        // ---------- fixed bottom checkout bar ----------
+      ],
+    );
+  }
+
+
+  Widget _buildRealCartView() {
+    return ListView(
+      padding: const EdgeInsets.all(8.0),
+      children: [
+        Container(
+          margin: EdgeInsets.all(2.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(3.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "My Cart",
+                  style: TextStyle(
+                    fontSize: 22.sp,
+                    color: Colors.black,
+                    fontFamily: AppConstants.manrope,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 1.h),
+                Container(
+                  width: 12.w,
+                  height: 1.h,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(height: 0.5.h),
+                Text(
+                  "Items (${cartDetailsModel?.data?.length ?? 0})",
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    color: const Color(0xFF969696),
+                    fontFamily: AppConstants.manrope,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 1.h),
+              ],
+            ),
+          ),
+        ),
+        ...List.generate(cartDetailsModel!.data!.length, (index) {
+          final item = cartDetailsModel!.data![index];
+          return Column(
+            children: [
+              _buildCartItem(item),
+              if (index != cartDetailsModel!.data!.length - 1)
+                Divider(
+                  height: 1,
+                  color: const Color(0xFFF5F5F5),
+                  indent: 4.w,
+                  endIndent: 4.w,
+                ),
+            ],
+          );
+        }),
+        if (cartDetailsModel?.data?[0].type == "product") ...[
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: Text(
+              "People also added",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+          ),
+          _buildSuggestedList(),
+        ],
+        SizedBox(height: 50.h),
+      ],
+    );
+  }
+
+  // --- END OF MOVED WIDGET ---
+
   Widget _buildEmptyBasketView() {
+    // ... આ ફંક્શનમાં કોઈ ફેરફાર નથી ... (No changes in this function)
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Padding(
@@ -378,7 +2020,6 @@ class _AddToCartViewState extends State<AddToCartView> {
                   radius: 12.0,
                   width: 43.5.w,
                   fontFamily: AppConstants.manropeBold,
-
                   fontWeight: FontWeight.bold,
                 ),
                 SizedBox(width: 4.w),
@@ -406,6 +2047,8 @@ class _AddToCartViewState extends State<AddToCartView> {
   }
 
   Widget _buildCartItem(dynamic item) {
+    // આ ફંક્શન 'dynamic' item લેતું હોવાથી, તે આપણા મોક ડેટા સાથે પણ કામ કરશે.
+    // (Because this function takes a 'dynamic' item, it will also work with our mock data.)
     final product = item.itemDetails;
     if (product == null) return const SizedBox();
 
@@ -438,11 +2081,20 @@ class _AddToCartViewState extends State<AddToCartView> {
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Center(child: Loader()),
                 errorWidget:
-                    (context, url, error) => Icon(
-                      Icons.image_outlined,
-                      color: Colors.grey[400],
-                      size: 8.w,
+                    (context, url, error) => Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(image),
+                      fit: BoxFit.fill,
                     ),
+                    border: Border.all(
+                      width: 1,
+                      color: const Color(0xFF969696),
+                    ),
+                    borderRadius: BorderRadius.circular(08),
+                  ),
+                  // child: Image(image: AssetImage(image)),
+                ),
               ),
             ),
           ),
@@ -466,10 +2118,19 @@ class _AddToCartViewState extends State<AddToCartView> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        RemoveFromCartApi(
-                          item.productId ?? 0,
-                          item.type ?? "product",
-                        );
+                        // --- UPDATED LOGIC ---
+                        if (widget.isAmend != true) {
+                          RemoveFromCartApi(
+                            item.productId ?? 0,
+                            item.type ?? "product",
+                          );
+                        } else {
+                          // Static list, maybe just remove from UI
+                          setState(() {
+                            _staticAmendItems.remove(item);
+                          });
+                        }
+                        // --- END OF UPDATE ---
                       },
                       child: Container(
                         padding: EdgeInsets.all(1.w),
@@ -487,7 +2148,6 @@ class _AddToCartViewState extends State<AddToCartView> {
                   ],
                 ),
                 SizedBox(height: 1.h),
-
                 Row(
                   children: [
                     Text(
@@ -524,18 +2184,35 @@ class _AddToCartViewState extends State<AddToCartView> {
         children: [
           InkWell(
             onTap: () {
-              if (qty > 1) {
+              // --- UPDATED LOGIC ---
+              if (widget.isAmend == true) {
+                // Handle static data
                 setState(() {
-                  item.quantity = qty - 1;
+                  if (qty > 1) {
+                    item.quantity = qty - 1;
+                  } else {
+                    _staticAmendItems.remove(item);
+                  }
                 });
-                updateQuantityApi(
-                  item.productId ?? 0,
-                  item.quantity ?? 1,
-                  item.type ?? "",
-                );
               } else {
-                RemoveFromCartApi(item.productId ?? 0, item.type ?? "product");
+                // Original API call
+                if (qty > 1) {
+                  setState(() {
+                    item.quantity = qty - 1;
+                  });
+                  updateQuantityApi(
+                    item.productId ?? 0,
+                    item.quantity ?? 1,
+                    item.type ?? "",
+                  );
+                } else {
+                  RemoveFromCartApi(
+                    item.productId ?? 0,
+                    item.type ?? "product",
+                  );
+                }
               }
+              // --- END OF UPDATE ---
             },
             child: Text(
               "-",
@@ -560,16 +2237,28 @@ class _AddToCartViewState extends State<AddToCartView> {
           SizedBox(width: 2.w),
           InkWell(
             onTap: () {
-              if ((item.quantity ?? 1) < 10) {
-                setState(() {
-                  item.quantity = (item.quantity ?? 1) + 1;
-                });
-                updateQuantityApi(
-                  item.productId ?? 0,
-                  item.quantity ?? 1,
-                  item.type ?? "",
-                );
+              // --- UPDATED LOGIC ---
+              if (widget.isAmend == true) {
+                // Handle static data
+                if (qty < 10) {
+                  setState(() {
+                    item.quantity = qty + 1;
+                  });
+                }
+              } else {
+                // Original API call
+                if ((item.quantity ?? 1) < 10) {
+                  setState(() {
+                    item.quantity = (item.quantity ?? 1) + 1;
+                  });
+                  updateQuantityApi(
+                    item.productId ?? 0,
+                    item.quantity ?? 1,
+                    item.type ?? "",
+                  );
+                }
               }
+              // --- END OF UPDATE ---
             },
             child: Icon(Icons.add, color: Colors.black, size: 16.sp),
           ),
@@ -577,6 +2266,10 @@ class _AddToCartViewState extends State<AddToCartView> {
       ),
     );
   }
+
+  // ... બાકીના બધા ફંક્શન્સ જેમ છે તેમ જ રહેશે (All other functions remain the same) ...
+  // (AddCartProductApi, summaryTile, _buildSummaryRow, getSubtotal, etc.)
+  // ... (Paste all your remaining functions here) ...
 
   Widget _buildSectionCard({
     required String title,
@@ -870,22 +2563,35 @@ class _AddToCartViewState extends State<AddToCartView> {
   }
 
   Widget _buildSuggestedList() {
+    // ✅ Step-1: Collect all products
     final List<BusinessProducts> allProducts =
-        (cartDetailsModel?.data?.expand(
-                  (item) => item.itemDetails?.businessProducts ?? [],
-                ) ??
-                [])
-            .whereType<BusinessProducts>()
-            .toList();
+    (cartDetailsModel?.data?.expand(
+          (item) => item.itemDetails?.businessProducts ?? [],
+    ) ??
+        [])
+        .whereType<BusinessProducts>()
+        .toList();
+
+    // ✅ Step-2: Remove duplicates using product.id
+    final Map<String, BusinessProducts> uniqueMap = {};
+
+    for (var p in allProducts) {
+      if (p.id != null) {
+        uniqueMap[p.id.toString()] = p;
+      }
+    }
+
+    final List<BusinessProducts> uniqueProducts = uniqueMap.values.toList();
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       height: 10.h,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: allProducts.length,
+        itemCount: uniqueProducts.length,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         itemBuilder: (context, index) {
-          final product = allProducts[index];
+          final product = uniqueProducts[index];
 
           return Container(
             margin: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 1.w),
@@ -896,131 +2602,92 @@ class _AddToCartViewState extends State<AddToCartView> {
               color: Colors.white,
               border: Border.all(color: const Color(0xFF969696), width: 1),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+            child: Row(
               children: [
-                Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: CachedNetworkImage(
-                        imageUrl:
-                            (product.image != null && product.image!.isNotEmpty)
-                                ? product.image!
-                                : (product.images != null &&
-                                    product.images!.isNotEmpty)
-                                ? product.images!.first
-                                : "",
-                        fit: BoxFit.cover,
-                        width: 14.w,
-                        height: 14.w,
-                        placeholder:
-                            (context, url) => const Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.maincolor,
-                                strokeWidth: 2,
-                              ),
-                            ),
-                        errorWidget:
-                            (context, url, error) => Icon(
-                              Icons.image_outlined,
-                              color: Colors.grey[400],
-                              size: 30,
-                            ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: CachedNetworkImage(
+                    imageUrl: (product.image != null && product.image!.isNotEmpty)
+                        ? product.image!
+                        : (product.images != null &&
+                        product.images!.isNotEmpty)
+                        ? product.images!.first
+                        : "",
+                    fit: BoxFit.cover,
+                    width: 14.w,
+                    height: 14.w,
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.maincolor,
+                        strokeWidth: 2,
                       ),
                     ),
-                    SizedBox(width: 2.w),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    errorWidget: (context, url, error) => Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(image),
+                          fit: BoxFit.fill,
+                        ),
+                        border: Border.all(
+                          width: 1,
+                          color: const Color(0xFF969696),
+                        ),
+                        borderRadius: BorderRadius.circular(08),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 2.w),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.name ?? "",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+
+                    (product.offerPrice != null &&
+                        product.offerPrice != "0.00" &&
+                        product.offerPrice != product.price)
+                        ? Row(
                       children: [
                         Text(
-                          product.name ?? "",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                          "£${product.price}",
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            decoration: TextDecoration.lineThrough,
+                            color: Colors.grey,
                           ),
                         ),
-                        (product.offerPrice != null &&
-                                product.offerPrice != "0.00" &&
-                                product.offerPrice != product.price)
-                            ? Row(
-                              children: [
-                                Text(
-                                  "£${product.price}",
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.normal,
-                                    fontFamily: AppConstants.manrope,
-                                    color: Colors.grey,
-                                    decoration: TextDecoration.lineThrough,
-                                    decorationColor: AppColors.maincolor,
-                                  ),
-                                ),
-                                const SizedBox(width: 5),
-                                Text(
-                                  "£${product.offerPrice}",
-                                  style: TextStyle(
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: AppConstants.manrope,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                SizedBox(width: 4.w),
-                                InkWell(
-                                  onTap: () {
-                                    AddCartProductApi(
-                                      product.id.toString() ?? "",
-                                    );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      color: Colors.black,
-                                    ),
-                                    child: Icon(
-                                      Icons.add,
-                                      size: 17.sp,
-                                      color: AppColors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                            : Row(
-                              children: [
-                                Text(
-                                  "£${product.price ?? ""}",
-                                  style: TextStyle(
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: AppConstants.manrope,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    AddCartProductApi(
-                                      product.id.toString() ?? "",
-                                    );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.black,
-                                    ),
-                                    child: Icon(
-                                      Icons.add,
-                                      size: 17.sp,
-                                      color: AppColors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                        const SizedBox(width: 5),
+                        Text(
+                          "£${product.offerPrice}",
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(width: 4.w),
+                        _addBtn(product.id),
+                      ],
+                    )
+                        : Row(
+                      children: [
+                        Text(
+                          "£${product.price ?? ""}",
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        _addBtn(product.id),
                       ],
                     ),
                   ],
@@ -1032,6 +2699,25 @@ class _AddToCartViewState extends State<AddToCartView> {
       ),
     );
   }
+
+  Widget _addBtn(dynamic id) {
+    return InkWell(
+      onTap: () {
+        AddCartProductApi(id.toString());
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.black,
+        ),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
 
   void _showFancyAnythingElseSheet() {
     final List<BusinessProducts> suggestedProducts =
@@ -1056,7 +2742,6 @@ class _AddToCartViewState extends State<AddToCartView> {
                 (_, controller) => Container(
                   decoration: const BoxDecoration(
                     color: Colors.white,
-
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(20),
                     ),
@@ -1213,21 +2898,20 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                       ),
                                                     ),
                                                 errorWidget:
-                                                    (
-                                                      context,
-                                                      url,
-                                                      error,
-                                                    ) => Container(
-                                                      color: const Color(
-                                                        0xFFF8F8F8,
-                                                      ),
-                                                      height: 14.h,
-                                                      child: Icon(
-                                                        Icons.image_outlined,
-                                                        color: Colors.grey[400],
-                                                        size: 6.w,
-                                                      ),
+                                                    (context, url, error) => Container(
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: AssetImage(image),
+                                                      fit: BoxFit.fill,
                                                     ),
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: const Color(0xFF969696),
+                                                    ),
+                                                    borderRadius: BorderRadius.circular(08),
+                                                  ),
+                                                  // child: Image(image: AssetImage(image)),
+                                                ),
                                               ),
                                             ),
                                             Positioned(
@@ -1285,7 +2969,8 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                     fontSize: 15.sp,
                                                     fontWeight: FontWeight.w600,
                                                     fontFamily:
-                                                        AppConstants.manropeBold,
+                                                        AppConstants
+                                                            .manropeBold,
                                                     color: const Color(
                                                       0xFF2E3333,
                                                     ),
@@ -1505,6 +3190,7 @@ class _AddToCartViewState extends State<AddToCartView> {
   }
 
   void _handleCheckoutTap() {
+    // This logic should now be fine, as cartDetailsModel will be null in amend mode
     if (cartDetailsModel?.data?[0].type == "product") {
       if (!hasShownFancySheet) {
         setState(() {
@@ -1527,4 +3213,875 @@ class _AddToCartViewState extends State<AddToCartView> {
       ),
     );
   }
+
+  BussinessViewProfile() {
+    checkInternet().then((internet) async {
+      if (internet) {
+        CommunityProvider()
+            .businessProfileViewApi(widget.businessID.toString(), '', '')
+            .then((response) async {
+              busnessviewmodal = BusnessViewModal.fromJson(response.data);
+              if (response.statusCode == 200) {
+                setState(() {
+                  isLoading = false;
+                });
+                busnessviewmodal = BusnessViewModal.fromJson(response.data);
+
+                // showAmendProduct();
+                log("data ave che ${response.data}");
+                log(
+                  "PRODUCT IS SUCESS ${busnessviewmodal?.data?.products?.length}",
+                );
+              } else if (response.statusCode == 422) {
+                setState(() {
+                  isLoading = false;
+                });
+              } else {
+                setState(() {
+                  isLoading = false;
+                });
+              }
+            });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  // void showAmendProduct() {
+  //   final List<Products> suggestedProducts =
+  //       busnessviewmodal?.data?.products ?? [];
+  //
+  //   final bool hasCartData = cartDetailsModel?.data?.isNotEmpty == true;
+  //   final cart = hasCartData ? cartDetailsModel!.data!.first : null;
+  //   final loyalty = cart?.loyaltyDetails;
+  //
+  //   final bool hasLoyalty =
+  //       (cart?.type == "product") &&
+  //       loyalty?.loyaltyOrderThreshold != null &&
+  //       loyalty?.loyaltyDiscountPercentage != null;
+  //
+  //   // Clean percentage text (e.g., "10.0" -> "10")
+  //   final String loyaltyPct = (loyalty?.loyaltyDiscountPercentage ?? "")
+  //       .toString()
+  //       .replaceAll(RegExp(r'\.0+$'), '');
+  //
+  //   showModalBottomSheet(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     backgroundColor: Colors.transparent,
+  //     builder:
+  //         (context) => DraggableScrollableSheet(
+  //           initialChildSize: 0.85,
+  //           minChildSize: 0.4,
+  //           maxChildSize: 0.95,
+  //           expand: false,
+  //           builder:
+  //               (_, controller) => Container(
+  //                 decoration: const BoxDecoration(
+  //                   color: Colors.white,
+  //                   borderRadius: BorderRadius.vertical(
+  //                     top: Radius.circular(20),
+  //                   ),
+  //                 ),
+  //                 child: Stack(
+  //                   clipBehavior: Clip.none,
+  //                   children: [
+  //                     // ----------------- SCROLL AREA -----------------
+  //                     Padding(
+  //                       padding: EdgeInsets.only(
+  //                         bottom: 10.h,
+  //                         left: 4.w,
+  //                         right: 4.w,
+  //                       ),
+  //                       child: ListView(
+  //                         controller: controller,
+  //                         physics: const BouncingScrollPhysics(),
+  //                         children: [
+  //                           // Handle
+  //                           Center(
+  //                             child: Container(
+  //                               margin: EdgeInsets.only(top: 1.h, bottom: 2.h),
+  //                               width: 10.w,
+  //                               height: 0.5.h,
+  //                               decoration: BoxDecoration(
+  //                                 color: Colors.grey[300],
+  //                                 borderRadius: BorderRadius.circular(10),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           // Title + Close
+  //                           Row(
+  //                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                             children: [
+  //                               Text(
+  //                                 "Amend order",
+  //                                 style: TextStyle(
+  //                                   fontSize: 20.sp,
+  //                                   fontWeight: FontWeight.w700,
+  //                                   fontFamily: AppConstants.manropeBold,
+  //                                   color: const Color(0xFF2E3333),
+  //                                 ),
+  //                               ),
+  //                               GestureDetector(
+  //                                 onTap: () => Navigator.pop(context),
+  //                                 child: Icon(
+  //                                   Icons.close,
+  //                                   size: 24.sp,
+  //                                   color: Colors.grey[600],
+  //                                 ),
+  //                               ),
+  //                             ],
+  //                           ),
+  //                           SizedBox(height: 1.5.h),
+  //
+  //                           // Loyalty banner (guarded; no crashes)
+  //                           if (hasLoyalty)
+  //                             Container(
+  //                               width: double.infinity,
+  //                               padding: EdgeInsets.symmetric(
+  //                                 horizontal: 4.w,
+  //                                 vertical: 1.6.h,
+  //                               ),
+  //                               margin: EdgeInsets.only(bottom: 1.5.h),
+  //                               decoration: BoxDecoration(
+  //                                 color: AppColors.maincolor.withOpacity(0.1),
+  //                                 borderRadius: BorderRadius.circular(10),
+  //                               ),
+  //                               child: Row(
+  //                                 children: [
+  //                                   Expanded(
+  //                                     child: Text(
+  //                                       "You're getting closer to an exclusive reward! "
+  //                                       "Complete ${loyalty!.loyaltyOrderThreshold} more orders "
+  //                                       "to unlock a $loyaltyPct% discount on your next purchase.",
+  //                                       style: TextStyle(
+  //                                         fontSize: 14.sp,
+  //                                         color: const Color(0xFF3C1361),
+  //                                         fontFamily: AppConstants.manrope,
+  //                                         fontWeight: FontWeight.w600,
+  //                                       ),
+  //                                     ),
+  //                                   ),
+  //                                   Container(
+  //                                     width: 28,
+  //                                     height: 28,
+  //                                     decoration: const BoxDecoration(
+  //                                       color: AppColors.maincolor,
+  //                                       shape: BoxShape.circle,
+  //                                     ),
+  //                                     child: const Icon(
+  //                                       Icons.card_giftcard,
+  //                                       size: 16,
+  //                                       color: Colors.white,
+  //                                     ),
+  //                                   ),
+  //                                 ],
+  //                               ),
+  //                             ),
+  //
+  //                           // Upsell header
+  //                           Column(
+  //                             crossAxisAlignment: CrossAxisAlignment.start,
+  //                             children: [
+  //                               Text(
+  //                                 "You may also like",
+  //                                 style: TextStyle(
+  //                                   fontSize: 16.sp,
+  //                                   fontWeight: FontWeight.w600,
+  //                                   fontFamily: AppConstants.manrope,
+  //                                   color: const Color(0xFF2E3333),
+  //                                 ),
+  //                               ),
+  //                               SizedBox(height: 0.5.h),
+  //                               Text(
+  //                                 "Add more items to your order before checkout.",
+  //                                 style: TextStyle(
+  //                                   fontSize: 15.sp,
+  //                                   color: Colors.grey[600],
+  //                                   fontFamily: AppConstants.manrope,
+  //                                 ),
+  //                               ),
+  //                             ],
+  //                           ),
+  //                           SizedBox(height: 2.h),
+  //
+  //                           // Products grid (guarded)
+  //                           if (suggestedProducts.isEmpty)
+  //                             Center(
+  //                               child: Padding(
+  //                                 padding: EdgeInsets.symmetric(vertical: 4.h),
+  //                                 child: Text(
+  //                                   "No suggested items available",
+  //                                   style: TextStyle(
+  //                                     fontSize: 14.sp,
+  //                                     color: Colors.grey[500],
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             )
+  //                           else
+  //                             GridView.builder(
+  //                               shrinkWrap: true,
+  //                               physics: const NeverScrollableScrollPhysics(),
+  //                               itemCount: suggestedProducts.length,
+  //                               gridDelegate:
+  //                                   SliverGridDelegateWithFixedCrossAxisCount(
+  //                                     crossAxisCount: 3,
+  //                                     childAspectRatio: 0.48,
+  //                                     crossAxisSpacing: 3.w,
+  //                                     mainAxisSpacing: 2.h,
+  //                                   ),
+  //                               itemBuilder: (context, index) {
+  //                                 final Products product =
+  //                                     suggestedProducts[index];
+  //
+  //                                 // Safe image selection
+  //                                 final String imageUrl =
+  //                                     (() {
+  //                                       if (product.image != null &&
+  //                                           product.image!.isNotEmpty) {
+  //                                         return product.image!;
+  //                                       }
+  //                                       if (product.images != null &&
+  //                                           product.images!.isNotEmpty) {
+  //                                         return product.images!.first;
+  //                                       }
+  //                                       return "";
+  //                                     })();
+  //
+  //                                 // Price helpers
+  //                                 final String? price = product.price;
+  //                                 final String? offerPrice = product.offerPrice;
+  //                                 final bool hasOffer =
+  //                                     (offerPrice != null &&
+  //                                         offerPrice != "0.00" &&
+  //                                         offerPrice != price);
+  //
+  //                                 return Container(
+  //                                   decoration: BoxDecoration(
+  //                                     color: Colors.white,
+  //                                     border: Border.all(
+  //                                       color: const Color(0xFFE5E5E5),
+  //                                       width: 1,
+  //                                     ),
+  //                                     borderRadius: BorderRadius.circular(12),
+  //                                   ),
+  //                                   child: Column(
+  //                                     crossAxisAlignment:
+  //                                         CrossAxisAlignment.start,
+  //                                     children: [
+  //                                       Stack(
+  //                                         clipBehavior: Clip.none,
+  //                                         children: [
+  //                                           ClipRRect(
+  //                                             borderRadius:
+  //                                                 const BorderRadius.vertical(
+  //                                                   top: Radius.circular(12),
+  //                                                 ),
+  //                                             child: CachedNetworkImage(
+  //                                               imageUrl: imageUrl,
+  //                                               fit: BoxFit.cover,
+  //                                               height: 14.h,
+  //                                               width: double.infinity,
+  //                                               placeholder:
+  //                                                   (context, url) => Container(
+  //                                                     color: const Color(
+  //                                                       0xFFF8F8F8,
+  //                                                     ),
+  //                                                     child: const Center(
+  //                                                       child:
+  //                                                           CircularProgressIndicator(
+  //                                                             color:
+  //                                                                 AppColors
+  //                                                                     .maincolor,
+  //                                                             strokeWidth: 2,
+  //                                                           ),
+  //                                                     ),
+  //                                                   ),
+  //                                               errorWidget:
+  //                                                   (
+  //                                                     context,
+  //                                                     url,
+  //                                                     error,
+  //                                                   ) => Container(
+  //                                                     color: const Color(
+  //                                                       0xFFF8F8F8,
+  //                                                     ),
+  //                                                     height: 14.h,
+  //                                                     child: Icon(
+  //                                                       Icons.image_outlined,
+  //                                                       color: Colors.grey[400],
+  //                                                       size: 6.w,
+  //                                                     ),
+  //                                                   ),
+  //                                             ),
+  //                                           ),
+  //                                           Positioned(
+  //                                             bottom: -12,
+  //                                             right: 4,
+  //                                             child: GestureDetector(
+  //                                               onTap: () {
+  //                                                 // Add + close (your existing flow)
+  //                                                 AddCartProductApi(
+  //                                                   product.id.toString(),
+  //                                                 );
+  //                                                 Get.back();
+  //                                               },
+  //                                               child: Container(
+  //                                                 width: 11.w,
+  //                                                 height: 11.w,
+  //                                                 decoration: BoxDecoration(
+  //                                                   color: Colors.white,
+  //                                                   shape: BoxShape.circle,
+  //                                                   boxShadow: [
+  //                                                     BoxShadow(
+  //                                                       color: Colors.black
+  //                                                           .withOpacity(0.15),
+  //                                                       blurRadius: 6,
+  //                                                       spreadRadius: 2,
+  //                                                       offset: const Offset(
+  //                                                         0,
+  //                                                         2,
+  //                                                       ),
+  //                                                     ),
+  //                                                   ],
+  //                                                 ),
+  //                                                 child: Icon(
+  //                                                   Icons.add,
+  //                                                   size: 22.sp,
+  //                                                   color: AppColors.maincolor,
+  //                                                 ),
+  //                                               ),
+  //                                             ),
+  //                                           ),
+  //                                         ],
+  //                                       ),
+  //                                       Expanded(
+  //                                         child: Padding(
+  //                                           padding: EdgeInsets.all(4.w),
+  //                                           child: Column(
+  //                                             crossAxisAlignment:
+  //                                                 CrossAxisAlignment.start,
+  //                                             children: [
+  //                                               Text(
+  //                                                 product.name ?? "",
+  //                                                 maxLines: 3,
+  //                                                 overflow:
+  //                                                     TextOverflow.ellipsis,
+  //                                                 style: TextStyle(
+  //                                                   fontSize: 15.sp,
+  //                                                   fontWeight: FontWeight.w600,
+  //                                                   fontFamily:
+  //                                                       AppConstants
+  //                                                           .manropeBold,
+  //                                                   color: const Color(
+  //                                                     0xFF2E3333,
+  //                                                   ),
+  //                                                 ),
+  //                                               ),
+  //                                               const Spacer(),
+  //                                               Padding(
+  //                                                 padding: EdgeInsets.symmetric(
+  //                                                   horizontal: 0.w,
+  //                                                 ),
+  //                                                 child:
+  //                                                     hasOffer
+  //                                                         ? FittedBox(
+  //                                                           fit:
+  //                                                               BoxFit
+  //                                                                   .scaleDown,
+  //                                                           alignment:
+  //                                                               Alignment
+  //                                                                   .centerLeft,
+  //                                                           child: Row(
+  //                                                             children: [
+  //                                                               Text(
+  //                                                                 "£${price ?? ''}",
+  //                                                                 style: TextStyle(
+  //                                                                   fontSize:
+  //                                                                       13.sp,
+  //                                                                   fontWeight:
+  //                                                                       FontWeight
+  //                                                                           .normal,
+  //                                                                   fontFamily:
+  //                                                                       AppConstants
+  //                                                                           .manrope,
+  //                                                                   color:
+  //                                                                       Colors
+  //                                                                           .grey,
+  //                                                                   decoration:
+  //                                                                       TextDecoration
+  //                                                                           .lineThrough,
+  //                                                                   decorationColor:
+  //                                                                       AppColors
+  //                                                                           .maincolor,
+  //                                                                 ),
+  //                                                               ),
+  //                                                               const SizedBox(
+  //                                                                 width: 5,
+  //                                                               ),
+  //                                                               Text(
+  //                                                                 "£$offerPrice",
+  //                                                                 style: TextStyle(
+  //                                                                   fontSize:
+  //                                                                       14.sp,
+  //                                                                   fontWeight:
+  //                                                                       FontWeight
+  //                                                                           .bold,
+  //                                                                   fontFamily:
+  //                                                                       AppConstants
+  //                                                                           .manrope,
+  //                                                                   color:
+  //                                                                       Colors
+  //                                                                           .black,
+  //                                                                 ),
+  //                                                               ),
+  //                                                             ],
+  //                                                           ),
+  //                                                         )
+  //                                                         : Text(
+  //                                                           "£${price ?? ""}",
+  //                                                           style: TextStyle(
+  //                                                             fontSize: 14.sp,
+  //                                                             fontWeight:
+  //                                                                 FontWeight
+  //                                                                     .bold,
+  //                                                             fontFamily:
+  //                                                                 AppConstants
+  //                                                                     .manrope,
+  //                                                             color:
+  //                                                                 Colors.black,
+  //                                                           ),
+  //                                                         ),
+  //                                               ),
+  //                                             ],
+  //                                           ),
+  //                                         ),
+  //                                       ),
+  //                                     ],
+  //                                   ),
+  //                                 );
+  //                               },
+  //                             ),
+  //                           SizedBox(height: 20.h),
+  //                         ],
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //         ),
+  //   );
+  // }
+// 👇 Drop-in replacement
+  void showAmendProduct() {
+    final List<Products> suggestedProducts = busnessviewmodal?.data?.products ?? [];
+
+    final bool hasCartData = cartDetailsModel?.data?.isNotEmpty == true;
+    final cart = hasCartData ? cartDetailsModel!.data!.first : null;
+    final loyalty = cart?.loyaltyDetails;
+
+    final bool hasLoyalty =
+        (cart?.type == "product") &&
+            loyalty?.loyaltyOrderThreshold != null &&
+            loyalty?.loyaltyDiscountPercentage != null;
+
+    // Clean percentage text (e.g., "10.0" -> "10")
+    final String loyaltyPct = (loyalty?.loyaltyDiscountPercentage ?? "")
+        .toString()
+        .replaceAll(RegExp(r'\.0+$'), '');
+
+    // ✅ Only 3 items to show
+    final List<Products> visible = suggestedProducts.take(3).toList();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.56,
+        minChildSize: 0.55,
+        expand: false,
+        builder: (_, controller) => Stack(
+          children: [
+
+            Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 12.h, left: 4.w, right: 4.w),
+                child: ListView(
+                  controller: controller,
+                  physics: const BouncingScrollPhysics(),
+                  children: [
+                    // Handle
+                    Center(
+                      child: Container(
+                        margin: EdgeInsets.only(top: 1.h, bottom: 2.h),
+                        width: 20.w,
+                        height: 0.5.h,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    // Title + Close
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Amend order",
+                          style: TextStyle(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w700,
+                            fontFamily: AppConstants.manropeBold,
+                            color: const Color(0xFF2E3333),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: Icon(Icons.close, size: 24.sp, color: Colors.grey[600]),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 1.5.h),
+
+                    // Loyalty banner (guarded)
+                    if (hasLoyalty)
+                      Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.6.h),
+                        margin: EdgeInsets.only(bottom: 1.5.h),
+                        decoration: BoxDecoration(
+                          color: AppColors.maincolor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "You're getting closer to an exclusive reward! "
+                                    "Complete ${loyalty!.loyaltyOrderThreshold} more orders "
+                                    "to unlock a $loyaltyPct% discount on your next purchase.",
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: const Color(0xFF3C1361),
+                                  fontFamily: AppConstants.manrope,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 28,
+                              height: 28,
+                              decoration: const BoxDecoration(
+                                color: AppColors.maincolor,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(Icons.card_giftcard, size: 16, color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                    // Upsell header
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "You may also like",
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: AppConstants.manrope,
+                            color: const Color(0xFF2E3333),
+                          ),
+                        ),
+                        SizedBox(height: 0.5.h),
+                        Text(
+                          "Add more items to your order before checkout.",
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Colors.grey[600],
+                            fontFamily: AppConstants.manrope,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 2.h),
+
+                    // ✅ Show only 3 products
+                    if (visible.isEmpty)
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 4.h),
+                          child: Text(
+                            "No suggested items available",
+                            style: TextStyle(fontSize: 14.sp, color: Colors.grey[500]),
+                          ),
+                        ),
+                      )
+                    else
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: visible.length, // <= 3
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: 0.48,
+                          crossAxisSpacing: 3.w,
+                          mainAxisSpacing: 2.h,
+                        ),
+                        itemBuilder: (context, index) {
+                          final Products product = visible[index];
+
+                          final String imageUrl = (() {
+                            if (product.image != null && product.image!.isNotEmpty) {
+                              return product.image!;
+                            }
+                            if (product.images != null && product.images!.isNotEmpty) {
+                              return product.images!.first;
+                            }
+                            return "";
+                          })();
+
+                          final String? price = product.price;
+                          final String? offerPrice = product.offerPrice;
+                          final bool hasOffer = (offerPrice != null && offerPrice != "0.00" && offerPrice != price);
+
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: const Color(0xFFE5E5E5), width: 1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                                      child: CachedNetworkImage(
+                                        imageUrl: imageUrl,
+                                        fit: BoxFit.cover,
+                                        height: 14.h,
+                                        width: double.infinity,
+                                        placeholder: (context, url) => Container(
+                                          color: const Color(0xFFF8F8F8),
+                                          child: const Center(
+                                            child: CircularProgressIndicator(
+                                              color: AppColors.maincolor,
+                                              strokeWidth: 2,
+                                            ),
+                                          ),
+                                        ),
+                                        errorWidget:
+                                            (context, url, error) => Container(
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: AssetImage(image),
+                                              fit: BoxFit.fill,
+                                            ),
+                                            border: Border.all(
+                                              width: 1,
+                                              color: const Color(0xFF969696),
+                                            ),
+                                            borderRadius: BorderRadius.circular(08),
+                                          ),
+                                          // child: Image(image: AssetImage(image)),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom: -12,
+                                      right: 4,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          AddCartProductApi(product.id.toString());
+                                          Get.back();
+                                        },
+                                        child: Container(
+                                          width: 11.w,
+                                          height: 11.w,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            shape: BoxShape.circle,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black.withOpacity(0.15),
+                                                blurRadius: 6,
+                                                spreadRadius: 2,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Icon(Icons.add, size: 22.sp, color: AppColors.maincolor),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(4.w),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          product.name ?? "",
+                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.w600,
+                                            fontFamily: AppConstants.manropeBold,
+                                            color: const Color(0xFF2E3333),
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 0.w),
+                                          child: hasOffer
+                                              ? FittedBox(
+                                            fit: BoxFit.scaleDown,
+                                            alignment: Alignment.centerLeft,
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  "£${price ?? ''}",
+                                                  style: TextStyle(
+                                                    fontSize: 13.sp,
+                                                    fontFamily: AppConstants.manrope,
+                                                    color: Colors.grey,
+                                                    decoration: TextDecoration.lineThrough,
+                                                    decorationColor: AppColors.maincolor,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 5),
+                                                Text(
+                                                  "£$offerPrice",
+                                                  style: TextStyle(
+                                                    fontSize: 14.sp,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: AppConstants.manrope,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                              : Text(
+                                            "£${price ?? ""}",
+                                            style: TextStyle(
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: AppConstants.manrope,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Container(
+                padding: EdgeInsets.fromLTRB(4.w, 2.h, 4.w,2.w ),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, -2))],
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                ),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 6.2.h,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Get.to(BusinessDetailPage(businessID: widget.businessID,));
+                    },                    icon: const Icon(Icons.storefront),
+                    label: Text(
+                      "View Shop",
+                      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.maincolor,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+// 👇 Helper: put your actual shop screen here
+  void _onViewShop() {
+    Get.back(); // close bottom sheet first (optional)
+
+  }
+
+}
+
+class _MockItemDetails {
+  final String? name;
+  final String? image;
+  final List? images;
+  final String? price;
+  final String? offerPrice;
+
+  // Added this to avoid null errors on `item.itemDetails.businessProducts` in _buildRealCartView
+  List<dynamic> get businessProducts => [];
+
+  // Added this for `item.itemDetails.businessId` in _navigateToCheckout
+  String get businessId => "static_biz_id";
+
+  _MockItemDetails({
+    this.name,
+    this.image,
+    this.images,
+    this.price,
+    this.offerPrice,
+  });
+}
+
+class _MockCartItem {
+  final _MockItemDetails? itemDetails;
+  int? quantity;
+  final int? productId;
+  final String? type;
+
+  // Added this to avoid null errors on `item.loyaltyDetails` in _buildSummaryRow
+  dynamic get loyaltyDetails => null;
+
+  _MockCartItem({
+    this.itemDetails,
+    this.quantity,
+    this.productId,
+    this.type = "product",
+  });
 }

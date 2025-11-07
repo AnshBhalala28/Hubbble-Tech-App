@@ -95,8 +95,8 @@ String formatDateTime(String? createdAt) {
 }
 // 1260*2736
 class AppConstants {
-  // static String BASEURL = "https://portal.wavee.ai/api/";
-  static String BASEURL = "https://staging-portal.wavee.ai/api/";
+  static String BASEURL = "https://portal.wavee.ai/api/";
+  // static String BASEURL = "https://staging-portal.wavee.ai/api/";
 
   static const String path = "assets/Svg/";
   static const String manrope1 = "AlbertSans-SemiBold";

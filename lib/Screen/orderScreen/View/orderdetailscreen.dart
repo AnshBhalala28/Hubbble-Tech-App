@@ -19,26 +19,6 @@ import '../../../comman/check_inernet_connecty.dart';
 import '../../../comman/error_dialog.dart';
 import '../Model/order_detail_model.dart';
 import '../Provider/order_screen_provider.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:readmore/readmore.dart';
-import 'package:sizer/sizer.dart';
-import 'package:wavee/Screen/messageScreen/View/messageScreen.dart';
-import 'package:wavee/Screen/orderScreen/Model/service_order_model.dart';
-import 'package:wavee/Screen/orderScreen/View/order_screen_view.dart';
-import 'package:wavee/comman/Custom_AppBar.dart';
-import 'package:wavee/comman/colors.dart';
-import 'package:wavee/comman/const.dart';
-import 'package:wavee/comman/custom_button.dart';
-import 'package:wavee/comman/loader.dart';
-
-import '../../../comman/check_inernet_connecty.dart';
-import '../../../comman/error_dialog.dart';
-import '../Model/order_detail_model.dart';
-import '../Provider/order_screen_provider.dart';
 
 class Orderdetail_Screen extends StatefulWidget {
   String? orderid;
@@ -1007,6 +987,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                               onConfirm: CancleOrder,
                             );
                           },
+                          fontFamily: AppConstants.manropeBold,
                           color: AppColors.maincolor,
                           fontcolor: AppColors.white,
                           height: 5.h,
@@ -1757,7 +1738,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                 if (canAmend) {
                   // Add your amend order logic here
                   // For example: Get.to(AmendOrderScreen());
-                  Get.to(AddToCartView(isAmend: true,));
+                  Get.to(AddToCartView(isAmend: true,businessID:orderDetailModel?.data?.business?.id.toString()??""));
                 }
               },
               color: canAmend ? AppColors.maincolor : AppColors.maincolor ,
@@ -1810,7 +1791,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                 style: TextStyle(
                   fontSize: 19.sp,
                   fontWeight: FontWeight.bold,
-                  fontFamily: AppConstants.manrope,
+                  fontFamily: AppConstants.manropeBold,
                   color: Colors.black,
                 ),
               ),
@@ -2041,6 +2022,21 @@ class CustomFeatureCard extends StatelessWidget {
   }
 }
 
+
+// Enum (Status na prakar define karva mate)
+enum _StatusType { inProgress, completed, failed }
+
+// Navu Helper Function (Status no prakar check karva)
+_StatusType _getStatusType(String status, int currentIndex, int totalSteps) {
+  if (status == "declined" || status == "cancelled") {
+    return _StatusType.failed;
+  }
+  if (currentIndex == totalSteps - 1) {
+    return _StatusType.completed;
+  }
+  return _StatusType.inProgress;
+}
+
 class OrderStepsWidget extends StatelessWidget {
   final String currentStatus;
 
@@ -2048,178 +2044,237 @@ class OrderStepsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> steps = [
-      {"title": "Order Placed", "status": "order placed"},
-      {"title": "Pending Approval", "status": "pending approval"},
-      {"title": "Packing Your Bag", "status": "packing your bag"},
-      {"title": "Ready for Collection", "status": "ready for collection"},
-      {"title": "Collected", "status": "collected"},
-    ];
+    String lowerCaseStatus = currentStatus.toLowerCase();
+    List<Map<String, dynamic>> steps;
+
+    // 1. Status pramane steps ni list taiyar karo
+    if (lowerCaseStatus == "declined") {
+      steps = [
+        {"title": "Order Placed", "status": "order placed"},
+        {"title": "Pending Approval", "status": "pending approval"},
+        {"title": "Declined", "status": "declined"},
+      ];
+    } else if (lowerCaseStatus == "cancelled") {
+      steps = [
+        {"title": "Order Placed", "status": "order placed"},
+        {"title": "Cancelled", "status": "cancelled"},
+      ];
+    } else {
+      // Normal "Happy Path"
+      steps = [
+        {"title": "Order Placed", "status": "order placed"},
+        {"title": "Pending Approval", "status": "pending approval"},
+        {"title": "Packing Your Bag", "status": "packing your bag"},
+        {"title": "Ready for Collection", "status": "ready for collection"},
+        {"title": "Collected", "status": "collected"},
+      ];
+    }
 
     int currentStatusIndex = steps.indexWhere(
-      (step) => step['status'] == currentStatus.toLowerCase(),
+          (step) => step['status'] == lowerCaseStatus,
     );
 
     return Column(
-      children:
-          steps.asMap().entries.map((entry) {
-            int index = entry.key;
-            var step = entry.value;
-            bool isLast = index == steps.length - 1;
-            bool isCompleted = index <= currentStatusIndex;
-            bool isActive = index == currentStatusIndex;
+      children: steps.asMap().entries.map((entry) {
+        int index = entry.key;
+        var step = entry.value;
+        bool isLast = index == steps.length - 1;
+        bool isCompleted = index <= currentStatusIndex;
+        bool isActive = index == currentStatusIndex;
 
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        // 2. Status no prakar ane color nakki karo
+        _StatusType statusType =
+        _getStatusType(step['status']!, index, steps.length);
+
+        Color stepColor;
+        if (statusType == _StatusType.failed) {
+          stepColor = Colors.red;
+        } else if (statusType == _StatusType.completed) {
+          stepColor = Colors.green; // "Collected" mate Green
+        } else {
+          stepColor = AppColors.maincolor; // Normal In-Progress
+        }
+
+        // Active step mate color
+        Color activeColor = isActive ? stepColor : AppColors.maincolor;
+
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
               children: [
-                Column(
+                isActive
+                    ? LiveStatusIndicator(
+                  // *** AA WIDGET HAVE NAVI "GLOWING ORB" EFFECT BATAVSHE ***
+                  color: activeColor,
+                  child: _buildStatusCircle(
+                    step['status'],
+                    isCompleted,
+                    isActive,
+                    activeColor,
+                  ),
+                )
+                    : _buildStatusCircle(
+                  step['status'],
+                  isCompleted,
+                  isActive,
+                  stepColor,
+                ),
+                if (!isLast)
+                  Container(
+                    width: 2,
+                    height: 30,
+                    color: index < currentStatusIndex
+                        ? stepColor.withOpacity(0.5)
+                        : Colors.grey[300],
+                    margin: const EdgeInsets.symmetric(vertical: 2),
+                  ),
+              ],
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(bottom: isLast ? 0 : 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    isActive
-                        ? PulsingDot(
-                          child: _buildStatusCircle(
-                            step['status'],
-                            isCompleted,
-                            isActive,
-                          ),
-                        )
-                        : _buildStatusCircle(
-                          step['status'],
-                          isCompleted,
-                          isActive,
-                        ),
-                    if (!isLast)
+                    Text(
+                      step['title'],
+                      style: TextStyle(
+                        fontSize: isActive ? 17.5.sp : 16.5.sp,
+                        fontWeight: isActive
+                            ? FontWeight.bold
+                            : isCompleted
+                            ? FontWeight.w600
+                            : FontWeight.normal,
+                        color: isActive
+                            ? activeColor
+                            : isCompleted
+                            ? Colors.black
+                            : Colors.grey[600],
+                      ),
+                    ),
+                    if (isActive)
                       Container(
-                        width: 2,
-                        height: 30,
-                        color:
-                            index < currentStatusIndex
-                                ? AppColors.maincolor.withOpacity(0.5)
-                                : Colors.grey[300],
-                        margin: const EdgeInsets.symmetric(vertical: 2),
+                        margin: const EdgeInsets.only(top: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: activeColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          (statusType == _StatusType.failed)
+                              ? step['title'] // "Declined" or "Cancelled"
+                              : "Live Status",
+                          style: TextStyle(
+                            fontSize: 13.sp,
+                            color: activeColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                   ],
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: isLast ? 0 : 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          step['title'],
-                          style: TextStyle(
-                            fontSize: isActive ? 17.5.sp : 16.5.sp,
-                            fontWeight:
-                                isActive
-                                    ? FontWeight.bold
-                                    : isCompleted
-                                    ? FontWeight.w600
-                                    : FontWeight.normal,
-                            color:
-                                isActive
-                                    ? AppColors.maincolor
-                                    : isCompleted
-                                    ? Colors.black
-                                    : Colors.grey[600],
-                          ),
-                        ),
-                        if (isActive)
-                          Container(
-                            margin: const EdgeInsets.only(top: 8),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.green.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              "Live Status",
-                              style: TextStyle(
-                                fontSize: 13.sp,
-                                color: AppColors.maincolor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }).toList(),
+              ),
+            ),
+          ],
+        );
+      }).toList(),
     );
   }
 
-  Widget _buildStatusCircle(String status, bool isCompleted, bool isActive) {
+  Widget _buildStatusCircle(
+      String status, bool isCompleted, bool isActive, Color color) {
+    IconData iconData = getStatusIconData(status);
+    if (isCompleted && !isActive) {
+      iconData = Icons.check;
+    }
+    if (status == 'collected') {
+      iconData = Icons.check_circle_outline;
+    }
+
     return Container(
       width: 20,
       height: 20,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color:
-            isActive
-                ? AppColors.maincolor
-                : isCompleted
-                ? AppColors.maincolor.withOpacity(0.7)
-                : Colors.grey[300],
+        color: isActive
+            ? color
+            : isCompleted
+            ? color.withOpacity(0.7)
+            : Colors.grey[300],
         border:
-            isActive ? Border.all(color: AppColors.maincolor, width: 2) : null,
+        isActive ? Border.all(color: color, width: 2) : null,
       ),
-      child:
-          isCompleted
-              ? Icon(
-                isActive ? getStatusIconData(status) : Icons.check,
-                color: Colors.white,
-                size: isActive ? 12 : 10,
-              )
-              : const SizedBox.shrink(),
+      child: isCompleted
+          ? Icon(
+        iconData,
+        color: Colors.white,
+        size: isActive ? 12 : 10,
+      )
+          : const SizedBox.shrink(),
     );
   }
 
   IconData getStatusIconData(String status) {
     switch (status.toLowerCase()) {
       case 'order placed':
-        return Icons.shopping_cart;
+        return Icons.shopping_cart_checkout;
       case 'pending approval':
         return Icons.hourglass_empty;
       case 'packing your bag':
-        return Icons.inventory;
+        return Icons.inventory_2_outlined;
       case 'ready for collection':
-        return Icons.delivery_dining;
+        return Icons.storefront_outlined;
       case 'collected':
-        return Icons.done_all;
+        return Icons.check_circle_outline;
+      case 'declined':
+        return Icons.cancel_outlined;
+      case 'cancelled':
+        return Icons.do_not_disturb_alt_outlined;
       default:
         return Icons.radio_button_unchecked;
     }
   }
 }
 
-class PulsingDot extends StatefulWidget {
-  final Widget child;
+// --- NAVU "GLOWING ORB" ANIMATION ---
+// Aa tamara 'LiveStatusIndicator' nu navu version chhe
 
-  const PulsingDot({super.key, required this.child});
+class LiveStatusIndicator extends StatefulWidget {
+  final Widget child;
+  final Color color;
+
+  const LiveStatusIndicator(
+      {super.key, required this.child, required this.color});
 
   @override
-  State<PulsingDot> createState() => _PulsingDotState();
+  State<LiveStatusIndicator> createState() => _LiveStatusIndicatorState();
 }
 
-class _PulsingDotState extends State<PulsingDot>
+class _LiveStatusIndicatorState extends State<LiveStatusIndicator>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  late Animation<double> _glowAnimation;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
-      lowerBound: 0.95,
-      upperBound: 1.05,
-    )..repeat(reverse: true);
+      duration: const Duration(milliseconds: 1500), // 1.5 second nu cycle
+    )..repeat(reverse: true); // Forward ane reverse repeat thashe
+
+    // Glow effect mate tween
+    _glowAnimation = Tween<double>(begin: 0.0, end: 10.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut, // Smooth transition
+      ),
+    );
   }
 
   @override
@@ -2231,10 +2286,24 @@ class _PulsingDotState extends State<PulsingDot>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _controller,
-      builder: (_, child) {
-        return Transform.scale(scale: _controller.value, child: widget.child);
+      animation: _glowAnimation,
+      builder: (context, child) {
+        return Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            // Main dot ni paachhal soft glow add karo
+            boxShadow: [
+              BoxShadow(
+                color: widget.color.withOpacity(0.6), // Glow no color
+                blurRadius: _glowAnimation.value, // Animated blur
+                spreadRadius: _glowAnimation.value / 4, // Animated spread
+              ),
+            ],
+          ),
+          child: child,
+        );
       },
+      child: widget.child, // Original dot (inner content)
     );
   }
 }

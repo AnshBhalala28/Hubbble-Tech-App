@@ -7,8 +7,8 @@ import 'package:sizer/sizer.dart';
 
 import 'Screen/Authcation/Model/login_model.dart';
 import 'Screen/welcome_screen.dart';
-import 'comman/chat.dart';
-import 'comman/colors.dart';
+import 'comman/chat.dart'; // (તમારી ફાઈલ)
+import 'comman/colors.dart'; // (તમારી ફાઈલ)
 import 'firebase_options.dart';
 
 String? myDeviceToken;
@@ -19,25 +19,48 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   print("===================================");
   print("✅ BACKGROUND/TERMINATED HANDLER CALLED");
-  print("Message ID: ${message.messageId}");
-  print("Data Payload: ${message.data}");
-  print("Notification Payload: ${message.notification?.title}");
   print("===================================");
 
-  _showAwesomeNotification(message, "Background");
+  // આખું મેસેજ પ્રિન્ટ કરીએ
+  print("FULL MESSAGE DATA: ${message.toMap().toString()}");
+
+  print("--- DATA PAYLOAD ---");
+  print(message.data);
+
+  print("--- NOTIFICATION PAYLOAD ---");
+  print("Title: ${message.notification?.title}");
+  print("Body: ${message.notification?.body}");
+  print("===================================");
+
+  // **** આ છે ડબલ નોટિફિકેશન રોકવાનો લોજિક ****
+  if (message.notification == null) {
+    print(">>> 'notification' કી નથી (null છે).");
+    print(">>> તેથી, _showAwesomeNotification ને કોલ કરું છું...");
+    _showAwesomeNotification(message, "Background (Data-Only)");
+  } else {
+    print(">>> 'notification' કી હાજર છે.");
+    print(">>> Firebase પોતે જ નોટિફિકેશન બતાવશે. હું કાંઈ નહીં કરું.");
+  }
+
+  print("✅ BACKGROUND HANDLER FINISHED");
+  print("===================================");
 }
 
 void _showAwesomeNotification(RemoteMessage message, String source) async {
+  print("--- _showAwesomeNotification (Source: $source) ---");
+
   bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
   if (!isAllowed) {
-    print("Notification NOT Allowed by user.");
+    print(">>> Notification NOT Allowed by user. Exiting function.");
     return;
   }
 
   String? title = message.notification?.title ?? message.data['title'] ?? '';
   String? body = message.notification?.body ?? message.data['body'] ?? '';
 
-  print("... [$source] Trying to show notification: '$title'");
+  print(">>> Creating AwesomeNotification:");
+  print(">>> Title: $title");
+  print(">>> Body: $body");
 
   AwesomeNotifications().createNotification(
     content: NotificationContent(
@@ -48,6 +71,7 @@ void _showAwesomeNotification(RemoteMessage message, String source) async {
       notificationLayout: NotificationLayout.Default,
     ),
   );
+  print("--- _showAwesomeNotification FINISHED ---");
 }
 
 void main() async {
@@ -111,24 +135,16 @@ class _MyAppState extends State<MyApp> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       print("===================================");
       print("✅ FOREGROUND (onMessage) HANDLER CALLED");
-      print("Data Payload: ${message.data}");
-      print("Notification Payload: ${message.notification?.title}");
-
-      print(
-        "Checking: message.data['sender_token'] (${message.data['sender_token']}) != myDeviceToken ($myDeviceToken)",
-      );
-      print("🔥🔥🔥🔥");
-
-      print("... Condition is TRUE (or commented). Showing notification.");
-      _showAwesomeNotification(message, "Foreground");
+      print("FULL MESSAGE DATA: ${message.toMap().toString()}");
       print("===================================");
+
+      _showAwesomeNotification(message, "Foreground");
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print("===================================");
       print("✅ APP OPENED FROM BACKGROUND (onMessageOpenedApp)");
-      print("User clicked notification: ${message.messageId}");
-      print("Data Payload: ${message.data}");
+      print("FULL MESSAGE DATA: ${message.toMap().toString()}");
       print("===================================");
     });
 
@@ -137,18 +153,12 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> checkInitialMessage() async {
     RemoteMessage? initialMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
+    await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
       print("===================================");
       print("✅ APP OPENED FROM TERMINATED (getInitialMessage)");
-      print("Data Payload: ${initialMessage.data}");
-
-      if (initialMessage.data['sender_token'] != myDeviceToken) {
-        print("... Showing initial notification (from terminated).");
-      } else {
-        print("... Ignoring initial notification (sender is self).");
-      }
+      print("FULL MESSAGE DATA: ${initialMessage.toMap().toString()}");
       print("===================================");
     }
   }
