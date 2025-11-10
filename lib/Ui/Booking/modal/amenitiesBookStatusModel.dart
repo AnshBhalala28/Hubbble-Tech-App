@@ -173,9 +173,11 @@ class December {
   int? userId;
   String? status;
   String? requestedAt;
-  Null rsvp;
-  Null attended;
+  var rsvp;
+  var attended;
   Amenity? amenity;
+  String? startTime;
+  String? endTime;
 
   December({
     this.bookingId,
@@ -185,6 +187,8 @@ class December {
     this.rsvp,
     this.attended,
     this.amenity,
+    this.startTime,
+    this.endTime,
   });
 
   December.fromJson(Map<String, dynamic> json) {
@@ -194,6 +198,8 @@ class December {
     requestedAt = json['requested_at'];
     rsvp = json['rsvp'];
     attended = json['attended'];
+    endTime = json['end_time'];
+    startTime = json['start_time'];
     amenity =
         json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
@@ -206,6 +212,8 @@ class December {
     data['requested_at'] = this.requestedAt;
     data['rsvp'] = this.rsvp;
     data['attended'] = this.attended;
+    data['end_time'] = this.endTime;
+    data['start_time'] = this.startTime;
     if (this.amenity != null) {
       data['amenity'] = this.amenity!.toJson();
     }
@@ -370,6 +378,8 @@ class June {
   String? rsvp;
   String? attended;
   Amenity? amenity;
+  String? startTime;
+  String? endTime;
 
   June({
     this.bookingId,
@@ -379,6 +389,8 @@ class June {
     this.rsvp,
     this.attended,
     this.amenity,
+    this.startTime,
+    this.endTime,
   });
 
   June.fromJson(Map<String, dynamic> json) {
@@ -388,6 +400,8 @@ class June {
     requestedAt = json['requested_at'];
     rsvp = json['rsvp'];
     attended = json['attended'];
+    endTime = json['end_time'];
+    startTime = json['start_time'];
     amenity =
         json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
@@ -400,6 +414,8 @@ class June {
     data['requested_at'] = this.requestedAt;
     data['rsvp'] = this.rsvp;
     data['attended'] = this.attended;
+    data['end_time'] = this.endTime;
+    data['start_time'] = this.startTime;
     if (this.amenity != null) {
       data['amenity'] = this.amenity!.toJson();
     }
@@ -415,6 +431,8 @@ class November {
   String? rsvp;
   String? attended;
   Amenity? amenity;
+  String? startTime;
+  String? endTime;
 
   November({
     this.bookingId,
@@ -424,6 +442,8 @@ class November {
     this.rsvp,
     this.attended,
     this.amenity,
+    this.startTime,
+    this.endTime,
   });
 
   November.fromJson(Map<String, dynamic> json) {
@@ -433,6 +453,8 @@ class November {
     requestedAt = json['requested_at'];
     rsvp = json['rsvp'];
     attended = json['attended'];
+    endTime = json['end_time'];
+    startTime = json['start_time'];
     amenity =
         json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
@@ -445,6 +467,8 @@ class November {
     data['requested_at'] = this.requestedAt;
     data['rsvp'] = this.rsvp;
     data['attended'] = this.attended;
+    data['end_time'] = this.endTime;
+    data['start_time'] = this.startTime;
     if (this.amenity != null) {
       data['amenity'] = this.amenity!.toJson();
     }
@@ -460,6 +484,8 @@ class October {
   String? rsvp;
   String? attended;
   Amenity? amenity;
+  String? startTime;
+  String? endTime;
 
   October({
     this.bookingId,
@@ -469,6 +495,8 @@ class October {
     this.rsvp,
     this.attended,
     this.amenity,
+    this.startTime,
+    this.endTime,
   });
 
   October.fromJson(Map<String, dynamic> json) {
@@ -478,6 +506,8 @@ class October {
     requestedAt = json['requested_at'];
     rsvp = json['rsvp'];
     attended = json['attended'];
+    endTime = json['end_time'];
+    startTime = json['start_time'];
     amenity =
         json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
@@ -490,6 +520,8 @@ class October {
     data['requested_at'] = this.requestedAt;
     data['rsvp'] = this.rsvp;
     data['attended'] = this.attended;
+    data['end_time'] = this.endTime;
+    data['start_time'] = this.startTime;
     if (this.amenity != null) {
       data['amenity'] = this.amenity!.toJson();
     }
@@ -505,6 +537,8 @@ class September {
   String? rsvp;
   String? attended;
   Amenity? amenity;
+  String? startTime;
+  String? endTime;
 
   September({
     this.bookingId,
@@ -514,6 +548,8 @@ class September {
     this.rsvp,
     this.attended,
     this.amenity,
+    this.startTime,
+    this.endTime,
   });
 
   September.fromJson(Map<String, dynamic> json) {
@@ -523,6 +559,8 @@ class September {
     requestedAt = json['requested_at'];
     rsvp = json['rsvp'];
     attended = json['attended'];
+    endTime = json['end_time'];
+    startTime = json['start_time'];
     amenity =
         json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
@@ -535,6 +573,8 @@ class September {
     data['requested_at'] = this.requestedAt;
     data['rsvp'] = this.rsvp;
     data['attended'] = this.attended;
+    data['end_time'] = this.endTime;
+    data['start_time'] = this.startTime;
     if (this.amenity != null) {
       data['amenity'] = this.amenity!.toJson();
     }
@@ -550,6 +590,8 @@ class August {
   String? rsvp;
   String? attended;
   Amenity? amenity;
+  String? startTime;
+  String? endTime;
 
   August({
     this.bookingId,
@@ -559,6 +601,8 @@ class August {
     this.rsvp,
     this.attended,
     this.amenity,
+    this.startTime,
+    this.endTime,
   });
 
   August.fromJson(Map<String, dynamic> json) {
@@ -568,6 +612,8 @@ class August {
     requestedAt = json['requested_at'];
     rsvp = json['rsvp'];
     attended = json['attended'];
+    endTime = json['end_time'];
+    startTime = json['start_time'];
     amenity =
         json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
@@ -580,6 +626,8 @@ class August {
     data['requested_at'] = this.requestedAt;
     data['rsvp'] = this.rsvp;
     data['attended'] = this.attended;
+    data['end_time'] = this.endTime;
+    data['start_time'] = this.startTime;
     if (this.amenity != null) {
       data['amenity'] = this.amenity!.toJson();
     }
@@ -595,6 +643,8 @@ class July {
   String? rsvp;
   String? attended;
   Amenity? amenity;
+  String? startTime;
+  String? endTime;
 
   July({
     this.bookingId,
@@ -604,6 +654,8 @@ class July {
     this.rsvp,
     this.attended,
     this.amenity,
+    this.startTime,
+    this.endTime,
   });
 
   July.fromJson(Map<String, dynamic> json) {
@@ -613,6 +665,8 @@ class July {
     requestedAt = json['requested_at'];
     rsvp = json['rsvp'];
     attended = json['attended'];
+    endTime = json['end_time'];
+    startTime = json['start_time'];
     amenity =
         json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
@@ -625,6 +679,8 @@ class July {
     data['requested_at'] = this.requestedAt;
     data['rsvp'] = this.rsvp;
     data['attended'] = this.attended;
+    data['end_time'] = this.endTime;
+    data['start_time'] = this.startTime;
     if (this.amenity != null) {
       data['amenity'] = this.amenity!.toJson();
     }
@@ -640,6 +696,8 @@ class May {
   String? rsvp;
   String? attended;
   Amenity? amenity;
+  String? startTime;
+  String? endTime;
 
   May({
     this.bookingId,
@@ -649,6 +707,8 @@ class May {
     this.rsvp,
     this.attended,
     this.amenity,
+    this.startTime,
+    this.endTime,
   });
 
   May.fromJson(Map<String, dynamic> json) {
@@ -658,6 +718,8 @@ class May {
     requestedAt = json['requested_at'];
     rsvp = json['rsvp'];
     attended = json['attended'];
+    endTime = json['end_time'];
+    startTime = json['start_time'];
     amenity =
         json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
@@ -670,6 +732,8 @@ class May {
     data['requested_at'] = this.requestedAt;
     data['rsvp'] = this.rsvp;
     data['attended'] = this.attended;
+    data['end_time'] = this.endTime;
+    data['start_time'] = this.startTime;
     if (this.amenity != null) {
       data['amenity'] = this.amenity!.toJson();
     }
@@ -685,6 +749,8 @@ class April {
   String? rsvp;
   String? attended;
   Amenity? amenity;
+  String? startTime;
+  String? endTime;
 
   April({
     this.bookingId,
@@ -694,6 +760,8 @@ class April {
     this.rsvp,
     this.attended,
     this.amenity,
+    this.startTime,
+    this.endTime,
   });
 
   April.fromJson(Map<String, dynamic> json) {
@@ -703,6 +771,8 @@ class April {
     requestedAt = json['requested_at'];
     rsvp = json['rsvp'];
     attended = json['attended'];
+    endTime = json['end_time'];
+    startTime = json['start_time'];
     amenity =
         json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
@@ -715,6 +785,8 @@ class April {
     data['requested_at'] = this.requestedAt;
     data['rsvp'] = this.rsvp;
     data['attended'] = this.attended;
+    data['end_time'] = this.endTime;
+    data['start_time'] = this.startTime;
     if (this.amenity != null) {
       data['amenity'] = this.amenity!.toJson();
     }
@@ -729,6 +801,8 @@ class March {
   String? requestedAt;
   String? rsvp;
   String? attended;
+  String? startTime;
+  String? endTime;
   Amenity? amenity;
 
   March({
@@ -739,6 +813,8 @@ class March {
     this.rsvp,
     this.attended,
     this.amenity,
+    this.startTime,
+    this.endTime,
   });
 
   March.fromJson(Map<String, dynamic> json) {
@@ -748,6 +824,8 @@ class March {
     requestedAt = json['requested_at'];
     rsvp = json['rsvp'];
     attended = json['attended'];
+    endTime = json['end_time'];
+    startTime = json['start_time'];
     amenity =
         json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
@@ -760,6 +838,8 @@ class March {
     data['requested_at'] = this.requestedAt;
     data['rsvp'] = this.rsvp;
     data['attended'] = this.attended;
+    data['end_time'] = this.endTime;
+    data['start_time'] = this.startTime;
     if (this.amenity != null) {
       data['amenity'] = this.amenity!.toJson();
     }
@@ -774,6 +854,8 @@ class February {
   String? requestedAt;
   String? rsvp;
   String? attended;
+  String? startTime;
+  String? endTime;
   Amenity? amenity;
 
   February({
@@ -784,6 +866,8 @@ class February {
     this.rsvp,
     this.attended,
     this.amenity,
+    this.startTime,
+    this.endTime,
   });
 
   February.fromJson(Map<String, dynamic> json) {
@@ -793,6 +877,8 @@ class February {
     requestedAt = json['requested_at'];
     rsvp = json['rsvp'];
     attended = json['attended'];
+    endTime = json['end_time'];
+    startTime = json['start_time'];
     amenity =
         json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
@@ -805,6 +891,8 @@ class February {
     data['requested_at'] = this.requestedAt;
     data['rsvp'] = this.rsvp;
     data['attended'] = this.attended;
+    data['end_time'] = this.endTime;
+    data['start_time'] = this.startTime;
     if (this.amenity != null) {
       data['amenity'] = this.amenity!.toJson();
     }
@@ -820,6 +908,8 @@ class January {
   String? rsvp;
   String? attended;
   Amenity? amenity;
+  String? startTime;
+  String? endTime;
 
   January({
     this.bookingId,
@@ -829,6 +919,8 @@ class January {
     this.rsvp,
     this.attended,
     this.amenity,
+    this.startTime,
+    this.endTime,
   });
 
   January.fromJson(Map<String, dynamic> json) {
@@ -838,6 +930,8 @@ class January {
     requestedAt = json['requested_at'];
     rsvp = json['rsvp'];
     attended = json['attended'];
+    endTime = json['end_time'];
+    startTime = json['start_time'];
     amenity =
         json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
   }
@@ -850,6 +944,8 @@ class January {
     data['requested_at'] = this.requestedAt;
     data['rsvp'] = this.rsvp;
     data['attended'] = this.attended;
+    data['end_time'] = this.endTime;
+    data['start_time'] = this.startTime;
     if (this.amenity != null) {
       data['amenity'] = this.amenity!.toJson();
     }

@@ -91,8 +91,23 @@ String formatDateTime(String? createdAt) {
   DateTime parsedDate = DateTime.parse(createdAt);
   return "${DateFormat('dd MMM yyyy').format(parsedDate)}, ${DateFormat('hh:mm a').format(parsedDate)}";
 }
+String formatTime(String time) {
+  final parsed = DateFormat("HH:mm:ss").parse(time);
+  return DateFormat("hh:mm a").format(parsed);
+}
+String formatTime12(String? time) {
+  if (time == null || time == "N/A" || time.isEmpty) {
+    return "N/A";
+  }
 
-// 1260*2736
+  try {
+    final parsed = DateFormat("HH:mm:ss").parse(time);
+    return DateFormat("hh:mm a").format(parsed);
+  } catch (e) {
+    return "N/A";
+  }
+}
+
 class AppConstants {
   static String BASEURL = "https://development.wavee.ai/api/";
 

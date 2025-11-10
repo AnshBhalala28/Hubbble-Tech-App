@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +30,8 @@ class Form_Screen extends StatefulWidget {
   final String? rsvp;
   final String? attend;
   final String? bookingDate;
+  final String? startTime;
+  final String? endtime;
   final String? requestedDate;
   final bool? isPage;
 
@@ -41,6 +45,8 @@ class Form_Screen extends StatefulWidget {
     this.bookingDate,
     this.bookingId,
     this.rsvp,
+    this.startTime,
+    this.endtime,
     this.attend,
   });
 
@@ -1029,25 +1035,127 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                       ),
                                                   SizedBox(height: 2.h),
                                                   widget.requestedDate != null
-                                                      ? Text(
-                                                        getRequestedDate() !=
-                                                                null
-                                                            ? DateFormat(
-                                                              "EEE, d MMM yyyy, hh:mm a",
-                                                            ).format(
-                                                              getRequestedDate()!,
-                                                            )
-                                                            : "N/A",
-                                                        style: TextStyle(
-                                                          letterSpacing: 1,
-                                                          fontSize: 16.sp,
-                                                          color:
-                                                              AppColors
-                                                                  .maincolor,
-                                                          fontFamily:
-                                                              AppConstants
-                                                                  .manrope,
-                                                        ),
+                                                      ? Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            getRequestedDate() !=
+                                                                    null
+                                                                ? DateFormat(
+                                                                  "EEE, d MMM yyyy",
+                                                                ).format(
+                                                                  getRequestedDate()!,
+                                                                )
+                                                                : "N/A",
+                                                            style: TextStyle(
+                                                              fontSize: 16.sp,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              color:
+                                                                  AppColors
+                                                                      .maincolor,
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manropeBold,
+                                                              letterSpacing: 1,
+                                                            ),
+                                                          ),
+                                                          SizedBox(height: 6),
+
+                                                          // ---- TIME ROW ----
+                                                          Row(
+                                                            children: [
+                                                              // Start Time
+                                                              Row(
+                                                                children: [
+                                                                  Icon(
+                                                                    Icons
+                                                                        .access_time,
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 6,
+                                                                  ),
+                                                                  Text(
+                                                                    formatTime12(
+                                                                      widget
+                                                                          .startTime,
+                                                                    ),
+                                                                    style: TextStyle(
+                                                                      fontSize:
+                                                                          15.sp,
+                                                                      color:
+                                                                          Colors
+                                                                              .black87,
+                                                                      fontFamily:
+                                                                          AppConstants
+                                                                              .manrope,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+
+                                                              SizedBox(
+                                                                width: 10,
+                                                              ),
+
+                                                              Text(
+                                                                "→",
+                                                                style: TextStyle(
+                                                                  fontSize:
+                                                                      15.sp,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color:
+                                                                      AppColors
+                                                                          .maincolor,
+                                                                ),
+                                                              ),
+
+                                                              SizedBox(
+                                                                width: 10,
+                                                              ),
+
+                                                              // End Time
+                                                              Row(
+                                                                children: [
+                                                                  Icon(
+                                                                    Icons
+                                                                        .access_time_outlined,
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 6,
+                                                                  ),
+                                                                  Text(
+                                                                    formatTime12(
+                                                                      widget
+                                                                          .endtime,
+                                                                    ),
+                                                                    style: TextStyle(
+                                                                      fontSize:
+                                                                          15.sp,
+                                                                      color:
+                                                                          Colors
+                                                                              .black87,
+                                                                      fontFamily:
+                                                                          AppConstants
+                                                                              .manrope,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
                                                       )
                                                       : Text(
                                                         "Operating Hours: $operatingHoursString",
@@ -2179,10 +2287,139 @@ class _Form_ScreenState extends State<Form_Screen> {
     }
   }
 
+  // void showTornTicketDialog({
+  //   required BuildContext context,
+  //   required String selectedDate,
+  //   required String selectedTime,
+  //   required String endTime,
+  //   required String duration,
+  //   required String location,
+  //   required String attendeeInitials,
+  // }) {
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (BuildContext context) {
+  //       return Dialog(
+  //         backgroundColor: Colors.transparent,
+  //         child: Stack(
+  //           alignment: Alignment.topCenter,
+  //           children: [
+  //             Container(
+  //               margin: const EdgeInsets.only(top: 40),
+  //               child: TornTicket(
+  //                 height: 51.h,
+  //                 borderRadius: 12,
+  //                 child: Container(
+  //                   padding: const EdgeInsets.all(20),
+  //                   width: double.infinity,
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       SizedBox(height: 3.h + 10),
+  //                       Center(
+  //                         child: Text(
+  //                           "Thank you!",
+  //                           style: TextStyle(
+  //                             fontSize: 20.sp,
+  //                             fontWeight: FontWeight.bold,
+  //                             fontFamily: AppConstants.manrope,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       SizedBox(height: 1.h),
+  //                       const Center(
+  //                         child: Text(
+  //                           "Your booking was successful",
+  //                           style: TextStyle(
+  //                             fontSize: 14,
+  //                             fontFamily: AppConstants.manrope,
+  //                             color: Colors.grey,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       const Divider(height: 30, thickness: 1),
+  //                       Row(
+  //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                         children: [
+  //                           _buildTicketInfo(
+  //                             Icons.calendar_today,
+  //                             selectedDate.replaceAll('/', '-'),
+  //                           ),
+  //                           _buildTicketInfo(Icons.access_time, selectedTime),
+  //                           _buildTicketInfo(Icons.access_time, endTime),
+  //                           _buildTicketInfo(Icons.timelapse, duration),
+  //                         ],
+  //                       ),
+  //                       SizedBox(height: 3.h),
+  //                       const Text(
+  //                         "Amenities",
+  //                         style: TextStyle(
+  //                           fontSize: 12,
+  //                           color: Colors.grey,
+  //                           fontFamily: AppConstants.manrope,
+  //                           letterSpacing: 1,
+  //                         ),
+  //                       ),
+  //                       Text(
+  //                         location,
+  //                         style: const TextStyle(
+  //                           fontSize: 15,
+  //                           fontWeight: FontWeight.w500,
+  //                           fontFamily: AppConstants.manrope,
+  //                         ),
+  //                       ),
+  //                       SizedBox(height: 1.h),
+  //                       SizedBox(height: 4.h),
+  //                       batan(
+  //                         title: "Back to Home",
+  //                         route: () {
+  //                           Get.offAll(() => const BookingScreen());
+  //                         },
+  //                         color: AppColors.maincolor,
+  //                         fontcolor: Colors.white,
+  //                         height: 5.h,
+  //                         width: double.infinity,
+  //                         fontsize: 18.sp,
+  //                         radius: 12.0,
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //             Positioned(
+  //               top: 0,
+  //               child: CircleAvatar(
+  //                 radius: 40,
+  //                 backgroundColor: AppColors.maincolor,
+  //                 child: Icon(Icons.check, size: 25.sp, color: Colors.white),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+  //
+  // Widget _buildTicketInfo(IconData icon, String label) {
+  //   return Column(
+  //     children: [
+  //       Icon(icon, color: Colors.amber[700]),
+  //       const SizedBox(height: 4),
+  //       Text(
+  //         label,
+  //         style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+  //       ),
+  //     ],
+  //   );
+  // }
   void showTornTicketDialog({
     required BuildContext context,
     required String selectedDate,
     required String selectedTime,
+    required String endTime,
     required String duration,
     required String location,
     required String attendeeInitials,
@@ -2230,37 +2467,124 @@ class _Form_ScreenState extends State<Form_Screen> {
                           ),
                         ),
                         const Divider(height: 30, thickness: 1),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _buildTicketInfo(
-                              Icons.calendar_today,
-                              selectedDate.replaceAll('/', '-'),
-                            ),
-                            _buildTicketInfo(Icons.access_time, selectedTime),
-                            _buildTicketInfo(Icons.timelapse, duration),
-                          ],
+
+                        // ✅ New Better Design
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.grey.withOpacity(0.20),
+                          ),
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // DATE
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.calendar_today,
+                                    color: Colors.amber[800],
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    selectedDate.replaceAll('/', '-'),
+                                    style:  TextStyle(
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: AppConstants.manrope,
+
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10),
+
+                              // START → END
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.access_time_filled,
+                                    color: Colors.green[700],
+                                    size: 22,
+                                  ),
+                                  SizedBox(width: 8),
+
+                                  Text(
+                                    selectedTime,
+                                    style:  TextStyle(
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: AppConstants.manrope,
+
+                                    ),
+                                  ),
+
+                                  const SizedBox(width: 6),
+                                 Icon(Icons.arrow_forward,  color: Colors.black,
+                                   size: 15.sp,),
+                                  const SizedBox(width: 6),
+
+                                  Text(
+                                    endTime,
+                                    style:  TextStyle(
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: AppConstants.manrope,
+
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10),
+
+                              // Duration
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.timelapse,
+                                    color: Colors.blue[700],
+                                    size: 22,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    duration,
+                                    style:  TextStyle(
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: AppConstants.manrope,
+
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
+
                         SizedBox(height: 3.h),
-                        const Text(
+
+                         Text(
                           "Amenities",
                           style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                            fontFamily: AppConstants.manrope,
+                            fontSize: 14.sp,
+                            color: Colors.black,
+                            fontFamily: AppConstants.manropeBold,
                             letterSpacing: 1,
                           ),
                         ),
+
                         Text(
                           location,
                           style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
                             fontFamily: AppConstants.manrope,
                           ),
                         ),
-                        SizedBox(height: 1.h),
+
                         SizedBox(height: 4.h),
+
                         batan(
                           title: "Back to Home",
                           route: () {
@@ -2278,6 +2602,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                   ),
                 ),
               ),
+
               Positioned(
                 top: 0,
                 child: CircleAvatar(
@@ -2290,19 +2615,6 @@ class _Form_ScreenState extends State<Form_Screen> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildTicketInfo(IconData icon, String label) {
-    return Column(
-      children: [
-        Icon(icon, color: Colors.amber[700]),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-        ),
-      ],
     );
   }
 
@@ -2547,24 +2859,136 @@ class _Form_ScreenState extends State<Form_Screen> {
     }
   }
 
+  String convertTo24(String time) {
+    try {
+      final parsed = DateFormat("hh:mm a").parse(time);
+      return DateFormat("HH:mm:ss").format(parsed);
+    } catch (e) {
+      return time; // fallback
+    }
+  }
+
+  String calculateEndTime(String startTime, int durationMinutes) {
+    try {
+      final start = DateFormat("HH:mm:ss").parse(startTime);
+      final end = start.add(Duration(minutes: durationMinutes));
+      return DateFormat("HH:mm:ss").format(end);
+    } catch (e) {
+      return startTime;
+    }
+  }
+
+  // String apiTime = convertTo24(time);
+  // Future<bool> AddBookingApi(
+  //   String date,
+  //   String time,
+  //   int duration,
+  //   String name,
+  // ) async {
+  //   String apiTime = convertTo24(time);
+  //   Map<String, String> data = {
+  //     "user_id": loginModel?.data?.user?.id.toString() ?? "",
+  //     "amenity_id": widget.amenites_id ?? '',
+  //     "date": date,
+  //     "start_time": apiTime,
+  //     "duration_minutes": duration.toString(),
+  //   };
+  //   log("data data data data $data");
+  //   setState(() {
+  //     isGlobalLoading = true;
+  //   });
+  //   bool hasInternet = await checkInternet();
+  //   if (!hasInternet) {
+  //     if (mounted) buildErrorDialog(context, 'Error', "Internet Required");
+  //     setState(() {
+  //       isGlobalLoading = false;
+  //     });
+  //     return false;
+  //   }
+  //   try {
+  //     var response = await AmenitiesProvider().addBookingApi(data);
+  //     if (response.statusCode == 200) {
+  //       if (mounted) {
+  //         setState(() {
+  //           isGlobalLoading = false;
+  //         });
+  //       }
+  //
+  //       // ટિકિટ માટે ડ્યુરેશન સ્ટ્રિંગ ફોર્મેટ કરો
+  //       String durationStr = "${(duration / 60).toStringAsFixed(1)} hr";
+  //       if (duration < 60) {
+  //         durationStr = "$duration min";
+  //       } else if (duration % 60 == 0) {
+  //         durationStr = "${(duration / 60).toInt()} hr";
+  //       }
+  //
+  //       showTornTicketDialog(
+  //         attendeeInitials: 'NP',
+  //         context: context,
+  //         location: name,
+  //         selectedDate: date.toString(),
+  //         selectedTime: time,
+  //         duration: durationStr,
+  //
+  //         endTime: ''
+  //       );
+  //       return true;
+  //     } else {
+  //       if (mounted) {
+  //         setState(() {
+  //           isGlobalLoading = false;
+  //         });
+  //       }
+  //       Get.snackbar(
+  //         "Booking Failed",
+  //         response.data['message'] ?? "Something went wrong. Please try again.",
+  //         backgroundColor: Colors.red,
+  //         colorText: Colors.white,
+  //       );
+  //       return false;
+  //     }
+  //   } catch (e) {
+  //     if (mounted) {
+  //       setState(() {
+  //         isGlobalLoading = false;
+  //       });
+  //     }
+  //     Get.snackbar(
+  //       "Error",
+  //       "Something went wrong. Please try again later.",
+  //       backgroundColor: Colors.red,
+  //       colorText: Colors.white,
+  //     );
+  //     return false;
+  //   }
+  // }
   Future<bool> AddBookingApi(
     String date,
     String time,
     int duration,
     String name,
   ) async {
+    // Convert AM/PM to 24-hour if needed
+    String apiTime = convertTo24(time);
+
+    // 🔹 Calculate end time from duration
+    String endTime = calculateEndTime(apiTime, duration);
+
     Map<String, String> data = {
       "user_id": loginModel?.data?.user?.id.toString() ?? "",
       "amenity_id": widget.amenites_id ?? '',
       "date": date,
-      "start_time": time,
-      // API માં ડ્યુરેશન મિનિટમાં મોકલો
+      "start_time": apiTime,
+      "end_time": endTime, // 👈 Added
       "duration_minutes": duration.toString(),
     };
+
+    log("data => $data");
 
     setState(() {
       isGlobalLoading = true;
     });
+
     bool hasInternet = await checkInternet();
     if (!hasInternet) {
       if (mounted) buildErrorDialog(context, 'Error', "Internet Required");
@@ -2573,8 +2997,10 @@ class _Form_ScreenState extends State<Form_Screen> {
       });
       return false;
     }
+
     try {
       var response = await AmenitiesProvider().addBookingApi(data);
+
       if (response.statusCode == 200) {
         if (mounted) {
           setState(() {
@@ -2582,7 +3008,7 @@ class _Form_ScreenState extends State<Form_Screen> {
           });
         }
 
-        // ટિકિટ માટે ડ્યુરેશન સ્ટ્રિંગ ફોર્મેટ કરો
+        // Format duration for ticket
         String durationStr = "${(duration / 60).toStringAsFixed(1)} hr";
         if (duration < 60) {
           durationStr = "$duration min";
@@ -2590,6 +3016,7 @@ class _Form_ScreenState extends State<Form_Screen> {
           durationStr = "${(duration / 60).toInt()} hr";
         }
 
+        // ✅ show ticket with end time
         showTornTicketDialog(
           attendeeInitials: 'NP',
           context: context,
@@ -2597,6 +3024,9 @@ class _Form_ScreenState extends State<Form_Screen> {
           selectedDate: date.toString(),
           selectedTime: time,
           duration: durationStr,
+          endTime: DateFormat("hh:mm a").format(
+            DateFormat("HH:mm:ss").parse(endTime),
+          ), // convert to AM/PM for display
         );
         return true;
       } else {
