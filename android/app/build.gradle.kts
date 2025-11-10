@@ -16,32 +16,32 @@ val googleMapsApiKey = localProperties.getProperty("GOOGLE_MAPS_API_KEY") ?: ""
 
 android {
     namespace = "com.wavee.community"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = "27.0.12077973"
 
     defaultConfig {
         applicationId = "com.wavee.community"
-        minSdk = 23
-        targetSdk = 35
+        minSdk = 26
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         resValue("string", "google_maps_api_key", googleMapsApiKey)
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "21"
     }
 
     signingConfigs {
         create("release") {
             keyAlias = "waveeai"
             keyPassword = "123456"
-            storeFile = file("C:\\Users\\fab\\StudioProjects\\waveeai-app-new\\android\\waveeai.jks")
+            storeFile = file("/Users/jacksardhara/StudioProjects/waveeai-app-new/android/waveeai.jks")
             storePassword = "123456"
         }
     }

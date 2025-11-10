@@ -1,14 +1,19 @@
+import 'dart:io';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
-import 'Screen/Authcation/Model/login_model.dart';
-import 'Screen/welcome_screen.dart';
-import 'comman/chat.dart';
-import 'comman/colors.dart';
+import 'Ui/Authentication/modal/login_model.dart';
+import 'Ui/welcomeScreen.dart';
+import 'Utils/chatCounter.dart';
+import 'Utils/colors.dart';
+import 'Utils/storeUserData.dart';
 import 'firebase_options.dart';
 
 String? myDeviceToken;
@@ -46,6 +51,35 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("===================================");
 }
 
+/// Runs only once after fresh iOS reinstall
+Future<void> _handleFreshInstallIOS() async {
+  if (!Platform.isIOS) return;
+
+  final prefs = await SharedPreferences.getInstance();
+  const flag = 'has_launched_once';
+
+  // If first time after reinstall
+  final hasLaunchedBefore = prefs.getBool(flag) ?? false;
+  if (hasLaunchedBefore) return;
+
+  print("🍏 Fresh iOS install → Clearing Keychain login cache");
+
+  try {
+    const storage = FlutterSecureStorage();
+    await SaveDataLocal.clearUserData();
+    await storage.deleteAll(
+      iOptions: const IOSOptions(
+        accessibility: KeychainAccessibility.first_unlock,
+      ),
+    );
+  } catch (e) {
+    print("Keychain clear error: $e");
+  }
+
+  await AwesomeNotifications().resetGlobalBadge();
+  await prefs.setBool(flag, true);
+}
+
 void _showAwesomeNotification(RemoteMessage message, String source) async {
   print("--- _showAwesomeNotification (Source: $source) ---");
 
@@ -77,6 +111,7 @@ void _showAwesomeNotification(RemoteMessage message, String source) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await _handleFreshInstallIOS();
   Get.put(GlobalCountsController());
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
@@ -123,7 +158,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    setupFirebaseListeners();
+    if (Platform.isAndroid) setupFirebaseListeners();
   }
 
   Future<void> setupFirebaseListeners() async {
@@ -153,7 +188,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> checkInitialMessage() async {
     RemoteMessage? initialMessage =
-    await FirebaseMessaging.instance.getInitialMessage();
+        await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
       print("===================================");
