@@ -7,8 +7,8 @@ import 'package:sizer/sizer.dart';
 
 import 'Screen/Authcation/Model/login_model.dart';
 import 'Screen/welcome_screen.dart';
-import 'comman/chat.dart'; // (તમારી ફાઈલ)
-import 'comman/colors.dart'; // (તમારી ફાઈલ)
+import 'comman/chat.dart';
+import 'comman/colors.dart';
 import 'firebase_options.dart';
 
 String? myDeviceToken;
@@ -39,7 +39,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     _showAwesomeNotification(message, "Background (Data-Only)");
   } else {
     print(">>> 'notification' કી હાજર છે.");
-    print(">>> Firebase પોતે જ નોટિફિકેશન બતાવશે. હું કાંઈ નહીં કરું.");
+    print(">>> Firebase પોતે જ નોટિફિકેશન બતાવશે. હું કાંઈ નહીં કરુ");
   }
 
   print("✅ BACKGROUND HANDLER FINISHED");

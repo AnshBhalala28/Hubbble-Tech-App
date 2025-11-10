@@ -186,19 +186,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: 3.h),
-                isLoading == true
-                    ? const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.maincolor,
-                  ),
-                )
-                    : Container(
-                  height: 6.h,
+             Container(
+                  height: 5.h,
                   decoration: BoxDecoration(
                     color: AppColors.maincolor,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: InkWell(
+                  child:   isLoading == true
+                      ? const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                      :  InkWell(
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
                         setState(() {

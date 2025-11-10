@@ -631,7 +631,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                           color: Colors.grey,
                                                           fontSize: 14.5.sp,
                                                         ),
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow.ellipsis,
                                                       ),
+
                                                     ),
                                                   ],
                                                 ),
@@ -929,11 +932,14 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                   style: TextStyle(
                                                     fontWeight:
                                                     FontWeight.bold,
+
                                                     fontFamily:
                                                     AppConstants.manropeBold,
                                                     color: Colors.grey,
                                                     fontSize: 14.5.sp,
                                                   ),
+                                                  maxLines: 2,
+                                                  overflow: TextOverflow.ellipsis,
                                                 ),
                                               ),
                                             ],

@@ -1738,7 +1738,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                 if (canAmend) {
                   // Add your amend order logic here
                   // For example: Get.to(AmendOrderScreen());
-                  Get.to(AddToCartView(isAmend: true,businessID:orderDetailModel?.data?.business?.id.toString()??""));
+                  // Get.to(AddToCartView(isAmend: true,businessID:orderDetailModel?.data?.business?.id.toString()??""));
                 }
               },
               color: canAmend ? AppColors.maincolor : AppColors.maincolor ,
@@ -2023,10 +2023,8 @@ class CustomFeatureCard extends StatelessWidget {
 }
 
 
-// Enum (Status na prakar define karva mate)
 enum _StatusType { inProgress, completed, failed }
 
-// Navu Helper Function (Status no prakar check karva)
 _StatusType _getStatusType(String status, int currentIndex, int totalSteps) {
   if (status == "declined" || status == "cancelled") {
     return _StatusType.failed;

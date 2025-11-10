@@ -240,6 +240,7 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
       if (internet) {
         ProfileProvider().profileApi(data).then((response) async {
           if (response.statusCode == 200) {
+            if(mounted){
             setState(() {
               profileModel = ProfileModel.fromJson(response.data);
               final building = profileModel?.data?.buildingDocument;
@@ -252,7 +253,7 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
               landline.text = profileModel?.data?.building?.landline ?? "";
               number.text = profileModel?.data?.building?.mobile ?? "";
               isLoading = false;
-            });
+            });}
           } else {
             isLoading = false;
           }

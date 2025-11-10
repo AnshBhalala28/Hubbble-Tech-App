@@ -1661,7 +1661,7 @@ class _EventScreenState extends State<EventScreen> with TickerProviderStateMixin
                       height: 5.h,
                       width: 37.w,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color:  Colors.grey.shade50,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: DropdownButtonHideUnderline(
@@ -2126,7 +2126,7 @@ class _EventScreenState extends State<EventScreen> with TickerProviderStateMixin
               width: 20.w,
               margin: const EdgeInsets.only(right: 10),
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.maincolor : Colors.white,
+                color: isSelected ? AppColors.maincolor : Colors.grey.shade50,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
@@ -2136,24 +2136,24 @@ class _EventScreenState extends State<EventScreen> with TickerProviderStateMixin
                     dates[index]['day']!,
                     style: TextStyle(
                       color: isSelected ? Colors.white : Colors.black,
-                      fontSize: 17,
+                      fontSize: 17.sp,
                       fontWeight: FontWeight.bold,
-                      fontFamily: AppConstants.manrope,
+                      fontFamily: AppConstants.manropeBold,
                     ),
                   ),
                   Text(
                     dates[index]['weekday']!,
                     style: TextStyle(
                       color: isSelected ? Colors.white : Colors.black,
-                      fontSize: 15,
-                      fontFamily: AppConstants.manrope,
+                      fontSize: 15.sp,
+                      fontFamily: AppConstants.manropeBold,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
             ),
-          );
+          ).marginOnly(right: 2.w);
         },
       ),
     );

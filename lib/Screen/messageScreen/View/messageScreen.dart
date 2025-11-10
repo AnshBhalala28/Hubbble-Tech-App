@@ -687,7 +687,7 @@ class _MessageScreenState extends State<MessageScreen> {
             },
             child: CachedNetworkImage(
               imageUrl: message.file ?? "",
-              height: 30.h,
+              // height: 30.h,
               width: 30.w,
               placeholder:
                   (context, url) => const Center(

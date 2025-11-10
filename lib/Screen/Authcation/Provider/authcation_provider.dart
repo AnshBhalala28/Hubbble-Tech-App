@@ -41,6 +41,21 @@ class AuthProvider extends ChangeNotifier {
       rethrow;
     }
   }
+  Future<dynamic> changePasswordApi(Map<String, String> data) async {
+    try {
+      var response = await Dio().post(
+        '${ApiEndpoint.changePassword}',
+        data: data,
+
+      );
+      return response;
+    } catch (e) {
+      log("Login Error in fuild ${ApiEndpoint.changePassword}");
+      log("Login Error in fuild $e");
+      // log("Login Error in fuild ${}");
+      rethrow;
+    }
+  }
   Future<Response> forgetPasswordApi(Map<String, String> bodyData) async {
     String? token = await SaveDataLocal.getToken();
 
@@ -55,6 +70,25 @@ class AuthProvider extends ChangeNotifier {
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    }
+  }
+  Future<Response> changePass(Map<String, String> bodyData) async {
+    String? token = await SaveDataLocal.getToken();
+
+    try {
+      final dio = await DioHelper.getDio();
+      final response = await dio.post(
+        ApiEndpoint.changePassword,
+        data: bodyData,
+        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+      );
+
+      return response;
+    } on DioException catch (e) {
+      log("sadasdasdssdds${e.message}");
+      log("sadasdasdssdds${e.response?.data}");
+      throw Exception(handleDioError(e));
+
     }
   }
 

@@ -4,6 +4,7 @@ class ApiEndpoint {
   static String baseUrl = AppConstants.BASEURL;
   static String login = "${baseUrl}login";
   static String updateFcm = "${baseUrl}update-fcm-token";
+  static String changePassword = "${baseUrl}changePasswordApp";
   static String forgetPassword = "${baseUrl}forget-password";
   static String deleteAccount = "${baseUrl}delete-resident-app?id=";
   static String logout = "${baseUrl}api-logout";

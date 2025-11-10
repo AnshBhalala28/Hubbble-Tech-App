@@ -45,6 +45,8 @@
 	<string>Wavee Ai needs access to your photo library to upload profile and document images.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Wavee Ai requests photo library access for profile and chat features.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Wavee Ai needs access to your location to show nearby communities and features even when the app is not actively open.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>INSendMessageIntent</string>
