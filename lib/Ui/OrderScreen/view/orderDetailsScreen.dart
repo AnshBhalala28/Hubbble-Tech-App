@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Ui/CartScreen/view/cartViewScreen.dart';
 import 'package:wavee/Ui/OrderScreen/modal/order_detail_model.dart';
 import 'package:wavee/Ui/OrderScreen/modal/service_order_model.dart';
 
@@ -74,7 +75,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
               ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 4.h),
+                  SizedBox(height: 6.h),
                   TitleBar(
                     title:
                         serviceOrderDetail?.data?.products?.service?.title
@@ -88,7 +89,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                   ),
                   SizedBox(height: 2.h),
                   isLoading
-                      ? Loader().paddingOnly(top: 30.h)
+                      ? Loader().paddingOnly(top: 0.h)
                       : Expanded(
                         child: SingleChildScrollView(
                           child: Column(
@@ -509,24 +510,15 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                   ),
                   SizedBox(height: 2.h),
                   isLoading
-                      ? Loader().paddingOnly(top: 30.h)
+                      ? Loader().paddingOnly(top: 0.h)
                       : Expanded(
                         child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              (orderDetailModel!
-                                              .data!
-                                              .products!
-                                              .product!
-                                              .images ==
+                              (orderDetailModel?.data?.products?.product?.images ==
                                           null ||
-                                      orderDetailModel!
-                                          .data!
-                                          .products!
-                                          .product!
-                                          .images!
-                                          .isEmpty)
+                                  (orderDetailModel?.data?.products?.product?.images)!.isEmpty)
                                   ? Container(
                                     height: 25.h,
                                     width: double.infinity,
@@ -540,12 +532,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                       child: CachedNetworkImage(
                                         width: double.infinity,
                                         imageUrl:
-                                            orderDetailModel!
-                                                .data!
-                                                .products!
-                                                .product!
-                                                .image
-                                                .toString(),
+                                        (orderDetailModel?.data?.products?.product?.images).toString(),
                                         fit: BoxFit.fill,
                                         placeholder:
                                             (context, url) => const Center(
@@ -1741,7 +1728,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                 if (canAmend) {
                   // Add your amend order logic here
                   // For example: Get.to(AmendOrderScreen());
-                  // Get.to(AddToCartView(isAmend: true,businessID:orderDetailModel?.data?.business?.id.toString()??""));
+                  Get.to(AddToCartView(isAmend: true,businessID:orderDetailModel?.data?.business?.id.toString()??""));
                 }
               },
               color: canAmend ? AppColors.maincolor : AppColors.maincolor,

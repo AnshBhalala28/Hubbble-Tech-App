@@ -31,13 +31,15 @@ class Data {
   String? startTime;
   String? endTime;
   String? bookingDate;
+  String? isFirstSlot;
 
-  Data({this.startTime, this.endTime, this.bookingDate});
+  Data({this.startTime, this.endTime, this.isFirstSlot, this.bookingDate});
 
   Data.fromJson(Map<String, dynamic> json) {
     startTime = json['start_time'];
     endTime = json['end_time'];
     bookingDate = json['booking_date'];
+    isFirstSlot = json['is_first_slot'];
   }
 
   Map<String, dynamic> toJson() {
@@ -45,6 +47,7 @@ class Data {
     data['start_time'] = this.startTime;
     data['end_time'] = this.endTime;
     data['booking_date'] = this.bookingDate;
+    data['is_first_slot'] = this.isFirstSlot;
     return data;
   }
 }

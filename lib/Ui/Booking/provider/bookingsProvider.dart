@@ -12,7 +12,8 @@ class AmenitiesProvider extends ChangeNotifier {
     String amenityId,
     String date,
     String page,
-  ) async {
+  ) async
+  {
     try {
       String? token = await SaveDataLocal.getToken();
       final dio = await DioHelper.getDio();

@@ -69,9 +69,9 @@ class _Form_ScreenState extends State<Form_Screen> {
   DateTime? selectedYear;
   bool isGlobalLoading = false;
   bool isRsvpLoading = false;
-
+  bool showPlus30 = false;
   bool showBookingDetails = false;
-
+  String? selectedSlotTime;
   String? selectedStartTime;
 
   int selectedDurationInMinutes = 60;
@@ -246,7 +246,6 @@ class _Form_ScreenState extends State<Form_Screen> {
     return availableSlots;
   }
 
-
   @override
   Widget build(BuildContext context) {
     final selectedAmenity = amenitiesModel?.data?.data?.first;
@@ -294,7 +293,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                 ? Loader()
                 : Column(
                   children: [
-                    SizedBox(height: 4.h),
+                    SizedBox(height: 6.h),
                     TitleBar(
                       back: () {
                         if (showBookingDetails) {
@@ -1167,6 +1166,27 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                           [],
                                                       30,
                                                     ),
+                                                    if (showPlus30)
+                                                      SizedBox(height: 1.h),
+                                                    if (showPlus30)
+                                                      Text(
+                                                        'Sorry, maintenance in progress, it will be ready in 30 mins.',
+                                                        style: TextStyle(
+                                                          color:
+                                                              AppColors
+                                                                  .redColor,
+                                                          fontFamily:
+                                                              AppConstants
+                                                                  .manrope,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          decorationColor:
+                                                              Colors.black
+                                                                  .withOpacity(
+                                                                    0.4,
+                                                                  ),
+                                                        ),
+                                                      ),
                                                   ] else if (calendar1Loading)
                                                     Padding(
                                                       padding:
@@ -1718,69 +1738,105 @@ class _Form_ScreenState extends State<Form_Screen> {
           Wrap(
             spacing: 8.0,
             runSpacing: 8.0,
-            children:
-                availableSlots.map((time) {
-                  final bool isSelected = selectedStartTime == time;
+            children: availableSlots.asMap().entries.map((entry) {
+              final int index = entry.key;
+              final String time = entry.value;
 
-                  final bool isAlreadyBooked = _isSlotAlreadyBookedByMe(
-                    time,
-                    calendar1SelectedDate!,
-                  );
+              // 🔁 use selectedSlotTime for highlight (must exist in your State)
+              final bool isSelected = selectedSlotTime == time;
 
-                  return GestureDetector(
-                    onTap:
-                        isAlreadyBooked
-                            ? null
-                            : () {
-                              setState(() {
-                                selectedStartTime = time;
-                              });
-                            },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 3.w,
-                        vertical: 1.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color:
-                            isAlreadyBooked
-                                ? AppColors.maincolor
-                                : isSelected
-                                ? AppColors.maincolor
-                                : AppColors.bgcolor,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color:
-                              isAlreadyBooked
-                                  ? Colors.grey.shade400
-                                  : isSelected
-                                  ? AppColors.maincolor
-                                  : Colors.grey.shade300,
-                        ),
-                      ),
-                      child: Text(
+              final bool isAlreadyBooked = _isSlotAlreadyBookedByMe(
+                time,
+                calendar1SelectedDate!,
+              );
+
+              final Color bgColor =
+              isAlreadyBooked
+                  ? AppColors.maincolor
+                  : isSelected
+                  ? AppColors.maincolor
+                  : AppColors.bgcolor;
+
+              final Color textColor =
+              isAlreadyBooked
+                  ? Colors.white
+                  : isSelected
+                  ? Colors.white
+                  : Colors.black;
+
+              return GestureDetector(
+                onTap: isAlreadyBooked
+                    ? null
+                    : () {
+                  setState(() {
+                    // keep selection color on the tapped slot
+                    selectedSlotTime = time;
+
+                    // store start time (+30 mins for non-first)
+                    final inputFormat = DateFormat("hh:mm a");
+                    final DateTime parsedTime = inputFormat.parse(time);
+
+                    if (index > 0) {
+                      final DateTime newTime =
+                      parsedTime.add(const Duration(minutes: 30));
+                      selectedStartTime = inputFormat.format(newTime);
+                    } else {
+                      selectedStartTime = time;
+                    }
+
+                    showPlus30 = index > 0;
+                    log('selected time (stored): $selectedStartTime | tapped: $selectedSlotTime');
+                  });
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 3.w,
+                    vertical: 1.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: bgColor,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: isAlreadyBooked
+                          ? Colors.grey.shade400
+                          : isSelected
+                          ? AppColors.maincolor
+                          : Colors.grey.shade300,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
                         time,
                         style: TextStyle(
-                          color:
-                              isAlreadyBooked
-                                  ? Colors.white
-                                  : isSelected
-                                  ? Colors.white
-                                  : Colors.black,
+                          color: textColor,
                           fontFamily: AppConstants.manrope,
                           fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.normal,
-
-                          // decoration:
-                          //     isAlreadyBooked
-                          //         ? TextDecoration.lineThrough
-                          //         : TextDecoration.none,
+                          isSelected ? FontWeight.bold : FontWeight.normal,
                           decorationColor: Colors.black.withOpacity(0.4),
                         ),
                       ),
-                    ),
-                  );
-                }).toList(),
+
+                      // Show "+ 30 minutes" only when selected AND not first slot
+                      if (isSelected && index > 0)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                            "+ 30 minutes",
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: textColor.withValues(alpha: 0.9),
+                              fontFamily: AppConstants.manrope,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
           ),
       ],
     );
@@ -1793,7 +1849,7 @@ class _Form_ScreenState extends State<Form_Screen> {
   }) {
     return Container(
       height: 5.h,
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
@@ -2767,7 +2823,7 @@ class _Form_ScreenState extends State<Form_Screen> {
       "amenity_id": widget.amenites_id ?? '',
       "date": date,
       "start_time": apiTime,
-
+      "is_first_slot":(!showPlus30).toString(),
       "duration_minutes": duration.toString(),
     };
 
@@ -2931,25 +2987,74 @@ class _Form_ScreenState extends State<Form_Screen> {
     }
   }
 
-  bool _isSlotAlreadyBookedByMe(String slotTime, DateTime selectedDate) {
-    if (statusModal?.data == null || statusModal!.data!.isEmpty) {
-      return false;
+  // bool _isSlotAlreadyBookedByMe(String slotTime, DateTime selectedDate) {
+  //   if (statusModal?.data == null || statusModal!.data!.isEmpty) {
+  //     return false;
+  //   }
+  //
+  //   final String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
+  //
+  //   final String timeStr = convertTo24(slotTime);
+  //
+  //   for (final booking in statusModal!.data!) {
+  //     if (booking.bookingDate == null || booking.startTime == null) {
+  //       continue;
+  //     }
+  //
+  //     if (booking.bookingDate == dateStr && booking.startTime == timeStr) {
+  //       return true;
+  //     }
+  //   }
+  //
+  //   return false;
+  // }
+
+  String _toHms(String time) {
+    // Accepts "HH:mm" or "HH:mm:ss" and returns "HH:mm:ss"
+    final parts = time.split(':');
+    if (parts.length == 2) {
+      return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}:00';
+    } else if (parts.length == 3) {
+      return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}:${parts[2].padLeft(2, '0')}';
     }
+    // Fallback (unexpected format): return as-is
+    return time;
+  }
+
+  bool _isSlotAlreadyBookedByMe(String slotTime, DateTime selectedDate) {
+    final data = statusModal?.data;
+    if (data == null || data.isEmpty) return false;
 
     final String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
 
-    final String timeStr = convertTo24(slotTime);
+    // Your slot from UI (could be "05:00" or "05:00:00")
+    final String uiTime24 = convertTo24(slotTime);        // e.g., "05:00" or "05:00:00"
+    final String uiHms = _toHms(uiTime24);                // → "05:00:00"
 
-    for (final booking in statusModal!.data!) {
-      if (booking.bookingDate == null || booking.startTime == null) {
-        continue;
+    for (final booking in data) {
+      final String? bDate = booking.bookingDate;
+      final String? bStart = booking.startTime;
+      if (bDate == null || bStart == null) continue;
+      if (bDate != dateStr) continue;
+
+      // Server time is usually "HH:mm:ss"
+      String bookingHms = _toHms(bStart);
+
+      // If not first slot → subtract 30 minutes from booking start
+      if (booking.isFirstSlot == "false") {
+        final DateTime parsed = DateFormat('HH:mm:ss').parseStrict(bookingHms);
+        final DateTime adjusted = parsed.subtract(const Duration(minutes: 30));
+        bookingHms = DateFormat('HH:mm:ss').format(adjusted);
       }
 
-      if (booking.bookingDate == dateStr && booking.startTime == timeStr) {
+      // Debug print
+      print('Comparing >> UI Slot: $uiHms  |  Booking Final Time: $bookingHms');
+
+      if (bookingHms == uiHms) {
+        print('🎯 MATCHED: Slot is booked!');
         return true;
       }
     }
-
     return false;
   }
 
@@ -3002,4 +3107,3 @@ class _Form_ScreenState extends State<Form_Screen> {
     });
   }
 }
-
