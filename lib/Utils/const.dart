@@ -1,6 +1,8 @@
 // ignore_for_file: non_constant_identifier_names, constant_identifier_names
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:intl/intl.dart';
+import 'package:wavee/Ui/CartScreen/model/amendOrderModal.dart'
+    show AmendOrderModal;
 
 import '../Ui/Authentication/modal/DeleteAccountModel.dart';
 import '../Ui/Authentication/modal/forgotPasswordModel.dart';
@@ -92,10 +94,12 @@ String formatDateTime(String? createdAt) {
   DateTime parsedDate = DateTime.parse(createdAt);
   return "${DateFormat('dd MMM yyyy').format(parsedDate)}, ${DateFormat('hh:mm a').format(parsedDate)}";
 }
+
 String formatTime(String time) {
   final parsed = DateFormat("HH:mm:ss").parse(time);
   return DateFormat("hh:mm a").format(parsed);
 }
+
 String formatTime12(String? time) {
   if (time == null || time == "N/A" || time.isEmpty) {
     return "N/A";
@@ -233,4 +237,5 @@ OrdersendMessageModel? ordersendmessagemodel;
 SearchProductModel? searchproductmodel;
 ChatStoryModal? chatStories;
 EventDetailModal? eventDetailModal;
-StatusModal?statusModal;
+StatusModal? statusModal;
+AmendOrderModal? amendOrderModal;

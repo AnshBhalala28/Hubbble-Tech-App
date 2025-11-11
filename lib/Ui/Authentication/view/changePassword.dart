@@ -209,7 +209,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     );
   }
 
-
   void _changePasswordApi() async {
     try {
       setState(() => isLoading = true);

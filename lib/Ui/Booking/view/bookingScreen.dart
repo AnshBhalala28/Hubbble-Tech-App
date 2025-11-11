@@ -186,58 +186,58 @@ class _BookingScreenState extends State<BookingScreen> {
                       offset: const Offset(0, 45),
                       itemBuilder:
                           (BuildContext context) => [
-                        PopupMenuItem(
-                          value: "all",
-                          child: Text(
-                            "All",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
+                            PopupMenuItem(
+                              value: "all",
+                              child: Text(
+                                "All",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500,
 
-                              fontFamily: AppConstants.manrope,
+                                  fontFamily: AppConstants.manrope,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: "confirmed",
-                          child: Text(
-                            "Confirmed",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
+                            PopupMenuItem(
+                              value: "confirmed",
+                              child: Text(
+                                "Confirmed",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500,
 
-                              fontFamily: AppConstants.manrope,
+                                  fontFamily: AppConstants.manrope,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: "pending",
-                          child: Text(
-                            "Pending",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
+                            PopupMenuItem(
+                              value: "pending",
+                              child: Text(
+                                "Pending",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500,
 
-                              fontFamily: AppConstants.manrope,
+                                  fontFamily: AppConstants.manrope,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: "cancelled",
-                          child: Text(
-                            "Cancelled",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: AppConstants.manrope,
+                            PopupMenuItem(
+                              value: "cancelled",
+                              child: Text(
+                                "Cancelled",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: AppConstants.manrope,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ],
+                          ],
                       child: Container(
                         alignment: Alignment.center,
                         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -268,232 +268,265 @@ class _BookingScreenState extends State<BookingScreen> {
               ],
             ),
             SizedBox(height: 2.h),
-            Expanded(child: SingleChildScrollView(child: Column(children: [
-
-              isLoading
-                  ? Loader().paddingOnly(top: 20.h)
-                  : nonEmptyBookings.isEmpty || nonEmptyBookings.isEmpty
-                  ? Center(
-                child: Text(
-                  "No Bookings Found",
-                  style: TextStyle(
-                    fontSize: 17.sp,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.black,
-                    fontFamily: AppConstants.manrope,
-                  ),
-                ).paddingOnly(top: 30.h),
-              )
-                  : SizedBox(
+            Expanded(
+              child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: nonEmptyBookings.length,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      itemBuilder: (context, index) {
-                        final entry = nonEmptyBookings[index];
-                        final monthName = entry['month'].toString();
-                        final booking = entry['booking'];
-
-                        final dateTime = DateFormat(
-                          "yyyy-MM-dd hh:mm a",
-                        ).parse(booking['requested_at'] ?? "", true);
-
-                        final day =
-                        DateFormat(
-                          'EEE',
-                        ).format(dateTime).toUpperCase();
-                        final dayNum = DateFormat('d').format(dateTime);
-                        final monthFormatted = DateFormat(
-                          'MMMM',
-                        ).format(dateTime);
-                        final time = DateFormat('hh:mm a').format(dateTime);
-
-                        final isFirstOfMonth =
-                            index == 0 ||
-                                nonEmptyBookings[index - 1]['month'] !=
-                                    monthName;
-
-                        return GestureDetector(
-                          onTap: () {
-                            Get.to(
-                                  () => Form_Screen(
-                                amenites_id:
-                                booking['amenity']['id'].toString(),
-                                status: booking['status'],
-                                bookingDate: booking['requested_at'],
-                                attend:
-                                booking['attended']?.toString() ??
-                                    "",
-                                rsvp: booking['rsvp'],
-                                EventName: booking['amenity']['name'],
-                                bookingId:
-                                booking['booking_id'].toString(),
-                                requestedDate:
-                                booking['requested_at'] ?? "N/A",
-                                startTime: booking['start_time'] ?? "N/A",
-                                endtime: booking['end_time'] ?? "N/A",
-                                isPage: true,
-                              ),
-                            );
-                          },
-
+                    isLoading
+                        ? Loader().paddingOnly(top: 20.h)
+                        : nonEmptyBookings.isEmpty || nonEmptyBookings.isEmpty
+                        ? Center(
+                          child: Text(
+                            "No Bookings Found",
+                            style: TextStyle(
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.black,
+                              fontFamily: AppConstants.manrope,
+                            ),
+                          ).paddingOnly(top: 30.h),
+                        )
+                        : SizedBox(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (isFirstOfMonth)
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 16.0,
-                                    bottom: 8,
-                                  ),
-                                  child: Text(
-                                    monthFormatted,
-                                    style: const TextStyle(
-                                      fontFamily: AppConstants.manropeBold,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black87,
-                                    ),
-                                  ),
-                                ),
-                              Padding(
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: nonEmptyBookings.length,
                                 padding: const EdgeInsets.symmetric(
-                                  vertical: 8.0,
+                                  horizontal: 16,
+                                  vertical: 8,
                                 ),
-                                child: Row(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          day,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey[600],
-                                            fontFamily: AppConstants.manropeBold,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          dayNum,
-                                          style:  TextStyle(
-                                            fontFamily: AppConstants.manropeBold,
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                formatTime12(  booking['start_time']),
-                                                style:  TextStyle(
-                                                  fontSize: 13,
-                                                  color: Colors.black87,
-                                                  fontWeight:
-                                                  FontWeight.w500,
-                                                  fontFamily: AppConstants.manropeBold,
-                                                ),
-                                              ),
-                                              const Spacer(),
-                                              Container(
-                                                padding:
-                                                const EdgeInsets.symmetric(
-                                                  horizontal: 8,
-                                                  vertical: 4,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  color: getStatusColor(
-                                                    booking['status'] ?? "",
-                                                    booking['rsvp'],
-                                                    booking['attended'],
-                                                  ),
-                                                  borderRadius:
-                                                  BorderRadius.circular(
-                                                    8,
-                                                  ),
-                                                ),
-                                                child: Text(
-                                                  getStatusText(
-                                                    booking['status']
-                                                        .toString(),
-                                                    booking['rsvp'],
-                                                    booking['attended'],
-                                                  ),
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 12,
-                                                    fontWeight:
-                                                    FontWeight.bold,
-                                                    fontFamily: AppConstants.manrope,
+                                itemBuilder: (context, index) {
+                                  final entry = nonEmptyBookings[index];
+                                  final monthName = entry['month'].toString();
+                                  final booking = entry['booking'];
 
+                                  final dateTime = DateFormat(
+                                    "yyyy-MM-dd hh:mm a",
+                                  ).parse(booking['requested_at'] ?? "", true);
+
+                                  final day =
+                                      DateFormat(
+                                        'EEE',
+                                      ).format(dateTime).toUpperCase();
+                                  final dayNum = DateFormat(
+                                    'd',
+                                  ).format(dateTime);
+                                  final monthFormatted = DateFormat(
+                                    'MMMM',
+                                  ).format(dateTime);
+                                  final time = DateFormat(
+                                    'hh:mm a',
+                                  ).format(dateTime);
+
+                                  final isFirstOfMonth =
+                                      index == 0 ||
+                                      nonEmptyBookings[index - 1]['month'] !=
+                                          monthName;
+
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Get.to(
+                                        () => Form_Screen(
+                                          amenites_id:
+                                              booking['amenity']['id']
+                                                  .toString(),
+                                          status: booking['status'],
+                                          bookingDate: booking['requested_at'],
+                                          attend:
+                                              booking['attended']?.toString() ??
+                                              "",
+                                          rsvp: booking['rsvp'],
+                                          EventName: booking['amenity']['name'],
+                                          bookingId:
+                                              booking['booking_id'].toString(),
+                                          requestedDate:
+                                              booking['requested_at'] ?? "N/A",
+                                          startTime:
+                                              booking['start_time'] ?? "N/A",
+                                          endtime: booking['end_time'] ?? "N/A",
+                                          isPage: true,
+                                        ),
+                                      );
+                                    },
+
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        if (isFirstOfMonth)
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 16.0,
+                                              bottom: 8,
+                                            ),
+                                            child: Text(
+                                              monthFormatted,
+                                              style: const TextStyle(
+                                                fontFamily:
+                                                    AppConstants.manropeBold,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                          ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0,
+                                          ),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    day,
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.grey[600],
+                                                      fontFamily:
+                                                          AppConstants
+                                                              .manropeBold,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
                                                   ),
+                                                  const SizedBox(height: 2),
+                                                  Text(
+                                                    dayNum,
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          AppConstants
+                                                              .manropeBold,
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black87,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          formatTime12(
+                                                            booking['start_time'],
+                                                          ),
+                                                          style: TextStyle(
+                                                            fontSize: 13,
+                                                            color:
+                                                                Colors.black87,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontFamily:
+                                                                AppConstants
+                                                                    .manropeBold,
+                                                          ),
+                                                        ),
+                                                        const Spacer(),
+                                                        Container(
+                                                          padding:
+                                                              const EdgeInsets.symmetric(
+                                                                horizontal: 8,
+                                                                vertical: 4,
+                                                              ),
+                                                          decoration: BoxDecoration(
+                                                            color: getStatusColor(
+                                                              booking['status'] ??
+                                                                  "",
+                                                              booking['rsvp'],
+                                                              booking['attended'],
+                                                            ),
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  8,
+                                                                ),
+                                                          ),
+                                                          child: Text(
+                                                            getStatusText(
+                                                              booking['status']
+                                                                  .toString(),
+                                                              booking['rsvp'],
+                                                              booking['attended'],
+                                                            ),
+                                                            style: const TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manrope,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(height: 4),
+                                                    Text(
+                                                      booking['amenity']['name'] ??
+                                                          "Meeting Room",
+                                                      style: const TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.black87,
+                                                        fontFamily:
+                                                            AppConstants
+                                                                .manropeBold,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 2),
+                                                    Text(
+                                                      booking['amenity']['description'] ??
+                                                          "",
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: const TextStyle(
+                                                        fontSize: 13,
+                                                        fontFamily:
+                                                            AppConstants
+                                                                .manrope,
+                                                        color: Colors.black54,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 8),
+                                                    const Divider(
+                                                      thickness: 0.5,
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ],
                                           ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            booking['amenity']['name'] ??
-                                                "Meeting Room",
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black87,
-                                              fontFamily: AppConstants.manropeBold,
-
-                                            ),
-                                          ),
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            booking['amenity']['description'] ??
-                                                "",
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontSize: 13,
-                                              fontFamily: AppConstants.manrope,
-                                              color: Colors.black54,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          const Divider(thickness: 0.5),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  );
+                                },
                               ),
-
                             ],
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                    SizedBox(height: 5.h),
                   ],
                 ),
               ),
-              SizedBox(height: 5.h),
-            ],),)),
-
+            ),
           ],
         ),
       ),

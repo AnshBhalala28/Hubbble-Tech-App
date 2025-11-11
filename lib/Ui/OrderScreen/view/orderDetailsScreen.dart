@@ -516,9 +516,18 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              (orderDetailModel?.data?.products?.product?.images ==
+                              (orderDetailModel
+                                              ?.data
+                                              ?.products
+                                              ?.product
+                                              ?.images ==
                                           null ||
-                                  (orderDetailModel?.data?.products?.product?.images)!.isEmpty)
+                                      (orderDetailModel
+                                              ?.data
+                                              ?.products
+                                              ?.product
+                                              ?.images)!
+                                          .isEmpty)
                                   ? Container(
                                     height: 25.h,
                                     width: double.infinity,
@@ -532,7 +541,12 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                       child: CachedNetworkImage(
                                         width: double.infinity,
                                         imageUrl:
-                                        (orderDetailModel?.data?.products?.product?.images).toString(),
+                                            (orderDetailModel
+                                                    ?.data
+                                                    ?.products
+                                                    ?.product
+                                                    ?.images)
+                                                .toString(),
                                         fit: BoxFit.fill,
                                         placeholder:
                                             (context, url) => const Center(
@@ -1728,7 +1742,13 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                 if (canAmend) {
                   // Add your amend order logic here
                   // For example: Get.to(AmendOrderScreen());
-                  Get.to(AddToCartView(isAmend: true,businessID:orderDetailModel?.data?.business?.id.toString()??""));
+                  Get.to(
+                    AddToCartView(
+                      isAmend: true,
+                      businessID:
+                          orderDetailModel?.data?.business?.id.toString() ?? "",
+                    ),
+                  );
                 }
               },
               color: canAmend ? AppColors.maincolor : AppColors.maincolor,

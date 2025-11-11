@@ -27,6 +27,26 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
+  Future<Response> amendOrderDetailapi(Map<String, String> bodyData) async {
+    try {
+      String? token = await SaveDataLocal.getToken();
+      if (token != null && token.isNotEmpty) {
+        Map<String, String> headers = {'X-Auth-Token': token};
+      }
+
+      final dio = await DioHelper.getDio();
+      final response = await dio.post(
+        ApiEndpoint.amendOrderDetail,
+        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        data: bodyData,
+      );
+
+      return response;
+    } on DioException catch (e) {
+      throw Exception(handleDioError(e));
+    }
+  }
+
   Future<Response> updateCartQuantityApi(Map<String, String> bodyData) async {
     try {
       final dio = await DioHelper.getDio();
