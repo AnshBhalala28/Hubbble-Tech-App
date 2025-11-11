@@ -209,9 +209,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     );
   }
 
-  // 🔧 Change Password API
-
-  // 🔧 Change Password API
 
   void _changePasswordApi() async {
     try {

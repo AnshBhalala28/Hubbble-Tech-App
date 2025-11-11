@@ -9,6 +9,7 @@ import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:torn_ticket/torn_ticket.dart';
+import 'package:wavee/Ui/Booking/modal/statusModal.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
@@ -71,9 +72,9 @@ class _Form_ScreenState extends State<Form_Screen> {
 
   bool showBookingDetails = false;
 
-  String? selectedStartTime; // દા.ત., "10:30 AM"
-  // ▼▼▼ ડ્યુરેશન હવે API માંથી સેટ થશે ▼▼▼
-  int selectedDurationInMinutes = 60; // ડિફોલ્ટ 60 મિનિટ
+  String? selectedStartTime;
+
+  int selectedDurationInMinutes = 60;
 
   DateTime? getRequestedDate() {
     if (widget.requestedDate == null) return null;
@@ -112,6 +113,8 @@ class _Form_ScreenState extends State<Form_Screen> {
 
     _generateDatesBasedOnSelection();
     AmenitiesApi(date: calendar1SelectedDateStr);
+
+    statusApi();
   }
 
   int selectedMonthIndex = DateTime.now().month - 1;
@@ -140,13 +143,10 @@ class _Form_ScreenState extends State<Form_Screen> {
   String calendar1SelectedDateStr = '';
   bool calendar1Loading = false;
 
-  // ડેટ/ટાઇમ પાર્સ કરવા માટેના હેલ્પર ફંક્શન્સ
   DateTime _parseTime(String timeStr, DateTime onDate) {
-    // 1. સૌથી પહેલા સ્ટ્રિંગમાંથી વધારાની સ્પેસ દૂર કરો
     final String cleanTimeStr = timeStr.trim();
 
     try {
-      // 2. પહેલા 24-કલાક (HH:mm) ફોર્મેટમાં પાર્સ કરવાનો પ્રયાસ કરો
       final format24 = DateFormat("HH:mm");
       final dt = format24.parse(cleanTimeStr);
       return DateTime(
@@ -157,7 +157,6 @@ class _Form_ScreenState extends State<Form_Screen> {
         dt.minute,
       );
     } catch (e) {
-      // 3. જો 24-કલાક ફોર્મેટ નિષ્ફળ જાય, તો AM/PM (h:mm a) ફોર્મેટમાં પ્રયાસ કરો
       try {
         final format12 = DateFormat("h:mm a");
         final dt = format12.parse(cleanTimeStr);
@@ -169,15 +168,13 @@ class _Form_ScreenState extends State<Form_Screen> {
           dt.minute,
         );
       } catch (e2) {
-        // 4. જો બંન્ને નિષ્ફળ જાય, તો એરર પ્રિન્ટ કરો
         print("!!! Failed to parse time: '$timeStr' !!!");
-        // ક્રેશ થવાથી બચવા માટે, આજની તારીખ પરત કરો
+
         return DateTime.now();
       }
     }
   }
 
-  // ઉપલબ્ધ સ્લોટ જનરેટ કરવા માટેનું મુખ્ય લોજિક
   List<String> _generateAvailableSlots(
     String operatingHoursStr,
     List<ExistingBooking> existingBookings,
@@ -187,11 +184,10 @@ class _Form_ScreenState extends State<Form_Screen> {
     final DateTime now = DateTime.now();
     final DateTime selectedDay = calendar1SelectedDate!;
 
-    // 1. ઓપરેટિંગ અવર્સ પાર્સ કરો
     if (operatingHoursStr == "Closed" ||
         operatingHoursStr == "No operating hours available" ||
         !operatingHoursStr.contains(" - ")) {
-      return []; // કોઈ સ્લોટ નથી
+      return [];
     }
     final parts = operatingHoursStr.split(" - ");
     final DateTime openingTime = _parseTime(parts[0].trim(), selectedDay);
@@ -199,25 +195,23 @@ class _Form_ScreenState extends State<Form_Screen> {
 
     DateTime currentTime = openingTime;
 
-    // 2. બધા ૩૦-મિનિટના સ્લોટ જનરેટ કરો
     while (currentTime.isBefore(closingTime)) {
       final DateTime slotStartTime = currentTime;
-      // ▼▼▼ ડ્યુરેશન હવે ફિક્સ છે (selectedDurationInMinutes માંથી) ▼▼▼
+
       final DateTime slotEndTime = slotStartTime.add(
         Duration(minutes: selectedDurationInMinutes),
       );
 
       bool isAvailable = true;
-      // જો સ્લોટનો અંતિમ સમય ક્લોઝિંગ ટાઇમ પછી હોય તો સ્લોટ ન બતાવો
+
       if (slotEndTime.isAfter(closingTime)) {
         isAvailable = false;
       }
-      // જો આજનો દિવસ પસંદ કરેલ હોય અને સ્લોટ ભૂતકાળમાં હોય તો ન બતાવો
+
       if (isSameDay(selectedDay, now) && slotStartTime.isBefore(now)) {
         isAvailable = false;
       }
 
-      // 3. એક્ઝિસ્ટિંગ બુકિંગ સાથે ઓવરલેપ ચેક કરો
       if (isAvailable) {
         for (final booking in existingBookings) {
           if (booking.startTime == null || booking.endTime == null) continue;
@@ -228,7 +222,6 @@ class _Form_ScreenState extends State<Form_Screen> {
           );
           final DateTime bookingEnd = _parseTime(booking.endTime!, selectedDay);
 
-          // બફર ટાઇમ સાથે બુકિંગનો અંતિમ સમય
           final DateTime bufferEndTime = bookingEnd.add(
             Duration(minutes: bufferInMinutes),
           );
@@ -245,20 +238,14 @@ class _Form_ScreenState extends State<Form_Screen> {
         availableSlots.add(DateFormat("h:mm a").format(slotStartTime));
       }
 
-      // ▼▼▼ ફેરફાર અહીં છે ▼▼▼
-      // 30 મિનિટના બદલે, હવે આપણે બુકિંગ ડ્યુરેશન જેટલો વધારો કરીશું
-      // આનાથી 60 મિનિટના ડ્યુરેશન માટે 9:00, 10:00, 11:00 જેવા સ્લોટ બનશે
-
-      // જો selectedDurationInMinutes 0 હોય (જે API માંથી કદાચ ન આવે, પણ સુરક્ષા માટે),
-      // તો ડિફોલ્ટ 30 મિનિટનો વધારો કરો જેથી અનંત લૂપ ન થાય.
       final int increment =
           selectedDurationInMinutes > 0 ? selectedDurationInMinutes : 30;
       currentTime = currentTime.add(Duration(minutes: increment));
-      // ▲▲▲ ફેરફાર પૂરો ▲▲▲
     }
 
     return availableSlots;
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -1065,10 +1052,8 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                           ),
                                                           SizedBox(height: 6),
 
-                                                          // ---- TIME ROW ----
                                                           Row(
                                                             children: [
-                                                              // Start Time
                                                               Row(
                                                                 children: [
                                                                   Icon(
@@ -1122,7 +1107,6 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                 width: 10,
                                                               ),
 
-                                                              // End Time
                                                               Row(
                                                                 children: [
                                                                   Icon(
@@ -1181,7 +1165,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                       selectedAmenity
                                                               ?.existingBookings ??
                                                           [],
-                                                      30, // Buffer time (30 min)
+                                                      30,
                                                     ),
                                                   ] else if (calendar1Loading)
                                                     Padding(
@@ -1737,12 +1721,21 @@ class _Form_ScreenState extends State<Form_Screen> {
             children:
                 availableSlots.map((time) {
                   final bool isSelected = selectedStartTime == time;
+
+                  final bool isAlreadyBooked = _isSlotAlreadyBookedByMe(
+                    time,
+                    calendar1SelectedDate!,
+                  );
+
                   return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedStartTime = time;
-                      });
-                    },
+                    onTap:
+                        isAlreadyBooked
+                            ? null
+                            : () {
+                              setState(() {
+                                selectedStartTime = time;
+                              });
+                            },
                     child: Container(
                       padding: EdgeInsets.symmetric(
                         horizontal: 3.w,
@@ -1750,13 +1743,17 @@ class _Form_ScreenState extends State<Form_Screen> {
                       ),
                       decoration: BoxDecoration(
                         color:
-                            isSelected
+                            isAlreadyBooked
+                                ? AppColors.maincolor
+                                : isSelected
                                 ? AppColors.maincolor
                                 : AppColors.bgcolor,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
                           color:
-                              isSelected
+                              isAlreadyBooked
+                                  ? Colors.grey.shade400
+                                  : isSelected
                                   ? AppColors.maincolor
                                   : Colors.grey.shade300,
                         ),
@@ -1764,10 +1761,21 @@ class _Form_ScreenState extends State<Form_Screen> {
                       child: Text(
                         time,
                         style: TextStyle(
-                          color: isSelected ? Colors.white : Colors.black,
+                          color:
+                              isAlreadyBooked
+                                  ? Colors.white
+                                  : isSelected
+                                  ? Colors.white
+                                  : Colors.black,
                           fontFamily: AppConstants.manrope,
                           fontWeight:
                               isSelected ? FontWeight.bold : FontWeight.normal,
+
+                          // decoration:
+                          //     isAlreadyBooked
+                          //         ? TextDecoration.lineThrough
+                          //         : TextDecoration.none,
+                          decorationColor: Colors.black.withOpacity(0.4),
                         ),
                       ),
                     ),
@@ -1886,7 +1894,7 @@ class _Form_ScreenState extends State<Form_Screen> {
 
   String _formatDuration(List<String>? durations) {
     if (durations == null || durations.isEmpty) return "N/A";
-    // હવે આપણે selectedDurationInMinutes નો ઉપયોગ કરીશું, જે API માંથી સેટ થાય છે
+
     int totalMinutes = selectedDurationInMinutes;
 
     if (totalMinutes < 60) {
@@ -1894,10 +1902,9 @@ class _Form_ScreenState extends State<Form_Screen> {
     } else {
       double hours = totalMinutes / 60;
       if (hours == hours.toInt()) {
-        // જો બરાબર 1.0, 2.0, વગેરે હોય તો ".0" દૂર કરો
         return "${hours.toInt()} hr";
       }
-      // જો 1.5 hr હોય તો બતાવો
+
       return "${hours.toStringAsFixed(1)} hr";
     }
   }
@@ -2287,134 +2294,8 @@ class _Form_ScreenState extends State<Form_Screen> {
     }
   }
 
-  // void showTornTicketDialog({
-  //   required BuildContext context,
-  //   required String selectedDate,
-  //   required String selectedTime,
-  //   required String endTime,
-  //   required String duration,
-  //   required String location,
-  //   required String attendeeInitials,
-  // }) {
-  //   showDialog(
-  //     context: context,
-  //     barrierDismissible: false,
-  //     builder: (BuildContext context) {
-  //       return Dialog(
-  //         backgroundColor: Colors.transparent,
-  //         child: Stack(
-  //           alignment: Alignment.topCenter,
-  //           children: [
-  //             Container(
-  //               margin: const EdgeInsets.only(top: 40),
-  //               child: TornTicket(
-  //                 height: 51.h,
-  //                 borderRadius: 12,
-  //                 child: Container(
-  //                   padding: const EdgeInsets.all(20),
-  //                   width: double.infinity,
-  //                   child: Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     children: [
-  //                       SizedBox(height: 3.h + 10),
-  //                       Center(
-  //                         child: Text(
-  //                           "Thank you!",
-  //                           style: TextStyle(
-  //                             fontSize: 20.sp,
-  //                             fontWeight: FontWeight.bold,
-  //                             fontFamily: AppConstants.manrope,
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       SizedBox(height: 1.h),
-  //                       const Center(
-  //                         child: Text(
-  //                           "Your booking was successful",
-  //                           style: TextStyle(
-  //                             fontSize: 14,
-  //                             fontFamily: AppConstants.manrope,
-  //                             color: Colors.grey,
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       const Divider(height: 30, thickness: 1),
-  //                       Row(
-  //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                         children: [
-  //                           _buildTicketInfo(
-  //                             Icons.calendar_today,
-  //                             selectedDate.replaceAll('/', '-'),
-  //                           ),
-  //                           _buildTicketInfo(Icons.access_time, selectedTime),
-  //                           _buildTicketInfo(Icons.access_time, endTime),
-  //                           _buildTicketInfo(Icons.timelapse, duration),
-  //                         ],
-  //                       ),
-  //                       SizedBox(height: 3.h),
-  //                       const Text(
-  //                         "Amenities",
-  //                         style: TextStyle(
-  //                           fontSize: 12,
-  //                           color: Colors.grey,
-  //                           fontFamily: AppConstants.manrope,
-  //                           letterSpacing: 1,
-  //                         ),
-  //                       ),
-  //                       Text(
-  //                         location,
-  //                         style: const TextStyle(
-  //                           fontSize: 15,
-  //                           fontWeight: FontWeight.w500,
-  //                           fontFamily: AppConstants.manrope,
-  //                         ),
-  //                       ),
-  //                       SizedBox(height: 1.h),
-  //                       SizedBox(height: 4.h),
-  //                       batan(
-  //                         title: "Back to Home",
-  //                         route: () {
-  //                           Get.offAll(() => const BookingScreen());
-  //                         },
-  //                         color: AppColors.maincolor,
-  //                         fontcolor: Colors.white,
-  //                         height: 5.h,
-  //                         width: double.infinity,
-  //                         fontsize: 18.sp,
-  //                         radius: 12.0,
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //             Positioned(
-  //               top: 0,
-  //               child: CircleAvatar(
-  //                 radius: 40,
-  //                 backgroundColor: AppColors.maincolor,
-  //                 child: Icon(Icons.check, size: 25.sp, color: Colors.white),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
   //
-  // Widget _buildTicketInfo(IconData icon, String label) {
-  //   return Column(
-  //     children: [
-  //       Icon(icon, color: Colors.amber[700]),
-  //       const SizedBox(height: 4),
-  //       Text(
-  //         label,
-  //         style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-  //       ),
-  //     ],
-  //   );
-  // }
+
   void showTornTicketDialog({
     required BuildContext context,
     required String selectedDate,
@@ -2468,7 +2349,6 @@ class _Form_ScreenState extends State<Form_Screen> {
                         ),
                         const Divider(height: 30, thickness: 1),
 
-                        // ✅ New Better Design
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
@@ -2478,7 +2358,6 @@ class _Form_ScreenState extends State<Form_Screen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // DATE
                               Row(
                                 children: [
                                   Icon(
@@ -2489,18 +2368,16 @@ class _Form_ScreenState extends State<Form_Screen> {
                                   const SizedBox(width: 10),
                                   Text(
                                     selectedDate.replaceAll('/', '-'),
-                                    style:  TextStyle(
+                                    style: TextStyle(
                                       fontSize: 15.sp,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: AppConstants.manrope,
-
                                     ),
                                   ),
                                 ],
                               ),
                               SizedBox(height: 10),
 
-                              // START → END
                               Row(
                                 children: [
                                   Icon(
@@ -2512,33 +2389,33 @@ class _Form_ScreenState extends State<Form_Screen> {
 
                                   Text(
                                     selectedTime,
-                                    style:  TextStyle(
+                                    style: TextStyle(
                                       fontSize: 15.sp,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: AppConstants.manrope,
-
                                     ),
                                   ),
 
                                   const SizedBox(width: 6),
-                                 Icon(Icons.arrow_forward,  color: Colors.black,
-                                   size: 15.sp,),
+                                  Icon(
+                                    Icons.arrow_forward,
+                                    color: Colors.black,
+                                    size: 15.sp,
+                                  ),
                                   const SizedBox(width: 6),
 
                                   Text(
                                     endTime,
-                                    style:  TextStyle(
+                                    style: TextStyle(
                                       fontSize: 15.sp,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: AppConstants.manrope,
-
                                     ),
                                   ),
                                 ],
                               ),
                               SizedBox(height: 10),
 
-                              // Duration
                               Row(
                                 children: [
                                   Icon(
@@ -2549,11 +2426,10 @@ class _Form_ScreenState extends State<Form_Screen> {
                                   SizedBox(width: 10),
                                   Text(
                                     duration,
-                                    style:  TextStyle(
+                                    style: TextStyle(
                                       fontSize: 15.sp,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: AppConstants.manrope,
-
                                     ),
                                   ),
                                 ],
@@ -2564,7 +2440,7 @@ class _Form_ScreenState extends State<Form_Screen> {
 
                         SizedBox(height: 3.h),
 
-                         Text(
+                        Text(
                           "Amenities",
                           style: TextStyle(
                             fontSize: 14.sp,
@@ -2819,18 +2695,16 @@ class _Form_ScreenState extends State<Form_Screen> {
       if (response.statusCode == 200) {
         amenitiesModel = AmenitiesModel.fromJson(response.data);
 
-        // API માંથી ડ્યુરેશન સેટ કરો
         if (amenitiesModel?.data?.data?.isNotEmpty == true &&
             amenitiesModel!.data!.data!.first.durationOptions?.isNotEmpty ==
                 true) {
-          // API માંથી મળેલ પ્રથમ ડ્યુરેશનને સેટ કરો
           selectedDurationInMinutes =
               int.tryParse(
                 amenitiesModel!.data!.data!.first.durationOptions!.first,
               ) ??
-              60; // જો પાર્સ ન થાય તો 60
+              60;
         } else {
-          selectedDurationInMinutes = 60; // જો API માંથી ન મળે તો 60
+          selectedDurationInMinutes = 60;
         }
 
         setState(() {
@@ -2864,7 +2738,7 @@ class _Form_ScreenState extends State<Form_Screen> {
       final parsed = DateFormat("hh:mm a").parse(time);
       return DateFormat("HH:mm:ss").format(parsed);
     } catch (e) {
-      return time; // fallback
+      return time;
     }
   }
 
@@ -2878,100 +2752,14 @@ class _Form_ScreenState extends State<Form_Screen> {
     }
   }
 
-  // String apiTime = convertTo24(time);
-  // Future<bool> AddBookingApi(
-  //   String date,
-  //   String time,
-  //   int duration,
-  //   String name,
-  // ) async {
-  //   String apiTime = convertTo24(time);
-  //   Map<String, String> data = {
-  //     "user_id": loginModel?.data?.user?.id.toString() ?? "",
-  //     "amenity_id": widget.amenites_id ?? '',
-  //     "date": date,
-  //     "start_time": apiTime,
-  //     "duration_minutes": duration.toString(),
-  //   };
-  //   log("data data data data $data");
-  //   setState(() {
-  //     isGlobalLoading = true;
-  //   });
-  //   bool hasInternet = await checkInternet();
-  //   if (!hasInternet) {
-  //     if (mounted) buildErrorDialog(context, 'Error', "Internet Required");
-  //     setState(() {
-  //       isGlobalLoading = false;
-  //     });
-  //     return false;
-  //   }
-  //   try {
-  //     var response = await AmenitiesProvider().addBookingApi(data);
-  //     if (response.statusCode == 200) {
-  //       if (mounted) {
-  //         setState(() {
-  //           isGlobalLoading = false;
-  //         });
-  //       }
-  //
-  //       // ટિકિટ માટે ડ્યુરેશન સ્ટ્રિંગ ફોર્મેટ કરો
-  //       String durationStr = "${(duration / 60).toStringAsFixed(1)} hr";
-  //       if (duration < 60) {
-  //         durationStr = "$duration min";
-  //       } else if (duration % 60 == 0) {
-  //         durationStr = "${(duration / 60).toInt()} hr";
-  //       }
-  //
-  //       showTornTicketDialog(
-  //         attendeeInitials: 'NP',
-  //         context: context,
-  //         location: name,
-  //         selectedDate: date.toString(),
-  //         selectedTime: time,
-  //         duration: durationStr,
-  //
-  //         endTime: ''
-  //       );
-  //       return true;
-  //     } else {
-  //       if (mounted) {
-  //         setState(() {
-  //           isGlobalLoading = false;
-  //         });
-  //       }
-  //       Get.snackbar(
-  //         "Booking Failed",
-  //         response.data['message'] ?? "Something went wrong. Please try again.",
-  //         backgroundColor: Colors.red,
-  //         colorText: Colors.white,
-  //       );
-  //       return false;
-  //     }
-  //   } catch (e) {
-  //     if (mounted) {
-  //       setState(() {
-  //         isGlobalLoading = false;
-  //       });
-  //     }
-  //     Get.snackbar(
-  //       "Error",
-  //       "Something went wrong. Please try again later.",
-  //       backgroundColor: Colors.red,
-  //       colorText: Colors.white,
-  //     );
-  //     return false;
-  //   }
-  // }
   Future<bool> AddBookingApi(
     String date,
     String time,
     int duration,
     String name,
   ) async {
-    // Convert AM/PM to 24-hour if needed
     String apiTime = convertTo24(time);
 
-    // 🔹 Calculate end time from duration
     String endTime = calculateEndTime(apiTime, duration);
 
     Map<String, String> data = {
@@ -2979,7 +2767,7 @@ class _Form_ScreenState extends State<Form_Screen> {
       "amenity_id": widget.amenites_id ?? '',
       "date": date,
       "start_time": apiTime,
-      "end_time": endTime, // 👈 Added
+
       "duration_minutes": duration.toString(),
     };
 
@@ -3008,7 +2796,6 @@ class _Form_ScreenState extends State<Form_Screen> {
           });
         }
 
-        // Format duration for ticket
         String durationStr = "${(duration / 60).toStringAsFixed(1)} hr";
         if (duration < 60) {
           durationStr = "$duration min";
@@ -3016,7 +2803,6 @@ class _Form_ScreenState extends State<Form_Screen> {
           durationStr = "${(duration / 60).toInt()} hr";
         }
 
-        // ✅ show ticket with end time
         showTornTicketDialog(
           attendeeInitials: 'NP',
           context: context,
@@ -3024,9 +2810,9 @@ class _Form_ScreenState extends State<Form_Screen> {
           selectedDate: date.toString(),
           selectedTime: time,
           duration: durationStr,
-          endTime: DateFormat("hh:mm a").format(
-            DateFormat("HH:mm:ss").parse(endTime),
-          ), // convert to AM/PM for display
+          endTime: DateFormat(
+            "hh:mm a",
+          ).format(DateFormat("HH:mm:ss").parse(endTime)),
         );
         return true;
       } else {
@@ -3144,4 +2930,76 @@ class _Form_ScreenState extends State<Form_Screen> {
       if (mounted) buildErrorDialog(context, 'Error', "Internet Required");
     }
   }
+
+  bool _isSlotAlreadyBookedByMe(String slotTime, DateTime selectedDate) {
+    if (statusModal?.data == null || statusModal!.data!.isEmpty) {
+      return false;
+    }
+
+    final String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
+
+    final String timeStr = convertTo24(slotTime);
+
+    for (final booking in statusModal!.data!) {
+      if (booking.bookingDate == null || booking.startTime == null) {
+        continue;
+      }
+
+      if (booking.bookingDate == dateStr && booking.startTime == timeStr) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  statusApi() {
+    final Map<String, String> data = {};
+    data['user_id'] = loginModel?.data?.user?.id.toString() ?? "";
+    log("Data $data");
+    checkInternet().then((internet) async {
+      if (internet) {
+        AmenitiesProvider()
+            .bookingStatusApi(data)
+            .then((response) async {
+              statusModal = StatusModal.fromJson(response.data);
+
+              if (response.statusCode == 200) {
+                log("response ave che ${response.data}");
+                setState(() {
+                  isLoading = false;
+                });
+              } else if (response.statusCode == 422) {
+                setState(() {
+                  isLoading = false;
+                });
+              } else {
+                log("errror ");
+                setState(() {
+                  isLoading = false;
+                });
+              }
+
+              setState(() {
+                isLoading = false;
+              });
+              return false;
+            })
+            .catchError((error) {
+              setState(() {
+                isLoading = false;
+              });
+
+              return false;
+            });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+        return false;
+      }
+    });
+  }
 }
+
