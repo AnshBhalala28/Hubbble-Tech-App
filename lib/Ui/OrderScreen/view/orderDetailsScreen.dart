@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +51,8 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
     });
     OrderDetailAPI();
     OrderDetailAPI1();
+    log( widget.orderid.toString());
+    log( widget.orderProductID.toString());
   }
 
   @override
@@ -436,7 +440,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                 style: TextStyle(
                                   fontSize: 19.sp,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: AppConstants.manrope,
+                                  fontFamily: AppConstants.manropeBold,
                                   color: AppColors.maincolor,
                                 ),
                               ),
@@ -754,7 +758,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                   children: [
                                     TextSpan(
                                       text:
-                                          "£${orderDetailModel?.data?.order?.totalAmount ?? ""}",
+                                          "£${orderDetailModel?.data?.products?.totalPrice ?? ""}",
                                       style: TextStyle(
                                         fontSize: 18.sp,
                                         fontWeight: FontWeight.bold,
@@ -812,7 +816,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                 style: TextStyle(
                                   fontSize: 19.sp,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: AppConstants.manrope,
+                                  fontFamily: AppConstants.manropeBold,
                                   color: AppColors.maincolor,
                                 ),
                               ),

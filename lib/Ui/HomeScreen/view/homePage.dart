@@ -485,7 +485,7 @@ class _HomePageState extends State<HomePage> {
                                             "Building Message Board",
                                             style: TextStyle(
                                               color: AppColors.black,
-                                              fontFamily: AppConstants.manrope,
+                                              fontFamily: AppConstants.manropeBold,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 19.sp,
                                             ),

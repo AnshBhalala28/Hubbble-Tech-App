@@ -290,7 +290,7 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                   Text(
                     label,
                     style: TextStyle(
-                      fontFamily: AppConstants.manrope,
+                      fontFamily: AppConstants.manropeBold,
                       fontWeight: FontWeight.w600,
                       fontSize: 17.sp,
                       color: Colors.black87,
