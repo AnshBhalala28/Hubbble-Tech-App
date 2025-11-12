@@ -138,11 +138,11 @@ class _AddToCartViewState extends State<AddToCartView> {
                     if (isLoading)
                       Center(child: Loader())
                     else if ((widget.isAmend == true &&
-                        (amendOrderModal
-                            ?.amendOrderData
-                            ?.products
-                            ?.isEmpty ??
-                            true)) ||
+                            (amendOrderModal
+                                    ?.amendOrderData
+                                    ?.products
+                                    ?.isEmpty ??
+                                true)) ||
                         (widget.isAmend != true &&
                             (cartDetailsModel?.data == null ||
                                 (cartDetailsModel?.data?.length ?? 0) == 0)))
@@ -279,8 +279,8 @@ class _AddToCartViewState extends State<AddToCartView> {
                                         if (widget.isAmend == true)
                                           _buildAmendOrderSummary()
                                         else if (cartDetailsModel
-                                            ?.data?[0]
-                                            .type ==
+                                                ?.data?[0]
+                                                .type ==
                                             "product")
                                           _buildRegularOrderSummary()
                                         else
@@ -321,9 +321,9 @@ class _AddToCartViewState extends State<AddToCartView> {
                                 fontSize: 18.sp,
                                 color: Colors.black,
                                 fontFamily:
-                                widget.isAmend == true
-                                    ? AppConstants.manropeBold
-                                    : AppConstants.manrope,
+                                    widget.isAmend == true
+                                        ? AppConstants.manropeBold
+                                        : AppConstants.manrope,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -343,7 +343,7 @@ class _AddToCartViewState extends State<AddToCartView> {
           ],
         ),
         bottomNavigationBar: Obx(
-              () => BottomBar(
+          () => BottomBar(
             selected: 4,
             chatCount: countsController.chatCount.value,
           ),
@@ -514,95 +514,107 @@ class _AddToCartViewState extends State<AddToCartView> {
   Widget _buildAvailableProductsList() {
     return Column(
       children:
-      availableProducts.map((product) {
-        final bool isAlreadyInOrder = _isProductInOrder(product);
+          availableProducts.map((product) {
+            final bool isAlreadyInOrder = _isProductInOrder(product);
 
-        // Check if product is selected and get the SelectedItem (or a temp one)
-        final bool isSelected = selectedProducts.any(
+            // Check if product is selected and get the SelectedItem (or a temp one)
+            final bool isSelected = selectedProducts.any(
               (s) => s.product.id == product.id,
-        );
-        final SelectedItem selectedItem = selectedProducts.firstWhere(
+            );
+            final SelectedItem selectedItem = selectedProducts.firstWhere(
               (s) => s.product.id == product.id,
-          orElse: () => SelectedItem(product: product, qty: 1),
-        );
-        final int quantity = selectedItem.qty;
+              orElse: () => SelectedItem(product: product, qty: 1),
+            );
+            final int quantity = selectedItem.qty;
 
-        return Container(
-          margin: EdgeInsets.only(bottom: 2.h),
-          padding: EdgeInsets.all(2.w),
-          decoration: BoxDecoration(
-            color:
-            isSelected
-                ? AppColors.maincolor.withOpacity(0.05)
-                : Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color:
-              isSelected
-                  ? AppColors.maincolor
-                  : const Color(0xFFE5E5E5),
-              width: isSelected ? 2 : 1,
-            ),
-          ),
-          child: Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  width: 16.w,
-                  height: 16.w,
-                  color: const Color(0xFFF8F8F8),
-                  child: CachedNetworkImage(
-                    imageUrl: _getProductImage(product),
-                    fit: BoxFit.cover,
-                    placeholder:
-                        (context, url) => Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.maincolor,
-                        strokeWidth: 2,
-                      ),
-                    ),
-                    errorWidget:
-                        (context, url, error) => Icon(
-                      Icons.image_outlined,
-                      color: Colors.grey[400],
-                      size: 6.w,
-                    ),
-                  ),
+            return Container(
+              margin: EdgeInsets.only(bottom: 2.h),
+              padding: EdgeInsets.all(2.w),
+              decoration: BoxDecoration(
+                color:
+                    isSelected
+                        ? AppColors.maincolor.withOpacity(0.05)
+                        : Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color:
+                      isSelected
+                          ? AppColors.maincolor
+                          : const Color(0xFFE5E5E5),
+                  width: isSelected ? 2 : 1,
                 ),
               ),
-              SizedBox(width: 3.w),
-
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product.name ?? "",
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF2E3333),
-                        fontFamily: AppConstants.manrope,
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      width: 16.w,
+                      height: 16.w,
+                      color: const Color(0xFFF8F8F8),
+                      child: CachedNetworkImage(
+                        imageUrl: _getProductImage(product),
+                        fit: BoxFit.cover,
+                        placeholder:
+                            (context, url) => Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.maincolor,
+                                strokeWidth: 2,
+                              ),
+                            ),
+                        errorWidget:
+                            (context, url, error) => Icon(
+                              Icons.image_outlined,
+                              color: Colors.grey[400],
+                              size: 6.w,
+                            ),
                       ),
                     ),
-                    SizedBox(height: 0.5.h),
-                    if (product.offerPrice != null &&
-                        product.offerPrice != "0.00" &&
-                        product.offerPrice != product.price)
-                      Row(
-                        children: [
-                          Text(
-                            "£${product.price}",
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              color: Colors.grey,
-                              decoration: TextDecoration.lineThrough,
-                            ),
+                  ),
+                  SizedBox(width: 3.w),
+
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          product.name ?? "",
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF2E3333),
+                            fontFamily: AppConstants.manrope,
                           ),
-                          SizedBox(width: 2.w),
+                        ),
+                        SizedBox(height: 0.5.h),
+                        if (product.offerPrice != null &&
+                            product.offerPrice != "0.00" &&
+                            product.offerPrice != product.price)
+                          Row(
+                            children: [
+                              Text(
+                                "£${product.price}",
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: Colors.grey,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                              ),
+                              SizedBox(width: 2.w),
+                              Text(
+                                "£${product.offerPrice}",
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.maincolor,
+                                  fontFamily: AppConstants.manrope,
+                                ),
+                              ),
+                            ],
+                          )
+                        else
                           Text(
-                            "£${product.offerPrice}",
+                            "£${product.price ?? ""}",
                             style: TextStyle(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.bold,
@@ -610,74 +622,62 @@ class _AddToCartViewState extends State<AddToCartView> {
                               fontFamily: AppConstants.manrope,
                             ),
                           ),
-                        ],
-                      )
-                    else
-                      Text(
-                        "£${product.price ?? ""}",
+                      ],
+                    ),
+                  ),
+
+                  if (isAlreadyInOrder)
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 3.w,
+                        vertical: 0.5.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: Colors.orange),
+                      ),
+                      child: Text(
+                        "Already in Order",
                         style: TextStyle(
-                          fontSize: 16.sp,
+                          fontSize: 12.sp,
+                          color: Colors.orange,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.maincolor,
-                          fontFamily: AppConstants.manrope,
                         ),
                       ),
-                  ],
-                ),
-              ),
-
-              if (isAlreadyInOrder)
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 3.w,
-                    vertical: 0.5.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: Colors.orange),
-                  ),
-                  child: Text(
-                    "Already in Order",
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.orange,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                )
-              else if (isSelected)
-              // show quantity control for selected item
-                _buildAddMoreQuantityControl(product, quantity)
-              else
-                GestureDetector(
-                  onTap: () {
-                    _addProductToSelection(product);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 3.w,
-                      vertical: 1.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.maincolor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      "Add",
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: AppConstants.manrope,
+                    )
+                  else if (isSelected)
+                    // show quantity control for selected item
+                    _buildAddMoreQuantityControl(product, quantity)
+                  else
+                    GestureDetector(
+                      onTap: () {
+                        _addProductToSelection(product);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 3.w,
+                          vertical: 1.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.maincolor,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          "Add",
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: AppConstants.manrope,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-            ],
-          ),
-        );
-      }).toList(),
+                ],
+              ),
+            );
+          }).toList(),
     );
   }
 
@@ -772,11 +772,11 @@ class _AddToCartViewState extends State<AddToCartView> {
 
               // Build product list (id + qty) from selectedProducts (SelectedItem)
               final List<Map<String, dynamic>> selectedItemsPayload =
-              selectedProducts.map((sel) {
-                final productId = sel.product.id?.toString() ?? "";
-                final qty = sel.qty ?? 1;
-                return {"product_id": productId, "qty": qty};
-              }).toList();
+                  selectedProducts.map((sel) {
+                    final productId = sel.product.id?.toString() ?? "";
+                    final qty = sel.qty ?? 1;
+                    return {"product_id": productId, "qty": qty};
+                  }).toList();
 
               // Call prepaidAddProduct that accepts a list of items
               prepaidAddProduct(selectedItemsPayload);
@@ -832,71 +832,71 @@ class _AddToCartViewState extends State<AddToCartView> {
         CommunityProvider()
             .businessProfileViewApi(widget.businessID.toString(), '', '')
             .then((response) {
-          setState(() {
-            isLoadingProducts = false;
-            if (response.statusCode == 200) {
-              print("Business Profile Response: ${response.data}");
+              setState(() {
+                isLoadingProducts = false;
+                if (response.statusCode == 200) {
+                  print("Business Profile Response: ${response.data}");
 
-              dynamic productsData;
+                  dynamic productsData;
 
-              if (response.data['data'] != null &&
-                  response.data['data']['products'] != null) {
-                productsData = response.data['data']['products'];
-              } else if (response.data['products'] != null) {
-                productsData = response.data['products'];
-              } else if (response.data['data'] != null &&
-                  response.data['data'] is List) {
-                productsData = response.data['data'];
-              } else {
-                productsData = response.data;
-              }
+                  if (response.data['data'] != null &&
+                      response.data['data']['products'] != null) {
+                    productsData = response.data['data']['products'];
+                  } else if (response.data['products'] != null) {
+                    productsData = response.data['products'];
+                  } else if (response.data['data'] != null &&
+                      response.data['data'] is List) {
+                    productsData = response.data['data'];
+                  } else {
+                    productsData = response.data;
+                  }
 
-              final List<BusinessProducts> allProducts = [];
+                  final List<BusinessProducts> allProducts = [];
 
-              if (productsData is List) {
-                allProducts.addAll(
-                  productsData.map<BusinessProducts>((item) {
-                    if (item is Map<dynamic, dynamic>) {
+                  if (productsData is List) {
+                    allProducts.addAll(
+                      productsData.map<BusinessProducts>((item) {
+                        if (item is Map<dynamic, dynamic>) {
+                          final Map<String, dynamic> stringMap =
+                              item.cast<String, dynamic>();
+                          return BusinessProducts.fromJson(stringMap);
+                        } else if (item is Map<String, dynamic>) {
+                          return BusinessProducts.fromJson(item);
+                        } else {
+                          return BusinessProducts.fromJson({});
+                        }
+                      }).toList(),
+                    );
+                  } else if (productsData is Map) {
+                    if (productsData is Map<dynamic, dynamic>) {
                       final Map<String, dynamic> stringMap =
-                      item.cast<String, dynamic>();
-                      return BusinessProducts.fromJson(stringMap);
-                    } else if (item is Map<String, dynamic>) {
-                      return BusinessProducts.fromJson(item);
-                    } else {
-                      return BusinessProducts.fromJson({});
+                          productsData.cast<String, dynamic>();
+                      allProducts.add(BusinessProducts.fromJson(stringMap));
+                    } else if (productsData is Map<String, dynamic>) {
+                      allProducts.add(BusinessProducts.fromJson(productsData));
                     }
-                  }).toList(),
-                );
-              } else if (productsData is Map) {
-                if (productsData is Map<dynamic, dynamic>) {
-                  final Map<String, dynamic> stringMap =
-                  productsData.cast<String, dynamic>();
-                  allProducts.add(BusinessProducts.fromJson(stringMap));
-                } else if (productsData is Map<String, dynamic>) {
-                  allProducts.add(BusinessProducts.fromJson(productsData));
+                  }
+
+                  availableProducts =
+                      allProducts
+                          .where((product) => !_isProductInOrder(product))
+                          .toList();
+
+                  print(
+                    "Loaded ${availableProducts.length} available products",
+                  );
+                } else {
+                  buildErrorDialog(context, 'Error', "Failed to load products");
                 }
-              }
-
-              availableProducts =
-                  allProducts
-                      .where((product) => !_isProductInOrder(product))
-                      .toList();
-
-              print(
-                "Loaded ${availableProducts.length} available products",
-              );
-            } else {
-              buildErrorDialog(context, 'Error', "Failed to load products");
-            }
-          });
-        })
+              });
+            })
             .catchError((error) {
-          setState(() {
-            isLoadingProducts = false;
-          });
-          print("Error loading products: $error");
-          buildErrorDialog(context, 'Error', "Failed to load products");
-        });
+              setState(() {
+                isLoadingProducts = false;
+              });
+              print("Error loading products: $error");
+              buildErrorDialog(context, 'Error', "Failed to load products");
+            });
       } else {
         setState(() {
           isLoadingProducts = false;
@@ -918,7 +918,7 @@ class _AddToCartViewState extends State<AddToCartView> {
   bool _isProductInOrder(BusinessProducts product) {
     return amendOrderModal?.amendOrderData?.products?.any(
           (orderProduct) => orderProduct.productId == product.id,
-    ) ??
+        ) ??
         false;
   }
 
@@ -936,12 +936,12 @@ class _AddToCartViewState extends State<AddToCartView> {
   }
 
   void _updateSelectedProductQuantity(
-      BusinessProducts product,
-      int newQuantity,
-      ) {
+    BusinessProducts product,
+    int newQuantity,
+  ) {
     setState(() {
       final sel = selectedProducts.firstWhere(
-            (s) => s.product.id == product.id,
+        (s) => s.product.id == product.id,
         orElse: () => SelectedItem(product: product, qty: 1),
       );
       sel.qty = newQuantity;
@@ -1125,21 +1125,21 @@ class _AddToCartViewState extends State<AddToCartView> {
               color: const Color(0xFFF8F8F8),
               child: CachedNetworkImage(
                 imageUrl:
-                (product.image != null &&
-                    (product.image as String).isNotEmpty)
-                    ? product.image
-                    : (product.images != null &&
-                    (product.images as List).isNotEmpty)
-                    ? product.images.first
-                    : "",
+                    (product.image != null &&
+                            (product.image as String).isNotEmpty)
+                        ? product.image
+                        : (product.images != null &&
+                            (product.images as List).isNotEmpty)
+                        ? product.images.first
+                        : "",
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Center(child: Loader()),
                 errorWidget:
                     (context, url, error) => Icon(
-                  Icons.image_outlined,
-                  color: Colors.grey[400],
-                  size: 8.w,
-                ),
+                      Icons.image_outlined,
+                      color: Colors.grey[400],
+                      size: 8.w,
+                    ),
               ),
             ),
           ),
@@ -1376,11 +1376,11 @@ class _AddToCartViewState extends State<AddToCartView> {
   }
 
   Widget _buildSummaryRow(
-      String title,
-      double amount, {
-        bool isTotal = false,
-        bool isDiscount = false,
-      }) {
+    String title,
+    double amount, {
+    bool isTotal = false,
+    bool isDiscount = false,
+  }) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 0.5.h),
       child: Row(
@@ -1393,9 +1393,9 @@ class _AddToCartViewState extends State<AddToCartView> {
               fontWeight: FontWeight.bold,
               fontFamily: AppConstants.manrope,
               color:
-              isDiscount
-                  ? Colors.green[700]
-                  : (isTotal ? Colors.black : Colors.grey[800]),
+                  isDiscount
+                      ? Colors.green[700]
+                      : (isTotal ? Colors.black : Colors.grey[800]),
             ),
           ),
           Text(
@@ -1407,9 +1407,9 @@ class _AddToCartViewState extends State<AddToCartView> {
               fontWeight: FontWeight.bold,
               fontFamily: AppConstants.manrope,
               color:
-              isDiscount
-                  ? Colors.green[700]
-                  : (isTotal ? AppColors.maincolor : Colors.black),
+                  isDiscount
+                      ? Colors.green[700]
+                      : (isTotal ? AppColors.maincolor : Colors.black),
             ),
           ),
         ],
@@ -1424,7 +1424,7 @@ class _AddToCartViewState extends State<AddToCartView> {
           double.tryParse(
             item.itemDetails?.offerPrice ?? item.itemDetails?.price ?? '0',
           ) ??
-              0;
+          0;
       total += price * (item.quantity ?? 1);
     });
     return total;
@@ -1437,7 +1437,7 @@ class _AddToCartViewState extends State<AddToCartView> {
           double.tryParse(
             item.itemDetails?.offerPrice ?? item.itemDetails?.price ?? '0',
           ) ??
-              0;
+          0;
       total += price * (item.quantity ?? 1);
     });
     return total;
@@ -1449,17 +1449,17 @@ class _AddToCartViewState extends State<AddToCartView> {
         CartProvider()
             .cartDetailApi(loginModel?.data?.user?.id.toString() ?? "")
             .then((response) {
-          cartDetailsModel = CartDetailsModel.fromJson(response.data);
-          if (response.statusCode == 200) {
-            setState(() {
-              isLoading = false;
+              cartDetailsModel = CartDetailsModel.fromJson(response.data);
+              if (response.statusCode == 200) {
+                setState(() {
+                  isLoading = false;
+                });
+              } else {
+                setState(() {
+                  isLoading = false;
+                });
+              }
             });
-          } else {
-            setState(() {
-              isLoading = false;
-            });
-          }
-        });
       } else {
         setState(() {
           isLoading = false;
@@ -1544,7 +1544,7 @@ class _AddToCartViewState extends State<AddToCartView> {
     }
     String discountStr =
         checkoutTotal?.data?.first.loyaltyDetails?.loyaltyDiscountPercentage ??
-            "0";
+        "0";
     return double.tryParse(discountStr) ?? 0.0;
   }
 
@@ -1568,12 +1568,12 @@ class _AddToCartViewState extends State<AddToCartView> {
 
   Widget _buildSuggestedList() {
     final List<BusinessProducts> allProducts =
-    (cartDetailsModel?.data?.expand(
-          (item) => item.itemDetails?.businessProducts ?? [],
-    ) ??
-        [])
-        .whereType<BusinessProducts>()
-        .toList();
+        (cartDetailsModel?.data?.expand(
+                  (item) => item.itemDetails?.businessProducts ?? [],
+                ) ??
+                [])
+            .whereType<BusinessProducts>()
+            .toList();
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       height: 10.h,
@@ -1602,28 +1602,28 @@ class _AddToCartViewState extends State<AddToCartView> {
                       borderRadius: BorderRadius.circular(10),
                       child: CachedNetworkImage(
                         imageUrl:
-                        (product.image != null && product.image!.isNotEmpty)
-                            ? product.image!
-                            : (product.images != null &&
-                            product.images!.isNotEmpty)
-                            ? product.images!.first
-                            : "",
+                            (product.image != null && product.image!.isNotEmpty)
+                                ? product.image!
+                                : (product.images != null &&
+                                    product.images!.isNotEmpty)
+                                ? product.images!.first
+                                : "",
                         fit: BoxFit.cover,
                         width: 14.w,
                         height: 14.w,
                         placeholder:
                             (context, url) => const Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.maincolor,
-                            strokeWidth: 2,
-                          ),
-                        ),
+                              child: CircularProgressIndicator(
+                                color: AppColors.maincolor,
+                                strokeWidth: 2,
+                              ),
+                            ),
                         errorWidget:
                             (context, url, error) => Icon(
-                          Icons.image_outlined,
-                          color: Colors.grey[400],
-                          size: 30,
-                        ),
+                              Icons.image_outlined,
+                              color: Colors.grey[400],
+                              size: 30,
+                            ),
                       ),
                     ),
                     SizedBox(width: 2.w),
@@ -1641,83 +1641,83 @@ class _AddToCartViewState extends State<AddToCartView> {
                           ),
                         ),
                         (product.offerPrice != null &&
-                            product.offerPrice != "0.00" &&
-                            product.offerPrice != product.price)
+                                product.offerPrice != "0.00" &&
+                                product.offerPrice != product.price)
                             ? Row(
-                          children: [
-                            Text(
-                              "£${product.price}",
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.normal,
-                                fontFamily: AppConstants.manrope,
-                                color: Colors.grey,
-                                decoration: TextDecoration.lineThrough,
-                                decorationColor: AppColors.maincolor,
-                              ),
-                            ),
-                            const SizedBox(width: 5),
-                            Text(
-                              "£${product.offerPrice}",
-                              style: TextStyle(
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: AppConstants.manrope,
-                                color: Colors.black,
-                              ),
-                            ),
-                            SizedBox(width: 4.w),
-                            InkWell(
-                              onTap: () {
-                                AddCartProductApi(
-                                  product.id.toString() ?? "",
-                                );
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(3),
-                                  color: Colors.black,
+                              children: [
+                                Text(
+                                  "£${product.price}",
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.normal,
+                                    fontFamily: AppConstants.manrope,
+                                    color: Colors.grey,
+                                    decoration: TextDecoration.lineThrough,
+                                    decorationColor: AppColors.maincolor,
+                                  ),
                                 ),
-                                child: Icon(
-                                  Icons.add,
-                                  size: 17.sp,
-                                  color: AppColors.white,
+                                const SizedBox(width: 5),
+                                Text(
+                                  "£${product.offerPrice}",
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manrope,
+                                    color: Colors.black,
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ],
-                        )
+                                SizedBox(width: 4.w),
+                                InkWell(
+                                  onTap: () {
+                                    AddCartProductApi(
+                                      product.id.toString() ?? "",
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      color: Colors.black,
+                                    ),
+                                    child: Icon(
+                                      Icons.add,
+                                      size: 17.sp,
+                                      color: AppColors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
                             : Row(
-                          children: [
-                            Text(
-                              "£${product.price ?? ""}",
-                              style: TextStyle(
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: AppConstants.manrope,
-                                color: Colors.black,
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () {
-                                AddCartProductApi(
-                                  product.id.toString() ?? "",
-                                );
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.black,
+                              children: [
+                                Text(
+                                  "£${product.price ?? ""}",
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manrope,
+                                    color: Colors.black,
+                                  ),
                                 ),
-                                child: Icon(
-                                  Icons.add,
-                                  size: 17.sp,
-                                  color: AppColors.white,
+                                InkWell(
+                                  onTap: () {
+                                    AddCartProductApi(
+                                      product.id.toString() ?? "",
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.black,
+                                    ),
+                                    child: Icon(
+                                      Icons.add,
+                                      size: 17.sp,
+                                      color: AppColors.white,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
                       ],
                     ),
                   ],
@@ -1732,12 +1732,12 @@ class _AddToCartViewState extends State<AddToCartView> {
 
   void _showFancyAnythingElseSheet() {
     final List<BusinessProducts> suggestedProducts =
-    (cartDetailsModel?.data?.expand(
-          (item) => item.itemDetails?.businessProducts ?? [],
-    ) ??
-        [])
-        .whereType<BusinessProducts>()
-        .toList();
+        (cartDetailsModel?.data?.expand(
+                  (item) => item.itemDetails?.businessProducts ?? [],
+                ) ??
+                [])
+            .whereType<BusinessProducts>()
+            .toList();
 
     showModalBottomSheet(
       context: context,
@@ -1745,448 +1745,452 @@ class _AddToCartViewState extends State<AddToCartView> {
       backgroundColor: Colors.transparent,
       builder:
           (context) => DraggableScrollableSheet(
-        initialChildSize: 0.85,
-        minChildSize: 0.4,
-        maxChildSize: 0.95,
-        expand: false,
-        builder:
-            (_, controller) => Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
+            initialChildSize: 0.85,
+            minChildSize: 0.4,
+            maxChildSize: 0.95,
+            expand: false,
+            builder:
+                (_, controller) => Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
 
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(20),
-            ),
-          ),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                  bottom: 10.h,
-                  left: 4.w,
-                  right: 4.w,
-                ),
-                child: ListView(
-                  controller: controller,
-                  physics: const BouncingScrollPhysics(),
-                  children: [
-                    Center(
-                      child: Container(
-                        margin: EdgeInsets.only(top: 1.h, bottom: 2.h),
-                        width: 10.w,
-                        height: 0.5.h,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Fancy anything else?",
-                          style: TextStyle(
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.w700,
-                            fontFamily: AppConstants.manrope,
-                            color: const Color(0xFF2E3333),
-                          ),
+                  ),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 10.h,
+                          left: 4.w,
+                          right: 4.w,
                         ),
-                        GestureDetector(
-                          onTap: () => Navigator.pop(context),
-                          child: Icon(
-                            Icons.close,
-                            size: 24.sp,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 2.h),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Your regulars",
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: AppConstants.manrope,
-                            color: const Color(0xFF2E3333),
-                          ),
-                        ),
-                        SizedBox(height: 0.5.h),
-                        Text(
-                          "Forgotten anything from your regular items?",
-                          style: TextStyle(
-                            fontSize: 15.sp,
-                            color: Colors.grey[600],
-                            fontFamily: AppConstants.manrope,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 2.h),
-                    if (suggestedProducts.isEmpty)
-                      Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 4.h),
-                          child: Text(
-                            "No suggested items available",
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              color: Colors.grey[500],
-                            ),
-                          ),
-                        ),
-                      )
-                    else
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: suggestedProducts.length,
-                        gridDelegate:
-                        SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio: 0.48,
-                          crossAxisSpacing: 3.w,
-                          mainAxisSpacing: 2.h,
-                        ),
-                        itemBuilder: (context, index) {
-                          final product = suggestedProducts[index];
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                color: const Color(0xFFE5E5E5),
-                                width: 1,
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              children: [
-                                Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius:
-                                      const BorderRadius.vertical(
-                                        top: Radius.circular(12),
-                                      ),
-                                      child: CachedNetworkImage(
-                                        imageUrl:
-                                        (product.image != null &&
-                                            product
-                                                .image!
-                                                .isNotEmpty)
-                                            ? product.image!
-                                            : (product.images !=
-                                            null &&
-                                            product
-                                                .images!
-                                                .isNotEmpty)
-                                            ? product.images!.first
-                                            : "",
-                                        fit: BoxFit.cover,
-                                        height: 14.h,
-                                        width: double.infinity,
-                                        placeholder:
-                                            (context, url) => Container(
-                                          color: const Color(
-                                            0xFFF8F8F8,
-                                          ),
-                                          child: const Center(
-                                            child:
-                                            CircularProgressIndicator(
-                                              color:
-                                              AppColors
-                                                  .maincolor,
-                                              strokeWidth: 2,
-                                            ),
-                                          ),
-                                        ),
-                                        errorWidget:
-                                            (
-                                            context,
-                                            url,
-                                            error,
-                                            ) => Container(
-                                          color: const Color(
-                                            0xFFF8F8F8,
-                                          ),
-                                          height: 14.h,
-                                          child: Icon(
-                                            Icons.image_outlined,
-                                            color: Colors.grey[400],
-                                            size: 6.w,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      bottom: -12,
-                                      right: 4,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          AddCartProductApi(
-                                            product.id.toString(),
-                                          );
-                                          Get.back();
-                                        },
-                                        child: Container(
-                                          width: 11.w,
-                                          height: 11.w,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.circle,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black
-                                                    .withOpacity(0.15),
-                                                blurRadius: 6,
-                                                spreadRadius: 2,
-                                                offset: const Offset(
-                                                  0,
-                                                  2,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Icon(
-                                            Icons.add,
-                                            size: 22.sp,
-                                            color: AppColors.maincolor,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                        child: ListView(
+                          controller: controller,
+                          physics: const BouncingScrollPhysics(),
+                          children: [
+                            Center(
+                              child: Container(
+                                margin: EdgeInsets.only(top: 1.h, bottom: 2.h),
+                                width: 10.w,
+                                height: 0.5.h,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.all(4.w),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Fancy anything else?",
+                                  style: TextStyle(
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: AppConstants.manrope,
+                                    color: const Color(0xFF2E3333),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () => Navigator.pop(context),
+                                  child: Icon(
+                                    Icons.close,
+                                    size: 24.sp,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 2.h),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Your regulars",
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: AppConstants.manrope,
+                                    color: const Color(0xFF2E3333),
+                                  ),
+                                ),
+                                SizedBox(height: 0.5.h),
+                                Text(
+                                  "Forgotten anything from your regular items?",
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    color: Colors.grey[600],
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 2.h),
+                            if (suggestedProducts.isEmpty)
+                              Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 4.h),
+                                  child: Text(
+                                    "No suggested items available",
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      color: Colors.grey[500],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            else
+                              GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: suggestedProducts.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,
+                                      childAspectRatio: 0.48,
+                                      crossAxisSpacing: 3.w,
+                                      mainAxisSpacing: 2.h,
+                                    ),
+                                itemBuilder: (context, index) {
+                                  final product = suggestedProducts[index];
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                        color: const Color(0xFFE5E5E5),
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          product.name ?? "",
-                                          maxLines: 3,
-                                          overflow:
-                                          TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 15.sp,
-                                            fontWeight: FontWeight.w600,
-                                            fontFamily:
-                                            AppConstants
-                                                .manropeBold,
-                                            color: const Color(
-                                              0xFF2E3333,
+                                        Stack(
+                                          clipBehavior: Clip.none,
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                                  const BorderRadius.vertical(
+                                                    top: Radius.circular(12),
+                                                  ),
+                                              child: CachedNetworkImage(
+                                                imageUrl:
+                                                    (product.image != null &&
+                                                            product
+                                                                .image!
+                                                                .isNotEmpty)
+                                                        ? product.image!
+                                                        : (product.images !=
+                                                                null &&
+                                                            product
+                                                                .images!
+                                                                .isNotEmpty)
+                                                        ? product.images!.first
+                                                        : "",
+                                                fit: BoxFit.cover,
+                                                height: 14.h,
+                                                width: double.infinity,
+                                                placeholder:
+                                                    (context, url) => Container(
+                                                      color: const Color(
+                                                        0xFFF8F8F8,
+                                                      ),
+                                                      child: const Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                              color:
+                                                                  AppColors
+                                                                      .maincolor,
+                                                              strokeWidth: 2,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                errorWidget:
+                                                    (
+                                                      context,
+                                                      url,
+                                                      error,
+                                                    ) => Container(
+                                                      color: const Color(
+                                                        0xFFF8F8F8,
+                                                      ),
+                                                      height: 14.h,
+                                                      child: Icon(
+                                                        Icons.image_outlined,
+                                                        color: Colors.grey[400],
+                                                        size: 6.w,
+                                                      ),
+                                                    ),
+                                              ),
                                             ),
-                                          ),
+                                            Positioned(
+                                              bottom: -12,
+                                              right: 4,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  AddCartProductApi(
+                                                    product.id.toString(),
+                                                  );
+                                                  Get.back();
+                                                },
+                                                child: Container(
+                                                  width: 11.w,
+                                                  height: 11.w,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    shape: BoxShape.circle,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.black
+                                                            .withOpacity(0.15),
+                                                        blurRadius: 6,
+                                                        spreadRadius: 2,
+                                                        offset: const Offset(
+                                                          0,
+                                                          2,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.add,
+                                                    size: 22.sp,
+                                                    color: AppColors.maincolor,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        const Spacer(),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 0.w,
-                                          ),
-                                          child:
-                                          (product.offerPrice !=
-                                              null &&
-                                              product.offerPrice !=
-                                                  "0.00" &&
-                                              product.offerPrice !=
-                                                  product.price)
-                                              ? FittedBox(
-                                            fit:
-                                            BoxFit
-                                                .scaleDown,
-                                            alignment:
-                                            Alignment
-                                                .centerLeft,
-                                            child: Row(
+                                        Expanded(
+                                          child: Padding(
+                                            padding: EdgeInsets.all(4.w),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  "£${product.price}",
+                                                  product.name ?? "",
+                                                  maxLines: 3,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   style: TextStyle(
-                                                    fontSize:
-                                                    13.sp,
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .normal,
+                                                    fontSize: 15.sp,
+                                                    fontWeight: FontWeight.w600,
                                                     fontFamily:
-                                                    AppConstants
-                                                        .manrope,
-                                                    color:
-                                                    Colors
-                                                        .grey,
-                                                    decoration:
-                                                    TextDecoration
-                                                        .lineThrough,
-                                                    decorationColor:
-                                                    AppColors
-                                                        .maincolor,
+                                                        AppConstants
+                                                            .manropeBold,
+                                                    color: const Color(
+                                                      0xFF2E3333,
+                                                    ),
                                                   ),
                                                 ),
-                                                const SizedBox(
-                                                  width: 5,
-                                                ),
-                                                Text(
-                                                  "£${product.offerPrice}",
-                                                  style: TextStyle(
-                                                    fontSize:
-                                                    14.sp,
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .bold,
-                                                    fontFamily:
-                                                    AppConstants
-                                                        .manrope,
-                                                    color:
-                                                    Colors
-                                                        .black,
+                                                const Spacer(),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 0.w,
                                                   ),
+                                                  child:
+                                                      (product.offerPrice !=
+                                                                  null &&
+                                                              product.offerPrice !=
+                                                                  "0.00" &&
+                                                              product.offerPrice !=
+                                                                  product.price)
+                                                          ? FittedBox(
+                                                            fit:
+                                                                BoxFit
+                                                                    .scaleDown,
+                                                            alignment:
+                                                                Alignment
+                                                                    .centerLeft,
+                                                            child: Row(
+                                                              children: [
+                                                                Text(
+                                                                  "£${product.price}",
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        13.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                    fontFamily:
+                                                                        AppConstants
+                                                                            .manrope,
+                                                                    color:
+                                                                        Colors
+                                                                            .grey,
+                                                                    decoration:
+                                                                        TextDecoration
+                                                                            .lineThrough,
+                                                                    decorationColor:
+                                                                        AppColors
+                                                                            .maincolor,
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 5,
+                                                                ),
+                                                                Text(
+                                                                  "£${product.offerPrice}",
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        14.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontFamily:
+                                                                        AppConstants
+                                                                            .manrope,
+                                                                    color:
+                                                                        Colors
+                                                                            .black,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          )
+                                                          : Text(
+                                                            "£${product.price ?? ""}",
+                                                            style: TextStyle(
+                                                              fontSize: 14.sp,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manrope,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
                                                 ),
                                               ],
-                                            ),
-                                          )
-                                              : Text(
-                                            "£${product.price ?? ""}",
-                                            style: TextStyle(
-                                              fontSize: 14.sp,
-                                              fontWeight:
-                                              FontWeight
-                                                  .bold,
-                                              fontFamily:
-                                              AppConstants
-                                                  .manrope,
-                                              color:
-                                              Colors.black,
                                             ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    SizedBox(height: 20.h),
-                  ],
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  padding: EdgeInsets.all(4.w),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 10,
-                        offset: Offset(0, -2),
-                      ),
-                    ],
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(20),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      (cartDetailsModel?.data?[0].type == "product" &&
-                          cartDetailsModel
-                              ?.data?[0]
-                              .loyaltyDetails
-                              ?.loyaltyOrderThreshold !=
-                              null &&
-                          cartDetailsModel
-                              ?.data?[0]
-                              .loyaltyDetails
-                              ?.loyaltyDiscountPercentage !=
-                              null)
-                          ? Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 4.w,
-                          vertical: 1.8.h,
-                        ),
-                        margin: EdgeInsets.only(bottom: 2.h),
-                        decoration: BoxDecoration(
-                          color: AppColors.maincolor.withOpacity(
-                            0.1,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                "You're getting closer to an exclusive reward! Complete ${cartDetailsModel?.data?[0].loyaltyDetails?.loyaltyOrderThreshold} more orders to unlock a ${cartDetailsModel?.data?[0].loyaltyDetails?.loyaltyDiscountPercentage?.replaceAll(RegExp(r'\\.0+\$'), '')}% discount on your next purchase.",
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: const Color(0xFF3C1361),
-                                  fontFamily: AppConstants.manrope,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                  );
+                                },
                               ),
-                            ),
-                            Container(
-                              width: 28,
-                              height: 28,
-                              decoration: const BoxDecoration(
-                                color: AppColors.maincolor,
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.card_giftcard,
-                                size: 16,
-                                color: Colors.white,
-                              ),
-                            ),
+                            SizedBox(height: 20.h),
                           ],
                         ),
-                      )
-                          : const SizedBox(),
-                      GestureDetector(
-                        onTap: () {
-                          Get.back();
-                          _navigateToCheckout();
-                        },
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
                         child: Container(
-                          height: 6.h,
-                          decoration: BoxDecoration(
-                            color: AppColors.maincolor,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.shopping_cart_checkout,
-                                color: Colors.white,
-                                size: 20.sp,
+                          padding: EdgeInsets.all(4.w),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 10,
+                                offset: Offset(0, -2),
                               ),
-                              SizedBox(width: 3.w),
-                              Text(
-                                "Checkout",
-                                style: TextStyle(
-                                  fontSize: 18.sp,
-                                  color: Colors.white,
-                                  fontFamily: AppConstants.manrope,
-                                  fontWeight: FontWeight.w600,
+                            ],
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              (cartDetailsModel?.data?[0].type == "product" &&
+                                      cartDetailsModel
+                                              ?.data?[0]
+                                              .loyaltyDetails
+                                              ?.loyaltyOrderThreshold !=
+                                          null &&
+                                      cartDetailsModel
+                                              ?.data?[0]
+                                              .loyaltyDetails
+                                              ?.loyaltyDiscountPercentage !=
+                                          null)
+                                  ? Container(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 4.w,
+                                      vertical: 1.8.h,
+                                    ),
+                                    margin: EdgeInsets.only(bottom: 2.h),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.maincolor.withOpacity(
+                                        0.1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            "You're getting closer to an exclusive reward! Complete ${cartDetailsModel?.data?[0].loyaltyDetails?.loyaltyOrderThreshold} more orders to unlock a ${cartDetailsModel?.data?[0].loyaltyDetails?.loyaltyDiscountPercentage?.replaceAll(RegExp(r'\\.0+\$'), '')}% discount on your next purchase.",
+                                            style: TextStyle(
+                                              fontSize: 14.sp,
+                                              color: const Color(0xFF3C1361),
+                                              fontFamily: AppConstants.manrope,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: 28,
+                                          height: 28,
+                                          decoration: const BoxDecoration(
+                                            color: AppColors.maincolor,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.card_giftcard,
+                                            size: 16,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                  : const SizedBox(),
+                              GestureDetector(
+                                onTap: () {
+                                  Get.back();
+                                  _navigateToCheckout();
+                                },
+                                child: Container(
+                                  height: 6.h,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.maincolor,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.shopping_cart_checkout,
+                                        color: Colors.white,
+                                        size: 20.sp,
+                                      ),
+                                      SizedBox(width: 3.w),
+                                      Text(
+                                        "Checkout",
+                                        style: TextStyle(
+                                          fontSize: 18.sp,
+                                          color: Colors.white,
+                                          fontFamily: AppConstants.manrope,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      SizedBox(width: 2.w),
+                                    ],
+                                  ),
                                 ),
                               ),
-                              SizedBox(width: 2.w),
                             ],
                           ),
                         ),
@@ -2194,11 +2198,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                     ],
                   ),
                 ),
-              ),
-            ],
           ),
-        ),
-      ),
     );
   }
 
@@ -2307,8 +2307,8 @@ class _AddToCartViewState extends State<AddToCartView> {
 
     // loyalty discount (server already provides loyaltyDiscountApplied as a number)
     double loyaltyDiscount =
-    (amendOrderModal?.amendOrderData?.loyaltyDiscountApplied ?? 0)
-        .toDouble();
+        (amendOrderModal?.amendOrderData?.loyaltyDiscountApplied ?? 0)
+            .toDouble();
 
     // computed final total on client
     double calculatedTotal = subtotal - discountAmount - loyaltyDiscount;
@@ -2316,7 +2316,7 @@ class _AddToCartViewState extends State<AddToCartView> {
     // server reported total (fallback)
     double serverTotal =
         double.tryParse(amendOrderModal?.amendOrderData?.totalAmount ?? '') ??
-            calculatedTotal;
+        calculatedTotal;
 
     // Decide which to show: prefer serverTotal if it's within a small tolerance of calculatedTotal,
     // otherwise show calculatedTotal and keep server total as note (helps debug)
@@ -2339,25 +2339,11 @@ class _AddToCartViewState extends State<AddToCartView> {
           ),
         Divider(height: 3.h, thickness: 1),
         _buildSummaryRow("Total", totalToShow, isTotal: true),
-        SizedBox(height: 2.h),
-        if (!preferServer)
-          Padding(
-            padding: EdgeInsets.only(top: 8.0),
-            child: Text(
-              "Note: totals calculated locally. Server total: £${serverTotal.toStringAsFixed(2)}",
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: Colors.grey[600],
-                fontStyle: FontStyle.italic,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        SizedBox(height: 2.h),
+        SizedBox(height: 1.5.h),
         Text(
           "Note: Price differences will be adjusted in the final payment",
           style: TextStyle(
-            fontSize: 12.sp,
+            fontSize: 13.sp,
             color: Colors.grey[600],
             fontStyle: FontStyle.italic,
           ),
@@ -2370,7 +2356,7 @@ class _AddToCartViewState extends State<AddToCartView> {
   List<Widget> _buildAmendOrderItems() {
     return List.generate(
       amendOrderModal?.amendOrderData?.products?.length ?? 0,
-          (index) {
+      (index) {
         final product = amendOrderModal?.amendOrderData?.products?[index];
         if (product == null) return const SizedBox();
 
@@ -2396,7 +2382,7 @@ class _AddToCartViewState extends State<AddToCartView> {
     if (itemDetails == null) return const SizedBox();
 
     bool isExisting = product.id != null; // existing product
-    bool isNewItem = product.id == null;  // new amend item
+    bool isNewItem = product.id == null; // new amend item
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 2.w),
@@ -2420,11 +2406,12 @@ class _AddToCartViewState extends State<AddToCartView> {
                 imageUrl: _getAmendItemImage(itemDetails),
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Center(child: Loader()),
-                errorWidget: (context, url, error) => Icon(
-                  Icons.image_outlined,
-                  color: Colors.grey[400],
-                  size: 8.w,
-                ),
+                errorWidget:
+                    (context, url, error) => Icon(
+                      Icons.image_outlined,
+                      color: Colors.grey[400],
+                      size: 8.w,
+                    ),
               ),
             ),
           ),
@@ -2513,8 +2500,11 @@ class _AddToCartViewState extends State<AddToCartView> {
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.warning_amber_rounded,
-                                  color: Colors.orange, size: 16.sp),
+                              Icon(
+                                Icons.warning_amber_rounded,
+                                color: Colors.orange,
+                                size: 16.sp,
+                              ),
                               SizedBox(width: 1.w),
                               Text(
                                 "Can't edit",
@@ -2552,7 +2542,6 @@ class _AddToCartViewState extends State<AddToCartView> {
     );
   }
 
-
   Widget _buildAmendQuantityControl(Products product) {
     int qty = product.quantity ?? 1;
     int orderProductID = product.id ?? 0;
@@ -2566,10 +2555,16 @@ class _AddToCartViewState extends State<AddToCartView> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Decrement button (-)
           InkWell(
             onTap: () {
               if (qty > 1) {
-                prepaidCartQuantity(orderProductID.toString(), qty - 1);
+                // Decrement by 1
+                prepaidCartQuantity(
+                  orderProductID.toString(),
+                  qty - 1,
+                  'decrement',
+                );
               } else {
                 showCancelConfirmationDialog(
                   context: context,
@@ -2598,10 +2593,16 @@ class _AddToCartViewState extends State<AddToCartView> {
             ),
           ),
           SizedBox(width: 2.w),
+          // Increment button (+)
           InkWell(
             onTap: () {
               if (qty < 10) {
-                prepaidCartQuantity(orderProductID.toString(), qty + 1);
+                // Increment by 1
+                prepaidCartQuantity(
+                  orderProductID.toString(),
+                  qty + 1,
+                  'increment',
+                );
               }
             },
             child: Icon(Icons.add, color: Colors.black, size: 16.sp),
@@ -2610,6 +2611,75 @@ class _AddToCartViewState extends State<AddToCartView> {
       ),
     );
   }
+
+  // Updated prepaidCartQuantity method with operation type
+  prepaidCartQuantity(
+    String orderProductID,
+    int newQty,
+    String operation,
+  ) async {
+    setState(() {
+      isUpdateQuantity = true;
+    });
+
+    // Determine the amendment type based on operation
+    String amendmentType =
+        operation == 'increment' ? "increment_qty" : "decrement_qty";
+
+    List<Map<String, dynamic>> amendments = [
+      {
+        "type": amendmentType,
+        "order_product_id": orderProductID,
+        if (operation == 'increment') "qty_to_add": 1,
+        if (operation != 'increment') "qty_to_subtract": 1,
+      },
+    ];
+
+    final Map<String, dynamic> data = {
+      "user_id": loginModel?.data?.user?.id.toString() ?? "",
+      "order_id": widget.orderID.toString(),
+      "amendments": jsonEncode(amendments),
+    };
+
+    log("Amend Order Data: $data");
+
+    bool internet = await checkInternet();
+    if (!internet) {
+      setState(() => isUpdateQuantity = false);
+      buildErrorDialog(context, 'Error', "Internet Required");
+      return;
+    }
+
+    try {
+      final response = await CartProvider().amendOrderApi(data);
+
+      if (response.statusCode == 200) {
+        setState(() => isUpdateQuantity = false);
+
+        // Update local UI immediately for better UX
+        if (amendOrderModal?.amendOrderData?.products != null) {
+          for (var product in amendOrderModal!.amendOrderData!.products!) {
+            if (product.id.toString() == orderProductID) {
+              product.quantity = newQty;
+              break;
+            }
+          }
+        }
+
+        // Then refresh from server
+        amendOrderApi();
+        log("Quantity updated successfully: ${response.data}");
+      } else {
+        log("Failed to update quantity: ${response.data}");
+        setState(() => isUpdateQuantity = false);
+        buildErrorDialog(context, 'Error', "Failed to update quantity");
+      }
+    } catch (e) {
+      setState(() => isUpdateQuantity = false);
+      buildErrorDialog(context, 'Error', e.toString());
+    }
+  }
+
   void _showEditWarning(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -2622,8 +2692,6 @@ class _AddToCartViewState extends State<AddToCartView> {
       ),
     );
   }
-
-
 
   List<Widget> _buildRegularCartItems() {
     return List.generate(cartDetailsModel!.data!.length, (index) {
@@ -2648,9 +2716,9 @@ class _AddToCartViewState extends State<AddToCartView> {
       children: [
         _buildSummaryRow("Subtotal", getSubtotal()),
         if (cartDetailsModel
-            ?.data?[0]
-            .loyaltyDetails
-            ?.willGetLoyaltyDiscountOnCurrentOrder ??
+                ?.data?[0]
+                .loyaltyDetails
+                ?.willGetLoyaltyDiscountOnCurrentOrder ??
             false)
           _buildSummaryRow(
             "Loyalty Discount (-${getLoyaltyDiscountPercentage().toStringAsFixed(0)}%)",
@@ -2946,55 +3014,55 @@ class _AddToCartViewState extends State<AddToCartView> {
     );
   }
 
-  prepaidCartQuantity(String orderProductID, qty) async {
-    setState(() {
-      isUpdateQuantity = true;
-    });
-
-    // Example amendments list
-    List<Map<String, dynamic>> amendments = [
-      {
-        "type": "increment_qty",
-        "order_product_id": orderProductID,
-        "qty_to_add": qty,
-      },
-    ];
-
-    final Map<String, dynamic> data = {
-      "user_id": loginModel?.data?.user?.id.toString() ?? "",
-      "order_id": widget.orderID.toString(),
-      "amendments": jsonEncode(amendments),
-    };
-    log("data chat gpt $data");
-    bool internet = await checkInternet();
-    if (!internet) {
-      setState(() => isUpdateQuantity = false);
-      buildErrorDialog(context, 'Error', "Internet Required");
-      return;
-    }
-
-    try {
-      final response = await CartProvider().amendOrderApi(data);
-
-      if (response.statusCode == 200) {
-        setState(() => isUpdateQuantity = false);
-        amendOrderApi();
-        log("sdadsad${response.data}");
-      } else {
-        log("sdadsad${response.data}");
-
-        setState(() => isUpdateQuantity = false);
-      }
-    } catch (e) {
-      setState(() => isUpdateQuantity = false);
-      buildErrorDialog(context, 'Error', e.toString());
-    }
-  }
+  // prepaidCartQuantity(String orderProductID, qty) async {
+  //   setState(() {
+  //     isUpdateQuantity = true;
+  //   });
+  //
+  //   // Example amendments list
+  //   List<Map<String, dynamic>> amendments = [
+  //     {
+  //       "type": "increment_qty",
+  //       "order_product_id": orderProductID,
+  //       "qty_to_add": qty,
+  //     },
+  //   ];
+  //
+  //   final Map<String, dynamic> data = {
+  //     "user_id": loginModel?.data?.user?.id.toString() ?? "",
+  //     "order_id": widget.orderID.toString(),
+  //     "amendments": jsonEncode(amendments),
+  //   };
+  //   log("data chat gpt $data");
+  //   bool internet = await checkInternet();
+  //   if (!internet) {
+  //     setState(() => isUpdateQuantity = false);
+  //     buildErrorDialog(context, 'Error', "Internet Required");
+  //     return;
+  //   }
+  //
+  //   try {
+  //     final response = await CartProvider().amendOrderApi(data);
+  //
+  //     if (response.statusCode == 200) {
+  //       setState(() => isUpdateQuantity = false);
+  //       amendOrderApi();
+  //       log("sdadsad${response.data}");
+  //     } else {
+  //       log("sdadsad${response.data}");
+  //
+  //       setState(() => isUpdateQuantity = false);
+  //     }
+  //   } catch (e) {
+  //     setState(() => isUpdateQuantity = false);
+  //     buildErrorDialog(context, 'Error', e.toString());
+  //   }
+  // }
 
   // 2) Updated prepaidAddProduct(...) - awaits server refresh before clearing UI state
   Future<void> prepaidAddProduct(
-      List<Map<String, dynamic>> selectedItems,
-      ) async {
+    List<Map<String, dynamic>> selectedItems,
+  ) async {
     if (selectedItems.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("No items selected to add.")),
@@ -3008,13 +3076,13 @@ class _AddToCartViewState extends State<AddToCartView> {
 
     // Build amendments array dynamically
     List<Map<String, dynamic>> amendments =
-    selectedItems.map((item) {
-      return {
-        "type": "add_item",
-        "product_id": item["product_id"]?.toString() ?? "",
-        "qty": item["qty"] ?? 1,
-      };
-    }).toList();
+        selectedItems.map((item) {
+          return {
+            "type": "add_item",
+            "product_id": item["product_id"]?.toString() ?? "",
+            "qty": item["qty"] ?? 1,
+          };
+        }).toList();
 
     final Map<String, dynamic> data = {
       "user_id": loginModel?.data?.user?.id.toString() ?? "",
@@ -3130,7 +3198,9 @@ class _AddToCartViewState extends State<AddToCartView> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => StripeWebView(title: 'Pay Online', link: url,isAmend: true,),
+        builder:
+            (context) =>
+                StripeWebView(title: 'Pay Online', link: url, isAmend: true),
       ),
     );
   }

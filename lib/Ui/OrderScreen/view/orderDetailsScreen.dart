@@ -51,8 +51,8 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
     });
     OrderDetailAPI();
     OrderDetailAPI1();
-    log( widget.orderid.toString());
-    log( widget.orderProductID.toString());
+    log(widget.orderid.toString());
+    log(widget.orderProductID.toString());
   }
 
   @override
@@ -637,29 +637,57 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                   ),
 
                               SizedBox(height: 1.h),
-                              if (orderDetailModel?.data?.products?.product?.images != null &&
-                                  orderDetailModel!.data!.products!.product!.images!.isNotEmpty)
+                              if (orderDetailModel
+                                          ?.data
+                                          ?.products
+                                          ?.product
+                                          ?.images !=
+                                      null &&
+                                  orderDetailModel!
+                                      .data!
+                                      .products!
+                                      .product!
+                                      .images!
+                                      .isNotEmpty)
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: orderDetailModel!.data!.products!.product!.images!
-                                      .asMap()
-                                      .entries
-                                      .map((entry) {
-                                    return GestureDetector(
-                                      onTap: () => _controller.animateToPage(entry.key),
-                                      child: Container(
-                                        width: _currentIndex == entry.key ? 10 : 8,
-                                        height: _currentIndex == entry.key ? 10 : 8,
-                                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: _currentIndex == entry.key
-                                              ? AppColors.maincolor
-                                              : Colors.grey,
-                                        ),
-                                      ),
-                                    );
-                                  }).toList(),
+                                  children:
+                                      orderDetailModel!
+                                          .data!
+                                          .products!
+                                          .product!
+                                          .images!
+                                          .asMap()
+                                          .entries
+                                          .map((entry) {
+                                            return GestureDetector(
+                                              onTap:
+                                                  () => _controller
+                                                      .animateToPage(entry.key),
+                                              child: Container(
+                                                width:
+                                                    _currentIndex == entry.key
+                                                        ? 10
+                                                        : 8,
+                                                height:
+                                                    _currentIndex == entry.key
+                                                        ? 10
+                                                        : 8,
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 4,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color:
+                                                      _currentIndex == entry.key
+                                                          ? AppColors.maincolor
+                                                          : Colors.grey,
+                                                ),
+                                              ),
+                                            );
+                                          })
+                                          .toList(),
                                 )
                               else
                                 const SizedBox.shrink(), // Or show a placeholder
