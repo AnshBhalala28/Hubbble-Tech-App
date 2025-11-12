@@ -3,6 +3,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:wavee/Ui/CartScreen/model/amendOrderModal.dart'
     show AmendOrderModal;
+import 'package:wavee/Ui/CartScreen/model/removeAmendModal.dart';
 
 import '../Ui/Authentication/modal/DeleteAccountModel.dart';
 import '../Ui/Authentication/modal/forgotPasswordModel.dart';
@@ -241,3 +242,4 @@ EventDetailModal? eventDetailModal;
 StatusModal? statusModal;
 AmendOrderModal? amendOrderModal;
 AmendPaymentModal? amendPaymentModal;
+RemoveAmendModal? removeAmend;

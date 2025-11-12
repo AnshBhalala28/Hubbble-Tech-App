@@ -9,6 +9,7 @@ import 'package:wavee/Ui/CartScreen/model/amendOrderModal.dart';
 import 'package:wavee/Ui/CartScreen/model/amendPaymentModal.dart';
 import 'package:wavee/Ui/CartScreen/model/cartDetailsModal.dart'
     hide ItemDetails;
+import 'package:wavee/Utils/customSnackBars.dart';
 import 'package:wavee/Utils/stripeWebView.dart';
 
 import '../../../Utils/bottomBar.dart';
@@ -2437,26 +2438,29 @@ class _AddToCartViewState extends State<AddToCartView> {
                     ),
 
                     // 🗑 Delete Icon
-                    GestureDetector(
-                      onTap: () {
-                        showCancelConfirmationDialog(
-                          context: context,
-                          onConfirm: CancleOrder,
-                        );
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(1.w),
-                        decoration: const BoxDecoration(
-                          color: Color(0xFFF5F5F5),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.delete,
-                          color: Colors.black,
-                          size: 18.sp,
+                    if (isNewItem)
+                      GestureDetector(
+                        onTap: () {
+                          showCancelConfirmationDialog(
+                            context: context,
+                            onConfirm: () {
+                              CancleOrder(product.amendMeta?.amendCartId);
+                            },
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(1.w),
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFF5F5F5),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.black,
+                            size: 18.sp,
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
 
@@ -2485,7 +2489,8 @@ class _AddToCartViewState extends State<AddToCartView> {
                     const Spacer(),
 
                     // 👉 If product has valid id → show editable quantity control
-                    if (isExisting) _buildAmendQuantityControl(product),
+                    if (isExisting)
+                      _buildAmendQuantityControl(product, isNewItem),
 
                     // 👉 If id is null → show warning icon instead of quantity control
                     if (isNewItem)
@@ -2542,7 +2547,7 @@ class _AddToCartViewState extends State<AddToCartView> {
     );
   }
 
-  Widget _buildAmendQuantityControl(Products product) {
+  Widget _buildAmendQuantityControl(Products product, bool isNewItem) {
     int qty = product.quantity ?? 1;
     int orderProductID = product.id ?? 0;
 
@@ -2566,9 +2571,10 @@ class _AddToCartViewState extends State<AddToCartView> {
                   'decrement',
                 );
               } else {
-                showCancelConfirmationDialog(
-                  context: context,
-                  onConfirm: CancleOrder,
+                showSnackBar(
+                  title: 'Sorry !!',
+                  message: 'The minimum quantity allowed is 1.',
+                  backgoundColor: Colors.red,
                 );
               }
             },
@@ -2853,7 +2859,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  "Do you really want to cancel this order?\nThis action cannot be undone.",
+                  "Do you really want to remove this order?\nThis action cannot be undone.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15.sp,
@@ -2888,7 +2894,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                         elevation: 1,
                         borderRadius: BorderRadius.circular(12.0),
                         child: batan(
-                          title: "Yes, Cancel",
+                          title: "Yes, Remove",
                           route: () {
                             onConfirm();
                             Get.back();
@@ -2913,13 +2919,14 @@ class _AddToCartViewState extends State<AddToCartView> {
     );
   }
 
-  CancleOrder() async {
+  CancleOrder(id) async {
     setState(() {
       isUpdateQuantity = true;
     });
     Map<String, String> data = {
       "user_id": loginModel?.data?.user?.id.toString() ?? "",
       "order_id": widget.orderID.toString(),
+      "amend_cart_id": id.toString(),
     };
 
     checkInternet().then((internet) async {
@@ -2931,7 +2938,7 @@ class _AddToCartViewState extends State<AddToCartView> {
             setState(() {
               isUpdateQuantity = false;
             });
-            confirmShowDialog(context: context);
+            amendOrderApi();
           } else {
             setState(() {
               isUpdateQuantity = false;

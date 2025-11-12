@@ -113,6 +113,7 @@ class Products {
   var updatedAt;
   ItemDetails? itemDetails;
   Business? business;
+  AmendMeta? amendMeta;
 
   Products({
     this.id,
@@ -127,6 +128,7 @@ class Products {
     this.updatedAt,
     this.itemDetails,
     this.business,
+    this.amendMeta,
   });
 
   Products.fromJson(Map<String, dynamic> json) {
@@ -148,6 +150,10 @@ class Products {
         json['business'] != null
             ? new Business.fromJson(json['business'])
             : null;
+    amendMeta =
+        json['amend_meta'] != null
+            ? new AmendMeta.fromJson(json['amend_meta'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -167,6 +173,9 @@ class Products {
     }
     if (this.business != null) {
       data['business'] = this.business!.toJson();
+    }
+    if (this.amendMeta != null) {
+      data['amend_meta'] = this.amendMeta!.toJson();
     }
     return data;
   }
@@ -305,6 +314,36 @@ class Business {
     data['id'] = this.id;
     data['business_name'] = this.businessName;
     data['profile'] = this.profile;
+    return data;
+  }
+}
+
+class AmendMeta {
+  String? source;
+  String? actionType;
+  int? amendCartId;
+  String? displayLabel;
+
+  AmendMeta({
+    this.source,
+    this.actionType,
+    this.amendCartId,
+    this.displayLabel,
+  });
+
+  AmendMeta.fromJson(Map<String, dynamic> json) {
+    source = json['source'];
+    actionType = json['action_type'];
+    amendCartId = json['amend_cart_id'];
+    displayLabel = json['display_label'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['source'] = this.source;
+    data['action_type'] = this.actionType;
+    data['amend_cart_id'] = this.amendCartId;
+    data['display_label'] = this.displayLabel;
     return data;
   }
 }
