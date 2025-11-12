@@ -1747,6 +1747,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                       isAmend: true,
                       businessID:
                           orderDetailModel?.data?.business?.id.toString() ?? "",
+                      orderID: orderDetailModel?.data?.order?.id.toString()??"",
                     ),
                   );
                 }

@@ -91,4 +91,6 @@ class ApiEndpoint {
   static String conciergeProfile = "${baseUrl}concierge-friends-profile/";
   static String sendOrderChat = "${baseUrl}sendOrderChat";
   static String amendOrderDetail = "${baseUrl}getOrderDetails";
+  static String prepareAmendOrder = "${baseUrl}prepareAmendOrder";
+  static String amendOrder = "${baseUrl}amendOrder";
 }

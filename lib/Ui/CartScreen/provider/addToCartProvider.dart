@@ -46,6 +46,39 @@ class CartProvider extends ChangeNotifier {
       throw Exception(handleDioError(e));
     }
   }
+  Future<Response> amendOrderApi(Map<String, dynamic> bodyData) async {
+    try {
+      String? token = await SaveDataLocal.getToken();
+
+      final dio = await DioHelper.getDio();
+      final response = await dio.post(
+        ApiEndpoint.prepareAmendOrder,
+        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        data: bodyData, // JSON encode auto thase
+      );
+
+      return response;
+    } on DioException catch (e) {
+      throw Exception(handleDioError(e));
+    }
+  }
+  Future<Response> amendPaymentApi(Map<String, dynamic> bodyData) async {
+    try {
+      String? token = await SaveDataLocal.getToken();
+
+      final dio = await DioHelper.getDio();
+      final response = await dio.post(
+        ApiEndpoint.amendOrder,
+        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        data: bodyData, // JSON encode auto thase
+      );
+
+      return response;
+    } on DioException catch (e) {
+      throw Exception(handleDioError(e));
+    }
+  }
+
 
   Future<Response> updateCartQuantityApi(Map<String, String> bodyData) async {
     try {
@@ -67,12 +100,12 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  Future<Response> removeCartApi(Map<String, String> bodyData) async {
+  Future<Response> removeCartApi(Map<String, dynamic> bodyData) async {
     try {
       final dio = await DioHelper.getDio();
       String? token = await SaveDataLocal.getToken();
       if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': token};
+        Map<String, String> headers = {'X-Auth-Token': token,};
       }
 
       final response = await dio.post(
