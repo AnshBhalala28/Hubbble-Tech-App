@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/Ui/CartScreen/model/amendOrderModal.dart';
+import 'package:wavee/Ui/CartScreen/model/amendPaymentModal.dart';
 import 'package:wavee/Ui/CartScreen/model/cartDetailsModal.dart'
     hide ItemDetails;
+import 'package:wavee/Utils/stripeWebView.dart';
 
 import '../../../Utils/bottomBar.dart';
 import '../../../Utils/chatCounter.dart';
@@ -1015,19 +1017,7 @@ class _AddToCartViewState extends State<AddToCartView> {
   }
 
   void _navigateToAmendCheckout() {
-    Get.to(
-      BuyProductView(
-        bunessid:
-        amendOrderModal
-            ?.amendOrderData
-            ?.products
-            ?.first
-            .itemDetails
-            ?.businessId
-            .toString(),
-        type: "product",
-      ),
-    );
+    CheckOutAPI();
   }
 
   Widget _buildEmptyBasketView() {
@@ -2405,6 +2395,9 @@ class _AddToCartViewState extends State<AddToCartView> {
     final itemDetails = product.itemDetails;
     if (itemDetails == null) return const SizedBox();
 
+    bool isExisting = product.id != null; // existing product
+    bool isNewItem = product.id == null;  // new amend item
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 2.w),
       padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
@@ -2416,6 +2409,7 @@ class _AddToCartViewState extends State<AddToCartView> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // 🖼 Product Image
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Container(
@@ -2426,8 +2420,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                 imageUrl: _getAmendItemImage(itemDetails),
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Center(child: Loader()),
-                errorWidget:
-                    (context, url, error) => Icon(
+                errorWidget: (context, url, error) => Icon(
                   Icons.image_outlined,
                   color: Colors.grey[400],
                   size: 8.w,
@@ -2436,6 +2429,8 @@ class _AddToCartViewState extends State<AddToCartView> {
             ),
           ),
           SizedBox(width: 3.w),
+
+          // 🧾 Product Info
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -2453,6 +2448,8 @@ class _AddToCartViewState extends State<AddToCartView> {
                         ),
                       ),
                     ),
+
+                    // 🗑 Delete Icon
                     GestureDetector(
                       onTap: () {
                         showCancelConfirmationDialog(
@@ -2475,6 +2472,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                     ),
                   ],
                 ),
+
                 SizedBox(height: 1.h),
                 Text(
                   "Original Price: £${product.price ?? '0'}",
@@ -2485,6 +2483,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                   ),
                 ),
                 SizedBox(height: 0.5.h),
+
                 Row(
                   children: [
                     Text(
@@ -2497,9 +2496,41 @@ class _AddToCartViewState extends State<AddToCartView> {
                       ),
                     ),
                     const Spacer(),
-                    _buildAmendQuantityControl(product),
+
+                    // 👉 If product has valid id → show editable quantity control
+                    if (isExisting) _buildAmendQuantityControl(product),
+
+                    // 👉 If id is null → show warning icon instead of quantity control
+                    if (isNewItem)
+                      GestureDetector(
+                        onTap: () => _showEditWarning(context),
+                        child: Container(
+                          padding: EdgeInsets.all(1.w),
+                          decoration: BoxDecoration(
+                            color: Colors.orange.shade50,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.orange),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.warning_amber_rounded,
+                                  color: Colors.orange, size: 16.sp),
+                              SizedBox(width: 1.w),
+                              Text(
+                                "Can't edit",
+                                style: TextStyle(
+                                  color: Colors.orange,
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                   ],
                 ),
+
                 if (product.totalPrice != null)
                   Padding(
                     padding: EdgeInsets.only(top: 0.5.h),
@@ -2521,9 +2552,11 @@ class _AddToCartViewState extends State<AddToCartView> {
     );
   }
 
+
   Widget _buildAmendQuantityControl(Products product) {
     int qty = product.quantity ?? 1;
-    int orderProductID = product.id ?? 1;
+    int orderProductID = product.id ?? 0;
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
       decoration: BoxDecoration(
@@ -2536,10 +2569,7 @@ class _AddToCartViewState extends State<AddToCartView> {
           InkWell(
             onTap: () {
               if (qty > 1) {
-                // _updateAmendQuantity(product, qty - 1);
-                log("QTY MINUS $qty");
-
-                prepaidCartQuantity(orderProductID.toString(), qty);
+                prepaidCartQuantity(orderProductID.toString(), qty - 1);
               } else {
                 showCancelConfirmationDialog(
                   context: context,
@@ -2571,8 +2601,7 @@ class _AddToCartViewState extends State<AddToCartView> {
           InkWell(
             onTap: () {
               if (qty < 10) {
-                log("QTY PLUS $qty");
-                prepaidCartQuantity(orderProductID.toString(), qty);
+                prepaidCartQuantity(orderProductID.toString(), qty + 1);
               }
             },
             child: Icon(Icons.add, color: Colors.black, size: 16.sp),
@@ -2581,6 +2610,20 @@ class _AddToCartViewState extends State<AddToCartView> {
       ),
     );
   }
+  void _showEditWarning(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text(
+          "You can't edit this product because it's newly added.",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.orangeAccent,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+
 
   List<Widget> _buildRegularCartItems() {
     return List.generate(cartDetailsModel!.data!.length, (index) {
@@ -2948,6 +2991,7 @@ class _AddToCartViewState extends State<AddToCartView> {
     }
   }
 
+  // 2) Updated prepaidAddProduct(...) - awaits server refresh before clearing UI state
   Future<void> prepaidAddProduct(
       List<Map<String, dynamic>> selectedItems,
       ) async {
@@ -3041,5 +3085,53 @@ class _AddToCartViewState extends State<AddToCartView> {
       buildErrorDialog(context, 'Error', e.toString());
       log("Exception in prepaidAddProduct: $e");
     }
+  }
+
+  bool isCheckout = false;
+
+  CheckOutAPI() {
+    setState(() {
+      isCheckout = true;
+    });
+    final Map<String, String> data = {
+      "user_id": loginModel?.data?.user?.id.toString() ?? "",
+      "order_id": widget.orderID ?? "",
+    };
+
+    checkInternet().then((internet) async {
+      if (internet) {
+        CartProvider().amendPaymentApi(data).then((response) async {
+          amendPaymentModal = AmendPaymentModal.fromJson(response.data);
+
+          if (response.statusCode == 200) {
+            setState(() {
+              isCheckout = false;
+            });
+
+            _openPaymentPage(
+              amendPaymentModal?.data?.paymentUrl.toString() ?? "",
+            );
+          } else {
+            setState(() {
+              isCheckout = false;
+            });
+          }
+        });
+      } else {
+        setState(() {
+          isCheckout = false;
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  _openPaymentPage(String url) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => StripeWebView(title: 'Pay Online', link: url,isAmend: true,),
+      ),
+    );
   }
 }
