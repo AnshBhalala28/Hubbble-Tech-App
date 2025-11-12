@@ -149,7 +149,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           color: AppColors.black,
                           fontSize: 19.sp,
                           fontWeight: FontWeight.bold,
-                          fontFamily: AppConstants.manrope,
+                          fontFamily: AppConstants.manropeBold,
                         ),
                       ),
                     ),
