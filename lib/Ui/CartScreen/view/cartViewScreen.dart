@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/Ui/CartScreen/model/amendOrderModal.dart';
+import 'package:wavee/Ui/CartScreen/model/amendPaymentModal.dart';
 import 'package:wavee/Ui/CartScreen/model/cartDetailsModal.dart'
     hide ItemDetails;
+import 'package:wavee/Utils/stripeWebView.dart';
 
 import '../../../Utils/bottomBar.dart';
 import '../../../Utils/chatCounter.dart';
@@ -1015,19 +1017,7 @@ class _AddToCartViewState extends State<AddToCartView> {
   }
 
   void _navigateToAmendCheckout() {
-    Get.to(
-      BuyProductView(
-        bunessid:
-            amendOrderModal
-                ?.amendOrderData
-                ?.products
-                ?.first
-                .itemDetails
-                ?.businessId
-                .toString(),
-        type: "product",
-      ),
-    );
+    CheckOutAPI();
   }
 
   Widget _buildEmptyBasketView() {
@@ -3042,5 +3032,53 @@ class _AddToCartViewState extends State<AddToCartView> {
       buildErrorDialog(context, 'Error', e.toString());
       log("Exception in prepaidAddProduct: $e");
     }
+  }
+
+  bool isCheckout = false;
+
+  CheckOutAPI() {
+    setState(() {
+      isCheckout = true;
+    });
+    final Map<String, String> data = {
+      "user_id": loginModel?.data?.user?.id.toString() ?? "",
+      "order_id": widget.orderID ?? "",
+    };
+
+    checkInternet().then((internet) async {
+      if (internet) {
+        CartProvider().amendPaymentApi(data).then((response) async {
+          amendPaymentModal = AmendPaymentModal.fromJson(response.data);
+
+          if (response.statusCode == 200) {
+            setState(() {
+              isCheckout = false;
+            });
+
+            _openPaymentPage(
+              amendPaymentModal?.data?.paymentUrl.toString() ?? "",
+            );
+          } else {
+            setState(() {
+              isCheckout = false;
+            });
+          }
+        });
+      } else {
+        setState(() {
+          isCheckout = false;
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  _openPaymentPage(String url) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => StripeWebView(title: 'Pay Online', link: url,isAmend: true,),
+      ),
+    );
   }
 }

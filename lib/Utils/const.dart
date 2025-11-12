@@ -240,4 +240,4 @@ ChatStoryModal? chatStories;
 EventDetailModal? eventDetailModal;
 StatusModal? statusModal;
 AmendOrderModal? amendOrderModal;
-AmendPaymentModal? amendPaymentModal;
+  AmendPaymentModal? amendPaymentModal;

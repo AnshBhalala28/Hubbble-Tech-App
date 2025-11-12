@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Ui/CartScreen/model/amendPaymentModal.dart';
+import 'package:wavee/Ui/CartScreen/provider/addToCartProvider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
@@ -16,8 +18,14 @@ import 'errorDialog.dart';
 class StripeWebView extends StatefulWidget {
   final String? title;
   final String? link;
+  final bool isAmend;
 
-  const StripeWebView({super.key, required this.title, required this.link});
+  const StripeWebView({
+    super.key,
+    required this.title,
+    required this.link,
+    this.isAmend = false,
+  });
 
   @override
   State<StripeWebView> createState() => _StripeWebViewState();
@@ -55,7 +63,7 @@ class _StripeWebViewState extends State<StripeWebView> {
                 if (url.contains("payment-successful")) {
                   await Future.delayed(const Duration(seconds: 2));
                   if (mounted) {
-                    CheckOutAPI();
+                    widget.isAmend ? AmendOrder() : CheckOutAPI();
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -137,6 +145,43 @@ class _StripeWebViewState extends State<StripeWebView> {
       if (internet) {
         CheckoutProvider().productCheckoutApi(data).then((response) async {
           placeOrderModel = PlaceOrderModel.fromJson(response.data);
+
+          if (response.statusCode == 200) {
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
+          } else {
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
+          }
+        });
+      } else {
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+          });
+        }
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
+  void AmendOrder() {
+    final Map<String, String> data = {
+      "user_id": loginModel?.data?.user?.id.toString() ?? "",
+      "session_id": amendPaymentModal?.data?.sessionId.toString() ?? "",
+      "is_finalizing": "1",
+    };
+    log("adadasdadasdadadasdadadsasd  $data");
+    checkInternet().then((internet) async {
+      if (internet) {
+        CartProvider().amendPaymentApi(data).then((response) async {
+          amendPaymentModal = AmendPaymentModal.fromJson(response.data);
 
           if (response.statusCode == 200) {
             if (mounted) {
