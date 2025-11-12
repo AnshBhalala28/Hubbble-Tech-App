@@ -5545,11 +5545,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     child: CircularProgressIndicator(),
                                   ),
                               errorWidget:
-                                  (context, url, error) => const Icon(
-                                    Icons.broken_image,
-                                    size: 40,
-                                    color: Colors.grey,
-                                  ),
+                                  (context, url, error) => Image(image: AssetImage("assets/images/Applogo_remove_background.png"))
                             ),
                   ),
                 ),

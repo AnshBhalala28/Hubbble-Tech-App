@@ -633,47 +633,33 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                   ),
 
                               SizedBox(height: 1.h),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children:
-                                    orderDetailModel!
-                                        .data!
-                                        .products!
-                                        .product!
-                                        .images!
-                                        .asMap()
-                                        .entries
-                                        .map((entry) {
-                                          return GestureDetector(
-                                            onTap:
-                                                () => _controller.animateToPage(
-                                                  entry.key,
-                                                ),
-                                            child: Container(
-                                              width:
-                                                  _currentIndex == entry.key
-                                                      ? 10
-                                                      : 8,
-                                              height:
-                                                  _currentIndex == entry.key
-                                                      ? 10
-                                                      : 8,
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 4,
-                                                  ),
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color:
-                                                    _currentIndex == entry.key
-                                                        ? AppColors.maincolor
-                                                        : Colors.grey,
-                                              ),
-                                            ),
-                                          );
-                                        })
-                                        .toList(),
-                              ),
+                              if (orderDetailModel?.data?.products?.product?.images != null &&
+                                  orderDetailModel!.data!.products!.product!.images!.isNotEmpty)
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: orderDetailModel!.data!.products!.product!.images!
+                                      .asMap()
+                                      .entries
+                                      .map((entry) {
+                                    return GestureDetector(
+                                      onTap: () => _controller.animateToPage(entry.key),
+                                      child: Container(
+                                        width: _currentIndex == entry.key ? 10 : 8,
+                                        height: _currentIndex == entry.key ? 10 : 8,
+                                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: _currentIndex == entry.key
+                                              ? AppColors.maincolor
+                                              : Colors.grey,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                )
+                              else
+                                const SizedBox.shrink(), // Or show a placeholder
+
                               SizedBox(height: 1.h),
                               SizedBox(height: 1.h),
                               Column(
@@ -1133,7 +1119,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
-                    fontFamily: AppConstants.manrope,
+                    fontFamily: AppConstants.manropeBold,
                   ),
                 ),
                 const SizedBox(height: 10),
