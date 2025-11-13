@@ -1249,7 +1249,7 @@ class _AddToCartViewState extends State<AddToCartView> {
           Text(
             "${item.quantity ?? 1}",
             style: TextStyle(
-              fontSize: 17.sp,
+              fontSize: 16.sp,
               color: Colors.black,
               fontFamily: AppConstants.manrope,
               fontWeight: FontWeight.bold,
@@ -1258,14 +1258,37 @@ class _AddToCartViewState extends State<AddToCartView> {
           SizedBox(width: 2.w),
           InkWell(
             onTap: () {
-              if ((item.quantity ?? 1) < 10) {
+              log('item.maxQuantity : ${item.maxQuantity}');
+
+              final int currentQty = item.quantity ?? 1;
+              final dynamic maxQ = item.maxQuantity;
+
+              bool canIncrease = false;
+
+              // Check unlimited
+              if (maxQ == "unlimited") {
+                canIncrease = true;
+              } else {
+                // Convert to number safely
+                final int maxQty = int.tryParse(maxQ.toString()) ?? 0;
+                canIncrease = currentQty < maxQty;
+              }
+
+              if (canIncrease) {
                 setState(() {
-                  item.quantity = (item.quantity ?? 1) + 1;
+                  item.quantity = currentQty + 1;
                 });
+
                 updateQuantityApi(
                   item.productId ?? 0,
                   item.quantity ?? 1,
                   item.type ?? "",
+                );
+              } else {
+                showSnackBar(
+                  title: 'Stock Unavailable',
+                  message: 'Requested quantity exceeds available stock.',
+                  backgoundColor: Colors.red,
                 );
               }
             },

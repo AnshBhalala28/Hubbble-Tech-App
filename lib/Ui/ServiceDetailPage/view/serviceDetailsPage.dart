@@ -489,93 +489,110 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                     ),
                   ),
 
-              Material(
-                elevation: 1,
-                borderRadius: BorderRadius.circular(12),
-                child: batan(
-                  title: "Add to Cart",
-                  route: () {
-                    int? serviceStatus =
-                        busnessviewmodal?.data?.business?.serviceStatus;
+              isLoading
+                  ? Container(height: 1)
+                  : Material(
+                    elevation: 1,
+                    borderRadius: BorderRadius.circular(12),
+                    child: batan(
+                      title: "Add to Cart",
+                      route: () {
+                        int? serviceStatus =
+                            busnessviewmodal?.data?.business?.serviceStatus;
 
-                    if (serviceStatus == 0) {
-                      showOnlineOrderDisabledDialog(
-                        context: context,
-                        businessName:
-                            busnessviewmodal?.data?.business?.businessName ??
-                            "",
-                        isProduct: false,
-                      );
-                      return;
-                    }
+                        if (serviceStatus == 0) {
+                          showOnlineOrderDisabledDialog(
+                            context: context,
+                            businessName:
+                                busnessviewmodal
+                                    ?.data
+                                    ?.business
+                                    ?.businessName ??
+                                "",
+                            isProduct: false,
+                          );
+                          return;
+                        }
 
-                    if (cartDetailsModel?.data != null &&
-                        cartDetailsModel!.data!.isNotEmpty) {
-                      if (cartDetailsModel!.data![0].type == "product") {
-                        ShowAddCart(
-                          context: context,
-                          businessName:
-                              busnessviewmodal?.data?.business?.businessName ??
-                              "",
-                          isProduct: true,
-                          onContinue: () async {
-                            for (
-                              int i = 0;
-                              i < cartDetailsModel!.data!.length;
-                              i++
-                            ) {
-                              final itemId =
-                                  cartDetailsModel!.data![i].itemDetails?.id;
-                              if (itemId != null) {
-                                await RemoveFromCartApi(itemId, "product");
-                              }
-                            }
+                        if (cartDetailsModel?.data != null &&
+                            cartDetailsModel!.data!.isNotEmpty) {
+                          if (cartDetailsModel!.data![0].type == "product") {
+                            ShowAddCart(
+                              context: context,
+                              businessName:
+                                  busnessviewmodal
+                                      ?.data
+                                      ?.business
+                                      ?.businessName ??
+                                  "",
+                              isProduct: true,
+                              onContinue: () async {
+                                for (
+                                  int i = 0;
+                                  i < cartDetailsModel!.data!.length;
+                                  i++
+                                ) {
+                                  final itemId =
+                                      cartDetailsModel!
+                                          .data![i]
+                                          .itemDetails
+                                          ?.id;
+                                  if (itemId != null) {
+                                    await RemoveFromCartApi(itemId, "product");
+                                  }
+                                }
+                                AddCartServiceApi();
+                              },
+                            );
+                          } else if (cartDetailsModel!
+                                  .data![0]
+                                  .itemDetails
+                                  ?.businessId ==
+                              servicedetailsmodel?.data?.businessId) {
                             AddCartServiceApi();
-                          },
-                        );
-                      } else if (cartDetailsModel!
-                              .data![0]
-                              .itemDetails
-                              ?.businessId ==
-                          servicedetailsmodel?.data?.businessId) {
-                        AddCartServiceApi();
-                      } else {
-                        ShowAddCart(
-                          context: context,
-                          businessName:
-                              busnessviewmodal?.data?.business?.businessName ??
-                              "",
-                          isProduct: true,
-                          onContinue: () async {
-                            for (
-                              int i = 0;
-                              i < cartDetailsModel!.data!.length;
-                              i++
-                            ) {
-                              final itemId =
-                                  cartDetailsModel!.data![i].itemDetails?.id;
-                              if (itemId != null) {
-                                await RemoveFromCartApi(itemId, "product");
-                              }
-                            }
-                            AddCartServiceApi();
-                          },
-                        );
-                      }
-                    } else {
-                      AddCartServiceApi();
-                    }
-                  },
-                  color: AppColors.white,
-                  fontcolor: AppColors.maincolor,
-                  height: 5.h,
-                  fontsize: 15.sp,
-                  iconData: Icons.add_shopping_cart_outlined,
-                  radius: 12.0,
-                  width: 50.w,
-                  fontFamily: AppConstants.manropeBold,
-                ),
-              ).paddingOnly(left: 25.w),
+                          } else {
+                            ShowAddCart(
+                              context: context,
+                              businessName:
+                                  busnessviewmodal
+                                      ?.data
+                                      ?.business
+                                      ?.businessName ??
+                                  "",
+                              isProduct: true,
+                              onContinue: () async {
+                                for (
+                                  int i = 0;
+                                  i < cartDetailsModel!.data!.length;
+                                  i++
+                                ) {
+                                  final itemId =
+                                      cartDetailsModel!
+                                          .data![i]
+                                          .itemDetails
+                                          ?.id;
+                                  if (itemId != null) {
+                                    await RemoveFromCartApi(itemId, "product");
+                                  }
+                                }
+                                AddCartServiceApi();
+                              },
+                            );
+                          }
+                        } else {
+                          AddCartServiceApi();
+                        }
+                      },
+                      color: AppColors.white,
+                      fontcolor: AppColors.maincolor,
+                      height: 5.h,
+                      fontsize: 15.sp,
+                      iconData: Icons.add_shopping_cart_outlined,
+                      radius: 12.0,
+                      width: 50.w,
+                      fontFamily: AppConstants.manropeBold,
+                    ),
+                  ).paddingOnly(left: 25.w),
             ],
           ).paddingOnly(left: 2.w, right: 2.w),
           if (isAddReviewLoading)

@@ -17,7 +17,7 @@ import '../modal/postlikemodel.dart';
 class FullScreenMediaView extends StatefulWidget {
   final List<dynamic> posts;
   final int postId;
-  final int initialIndex; // 👈 new parameter
+  final int initialIndex;
 
   const FullScreenMediaView({
     super.key,
@@ -31,8 +31,9 @@ class FullScreenMediaView extends StatefulWidget {
 }
 
 class _FullScreenMediaViewState extends State<FullScreenMediaView> {
-  bool isLiked = false;
+  Map<int, bool> likedPosts = {};
   bool isLikeInProgress = false;
+
   DateTime? startTime;
   DateTime? endTime;
 
@@ -46,7 +47,7 @@ class _FullScreenMediaViewState extends State<FullScreenMediaView> {
   void initState() {
     super.initState();
     startTime = DateTime.now();
-    _pageController = PageController(initialPage: widget.initialIndex); // 👈
+    _pageController = PageController(initialPage: widget.initialIndex);
     PostAsViewedap();
     _loadLikeStatus();
     _initializeCurrentMedia();
@@ -67,28 +68,36 @@ class _FullScreenMediaViewState extends State<FullScreenMediaView> {
     super.dispose();
   }
 
+  // 🔹 Load Like Status for All Posts
   Future<void> _loadLikeStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final userId = loginModel?.data?.user?.id.toString() ?? '';
-    final key = 'image_like_${widget.postId}_$userId';
-    setState(() {
-      isLiked = prefs.getBool(key) ?? false;
-    });
+
+    for (var post in widget.posts) {
+      final postId = post['id'].toString();
+      final key = 'image_like_${postId}_$userId';
+      likedPosts[post['id']] = prefs.getBool(key) ?? false;
+    }
+
+    setState(() {});
   }
 
-  Future<void> _saveLikeStatus(bool liked) async {
+  // 🔹 Save Like Status for a Post
+  Future<void> _saveLikeStatus(int postId, bool liked) async {
     final prefs = await SharedPreferences.getInstance();
     final userId = loginModel?.data?.user?.id.toString() ?? '';
-    final key = 'image_like_${widget.postId}_$userId';
+    final key = 'image_like_${postId}_$userId';
     await prefs.setBool(key, liked);
   }
 
-  void handleLikeToggle() {
+  // 🔹 Toggle Like for Current Post
+  void handleLikeToggle(int postId) {
     if (isLikeInProgress) return;
     setState(() => isLikeInProgress = true);
-    postslikeap();
+    postslikeap(postId);
   }
 
+  // 🔹 Dispose Video Player
   void _disposeVideo() {
     _chewieController?.dispose();
     _videoController?.dispose();
@@ -96,6 +105,7 @@ class _FullScreenMediaViewState extends State<FullScreenMediaView> {
     _videoController = null;
   }
 
+  // 🔹 Initialize Media (Video or Image)
   void _initializeCurrentMedia() async {
     _disposeVideo();
     final currentPost = widget.posts[currentIndex];
@@ -118,10 +128,14 @@ class _FullScreenMediaViewState extends State<FullScreenMediaView> {
 
   @override
   Widget build(BuildContext context) {
+    final currentPost = widget.posts[currentIndex];
+    final currentPostId = currentPost['id'];
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
         children: [
+          // 🔹 Media Viewer
           PageView.builder(
             controller: _pageController,
             itemCount: widget.posts.length,
@@ -161,7 +175,7 @@ class _FullScreenMediaViewState extends State<FullScreenMediaView> {
             },
           ),
 
-          // 🔹 Close button
+          // 🔹 Close Button
           Positioned(
             top: 7.h,
             right: 3.w,
@@ -178,12 +192,15 @@ class _FullScreenMediaViewState extends State<FullScreenMediaView> {
             ),
           ),
 
-          // 🔹 Like button
+          // 🔹 Like Button
           Positioned(
             bottom: 5.h,
             right: 5.w,
             child: GestureDetector(
-              onTap: isLikeInProgress ? null : handleLikeToggle,
+              onTap:
+                  isLikeInProgress
+                      ? null
+                      : () => handleLikeToggle(currentPostId),
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
@@ -191,15 +208,20 @@ class _FullScreenMediaViewState extends State<FullScreenMediaView> {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  isLiked ? Icons.favorite : Icons.favorite_border,
-                  color: isLiked ? Colors.red : Colors.white,
+                  likedPosts[currentPostId] == true
+                      ? Icons.favorite
+                      : Icons.favorite_border,
+                  color:
+                      likedPosts[currentPostId] == true
+                          ? Colors.red
+                          : Colors.white,
                   size: 28,
                 ),
               ),
             ),
           ),
 
-          // 🔹 Page indicator
+          // 🔹 Page Indicator
           if (widget.posts.length > 1)
             Positioned(
               bottom: 5.h,
@@ -230,12 +252,11 @@ class _FullScreenMediaViewState extends State<FullScreenMediaView> {
   }
 
   // 🔹 API Calls
-
-  void postslikeap() {
+  void postslikeap(int postId) {
     final Map<String, String> data = {
       'user_id': (loginModel?.data?.user?.id).toString(),
       'type': 'post',
-      'post_offer_promo_id': widget.postId.toString(),
+      'post_offer_promo_id': postId.toString(),
     };
 
     checkInternet().then((internet) async {
@@ -244,10 +265,10 @@ class _FullScreenMediaViewState extends State<FullScreenMediaView> {
           if (response.statusCode == 200) {
             postlikemodel = PostLikeModel.fromJson(response.data);
             setState(() {
-              isLiked = !isLiked;
+              likedPosts[postId] = !(likedPosts[postId] ?? false);
               isLikeInProgress = false;
             });
-            _saveLikeStatus(isLiked);
+            _saveLikeStatus(postId, likedPosts[postId]!);
           } else {
             setState(() => isLikeInProgress = false);
           }

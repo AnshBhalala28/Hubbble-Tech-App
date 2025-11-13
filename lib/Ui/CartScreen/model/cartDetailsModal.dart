@@ -33,6 +33,7 @@ class Data {
   int? userId;
   int? productId;
   int? quantity;
+  var maxQuantity;
   String? totalPrice;
   String? createdAt;
   String? updatedAt;
@@ -45,6 +46,7 @@ class Data {
     this.userId,
     this.productId,
     this.quantity,
+    this.maxQuantity,
     this.totalPrice,
     this.createdAt,
     this.updatedAt,
@@ -58,6 +60,7 @@ class Data {
     userId = json['user_id'];
     productId = json['product_id'];
     quantity = json['quantity'];
+    maxQuantity = json['max_quantity'];
     totalPrice = json['total_price'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -78,6 +81,7 @@ class Data {
     data['user_id'] = this.userId;
     data['product_id'] = this.productId;
     data['quantity'] = this.quantity;
+    data['max_quantity'] = this.maxQuantity;
     data['total_price'] = this.totalPrice;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;

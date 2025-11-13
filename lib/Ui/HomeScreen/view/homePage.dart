@@ -24,6 +24,7 @@ import '../../../Utils/customSnackBars.dart';
 import '../../../Utils/errorDialog.dart';
 import '../../../Utils/loader.dart';
 import '../../../Utils/storeUserData.dart';
+import '../../../Utils/viewPdfFunction.dart';
 import '../../Authentication/View/changePassword.dart';
 import '../../Authentication/provider/authenticationProvider.dart';
 import '../../Booking/View/eventBookingScreen.dart';
@@ -704,6 +705,147 @@ class _HomePageState extends State<HomePage> {
                                                                       .ellipsis,
                                                             ),
                                                           ),
+                                                          if (messageBoardModal
+                                                                  ?.data?[0]
+                                                                  .file
+                                                                  ?.length !=
+                                                              0)
+                                                            SizedBox(
+                                                              height: 1.h,
+                                                            ),
+                                                          if (messageBoardModal
+                                                                  ?.data?[0]
+                                                                  .file
+                                                                  ?.length !=
+                                                              0)
+                                                            ((messageBoardModal
+                                                                        ?.data?[0]
+                                                                        .file?[0])!
+                                                                    .toLowerCase()
+                                                                    .endsWith(
+                                                                      '.pdf',
+                                                                    )
+                                                                ? GestureDetector(
+                                                                  onTap: () async {
+                                                                    final url =
+                                                                        messageBoardModal
+                                                                            ?.data?[0]
+                                                                            .file?[0];
+                                                                    final uri =
+                                                                        Uri.parse(
+                                                                          url ??
+                                                                              '',
+                                                                        );
+                                                                    Get.to(
+                                                                      PdfView(
+                                                                        link:
+                                                                            uri.toString(),
+                                                                      ),
+                                                                    );
+                                                                    // if (await canLaunchUrl(uri)) {
+                                                                    //   final launched = await launchUrl(
+                                                                    //     uri,
+                                                                    //     mode: LaunchMode.externalApplication,
+                                                                    //   );
+                                                                    //   if (!launched) {
+                                                                    //     ScaffoldMessenger.of(context).showSnackBar(
+                                                                    //       SnackBar(content: Text("Failed to open externally")),
+                                                                    //     );
+                                                                    //   }
+                                                                    // } else {
+                                                                    //   ScaffoldMessenger.of(context).showSnackBar(
+                                                                    //     SnackBar(content: Text("Cannot open PDF")),
+                                                                    //   );
+                                                                    // }
+                                                                  },
+
+                                                                  child: Container(
+                                                                    width:
+                                                                        double
+                                                                            .infinity,
+                                                                    height: 8.h,
+                                                                    color:
+                                                                        Colors
+                                                                            .grey
+                                                                            .shade200,
+                                                                    child: Center(
+                                                                      child: Row(
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.min,
+                                                                        children: [
+                                                                          Icon(
+                                                                            Icons.picture_as_pdf,
+                                                                            color:
+                                                                                Colors.red,
+                                                                            size:
+                                                                                25.sp,
+                                                                          ),
+                                                                          SizedBox(
+                                                                            width:
+                                                                                2.w,
+                                                                          ),
+                                                                          Text(
+                                                                            "View PDF",
+                                                                            style: TextStyle(
+                                                                              fontSize:
+                                                                                  16.sp,
+                                                                              fontFamily:
+                                                                                  AppConstants.manrope,
+                                                                              fontWeight:
+                                                                                  FontWeight.bold,
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                                : ClipRRect(
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        15,
+                                                                      ),
+                                                                  child: CachedNetworkImage(
+                                                                    imageUrl:
+                                                                        messageBoardModal
+                                                                            ?.data?[0]
+                                                                            .file?[0] ??
+                                                                        '',
+                                                                    placeholder:
+                                                                        (
+                                                                          context,
+                                                                          url,
+                                                                        ) => SizedBox(
+                                                                          height:
+                                                                              20.h,
+                                                                          width:
+                                                                              double.infinity,
+                                                                          child: const Center(
+                                                                            child:
+                                                                                CircularProgressIndicator(),
+                                                                          ),
+                                                                        ),
+                                                                    errorWidget:
+                                                                        (
+                                                                          context,
+                                                                          url,
+                                                                          error,
+                                                                        ) => Icon(
+                                                                          Icons
+                                                                              .error,
+                                                                          size:
+                                                                              24.sp,
+                                                                        ),
+                                                                    width:
+                                                                        double
+                                                                            .infinity,
+                                                                    height:
+                                                                        20.h,
+                                                                    fit:
+                                                                        BoxFit
+                                                                            .cover,
+                                                                  ),
+                                                                )),
                                                         ],
                                                       ),
                                                     ),

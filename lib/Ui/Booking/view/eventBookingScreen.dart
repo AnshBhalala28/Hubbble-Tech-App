@@ -25,7 +25,13 @@ class EventbookingScreen extends StatefulWidget {
 class _EventbookingScreenState extends State<EventbookingScreen> {
   final GlobalKey<ScaffoldState> _eventBookingScren =
       GlobalKey<ScaffoldState>();
-  List<String> categories = ['All', 'Approved', 'Pending', 'Rejected'];
+  List<String> categories = [
+    'All',
+    'Approved',
+    'Pending',
+    'Rejected',
+    'Cancelled',
+  ];
   int selectedCategory = 0;
 
   bool isLoading = false;

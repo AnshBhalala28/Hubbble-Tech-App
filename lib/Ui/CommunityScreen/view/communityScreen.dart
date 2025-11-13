@@ -5668,26 +5668,50 @@ class _CommunityScreenState extends State<CommunityScreen>
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            Text(
-                              "£",
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green,
-                              ),
-                            ),
                             const SizedBox(width: 4),
                             Expanded(
-                              child: Text(
-                                "Price: ${services[index].price ?? 'N/A'}",
-                                style: TextStyle(
-                                  fontSize: 15.sp,
-                                  color: Colors.green[700],
-                                  fontFamily: AppConstants.manrope,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                              child:
+                                  services[index].offerPrice != null
+                                      ? Row(
+                                        children: [
+                                          // Original price with line-through
+                                          Text(
+                                            "£${services[index].price ?? 'N/A'}",
+                                            style: TextStyle(
+                                              fontSize: 14.sp,
+                                              color: Colors.grey,
+                                              decoration:
+                                                  TextDecoration.lineThrough,
+                                              fontFamily: AppConstants.manrope,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(width: 2.w),
+                                          // Offer price
+                                          Text(
+                                            "£${services[index].offerPrice}",
+                                            style: TextStyle(
+                                              fontSize: 15.sp,
+                                              color: Colors.green[700],
+                                              fontFamily: AppConstants.manrope,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      )
+                                      : Text(
+                                        "₹${services[index].price ?? 'N/A'}",
+                                        style: TextStyle(
+                                          fontSize: 15.sp,
+                                          color: Colors.green[700],
+                                          fontFamily: AppConstants.manrope,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                             ),
                           ],
                         ),

@@ -814,15 +814,24 @@ class Services {
   int? id;
   String? title;
   String? price;
+  String? offerPrice;
   String? images;
   String? availability;
 
-  Services({this.id, this.title, this.price, this.images, this.availability});
+  Services({
+    this.id,
+    this.title,
+    this.price,
+    this.images,
+    this.offerPrice,
+    this.availability,
+  });
 
   Services.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
     price = json['price'];
+    offerPrice = json['offer_price'];
     images = json['images'];
     availability = json['availability'];
   }
@@ -832,6 +841,7 @@ class Services {
     data['id'] = this.id;
     data['title'] = this.title;
     data['price'] = this.price;
+    data['offer_price'] = this.offerPrice;
     data['images'] = this.images;
     data['availability'] = this.availability;
     return data;
