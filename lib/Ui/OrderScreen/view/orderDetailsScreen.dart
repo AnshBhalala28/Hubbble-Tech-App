@@ -2277,7 +2277,6 @@ class OrderStepsWidget extends StatelessWidget {
   }
 }
 
-
 class LiveStatusIndicator extends StatefulWidget {
   final Widget child;
   final Color color;

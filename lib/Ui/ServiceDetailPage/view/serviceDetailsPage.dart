@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
+
 import '../../../Utils/bottomBar.dart';
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
@@ -739,7 +740,6 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                 ),
               ),
       bottomNavigationBar: const BottomBar(selected: 0),
-
     );
   }
 

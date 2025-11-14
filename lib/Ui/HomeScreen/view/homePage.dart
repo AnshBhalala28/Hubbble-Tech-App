@@ -2294,7 +2294,6 @@ class _HomePageState extends State<HomePage> {
                 IconName: Icons.check_circle,
               );
               launchStore();
-
             } else {
               if (responseData.containsKey('data') &&
                   responseData['data'] is Map) {

@@ -79,5 +79,3 @@ handleDioError(DioException e) {
   //   );
   // }
 }
-
-
