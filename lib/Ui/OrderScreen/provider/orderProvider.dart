@@ -70,4 +70,20 @@ class OrderProvider extends ChangeNotifier {
       throw Exception(handleDioError(e));
     }
   }
+
+  Future<Response> cancleOrderApi1(Map<String, String> bodyData) async {
+    try {
+      String? token = await SaveDataLocal.getToken();
+      final dio = await DioHelper.getDio();
+      final response = await dio.post(
+        ApiEndpoint.cancleOrder1,
+        data: bodyData,
+        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+      );
+
+      return response;
+    } on DioException catch (e) {
+      throw Exception(handleDioError(e));
+    }
+  }
 }

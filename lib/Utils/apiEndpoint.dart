@@ -77,6 +77,7 @@ class ApiEndpoint {
   static String myOrder = "${baseUrl}myOrders";
   static String myOrderDetail = "${baseUrl}orderDetails?";
   static String cancleOrder = "${baseUrl}removeAmendCartItems";
+  static String cancleOrder1 = "${baseUrl}cancelOrder";
   static String productDetail = "${baseUrl}getProductDetails";
   static String addReview = "${baseUrl}add-review";
   static String showReview = "${baseUrl}show-reviews";

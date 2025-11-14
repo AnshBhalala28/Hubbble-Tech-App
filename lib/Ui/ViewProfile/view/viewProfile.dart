@@ -236,7 +236,7 @@ class _ViewProfileState extends State<ViewProfile> {
                                 ),
                                 SizedBox(height: 1.5.h),
                                 Text(
-                                  'Are You Sure Want to Log out Your Account?',
+                                  'Are you sure you want to log out of your account?',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 15.sp,

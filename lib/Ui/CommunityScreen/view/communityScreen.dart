@@ -3792,6 +3792,69 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     busnessviewmodal?.data?.services ?? [],
                                   ),
                                 ],
+                                // if ((busnessviewmodal?.data?.products ?? [])
+                                //     .isNotEmpty) ...[
+                                //   SizedBox(height: 2.h),
+                                //   Padding(
+                                //     padding: const EdgeInsets.symmetric(
+                                //       horizontal: 8.0,
+                                //     ),
+                                //     child: Text(
+                                //       "Products",
+                                //       style: TextStyle(
+                                //         fontSize: 16.sp,
+                                //         fontWeight: FontWeight.bold,
+                                //         fontFamily: AppConstants.manropeBold,
+                                //       ),
+                                //     ),
+                                //   ),
+                                //   SizedBox(height: 1.h),
+                                //   buildViewShopTile(
+                                //     icon: Icons.store,
+                                //     title: "View Shop",
+                                //     subtitle:
+                                //         (busnessviewmodal
+                                //                         ?.data
+                                //                         ?.business
+                                //                         ?.loyaltyInfo ==
+                                //                     null ||
+                                //                 busnessviewmodal
+                                //                         ?.data
+                                //                         ?.business
+                                //                         ?.loyaltyInfo
+                                //                         ?.loyaltyOrderThreshold ==
+                                //                     null ||
+                                //                 busnessviewmodal
+                                //                         ?.data
+                                //                         ?.business
+                                //                         ?.loyaltyInfo
+                                //                         ?.loyaltyOrderThreshold ==
+                                //                     0)
+                                //             ? "Order 5 times to get 20% discount behind the scenes"
+                                //             : "You're getting closer to an exclusive reward! Complete "
+                                //                 "${busnessviewmodal?.data?.business?.loyaltyInfo?.ordersCompletedWithBusiness} "
+                                //                 "more orders to unlock a ${busnessviewmodal?.data?.business?.loyaltyInfo?.loyaltyDiscountPercentage?.replaceAll(RegExp(r'\\.0+\$'), '')}% discount on your next purchase.",
+                                //     onTap: () {
+                                //       Get.to(
+                                //         BusinessDetailPage(
+                                //           businessID:
+                                //               busnessviewmodal
+                                //                   ?.data
+                                //                   ?.business
+                                //                   ?.id
+                                //                   .toString() ??
+                                //               "",
+                                //           userID:
+                                //               loginModel?.data?.user?.id
+                                //                   .toString() ??
+                                //               "",
+                                //           long: AppLon,
+                                //           lat: AppLat,
+                                //         ),
+                                //       );
+                                //     },
+                                //   ),
+                                // ],
                                 if ((busnessviewmodal?.data?.products ?? [])
                                     .isNotEmpty) ...[
                                   SizedBox(height: 2.h),
@@ -3813,7 +3876,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     icon: Icons.store,
                                     title: "View Shop",
                                     subtitle:
-                                        (busnessviewmodal
+                                        _isBusinessClosedToday()
+                                            ? "Shop is closed today"
+                                            : (busnessviewmodal
                                                         ?.data
                                                         ?.business
                                                         ?.loyaltyInfo ==
@@ -3835,23 +3900,25 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                 "${busnessviewmodal?.data?.business?.loyaltyInfo?.ordersCompletedWithBusiness} "
                                                 "more orders to unlock a ${busnessviewmodal?.data?.business?.loyaltyInfo?.loyaltyDiscountPercentage?.replaceAll(RegExp(r'\\.0+\$'), '')}% discount on your next purchase.",
                                     onTap: () {
-                                      Get.to(
-                                        BusinessDetailPage(
-                                          businessID:
-                                              busnessviewmodal
-                                                  ?.data
-                                                  ?.business
-                                                  ?.id
-                                                  .toString() ??
-                                              "",
-                                          userID:
-                                              loginModel?.data?.user?.id
-                                                  .toString() ??
-                                              "",
-                                          long: AppLon,
-                                          lat: AppLat,
-                                        ),
-                                      );
+                                      _isBusinessClosedToday()
+                                          ? null
+                                          : Get.to(
+                                            BusinessDetailPage(
+                                              businessID:
+                                                  busnessviewmodal
+                                                      ?.data
+                                                      ?.business
+                                                      ?.id
+                                                      .toString() ??
+                                                  "",
+                                              userID:
+                                                  loginModel?.data?.user?.id
+                                                      .toString() ??
+                                                  "",
+                                              long: AppLon,
+                                              lat: AppLat,
+                                            ),
+                                          );
                                     },
                                   ),
                                 ],
@@ -5613,14 +5680,17 @@ class _CommunityScreenState extends State<CommunityScreen>
                       print(
                         "Service ID: ${services[index].id}, Business ID: ${busnessviewmodal?.data?.business?.id}",
                       );
-                      Get.to(
-                        () => ServiceDetailsPage(
-                          serviceID: services[index].id.toString(),
-                          businessID:
-                              busnessviewmodal?.data?.business?.id.toString() ??
-                              "",
-                        ),
-                      );
+                      _isBusinessClosedToday()
+                          ? null
+                          : Get.to(
+                            () => ServiceDetailsPage(
+                              serviceID: services[index].id.toString(),
+                              businessID:
+                                  busnessviewmodal?.data?.business?.id
+                                      .toString() ??
+                                  "",
+                            ),
+                          );
                     },
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 8,
@@ -5727,7 +5797,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                "Availability: ${services[index].availability ?? 'N/A'}",
+                                _isBusinessClosedToday()
+                                    ? "Shop is closed"
+                                    : "Availability: ${services[index].availability ?? 'N/A'}",
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   color:
@@ -6289,6 +6361,59 @@ class _CommunityScreenState extends State<CommunityScreen>
         }),
       ],
     );
+  }
+
+  bool _isBusinessClosedToday() {
+    final now = DateTime.now();
+    final today = _getDayName(now.weekday);
+    final todayHours = _getHoursForDay(today);
+
+    if (todayHours == null) return true;
+
+    if (todayHours.closed == true) return true;
+
+    if (todayHours.open != null && todayHours.close != null) {
+      try {
+        DateTime _parseTime(String time) {
+          // format: 11:23 AM or 6:45 PM
+          final parts = time.split(" ");
+          final hourMin = parts[0].split(":");
+
+          int hour = int.parse(hourMin[0]);
+          int minute = int.parse(hourMin[1]);
+          final ampm = parts[1].toUpperCase();
+
+          if (ampm == "PM" && hour != 12) hour += 12;
+          if (ampm == "AM" && hour == 12) hour = 0;
+
+          return DateTime(now.year, now.month, now.day, hour, minute);
+        }
+
+        final openTime = _parseTime(todayHours.open);
+        final closeTime = _parseTime(todayHours.close);
+
+        if (now.isBefore(openTime) || now.isAfter(closeTime)) {
+          return true;
+        }
+
+        return false;
+      } catch (e) {
+        return true;
+      }
+    }
+
+    return true;
+  }
+
+  bool _isBusinessOpenToday() {
+    final today = _getDayName(DateTime.now().weekday);
+    final todayHours = _getHoursForDay(today);
+    if (todayHours == null) return false;
+    if (todayHours.closed == true) return false;
+    if (todayHours.open != null && todayHours.close != null) {
+      return true;
+    }
+    return false;
   }
 
   String _getCurrentDayStatus() {

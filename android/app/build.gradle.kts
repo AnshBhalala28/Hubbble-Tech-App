@@ -41,7 +41,7 @@ android {
         create("release") {
             keyAlias = "waveeai"
             keyPassword = "123456"
-            storeFile = file("/Users/jacksardhara/StudioProjects/waveeai-app-new/android/waveeai.jks")
+            storeFile = file("E:\\wavee-ai-new\\android\\waveeai.jks")
             storePassword = "123456"
         }
     }

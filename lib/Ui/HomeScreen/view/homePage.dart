@@ -2222,41 +2222,29 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> launchAppOrStore() async {
-    const packageName = "com.wavee.comunity";
-
-    if (Platform.isAndroid) {
-      final Uri intentUri = Uri.parse(
-        "intent://#Intent;package=$packageName;end",
-      );
-
-      if (await launchUrl(intentUri, mode: LaunchMode.externalApplication)) {
-        return; // App launched successfully
-      } else {
-        // Fallback: Play Store
-        final Uri storeUri = Uri.parse(
-          "https://play.google.com/store/apps/details?id=$packageName",
-        );
-        await launchUrl(storeUri, mode: LaunchMode.externalApplication);
-      }
-    } else if (Platform.isIOS) {
-      const String customScheme = "wavee://home"; // iOS app ma set karvu padse
-      const String appStoreUrl =
-          "https://apps.apple.com/in/app/wavee-pet/id6746203457";
-
-      if (await canLaunchUrl(Uri.parse(customScheme))) {
-        await launchUrl(
-          Uri.parse(customScheme),
-          mode: LaunchMode.externalApplication,
-        );
-      } else {
-        await launchUrl(
-          Uri.parse(appStoreUrl),
-          mode: LaunchMode.externalApplication,
-        );
-      }
-    }
-  }
+  // Future<void> launchStore() async {
+  //   // Android Play Store link
+  //   final Uri playStoreUri = Uri.parse(
+  //     "https://play.google.com/store/apps/details?id=com.pets.wavee",
+  //   );
+  //
+  //   // iOS App Store link
+  //   final Uri appStoreUri = Uri.parse(
+  //     "https://apps.apple.com/in/app/wavee-pet/id6746203457",
+  //   );
+  //
+  //   if (Platform.isAndroid) {
+  //     await launchUrl(
+  //       playStoreUri,
+  //       mode: LaunchMode.externalApplication,
+  //     );
+  //   } else if (Platform.isIOS) {
+  //     await launchUrl(
+  //       appStoreUri,
+  //       mode: LaunchMode.externalApplication,
+  //     );
+  //   }
+  // }
 
   getdataloginData() async {
     Map<String, String?> credentials =
@@ -2305,6 +2293,8 @@ class _HomePageState extends State<HomePage> {
                 IconColor: AppColors.white,
                 IconName: Icons.check_circle,
               );
+              launchStore();
+
             } else {
               if (responseData.containsKey('data') &&
                   responseData['data'] is Map) {

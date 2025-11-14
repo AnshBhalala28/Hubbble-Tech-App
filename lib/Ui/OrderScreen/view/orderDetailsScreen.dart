@@ -196,9 +196,9 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                                                 context,
                                                                 url,
                                                                 error,
-                                                              ) => const Center(
-                                                                child: Icon(
-                                                                  Icons.error,
+                                                              ) => const Image(
+                                                                image: AssetImage(
+                                                                  'assets/images/Applogo_remove_background.png',
                                                                 ),
                                                               ),
                                                         ),
@@ -371,7 +371,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                         .capitalizeFirst ??
                                     "",
                                 style: TextStyle(
-                                  fontFamily: AppConstants.manrope,
+                                  fontFamily: AppConstants.manropeBold,
                                   fontSize: 18.sp,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -549,7 +549,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                                                     ?.data
                                                     ?.products
                                                     ?.product
-                                                    ?.images)
+                                                    ?.image)
                                                 .toString(),
                                         fit: BoxFit.fill,
                                         placeholder:
@@ -1171,6 +1171,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                       child: batan(
                         title: "Yes",
                         route: () {
+                          Navigator.of(context).pop();
                           Get.to(Order_Screen());
                         },
                         color: AppColors.maincolor,
@@ -1298,7 +1299,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
     checkInternet().then((internet) async {
       if (internet) {
         try {
-          var response = await OrderProvider().cancleOrderApi(data);
+          var response = await OrderProvider().cancleOrderApi1(data);
 
           if (response.statusCode == 200) {
             setState(() {
@@ -2276,8 +2277,6 @@ class OrderStepsWidget extends StatelessWidget {
   }
 }
 
-// --- NAVU "GLOWING ORB" ANIMATION ---
-// Aa tamara 'LiveStatusIndicator' nu navu version chhe
 
 class LiveStatusIndicator extends StatefulWidget {
   final Widget child;

@@ -284,7 +284,7 @@ class _MessageScreenState extends State<MessageScreen> {
                       ? Expanded(
                         child: Center(
                           child: Text(
-                            "No Messages available",
+                            "No messages available",
                             style: TextStyle(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.bold,
