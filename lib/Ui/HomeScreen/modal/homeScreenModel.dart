@@ -50,7 +50,7 @@ class User {
   String? email;
   Null emailVerifiedAt;
   String? dPassword;
-  int? mobileNo;
+  var mobileNo;
   String? gender;
   Address? address;
   Null fcmToken;

@@ -137,7 +137,7 @@ class Creator {
   String? email;
   var emailVerifiedAt;
   var dPassword;
-  int? mobileNo;
+  var mobileNo;
   var gender;
   var dateOfBirth;
   String? address;

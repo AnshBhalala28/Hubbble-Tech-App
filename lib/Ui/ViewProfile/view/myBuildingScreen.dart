@@ -156,7 +156,7 @@ class _MyBuilding_ScreenState extends State<MyBuilding_Screen> {
                             Text(
                               "Building Documents",
                               style: TextStyle(
-                                fontFamily: AppConstants.manrope,
+                                fontFamily: AppConstants.manropeBold,
                                 fontSize: 19.sp,
                                 fontWeight: FontWeight.bold,
                               ),

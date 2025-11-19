@@ -132,7 +132,7 @@
 //   String? email;
 //   var emailVerifiedAt;
 //   var dPassword;
-//   int? mobileNo;
+//   var mobileNo;
 //   String? gender;
 //   String? address;
 //   var fcmToken;
@@ -448,7 +448,7 @@ class User {
   String? email;
   var emailVerifiedAt;
   String? dPassword;
-  int? mobileNo;
+  var mobileNo;
   String? gender;
   var dateOfBirth;
   String? address;

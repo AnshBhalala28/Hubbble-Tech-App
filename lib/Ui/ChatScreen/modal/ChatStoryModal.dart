@@ -33,7 +33,7 @@ class Data {
   String? name;
   String? email;
   String? dPassword;
-  int? mobileNo;
+  var mobileNo;
   String? address;
   String? status;
   String? createdAt;

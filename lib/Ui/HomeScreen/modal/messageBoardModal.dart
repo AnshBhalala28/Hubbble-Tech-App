@@ -33,6 +33,7 @@ class Data {
   int? buildingId;
   String? residentType;
   String? title;
+  int? nocomment;
   String? coreOpt;
   String? boostLevelId;
   String? type;
@@ -65,6 +66,7 @@ class Data {
     this.file,
     this.status,
     this.createdAt,
+    this.nocomment,
     this.updatedAt,
     this.user,
     this.totalLikes,
@@ -86,6 +88,7 @@ class Data {
     storyPost = json['story_post'];
     views = json['views'];
     text = json['text'];
+    nocomment = json['nocomment'];
     file = json['file'] != null ? List<String>.from(json['file']) : null;
     status = json['status'];
     createdAt = json['created_at'];
@@ -117,6 +120,7 @@ class Data {
     result['views'] = views;
     result['text'] = text;
     result['file'] = file;
+    result['nocomment'] = nocomment;
     result['status'] = status;
     result['created_at'] = createdAt;
     result['updated_at'] = updatedAt;

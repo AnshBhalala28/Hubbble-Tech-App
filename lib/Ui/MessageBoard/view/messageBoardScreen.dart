@@ -882,6 +882,19 @@ class _MessageboardState extends State<Messageboard> {
                                                     AppConstants.manrope,
                                               ),
                                             ),
+                                            post?.nocomment==1?   Text(
+                                              "[COMMENT ARE DISABLED IN THIS POST]",
+                                              style: TextStyle(
+                                                fontFamily:
+                                                AppConstants
+                                                    .manropeBold,
+                                                fontSize: 14.sp,
+                                                color: const Color(
+                                                  0XFF3E3E3E,
+                                                ),
+                                              ),
+                                            ):SizedBox(),
+
                                             Padding(
                                               padding: EdgeInsets.symmetric(
                                                 vertical: 1.h,
@@ -1134,11 +1147,12 @@ class _MessageboardState extends State<Messageboard> {
                                                       ),
                                                     ),
                                                     SizedBox(width: 2.w),
-                                                    InkWell(
+                                         InkWell(
                                                       onTap: () async {
                                                         await getComments(
                                                           context,
                                                           (post?.id).toString(),
+                                                            post?.nocomment,
                                                         );
                                                       },
                                                       child: Text(
@@ -1264,32 +1278,81 @@ class _MessageboardState extends State<Messageboard> {
                                                 ),
 
                                                 SizedBox(width: 2.w),
-                                                Text(
-                                                  localpost_model
-                                                          ?.data
-                                                          ?.data?[index]
-                                                          .users?[0]
-                                                          .name ??
-                                                      "",
-                                                  style: TextStyle(
-                                                    fontFamily:
-                                                        AppConstants.manrope1,
-                                                    fontSize: 15.sp,
-                                                    fontWeight: FontWeight.bold,
+                                                // Text(
+                                                //   localpost_model
+                                                //           ?.data
+                                                //           ?.data?[index]
+                                                //           .users?[0]
+                                                //           .name ??
+                                                //       "",
+                                                //   style: TextStyle(
+                                                //     fontFamily:
+                                                //         AppConstants.manrope1,
+                                                //     fontSize: 15.sp,
+                                                //     fontWeight: FontWeight.bold,
+                                                //   ),
+                                                // ),
+                                                // SizedBox(width: 2.w),
+                                                // Text(
+                                                //   "•${formatPostDate(localpost_model?.data?.data?[index].createdAt)}",
+                                                //   style: TextStyle(
+                                                //     fontSize: 14.sp,
+                                                //     color: Colors.grey,
+                                                //     fontFamily:
+                                                //         AppConstants.manrope,
+                                                //     fontWeight: FontWeight.bold,
+                                                //   ),
+                                                // ),
+
+                                                Expanded(
+                                                  child: Row(
+                                                    children: [
+                                                      // User name
+                                                      Flexible(
+                                                        child: Text(
+                                                          localpost_model
+                                                              ?.data
+                                                              ?.data?[index]
+                                                              .users?[0]
+                                                              .name ??
+                                                              "",
+                                                          overflow:
+                                                          TextOverflow
+                                                              .ellipsis,
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                            AppConstants
+                                                                .manrope1,
+                                                            fontSize: 15.sp,
+                                                            fontWeight:
+                                                            FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+
+                                                      SizedBox(width: 1.w),
+
+                                                      // Dot and time
+                                                      Flexible(
+                                                        child: Text(
+                                                          "•${formatPostDate(localpost_model?.data?.data?[index].createdAt)}",
+                                                          overflow:
+                                                          TextOverflow
+                                                              .ellipsis,
+                                                          style: TextStyle(
+                                                            fontSize: 14.sp,
+                                                            color: Colors.grey,
+                                                            fontFamily:
+                                                            AppConstants
+                                                                .manrope,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                                SizedBox(width: 2.w),
-                                                Text(
-                                                  "•${formatPostDate(localpost_model?.data?.data?[index].createdAt)}",
-                                                  style: TextStyle(
-                                                    fontSize: 14.sp,
-                                                    color: Colors.grey,
-                                                    fontFamily:
-                                                        AppConstants.manrope,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                const Spacer(),
+
+                                                // const Spacer(),
                                                 loginModel?.data?.user?.id ==
                                                         post?.userId
                                                     ? PopupMenuButton<String>(
@@ -1754,6 +1817,7 @@ class _MessageboardState extends State<Messageboard> {
                                                           context,
                                                           post?.id?.toString() ??
                                                               "",
+
                                                         );
                                                       },
                                                       child: Text(
@@ -1867,7 +1931,7 @@ class _MessageboardState extends State<Messageboard> {
     }
   }
 
-  void showCommentBottomSheet(BuildContext context, String postId) {
+  void showCommentBottomSheet(BuildContext context, String postId ,int comment) {
     bool isLoading = true;
     showModalBottomSheet(
       context: context,
@@ -1987,69 +2051,58 @@ class _MessageboardState extends State<Messageboard> {
                                     },
                                   ),
                         ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: commentController,
-                                decoration: InputDecoration(
-                                  hintText: "Write a comment...",
-                                  filled: true,
-                                  fillColor: Colors.grey.shade100,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                    borderSide: const BorderSide(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                    horizontal: 16,
-                                  ),
-                                ),
+                    comment == 1
+                        ? SizedBox()   // Disable comment input if value = 1
+                        : Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: commentController,
+                            decoration: InputDecoration(
+                              hintText: "Write a comment...",
+                              filled: true,
+                              fillColor: Colors.grey.shade100,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 10,
+                                horizontal: 16,
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            isSendingComment
-                                ? const SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                                : IconButton(
-                                  icon: const Icon(
-                                    Icons.send,
-                                    color: Colors.blue,
-                                  ),
-                                  onPressed: () async {
-                                    if (commentController.text.trim().isEmpty) {
-                                      return;
-                                    }
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        isSendingComment
+                            ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                            : IconButton(
+                          icon: const Icon(Icons.send, color: Colors.blue),
+                          onPressed: () async {
+                            if (commentController.text.trim().isEmpty) return;
 
-                                    setModalState(
-                                      () => isSendingComment = true,
-                                    );
+                            setModalState(() => isSendingComment = true);
 
-                                    await sendComment(
-                                      context,
-                                      commentController.text.trim(),
-                                      postId,
-                                      () {
-                                        commentController.clear();
-                                        setModalState(() {});
-                                      },
-                                    );
+                            await sendComment(
+                              context,
+                              commentController.text.trim(),
+                              postId,
+                                  () {
+                                commentController.clear();
+                                setModalState(() {});
+                              },
+                            );
 
-                                    setModalState(
-                                      () => isSendingComment = false,
-                                    );
-                                  },
-                                ),
-                          ],
+                            setModalState(() => isSendingComment = false);
+                          },
                         ),
                       ],
+                    ),
+
+                    ],
                     ),
                   ),
                 );
@@ -2999,7 +3052,9 @@ class _MessageboardState extends State<Messageboard> {
     });
   }
 
-  Future<void> getComments(BuildContext context, String postId) async {
+  Future<void> getComments(BuildContext context, String postId, int? comment) async {
+    comment = comment ?? 0; // prevent null → default 0
+
     currentPostId = postId;
     final Map<String, String> data = {'post_id': postId};
 
@@ -3023,11 +3078,12 @@ class _MessageboardState extends State<Messageboard> {
     }
 
     if (context.mounted) {
-      showCommentBottomSheet(context, postId);
+      showCommentBottomSheet(context, postId, comment);
     }
   }
 
-  Future<void> getComments1(BuildContext context, String postId) async {
+
+  Future<void> getComments1(BuildContext context, String postId,) async {
     currentPostId = postId;
     final Map<String, String> data = {'post_id': postId};
 
@@ -3051,7 +3107,7 @@ class _MessageboardState extends State<Messageboard> {
     }
 
     if (context.mounted) {
-      showCommentBottomSheet(context, postId);
+      showCommentBottomSheet(context, postId,0);
     }
   }
 

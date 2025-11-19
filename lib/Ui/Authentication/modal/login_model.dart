@@ -92,7 +92,7 @@ class User {
   Name? name;
   String? email;
   String? dPassword;
-  int? mobileNo;
+  var mobileNo;
   String? gender;
   Address? address;
   String? status;

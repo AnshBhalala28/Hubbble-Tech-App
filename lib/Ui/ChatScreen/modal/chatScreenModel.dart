@@ -63,7 +63,7 @@ class BusinessUsers {
   String? email;
   var emailVerifiedAt;
   String? dPassword;
-  int? mobileNo;
+  var mobileNo;
   var gender;
   var dateOfBirth;
   Address? address;

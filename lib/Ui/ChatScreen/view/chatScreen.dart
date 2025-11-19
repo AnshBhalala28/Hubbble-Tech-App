@@ -423,7 +423,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                   style: TextStyle(
                                                     fontSize: 15.sp,
                                                     fontFamily:
-                                                        AppConstants.manrope,
+                                                        AppConstants.manropeBold,
                                                   ),
                                                 ),
                                               ],
@@ -1033,7 +1033,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                                           .bold,
                                                                   fontFamily:
                                                                       AppConstants
-                                                                          .manrope,
+                                                                          .manropeBold,
                                                                   color: const Color(
                                                                     0XFF000000,
                                                                   ),

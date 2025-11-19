@@ -464,7 +464,7 @@ class User {
   String? email;
   var emailVerifiedAt;
   var dPassword;
-  int? mobileNo;
+ var mobileNo;
   String? gender;
   var dateOfBirth;
   Address? address;

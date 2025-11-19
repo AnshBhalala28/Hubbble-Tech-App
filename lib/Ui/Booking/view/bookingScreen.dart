@@ -195,7 +195,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w500,
 
-                                  fontFamily: AppConstants.manrope,
+                                  fontFamily: AppConstants.manropeBold,
                                 ),
                               ),
                             ),
@@ -208,7 +208,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w500,
 
-                                  fontFamily: AppConstants.manrope,
+                                  fontFamily: AppConstants.manropeBold,
                                 ),
                               ),
                             ),
@@ -221,7 +221,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w500,
 
-                                  fontFamily: AppConstants.manrope,
+                                  fontFamily: AppConstants.manropeBold,
                                 ),
                               ),
                             ),
@@ -233,7 +233,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                   color: Colors.black,
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w500,
-                                  fontFamily: AppConstants.manrope,
+                                  fontFamily: AppConstants.manropeBold,
                                 ),
                               ),
                             ),
@@ -282,7 +282,7 @@ class _BookingScreenState extends State<BookingScreen> {
                               fontSize: 17.sp,
                               fontWeight: FontWeight.bold,
                               color: AppColors.black,
-                              fontFamily: AppConstants.manrope,
+                              fontFamily: AppConstants.manropeBold,
                             ),
                           ).paddingOnly(top: 30.h),
                         )
@@ -469,7 +469,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                                                       .bold,
                                                               fontFamily:
                                                                   AppConstants
-                                                                      .manrope,
+                                                                      .manropeBold,
                                                             ),
                                                           ),
                                                         ),

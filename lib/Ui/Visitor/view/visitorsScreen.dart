@@ -58,7 +58,8 @@ class _VisitorScreenState extends State<VisitorScreen> {
       } else {
         _pagingController.appendPage(items, pageKey + 1);
       }
-    } catch (e) {
+    } catch (e,stacktrace) {
+      print("sss$stacktrace");
       _pagingController.error = e;
     }
   }

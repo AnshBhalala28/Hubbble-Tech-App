@@ -178,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       "Forgot Password?",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontFamily: AppConstants.manrope,
+                        fontFamily: AppConstants.manropeBold,
                         color: AppColors.maincolor,
                         fontSize: 17.sp,
                       ),

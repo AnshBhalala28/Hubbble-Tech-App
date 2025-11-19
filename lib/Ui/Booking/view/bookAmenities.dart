@@ -176,7 +176,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                             style: TextStyle(
                                               fontSize: 17.sp,
                                               fontWeight: FontWeight.bold,
-                                              fontFamily: AppConstants.manrope,
+                                              fontFamily: AppConstants.manropeBold,
                                             ),
                                           ),
                                         ),

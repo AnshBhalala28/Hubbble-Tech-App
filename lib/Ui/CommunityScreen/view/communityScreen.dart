@@ -2824,7 +2824,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                     fontWeight: FontWeight.w600,
                                                     color: AppColors.black,
                                                     fontFamily:
-                                                        AppConstants.manrope,
+                                                        AppConstants.manropeBold,
                                                   ),
                                                 ),
                                               ],
@@ -3213,7 +3213,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: textColor,
-                  fontFamily: AppConstants.manrope,
+                  fontFamily: AppConstants.manropeBold,
                 ),
               ),
             ],
@@ -3302,9 +3302,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                   "N/A",
                                               style: TextStyle(
                                                 fontSize: 19.sp,
-                                                fontWeight: FontWeight.w900,
+                                                // fontWeight: FontWeight.w900,
                                                 fontFamily:
-                                                    AppConstants.manrope,
+                                                    AppConstants.manropeBold,
                                               ),
                                             ),
                                             SizedBox(height: 0.5.h),

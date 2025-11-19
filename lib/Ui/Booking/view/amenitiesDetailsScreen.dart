@@ -497,7 +497,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                               style: const TextStyle(
                                                 color: AppColors.black,
                                                 fontFamily:
-                                                    AppConstants.manrope,
+                                                    AppConstants.manropeBold,
                                                 fontSize: 19,
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -623,7 +623,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                         .white,
                                                             fontFamily:
                                                                 AppConstants
-                                                                    .manrope,
+                                                                    .manropeBold,
                                                           ),
                                                         ),
                                                       ],
@@ -653,7 +653,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                         ),
                                                         SizedBox(width: 2.w),
                                                         Text(
-                                                          "Max Booking per Day: ${booking?.maxBookingPerDay ?? 'N/A'}",
+                                                          "Max Booking per Resident: ${booking?.maxBookingPerDay ?? 'N/A'}",
                                                           style: TextStyle(
                                                             fontSize: 15.sp,
                                                             fontWeight:
@@ -661,7 +661,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                             color: Colors.black,
                                                             fontFamily:
                                                                 AppConstants
-                                                                    .manrope,
+                                                                    .manropeBold,
                                                           ),
                                                         ),
                                                       ],
@@ -2390,158 +2390,143 @@ class _Form_ScreenState extends State<Form_Screen> {
                   child: Container(
                     padding: const EdgeInsets.all(20),
                     width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 3.h + 10),
-                        Center(
-                          child: Text(
-                            "Thank you!",
+
+                    // 🔥 SCROLL ADDED HERE
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 3.h + 10),
+                          Center(
+                            child: Text(
+                              "Thank you!",
+                              style: TextStyle(
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: AppConstants.manrope,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 1.h),
+                          const Center(
+                            child: Text(
+                              "Your booking was successful",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: AppConstants.manrope,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                          const Divider(height: 30, thickness: 1),
+
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.grey.withOpacity(0.20),
+                            ),
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.calendar_today, color: Colors.amber[800], size: 20),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      selectedDate.replaceAll('/', '-'),
+                                      style: TextStyle(
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: AppConstants.manrope,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+
+                                Row(
+                                  children: [
+                                    Icon(Icons.access_time_filled, color: Colors.green[700], size: 22),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      selectedTime,
+                                      style: TextStyle(
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: AppConstants.manrope,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Icon(Icons.arrow_forward, color: Colors.black, size: 15.sp),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      endTime,
+                                      style: TextStyle(
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: AppConstants.manrope,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+
+                                Row(
+                                  children: [
+                                    Icon(Icons.timelapse, color: Colors.blue[700], size: 22),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      duration,
+                                      style: TextStyle(
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: AppConstants.manrope,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          SizedBox(height: 3.h),
+
+                          Text(
+                            "Amenities",
                             style: TextStyle(
-                              fontSize: 20.sp,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 14.sp,
+                              color: Colors.black,
+                              fontFamily: AppConstants.manropeBold,
+                              letterSpacing: 1,
+                            ),
+                          ),
+
+                          Text(
+                            location,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
                               fontFamily: AppConstants.manrope,
                             ),
                           ),
-                        ),
-                        SizedBox(height: 1.h),
-                        const Center(
-                          child: Text(
-                            "Your booking was successful",
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: AppConstants.manrope,
-                              color: Colors.grey,
-                            ),
+
+                          SizedBox(height: 4.h),
+
+                          batan(
+                            title: "Back to Home",
+                            route: () {
+                              Get.offAll(() => const BookingScreen());
+                            },
+                            color: AppColors.maincolor,
+                            fontcolor: Colors.white,
+                            height: 5.h,
+                            width: double.infinity,
+                            fontsize: 18.sp,
+                            radius: 12.0,
                           ),
-                        ),
-                        const Divider(height: 30, thickness: 1),
-
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.grey.withOpacity(0.20),
-                          ),
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.calendar_today,
-                                    color: Colors.amber[800],
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    selectedDate.replaceAll('/', '-'),
-                                    style: TextStyle(
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: AppConstants.manrope,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 10),
-
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.access_time_filled,
-                                    color: Colors.green[700],
-                                    size: 22,
-                                  ),
-                                  SizedBox(width: 8),
-
-                                  Text(
-                                    selectedTime,
-                                    style: TextStyle(
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: AppConstants.manrope,
-                                    ),
-                                  ),
-
-                                  const SizedBox(width: 6),
-                                  Icon(
-                                    Icons.arrow_forward,
-                                    color: Colors.black,
-                                    size: 15.sp,
-                                  ),
-                                  const SizedBox(width: 6),
-
-                                  Text(
-                                    endTime,
-                                    style: TextStyle(
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: AppConstants.manrope,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 10),
-
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.timelapse,
-                                    color: Colors.blue[700],
-                                    size: 22,
-                                  ),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    duration,
-                                    style: TextStyle(
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: AppConstants.manrope,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        SizedBox(height: 3.h),
-
-                        Text(
-                          "Amenities",
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            color: Colors.black,
-                            fontFamily: AppConstants.manropeBold,
-                            letterSpacing: 1,
-                          ),
-                        ),
-
-                        Text(
-                          location,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: AppConstants.manrope,
-                          ),
-                        ),
-
-                        SizedBox(height: 4.h),
-
-                        batan(
-                          title: "Back to Home",
-                          route: () {
-                            Get.offAll(() => const BookingScreen());
-                          },
-                          color: AppColors.maincolor,
-                          fontcolor: Colors.white,
-                          height: 5.h,
-                          width: double.infinity,
-                          fontsize: 18.sp,
-                          radius: 12.0,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -2561,6 +2546,7 @@ class _Form_ScreenState extends State<Form_Screen> {
       },
     );
   }
+
 
   void _generateDatesBasedOnSelection() {
     DateTime today = DateTime.now();

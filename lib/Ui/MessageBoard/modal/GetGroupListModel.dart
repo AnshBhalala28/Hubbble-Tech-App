@@ -169,7 +169,7 @@ class Users {
   String? email;
   String? emailVerifiedAt;
   String? dPassword;
-  int? mobileNo;
+  var mobileNo;
   String? gender;
   String? dateOfBirth;
   Address? address;

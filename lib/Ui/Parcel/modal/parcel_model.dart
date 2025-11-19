@@ -209,7 +209,7 @@ class Requester {
   String? email;
   var emailVerifiedAt;
   String? dPassword;
-  int? mobileNo;
+  var mobileNo;
   String? gender;
   var dateOfBirth;
   dynamic address; // <-- CHANGE HERE
@@ -384,8 +384,10 @@ class Unitsnumber {
     noOfKeys = json['no_of_keys'];
     keysOut = json['keys_out'];
     parkingOption = json['parking_option'];
-    documentsFiles = json['documents_files'].cast<String>();
-    documentsFilesLabel = json['documents_files_label'].cast<String>();
+
+    documentsFiles = parseStringList(json['documents_files']);
+    documentsFilesLabel = parseStringList(json['documents_files_label']);
+
     keyWaiver = json['key_waiver'];
     lettingAgentInfo = json['letting_agent_info'];
     bicycleScooterInfo = json['bicycle_scooter_info'];
@@ -393,6 +395,7 @@ class Unitsnumber {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }
+
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -436,4 +439,18 @@ class Links {
     data['active'] = this.active;
     return data;
   }
+}
+List<String> parseStringList(dynamic value) {
+  if (value == null) return [];
+  if (value is List) {
+    return value.map((e) => e.toString()).toList();
+  }
+  if (value is String) {
+    // If API returns comma-separated string
+    if (value.contains(',')) {
+      return value.split(',').map((e) => e.trim()).toList();
+    }
+    return [value]; // Single string
+  }
+  return [];
 }

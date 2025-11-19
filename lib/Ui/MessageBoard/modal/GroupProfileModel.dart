@@ -31,7 +31,7 @@ class Data {
   int? id;
   String? name;
   String? profile;
-  int? mobileNo;
+  var mobileNo;
   String? status;
   String? firstName;
   String? lastName;

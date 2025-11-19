@@ -98,7 +98,7 @@ class RequestedUserName {
   String? email;
   var emailVerifiedAt;
   String? dPassword;
-  int? mobileNo;
+  var mobileNo;
   String? gender;
   var dateOfBirth;
   Address? address;

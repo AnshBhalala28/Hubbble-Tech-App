@@ -34,7 +34,7 @@ class Data1 {
   String? email;
   var emailVerifiedAt;
   var dPassword;
-  int? mobileNo;
+  var mobileNo;
   String? gender;
   String? dateOfBirth;
   String? address;

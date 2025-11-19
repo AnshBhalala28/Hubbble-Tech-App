@@ -145,7 +145,7 @@ class _EventDetailState extends State<EventDetail> {
                                     style: TextStyle(
                                       color: AppColors.maincolor,
                                       fontSize: 19.sp,
-                                      fontFamily: AppConstants.manrope,
+                                      fontFamily: AppConstants.manropeBold,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),

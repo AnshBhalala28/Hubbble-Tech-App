@@ -1,10 +1,7 @@
 import 'dart:io';
-
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
@@ -28,12 +25,15 @@ class Myprofile_Screen extends StatefulWidget {
 
 class _Myprofile_ScreenState extends State<Myprofile_Screen> {
   final GlobalKey<ScaffoldState> Myprofile = GlobalKey<ScaffoldState>();
+
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+
   File? selectedImage;
   bool isLoading = true;
   bool isEditing = false;
+
   String profileImage = "";
   ProfileModel? profileModel;
 
@@ -50,7 +50,7 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
       body: Stack(
         children: [
           if (isLoading)
-            Center(child: Loader())
+             Center(child: Loader())
           else
             SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 3.w),
@@ -73,15 +73,14 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                         CircleAvatar(
                           radius: 35.sp,
                           backgroundColor: Colors.grey.shade300,
-                          backgroundImage:
-                              selectedImage != null
-                                  ? FileImage(selectedImage!)
-                                  : (profileImage.isNotEmpty
-                                          ? NetworkImage(profileImage)
-                                          : const AssetImage(
-                                            'assets/images/waveeLogoShort.png',
-                                          ))
-                                      as ImageProvider,
+                          backgroundImage: selectedImage != null
+                              ? FileImage(selectedImage!)
+                              : (profileImage.isNotEmpty
+                              ? NetworkImage(profileImage)
+                              : const AssetImage(
+                            'assets/images/waveeLogoShort.png',
+                          ))
+                          as ImageProvider,
                         ),
                         Container(
                           decoration: const BoxDecoration(
@@ -114,7 +113,6 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                   infoCard("Full Name", nameController.text, Icons.person),
                   infoCard("Email", emailController.text, Icons.email),
 
-                  // infoCard("Phone Number", phoneController.text, Icons.phone),
                   SizedBox(height: 2.h),
                   batan(
                     title: "Update Profile Image",
@@ -133,24 +131,23 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                 ],
               ),
             ),
+
           if (isEditing)
             Container(
               color: Colors.black.withOpacity(0.3),
-              child: Center(child: Loader()),
+              child:  Center(child: Loader()),
             ),
         ],
       ),
     );
   }
 
-  /// 🔹 New Reusable Info Card (same as your Policy Holder design)
+  /// Reusable Info Card
   Widget infoCard(String label, String value, IconData icon) {
     return Material(
       elevation: 1,
       borderRadius: BorderRadius.circular(12),
-
       child: Container(
-        // margin: EdgeInsets.only(bottom: 1.5.h),
         padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.5.h),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -171,7 +168,7 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
             ),
             SizedBox(width: 3.w),
 
-            // Label and value
+            // Label + Value
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,9 +200,9 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
     ).marginOnly(bottom: 1.h);
   }
 
-  /// 🔹 API Call
+  /// Get Profile API
   void GetProfile() {
-    final Map<String, String> data = {'id': widget.id.toString()};
+    final Map<String, String> data = {"id": widget.id.toString()};
 
     checkInternet().then((internet) async {
       if (internet) {
@@ -213,16 +210,14 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
           profileModel = ProfileModel.fromJson(response.data);
 
           if (response.statusCode == 200) {
-            profileModel = ProfileModel.fromJson(response.data);
-            if (profileModel?.status == 200) {
-              var user = profileModel?.data?.user;
-              nameController.text =
-                  "${capitalize(user?.name?.firstName)} ${capitalize(user?.name?.lastName)}";
-              emailController.text = user?.email ?? "N/A";
-              // phoneController.text = user?.mobileNo?.toString() ?? 'N/A';
-              profileImage = user?.profile ?? "";
-            }
+            var user = profileModel?.data?.user;
+
+            nameController.text =
+            "${capitalize(user?.name?.firstName)} ${capitalize(user?.name?.lastName)}";
+            emailController.text = user?.email ?? "N/A";
+            profileImage = user?.profile ?? "";
           }
+
           setState(() => isLoading = false);
         });
       } else {
@@ -231,34 +226,11 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
     });
   }
 
-  /// 🔹 Image Picker
+  /// PICK IMAGE (NO PERMISSIONS NEEDED)
   Future<void> pickImage() async {
-    PermissionStatus status;
+    final pickedFile =
+    await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    if (Platform.isAndroid) {
-      final androidInfo = await DeviceInfoPlugin().androidInfo;
-      final androidVersion = androidInfo.version.sdkInt;
-
-      if (androidVersion >= 33) {
-        status = await Permission.photos.request();
-      } else {
-        status = await Permission.storage.request();
-      }
-
-      if (!status.isGranted) {
-        Get.snackbar(
-          "Permission Denied",
-          "Please enable photo permission from settings",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-        return;
-      }
-    }
-
-    final pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-    );
     if (pickedFile != null) {
       setState(() {
         selectedImage = File(pickedFile.path);
@@ -273,7 +245,7 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
     }
   }
 
-  /// 🔹 Update Profile
+  /// UPDATE PROFILE API
   void EditProfile() {
     final Map<String, String> data = {
       'update_id': profileModel?.data?.id.toString() ?? '',
@@ -284,11 +256,10 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
 
     checkInternet().then((internet) async {
       if (internet) {
-        ProfileProvider().profileEdit(data, selectedImage).then((
-          response,
-        ) async {
+        ProfileProvider().profileEdit(data, selectedImage).then((response) {
           if (response.statusCode == 200) {
             var result = ProfileModel.fromJson(response.data);
+
             if (result.status == 200) {
               Get.offAll(HomePage(userName: ""));
               Get.snackbar(
@@ -298,21 +269,14 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                 colorText: Colors.white,
               );
             } else {
-              Get.snackbar(
-                "Error",
-                "Failed to update profile",
-                backgroundColor: Colors.red,
-                colorText: Colors.white,
-              );
+              Get.snackbar("Error", "Failed to update profile",
+                  backgroundColor: Colors.red, colorText: Colors.white);
             }
           } else {
-            Get.snackbar(
-              "Error",
-              "Server error, please try again",
-              backgroundColor: Colors.red,
-              colorText: Colors.white,
-            );
+            Get.snackbar("Error", "Server error, please try again",
+                backgroundColor: Colors.red, colorText: Colors.white);
           }
+
           setState(() => isEditing = false);
         });
       } else {
@@ -330,12 +294,9 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
     if (s == null || s.isEmpty) return '';
     return s
         .split(' ')
-        .map(
-          (word) =>
-              word.isNotEmpty
-                  ? word[0].toUpperCase() + word.substring(1).toLowerCase()
-                  : '',
-        )
+        .map((word) => word.isNotEmpty
+        ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+        : '')
         .join(' ');
   }
 }

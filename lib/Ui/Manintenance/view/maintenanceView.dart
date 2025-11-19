@@ -545,7 +545,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                         style: TextStyle(
                           fontSize: 19.sp,
                           fontWeight: FontWeight.bold,
-                          fontFamily: AppConstants.manrope,
+                          fontFamily: AppConstants.manropeBold,
                         ),
                       ),
                       SizedBox(height: 2.h),
