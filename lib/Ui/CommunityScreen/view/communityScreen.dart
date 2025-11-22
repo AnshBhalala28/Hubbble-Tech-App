@@ -1750,18 +1750,22 @@ class _CommunityScreenState extends State<CommunityScreen>
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                   Text(
                                     "Favourites",
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 18.sp,
                                       fontWeight: FontWeight.bold,
+                                      fontFamily: AppConstants.manropeBold,
+
                                     ),
                                   ),
                                   Text(
                                     "${getlikeModal?.data?.length ?? "No"} Favourites",
-                                    style: const TextStyle(
+                                    style:  TextStyle(
                                       color: Colors.grey,
-                                      fontSize: 14,
+                                      fontSize: 15.sp,
+                                        fontFamily: AppConstants.manrope,
+
                                     ),
                                   ),
                                 ],
@@ -1803,6 +1807,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: Colors.grey,
+                                      fontFamily: AppConstants.manrope,
+
                                     ),
                                   ),
                                 )
@@ -1900,11 +1906,13 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                 .business
                                                                 ?.businessName ??
                                                             "N/A",
-                                                        style: const TextStyle(
-                                                          fontSize: 16,
+                                                        style:  TextStyle(
+                                                          fontSize: 16.sp,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                           color: Colors.black87,
+                                                          fontFamily: AppConstants.manrope,
+
                                                         ),
                                                         maxLines: 1,
                                                         overflow:
@@ -1914,9 +1922,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                       const SizedBox(height: 3),
                                                       Text(
                                                         "${(getlikeModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
-                                                        style: const TextStyle(
-                                                          fontSize: 14,
+                                                        style:  TextStyle(
+                                                          fontSize: 14.sp,
                                                           color: Colors.black54,
+                                                          fontFamily: AppConstants.manrope,
+
                                                         ),
                                                       ),
                                                     ],
@@ -2072,18 +2082,21 @@ class _CommunityScreenState extends State<CommunityScreen>
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                   Text(
                                     "Recently Visited",
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 18.sp,
                                       fontWeight: FontWeight.bold,
+                                      fontFamily: AppConstants.manropeBold,
                                     ),
                                   ),
                                   Text(
                                     "${getvisitedModal?.data?.length ?? "No"}  Recently Visited",
-                                    style: const TextStyle(
+                                    style:  TextStyle(
                                       color: Colors.grey,
-                                      fontSize: 14,
+                                      fontSize: 15.sp,
+                                        fontFamily: AppConstants.manrope
+
                                     ),
                                   ),
                                 ],
@@ -2223,11 +2236,13 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                 .business
                                                                 ?.businessName ??
                                                             "N/A",
-                                                        style: const TextStyle(
-                                                          fontSize: 16,
+                                                        style:  TextStyle(
+                                                          fontSize: 16.sp,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                           color: Colors.black87,
+                                                            fontFamily: AppConstants.manrope
+
                                                         ),
                                                         maxLines: 1,
                                                         overflow:
@@ -2237,9 +2252,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                       const SizedBox(height: 3),
                                                       Text(
                                                         "${(getvisitedModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
-                                                        style: const TextStyle(
-                                                          fontSize: 14,
+                                                        style:  TextStyle(
+                                                          fontSize: 14.sp,
                                                           color: Colors.black54,
+                                                            fontFamily: AppConstants.manrope
+
                                                         ),
                                                       ),
                                                     ],
@@ -2824,7 +2841,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                     fontWeight: FontWeight.w600,
                                                     color: AppColors.black,
                                                     fontFamily:
-                                                        AppConstants.manropeBold,
+                                                        AppConstants
+                                                            .manropeBold,
                                                   ),
                                                 ),
                                               ],
@@ -3664,6 +3682,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                   ?.id
                                                   .toString() ??
                                               "",
+
                                           chatName:
                                               busnessviewmodal
                                                   ?.data
@@ -3688,6 +3707,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                   ?.data
                                                   ?.business
                                                   ?.chatStatus,
+                                          lat: AppLat,
+                                          long: AppLon,
                                         ),
                                       );
                                     },

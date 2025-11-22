@@ -131,7 +131,7 @@ class _BookingScreenState extends State<BookingScreen> {
             SizedBox(height: 4.h),
             TitleBar(
               back: () {
-                Get.to(HomePage(userName: '', selected: 1));
+                Get.off(HomePage(userName: '', selected: 1));
               },
               title: 'My Bookings',
               drawerCallback: () {},

@@ -122,9 +122,8 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                     servicedetailsmodel?.data?.businessName ??
                                         "",
                                     style: TextStyle(
-                                      fontFamily: AppConstants.manrope,
+                                      fontFamily: AppConstants.manropeBold,
                                       fontSize: 19.sp,
-                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),

@@ -1136,10 +1136,16 @@ class _AddToCartViewState extends State<AddToCartView> {
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Center(child: Loader()),
                 errorWidget:
-                    (context, url, error) => Icon(
-                      Icons.image_outlined,
-                      color: Colors.grey[400],
-                      size: 8.w,
+                    (context, url, error) => Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1,color: Color(0xFFF8F8F8)),
+                        image: DecorationImage(
+
+                          image: AssetImage(
+                            "assets/images/Applogo_remove_background.png",
+                          ),
+                        ),
+                      ),
                     ),
               ),
             ),
@@ -2431,11 +2437,17 @@ class _AddToCartViewState extends State<AddToCartView> {
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Center(child: Loader()),
                 errorWidget:
-                    (context, url, error) => Icon(
-                      Icons.image_outlined,
-                      color: Colors.grey[400],
-                      size: 8.w,
+                    (context, url, error) => Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1,color: Color(0xFFF8F8F8)),
+                    image: DecorationImage(
+
+                      image: AssetImage(
+                        "assets/images/Applogo_remove_background.png",
+                      ),
                     ),
+                  ),
+                ),
               ),
             ),
           ),

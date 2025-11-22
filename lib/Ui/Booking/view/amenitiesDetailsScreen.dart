@@ -2507,7 +2507,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              fontFamily: AppConstants.manrope,
+                              fontFamily: AppConstants.manropeBold,
                             ),
                           ),
 

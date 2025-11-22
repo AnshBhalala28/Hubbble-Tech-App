@@ -124,9 +124,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                         productViewModel?.data?.businessName ??
                                             "",
                                         style: TextStyle(
-                                          fontFamily: AppConstants.manrope,
+                                          fontFamily: AppConstants.manropeBold,
                                           fontSize: 19.sp,
-                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
