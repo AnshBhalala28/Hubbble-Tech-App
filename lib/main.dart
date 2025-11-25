@@ -26,29 +26,14 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("✅ BACKGROUND/TERMINATED HANDLER CALLED");
   print("===================================");
 
-  // આખું મેસેજ પ્રિન્ટ કરીએ
   print("FULL MESSAGE DATA: ${message.toMap().toString()}");
-
-  print("--- DATA PAYLOAD ---");
   print(message.data);
 
-  print("--- NOTIFICATION PAYLOAD ---");
-  print("Title: ${message.notification?.title}");
-  print("Body: ${message.notification?.body}");
-  print("===================================");
-
-  // **** આ છે ડબલ નોટિફિકેશન રોકવાનો લોજિક ****
   if (message.notification == null) {
-    print(">>> 'notification' કી નથી (null છે).");
-    print(">>> તેથી, _showAwesomeNotification ને કોલ કરું છું...");
-    _showAwesomeNotification(message, "Background (Data-Only)");
+    _showAwesomeNotification(message, "Background (Data Only)");
   } else {
-    print(">>> 'notification' કી હાજર છે.");
-    print(">>> Firebase પોતે જ નોટિફિકેશન બતાવશે. હું કાંઈ નહીં કરુ");
+    print("Firebase will show notification automatically (notification payload present)");
   }
-
-  print("✅ BACKGROUND HANDLER FINISHED");
-  print("===================================");
 }
 
 /// Runs only once after fresh iOS reinstall
@@ -58,11 +43,8 @@ Future<void> _handleFreshInstallIOS() async {
   final prefs = await SharedPreferences.getInstance();
   const flag = 'has_launched_once';
 
-  // If first time after reinstall
   final hasLaunchedBefore = prefs.getBool(flag) ?? false;
   if (hasLaunchedBefore) return;
-
-  print("🍏 Fresh iOS install → Clearing Keychain login cache");
 
   try {
     const storage = FlutterSecureStorage();
@@ -81,21 +63,16 @@ Future<void> _handleFreshInstallIOS() async {
 }
 
 void _showAwesomeNotification(RemoteMessage message, String source) async {
-  print("--- _showAwesomeNotification (Source: $source) ---");
-
   bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
   if (!isAllowed) {
-    print(">>> Notification NOT Allowed by user. Exiting function.");
+    print("Notifications not allowed by user.");
     return;
   }
 
   String? title = message.notification?.title ?? message.data['title'] ?? '';
-  String? body = message.notification?.body ?? message.data['body'] ?? '';
+  String? body  = message.notification?.body ?? message.data['body'] ?? '';
 
-  print(">>> Creating AwesomeNotification:");
-  print(">>> Title: $title");
-  print(">>> Body: $body");
-
+  // Note: removed invalid 'playSound' parameter from NotificationContent
   AwesomeNotifications().createNotification(
     content: NotificationContent(
       id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
@@ -103,9 +80,11 @@ void _showAwesomeNotification(RemoteMessage message, String source) async {
       title: title,
       body: body,
       notificationLayout: NotificationLayout.Default,
+      autoDismissible: true,
+      wakeUpScreen: true,
+      category: NotificationCategory.Message,
     ),
   );
-  print("--- _showAwesomeNotification FINISHED ---");
 }
 
 void main() async {
@@ -113,30 +92,38 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await _handleFreshInstallIOS();
   Get.put(GlobalCountsController());
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  AwesomeNotifications().initialize(null, [
-    NotificationChannel(
-      channelKey: 'basic_channel',
-      channelName: 'Basic Notifications',
-      channelDescription: 'Used for basic notifications',
-      defaultColor: AppColors.maincolor,
-      ledColor: Colors.white,
-      importance: NotificationImportance.High,
-      channelShowBadge: true,
-    ),
-  ], debug: true);
+  // Initialize Awesome Notifications - no 'playSound' used here.
+  AwesomeNotifications().initialize(
+    null,
+    [
+      NotificationChannel(
+        channelKey: 'basic_channel',
+        channelName: 'Basic Notifications',
+        channelDescription: 'Used for basic notifications',
+        defaultColor: AppColors.maincolor,
+        ledColor: Colors.white,
+        importance: NotificationImportance.Max, // highest importance
+        channelShowBadge: true,
+        enableLights: true,
+        enableVibration: true,
+        vibrationPattern: lowVibrationPattern,
+        // soundSource: null, // leave soundSource unset so system default is used
+      ),
+    ],
+    debug: true,
+  );
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   await messaging.requestPermission(
     alert: true,
     badge: true,
     sound: true,
-    announcement: true,
-    carPlay: true,
-    criticalAlert: true,
     provisional: false,
   );
+
   bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
   if (!isAllowed) {
     AwesomeNotifications().requestPermissionToSendNotifications();
@@ -163,24 +150,15 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> setupFirebaseListeners() async {
     myDeviceToken = await FirebaseMessaging.instance.getToken();
-    print("===================================");
-    print("📱 MY DEVICE TOKEN: $myDeviceToken");
-    print("===================================");
+    print("📱 Device Token: $myDeviceToken");
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print("===================================");
-      print("✅ FOREGROUND (onMessage) HANDLER CALLED");
-      print("FULL MESSAGE DATA: ${message.toMap().toString()}");
-      print("===================================");
-
+      print("🔥 Foreground notification received: ${message.toMap()}");
       _showAwesomeNotification(message, "Foreground");
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print("===================================");
-      print("✅ APP OPENED FROM BACKGROUND (onMessageOpenedApp)");
-      print("FULL MESSAGE DATA: ${message.toMap().toString()}");
-      print("===================================");
+      print("📂 App opened from notification: ${message.toMap()}");
     });
 
     checkInitialMessage();
@@ -188,13 +166,10 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> checkInitialMessage() async {
     RemoteMessage? initialMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
+    await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
-      print("===================================");
-      print("✅ APP OPENED FROM TERMINATED (getInitialMessage)");
-      print("FULL MESSAGE DATA: ${initialMessage.toMap().toString()}");
-      print("===================================");
+      print("📂 App opened from terminated state: ${initialMessage.toMap()}");
     }
   }
 

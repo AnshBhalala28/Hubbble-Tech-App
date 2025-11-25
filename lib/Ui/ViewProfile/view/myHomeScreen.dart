@@ -148,7 +148,8 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
               backgroundColor: AppColors.maincolor,
               colorText: Colors.white,
             );
-            Get.offAll(HomePage(userName: ""));
+            GetProfile();
+            // Get.offAll(HomePage(userName: ""));
           } else {
             Get.snackbar(
               "Error",

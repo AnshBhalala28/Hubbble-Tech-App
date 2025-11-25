@@ -1911,7 +1911,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                           fontWeight:
                                                               FontWeight.bold,
                                                           color: Colors.black87,
-                                                          fontFamily: AppConstants.manrope,
+                                                          fontFamily: AppConstants.manropeBold,
 
                                                         ),
                                                         maxLines: 1,
@@ -2241,7 +2241,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                           fontWeight:
                                                               FontWeight.bold,
                                                           color: Colors.black87,
-                                                            fontFamily: AppConstants.manrope
+                                                            fontFamily: AppConstants.manropeBold
 
                                                         ),
                                                         maxLines: 1,

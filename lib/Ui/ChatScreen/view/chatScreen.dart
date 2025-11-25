@@ -508,28 +508,44 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                             onTap: () {
                                               _timer?.cancel();
 
+                                              // Get.to(
+                                              //   MessageScreen(
+                                              //     chatName: displayName,
+                                              //     image: user.business?.logo,
+                                              //     conciergeID:
+                                              //         user.id.toString() ?? '',
+                                              //     type: "business",
+                                              //     chatStatus:
+                                              //         user
+                                              //             .business
+                                              //             ?.chatStatus ??
+                                              //         0,
+                                              //     businessID:
+                                              //         user.business?.id
+                                              //             .toString() ??
+                                              //         "",
+                                              //   ),
+                                              // )?.then((value) {
+                                              //   // Restart timer when returning from MessageScreen
+                                              //   _restartTimer();
+                                              //   ChatApi();
+                                              // });
                                               Get.to(
                                                 MessageScreen(
                                                   chatName: displayName,
                                                   image: user.business?.logo,
-                                                  conciergeID:
-                                                      user.id.toString() ?? '',
+                                                  conciergeID: user.id.toString() ?? '',
                                                   type: "business",
-                                                  chatStatus:
-                                                      user
-                                                          .business
-                                                          ?.chatStatus ??
-                                                      0,
-                                                  businessID:
-                                                      user.business?.id
-                                                          .toString() ??
-                                                      "",
+                                                  chatStatus: user.business?.chatStatus ?? 0,
+                                                  businessID: user.business?.id.toString() ?? "",
                                                 ),
                                               )?.then((value) {
-                                                // Restart timer when returning from MessageScreen
                                                 _restartTimer();
                                                 ChatApi();
+                                                StoryApi();
+                                                setState(() {});
                                               });
+
                                             },
                                             child: Stack(
                                               children: [

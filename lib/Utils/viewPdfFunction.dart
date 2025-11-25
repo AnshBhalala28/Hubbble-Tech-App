@@ -64,7 +64,6 @@ class _PdfViewState extends State<PdfView> {
                       size: 20.sp,
                     ),
                   ),
-                  // <-- 4. ડાયનેમિક ફાઇલ નામ બતાવો
                   Expanded(
                     child: Text(
                       fileName,
@@ -128,7 +127,7 @@ class _PdfViewState extends State<PdfView> {
       return InteractiveViewer(
         panEnabled: true, // પેન કરવા માટે
         minScale: 0.5, // મિનિમમ ઝૂમ
-        maxScale: 4.0, // મેક્સિમમ ઝૂમ
+        maxScale: 4.0,
         child: Center(
           child: Image.network(
             link,
