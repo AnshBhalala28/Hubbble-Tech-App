@@ -98,9 +98,7 @@ class _MessageScreenState extends State<MessageScreen> {
     log("Business ID AVE CE ${widget.lat}");
     log("Business ID AVE CE ${widget.long}");
     log(
-      "Business ID AVE CE ${widget.businessID == null
-          ? widget.businessID
-          : widget.senderid}",
+      "Business ID AVE CE ${widget.businessID == null ? widget.businessID : widget.senderid}",
     );
   }
 
@@ -179,22 +177,22 @@ class _MessageScreenState extends State<MessageScreen> {
                     child: InkWell(
                       onTap: () {
                         String friendid =
-                        (widget.conciergeID.toString() ==
-                            (loginModel?.data?.user?.id.toString() ??
-                                ""))
-                            ? (widget.senderid?.toString() ?? "")
-                            : (widget.conciergeID?.toString() ?? "");
+                            (widget.conciergeID.toString() ==
+                                    (loginModel?.data?.user?.id.toString() ??
+                                        ""))
+                                ? (widget.senderid?.toString() ?? "")
+                                : (widget.conciergeID?.toString() ?? "");
 
                         if (widget.type == "concierge") {
                           _timer?.cancel();
                           Get.to(
-                                () => UserProfileScreen(id: widget.conciergeID),
+                            () => UserProfileScreen(id: widget.conciergeID),
                           );
                         } else if (widget.type == "residents") {
                           _timer?.cancel();
 
                           Get.to(
-                                () => AppUserFriendProfileScreen(id: friendid),
+                            () => AppUserFriendProfileScreen(id: friendid),
                           );
                         } else if (widget.type == "business") {
                           Get.to(
@@ -221,25 +219,25 @@ class _MessageScreenState extends State<MessageScreen> {
                           InkWell(
                             onTap: () {
                               String friendid =
-                              (widget.conciergeID.toString() ==
-                                  (loginModel?.data?.user?.id
-                                      .toString() ??
-                                      ""))
-                                  ? (widget.senderid?.toString() ?? "")
-                                  : (widget.conciergeID?.toString() ?? "");
+                                  (widget.conciergeID.toString() ==
+                                          (loginModel?.data?.user?.id
+                                                  .toString() ??
+                                              ""))
+                                      ? (widget.senderid?.toString() ?? "")
+                                      : (widget.conciergeID?.toString() ?? "");
 
                               if (widget.type == "concierge") {
                                 _timer?.cancel();
 
                                 Get.to(
-                                      () =>
+                                  () =>
                                       UserProfileScreen(id: widget.conciergeID),
                                 );
                               } else if (widget.type == "residents") {
                                 _timer?.cancel();
 
                                 Get.to(
-                                      () =>
+                                  () =>
                                       AppUserFriendProfileScreen(id: friendid),
                                 );
                               }
@@ -249,14 +247,12 @@ class _MessageScreenState extends State<MessageScreen> {
                               child: CachedNetworkImage(
                                 imageUrl: widget.image ?? "",
                                 placeholder:
-                                    (context, url) =>
-                                    CircleAvatar(
+                                    (context, url) => CircleAvatar(
                                       radius: 20.sp,
                                       backgroundColor: Colors.grey.shade300,
                                     ),
                                 errorWidget:
-                                    (context, url, error) =>
-                                    CircleAvatar(
+                                    (context, url, error) => CircleAvatar(
                                       radius: 20.sp,
                                       child: Image.asset(
                                         "assets/images/waveeLogoShort.png",
@@ -288,399 +284,397 @@ class _MessageScreenState extends State<MessageScreen> {
                   ),
                   isLoading
                       ? Center(
-                    child: Center(child: Loader()),
-                  ).paddingOnly(top: 30.h)
+                        child: Center(child: Loader()),
+                      ).paddingOnly(top: 30.h)
                       : messageModel?.data?.length == 0 ||
-                      messageModel?.data?.length == null
+                          messageModel?.data?.length == null
                       ? Expanded(
-                    child: Center(
-                      child: Text(
-                        "No messages available",
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                          fontFamily: AppConstants.manrope,
+                        child: Center(
+                          child: Text(
+                            "No messages available",
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                              fontFamily: AppConstants.manrope,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  )
+                      )
                       : Expanded(
-                    child: ListView.builder(
-                      reverse: true,
-                      controller: _scrollController,
-                      itemCount: messageModel?.data?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        bool isMe =
-                            messageModel?.data?[index].sender?.id ==
+                        child: ListView.builder(
+                          reverse: true,
+                          controller: _scrollController,
+                          itemCount: messageModel?.data?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            bool isMe =
+                                messageModel?.data?[index].sender?.id ==
                                 loginModel?.data?.user?.id;
 
-                        DateTime? currentMessageDate;
-                        try {
-                          final created = DateTime.parse(
-                            messageModel?.data?[index].createdAt ?? "",
-                          );
-                          currentMessageDate = DateTime(
-                            created.year,
-                            created.month,
-                            created.day,
-                          );
-                        } catch (_) {}
+                            DateTime? currentMessageDate;
+                            try {
+                              final created = DateTime.parse(
+                                messageModel?.data?[index].createdAt ?? "",
+                              );
+                              currentMessageDate = DateTime(
+                                created.year,
+                                created.month,
+                                created.day,
+                              );
+                            } catch (_) {}
 
-                        bool showDateSeparator = false;
-                        if (index == messageModel!.data!.length - 1) {
-                          showDateSeparator = true;
-                        } else {
-                          try {
-                            final nextMessageDate = DateTime.parse(
-                              messageModel?.data?[index + 1].createdAt ??
-                                  "",
-                            );
-                            final nextDate = DateTime(
-                              nextMessageDate.year,
-                              nextMessageDate.month,
-                              nextMessageDate.day,
-                            );
-
-                            if (currentMessageDate != null &&
-                                currentMessageDate != nextDate) {
+                            bool showDateSeparator = false;
+                            if (index == messageModel!.data!.length - 1) {
                               showDateSeparator = true;
-                            }
-                          } catch (_) {}
-                        }
+                            } else {
+                              try {
+                                final nextMessageDate = DateTime.parse(
+                                  messageModel?.data?[index + 1].createdAt ??
+                                      "",
+                                );
+                                final nextDate = DateTime(
+                                  nextMessageDate.year,
+                                  nextMessageDate.month,
+                                  nextMessageDate.day,
+                                );
 
-                        return Column(
-                          children: [
-                            if (showDateSeparator)
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 10,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    formatDateTime(
-                                      messageModel
-                                          ?.data?[index]
-                                          .createdAt ??
-                                          "",
+                                if (currentMessageDate != null &&
+                                    currentMessageDate != nextDate) {
+                                  showDateSeparator = true;
+                                }
+                              } catch (_) {}
+                            }
+
+                            return Column(
+                              children: [
+                                if (showDateSeparator)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 10,
                                     ),
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey,
-                                      fontFamily: AppConstants.manrope,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 5,
-                                horizontal: 10,
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                isMe
-                                    ? MainAxisAlignment.end
-                                    : MainAxisAlignment.start,
-                                crossAxisAlignment:
-                                CrossAxisAlignment.center,
-                                children: [
-                                  if (!isMe)
-                                    CircleAvatar(
-                                      radius: 19.sp,
-                                      backgroundColor: Colors.grey.shade300,
-                                      child: ClipOval(
-                                        child: CachedNetworkImage(
-                                          imageUrl: widget.image ?? '',
-                                          fit: BoxFit.contain,
-                                          width: 38.sp,
-                                          height: 38.sp,
-                                          placeholder:
-                                              (context, url) =>
-                                          const CircularProgressIndicator(
-                                            strokeWidth: 1,
-                                          ),
-                                          errorWidget:
-                                              (context,
-                                              url,
-                                              error,) =>
-                                              Image.asset(
-                                                'assets/images/waveeLogoShort.png',
-                                                fit: BoxFit.contain,
-                                                width: 38.sp,
-                                                height: 38.sp,
-                                              ),
+                                    child: Center(
+                                      child: Text(
+                                        formatDateTime(
+                                          messageModel
+                                                  ?.data?[index]
+                                                  .createdAt ??
+                                              "",
+                                        ),
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                          fontFamily: AppConstants.manrope,
                                         ),
                                       ),
                                     ),
-                                  if (!isMe) const SizedBox(width: 8),
-                                  Flexible(
-                                    child: Container(
-                                      constraints: BoxConstraints(
-                                        minWidth: 60.w,
-                                        maxWidth: 80.w,
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 1.h,
-                                        horizontal: 3.w,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color:
+                                  ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 5,
+                                    horizontal: 10,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
                                         isMe
-                                            ? AppColors.maincolor
-                                            : Colors.grey[300],
-                                        borderRadius: BorderRadius.circular(
-                                          10,
+                                            ? MainAxisAlignment.end
+                                            : MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      if (!isMe)
+                                        CircleAvatar(
+                                          radius: 19.sp,
+                                          backgroundColor: Colors.grey.shade300,
+                                          child: ClipOval(
+                                            child: CachedNetworkImage(
+                                              imageUrl: widget.image ?? '',
+                                              fit: BoxFit.contain,
+                                              width: 38.sp,
+                                              height: 38.sp,
+                                              placeholder:
+                                                  (context, url) =>
+                                                      const CircularProgressIndicator(
+                                                        strokeWidth: 1,
+                                                      ),
+                                              errorWidget:
+                                                  (
+                                                    context,
+                                                    url,
+                                                    error,
+                                                  ) => Image.asset(
+                                                    'assets/images/waveeLogoShort.png',
+                                                    fit: BoxFit.contain,
+                                                    width: 38.sp,
+                                                    height: 38.sp,
+                                                  ),
+                                            ),
+                                          ),
+                                        ),
+                                      if (!isMe) const SizedBox(width: 8),
+                                      Flexible(
+                                        child: Container(
+                                          constraints: BoxConstraints(
+                                            minWidth: 60.w,
+                                            maxWidth: 80.w,
+                                          ),
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 1.h,
+                                            horizontal: 3.w,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                isMe
+                                                    ? AppColors.maincolor
+                                                    : Colors.grey[300],
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                          ),
+                                          child: getMessageWidget(
+                                            messageModel?.data?[index],
+                                            isMe,
+                                          ),
                                         ),
                                       ),
-                                      child: getMessageWidget(
-                                        messageModel?.data?[index],
-                                        isMe,
-                                      ),
-                                    ),
+                                      if (isMe) const SizedBox(width: 8),
+                                      if (isMe)
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            25.sp,
+                                          ),
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                messageModel
+                                                    ?.data?[index]
+                                                    .sender
+                                                    ?.profile ??
+                                                "",
+                                            placeholder:
+                                                (context, url) => CircleAvatar(
+                                                  radius: 18.sp,
+                                                  backgroundColor:
+                                                      Colors.grey.shade300,
+                                                ),
+                                            errorWidget:
+                                                (
+                                                  context,
+                                                  url,
+                                                  error,
+                                                ) => CircleAvatar(
+                                                  radius: 18.sp,
+                                                  child: Image.asset(
+                                                    "assets/images/waveeLogoShort.png",
+                                                  ),
+                                                ),
+                                            width: 26.sp,
+                                            height: 26.sp,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                    ],
                                   ),
-                                  if (isMe) const SizedBox(width: 8),
-                                  if (isMe)
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                        25.sp,
-                                      ),
-                                      child: CachedNetworkImage(
-                                        imageUrl:
-                                        messageModel
-                                            ?.data?[index]
-                                            .sender
-                                            ?.profile ??
-                                            "",
-                                        placeholder:
-                                            (context, url) =>
-                                            CircleAvatar(
-                                              radius: 18.sp,
-                                              backgroundColor:
-                                              Colors.grey.shade300,
-                                            ),
-                                        errorWidget:
-                                            (context,
-                                            url,
-                                            error,) =>
-                                            CircleAvatar(
-                                              radius: 18.sp,
-                                              child: Image.asset(
-                                                "assets/images/waveeLogoShort.png",
-                                              ),
-                                            ),
-                                        width: 26.sp,
-                                        height: 26.sp,
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
                   isLoading
                       ? const Center(child: Text(""))
                       : widget.chatStatus == 0
                       ? Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 10,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.redColor.withOpacity(0.07),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: AppColors.redColor.withOpacity(0.4),
-                          width: 1,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
                         ),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.info_outline_rounded,
-                            color: AppColors.redColor,
-                            size: 20,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 12,
                           ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              "Chat is temporarily unavailable as the ${widget
-                                  .chatName!} has paused messages.",
-                              style: const TextStyle(
-                                fontFamily: AppConstants.manrope,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
+                          decoration: BoxDecoration(
+                            color: AppColors.redColor.withOpacity(0.07),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: AppColors.redColor.withOpacity(0.4),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.info_outline_rounded,
                                 color: AppColors.redColor,
-                                height: 1.5,
+                                size: 20,
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                      : Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: AppColors.maincolor,
-                          radius: 22,
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.add,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              selectfile();
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(25),
-                              border: Border.all(
-                                color: Colors.grey.shade300,
-                              ),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 4,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: TextField(
-                              controller: _messageController,
-                              textInputAction: TextInputAction.send,
-                              keyboardType: TextInputType.multiline,
-
-                              minLines: 1,
-                              // Start with one line
-                              maxLines: 5,
-                              // Expand up to 5 lines (you can increase if needed)
-                              // onSubmitted: (text) {
-                              //   if (text.isNotEmpty) {
-                              //     setState(() {
-                              //       messages.add(text);
-                              //       _messageController.clear();
-                              //     });
-                              //   }
-                              // },
-                              onSubmitted: (value) {
-                                if (_messageController.text
-                                    .trim()
-                                    .isEmpty) {
-                                  ScaffoldMessenger.of(
-                                    context,
-                                  ).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Message cannot be empty',
-                                      ),
-                                      backgroundColor: AppColors.redColor,
-                                      duration: Duration(seconds: 1),
-                                    ),
-                                  );
-                                } else {
-                                  setState(() {
-                                    type = 1;
-                                  });
-
-                                  if (isLoading) return;
-
-                                  if (widget.type == "order") {
-                                    SendOrderChatApi();
-                                  } else {
-                                    SendMessagApi();
-                                  }
-
-                                  _scrollToBottom();
-                                }
-                              },
-                              decoration: const InputDecoration(
-                                hintText: "Type a message...",
-                                hintStyle: TextStyle(color: Colors.grey),
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(
-                                  vertical: 12,
-                                  horizontal: 16,
-                                ),
-                              ),
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(width: 8),
-                        CircleAvatar(
-                          backgroundColor: AppColors.maincolor,
-                          radius: 22,
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.send,
-                              color: Colors.white,
-                              size: 22,
-                            ),
-                            onPressed: () {
-                              if (_messageController.text
-                                  .trim()
-                                  .isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Message cannot be empty',
-                                    ),
-                                    backgroundColor: AppColors.redColor,
-                                    duration: Duration(seconds: 1),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  "Chat is temporarily unavailable as the ${widget.chatName!} has paused messages.",
+                                  style: const TextStyle(
+                                    fontFamily: AppConstants.manrope,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.redColor,
+                                    height: 1.5,
                                   ),
-                                );
-                              } else {
-                                setState(() {
-                                  type = 1;
-                                });
-
-                                if (isLoading) return;
-
-                                if (widget.type == "order") {
-                                  SendOrderChatApi();
-                                } else {
-                                  SendMessagApi();
-                                }
-
-                                _scrollToBottom();
-                              }
-                            },
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
+                      )
+                      : Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: AppColors.maincolor,
+                              radius: 22,
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  selectfile();
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(25),
+                                  border: Border.all(
+                                    color: Colors.grey.shade300,
+                                  ),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: TextField(
+                                  controller: _messageController,
+                                  textInputAction: TextInputAction.send,
+                                  keyboardType: TextInputType.multiline,
+
+                                  minLines: 1,
+                                  // Start with one line
+                                  maxLines: 5,
+                                  // Expand up to 5 lines (you can increase if needed)
+                                  // onSubmitted: (text) {
+                                  //   if (text.isNotEmpty) {
+                                  //     setState(() {
+                                  //       messages.add(text);
+                                  //       _messageController.clear();
+                                  //     });
+                                  //   }
+                                  // },
+                                  onSubmitted: (value) {
+                                    if (_messageController.text
+                                        .trim()
+                                        .isEmpty) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                            'Message cannot be empty',
+                                          ),
+                                          backgroundColor: AppColors.redColor,
+                                          duration: Duration(seconds: 1),
+                                        ),
+                                      );
+                                    } else {
+                                      setState(() {
+                                        type = 1;
+                                      });
+
+                                      if (isLoading) return;
+
+                                      if (widget.type == "order") {
+                                        SendOrderChatApi();
+                                      } else {
+                                        SendMessagApi();
+                                      }
+
+                                      _scrollToBottom();
+                                    }
+                                  },
+                                  decoration: const InputDecoration(
+                                    hintText: "Type a message...",
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.symmetric(
+                                      vertical: 12,
+                                      horizontal: 16,
+                                    ),
+                                  ),
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(width: 8),
+                            CircleAvatar(
+                              backgroundColor: AppColors.maincolor,
+                              radius: 22,
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.send,
+                                  color: Colors.white,
+                                  size: 22,
+                                ),
+                                onPressed: () {
+                                  if (_messageController.text.trim().isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Message cannot be empty',
+                                        ),
+                                        backgroundColor: AppColors.redColor,
+                                        duration: Duration(seconds: 1),
+                                      ),
+                                    );
+                                  } else {
+                                    setState(() {
+                                      type = 1;
+                                    });
+
+                                    if (isLoading) return;
+
+                                    if (widget.type == "order") {
+                                      SendOrderChatApi();
+                                    } else {
+                                      SendMessagApi();
+                                    }
+
+                                    _scrollToBottom();
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                 ],
               ),
               isSending
                   ? Positioned.fill(
-                child: Container(
-                  color: Colors.black.withOpacity(0.4),
-                  child: Center(child: Loader()),
-                ),
-              )
+                    child: Container(
+                      color: Colors.black.withOpacity(0.4),
+                      child: Center(child: Loader()),
+                    ),
+                  )
                   : const SizedBox(),
             ],
           ),
@@ -713,10 +707,9 @@ class _MessageScreenState extends State<MessageScreen> {
               // height: 30.h,
               width: 30.w,
               placeholder:
-                  (context, url) =>
-              const Center(
-                child: CircularProgressIndicator(color: Colors.white),
-              ),
+                  (context, url) => const Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  ),
               errorWidget: (context, url, error) => const Icon(Icons.photo),
             ),
           ),
@@ -770,15 +763,15 @@ class _MessageScreenState extends State<MessageScreen> {
         try {
           String userId = loginModel?.data?.user?.id.toString() ?? '';
           String conciergeId =
-          (widget.conciergeID.toString() ==
-              (loginModel?.data?.user?.id.toString() ?? ""))
-              ? (widget.senderid?.toString() ?? "")
-              : (widget.conciergeID?.toString() ?? "");
+              (widget.conciergeID.toString() ==
+                      (loginModel?.data?.user?.id.toString() ?? ""))
+                  ? (widget.senderid?.toString() ?? "")
+                  : (widget.conciergeID?.toString() ?? "");
 
           String type =
-          widget.type?.isNotEmpty == true
-              ? widget.type.toString() ?? ""
-              : 'business';
+              widget.type?.isNotEmpty == true
+                  ? widget.type.toString() ?? ""
+                  : 'business';
 
           var response = await MessageProvider().messageApi(
             userId,
@@ -815,20 +808,20 @@ class _MessageScreenState extends State<MessageScreen> {
       setState(() {
         isSending = true;
         loadingMessage =
-        type == 2
-            ? 'Sending Photo'
-            : type == 3
-            ? 'Sending Video'
-            : type == 1
-            ? 'Sending Message'
-            : 'Sending File';
+            type == 2
+                ? 'Sending Photo'
+                : type == 3
+                ? 'Sending Video'
+                : type == 1
+                ? 'Sending Message'
+                : 'Sending File';
       });
     }
     String conciergeId =
-    (widget.conciergeID.toString() ==
-        (loginModel?.data?.user?.id.toString() ?? ""))
-        ? (widget.senderid?.toString() ?? "")
-        : (widget.conciergeID?.toString() ?? "");
+        (widget.conciergeID.toString() ==
+                (loginModel?.data?.user?.id.toString() ?? ""))
+            ? (widget.senderid?.toString() ?? "")
+            : (widget.conciergeID?.toString() ?? "");
     final Map<String, String> data = {
       "message": _messageController.text.trim(),
       "sender_id": loginModel?.data?.user?.id.toString() ?? '',
@@ -873,10 +866,7 @@ class _MessageScreenState extends State<MessageScreen> {
       content: Stack(
         children: [
           SizedBox(
-            width: MediaQuery
-                .of(context)
-                .size
-                .width,
+            width: MediaQuery.of(context).size.width,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -1041,11 +1031,11 @@ class _MessageScreenState extends State<MessageScreen> {
                               FilePickerResult? result = await FilePicker
                                   .platform
                                   .pickFiles(
-                                type: FileType.custom,
-                                allowedExtensions: [
-                                  'pdf',
-                                ], // ✅ Only allow PDF files
-                              );
+                                    type: FileType.custom,
+                                    allowedExtensions: [
+                                      'pdf',
+                                    ], // ✅ Only allow PDF files
+                                  );
 
                               if (result != null) {
                                 setState(() {
@@ -1129,13 +1119,13 @@ class _MessageScreenState extends State<MessageScreen> {
     setState(() {
       isSending = true;
       loadingMessage =
-      type == 2
-          ? 'Sending Photo'
-          : type == 3
-          ? 'Sending Video'
-          : type == 1
-          ? 'Sending Message'
-          : 'Sending File';
+          type == 2
+              ? 'Sending Photo'
+              : type == 3
+              ? 'Sending Video'
+              : type == 1
+              ? 'Sending Message'
+              : 'Sending File';
     });
 
     Map<String, String> data = {

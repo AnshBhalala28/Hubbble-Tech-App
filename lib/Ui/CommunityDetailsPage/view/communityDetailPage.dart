@@ -987,7 +987,8 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                             fontSize: 19.sp,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black,
-                                            fontFamily: AppConstants.manropeBold,
+                                            fontFamily:
+                                                AppConstants.manropeBold,
                                           ),
                                         ),
                                         SizedBox(height: 0.5.h),

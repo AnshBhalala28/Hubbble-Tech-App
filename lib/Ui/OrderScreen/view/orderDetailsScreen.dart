@@ -211,79 +211,107 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                               //               })
                               //               .toList(),
                               //     ),
-
-                          (service == null || galleryImages == null || galleryImages.isEmpty)
-                              ? Container(
-                            height: 25.h,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.grey[200],
-                            ),
-                            alignment: Alignment.center,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: CachedNetworkImage(
-                                width: double.infinity,
-                                imageUrl: service?.images ?? "",
-                                fit: BoxFit.fill,
-                                placeholder: (context, url) => const Center(
-                                  child: CircularProgressIndicator(
-                                    color: AppColors.maincolor,
-                                  ),
-                                ),
-                                errorWidget: (context, url, error) => const Image(
-                                  image: AssetImage(
-                                    'assets/images/Applogo_remove_background.png',
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                              : CarouselSlider(
-                            carouselController: _controller,
-                            options: CarouselOptions(
-                              height: 25.h,
-                              autoPlay: true,
-                              enlargeCenterPage: true,
-                              viewportFraction: 1.0,
-                              onPageChanged: (index, reason) {
-                                setState(() {
-                                  _currentIndex = index;
-                                });
-                              },
-                            ),
-                            items: galleryImages
-                                .where((img) => img.isNotEmpty) // khali string hata hoy to filter
-                                .map((imageUrl) {
-                              return Builder(
-                                builder: (BuildContext context) {
-                                  return Stack(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: CachedNetworkImage(
-                                          imageUrl: imageUrl,
-                                          fit: BoxFit.cover,
-                                          width: double.infinity,
-                                          placeholder: (context, url) => const Center(
-                                            child: CircularProgressIndicator(
-                                              color: AppColors.maincolor,
+                              (service == null ||
+                                      galleryImages == null ||
+                                      galleryImages.isEmpty)
+                                  ? Container(
+                                    height: 25.h,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.grey[200],
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: CachedNetworkImage(
+                                        width: double.infinity,
+                                        imageUrl: service?.images ?? "",
+                                        fit: BoxFit.fill,
+                                        placeholder:
+                                            (context, url) => const Center(
+                                              child: CircularProgressIndicator(
+                                                color: AppColors.maincolor,
+                                              ),
                                             ),
-                                          ),
-                                          errorWidget: (context, url, error) => const Image(
-                                            image: AssetImage(
-                                              'assets/images/Applogo_remove_background.png',
+                                        errorWidget:
+                                            (
+                                              context,
+                                              url,
+                                              error,
+                                            ) => const Image(
+                                              image: AssetImage(
+                                                'assets/images/Applogo_remove_background.png',
+                                              ),
                                             ),
-                                          ),
-                                        ),
                                       ),
-                                    ],
-                                  );
-                                },
-                              );
-                            }).toList(),
-                          ),
+                                    ),
+                                  )
+                                  : CarouselSlider(
+                                    carouselController: _controller,
+                                    options: CarouselOptions(
+                                      height: 25.h,
+                                      autoPlay: true,
+                                      enlargeCenterPage: true,
+                                      viewportFraction: 1.0,
+                                      onPageChanged: (index, reason) {
+                                        setState(() {
+                                          _currentIndex = index;
+                                        });
+                                      },
+                                    ),
+                                    items:
+                                        galleryImages
+                                            .where(
+                                              (img) => img.isNotEmpty,
+                                            ) // khali string hata hoy to filter
+                                            .map((imageUrl) {
+                                              return Builder(
+                                                builder: (
+                                                  BuildContext context,
+                                                ) {
+                                                  return Stack(
+                                                    children: [
+                                                      ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              10,
+                                                            ),
+                                                        child: CachedNetworkImage(
+                                                          imageUrl: imageUrl,
+                                                          fit: BoxFit.cover,
+                                                          width:
+                                                              double.infinity,
+                                                          placeholder:
+                                                              (
+                                                                context,
+                                                                url,
+                                                              ) => const Center(
+                                                                child: CircularProgressIndicator(
+                                                                  color:
+                                                                      AppColors
+                                                                          .maincolor,
+                                                                ),
+                                                              ),
+                                                          errorWidget:
+                                                              (
+                                                                context,
+                                                                url,
+                                                                error,
+                                                              ) => const Image(
+                                                                image: AssetImage(
+                                                                  'assets/images/Applogo_remove_background.png',
+                                                                ),
+                                                              ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            })
+                                            .toList(),
+                                  ),
                               SizedBox(height: 1.h),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -74,13 +75,15 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                         CircleAvatar(
                           radius: 35.sp,
                           backgroundColor: Colors.grey.shade300,
-                          backgroundImage: selectedImage != null
-                              ? FileImage(selectedImage!)
-                              : (profileImage.isNotEmpty
-                              ? NetworkImage(profileImage)
-                              : const AssetImage(
-                            'assets/images/waveeLogoShort.png',
-                          )) as ImageProvider,
+                          backgroundImage:
+                              selectedImage != null
+                                  ? FileImage(selectedImage!)
+                                  : (profileImage.isNotEmpty
+                                          ? NetworkImage(profileImage)
+                                          : const AssetImage(
+                                            'assets/images/waveeLogoShort.png',
+                                          ))
+                                      as ImageProvider,
                         ),
                         Container(
                           decoration: const BoxDecoration(
@@ -123,21 +126,22 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                     child: AnimatedOpacity(
                       duration: Duration(milliseconds: 300),
                       opacity: showButton ? 1 : 0,
-                      child: showButton
-                          ? batan(
-                        title: "Update Profile Image",
-                        route: () {
-                          EditProfile();
-                        },
-                        color: AppColors.maincolor,
-                        fontcolor: Colors.white,
-                        height: 5.h,
-                        width: double.infinity,
-                        radius: 12.0,
-                        fontsize: 18.sp,
-                        fontFamily: AppConstants.manrope,
-                      )
-                          : SizedBox.shrink(),
+                      child:
+                          showButton
+                              ? batan(
+                                title: "Update Profile Image",
+                                route: () {
+                                  EditProfile();
+                                },
+                                color: AppColors.maincolor,
+                                fontcolor: Colors.white,
+                                height: 5.h,
+                                width: double.infinity,
+                                radius: 12.0,
+                                fontsize: 18.sp,
+                                fontFamily: AppConstants.manrope,
+                              )
+                              : SizedBox.shrink(),
                     ),
                   ),
 
@@ -224,7 +228,7 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
             var user = profileModel?.data?.user;
 
             nameController.text =
-            "${capitalize(user?.name?.firstName)} ${capitalize(user?.name?.lastName)}";
+                "${capitalize(user?.name?.firstName)} ${capitalize(user?.name?.lastName)}";
             emailController.text = user?.email ?? "N/A";
             profileImage = user?.profile ?? "";
           }
@@ -239,7 +243,9 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
 
   /// PICK IMAGE WITH ANIMATION
   Future<void> pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
 
     if (pickedFile != null) {
       setState(() {
@@ -277,15 +283,27 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
               setState(() {});
 
               Get.offAll(HomePage(userName: ""));
-              Get.snackbar("Success", "Profile updated successfully",
-                  backgroundColor: AppColors.maincolor, colorText: Colors.white);
+              Get.snackbar(
+                "Success",
+                "Profile updated successfully",
+                backgroundColor: AppColors.maincolor,
+                colorText: Colors.white,
+              );
             } else {
-              Get.snackbar("Error", "Failed to update profile",
-                  backgroundColor: Colors.red, colorText: Colors.white);
+              Get.snackbar(
+                "Error",
+                "Failed to update profile",
+                backgroundColor: Colors.red,
+                colorText: Colors.white,
+              );
             }
           } else {
-            Get.snackbar("Error", "Server error, please try again",
-                backgroundColor: Colors.red, colorText: Colors.white);
+            Get.snackbar(
+              "Error",
+              "Server error, please try again",
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+            );
           }
 
           setState(() => isEditing = false);
@@ -305,9 +323,12 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
     if (s == null || s.isEmpty) return '';
     return s
         .split(' ')
-        .map((word) => word.isNotEmpty
-        ? word[0].toUpperCase() + word.substring(1).toLowerCase()
-        : '')
+        .map(
+          (word) =>
+              word.isNotEmpty
+                  ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+                  : '',
+        )
         .join(' ');
   }
 }

@@ -396,7 +396,6 @@ class Unitsnumber {
     updatedAt = json['updated_at'];
   }
 
-
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
@@ -440,6 +439,7 @@ class Links {
     return data;
   }
 }
+
 List<String> parseStringList(dynamic value) {
   if (value == null) return [];
   if (value is List) {
