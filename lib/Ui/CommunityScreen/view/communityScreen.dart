@@ -5794,7 +5794,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                         ],
                                       )
                                       : Text(
-                                        "₹${services[index].price ?? 'N/A'}",
+                                        "£${services[index].price ?? 'N/A'}",
                                         style: TextStyle(
                                           fontSize: 15.sp,
                                           color: Colors.green[700],

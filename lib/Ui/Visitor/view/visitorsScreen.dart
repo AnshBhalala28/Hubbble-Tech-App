@@ -58,7 +58,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
       } else {
         _pagingController.appendPage(items, pageKey + 1);
       }
-    } catch (e,stacktrace) {
+    } catch (e, stacktrace) {
       print("sss$stacktrace");
       _pagingController.error = e;
     }
@@ -214,10 +214,37 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                     ],
                                   ),
                                 ),
+
+                                // if (visitor.inNote?.isNotEmpty == true)
+                                //   Padding(
+                                //     padding: EdgeInsets.only(top: 0.5.h),
+                                //     child: Row(
+                                //       children: [
+                                //         const Icon(
+                                //           Icons.note,
+                                //           size: 22,
+                                //           color: Colors.black54,
+                                //         ),
+                                //         SizedBox(width: 2.w),
+                                //         Expanded(
+                                //           child: Text(
+                                //             "Note: ${visitor.inNote}",
+                                //             style: TextStyle(
+                                //               fontSize: 16.5.sp,
+                                //               fontWeight: FontWeight.w500,
+                                //               fontFamily: AppConstants.manrope,
+                                //             ),
+                                //           ),
+                                //         ),
+                                //       ],
+                                //     ),
+                                //   ),
                                 if (visitor.inNote?.isNotEmpty == true)
                                   Padding(
                                     padding: EdgeInsets.only(top: 0.5.h),
                                     child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         const Icon(
                                           Icons.note,
@@ -225,9 +252,25 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                           color: Colors.black54,
                                         ),
                                         SizedBox(width: 2.w),
+
                                         Expanded(
-                                          child: Text(
+                                          child: ReadMoreText(
                                             "Note: ${visitor.inNote}",
+                                            trimLines: 2,
+                                            colorClickableText: Colors.blue,
+                                            trimMode: TrimMode.Line,
+                                            trimCollapsedText: " Read more",
+                                            trimExpandedText: " Read less",
+                                            moreStyle: TextStyle(
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.blue,
+                                            ),
+                                            lessStyle: TextStyle(
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.blue,
+                                            ),
                                             style: TextStyle(
                                               fontSize: 16.5.sp,
                                               fontWeight: FontWeight.w500,

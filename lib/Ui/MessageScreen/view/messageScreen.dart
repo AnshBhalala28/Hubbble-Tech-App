@@ -200,8 +200,8 @@ class _MessageScreenState extends State<MessageScreen> {
                           Get.to(
                             BusinessDetailPage(
                               businessID: widget.businessID,
-                              lat: widget.lat,
-                              long: widget.long,
+                              lat: widget.lat ?? "$AppLat",
+                              long: widget.long ?? "$AppLon",
                             ),
                           );
                         }

@@ -33,6 +33,7 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
   File? selectedImage;
   bool isLoading = true;
   bool isEditing = false;
+  bool showButton = false; // NEW FOR ANIMATION
 
   String profileImage = "";
   ProfileModel? profileModel;
@@ -50,7 +51,7 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
       body: Stack(
         children: [
           if (isLoading)
-             Center(child: Loader())
+            Center(child: Loader())
           else
             SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 3.w),
@@ -79,8 +80,7 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                               ? NetworkImage(profileImage)
                               : const AssetImage(
                             'assets/images/waveeLogoShort.png',
-                          ))
-                          as ImageProvider,
+                          )) as ImageProvider,
                         ),
                         Container(
                           decoration: const BoxDecoration(
@@ -114,19 +114,33 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
                   infoCard("Email", emailController.text, Icons.email),
 
                   SizedBox(height: 2.h),
-                  batan(
-                    title: "Update Profile Image",
-                    route: () {
-                      EditProfile();
-                    },
-                    color: AppColors.maincolor,
-                    fontcolor: Colors.white,
-                    height: 5.h,
-                    width: double.infinity,
-                    radius: 12.0,
-                    fontsize: 18.sp,
-                    fontFamily: AppConstants.manrope,
+
+                  /// 🔥 ANIMATED BUTTON (Fade + Slide)
+                  AnimatedSlide(
+                    duration: Duration(milliseconds: 350),
+                    offset: showButton ? Offset(0, 0) : Offset(0, 0.3),
+                    curve: Curves.easeOutBack,
+                    child: AnimatedOpacity(
+                      duration: Duration(milliseconds: 300),
+                      opacity: showButton ? 1 : 0,
+                      child: showButton
+                          ? batan(
+                        title: "Update Profile Image",
+                        route: () {
+                          EditProfile();
+                        },
+                        color: AppColors.maincolor,
+                        fontcolor: Colors.white,
+                        height: 5.h,
+                        width: double.infinity,
+                        radius: 12.0,
+                        fontsize: 18.sp,
+                        fontFamily: AppConstants.manrope,
+                      )
+                          : SizedBox.shrink(),
+                    ),
                   ),
+
                   SizedBox(height: 3.h),
                 ],
               ),
@@ -135,14 +149,14 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
           if (isEditing)
             Container(
               color: Colors.black.withOpacity(0.3),
-              child:  Center(child: Loader()),
+              child: Center(child: Loader()),
             ),
         ],
       ),
     );
   }
 
-  /// Reusable Info Card
+  /// CARD UI
   Widget infoCard(String label, String value, IconData icon) {
     return Material(
       elevation: 1,
@@ -156,7 +170,6 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Left icon box
             Container(
               width: 11.w,
               height: 11.w,
@@ -167,8 +180,6 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
               child: Icon(icon, size: 18.sp, color: Colors.white),
             ),
             SizedBox(width: 3.w),
-
-            // Label + Value
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,7 +211,7 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
     ).marginOnly(bottom: 1.h);
   }
 
-  /// Get Profile API
+  /// GET PROFILE API
   void GetProfile() {
     final Map<String, String> data = {"id": widget.id.toString()};
 
@@ -226,14 +237,14 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
     });
   }
 
-  /// PICK IMAGE (NO PERMISSIONS NEEDED)
+  /// PICK IMAGE WITH ANIMATION
   Future<void> pickImage() async {
-    final pickedFile =
-    await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
         selectedImage = File(pickedFile.path);
+        showButton = true;
       });
     } else {
       Get.snackbar(
@@ -245,7 +256,7 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
     }
   }
 
-  /// UPDATE PROFILE API
+  /// UPDATE PROFILE
   void EditProfile() {
     final Map<String, String> data = {
       'update_id': profileModel?.data?.id.toString() ?? '',
@@ -261,13 +272,13 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
             var result = ProfileModel.fromJson(response.data);
 
             if (result.status == 200) {
+              selectedImage = null;
+              showButton = false;
+              setState(() {});
+
               Get.offAll(HomePage(userName: ""));
-              Get.snackbar(
-                "Success",
-                "Profile image updated successfully",
-                backgroundColor: AppColors.maincolor,
-                colorText: Colors.white,
-              );
+              Get.snackbar("Success", "Profile updated successfully",
+                  backgroundColor: AppColors.maincolor, colorText: Colors.white);
             } else {
               Get.snackbar("Error", "Failed to update profile",
                   backgroundColor: Colors.red, colorText: Colors.white);
