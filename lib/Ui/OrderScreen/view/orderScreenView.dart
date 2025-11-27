@@ -392,7 +392,7 @@ class _Order_ScreenState extends State<Order_Screen> {
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 17.sp,
-          fontFamily: AppConstants.manrope,
+          fontFamily: AppConstants.manropeBold,
         ),
       ).paddingOnly(top: 30.h);
     }

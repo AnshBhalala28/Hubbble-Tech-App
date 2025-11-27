@@ -155,7 +155,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                       ),
                                       SizedBox(width: 2.w),
                                       Text(
-                                        "Name: ${capitalizeEachWord(visitor.visitorName?.capitalizeFirst ?? '')}",
+                                        "Name: ${capitalizeEachWord(visitor.visitorName?? '')}",
                                         style: TextStyle(
                                           fontSize: 16.5.sp,
                                           fontWeight: FontWeight.w500,
@@ -257,19 +257,22 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                           child: ReadMoreText(
                                             "Note: ${visitor.inNote}",
                                             trimLines: 2,
-                                            colorClickableText: Colors.blue,
+                                            colorClickableText: Colors.black,
                                             trimMode: TrimMode.Line,
                                             trimCollapsedText: " Read more",
                                             trimExpandedText: " Read less",
                                             moreStyle: TextStyle(
-                                              fontSize: 14.sp,
+                                              fontSize: 15.sp,
                                               fontWeight: FontWeight.w600,
-                                              color: Colors.blue,
+                                              fontFamily: AppConstants.manropeBold,
+                                              color:AppColors.maincolor,
                                             ),
                                             lessStyle: TextStyle(
-                                              fontSize: 14.sp,
+                                              fontSize: 15.sp,
                                               fontWeight: FontWeight.w600,
-                                              color: Colors.blue,
+                                              color: AppColors.maincolor,
+                                              fontFamily: AppConstants.manropeBold,
+
                                             ),
                                             style: TextStyle(
                                               fontSize: 16.5.sp,

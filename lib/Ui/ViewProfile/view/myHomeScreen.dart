@@ -434,7 +434,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                             Text(
                               "Building Documents",
                               style: TextStyle(
-                                fontFamily: AppConstants.manrope,
+                                fontFamily: AppConstants.manropeBold,
                                 fontSize: 17.sp,
                                 fontWeight: FontWeight.bold,
                               ),

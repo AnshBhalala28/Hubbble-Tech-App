@@ -2319,7 +2319,7 @@ class _MessageboardState extends State<Messageboard> {
                                 fontSize: 17.sp,
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
-                                fontFamily: AppConstants.manrope,
+                                fontFamily: AppConstants.manropeBold,
                               ),
                             ),
                           ),

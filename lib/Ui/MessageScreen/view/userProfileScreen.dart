@@ -141,16 +141,26 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             ),
                           ),
                           const Divider(),
-                          buildProfileDetailItem(
-                            Icons.email_outlined,
+                          infoCard(
                             "Email",
-                            userpersonalInfoModel?.data?.email,
+                            userpersonalInfoModel?.data?.email.toString() ??
+                                "N/A",
+                            Icons.email,
                             () {},
                           ),
-                          buildProfileDetailItem(
-                            Icons.phone_outlined,
+
+                          // buildProfileDetailItem(
+                          //   Icons.email_outlined,
+                          //   "Email",
+                          //   userpersonalInfoModel?.data?.email,
+                          //   () {},
+                          // ),
+                          infoCard(
                             "Phone",
-                            userpersonalInfoModel?.data?.phoneNumber,
+                            userpersonalInfoModel?.data?.phoneNumber
+                                    .toString() ??
+                                "N/A",
+                            Icons.phone_outlined,
                             () {
                               final phone =
                                   userpersonalInfoModel?.data?.phoneNumber;
@@ -166,6 +176,25 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               }
                             },
                           ),
+                          // buildProfileDetailItem(
+                          //   Icons.phone_outlined,
+                          //   "Phone",
+                          //   userpersonalInfoModel?.data?.phoneNumber,
+                          //   () {
+                          //     final phone =
+                          //         userpersonalInfoModel?.data?.phoneNumber;
+                          //     if (phone != null &&
+                          //         phone.toString().isNotEmpty) {
+                          //       final telUrl = Uri.parse(
+                          //         "tel:${phone.toString()}",
+                          //       );
+                          //       launchUrl(
+                          //         telUrl,
+                          //         mode: LaunchMode.externalApplication,
+                          //       );
+                          //     }
+                          //   },
+                          // ),
                           // buildProfileDetailItem(
                           //     Icons.calendar_today_outlined,
                           //     "Date of Birth",
@@ -440,7 +469,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     value ?? "N/A",
                     style: TextStyle(
                       fontSize: 17.sp,
-                      fontFamily: AppConstants.manrope,
+                      fontFamily: AppConstants.manropeBold,
                       fontWeight: FontWeight.w600,
                       color: Colors.black87,
                     ),
@@ -451,6 +480,68 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget infoCard(
+    String label,
+    String value,
+    IconData icon,
+    VoidCallback ontap,
+  ) {
+    return GestureDetector(
+      onTap: ontap,
+      child: Material(
+        elevation: 1,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.5.h),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 11.w,
+                height: 11.w,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: AppColors.maincolor,
+                ),
+                child: Icon(icon, size: 18.sp, color: Colors.white),
+              ),
+              SizedBox(width: 3.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: TextStyle(
+                        fontFamily: AppConstants.manrope,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16.sp,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    SizedBox(height: 0.6.h),
+                    Text(
+                      value.isNotEmpty ? value : "—",
+                      style: TextStyle(
+                        fontFamily: AppConstants.manrope,
+                        fontSize: 16.sp,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ).marginOnly(bottom: 1.h),
     );
   }
 

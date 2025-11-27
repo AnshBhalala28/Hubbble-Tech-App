@@ -158,7 +158,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                   style: TextStyle(
                                     color: statusColor,
                                     fontWeight: FontWeight.bold,
-                                    fontFamily: AppConstants.manrope,
+                                    fontFamily: AppConstants.manropeBold,
                                   ),
                                 ),
                               ],
@@ -176,8 +176,8 @@ class _ParcelScreenState extends State<ParcelScreen> {
                               trimLines: 2,
                               colorClickableText: Colors.blue,
                               trimMode: TrimMode.Line,
-                              trimCollapsedText: ' Show More',
-                              trimExpandedText: ' Show Less',
+                              trimCollapsedText: ' Read More',
+                              trimExpandedText: ' Read Less',
                               moreStyle: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

@@ -333,7 +333,7 @@ class _ViewProfileState extends State<ViewProfile> {
           style: TextStyle(
             fontSize: 17.sp,
             fontWeight: FontWeight.w600,
-            fontFamily: AppConstants.manrope,
+            fontFamily: AppConstants.manropeBold,
           ),
         ),
         subtitle: Text(
