@@ -423,7 +423,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                   style: TextStyle(
                                                     fontSize: 15.sp,
                                                     fontFamily:
-                                                        AppConstants.manropeBold,
+                                                        AppConstants
+                                                            .manropeBold,
                                                   ),
                                                 ),
                                               ],
@@ -534,10 +535,18 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                 MessageScreen(
                                                   chatName: displayName,
                                                   image: user.business?.logo,
-                                                  conciergeID: user.id.toString() ?? '',
+                                                  conciergeID:
+                                                      user.id.toString() ?? '',
                                                   type: "business",
-                                                  chatStatus: user.business?.chatStatus ?? 0,
-                                                  businessID: user.business?.id.toString() ?? "",
+                                                  chatStatus:
+                                                      user
+                                                          .business
+                                                          ?.chatStatus ??
+                                                      0,
+                                                  businessID:
+                                                      user.business?.id
+                                                          .toString() ??
+                                                      "",
                                                 ),
                                               )?.then((value) {
                                                 _restartTimer();
@@ -545,7 +554,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                 StoryApi();
                                                 setState(() {});
                                               });
-
                                             },
                                             child: Stack(
                                               children: [

@@ -2431,7 +2431,11 @@ class _Form_ScreenState extends State<Form_Screen> {
                               children: [
                                 Row(
                                   children: [
-                                    Icon(Icons.calendar_today, color: Colors.amber[800], size: 20),
+                                    Icon(
+                                      Icons.calendar_today,
+                                      color: Colors.amber[800],
+                                      size: 20,
+                                    ),
                                     const SizedBox(width: 10),
                                     Text(
                                       selectedDate.replaceAll('/', '-'),
@@ -2447,7 +2451,11 @@ class _Form_ScreenState extends State<Form_Screen> {
 
                                 Row(
                                   children: [
-                                    Icon(Icons.access_time_filled, color: Colors.green[700], size: 22),
+                                    Icon(
+                                      Icons.access_time_filled,
+                                      color: Colors.green[700],
+                                      size: 22,
+                                    ),
                                     SizedBox(width: 8),
                                     Text(
                                       selectedTime,
@@ -2458,7 +2466,11 @@ class _Form_ScreenState extends State<Form_Screen> {
                                       ),
                                     ),
                                     const SizedBox(width: 6),
-                                    Icon(Icons.arrow_forward, color: Colors.black, size: 15.sp),
+                                    Icon(
+                                      Icons.arrow_forward,
+                                      color: Colors.black,
+                                      size: 15.sp,
+                                    ),
                                     const SizedBox(width: 6),
                                     Text(
                                       endTime,
@@ -2474,7 +2486,11 @@ class _Form_ScreenState extends State<Form_Screen> {
 
                                 Row(
                                   children: [
-                                    Icon(Icons.timelapse, color: Colors.blue[700], size: 22),
+                                    Icon(
+                                      Icons.timelapse,
+                                      color: Colors.blue[700],
+                                      size: 22,
+                                    ),
                                     SizedBox(width: 10),
                                     Text(
                                       duration,
@@ -2546,7 +2562,6 @@ class _Form_ScreenState extends State<Form_Screen> {
       },
     );
   }
-
 
   void _generateDatesBasedOnSelection() {
     DateTime today = DateTime.now();

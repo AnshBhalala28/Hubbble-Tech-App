@@ -32,7 +32,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (message.notification == null) {
     _showAwesomeNotification(message, "Background (Data Only)");
   } else {
-    print("Firebase will show notification automatically (notification payload present)");
+    print(
+      "Firebase will show notification automatically (notification payload present)",
+    );
   }
 }
 
@@ -70,7 +72,7 @@ void _showAwesomeNotification(RemoteMessage message, String source) async {
   }
 
   String? title = message.notification?.title ?? message.data['title'] ?? '';
-  String? body  = message.notification?.body ?? message.data['body'] ?? '';
+  String? body = message.notification?.body ?? message.data['body'] ?? '';
 
   // Note: removed invalid 'playSound' parameter from NotificationContent
   AwesomeNotifications().createNotification(
@@ -96,25 +98,22 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   // Initialize Awesome Notifications - no 'playSound' used here.
-  AwesomeNotifications().initialize(
-    null,
-    [
-      NotificationChannel(
-        channelKey: 'basic_channel',
-        channelName: 'Basic Notifications',
-        channelDescription: 'Used for basic notifications',
-        defaultColor: AppColors.maincolor,
-        ledColor: Colors.white,
-        importance: NotificationImportance.Max, // highest importance
-        channelShowBadge: true,
-        enableLights: true,
-        enableVibration: true,
-        vibrationPattern: lowVibrationPattern,
-        // soundSource: null, // leave soundSource unset so system default is used
-      ),
-    ],
-    debug: true,
-  );
+  AwesomeNotifications().initialize(null, [
+    NotificationChannel(
+      channelKey: 'basic_channel',
+      channelName: 'Basic Notifications',
+      channelDescription: 'Used for basic notifications',
+      defaultColor: AppColors.maincolor,
+      ledColor: Colors.white,
+      importance: NotificationImportance.Max,
+      // highest importance
+      channelShowBadge: true,
+      enableLights: true,
+      enableVibration: true,
+      vibrationPattern: lowVibrationPattern,
+      // soundSource: null, // leave soundSource unset so system default is used
+    ),
+  ], debug: true);
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   await messaging.requestPermission(
@@ -166,7 +165,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> checkInitialMessage() async {
     RemoteMessage? initialMessage =
-    await FirebaseMessaging.instance.getInitialMessage();
+        await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
       print("📂 App opened from terminated state: ${initialMessage.toMap()}");

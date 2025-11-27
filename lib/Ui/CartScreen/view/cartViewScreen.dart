@@ -1138,9 +1138,8 @@ class _AddToCartViewState extends State<AddToCartView> {
                 errorWidget:
                     (context, url, error) => Container(
                       decoration: BoxDecoration(
-                        border: Border.all(width: 1,color: Color(0xFFF8F8F8)),
+                        border: Border.all(width: 1, color: Color(0xFFF8F8F8)),
                         image: DecorationImage(
-
                           image: AssetImage(
                             "assets/images/Applogo_remove_background.png",
                           ),
@@ -2438,16 +2437,15 @@ class _AddToCartViewState extends State<AddToCartView> {
                 placeholder: (context, url) => Center(child: Loader()),
                 errorWidget:
                     (context, url, error) => Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 1,color: Color(0xFFF8F8F8)),
-                    image: DecorationImage(
-
-                      image: AssetImage(
-                        "assets/images/Applogo_remove_background.png",
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: Color(0xFFF8F8F8)),
+                        image: DecorationImage(
+                          image: AssetImage(
+                            "assets/images/Applogo_remove_background.png",
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
               ),
             ),
           ),

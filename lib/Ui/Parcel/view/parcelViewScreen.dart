@@ -301,7 +301,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
       if (pageKey == 1 && newItems.isEmpty) {
         _pagingController.appendLastPage([]);
       }
-    } catch (error,stacktrace) {
+    } catch (error, stacktrace) {
       _pagingController.error = error;
       print("errorerrorerror$stacktrace");
     }
