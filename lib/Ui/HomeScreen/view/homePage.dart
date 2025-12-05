@@ -13,6 +13,7 @@ import 'package:sizer/sizer.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wavee/Utils/linkView.dart';
 
 import '../../../Utils/bottomBar.dart';
 import '../../../Utils/checkInternetConnection.dart';
@@ -689,22 +690,20 @@ class _HomePageState extends State<HomePage> {
                                                                       .manropeBold,
                                                             ),
                                                           ),
-                                                          Text(
+                                                          ClickableTrimmedText(
+                                                            text:
                                                             messageBoardModal
-                                                                    ?.data?[0]
-                                                                    .text ??
+                                                                ?.data?[0]
+                                                                .text ??
                                                                 "",
                                                             maxLines: 5,
                                                             style: TextStyle(
                                                               fontSize: 15.sp,
                                                               color:
-                                                                  Colors.black,
+                                                              Colors.black,
                                                               fontFamily:
-                                                                  AppConstants
-                                                                      .AlbertSansLight,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
+                                                              AppConstants
+                                                                  .AlbertSansLight,
                                                             ),
                                                           ),
                                                           if (messageBoardModal

@@ -15,6 +15,7 @@ import 'package:sizer/sizer.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wavee/Utils/linkView.dart';
 
 import '../../../Utils/bottomBar.dart';
 import '../../../Utils/checkInternetConnection.dart';
@@ -841,47 +842,20 @@ class _MessageboardState extends State<Messageboard> {
                                                 color: AppColors.maincolor,
                                               ),
                                             ),
-                                            ReadMoreText(
-                                              messageBoardModal
-                                                              ?.data?[index]
-                                                              .text ==
-                                                          null ||
-                                                      messageBoardModal
-                                                              ?.data?[index]
-                                                              .text ==
-                                                          ""
-                                                  ? "N/A"
-                                                  : "${messageBoardModal?.data?[index].text}",
-                                              trimLines: 4,
-                                              trimLength: 146,
-                                              colorClickableText: Colors.blue,
-                                              trimMode: TrimMode.Length,
-                                              trimCollapsedText: ' Show more',
-                                              trimExpandedText: ' Show less',
-                                              moreStyle: TextStyle(
-                                                fontSize: 15.sp,
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                                letterSpacing: 1,
-                                                color: AppColors.maincolor,
-                                              ),
-                                              lessStyle: TextStyle(
-                                                fontSize: 15.sp,
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                                letterSpacing: 1,
-                                                color: AppColors.maincolor,
-                                              ),
+                                            ExpandableClickableText(
+                                              text:
+                                                  messageBoardModal
+                                                      ?.data?[index]
+                                                      .text ??
+                                                  "N/A",
+                                              trimLength: 140,
                                               style: TextStyle(
-                                                fontSize: 16.sp,
-                                                color: Colors.grey.shade500,
-                                                fontWeight: FontWeight.normal,
-                                                fontFamily:
-                                                    AppConstants.manrope,
+                                                fontSize: 16,
+                                                color: Colors.grey.shade600,
+                                                fontFamily: AppConstants.manrope,
                                               ),
                                             ),
+
                                             post?.nocomment == 1
                                                 ? Text(
                                                   "[COMMENT ARE DISABLED IN THIS POST]",
@@ -1631,8 +1605,9 @@ class _MessageboardState extends State<Messageboard> {
                                                                 decoration: BoxDecoration(
                                                                   color: Colors
                                                                       .black
-                                                                      .withValues(alpha: 
-                                                                        0.6,
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.6,
                                                                       ),
                                                                   borderRadius:
                                                                       BorderRadius.circular(
@@ -2297,7 +2272,9 @@ class _MessageboardState extends State<Messageboard> {
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          color: Colors.black.withValues(alpha: 0.6),
+                                          color: Colors.black.withValues(
+                                            alpha: 0.6,
+                                          ),
                                           shape: BoxShape.circle,
                                         ),
                                         padding: const EdgeInsets.all(4),
@@ -2503,8 +2480,8 @@ class _MessageboardState extends State<Messageboard> {
                                           },
                                           child: Container(
                                             decoration: BoxDecoration(
-                                              color: Colors.black.withValues(alpha: 
-                                                0.6,
+                                              color: Colors.black.withValues(
+                                                alpha: 0.6,
                                               ),
                                               shape: BoxShape.circle,
                                             ),
@@ -2562,8 +2539,8 @@ class _MessageboardState extends State<Messageboard> {
                                           },
                                           child: Container(
                                             decoration: BoxDecoration(
-                                              color: Colors.black.withValues(alpha: 
-                                                0.6,
+                                              color: Colors.black.withValues(
+                                                alpha: 0.6,
                                               ),
                                               shape: BoxShape.circle,
                                             ),
