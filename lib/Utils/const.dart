@@ -116,10 +116,10 @@ String formatTime12(String? time) {
 }
 
 class AppConstants {
-  static String BASEURL = "https://development.wavee.ai/api/";
+  // static String BASEURL = "https://development.wavee.ai/api/";
 
   /// Og Url
-  // static String BASEURL = "https://portal.wavee.ai/api/";
+  static String BASEURL = "https://portal.wavee.ai/api/";
 
   static const String path = "assets/Svg/";
   static const String manrope1 = "AlbertSans-SemiBold";
