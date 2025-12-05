@@ -55,7 +55,7 @@ class HomePage extends StatefulWidget {
   final String userName;
 
   HomePage({super.key, this.selected, required this.userName});
-
+  static bool isPasswordDialogShown = false;
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -88,7 +88,9 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       isLoading = true;
     });
-    // Initial calls on page load
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkDefaultPassword();
+    });
     VisitorShowCount();
     ParcelShowCount();
     ChatShowCount();
@@ -2222,30 +2224,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Future<void> launchStore() async {
-  //   // Android Play Store link
-  //   final Uri playStoreUri = Uri.parse(
-  //     "https://play.google.com/store/apps/details?id=com.pets.wavee",
-  //   );
-  //
-  //   // iOS App Store link
-  //   final Uri appStoreUri = Uri.parse(
-  //     "https://apps.apple.com/in/app/wavee-pet/id6746203457",
-  //   );
-  //
-  //   if (Platform.isAndroid) {
-  //     await launchUrl(
-  //       playStoreUri,
-  //       mode: LaunchMode.externalApplication,
-  //     );
-  //   } else if (Platform.isIOS) {
-  //     await launchUrl(
-  //       appStoreUri,
-  //       mode: LaunchMode.externalApplication,
-  //     );
-  //   }
-  // }
-
   getdataloginData() async {
     Map<String, String?> credentials =
         await SaveDataLocal.getEmailAndPassword();
@@ -2365,5 +2343,151 @@ class _HomePageState extends State<HomePage> {
         buildErrorDialog(context, 'Error', "Internet Required");
       }
     });
+  }
+
+  Future<void> _checkDefaultPassword() async {
+    // if (HomePage.isPasswordDialogShown) {
+    //   return;
+    // }
+
+    String? savedPassword = await SaveDataLocal.getPassword();
+    if (savedPassword != null && (savedPassword == "12345678" || savedPassword == "123456")) {
+
+      // HomePage.isPasswordDialogShown = true;
+
+      showMandatoryPasswordChangeDialog();
+    }
+  }
+  void showMandatoryPasswordChangeDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return PopScope(
+          canPop: true,
+          child: Dialog(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            insetPadding: EdgeInsets.symmetric(horizontal: 12.w),
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                // Radius થોડો ઓછો કર્યો
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 4.w,
+                      vertical: 2.5.h,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // 1. Icon (ફેરફાર 3: સાઈઝ નાની કરી)
+                        Container(
+                          height: 10.h, // 15.h -> 10.h
+                          width: 10.h,
+                          decoration: BoxDecoration(
+                            color: AppColors.maincolor.withOpacity(0.08),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.security_rounded,
+                              size: 30.sp, // 40.sp -> 30.sp
+                              color: AppColors.maincolor,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 1.5.h),
+                        // Spacing ઓછું કર્યું
+
+                        // 2. Headline
+                        Text(
+                          "Password Reset",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 17.sp, // થોડો ફોન્ટ નાનો કર્યો
+                            fontFamily: AppConstants.manropeBold,
+                            color: Colors.black87,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        SizedBox(height: 1.h),
+
+                        // 3. Subtext
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 1.w),
+                          child: Text(
+                            "Please click here to update your password, as you are currently using the default one.",
+
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 14.sp, // 15.sp -> 13.sp
+                              fontFamily: AppConstants.manrope,
+                              color: Colors.grey.shade600,
+                              height: 1.4,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 2.5.h),
+                        batan(
+                          title: "Change Now",
+                          route: () {
+                            Navigator.pop(context);
+                            Get.to(() => const ChangePasswordScreen());
+                          },
+                          color: AppColors.maincolor,
+                          fontcolor: AppColors.white,
+                          height: 5.h,
+                          width: double.infinity,
+                          fontsize: 16.sp,
+                          radius: 18.0,
+                          fontFamily: AppConstants.manropeBold,
+                          iconData1: Icons.arrow_forward_rounded,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // --- Close Button ---
+                  Positioned(
+                    top: 1.h,
+                    right: 2.w,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        borderRadius: BorderRadius.circular(50),
+                        child: Container(
+                          padding: EdgeInsets.all(1.5.w),
+                          child: Icon(
+                            Icons.close_rounded,
+                            color: Colors.black,
+                            size: 18.sp,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
