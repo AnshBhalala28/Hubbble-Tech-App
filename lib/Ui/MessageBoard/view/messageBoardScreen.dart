@@ -809,7 +809,7 @@ class _MessageboardState extends State<Messageboard> {
                                                       // Dot and time
                                                       Flexible(
                                                         child: Text(
-                                                          "• ${formatPostDate(messageBoardModal?.data?[0].createdAt)}",
+                                                          "• ${formatPostDate(messageBoardModal?.data?[index].createdAt)}",
                                                           overflow:
                                                               TextOverflow
                                                                   .ellipsis,
