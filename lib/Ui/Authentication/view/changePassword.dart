@@ -17,7 +17,6 @@ import '../View/loginscreen.dart';
 import '../provider/authenticationProvider.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
-
   const ChangePasswordScreen({super.key});
 
   @override
@@ -87,6 +86,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 ),
               ),
               SizedBox(height: 2.5.h),
+
+              // ---------------------------------------------
+              // UPDATED NEW PASSWORD FIELD VALIDATOR
+              // ---------------------------------------------
               TextFormField(
                 controller: newPassword,
                 obscureText: !newVisible,
@@ -95,6 +98,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     return "Please enter new password";
                   } else if (val.length < 6) {
                     return "Password must be at least 6 characters";
+                  } else if (val == '12345678' ||val == '123456' ||val == '1234567890' ) {
+                    // 🔴 Added validation to block '12345678'
+                    return "Password cannot be $val";
                   }
                   return null;
                 },
@@ -117,6 +123,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   ),
                 ),
               ),
+
               SizedBox(height: 2.5.h),
               TextFormField(
                 controller: confirmPassword,
@@ -170,37 +177,37 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child:
-                    isLoading
-                        ? const Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.white,
-                            strokeWidth: 2,
-                          ),
-                        )
-                        : InkWell(
-                          onTap: () {
-                            if (_formKey.currentState!.validate()) {
-                              setState(() {
-                                isLoading = true;
-                                generalError = null;
-                              });
-                              FocusScope.of(context).unfocus();
-                              _changePasswordApi();
-                            }
-                          },
-                          borderRadius: BorderRadius.circular(5),
-                          child: const Center(
-                            child: Text(
-                              "Change Password",
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: AppConstants.manropeBold,
-                              ),
-                            ),
-                          ),
-                        ),
+                isLoading
+                    ? const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+                    : InkWell(
+                  onTap: () {
+                    if (_formKey.currentState!.validate()) {
+                      setState(() {
+                        isLoading = true;
+                        generalError = null;
+                      });
+                      FocusScope.of(context).unfocus();
+                      _changePasswordApi();
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(5),
+                  child: const Center(
+                    child: Text(
+                      "Change Password",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppConstants.manropeBold,
+                      ),
+                    ),
+                  ),
+                ),
               ),
               SizedBox(height: 2.h),
             ],
@@ -274,13 +281,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         // ❌ Handle non-200 status codes that Dio didn't throw (less common)
         setState(() {
           generalError =
-              "Something went wrong (${response.statusCode}). Please try again.";
+          "Something went wrong (${response.statusCode}). Please try again.";
         });
       }
     } catch (e, s) {
-      // 🔴 === START OF THE FIX === 🔴
-      // This block catches errors, including 400 Bad Request
-
       log("Change Password Error: $e");
       log("Stack Trace: $s");
 
@@ -289,8 +293,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       // Check if the error is from Dio and has a response from the server
       if (e is DioException && e.response != null && e.response!.data != null) {
         try {
-          // Try to parse the error message from the API response
-          // e.g., {"status": false, "message": "Old password is incorrect."}
           final responseData = e.response!.data;
 
           if (responseData is Map<String, dynamic> &&
@@ -298,9 +300,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             // Set the specific error message from the API
             errorMessage = responseData['message'];
           } else {
-            // If the response data is not in the expected format
             errorMessage =
-                "Server returned an error: (${e.response!.statusCode})";
+            "Server returned an error: (${e.response!.statusCode})";
           }
         } catch (parseError) {
           log("Error parsing Dio error response: $parseError");
@@ -308,12 +309,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         }
       }
 
-      // Show the (now specific) error message on the screen
       setState(() {
         generalError = errorMessage;
       });
-
-      // 🔴 === END OF THE FIX === 🔴
     } finally {
       if (mounted) {
         setState(() => isLoading = false);
