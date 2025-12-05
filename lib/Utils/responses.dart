@@ -73,7 +73,7 @@ handleDioError(DioException e) {
   //     "Error",
   //     message,
   //     snackPosition: SnackPosition.BOTTOM,
-  //     backgroundColor: Colors.red.withOpacity(0.1),
+  //     backgroundColor: Colors.red.withValues(alpha: 0.1),
   //     colorText: Colors.black,
   //     margin: const EdgeInsets.all(12),
   //   );

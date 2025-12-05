@@ -29,7 +29,7 @@ showOnlineOrderDisabledDialog({
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: AppColors.maincolor.withOpacity(0.15),
+                      color: AppColors.maincolor.withValues(alpha: 0.15),
                       shape: BoxShape.circle,
                     ),
                     padding: const EdgeInsets.all(18),
@@ -105,7 +105,7 @@ ShowAddCart({
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: AppColors.maincolor.withOpacity(0.15),
+                      color: AppColors.maincolor.withValues(alpha: 0.15),
                       shape: BoxShape.circle,
                     ),
                     padding: const EdgeInsets.all(18),

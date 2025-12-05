@@ -539,7 +539,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   ),
                   if (isAddtoCart)
                     Container(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withValues(alpha: 0.3),
                       child: Center(child: Loader()),
                     ),
                 ],

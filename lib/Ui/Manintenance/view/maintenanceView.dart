@@ -167,7 +167,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                     borderRadius: BorderRadius.circular(20),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.grey.withOpacity(0.2),
+                                        color: Colors.grey.withValues(alpha: 0.2),
                                         spreadRadius: 2,
                                         blurRadius: 5,
                                         offset: const Offset(0, 3),
@@ -292,7 +292,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
           ),
           if (isDetailLoading)
             Container(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               child: Center(child: Loader()),
             ),
         ],

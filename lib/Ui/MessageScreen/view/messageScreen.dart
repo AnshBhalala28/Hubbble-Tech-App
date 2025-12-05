@@ -493,10 +493,10 @@ class _MessageScreenState extends State<MessageScreen> {
                             vertical: 12,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.redColor.withOpacity(0.07),
+                            color: AppColors.redColor.withValues(alpha: 0.07),
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
-                              color: AppColors.redColor.withOpacity(0.4),
+                              color: AppColors.redColor.withValues(alpha: 0.4),
                               width: 1,
                             ),
                           ),
@@ -671,7 +671,7 @@ class _MessageScreenState extends State<MessageScreen> {
               isSending
                   ? Positioned.fill(
                     child: Container(
-                      color: Colors.black.withOpacity(0.4),
+                      color: Colors.black.withValues(alpha: 0.4),
                       child: Center(child: Loader()),
                     ),
                   )

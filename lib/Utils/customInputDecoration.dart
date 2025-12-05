@@ -35,7 +35,7 @@ InputDecoration inputDecoration({
     fillColor: Colors.white,
     filled: true,
     disabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.pink.withOpacity(0.1), width: 1),
+      borderSide: BorderSide(color: Colors.pink.withValues(alpha: 0.1), width: 1),
       borderRadius: BorderRadius.circular(30),
     ),
     errorBorder: OutlineInputBorder(

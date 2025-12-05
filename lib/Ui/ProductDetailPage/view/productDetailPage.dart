@@ -321,7 +321,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                         borderRadius: BorderRadius.circular(30),
                                         border: Border.all(
                                           color: AppColors.maincolor
-                                              .withOpacity(0.5),
+                                              .withValues(alpha: 0.5),
                                         ),
                                       ),
                                       child: Row(
@@ -540,7 +540,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           ).paddingOnly(left: 1.w, right: 1.w),
           if (isAddReviewLoading)
             Container(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               child: Center(child: Loader()),
             ),
         ],
@@ -1102,7 +1102,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     decoration: InputDecoration(
                       hintText: 'Write your experience...',
                       filled: true,
-                      fillColor: AppColors.maincolor.withOpacity(0.1),
+                      fillColor: AppColors.maincolor.withValues(alpha: 0.1),
                       contentPadding: EdgeInsets.symmetric(
                         vertical: 1.2.h,
                         horizontal: 4.w,

@@ -163,7 +163,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                                     borderRadius: BorderRadius.circular(20),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.grey.withOpacity(0.2),
+                                        color: Colors.grey.withValues(alpha: 0.2),
                                         spreadRadius: 2,
                                         blurRadius: 5,
                                         offset: const Offset(0, 3),
@@ -287,12 +287,12 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
           ),
           if (isDetailLoading)
             Container(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               child: Center(child: Loader()),
             ),
           if (isRsvpLoading)
             Container(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               child: Center(child: Loader()),
             ),
         ],
@@ -654,7 +654,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 CircleAvatar(
-                  backgroundColor: AppColors.maincolor.withOpacity(0.1),
+                  backgroundColor: AppColors.maincolor.withValues(alpha: 0.1),
                   radius: 32,
                   child: const Icon(
                     Icons.how_to_reg,
@@ -795,7 +795,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
               children: [
                 CircleAvatar(
                   radius: 32,
-                  backgroundColor: AppColors.maincolor.withOpacity(0.1),
+                  backgroundColor: AppColors.maincolor.withValues(alpha: 0.1),
                   child: const Icon(
                     Icons.event_available,
                     color: AppColors.maincolor,

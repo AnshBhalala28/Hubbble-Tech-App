@@ -434,7 +434,7 @@ class _EventDetailState extends State<EventDetail> {
                     if (isBooking)
                       Container(
                         decoration: BoxDecoration(
-                          color: AppColors.black.withOpacity(0.1),
+                          color: AppColors.black.withValues(alpha: 0.1),
                         ),
                         child: Loader(),
                       ),

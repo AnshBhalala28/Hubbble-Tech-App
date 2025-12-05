@@ -439,7 +439,7 @@ class _StoryProgressIndicatorState extends State<StoryProgressIndicator> {
               Container(
                 height: 3,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.3),
+                  color: Colors.white.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(1.5),
                 ),
               ),
@@ -462,7 +462,7 @@ class _StoryProgressIndicatorState extends State<StoryProgressIndicator> {
     return Container(
       height: 3,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.3),
+        color: Colors.white.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(1.5),
       ),
     );

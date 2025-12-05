@@ -446,7 +446,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             Container(
               padding: EdgeInsets.all(2.w),
               decoration: BoxDecoration(
-                color: AppColors.maincolor.withOpacity(0.1),
+                color: AppColors.maincolor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(icon, color: AppColors.maincolor, size: 17.sp),

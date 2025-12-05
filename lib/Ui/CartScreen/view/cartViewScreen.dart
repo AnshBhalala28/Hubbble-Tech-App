@@ -534,7 +534,7 @@ class _AddToCartViewState extends State<AddToCartView> {
               decoration: BoxDecoration(
                 color:
                     isSelected
-                        ? AppColors.maincolor.withOpacity(0.05)
+                        ? AppColors.maincolor.withValues(alpha: 0.05)
                         : Colors.white,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
@@ -634,7 +634,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                         vertical: 0.5.h,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.orange.withOpacity(0.1),
+                        color: Colors.orange.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(6),
                         border: Border.all(color: Colors.orange),
                       ),
@@ -790,7 +790,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.maincolor.withOpacity(0.3),
+                    color: AppColors.maincolor.withValues(alpha: 0.3),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -1975,7 +1975,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                     boxShadow: [
                                                       BoxShadow(
                                                         color: Colors.black
-                                                            .withOpacity(0.15),
+                                                            .withValues(alpha: 0.15),
                                                         blurRadius: 6,
                                                         spreadRadius: 2,
                                                         offset: const Offset(
@@ -2151,7 +2151,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                     ),
                                     margin: EdgeInsets.only(bottom: 2.h),
                                     decoration: BoxDecoration(
-                                      color: AppColors.maincolor.withOpacity(
+                                      color: AppColors.maincolor.withValues(alpha: 
                                         0.1,
                                       ),
                                       borderRadius: BorderRadius.circular(10),

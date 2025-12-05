@@ -1235,12 +1235,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                   if (isSending)
                     Container(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withValues(alpha: 0.3),
                       child: Center(child: Loader()),
                     ),
                   if (isRegistration)
                     Container(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withValues(alpha: 0.3),
                       child: Center(child: Loader()),
                     ),
                 ],
@@ -1928,7 +1928,7 @@ class _HomePageState extends State<HomePage> {
 
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.6),
+                                          color: Colors.black.withValues(alpha: 0.6),
                                           shape: BoxShape.circle,
                                         ),
                                         padding: const EdgeInsets.all(4),
@@ -2126,7 +2126,7 @@ class _HomePageState extends State<HomePage> {
                 // 🐾 Icon or image on top
                 CircleAvatar(
                   radius: 30,
-                  backgroundColor: AppColors.maincolor.withOpacity(0.2),
+                  backgroundColor: AppColors.maincolor.withValues(alpha: 0.2),
                   child: Icon(
                     Icons.pets,
                     color: AppColors.maincolor,
@@ -2374,10 +2374,10 @@ class _HomePageState extends State<HomePage> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                // Radius થોડો ઓછો કર્યો
+
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha: 0.2),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   ),
@@ -2398,7 +2398,7 @@ class _HomePageState extends State<HomePage> {
                           height: 10.h, // 15.h -> 10.h
                           width: 10.h,
                           decoration: BoxDecoration(
-                            color: AppColors.maincolor.withOpacity(0.08),
+                            color: AppColors.maincolor.withValues(alpha: 0.08),
                             shape: BoxShape.circle,
                           ),
                           child: Center(

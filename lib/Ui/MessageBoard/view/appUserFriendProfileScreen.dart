@@ -297,7 +297,7 @@ class _AppUserFriendProfileScreenState
           Container(
             padding: EdgeInsets.all(2.w),
             decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.1),
+              color: Colors.blue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: Colors.blue.shade700, size: 17.sp),

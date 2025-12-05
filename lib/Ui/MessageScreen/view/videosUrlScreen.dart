@@ -130,7 +130,7 @@ class _VideoViewState extends State<VideoView> {
                               !_isLoading)
                             Icon(
                               Icons.play_circle_fill,
-                              color: Colors.white.withOpacity(0.8),
+                              color: Colors.white.withValues(alpha: 0.8),
                               size: 80,
                             ),
                         ],

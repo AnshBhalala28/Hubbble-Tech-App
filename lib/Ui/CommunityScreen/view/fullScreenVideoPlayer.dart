@@ -197,7 +197,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                     controller.value.isPlaying
                         ? Icons.pause_circle
                         : Icons.play_circle,
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withValues(alpha: 0.8),
                     size: 60,
                   ),
                 ),

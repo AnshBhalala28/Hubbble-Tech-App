@@ -1182,7 +1182,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                               FontWeight.bold,
                                                           decorationColor:
                                                               Colors.black
-                                                                  .withOpacity(
+                                                                  .withValues(alpha: 
                                                                     0.4,
                                                                   ),
                                                         ),
@@ -1645,7 +1645,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                 ).paddingSymmetric(horizontal: 3.w),
             if (isRsvpLoading)
               Container(
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withValues(alpha: 0.3),
                 child: Center(child: Loader()),
               ),
           ],
@@ -1826,7 +1826,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                   isSelected
                                       ? FontWeight.bold
                                       : FontWeight.normal,
-                              decorationColor: Colors.black.withOpacity(0.4),
+                              decorationColor: Colors.black.withValues(alpha: 0.4),
                             ),
                           ),
 
@@ -1863,7 +1863,7 @@ class _Form_ScreenState extends State<Form_Screen> {
       height: 5.h,
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -2119,7 +2119,7 @@ class _Form_ScreenState extends State<Form_Screen> {
               children: [
                 CircleAvatar(
                   radius: 32,
-                  backgroundColor: AppColors.maincolor.withOpacity(0.1),
+                  backgroundColor: AppColors.maincolor.withValues(alpha: 0.1),
                   child: const Icon(
                     Icons.event_available,
                     color: AppColors.maincolor,
@@ -2266,7 +2266,7 @@ class _Form_ScreenState extends State<Form_Screen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 CircleAvatar(
-                  backgroundColor: AppColors.maincolor.withOpacity(0.1),
+                  backgroundColor: AppColors.maincolor.withValues(alpha: 0.1),
                   radius: 32,
                   child: const Icon(
                     Icons.how_to_reg,
@@ -2423,7 +2423,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
-                              color: Colors.grey.withOpacity(0.20),
+                              color: Colors.grey.withValues(alpha: 0.20),
                             ),
                             padding: const EdgeInsets.all(12),
                             child: Column(

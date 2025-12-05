@@ -617,7 +617,7 @@ class _BuyProductViewState extends State<BuyProductView> {
                                   gradient: LinearGradient(
                                     colors: [
                                       AppColors.maincolor,
-                                      AppColors.maincolor.withOpacity(0.8),
+                                      AppColors.maincolor.withValues(alpha: 0.8),
                                     ],
                                     begin: Alignment.centerLeft,
                                     end: Alignment.centerRight,
@@ -625,7 +625,7 @@ class _BuyProductViewState extends State<BuyProductView> {
                                   borderRadius: BorderRadius.circular(16),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.maincolor.withOpacity(
+                                      color: AppColors.maincolor.withValues(alpha: 
                                         0.3,
                                       ),
                                       blurRadius: 8,
@@ -665,7 +665,7 @@ class _BuyProductViewState extends State<BuyProductView> {
           ),
           if (isCheckout)
             Container(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               child: Center(child: Loader()),
             ),
         ],
@@ -716,7 +716,7 @@ class _BuyProductViewState extends State<BuyProductView> {
         padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.8.h),
         decoration: BoxDecoration(
           color:
-              isSelected ? AppColors.maincolor.withOpacity(0.08) : Colors.white,
+              isSelected ? AppColors.maincolor.withValues(alpha: 0.08) : Colors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected ? AppColors.maincolor : Colors.grey.shade300,
@@ -783,7 +783,7 @@ class _BuyProductViewState extends State<BuyProductView> {
     borderRadius: BorderRadius.circular(12),
     boxShadow: [
       BoxShadow(
-        color: Colors.grey.withOpacity(0.1),
+        color: Colors.grey.withValues(alpha: 0.1),
         blurRadius: 4,
         offset: const Offset(0, 2),
       ),
@@ -954,7 +954,7 @@ class _BuyProductViewState extends State<BuyProductView> {
                 Container(
                   padding: EdgeInsets.all(2.w),
                   decoration: BoxDecoration(
-                    color: AppColors.maincolor.withOpacity(0.1),
+                    color: AppColors.maincolor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(icon, color: AppColors.maincolor, size: 20.sp),
@@ -1082,7 +1082,7 @@ class _BuyProductViewState extends State<BuyProductView> {
         decoration: BoxDecoration(
           color:
               isSelected
-                  ? AppColors.maincolor.withOpacity(0.1)
+                  ? AppColors.maincolor.withValues(alpha: 0.1)
                   : Colors.grey[50],
           borderRadius: BorderRadius.circular(12),
           border: Border.all(

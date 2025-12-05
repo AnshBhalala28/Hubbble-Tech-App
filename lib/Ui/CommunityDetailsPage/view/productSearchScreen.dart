@@ -142,7 +142,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -248,7 +248,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       blurRadius: 10,
                       offset: const Offset(0, -2),
                     ),
@@ -269,7 +269,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       gradient: LinearGradient(
                         colors: [
                           AppColors.maincolor,
-                          AppColors.maincolor.withOpacity(0.8),
+                          AppColors.maincolor.withValues(alpha: 0.8),
                         ],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
@@ -277,7 +277,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.maincolor.withOpacity(0.3),
+                          color: AppColors.maincolor.withValues(alpha: 0.3),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),

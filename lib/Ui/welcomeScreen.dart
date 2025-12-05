@@ -118,7 +118,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               Container(
                 height: 100.h,
                 width: 100.w,
-                color: Colors.white.withOpacity(.2),
+                color: Colors.white.withValues(alpha: .2),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 4.0.w),

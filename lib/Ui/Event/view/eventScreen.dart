@@ -386,7 +386,7 @@ class _EventScreenState extends State<EventScreen>
           child: Material(
             elevation: 4,
             borderRadius: BorderRadius.circular(20),
-            shadowColor: AppColors.maincolor.withOpacity(0.2),
+            shadowColor: AppColors.maincolor.withValues(alpha: 0.2),
             child: InkWell(
               onTap: () {
                 Get.to(
@@ -402,7 +402,7 @@ class _EventScreenState extends State<EventScreen>
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: AppColors.maincolor.withOpacity(0.1),
+                    color: AppColors.maincolor.withValues(alpha: 0.1),
                     width: 1,
                   ),
                 ),
@@ -417,7 +417,7 @@ class _EventScreenState extends State<EventScreen>
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.maincolor.withOpacity(0.1),
+                            color: AppColors.maincolor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -442,7 +442,7 @@ class _EventScreenState extends State<EventScreen>
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.orange.withOpacity(0.1),
+                              color: Colors.orange.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(

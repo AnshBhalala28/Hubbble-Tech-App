@@ -1018,7 +1018,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
               ).paddingOnly(left: 2.w, right: 2.w),
           if (isCancleOrder)
             Container(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               child: Center(child: Loader()),
             ),
         ],
@@ -1447,7 +1447,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
       padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.8.h),
       decoration: BoxDecoration(
         color:
-            isSelected ? AppColors.maincolor.withOpacity(0.08) : Colors.white,
+            isSelected ? AppColors.maincolor.withValues(alpha: 0.08) : Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isSelected ? AppColors.maincolor : Colors.grey.shade300,
@@ -1534,7 +1534,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             spreadRadius: 1,
             blurRadius: 3,
             offset: const Offset(0, 1),
@@ -1557,7 +1557,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                   Container(
                     padding: EdgeInsets.all(2.w),
                     decoration: BoxDecoration(
-                      color: AppColors.maincolor.withOpacity(0.1),
+                      color: AppColors.maincolor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
@@ -1649,7 +1649,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             spreadRadius: 1,
             blurRadius: 3,
             offset: const Offset(0, 1),
@@ -1661,7 +1661,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
         leading: Container(
           padding: EdgeInsets.all(2.w),
           decoration: BoxDecoration(
-            color: AppColors.maincolor.withOpacity(0.1),
+            color: AppColors.maincolor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, color: AppColors.maincolor, size: 20.sp),
@@ -1714,7 +1714,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
               Container(
                 padding: EdgeInsets.all(2.w),
                 decoration: BoxDecoration(
-                  color: AppColors.maincolor.withOpacity(0.1),
+                  color: AppColors.maincolor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
@@ -1909,7 +1909,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
               Container(
                 padding: EdgeInsets.all(2.w),
                 decoration: BoxDecoration(
-                  color: AppColors.maincolor.withOpacity(0.1),
+                  color: AppColors.maincolor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
@@ -2260,7 +2260,7 @@ class OrderStepsWidget extends StatelessWidget {
                         height: 30,
                         color:
                             index < currentStatusIndex
-                                ? stepColor.withOpacity(0.5)
+                                ? stepColor.withValues(alpha: 0.5)
                                 : Colors.grey[300],
                         margin: const EdgeInsets.symmetric(vertical: 2),
                       ),
@@ -2299,7 +2299,7 @@ class OrderStepsWidget extends StatelessWidget {
                               vertical: 5,
                             ),
                             decoration: BoxDecoration(
-                              color: activeColor.withOpacity(0.1),
+                              color: activeColor.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
@@ -2346,7 +2346,7 @@ class OrderStepsWidget extends StatelessWidget {
             isActive
                 ? color
                 : isCompleted
-                ? color.withOpacity(0.7)
+                ? color.withValues(alpha: 0.7)
                 : Colors.grey[300],
         border: isActive ? Border.all(color: color, width: 2) : null,
       ),
@@ -2432,7 +2432,7 @@ class _LiveStatusIndicatorState extends State<LiveStatusIndicator>
             // Main dot ni paachhal soft glow add karo
             boxShadow: [
               BoxShadow(
-                color: widget.color.withOpacity(0.6), // Glow no color
+                color: widget.color.withValues(alpha: 0.6), // Glow no color
                 blurRadius: _glowAnimation.value, // Animated blur
                 spreadRadius: _glowAnimation.value / 4, // Animated spread
               ),

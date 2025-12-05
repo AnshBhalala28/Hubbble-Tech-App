@@ -305,7 +305,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                     color: AppColors.white,
                                     borderRadius: BorderRadius.circular(30),
                                     border: Border.all(
-                                      color: AppColors.maincolor.withOpacity(
+                                      color: AppColors.maincolor.withValues(alpha: 
                                         0.5,
                                       ),
                                     ),
@@ -597,7 +597,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           ),
           if (isAddReviewLoading)
             Container(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               child: Center(child: Loader()),
             ),
         ],

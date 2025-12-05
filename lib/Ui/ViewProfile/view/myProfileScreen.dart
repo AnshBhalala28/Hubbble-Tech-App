@@ -152,7 +152,7 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
 
           if (isEditing)
             Container(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               child: Center(child: Loader()),
             ),
         ],

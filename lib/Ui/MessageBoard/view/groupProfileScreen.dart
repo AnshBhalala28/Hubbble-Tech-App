@@ -533,7 +533,7 @@
 //                                                             'Friend request sent to ${selectedMembers}',
 //                                                             backgroundColor:
 //                                                                 Colors.green
-//                                                                     .withOpacity(
+//                                                                     .withValues(alpha: 
 //                                                                       0.7,
 //                                                                     ),
 //                                                             colorText:
@@ -702,7 +702,7 @@
 //           if (isSending)
 //             Positioned.fill(
 //               child: Container(
-//                 color: Colors.black.withOpacity(0.1),
+//                 color: Colors.black.withValues(alpha: 0.1),
 //                 child: Center(child: Loader()),
 //               ),
 //             ),
@@ -914,7 +914,7 @@
 //             Get.snackbar(
 //               'Sorry',
 //               'Faild to add member',
-//               backgroundColor: Colors.red.withOpacity(0.7),
+//               backgroundColor: Colors.red.withValues(alpha: 0.7),
 //               colorText: Colors.white,
 //               snackPosition: SnackPosition.BOTTOM,
 //             );

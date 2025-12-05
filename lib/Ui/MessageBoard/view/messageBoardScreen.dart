@@ -432,7 +432,7 @@ class _MessageboardState extends State<Messageboard> {
                                           padding: const EdgeInsets.all(6),
                                           decoration: BoxDecoration(
                                             color: AppColors.maincolor
-                                                .withOpacity(0.15),
+                                                .withValues(alpha: 0.15),
                                             shape: BoxShape.circle,
                                           ),
                                           child: const Icon(
@@ -604,7 +604,7 @@ class _MessageboardState extends State<Messageboard> {
                               padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: AppColors.white.withOpacity(0.1),
+                                color: AppColors.white.withValues(alpha: 0.1),
                               ),
                               child: Icon(
                                 Icons.info_outline_rounded,
@@ -1631,7 +1631,7 @@ class _MessageboardState extends State<Messageboard> {
                                                                 decoration: BoxDecoration(
                                                                   color: Colors
                                                                       .black
-                                                                      .withOpacity(
+                                                                      .withValues(alpha: 
                                                                         0.6,
                                                                       ),
                                                                   borderRadius:
@@ -1865,7 +1865,7 @@ class _MessageboardState extends State<Messageboard> {
           ).paddingOnly(top: 10.h),
           if (isSending1)
             Container(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               child: Center(child: Loader()),
             ),
         ],
@@ -2297,7 +2297,7 @@ class _MessageboardState extends State<Messageboard> {
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.6),
+                                          color: Colors.black.withValues(alpha: 0.6),
                                           shape: BoxShape.circle,
                                         ),
                                         padding: const EdgeInsets.all(4),
@@ -2503,7 +2503,7 @@ class _MessageboardState extends State<Messageboard> {
                                           },
                                           child: Container(
                                             decoration: BoxDecoration(
-                                              color: Colors.black.withOpacity(
+                                              color: Colors.black.withValues(alpha: 
                                                 0.6,
                                               ),
                                               shape: BoxShape.circle,
@@ -2562,7 +2562,7 @@ class _MessageboardState extends State<Messageboard> {
                                           },
                                           child: Container(
                                             decoration: BoxDecoration(
-                                              color: Colors.black.withOpacity(
+                                              color: Colors.black.withValues(alpha: 
                                                 0.6,
                                               ),
                                               shape: BoxShape.circle,
@@ -3035,7 +3035,7 @@ class _MessageboardState extends State<Messageboard> {
                 Get.snackbar(
                   'Error',
                   'Too many requests',
-                  backgroundColor: Colors.red.withOpacity(0.7),
+                  backgroundColor: Colors.red.withValues(alpha: 0.7),
                   colorText: Colors.white,
                   snackPosition: SnackPosition.BOTTOM,
                 );
@@ -3048,7 +3048,7 @@ class _MessageboardState extends State<Messageboard> {
                 Get.snackbar(
                   'Error',
                   'Internal Server Error',
-                  backgroundColor: Colors.red.withOpacity(0.7),
+                  backgroundColor: Colors.red.withValues(alpha: 0.7),
                   colorText: Colors.white,
                   snackPosition: SnackPosition.BOTTOM,
                 );

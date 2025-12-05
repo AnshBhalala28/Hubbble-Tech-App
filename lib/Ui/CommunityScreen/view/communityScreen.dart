@@ -1393,7 +1393,7 @@ class _CommunityScreenState extends State<CommunityScreen>
             isSending
                 ? Positioned.fill(
                   child: Container(
-                    color: Colors.black.withOpacity(0.4),
+                    color: Colors.black.withValues(alpha: 0.4),
                     child: Center(child: Loader()),
                   ),
                 )
@@ -4044,7 +4044,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                     boxShadow: [
                                                       BoxShadow(
                                                         color: Colors.black
-                                                            .withOpacity(0.05),
+                                                            .withValues(alpha: 0.05),
                                                         blurRadius: 10,
                                                         offset: const Offset(
                                                           0,
@@ -6510,7 +6510,7 @@ class _CommunityScreenState extends State<CommunityScreen>
       decoration:
           isToday
               ? BoxDecoration(
-                color: Colors.blue.withOpacity(0.1),
+                color: Colors.blue.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(6),
               )
               : null,
