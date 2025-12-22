@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    id("com.google.gms.google-services") // Only needed if using Firebase
+    id("com.google.gms.google-services")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
 }
@@ -41,7 +41,7 @@ android {
         create("release") {
             keyAlias = "waveeai"
             keyPassword = "123456"
-            storeFile = file("E:\\wavee-ai-new\\android\\waveeai.jks")
+            storeFile = file("/Users/jacksardhara/StudioProjects/waveeai-app-new/android/waveeai.jks")
             storePassword = "123456"
         }
     }

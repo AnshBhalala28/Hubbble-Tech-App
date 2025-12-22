@@ -56,7 +56,9 @@ class HomePage extends StatefulWidget {
   final String userName;
 
   HomePage({super.key, this.selected, required this.userName});
+
   static bool isPasswordDialogShown = false;
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -692,18 +694,18 @@ class _HomePageState extends State<HomePage> {
                                                           ),
                                                           ClickableTrimmedText(
                                                             text:
-                                                            messageBoardModal
-                                                                ?.data?[0]
-                                                                .text ??
+                                                                messageBoardModal
+                                                                    ?.data?[0]
+                                                                    .text ??
                                                                 "",
                                                             maxLines: 5,
                                                             style: TextStyle(
                                                               fontSize: 15.sp,
                                                               color:
-                                                              Colors.black,
+                                                                  Colors.black,
                                                               fontFamily:
-                                                              AppConstants
-                                                                  .AlbertSansLight,
+                                                                  AppConstants
+                                                                      .AlbertSansLight,
                                                             ),
                                                           ),
                                                           if (messageBoardModal
@@ -715,27 +717,35 @@ class _HomePageState extends State<HomePage> {
                                                               height: 1.h,
                                                             ),
                                                           if (messageBoardModal
-                                                                  ?.data?[0]
-                                                                  .file
-                                                                  ?.length !=
-                                                              0)
+                                                                      ?.data?[0]
+                                                                      .file !=
+                                                                  null &&
+                                                              messageBoardModal!
+                                                                  .data![0]
+                                                                  .file!
+                                                                  .isNotEmpty)
                                                             ((messageBoardModal
-                                                                        ?.data?[0]
-                                                                        .file?[0])!
+                                                                            ?.data?[0]
+                                                                            .file?[0] ??
+                                                                        '')
                                                                     .toLowerCase()
                                                                     .endsWith(
                                                                       '.pdf',
-                                                                    )
+                                                                    ) // Changed here
                                                                 ? GestureDetector(
                                                                   onTap: () async {
+                                                                    // Safely get the URL
                                                                     final url =
                                                                         messageBoardModal
                                                                             ?.data?[0]
                                                                             .file?[0];
+                                                                    if (url ==
+                                                                        null)
+                                                                      return; // Safety check
+
                                                                     final uri =
                                                                         Uri.parse(
-                                                                          url ??
-                                                                              '',
+                                                                          url,
                                                                         );
                                                                     Get.to(
                                                                       PdfView(
@@ -743,23 +753,7 @@ class _HomePageState extends State<HomePage> {
                                                                             uri.toString(),
                                                                       ),
                                                                     );
-                                                                    // if (await canLaunchUrl(uri)) {
-                                                                    //   final launched = await launchUrl(
-                                                                    //     uri,
-                                                                    //     mode: LaunchMode.externalApplication,
-                                                                    //   );
-                                                                    //   if (!launched) {
-                                                                    //     ScaffoldMessenger.of(context).showSnackBar(
-                                                                    //       SnackBar(content: Text("Failed to open externally")),
-                                                                    //     );
-                                                                    //   }
-                                                                    // } else {
-                                                                    //   ScaffoldMessenger.of(context).showSnackBar(
-                                                                    //     SnackBar(content: Text("Cannot open PDF")),
-                                                                    //   );
-                                                                    // }
                                                                   },
-
                                                                   child: Container(
                                                                     width:
                                                                         double
@@ -1927,7 +1921,9 @@ class _HomePageState extends State<HomePage> {
 
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          color: Colors.black.withValues(alpha: 0.6),
+                                          color: Colors.black.withValues(
+                                            alpha: 0.6,
+                                          ),
                                           shape: BoxShape.circle,
                                         ),
                                         padding: const EdgeInsets.all(4),
@@ -2350,13 +2346,14 @@ class _HomePageState extends State<HomePage> {
     // }
 
     String? savedPassword = await SaveDataLocal.getPassword();
-    if (savedPassword != null && (savedPassword == "12345678" || savedPassword == "123456")) {
-
+    if (savedPassword != null &&
+        (savedPassword == "12345678" || savedPassword == "123456")) {
       // HomePage.isPasswordDialogShown = true;
 
       showMandatoryPasswordChangeDialog();
     }
   }
+
   void showMandatoryPasswordChangeDialog() {
     showDialog(
       context: context,
