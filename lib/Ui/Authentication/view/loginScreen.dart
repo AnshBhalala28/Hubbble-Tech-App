@@ -292,6 +292,7 @@ class _LoginScreenState extends State<LoginScreen> {
             password: password.text,
           );
           showSnackBar(
+            context: context,
             title: "Login",
             message: "Login Successful.",
             backgoundColor: AppColors.maincolor,

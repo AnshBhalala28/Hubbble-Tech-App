@@ -124,6 +124,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               forgotpasswordmodel?.status == 200) {
             // await SaveDataLocal.saveLogInData(loginModel!);
             showSnackBar(
+              context: context,
               title: "Forget",
               message: forgotpasswordmodel?.message ?? '',
               backgoundColor: AppColors.maincolor,
@@ -138,7 +139,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             emailController.clear();
             // password.clear();
           } else if (response.statusCode == 422) {
-            showSnackBar(
+            showSnackBar(    context: context,
               title: "Faild",
               message: "The selected email is invalid.",
               backgoundColor: AppColors.redColor,
@@ -156,7 +157,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           setState(() {
             isLoading = false;
           });
-          showSnackBar(
+          showSnackBar(    context: context,
             title: "Faild",
             message: "The selected email is invalid.",
             backgoundColor: AppColors.redColor,

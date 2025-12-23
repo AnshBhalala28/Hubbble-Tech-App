@@ -259,6 +259,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         final res = response.data;
         if (res['status'] == true || res['status'] == 200) {
           showSnackBar(
+            context: context,
             title: "Success",
             message: res['message'] ?? "Password changed successfully",
             backgoundColor: AppColors.maincolor,

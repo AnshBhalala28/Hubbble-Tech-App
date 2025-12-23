@@ -1290,7 +1290,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                   item.type ?? "",
                 );
               } else {
-                showSnackBar(
+                showSnackBar(    context: context,
                   title: 'Stock Unavailable',
                   message: 'Requested quantity exceeds available stock.',
                   backgoundColor: Colors.red,
@@ -2604,7 +2604,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                   'decrement',
                 );
               } else {
-                showSnackBar(
+                showSnackBar(    context: context,
                   title: 'Sorry !!',
                   message: 'The minimum quantity allowed is 1.',
                   backgoundColor: Colors.red,

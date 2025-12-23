@@ -22,24 +22,51 @@ class AuthProvider extends ChangeNotifier {
   //     throw Exception('error $e');
   //   }
   // }
-  Future<dynamic> loginApi(Map<String, String> data) async {
+
+
+
+  /// hiren working code
+  // Future<dynamic> loginApi(Map<String, String> data) async {
+  //   try {
+  //     var response = await Dio().post(
+  //       ApiEndpoint.login,
+  //       data: data,
+  //       options: Options(
+  //         validateStatus: (status) {
+  //           return status == 200 || status == 422;
+  //         },
+  //       ),
+  //     );
+  //     return response;
+  //   } catch (e) {
+  //     log("Login Error in fuild ${ApiEndpoint.login}");
+  //     log("Login Error in fuild $e");
+  //     rethrow;
+  //   }
+  // }
+  Future<Response> loginApi(Map<String, String> data) async {
     try {
-      var response = await Dio().post(
+      final Dio dio = await DioHelper.getDio();
+
+      final response = await dio.post(
         ApiEndpoint.login,
         data: data,
         options: Options(
-          validateStatus: (status) {
-            return status == 200 || status == 422;
-          },
+          validateStatus: (status) =>
+          status == 200 || status == 422,
         ),
       );
+
       return response;
-    } catch (e) {
-      log("Login Error in fuild ${ApiEndpoint.login}");
-      log("Login Error in fuild $e");
+    } catch (e, stack) {
+      log("Login Error: ${ApiEndpoint.login}");
+      log("Login Error: ${stack}");
+      log(e.toString());
       rethrow;
     }
   }
+
+
 
   Future<dynamic> changePasswordApi(Map<String, String> data) async {
     try {

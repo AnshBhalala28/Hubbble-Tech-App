@@ -193,7 +193,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     String? fcmToken = await FirebaseMessaging.instance.getToken();
 
     if (fcmToken == null) {
-      showSnackBar(
+      showSnackBar(    context: context,
         title: "FCM Error",
         message: "Unable to fetch FCM token",
         backgoundColor: Colors.red,

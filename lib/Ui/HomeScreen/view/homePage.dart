@@ -2058,7 +2058,7 @@ class _HomePageState extends State<HomePage> {
     String? fcmToken = await FirebaseMessaging.instance.getToken();
 
     if (fcmToken == null) {
-      showSnackBar(
+      showSnackBar(    context: context,
         title: "FCM Error",
         message: "Unable to fetch FCM token",
         backgoundColor: Colors.red,
@@ -2078,6 +2078,7 @@ class _HomePageState extends State<HomePage> {
         try {
           var response = await AuthProvider().updateFCM(data);
           if (response.statusCode == 200) {
+            print("fcm update thay che ho=====>>>>>");
             setState(() {
               isLoading = false;
             });
@@ -2257,7 +2258,7 @@ class _HomePageState extends State<HomePage> {
             String apiMessage = responseData['message'] ?? "Unknown error";
 
             if (response.statusCode == 200 && apiStatus == 200) {
-              showSnackBar(
+              showSnackBar(    context: context,
                 title: "SignUp",
                 message:
                     "Registration Successful \nYou can now login to Wavee Pets using your credentials.",
@@ -2287,14 +2288,14 @@ class _HomePageState extends State<HomePage> {
                   errorMessage = errorData['password'][0];
                 }
 
-                showSnackBar(
+                showSnackBar(    context: context,
                   title: "Sorry",
                   message: errorMessage,
                   backgoundColor: AppColors.maincolor,
                   ColorText: AppColors.white,
                 );
               } else {
-                showSnackBar(
+                showSnackBar(    context: context,
                   title: "Sorry",
                   message: apiMessage,
                   backgoundColor: AppColors.redColor,
@@ -2303,7 +2304,7 @@ class _HomePageState extends State<HomePage> {
               }
             }
           } catch (jsonError) {
-            showSnackBar(
+            showSnackBar(    context: context,
               title: "Sorry",
               message: "Invalid response from server. Please try again.",
               backgoundColor: AppColors.redColor,
@@ -2312,14 +2313,14 @@ class _HomePageState extends State<HomePage> {
           }
         } catch (e) {
           if (e.toString().contains("No Internet connection")) {
-            showSnackBar(
+            showSnackBar(    context: context,
               title: "Sorry",
               message: "No internet connection. Please check your network.",
               backgoundColor: Colors.red.shade400,
               ColorText: Colors.white,
             );
           } else {
-            showSnackBar(
+            showSnackBar(    context: context,
               title: "Sorry",
               message: "Registration failed. Please try again.",
               backgoundColor: Colors.red.shade400,
