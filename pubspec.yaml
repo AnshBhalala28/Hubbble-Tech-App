@@ -85,6 +85,7 @@ dependencies:
   mime:
   flutter_dotenv:
   infinite_scroll_pagination: ^4.0.0
+  logger:
 
 
   path_provider: any
