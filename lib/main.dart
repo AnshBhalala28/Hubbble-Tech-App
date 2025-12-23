@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -22,17 +23,10 @@ String? myDeviceToken;
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  print("===================================");
-  print("✅ BACKGROUND/TERMINATED HANDLER CALLED");
-  print("===================================");
-
-  print("FULL MESSAGE DATA: ${message.toMap().toString()}");
-  print(message.data);
-
   if (message.notification == null) {
     _showAwesomeNotification(message, "Background (Data Only)");
   } else {
-    print(
+    log(
       "Firebase will show notification automatically (notification payload present)",
     );
   }
@@ -57,7 +51,7 @@ Future<void> _handleFreshInstallIOS() async {
       ),
     );
   } catch (e) {
-    print("Keychain clear error: $e");
+    log("Keychain clear error: $e");
   }
 
   await AwesomeNotifications().resetGlobalBadge();
@@ -67,7 +61,6 @@ Future<void> _handleFreshInstallIOS() async {
 void _showAwesomeNotification(RemoteMessage message, String source) async {
   bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
   if (!isAllowed) {
-    print("Notifications not allowed by user.");
     return;
   }
 
@@ -149,16 +142,12 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> setupFirebaseListeners() async {
     myDeviceToken = await FirebaseMessaging.instance.getToken();
-    print("📱 Device Token: $myDeviceToken");
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print("🔥 Foreground notification received: ${message.toMap()}");
       _showAwesomeNotification(message, "Foreground");
     });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print("📂 App opened from notification: ${message.toMap()}");
-    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {});
 
     checkInitialMessage();
   }
@@ -167,9 +156,7 @@ class _MyAppState extends State<MyApp> {
     RemoteMessage? initialMessage =
         await FirebaseMessaging.instance.getInitialMessage();
 
-    if (initialMessage != null) {
-      print("📂 App opened from terminated state: ${initialMessage.toMap()}");
-    }
+    if (initialMessage != null) {}
   }
 
   @override

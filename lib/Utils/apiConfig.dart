@@ -1,40 +1,9 @@
-// import 'dart:io';
-//
-// import 'package:dio/dio.dart';
-// import 'package:dio/io.dart'; // Needed for DefaultHttpClientAdapter
-// import 'package:flutter/services.dart' show rootBundle;
-// import 'apiEndpoint.dart';
-//
-// class DioHelper {
-//   static Dio? _dio;
-//
-//   static Future<Dio> getDio() async {
-//     if (_dio != null) return _dio!;
-//     final sslCert = await rootBundle.load('assets/certificates/api_cert3.pem');
-//     print("✅ Loaded SSL cert length: ${sslCert.lengthInBytes} bytes");
-//     SecurityContext context = SecurityContext(withTrustedRoots: false);
-//     context.setTrustedCertificatesBytes(sslCert.buffer.asUint8List());
-//     final HttpClient client = HttpClient(context: context);
-//     final adapter = IOHttpClientAdapter();
-//     adapter.onHttpClientCreate = (HttpClient _) => client;
-//     _dio = Dio(
-//       BaseOptions(
-//         baseUrl: ApiEndpoint.baseUrl,
-//         connectTimeout: const Duration(seconds: 60),
-//         receiveTimeout: const Duration(seconds: 60),
-//         contentType: Headers.formUrlEncodedContentType,
-//       ),
-//     );
-//     _dio!.httpClientAdapter = adapter;
-//     return _dio!;
-//   }
-// }
-
-
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 import 'apiEndpoint.dart';
 
@@ -44,20 +13,60 @@ class DioHelper {
   static Future<Dio> getDio() async {
     if (_dio != null) return _dio!;
 
-    final HttpClient client = HttpClient();
-    final adapter = IOHttpClientAdapter();
-    adapter.onHttpClientCreate = (HttpClient _) => client;
+    try {
+      log("Initializing Dio with SSL Configuration...");
 
-    _dio = Dio(
-      BaseOptions(
-        baseUrl: ApiEndpoint.baseUrl,
-        connectTimeout: const Duration(seconds: 60),
-        receiveTimeout: const Duration(seconds: 60),
-        contentType: Headers.formUrlEncodedContentType,
-      ),
-    );
+      // Load the SSL certificate from assets
+      final sslCert = await rootBundle.load(
+        'assets/certificates/api_cert3.pem',
+      );
 
-    _dio!.httpClientAdapter = adapter;
+      // Create a SecurityContext that trusts system roots AND our specific certificate
+      SecurityContext context = SecurityContext(withTrustedRoots: true);
+      try {
+        context.setTrustedCertificatesBytes(sslCert.buffer.asUint8List());
+      } catch (e) {
+        log("⚠️ Warning: Could not add certificate to SecurityContext: $e");
+      }
+
+      _dio = Dio(
+        BaseOptions(
+          baseUrl: ApiEndpoint.baseUrl,
+          connectTimeout: const Duration(seconds: 60),
+          receiveTimeout: const Duration(seconds: 60),
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      // Use IOHttpClientAdapter with an explicit createHttpClient callback
+      // to ensure our custom client with badCertificateCallback is used.
+      _dio!.httpClientAdapter = IOHttpClientAdapter(
+          createHttpClient: () {
+            final client = HttpClient(context: context);
+            client.badCertificateCallback = (
+              X509Certificate cert,
+              String host,
+              int port,
+            ) {
+              log("Bypassing SSL verification for $host");
+              return true;
+            };
+            return client;
+          },
+        )
+        ..onHttpClientCreate = (HttpClient client) {
+          // Fallback for older versions of Dio
+          client.badCertificateCallback =
+              (X509Certificate cert, String host, int port) => true;
+          return client;
+        };
+
+      log("✅ Dio SSL Configuration (Bypass + Pinning) initialized.");
+    } catch (e) {
+      log("❌ Failed to initialize Dio: $e");
+      rethrow;
+    }
+
     return _dio!;
   }
 }

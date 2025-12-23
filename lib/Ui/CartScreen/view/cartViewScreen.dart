@@ -836,8 +836,6 @@ class _AddToCartViewState extends State<AddToCartView> {
               setState(() {
                 isLoadingProducts = false;
                 if (response.statusCode == 200) {
-                  print("Business Profile Response: ${response.data}");
-
                   dynamic productsData;
 
                   if (response.data['data'] != null &&
@@ -1290,7 +1288,8 @@ class _AddToCartViewState extends State<AddToCartView> {
                   item.type ?? "",
                 );
               } else {
-                showSnackBar(    context: context,
+                showSnackBar(
+                  context: context,
                   title: 'Stock Unavailable',
                   message: 'Requested quantity exceeds available stock.',
                   backgoundColor: Colors.red,
@@ -1975,7 +1974,9 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                     boxShadow: [
                                                       BoxShadow(
                                                         color: Colors.black
-                                                            .withValues(alpha: 0.15),
+                                                            .withValues(
+                                                              alpha: 0.15,
+                                                            ),
                                                         blurRadius: 6,
                                                         spreadRadius: 2,
                                                         offset: const Offset(
@@ -2151,8 +2152,8 @@ class _AddToCartViewState extends State<AddToCartView> {
                                     ),
                                     margin: EdgeInsets.only(bottom: 2.h),
                                     decoration: BoxDecoration(
-                                      color: AppColors.maincolor.withValues(alpha: 
-                                        0.1,
+                                      color: AppColors.maincolor.withValues(
+                                        alpha: 0.1,
                                       ),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
@@ -2268,14 +2269,11 @@ class _AddToCartViewState extends State<AddToCartView> {
         amendOrderModal = AmendOrderModal.fromJson(response.data);
 
         // optional: log the relevant server data for debugging
-        try {
-          log("amendOrderApi response: ${response.data}");
-        } catch (_) {}
+        try {} catch (_) {}
       } else {
         // try to parse even on non-200 (defensive)
         try {
           amendOrderModal = AmendOrderModal.fromJson(response.data);
-          log("amendOrderApi non-200 parsed response: ${response.data}");
         } catch (e) {
           log("amendOrderApi failed to parse response: $e");
         }
@@ -2604,7 +2602,8 @@ class _AddToCartViewState extends State<AddToCartView> {
                   'decrement',
                 );
               } else {
-                showSnackBar(    context: context,
+                showSnackBar(
+                  context: context,
                   title: 'Sorry !!',
                   message: 'The minimum quantity allowed is 1.',
                   backgoundColor: Colors.red,
@@ -2707,9 +2706,7 @@ class _AddToCartViewState extends State<AddToCartView> {
 
         // Then refresh from server
         amendOrderApi();
-        log("Quantity updated successfully: ${response.data}");
       } else {
-        log("Failed to update quantity: ${response.data}");
         setState(() => isUpdateQuantity = false);
         buildErrorDialog(context, 'Error', "Failed to update quantity");
       }
@@ -3054,52 +3051,6 @@ class _AddToCartViewState extends State<AddToCartView> {
     );
   }
 
-  // prepaidCartQuantity(String orderProductID, qty) async {
-  //   setState(() {
-  //     isUpdateQuantity = true;
-  //   });
-  //
-  //   // Example amendments list
-  //   List<Map<String, dynamic>> amendments = [
-  //     {
-  //       "type": "increment_qty",
-  //       "order_product_id": orderProductID,
-  //       "qty_to_add": qty,
-  //     },
-  //   ];
-  //
-  //   final Map<String, dynamic> data = {
-  //     "user_id": loginModel?.data?.user?.id.toString() ?? "",
-  //     "order_id": widget.orderID.toString(),
-  //     "amendments": jsonEncode(amendments),
-  //   };
-  //   log("data chat gpt $data");
-  //   bool internet = await checkInternet();
-  //   if (!internet) {
-  //     setState(() => isUpdateQuantity = false);
-  //     buildErrorDialog(context, 'Error', "Internet Required");
-  //     return;
-  //   }
-  //
-  //   try {
-  //     final response = await CartProvider().amendOrderApi(data);
-  //
-  //     if (response.statusCode == 200) {
-  //       setState(() => isUpdateQuantity = false);
-  //       amendOrderApi();
-  //       log("sdadsad${response.data}");
-  //     } else {
-  //       log("sdadsad${response.data}");
-  //
-  //       setState(() => isUpdateQuantity = false);
-  //     }
-  //   } catch (e) {
-  //     setState(() => isUpdateQuantity = false);
-  //     buildErrorDialog(context, 'Error', e.toString());
-  //   }
-  // }
-
-  // 2) Updated prepaidAddProduct(...) - awaits server refresh before clearing UI state
   Future<void> prepaidAddProduct(
     List<Map<String, dynamic>> selectedItems,
   ) async {
@@ -3171,8 +3122,6 @@ class _AddToCartViewState extends State<AddToCartView> {
               ),
             ),
           );
-
-          log("✅ Added products successfully: ${response.data}");
         } catch (e) {
           // Failed while refreshing -- keep the UI consistent and show error
           log("Error while refreshing order after add: $e");
@@ -3186,7 +3135,6 @@ class _AddToCartViewState extends State<AddToCartView> {
       } else {
         if (mounted) setState(() => isUpdateQuantity = false);
         buildErrorDialog(context, 'Error', "Failed to add items");
-        log("❌ Add products failed: ${response.data}");
       }
     } catch (e) {
       if (mounted) setState(() => isUpdateQuantity = false);

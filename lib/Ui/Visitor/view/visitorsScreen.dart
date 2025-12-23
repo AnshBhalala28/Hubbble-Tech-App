@@ -155,7 +155,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                       ),
                                       SizedBox(width: 2.w),
                                       Text(
-                                        "Name: ${capitalizeEachWord(visitor.visitorName?? '')}",
+                                        "Name: ${capitalizeEachWord(visitor.visitorName ?? '')}",
                                         style: TextStyle(
                                           fontSize: 16.5.sp,
                                           fontWeight: FontWeight.w500,
@@ -264,15 +264,16 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                             moreStyle: TextStyle(
                                               fontSize: 15.sp,
                                               fontWeight: FontWeight.w600,
-                                              fontFamily: AppConstants.manropeBold,
-                                              color:AppColors.maincolor,
+                                              fontFamily:
+                                                  AppConstants.manropeBold,
+                                              color: AppColors.maincolor,
                                             ),
                                             lessStyle: TextStyle(
                                               fontSize: 15.sp,
                                               fontWeight: FontWeight.w600,
                                               color: AppColors.maincolor,
-                                              fontFamily: AppConstants.manropeBold,
-
+                                              fontFamily:
+                                                  AppConstants.manropeBold,
                                             ),
                                             style: TextStyle(
                                               fontSize: 16.5.sp,

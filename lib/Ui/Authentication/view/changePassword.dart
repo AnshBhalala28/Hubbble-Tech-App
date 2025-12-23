@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide FormData, MultipartFile;
 import 'package:sizer/sizer.dart';
 
+import '../../../Utils/apiConfig.dart';
+import '../../../Utils/apiEndpoint.dart';
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
 import '../../../Utils/const.dart';
@@ -98,7 +100,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     return "Please enter new password";
                   } else if (val.length < 6) {
                     return "Password must be at least 6 characters";
-                  } else if (val == '12345678' ||val == '123456' ||val == '1234567890' ) {
+                  } else if (val == '12345678' ||
+                      val == '123456' ||
+                      val == '1234567890') {
                     // 🔴 Added validation to block '12345678'
                     return "Password cannot be $val";
                   }
@@ -177,37 +181,37 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child:
-                isLoading
-                    ? const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.white,
-                    strokeWidth: 2,
-                  ),
-                )
-                    : InkWell(
-                  onTap: () {
-                    if (_formKey.currentState!.validate()) {
-                      setState(() {
-                        isLoading = true;
-                        generalError = null;
-                      });
-                      FocusScope.of(context).unfocus();
-                      _changePasswordApi();
-                    }
-                  },
-                  borderRadius: BorderRadius.circular(5),
-                  child: const Center(
-                    child: Text(
-                      "Change Password",
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: AppConstants.manropeBold,
-                      ),
-                    ),
-                  ),
-                ),
+                    isLoading
+                        ? const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                        : InkWell(
+                          onTap: () {
+                            if (_formKey.currentState!.validate()) {
+                              setState(() {
+                                isLoading = true;
+                                generalError = null;
+                              });
+                              FocusScope.of(context).unfocus();
+                              _changePasswordApi();
+                            }
+                          },
+                          borderRadius: BorderRadius.circular(5),
+                          child: const Center(
+                            child: Text(
+                              "Change Password",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: AppConstants.manropeBold,
+                              ),
+                            ),
+                          ),
+                        ),
               ),
               SizedBox(height: 2.h),
             ],
@@ -241,18 +245,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         return;
       }
 
-      // 🔹 API Call using Dio
-      final dio = Dio();
+      // 🔹 API Call using DioHelper (pinned)
+      final dio = await DioHelper.getDio();
       final response = await dio.post(
-        "https://portal.wavee.ai/api/changePasswordApp",
+        ApiEndpoint.changePassword,
         data: FormData.fromMap(data),
-        options: Options(
-          headers: {"Accept": "application/json"},
-          method: "POST",
-        ),
+        options: Options(headers: {"Accept": "application/json"}),
       );
-
-      log("Change Password Response: ${response.data}");
 
       // 🔹 Handle API Response (Success Case)
       if (response.statusCode == 200) {
@@ -282,7 +281,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         // ❌ Handle non-200 status codes that Dio didn't throw (less common)
         setState(() {
           generalError =
-          "Something went wrong (${response.statusCode}). Please try again.";
+              "Something went wrong (${response.statusCode}). Please try again.";
         });
       }
     } catch (e, s) {
@@ -302,7 +301,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             errorMessage = responseData['message'];
           } else {
             errorMessage =
-            "Server returned an error: (${e.response!.statusCode})";
+                "Server returned an error: (${e.response!.statusCode})";
           }
         } catch (parseError) {
           log("Error parsing Dio error response: $parseError");

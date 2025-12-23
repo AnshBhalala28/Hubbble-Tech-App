@@ -549,7 +549,8 @@ class User {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
 
-    addressh = json['addressh'] is Map ? Addressh.fromJson(json['addressh']) : null;
+    addressh =
+        json['addressh'] is Map ? Addressh.fromJson(json['addressh']) : null;
 
     profilepath = _safeStringList(json['profilepath']);
   }
@@ -597,7 +598,6 @@ class Links {
   }
 }
 
-
 /// ---------- SAFETY HELPERS ----------
 
 int? _safeInt(dynamic value) {
@@ -614,6 +614,7 @@ List<T>? _safeList<T>(dynamic value, T Function(dynamic) builder) {
 List<String>? _safeStringList(dynamic value) {
   if (value == null) return [];
   if (value is List) return value.map((e) => e.toString()).toList();
-  if (value is String && value.contains(",")) return value.split(",").map((e) => e.trim()).toList();
+  if (value is String && value.contains(","))
+    return value.split(",").map((e) => e.trim()).toList();
   return [value.toString()];
 }

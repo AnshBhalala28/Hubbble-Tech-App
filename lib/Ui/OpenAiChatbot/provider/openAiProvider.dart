@@ -1,7 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../Utils/const.dart';
@@ -37,7 +36,15 @@ class ChatBotAiProvider extends ChangeNotifier {
 
       return responseJson;
     } catch (e) {
-      throw Exception("Error During Communication: $e");
+      debugLog("Error in chatbotDataApi: $e");
+      if (e is http.Response) {
+        rethrow;
+      }
+      throw Exception(
+        kDebugMode
+            ? "Error During Communication: $e"
+            : "Error During Communication.",
+      );
     }
   }
 
@@ -68,7 +75,15 @@ class ChatBotAiProvider extends ChangeNotifier {
 
       return responseJson;
     } catch (e) {
-      throw Exception("Error During Communication: $e");
+      debugLog("Error in chatBotReceiveData: $e");
+      if (e is http.Response) {
+        rethrow;
+      }
+      throw Exception(
+        kDebugMode
+            ? "Error During Communication: $e"
+            : "Error During Communication.",
+      );
     }
   }
 
@@ -99,7 +114,15 @@ class ChatBotAiProvider extends ChangeNotifier {
 
       return responseJson;
     } catch (e) {
-      throw Exception("Error During Communication: $e");
+      debugLog("Error in clearChatBotData: $e");
+      if (e is http.Response) {
+        rethrow;
+      }
+      throw Exception(
+        kDebugMode
+            ? "Error During Communication: $e"
+            : "Error During Communication.",
+      );
     }
   }
 }

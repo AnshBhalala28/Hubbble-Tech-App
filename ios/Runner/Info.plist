@@ -80,6 +80,6 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>GMSApiKey</key>
-    	<string>AIzaSyDkTKndT7jGcmnVYK1xgPL3drb7oqAQAAY</string>
+    	<string>$(GOOGLE_MAPS_API_KEY)</string>
 </dict>
 </plist>

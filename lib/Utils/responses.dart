@@ -1,84 +1,3 @@
-// import 'dart:convert';
-// import 'dart:io';
-//
-// import 'package:dio/dio.dart';
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:http/http.dart' as http;
-//
-// import 'CustomExpection.dart';
-//
-// responses(http.Response response) {
-//   switch (response.statusCode) {
-//     case 200:
-//       {
-//         if (jsonDecode(response.body)['statusCode'] == 101) {}
-//         return response;
-//       }
-//     case 400:
-//     case 422:
-//       return response;
-//     case 401:
-//     case 403:
-//       throw UnauthorisedException(response.body.toString());
-//     case 405:
-//       throw UnauthorisedException(response.body.toString());
-//     case 429:
-//       Get.snackbar(
-//         "Server Unavailable",
-//         "Server's are Unavailable Please Try Again Later",
-//         snackPosition: SnackPosition.TOP,
-//         duration: const Duration(seconds: 3),
-//         backgroundColor: Colors.red,
-//         colorText: Colors.white,
-//       );
-//       throw response;
-//     case 500:
-//     default:
-//       throw FetchDataException(
-//         'Error occurred while Communication with Server with StatusCode :${response.statusCode}',
-//       );
-//   }
-// }
-//
-// handleDioError(DioException e) {
-//   String? message;
-//
-//   debugPrint("===== Dio Error Debug Info =====");
-//   debugPrint("Type: ${e.type}");
-//   debugPrint("Message: ${e.message}");
-//   debugPrint("Error: ${e.error}");
-//   debugPrint("Response : ${e.response}");
-//   debugPrint("StackTrace: ${e.stackTrace}");
-//   debugPrint("===============================");
-//
-//   if (e.type == DioExceptionType.connectionTimeout ||
-//       e.type == DioExceptionType.receiveTimeout ||
-//       e.type == DioExceptionType.sendTimeout) {
-//     message = "Request timed out. Please try again.";
-//   } else if (e.type == DioExceptionType.badResponse) {
-//     final statusCode = e.response?.statusCode ?? "Unknown";
-//     message = "Server error (Status Code: $statusCode)";
-//   } else if (e.type == DioExceptionType.unknown) {
-//     if (e.error is SocketException) {
-//       message = "No internet connection.";
-//     } else {
-//       debugPrint("Unexpected unknown Dio error: ${e.error}");
-//     }
-//   } else {
-//     message = "Something went wrong.";
-//   }
-//   // if (message != null && message.isNotEmpty) {
-//   //   Get.snackbar(
-//   //     "Error",
-//   //     message,
-//   //     snackPosition: SnackPosition.BOTTOM,
-//   //     backgroundColor: Colors.red.withValues(alpha: 0.1),
-//   //     colorText: Colors.black,
-//   //     margin: const EdgeInsets.all(12),
-//   //   );
-//   // }
-// }
 import 'dart:convert';
 import 'dart:io';
 
@@ -121,7 +40,12 @@ responses(http.Response response) {
     case 401:
     case 403:
     case 405:
-      throw UnauthorisedException(response.body.toString());
+      debugLog("Auth Error (${response.statusCode}): ${response.body}");
+      throw UnauthorisedException(
+        kDebugMode
+            ? response.body.toString()
+            : "Unauthorized access. Please log in again.",
+      );
 
     case 429:
       Get.snackbar(
@@ -136,9 +60,11 @@ responses(http.Response response) {
 
     case 500:
     default:
+      debugLog("Server Error (${response.statusCode}): ${response.body}");
       throw FetchDataException(
-        'Error occurred while communicating with server '
-            '(StatusCode: ${response.statusCode})',
+        kDebugMode
+            ? 'Error occurred while communicating with server (StatusCode: ${response.statusCode})'
+            : 'Error occurred while communicating with server.',
       );
   }
 }
@@ -167,7 +93,10 @@ handleDioError(DioException e) {
 
     case DioExceptionType.badResponse:
       final statusCode = e.response?.statusCode ?? "Unknown";
-      message = "Server error (Status Code: $statusCode)";
+      message =
+          kDebugMode
+              ? "Server error (Status Code: $statusCode)"
+              : "Server error. Please try again later.";
       break;
 
     case DioExceptionType.unknown:
@@ -184,15 +113,6 @@ handleDioError(DioException e) {
       message = "Unexpected error occurred.";
   }
 
-  /// OPTIONAL UI ERROR (Enable if needed)
-  /*
-  Get.snackbar(
-    "Error",
-    message,
-    snackPosition: SnackPosition.BOTTOM,
-    backgroundColor: Colors.red.withOpacity(0.1),
-    colorText: Colors.black,
-    margin: const EdgeInsets.all(12),
-  );
-  */
+  // Generic message returned to the caller or handled via UI if needed.
+  return message;
 }

@@ -1182,8 +1182,8 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                               FontWeight.bold,
                                                           decorationColor:
                                                               Colors.black
-                                                                  .withValues(alpha: 
-                                                                    0.4,
+                                                                  .withValues(
+                                                                    alpha: 0.4,
                                                                   ),
                                                         ),
                                                       ),
@@ -1826,7 +1826,9 @@ class _Form_ScreenState extends State<Form_Screen> {
                                   isSelected
                                       ? FontWeight.bold
                                       : FontWeight.normal,
-                              decorationColor: Colors.black.withValues(alpha: 0.4),
+                              decorationColor: Colors.black.withValues(
+                                alpha: 0.4,
+                              ),
                             ),
                           ),
 
@@ -3085,7 +3087,6 @@ class _Form_ScreenState extends State<Form_Screen> {
               statusModal = StatusModal.fromJson(response.data);
 
               if (response.statusCode == 200) {
-                log("response ave che ${response.data}");
                 setState(() {
                   isLoading = false;
                 });

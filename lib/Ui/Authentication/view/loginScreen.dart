@@ -264,8 +264,6 @@ class _LoginScreenState extends State<LoginScreen> {
         "fcm_token": fcmToken,
       };
 
-      log('Login data: $data');
-
       bool internet = await checkInternet();
 
       if (!internet) {
@@ -278,7 +276,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
       var response = await AuthProvider().loginApi(data);
       log('Login response status: ${response.statusCode}');
-      log('Login response data: ${response.data}');
       Map<String, dynamic> responseData =
           response.data is Map ? response.data : {};
 
@@ -286,11 +283,7 @@ class _LoginScreenState extends State<LoginScreen> {
         loginModel = LoginModel.fromJson(responseData);
 
         if (loginModel?.status == 200 && loginModel?.data?.user?.role == 4) {
-          await SaveDataLocal.saveLogInData(
-            loginModel!,
-            email: email.text,
-            password: password.text,
-          );
+          await SaveDataLocal.saveLogInData(loginModel!, email: email.text);
           showSnackBar(
             context: context,
             title: "Login",

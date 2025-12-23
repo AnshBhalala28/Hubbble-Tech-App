@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as path;
@@ -16,14 +17,10 @@ class ProfileProvider extends ChangeNotifier {
   Future<Response> profileApi(Map<String, String> bodyData) async {
     try {
       String? token = await SaveDataLocal.getToken();
-      if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': token};
-      }
       final dio = await DioHelper.getDio();
       final response = await dio.post(
         ApiEndpoint.profile,
         data: bodyData,
-
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
       );
       return response;
@@ -37,14 +34,10 @@ class ProfileProvider extends ChangeNotifier {
   Future<Response> updateProfile(Map<String, String> bodyData) async {
     try {
       String? token = await SaveDataLocal.getToken();
-      if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': token};
-      }
       final dio = await DioHelper.getDio();
       final response = await dio.post(
         ApiEndpoint.updateProfile,
         data: bodyData,
-
         options: Options(headers: {'X-Auth-Token': token ?? ''}),
       );
       return response;
@@ -80,7 +73,7 @@ class ProfileProvider extends ChangeNotifier {
         );
       }
 
-      Dio dio = Dio();
+      final dio = await DioHelper.getDio();
 
       final response = await dio.post(
         url,
@@ -90,16 +83,10 @@ class ProfileProvider extends ChangeNotifier {
 
       return response;
     } on DioException catch (e) {
-      if (e.type == DioExceptionType.connectionTimeout ||
-          e.type == DioExceptionType.receiveTimeout) {
-        throw Exception("Connection Timeout");
-      } else if (e.response != null) {
-        throw Exception("Server responded with error: ${e.response?.data}");
-      } else {
-        throw Exception("Dio error: ${e.message}");
-      }
+      throw Exception(handleDioError(e));
     } catch (e) {
-      throw Exception("Unexpected error: $e");
+      log("Unexpected error: $e");
+      throw Exception("Something went wrong.");
     }
   }
 }

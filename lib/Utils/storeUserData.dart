@@ -9,7 +9,6 @@ class SaveDataLocal {
   static const String userData = 'UserData';
   static const String userToken = 'UserToken';
   static const String userEmail = 'UserEmail';
-  static const String userPassword = 'UserPassword';
 
   static const FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
@@ -17,7 +16,6 @@ class SaveDataLocal {
   static Future<void> saveLogInData(
     LoginModel loginModel, {
     required String email,
-    required String password,
   }) async {
     // Save whole user model securely
     String json = jsonEncode(loginModel.toJson());
@@ -31,7 +29,6 @@ class SaveDataLocal {
 
     // Save email & password securely
     await _secureStorage.write(key: userEmail, value: email);
-    await _secureStorage.write(key: userPassword, value: password);
   }
 
   /// Get full login model from secure storage
@@ -54,23 +51,16 @@ class SaveDataLocal {
     return await _secureStorage.read(key: userEmail);
   }
 
-  /// Get saved password
-  static Future<String?> getPassword() async {
-    return await _secureStorage.read(key: userPassword);
-  }
-
   /// Clear all stored data
   static Future<void> clearUserData() async {
     await _secureStorage.delete(key: userData);
     await _secureStorage.delete(key: userToken);
     await _secureStorage.delete(key: userEmail);
-    await _secureStorage.delete(key: userPassword);
     log('✅ ALL DATA HAS BEEN CLEARED');
   }
 
   static Future<Map<String, String?>> getEmailAndPassword() async {
     String? email = await _secureStorage.read(key: userEmail);
-    String? password = await _secureStorage.read(key: userPassword);
-    return {'email': email, 'password': password};
+    return {'email': email};
   }
 }

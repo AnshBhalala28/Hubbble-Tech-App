@@ -9,41 +9,6 @@ import '../../../Utils/responses.dart';
 import '../../../Utils/storeUserData.dart';
 
 class AuthProvider extends ChangeNotifier {
-  // Future<Response> loginApi(Map<String, String> bodyData) async {
-  //   try {
-  //     final dio = await DioHelper.getDio();
-  //     final response = await dio.post(ApiEndpoint.login, data: bodyData);
-  //     log("Login Error in fuild ${ApiEndpoint.login}");
-  //     return response;
-  //   } on DioException catch (e) {
-  //     log("Login Error in fuild ${ApiEndpoint.login}");
-  //     log("Login Error in fuild ${e.message}");
-  //     log("Login Error in fuild ${e.response?.data}");
-  //     throw Exception('error $e');
-  //   }
-  // }
-
-
-
-  /// hiren working code
-  // Future<dynamic> loginApi(Map<String, String> data) async {
-  //   try {
-  //     var response = await Dio().post(
-  //       ApiEndpoint.login,
-  //       data: data,
-  //       options: Options(
-  //         validateStatus: (status) {
-  //           return status == 200 || status == 422;
-  //         },
-  //       ),
-  //     );
-  //     return response;
-  //   } catch (e) {
-  //     log("Login Error in fuild ${ApiEndpoint.login}");
-  //     log("Login Error in fuild $e");
-  //     rethrow;
-  //   }
-  // }
   Future<Response> loginApi(Map<String, String> data) async {
     try {
       final Dio dio = await DioHelper.getDio();
@@ -52,30 +17,26 @@ class AuthProvider extends ChangeNotifier {
         ApiEndpoint.login,
         data: data,
         options: Options(
-          validateStatus: (status) =>
-          status == 200 || status == 422,
+          validateStatus: (status) => status == 200 || status == 422,
         ),
       );
 
       return response;
     } catch (e, stack) {
       log("Login Error: ${ApiEndpoint.login}");
-      log("Login Error: ${stack}");
-      log(e.toString());
+      log("Login Error: $e");
+      log("Stack: $stack");
       rethrow;
     }
   }
 
-
-
   Future<dynamic> changePasswordApi(Map<String, String> data) async {
     try {
-      var response = await Dio().post(ApiEndpoint.changePassword, data: data);
+      final dio = await DioHelper.getDio();
+      var response = await dio.post(ApiEndpoint.changePassword, data: data);
       return response;
     } catch (e) {
-      log("Login Error in fuild ${ApiEndpoint.changePassword}");
-      log("Login Error in fuild $e");
-      // log("Login Error in fuild ${}");
+      log("Error in changePasswordApi: $e");
       rethrow;
     }
   }
@@ -110,8 +71,6 @@ class AuthProvider extends ChangeNotifier {
 
       return response;
     } on DioException catch (e) {
-      log("sadasdasdssdds${e.message}");
-      log("sadasdasdssdds${e.response?.data}");
       throw Exception(handleDioError(e));
     }
   }
@@ -156,7 +115,7 @@ class AuthProvider extends ChangeNotifier {
       final response = await dio.post(ApiEndpoint.updateFcm, data: bodyData);
       return response;
     } on DioException catch (e) {
-      throw Exception('error $e');
+      throw Exception(handleDioError(e));
     }
   }
 }

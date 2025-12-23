@@ -1447,7 +1447,9 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
       padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.8.h),
       decoration: BoxDecoration(
         color:
-            isSelected ? AppColors.maincolor.withValues(alpha: 0.08) : Colors.white,
+            isSelected
+                ? AppColors.maincolor.withValues(alpha: 0.08)
+                : Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isSelected ? AppColors.maincolor : Colors.grey.shade300,

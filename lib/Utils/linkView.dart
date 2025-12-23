@@ -26,9 +26,10 @@ class _ExpandableClickableTextState extends State<ExpandableClickableText> {
 
   @override
   Widget build(BuildContext context) {
-    final visibleText = widget.text.length > widget.trimLength && !isExpanded
-        ? widget.text.substring(0, widget.trimLength) + "..."
-        : widget.text;
+    final visibleText =
+        widget.text.length > widget.trimLength && !isExpanded
+            ? widget.text.substring(0, widget.trimLength) + "..."
+            : widget.text;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,7 +41,7 @@ class _ExpandableClickableTextState extends State<ExpandableClickableText> {
             onTap: () => setState(() => isExpanded = !isExpanded),
             child: Text(
               isExpanded ? "Show less" : "Show more",
-              style:  const TextStyle(
+              style: const TextStyle(
                 color: AppColors.maincolor,
                 fontFamily: AppConstants.manrope,
                 fontWeight: FontWeight.bold,
@@ -60,40 +61,45 @@ class _ExpandableClickableTextState extends State<ExpandableClickableText> {
 
     return Text.rich(
       TextSpan(
-        children: words.map((word) {
-          if (urlRegex.hasMatch(word)) {
+        children:
+            words.map((word) {
+              if (urlRegex.hasMatch(word)) {
+                String finalUrl = word;
 
-            String finalUrl = word;
+                // Add scheme if missing
+                if (!finalUrl.startsWith("http://") &&
+                    !finalUrl.startsWith("https://")) {
+                  finalUrl = "https://$finalUrl".replaceAll(
+                    " ",
+                    "",
+                  ); // remove any accidental spaces
+                }
 
-            // Add scheme if missing
-            if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
-              finalUrl = "https://$finalUrl".replaceAll(" ", ""); // remove any accidental spaces
-            }
-
-            return TextSpan(
-              text: "$word ",
-              style: widget.style?.copyWith(
-                color: Colors.blue,
-                decoration: TextDecoration.underline,
-              ),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => WebViewScreen(url: finalUrl),
-                    ),
-                  );
-                },
-            );
-          } else {
-            return TextSpan(text: "$word ", style: widget.style);
-          }
-        }).toList(),
+                return TextSpan(
+                  text: "$word ",
+                  style: widget.style?.copyWith(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                  ),
+                  recognizer:
+                      TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => WebViewScreen(url: finalUrl),
+                            ),
+                          );
+                        },
+                );
+              } else {
+                return TextSpan(text: "$word ", style: widget.style);
+              }
+            }).toList(),
       ),
     );
   }
-
 }
 
 class ClickableTrimmedText extends StatelessWidget {
@@ -122,37 +128,40 @@ class ClickableTrimmedText extends StatelessWidget {
           maxLines: maxLines,
           overflow: TextOverflow.ellipsis,
           text: TextSpan(
-            children: words.map((word) {
-              if (urlRegex.hasMatch(word)) {
-                String finalUrl = word;
+            children:
+                words.map((word) {
+                  if (urlRegex.hasMatch(word)) {
+                    String finalUrl = word;
 
-                // Auto add https if missing
-                if (!finalUrl.startsWith("http")) {
-                  finalUrl = "https://$finalUrl";
-                }
+                    // Auto add https if missing
+                    if (!finalUrl.startsWith("http")) {
+                      finalUrl = "https://$finalUrl";
+                    }
 
-                finalUrl = finalUrl.trim();
+                    finalUrl = finalUrl.trim();
 
-                return TextSpan(
-                  text: "$word ",
-                  style: style.copyWith(
-                    color: Colors.blue,
-                    decoration: TextDecoration.underline,
-                  ),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => WebViewScreen(url: finalUrl),
-                        ),
-                      );
-                    },
-                );
-              } else {
-                return TextSpan(text: "$word ", style: style);
-              }
-            }).toList(),
+                    return TextSpan(
+                      text: "$word ",
+                      style: style.copyWith(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                      recognizer:
+                          TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => WebViewScreen(url: finalUrl),
+                                ),
+                              );
+                            },
+                    );
+                  } else {
+                    return TextSpan(text: "$word ", style: style);
+                  }
+                }).toList(),
           ),
         );
       },

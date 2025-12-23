@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -29,14 +31,34 @@ class _SearchScreenState extends State<SearchScreen> {
   bool isUpdateQuantity = false;
   final TextEditingController searchController = TextEditingController();
   bool isAddtoCart = false;
+  Timer? _debounce;
 
   Map<int, int> productQuantities = {};
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (query.isNotEmpty) {
+        businessSearchApi(query);
+      } else {
+        setState(() {
+          searchResults.clear();
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.5,
@@ -59,15 +81,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 child: TextField(
                   controller: searchController,
-                  onChanged: (value) {
-                    if (value.isNotEmpty) {
-                      businessSearchApi(value);
-                    } else {
-                      setState(() {
-                        searchResults.clear();
-                      });
-                    }
-                  },
+                  onChanged: _onSearchChanged,
                   decoration: InputDecoration(
                     hintText: "Search...",
                     hintStyle: TextStyle(color: Colors.grey[600], fontSize: 14),
@@ -92,6 +106,9 @@ class _SearchScreenState extends State<SearchScreen> {
                               ),
                               onPressed: () {
                                 searchController.clear();
+                                if (_debounce?.isActive ?? false) {
+                                  _debounce!.cancel();
+                                }
                                 setState(() {
                                   searchResults.clear();
                                 });

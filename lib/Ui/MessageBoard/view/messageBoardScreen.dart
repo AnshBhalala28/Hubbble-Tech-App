@@ -852,7 +852,8 @@ class _MessageboardState extends State<Messageboard> {
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 color: Colors.grey.shade600,
-                                                fontFamily: AppConstants.manrope,
+                                                fontFamily:
+                                                    AppConstants.manrope,
                                               ),
                                             ),
 

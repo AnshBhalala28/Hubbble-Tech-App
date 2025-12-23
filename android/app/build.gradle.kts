@@ -12,6 +12,14 @@ val localProperties = Properties().apply {
         localFile.inputStream().use { load(it) }
     }
 }
+
+val keystoreProperties = Properties().apply {
+    val keystoreFile = rootProject.file("key.properties")
+    if (keystoreFile.exists()) {
+        keystoreFile.inputStream().use { load(it) }
+    }
+}
+
 val googleMapsApiKey = localProperties.getProperty("GOOGLE_MAPS_API_KEY") ?: ""
 
 android {
@@ -39,18 +47,22 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias = "waveeai"
-            keyPassword = "123456"
-            storeFile = file("/Users/jacksardhara/StudioProjects/waveeai-app-new/android/waveeai.jks")
-            storePassword = "123456"
+            keyAlias = keystoreProperties.getProperty("keyAlias")
+            keyPassword = keystoreProperties.getProperty("keyPassword")
+            storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
+            storePassword = keystoreProperties.getProperty("storePassword")
         }
     }
 
     buildTypes {
         getByName("release") {
             signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = false
-            isShrinkResources = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 }

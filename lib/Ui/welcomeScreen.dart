@@ -193,7 +193,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     String? fcmToken = await FirebaseMessaging.instance.getToken();
 
     if (fcmToken == null) {
-      showSnackBar(    context: context,
+      showSnackBar(
+        context: context,
         title: "FCM Error",
         message: "Unable to fetch FCM token",
         backgoundColor: Colors.red,
@@ -209,7 +210,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     final Map<String, String> data = {};
     data["user_id"] = loginModel?.data?.user?.id.toString() ?? "";
     data["fcm_token"] = fcmToken;
-    log("datadatadata$data");
+
     checkInternet().then((internet) async {
       if (internet) {
         try {

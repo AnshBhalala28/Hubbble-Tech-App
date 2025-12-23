@@ -617,7 +617,9 @@ class _BuyProductViewState extends State<BuyProductView> {
                                   gradient: LinearGradient(
                                     colors: [
                                       AppColors.maincolor,
-                                      AppColors.maincolor.withValues(alpha: 0.8),
+                                      AppColors.maincolor.withValues(
+                                        alpha: 0.8,
+                                      ),
                                     ],
                                     begin: Alignment.centerLeft,
                                     end: Alignment.centerRight,
@@ -625,8 +627,8 @@ class _BuyProductViewState extends State<BuyProductView> {
                                   borderRadius: BorderRadius.circular(16),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.maincolor.withValues(alpha: 
-                                        0.3,
+                                      color: AppColors.maincolor.withValues(
+                                        alpha: 0.3,
                                       ),
                                       blurRadius: 8,
                                       offset: const Offset(0, 4),
@@ -716,7 +718,9 @@ class _BuyProductViewState extends State<BuyProductView> {
         padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.8.h),
         decoration: BoxDecoration(
           color:
-              isSelected ? AppColors.maincolor.withValues(alpha: 0.08) : Colors.white,
+              isSelected
+                  ? AppColors.maincolor.withValues(alpha: 0.08)
+                  : Colors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected ? AppColors.maincolor : Colors.grey.shade300,

@@ -81,6 +81,7 @@ class CommunityProvider extends ChangeNotifier {
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
     } catch (e) {
+      debugLog("Error in businessLikeApi: $e");
       throw Exception("Something went wrong.");
     }
   }
@@ -102,6 +103,7 @@ class CommunityProvider extends ChangeNotifier {
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
     } catch (e) {
+      debugLog("Error in searchBusinessApi: $e");
       throw Exception("Something went wrong.");
     }
   }
@@ -203,7 +205,10 @@ class CommunityProvider extends ChangeNotifier {
 
       return response;
     } on DioException catch (e) {
-      throw Exception("Something went wrong: $e");
+      throw Exception(handleDioError(e));
+    } catch (e) {
+      debugLog("Error in categoryViewApi: $e");
+      throw Exception("Something went wrong.");
     }
   }
 
@@ -224,6 +229,7 @@ class CommunityProvider extends ChangeNotifier {
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
     } catch (e) {
+      debugLog("Error in postLikeApi: $e");
       throw Exception("Something went wrong.");
     }
   }
@@ -245,6 +251,7 @@ class CommunityProvider extends ChangeNotifier {
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
     } catch (e) {
+      debugLog("Error in recoedDwellApi: $e");
       throw Exception("Something went wrong.");
     }
   }
@@ -266,6 +273,7 @@ class CommunityProvider extends ChangeNotifier {
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
     } catch (e) {
+      debugLog("Error in postMarkViewApi: $e");
       throw Exception("Something went wrong.");
     }
   }
@@ -287,6 +295,7 @@ class CommunityProvider extends ChangeNotifier {
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
     } catch (e) {
+      debugLog("Error in markOfferPromoApi: $e");
       throw Exception("Something went wrong.");
     }
   }

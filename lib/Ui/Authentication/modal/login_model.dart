@@ -91,7 +91,7 @@ class User {
   int? role;
   Name? name;
   String? email;
-  String? dPassword;
+  var isDefaultPass;
   var mobileNo;
   String? gender;
   Address? address;
@@ -106,7 +106,7 @@ class User {
     this.role,
     this.name,
     this.email,
-    this.dPassword,
+    this.isDefaultPass,
     this.mobileNo,
     this.gender,
     this.address,
@@ -131,7 +131,7 @@ class User {
     }
 
     email = json['email'];
-    dPassword = json['d_password'];
+    isDefaultPass = json['is_default_pass'];
     mobileNo = json['mobile_no'];
     gender = json['gender'];
 
@@ -159,7 +159,7 @@ class User {
     }
 
     data['email'] = email;
-    data['d_password'] = dPassword;
+    data['is_default_pass'] = this.isDefaultPass;
     data['mobile_no'] = mobileNo;
     data['gender'] = gender;
 

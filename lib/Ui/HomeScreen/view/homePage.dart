@@ -13,6 +13,7 @@ import 'package:sizer/sizer.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wavee/Ui/Authentication/modal/login_model.dart';
 import 'package:wavee/Utils/linkView.dart';
 
 import '../../../Utils/bottomBar.dart';
@@ -1487,7 +1488,7 @@ class _HomePageState extends State<HomePage> {
     final Map<String, String> data = {};
     data["user_id"] = loginModel?.data?.user?.id.toString() ?? "";
     data["count"] = "visitor";
-    log("asdsadasasd$data");
+
     checkInternet().then((internet) async {
       if (internet) {
         try {
@@ -1527,13 +1528,12 @@ class _HomePageState extends State<HomePage> {
     final Map<String, String> bodyData = {};
     bodyData['sender_id'] = '1';
     bodyData['receiver_id'] = loginModel?.data?.user?.id.toString() ?? "";
-    print("dentalchatdata $bodyData");
+
     checkInternet().then((internet) async {
       if (internet) {
         HomeProvider().chatCountApi(bodyData).then((response) async {
           chatShowCountModal = ChatShowCountModal.fromJson(response.data);
           if (response.statusCode == 200) {
-            print("Notification Count data ${response.data}");
             if (mounted) {
               setState(() {
                 isLoading = false;
@@ -1543,7 +1543,6 @@ class _HomePageState extends State<HomePage> {
           }
           if (response.statusCode == 404 || response.statusCode == 429) {
             chatShowCountModal = ChatShowCountModal.fromJson(response.data);
-            print("Notification Count data ${response.data}");
 
             if (mounted) {
               setState(() {
@@ -1583,14 +1582,13 @@ class _HomePageState extends State<HomePage> {
     final Map<String, String> bodyData = {};
     bodyData["user_id"] = loginModel?.data?.user?.id.toString() ?? "";
     bodyData["type"] = "count";
-    print("dentalchatdata $bodyData");
+
     checkInternet().then((internet) async {
       if (internet) {
         HomeProvider().parcelShowCountApi(bodyData).then((response) async {
           parcelShowCountModel = ParcelShowCountModel.fromJson(response.data);
 
           if (response.statusCode == 200) {
-            print("Notification Count data ${response.data}");
             if (mounted) {
               setState(() {
                 isLoading = false;
@@ -1600,8 +1598,6 @@ class _HomePageState extends State<HomePage> {
           }
           if (response.statusCode == 404 || response.statusCode == 429) {
             parcelShowCountModel = ParcelShowCountModel.fromJson(response.data);
-
-            print("Notification Count data ${response.data}");
 
             if (mounted) {
               setState(() {
@@ -1641,14 +1637,13 @@ class _HomePageState extends State<HomePage> {
     final Map<String, String> bodyData = {};
     bodyData["user_id"] = loginModel?.data?.user?.id.toString() ?? "";
     bodyData["count"] = "visitor";
-    print("dentalchatdata $bodyData");
+
     checkInternet().then((internet) async {
       if (internet) {
         HomeProvider().visitorShowCountApi(bodyData).then((response) async {
           visitorShowCountModel = VisitorShowCountModel.fromJson(response.data);
 
           if (response.statusCode == 200) {
-            print("Notification Count data ${response.data}");
             if (mounted) {
               setState(() {
                 isLoading = false;
@@ -1660,8 +1655,6 @@ class _HomePageState extends State<HomePage> {
             visitorShowCountModel = VisitorShowCountModel.fromJson(
               response.data,
             );
-
-            print("Notification Count data ${response.data}");
 
             if (mounted) {
               setState(() {
@@ -2058,7 +2051,8 @@ class _HomePageState extends State<HomePage> {
     String? fcmToken = await FirebaseMessaging.instance.getToken();
 
     if (fcmToken == null) {
-      showSnackBar(    context: context,
+      showSnackBar(
+        context: context,
         title: "FCM Error",
         message: "Unable to fetch FCM token",
         backgoundColor: Colors.red,
@@ -2078,7 +2072,6 @@ class _HomePageState extends State<HomePage> {
         try {
           var response = await AuthProvider().updateFCM(data);
           if (response.statusCode == 200) {
-            print("fcm update thay che ho=====>>>>>");
             setState(() {
               isLoading = false;
             });
@@ -2226,25 +2219,22 @@ class _HomePageState extends State<HomePage> {
     String? savedEmail = credentials['email'];
     String? savedPassword = credentials['password'];
     String? savedName = credentials['name'];
-    print('Saved Email: $savedEmail');
-    print('Saved Password: $savedPassword');
-    print('Saved Password: $savedName');
   }
 
   Future<void> SignupApi() async {
     String? savedEmail = await SaveDataLocal.getEmail();
-    String? savedPassword = await SaveDataLocal.getPassword();
+
     final Map<String, String> data = {
       'name': loginModel?.data?.user?.fullName ?? "",
       'email': savedEmail.toString(),
-      'password': savedPassword.toString(),
+      'password': "12345678",
       'role': '4',
     };
 
     setState(() {
       isRegistration = true;
     });
-    log("datadatadatadatadatadatadata$data");
+
     checkInternet().then((internet) async {
       if (internet) {
         try {
@@ -2258,7 +2248,8 @@ class _HomePageState extends State<HomePage> {
             String apiMessage = responseData['message'] ?? "Unknown error";
 
             if (response.statusCode == 200 && apiStatus == 200) {
-              showSnackBar(    context: context,
+              showSnackBar(
+                context: context,
                 title: "SignUp",
                 message:
                     "Registration Successful \nYou can now login to Wavee Pets using your credentials.",
@@ -2288,14 +2279,16 @@ class _HomePageState extends State<HomePage> {
                   errorMessage = errorData['password'][0];
                 }
 
-                showSnackBar(    context: context,
+                showSnackBar(
+                  context: context,
                   title: "Sorry",
                   message: errorMessage,
                   backgoundColor: AppColors.maincolor,
                   ColorText: AppColors.white,
                 );
               } else {
-                showSnackBar(    context: context,
+                showSnackBar(
+                  context: context,
                   title: "Sorry",
                   message: apiMessage,
                   backgoundColor: AppColors.redColor,
@@ -2304,7 +2297,8 @@ class _HomePageState extends State<HomePage> {
               }
             }
           } catch (jsonError) {
-            showSnackBar(    context: context,
+            showSnackBar(
+              context: context,
               title: "Sorry",
               message: "Invalid response from server. Please try again.",
               backgoundColor: AppColors.redColor,
@@ -2313,14 +2307,16 @@ class _HomePageState extends State<HomePage> {
           }
         } catch (e) {
           if (e.toString().contains("No Internet connection")) {
-            showSnackBar(    context: context,
+            showSnackBar(
+              context: context,
               title: "Sorry",
               message: "No internet connection. Please check your network.",
               backgoundColor: Colors.red.shade400,
               ColorText: Colors.white,
             );
           } else {
-            showSnackBar(    context: context,
+            showSnackBar(
+              context: context,
               title: "Sorry",
               message: "Registration failed. Please try again.",
               backgoundColor: Colors.red.shade400,
@@ -2342,13 +2338,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _checkDefaultPassword() async {
-    // if (HomePage.isPasswordDialogShown) {
-    //   return;
-    // }
-
-    String? savedPassword = await SaveDataLocal.getPassword();
-    if (savedPassword != null &&
-        (savedPassword == "12345678" || savedPassword == "123456")) {
+    LoginModel? userData = await SaveDataLocal.getDataFromLocal();
+    if (userData?.data?.user?.isDefaultPass == 1) {
       // HomePage.isPasswordDialogShown = true;
 
       showMandatoryPasswordChangeDialog();

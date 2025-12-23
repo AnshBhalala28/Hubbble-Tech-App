@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../../../Utils/apiConfig.dart';
 import '../../../Utils/apiEndpoint.dart';
 import '../../../Utils/responses.dart';
 import '../../../Utils/storeUserData.dart';
@@ -8,7 +9,7 @@ import '../../../Utils/storeUserData.dart';
 class EventProvider extends ChangeNotifier {
   Future<Response> eventapi(Map<String, String> bodyData) async {
     try {
-      final dio = Dio();
+      final dio = await DioHelper.getDio();
       String? token = await SaveDataLocal.getToken();
 
       final response = await dio.post(
@@ -27,7 +28,7 @@ class EventProvider extends ChangeNotifier {
 
   Future<Response> eventDetailApi(Map<String, String> bodyData) async {
     try {
-      final dio = Dio();
+      final dio = await DioHelper.getDio();
       String? token = await SaveDataLocal.getToken();
 
       final response = await dio.post(
@@ -46,7 +47,7 @@ class EventProvider extends ChangeNotifier {
 
   Future<Response> sendeventapi(Map<String, String> bodyData) async {
     try {
-      final dio = Dio();
+      final dio = await DioHelper.getDio();
       String? token = await SaveDataLocal.getToken();
       final response = await dio.post(
         ApiEndpoint.sendEventRequest,

@@ -533,7 +533,7 @@
 //                                                             'Friend request sent to ${selectedMembers}',
 //                                                             backgroundColor:
 //                                                                 Colors.green
-//                                                                     .withValues(alpha: 
+//                                                                     .withValues(alpha:
 //                                                                       0.7,
 //                                                                     ),
 //                                                             colorText:

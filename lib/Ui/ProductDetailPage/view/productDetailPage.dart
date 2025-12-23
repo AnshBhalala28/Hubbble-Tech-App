@@ -320,8 +320,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                         color: AppColors.white,
                                         borderRadius: BorderRadius.circular(30),
                                         border: Border.all(
-                                          color: AppColors.maincolor
-                                              .withValues(alpha: 0.5),
+                                          color: AppColors.maincolor.withValues(
+                                            alpha: 0.5,
+                                          ),
                                         ),
                                       ),
                                       child: Row(

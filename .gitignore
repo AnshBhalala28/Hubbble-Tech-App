@@ -43,3 +43,14 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Secret files
+.env
+ios/Config.xcconfig
+ios/Runner/Config.xcconfig
+android/local.properties
+
+# Firebase configuration files (contain API keys)
+ios/Runner/GoogleService-Info.plist
+android/app/google-services.json
+lib/firebase_options.dart

@@ -29,24 +29,25 @@ class _WebViewScreenState extends State<WebViewScreen> {
   void initState() {
     super.initState();
 
-    controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (progress) {
-            setState(() {
-              progressValue = progress / 100;
-            });
-          },
-          onPageStarted: (_) {
-            setState(() => isLoading = true);
-          },
-          onPageFinished: (_) {
-            setState(() => isLoading = false);
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse(widget.url));
+    controller =
+        WebViewController()
+          ..setJavaScriptMode(JavaScriptMode.unrestricted)
+          ..setNavigationDelegate(
+            NavigationDelegate(
+              onProgress: (progress) {
+                setState(() {
+                  progressValue = progress / 100;
+                });
+              },
+              onPageStarted: (_) {
+                setState(() => isLoading = true);
+              },
+              onPageFinished: (_) {
+                setState(() => isLoading = false);
+              },
+            ),
+          )
+          ..loadRequest(Uri.parse(widget.url));
   }
 
   @override
@@ -65,7 +66,10 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
         title: Text(
           getDisplayUrl(),
-          style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+          style: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
 
@@ -84,10 +88,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
               children: [
                 WebViewWidget(controller: controller),
 
-                if (isLoading)
-                  const Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                if (isLoading) const Center(child: CircularProgressIndicator()),
               ],
             ),
           ),

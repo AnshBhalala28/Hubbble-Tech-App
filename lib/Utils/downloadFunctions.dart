@@ -2,12 +2,13 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import 'apiConfig.dart';
 
 Future<bool> requestStoragePermission() async {
   if (Platform.isAndroid) {
@@ -56,7 +57,7 @@ Future<void> downloadFile(
     bool permissionGranted = await requestStoragePermission();
 
     if (permissionGranted || Platform.isIOS) {
-      Dio dio = Dio();
+      final dio = await DioHelper.getDio();
       Directory? downloadDir = await getDownloadDirectory();
 
       if (downloadDir == null) {
@@ -179,7 +180,7 @@ Future<void> downloadFile(
       );
     }
   } catch (e) {
-    Navigator.of(context).pop();
+    if (context.mounted) Navigator.of(context).pop();
 
     Fluttertoast.showToast(
       msg: "Error: $e",

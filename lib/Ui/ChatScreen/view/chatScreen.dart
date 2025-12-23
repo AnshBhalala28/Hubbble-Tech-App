@@ -813,7 +813,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                             fontSize: 16.sp,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.grey,
-                                            fontFamily: AppConstants.manropeBold,
+                                            fontFamily:
+                                                AppConstants.manropeBold,
                                           ),
                                         ),
                                       ),

@@ -1,9 +1,9 @@
-//
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Utils/apiConfig.dart';
 import '../../../Utils/apiEndpoint.dart';
+import '../../../Utils/responses.dart';
 import '../../../Utils/storeUserData.dart';
 
 class ChatProvider extends ChangeNotifier {
@@ -24,9 +24,10 @@ class ChatProvider extends ChangeNotifier {
 
       return response;
     } on DioException catch (e) {
-      throw Exception("Something went wrong: $e");
+      throw Exception(handleDioError(e));
     } catch (e) {
-      throw Exception("Something went wrong: $e");
+      debugLog("Error in chatApi: $e");
+      throw Exception("Something went wrong.");
     }
   }
 
@@ -43,9 +44,10 @@ class ChatProvider extends ChangeNotifier {
 
       return response;
     } on DioException catch (e) {
-      throw Exception("Something went wrong: $e");
+      throw Exception(handleDioError(e));
     } catch (e) {
-      throw Exception("Something went wrong: $e");
+      debugLog("Error in chatStoryApi: $e");
+      throw Exception("Something went wrong.");
     }
   }
 }
