@@ -35,9 +35,19 @@ responses(http.Response response) {
 
     case 400:
     case 422:
-      // These status codes often return validation errors.
-      // Callers should sanitize before displaying to UI.
-      return response;
+      debugLog("Validation Error (${response.statusCode}): ${response.body}");
+      // Extract message safely to avoid surfacing raw JSON or stack traces
+      String message = "Invalid request. Please check your input.";
+      try {
+        final decoded = jsonDecode(response.body);
+        if (decoded['message'] != null) {
+          message = decoded['message'].toString();
+        }
+      } catch (_) {}
+      
+      throw BadRequestException(
+        kDebugMode ? "($message) Details: ${response.body}" : message,
+      );
 
     case 401:
     case 403:

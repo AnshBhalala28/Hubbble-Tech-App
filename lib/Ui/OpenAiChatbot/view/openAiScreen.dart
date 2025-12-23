@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
@@ -65,7 +66,6 @@ class _ChatBotScreenState extends State<ChatBotScreen>
     } else {}
   }
 
-  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -219,15 +219,21 @@ class _ChatBotScreenState extends State<ChatBotScreen>
                           color: Colors.black,
                           fontFamily: AppConstants.manrope,
                         ),
+                        maxLength: 500, // Bound input length
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(500),
+                        ],
                         decoration: inputDecoration(
                           hintText: "Type a message...",
-                        ),
+                        ).copyWith(counterText: ""),
                       ),
                     ),
                     SizedBox(width: 2.w),
                     GestureDetector(
                       onTap: () {
-                        if (_msg.text.trim().isEmpty) {
+                        String sanitizedMsg = _msg.text.trim();
+                        
+                        if (sanitizedMsg.isEmpty) {
                           Fluttertoast.showToast(
                             msg: "Please Ask Something",
                             backgroundColor: Colors.white,
@@ -236,8 +242,32 @@ class _ChatBotScreenState extends State<ChatBotScreen>
                           return;
                         }
 
+                        // Additional guardrails for AI/LLM forwarding
+                        if (sanitizedMsg.length > 500) {
+                          Fluttertoast.showToast(
+                            msg: "Message too long (max 500 characters)",
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                          );
+                          return;
+                        }
+
+                        // Simple sanitization to prevent common injection/jailbreak attempts
+                        sanitizedMsg = sanitizedMsg
+                            .replaceAll(RegExp(r'[<>/{}\[\]]'), '') // Remove common structural chars
+                            .trim();
+
+                        if (sanitizedMsg.isEmpty) {
+                          Fluttertoast.showToast(
+                            msg: "Invalid message content",
+                            backgroundColor: Colors.white,
+                            textColor: Colors.black,
+                          );
+                          return;
+                        }
+
                         FocusScope.of(context).unfocus();
-                        sendQueryApi();
+                        sendQueryApi(sanitizedText: sanitizedMsg);
                       },
                       child: Container(
                         height: 12.w,
@@ -318,15 +348,16 @@ class _ChatBotScreenState extends State<ChatBotScreen>
     });
   }
 
-  sendQueryApi() {
-    if (_msg.text.isEmpty) {
+  sendQueryApi({String? sanitizedText}) {
+    String finalMsg = sanitizedText ?? _msg.text.trim();
+    if (finalMsg.isEmpty) {
       return;
     }
     setState(() {
       isSending = true;
     });
     Map<String, String> data = {
-      "message": _msg.text.trim(),
+      "message": finalMsg,
       "user_id": loginModel?.data?.user?.id.toString() ?? '',
       "longitude": AppLon ?? "0.0",
       "latitude": AppLat ?? "0.0",
