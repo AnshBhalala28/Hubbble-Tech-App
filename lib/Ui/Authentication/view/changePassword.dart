@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide FormData, MultipartFile;
@@ -233,8 +231,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         'confirm_password': confirmPassword.text.trim(),
       };
 
-      log("Change Password Request Data: $data");
-
       // 🔹 Check Internet Connection
       bool internet = await checkInternet();
       if (!internet) {
@@ -284,10 +280,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               "Something went wrong (${response.statusCode}). Please try again.";
         });
       }
-    } catch (e, s) {
-      log("Change Password Error: $e");
-      log("Stack Trace: $s");
-
+    } catch (e) {
       String errorMessage = "Unable to change password. Please try again.";
 
       // Check if the error is from Dio and has a response from the server
@@ -304,7 +297,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 "Server returned an error: (${e.response!.statusCode})";
           }
         } catch (parseError) {
-          log("Error parsing Dio error response: $parseError");
           errorMessage = "An unknown error occurred while reading the error.";
         }
       }
@@ -322,7 +314,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   void Logout() {
     final Map<String, String> data = {};
     data["user_id"] = loginModel?.data?.user?.id.toString() ?? "";
-    log("dasdadadadadadasdadadsa$data");
+
     checkInternet().then((internet) async {
       if (internet) {
         try {

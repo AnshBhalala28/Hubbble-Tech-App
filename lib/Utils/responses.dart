@@ -35,32 +35,30 @@ responses(http.Response response) {
 
     case 400:
     case 422:
+      // These status codes often return validation errors.
+      // Callers should sanitize before displaying to UI.
       return response;
 
     case 401:
     case 403:
     case 405:
-      debugLog("Auth Error (${response.statusCode}): ${response.body}");
-      throw UnauthorisedException(
-        kDebugMode
-            ? response.body.toString()
-            : "Unauthorized access. Please log in again.",
-      );
+      debugLog("Auth Error: ${response.statusCode}");
+      throw UnauthorisedException("Unauthorized access. Please log in again.");
 
     case 429:
       Get.snackbar(
         "Server Unavailable",
-        "Servers are unavailable. Please try again later.",
+        "Too many requests. Please try again later.",
         snackPosition: SnackPosition.TOP,
         duration: const Duration(seconds: 3),
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
-      throw response;
+      throw FetchDataException("Rate limit exceeded.");
 
     case 500:
     default:
-      debugLog("Server Error (${response.statusCode}): ${response.body}");
+      debugLog("Server Error: ${response.statusCode}");
       throw FetchDataException(
         kDebugMode
             ? 'Error occurred while communicating with server (StatusCode: ${response.statusCode})'
@@ -75,13 +73,11 @@ responses(http.Response response) {
 handleDioError(DioException e) {
   String message = "Something went wrong.";
 
-  /// Debug-only logs
+  /// Debug-only logs (Sanitized: only logging error type and status code)
   debugLog("===== DIO ERROR =====");
   debugLog("Type: ${e.type}");
-  debugLog("Message: ${e.message}");
-  debugLog("Error: ${e.error}");
   debugLog("Status Code: ${e.response?.statusCode}");
-  debugLog("StackTrace: ${e.stackTrace}");
+  // We avoid logging full error message or response body as it might contain sensitive info
   debugLog("=====================");
 
   switch (e.type) {

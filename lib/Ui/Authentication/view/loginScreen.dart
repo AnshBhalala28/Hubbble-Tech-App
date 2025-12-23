@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -275,7 +273,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       var response = await AuthProvider().loginApi(data);
-      log('Login response status: ${response.statusCode}');
+
       Map<String, dynamic> responseData =
           response.data is Map ? response.data : {};
 
@@ -303,7 +301,6 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       } else if (response.statusCode == 422) {
         // Handle validation errors
-        log('Validation error response: $responseData');
 
         if (responseData['data'] != null && responseData['data'] is Map) {
           Map<String, dynamic> errorData = responseData['data'];
@@ -342,9 +339,7 @@ class _LoginScreenState extends State<LoginScreen> {
               responseData['message'] ?? "Login failed. Please try again.";
         });
       }
-    } catch (e, stackTrace) {
-      log("Error during login: $e");
-      log("Stack trace: $stackTrace");
+    } catch (e) {
       setState(() {
         generalError = "Something went wrong during login";
       });

@@ -4,27 +4,11 @@ import 'package:dio/dio.dart';
 
 import '../../../Utils/apiConfig.dart';
 import '../../../Utils/apiEndpoint.dart';
+import '../../../Utils/file_validation.dart';
 import '../../../Utils/responses.dart';
 import '../../../Utils/storeUserData.dart';
 
 class MaintenanceProvider {
-  // Future<Response> addMaintanceRequestApi(Map<String, String> bodyData) async {
-  //   try {
-  //     final dio = await DioHelper.getDio();
-  //     String? token = await SaveDataLocal.getToken();
-  //     final response = await dio.post(
-  //       ApiEndpoint.maintanceRequest,
-  //       data: bodyData,
-  //       options: Options(headers: {'X-Auth-Token': token ?? ''}),
-  //     );
-  //     return response;
-  //   } on DioException catch (e) {
-  //
-  //
-  //
-  //     throw Exception(handleDioError(e));
-  //   }
-  // }
   Future<Response> addMaintanceRequestApi({
     required String userId,
     required String subject,
@@ -32,6 +16,10 @@ class MaintenanceProvider {
     File? file,
   }) async {
     try {
+      if (file != null && file.path.isNotEmpty) {
+        await FileValidation.validate(file.path);
+      }
+
       final dio = await DioHelper.getDio();
       String? token = await SaveDataLocal.getToken();
 
@@ -40,7 +28,10 @@ class MaintenanceProvider {
         'subject': subject,
         'note': note,
         if (file != null && file.path.isNotEmpty)
-          'file[]': await MultipartFile.fromFile(file.path),
+          'file[]': await MultipartFile.fromFile(
+            file.path,
+            contentType: FileValidation.getMediaType(file.path),
+          ),
       });
 
       final response = await dio.post(
@@ -56,6 +47,8 @@ class MaintenanceProvider {
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 

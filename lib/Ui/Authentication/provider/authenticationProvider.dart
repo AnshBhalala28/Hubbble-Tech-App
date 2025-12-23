@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -22,10 +20,7 @@ class AuthProvider extends ChangeNotifier {
       );
 
       return response;
-    } catch (e, stack) {
-      log("Login Error: ${ApiEndpoint.login}");
-      log("Login Error: $e");
-      log("Stack: $stack");
+    } catch (e) {
       rethrow;
     }
   }
@@ -36,7 +31,6 @@ class AuthProvider extends ChangeNotifier {
       var response = await dio.post(ApiEndpoint.changePassword, data: data);
       return response;
     } catch (e) {
-      log("Error in changePasswordApi: $e");
       rethrow;
     }
   }

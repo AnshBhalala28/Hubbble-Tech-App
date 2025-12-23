@@ -4,12 +4,11 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http_parser/http_parser.dart';
-import 'package:mime/mime.dart';
 import 'package:path/path.dart' as path;
 
 import '../../../Utils/apiConfig.dart';
 import '../../../Utils/apiEndpoint.dart';
+import '../../../Utils/file_validation.dart';
 import '../../../Utils/responses.dart';
 import '../../../Utils/storeUserData.dart';
 
@@ -56,10 +55,10 @@ class ProfileProvider extends ChangeNotifier {
     try {
       FormData formData = FormData.fromMap(bodyData);
 
-      if (imageFile != null) {
+      if (imageFile != null && imageFile.path.isNotEmpty) {
+        await FileValidation.validate(imageFile.path);
         String fileName = path.basename(imageFile.path);
-        final mimeTypeData =
-            lookupMimeType(imageFile.path)?.split('/') ?? ['image', 'jpeg'];
+        final mediaType = FileValidation.getMediaType(imageFile.path);
 
         formData.files.add(
           MapEntry(
@@ -67,7 +66,7 @@ class ProfileProvider extends ChangeNotifier {
             await MultipartFile.fromFile(
               imageFile.path,
               filename: fileName,
-              contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
+              contentType: mediaType,
             ),
           ),
         );
@@ -86,7 +85,7 @@ class ProfileProvider extends ChangeNotifier {
       throw Exception(handleDioError(e));
     } catch (e) {
       log("Unexpected error: $e");
-      throw Exception("Something went wrong.");
+      rethrow;
     }
   }
 }

@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:http_parser/http_parser.dart';
 
 import '../../../Utils/apiConfig.dart';
 import '../../../Utils/apiEndpoint.dart';
+import '../../../Utils/file_validation.dart';
 import '../../../Utils/responses.dart';
 import '../../../Utils/storeUserData.dart';
 
@@ -47,31 +47,14 @@ class MessageProvider extends ChangeNotifier {
 
     if (bodyData['files']?.isNotEmpty ?? false) {
       final filePath = bodyData['files']!;
-      final extension = filePath.split('.').last.toLowerCase();
-      String mimeType;
-
-      switch (extension) {
-        case 'jpg':
-        case 'jpeg':
-        case 'png':
-          mimeType = 'image/$extension';
-          break;
-        case 'mp4':
-          mimeType = 'video/mp4';
-          break;
-        case 'pdf':
-          mimeType = 'application/pdf';
-          break;
-        default:
-          throw Exception('Unsupported file type');
-      }
+      await FileValidation.validate(filePath);
 
       formData.files.add(
         MapEntry(
           'files[]',
           await MultipartFile.fromFile(
             filePath,
-            contentType: MediaType.parse(mimeType),
+            contentType: FileValidation.getMediaType(filePath),
           ),
         ),
       );
@@ -86,6 +69,8 @@ class MessageProvider extends ChangeNotifier {
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -143,8 +128,15 @@ class MessageProvider extends ChangeNotifier {
     data.forEach((key, value) => formData.fields.add(MapEntry(key, value)));
 
     if (file != null && file.existsSync()) {
+      await FileValidation.validate(file.path);
       formData.files.add(
-        MapEntry('file', await MultipartFile.fromFile(file.path)),
+        MapEntry(
+          'file',
+          await MultipartFile.fromFile(
+            file.path,
+            contentType: FileValidation.getMediaType(file.path),
+          ),
+        ),
       );
     }
 
@@ -156,6 +148,8 @@ class MessageProvider extends ChangeNotifier {
       );
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 }
