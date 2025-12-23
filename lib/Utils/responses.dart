@@ -60,7 +60,8 @@ responses(http.Response response) {
     case 429:
       if (Get.context != null) {
         showSnackBar(
-          context: Get.context!, // <--- Use Get.context! here
+          context: Get.context!,
+          // <--- Use Get.context! here
           title: "Server Unavailable",
           message: "Too many requests. Please try again later.",
           backgoundColor: AppColors.redColor,

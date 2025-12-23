@@ -2032,10 +2032,10 @@ class _HomePageState extends State<HomePage> {
             });
           }
         } catch (e) {
-          if(mounted)
-          setState(() {
-            isLoading = false;
-          });
+          if (mounted)
+            setState(() {
+              isLoading = false;
+            });
         }
       } else {
         buildErrorDialog(context, 'Error', "Internet Required");

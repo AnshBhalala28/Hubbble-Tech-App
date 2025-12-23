@@ -259,12 +259,13 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                           } catch (e) {
                                             showSnackBar(
                                               context: context,
-                                              title:  'Error',
-                                              message:'Could not share business details.',
-                                              backgoundColor: AppColors.redColor,
+                                              title: 'Error',
+                                              message:
+                                                  'Could not share business details.',
+                                              backgoundColor:
+                                                  AppColors.redColor,
                                               ColorText: Colors.white,
                                             );
-
                                           }
                                         },
                                       ),

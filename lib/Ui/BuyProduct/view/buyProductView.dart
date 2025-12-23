@@ -596,8 +596,9 @@ class _BuyProductViewState extends State<BuyProductView> {
                                 if (selectedPayment.isEmpty) {
                                   showSnackBar(
                                     context: context,
-                                    title:  'Payment Method Required',
-                                    message:'Please select a payment method before placing your order.',
+                                    title: 'Payment Method Required',
+                                    message:
+                                        'Please select a payment method before placing your order.',
                                     backgoundColor: AppColors.redColor,
                                     ColorText: Colors.white,
                                   );

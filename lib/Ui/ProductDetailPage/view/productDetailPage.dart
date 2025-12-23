@@ -1170,12 +1170,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               } else {
                                 showSnackBar(
                                   context: context,
-                                  title:  "Oops!",
-                                  message:"Please write something before submitting.",
+                                  title: "Oops!",
+                                  message:
+                                      "Please write something before submitting.",
                                   backgoundColor: AppColors.redColor,
                                   ColorText: Colors.white,
                                 );
-
                               }
                             },
                             color: AppColors.maincolor,

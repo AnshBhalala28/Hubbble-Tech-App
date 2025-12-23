@@ -219,7 +219,8 @@ class _ChatBotScreenState extends State<ChatBotScreen>
                           color: Colors.black,
                           fontFamily: AppConstants.manrope,
                         ),
-                        maxLength: 500, // Bound input length
+                        maxLength: 500,
+                        // Bound input length
                         inputFormatters: [
                           LengthLimitingTextInputFormatter(500),
                         ],
@@ -232,7 +233,7 @@ class _ChatBotScreenState extends State<ChatBotScreen>
                     GestureDetector(
                       onTap: () {
                         String sanitizedMsg = _msg.text.trim();
-                        
+
                         if (sanitizedMsg.isEmpty) {
                           Fluttertoast.showToast(
                             msg: "Please Ask Something",
@@ -253,9 +254,13 @@ class _ChatBotScreenState extends State<ChatBotScreen>
                         }
 
                         // Simple sanitization to prevent common injection/jailbreak attempts
-                        sanitizedMsg = sanitizedMsg
-                            .replaceAll(RegExp(r'[<>/{}\[\]]'), '') // Remove common structural chars
-                            .trim();
+                        sanitizedMsg =
+                            sanitizedMsg
+                                .replaceAll(
+                                  RegExp(r'[<>/{}\[\]]'),
+                                  '',
+                                ) // Remove common structural chars
+                                .trim();
 
                         if (sanitizedMsg.isEmpty) {
                           Fluttertoast.showToast(
