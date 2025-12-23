@@ -101,17 +101,12 @@ class _HomePageState extends State<HomePage> {
 
     getdataloginData();
 
-    // Timer block has been removed
-
     MessageBoardApi();
     localpostapi();
-    // GetProfile();
     updateFCM1();
 
     _setupFirebaseMessagingListeners();
   }
-
-  // didChangeAppLifecycleState has been removed
 
   String formatPostDate(String? createdAt) {
     if (createdAt == null) return "";
