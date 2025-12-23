@@ -1939,7 +1939,7 @@ class _HomePageState extends State<HomePage> {
                           onTap: () {
                             if (addPostFormkey.currentState!.validate()) {
                               Addpostapi();
-                              Navigator.pop(context);
+                              Get.back();
                             }
                           },
 
@@ -2032,6 +2032,7 @@ class _HomePageState extends State<HomePage> {
             });
           }
         } catch (e) {
+          if(mounted)
           setState(() {
             isLoading = false;
           });
@@ -2427,7 +2428,7 @@ class _HomePageState extends State<HomePage> {
                         batan(
                           title: "Change Now",
                           route: () {
-                            Navigator.pop(context);
+                            Get.back();
                             Get.to(() => const ChangePasswordScreen());
                           },
                           color: AppColors.maincolor,
@@ -2451,7 +2452,7 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.transparent,
                       child: InkWell(
                         onTap: () {
-                          Navigator.pop(context);
+                          Get.back();
                         },
                         borderRadius: BorderRadius.circular(50),
                         child: Container(

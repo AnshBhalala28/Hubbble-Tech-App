@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wavee/Utils/customSnackBars.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
@@ -353,25 +354,24 @@ class _SearchScreenState extends State<SearchScreen> {
       if (cartDetailsModel?.data != null &&
           cartDetailsModel!.data!.isNotEmpty) {
         if (cartDetailsModel!.data![0].type == "service") {
-          Get.snackbar(
-            "Product item already in cart",
-            "Please remove service items before adding a product.",
-            backgroundColor: AppColors.redColor,
-            colorText: Colors.white,
-            margin: const EdgeInsets.all(10),
-            snackPosition: SnackPosition.TOP,
+          showSnackBar(
+            context: context,
+            title: 'Product item already in cart',
+            message: 'Please remove service items before adding a product.',
+            backgoundColor: AppColors.redColor,
+            ColorText: Colors.white,
           );
         } else if (cartDetailsModel!.data![0].itemDetails?.businessId ==
             productViewModel?.data?.businessId) {
           updateQuantityApi(product.id!, newQuantity, "product");
         } else {
-          Get.snackbar(
-            "Business mismatch",
-            "You can only add items from the same business to the cart.",
-            backgroundColor: AppColors.redColor,
-            colorText: Colors.white,
-            margin: const EdgeInsets.all(10),
-            snackPosition: SnackPosition.TOP,
+          showSnackBar(
+            context: context,
+            title: "Business mismatch",
+            message:
+                "You can only add items from the same business to the cart.",
+            backgoundColor: AppColors.redColor,
+            ColorText: Colors.white,
           );
         }
       } else {

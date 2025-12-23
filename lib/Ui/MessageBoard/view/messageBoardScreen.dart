@@ -15,6 +15,7 @@ import 'package:sizer/sizer.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wavee/Utils/customSnackBars.dart';
 import 'package:wavee/Utils/linkView.dart';
 
 import '../../../Utils/bottomBar.dart';
@@ -577,7 +578,7 @@ class _MessageboardState extends State<Messageboard> {
                                             ),
                                           ),
                                         ),
-                                        onPressed: () => Navigator.pop(context),
+                                        onPressed: () => Get.back(),
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
                                             horizontal: 16,
@@ -2303,7 +2304,7 @@ class _MessageboardState extends State<Messageboard> {
                           onTap: () {
                             if (addPostFormkey.currentState!.validate()) {
                               Addpostapi();
-                              Navigator.pop(context);
+                              Get.back();
                             }
                           },
                           borderRadius: BorderRadius.circular(5),
@@ -2585,7 +2586,7 @@ class _MessageboardState extends State<Messageboard> {
                                 newImages,
                               );
 
-                              Navigator.pop(context);
+                              Get.back();
                             }
                           },
                           child: Center(
@@ -2832,11 +2833,12 @@ class _MessageboardState extends State<Messageboard> {
             await localpostapi(page: 1);
 
             // Show success message
-            Get.snackbar(
-              'Success',
-              'Post deleted successfully',
-              backgroundColor: Colors.green,
-              colorText: Colors.white,
+            showSnackBar(
+              context: context,
+              title: 'Success',
+              message: 'Post deleted successfully',
+              backgoundColor: Colors.green,
+              ColorText: Colors.white,
             );
           } else {
             if (mounted) {
@@ -2844,11 +2846,12 @@ class _MessageboardState extends State<Messageboard> {
                 isSending1 = false;
               });
             }
-            Get.snackbar(
-              'Error',
-              'Failed to delete post',
-              backgroundColor: Colors.red,
-              colorText: Colors.white,
+            showSnackBar(
+              context: context,
+              title: 'Error',
+              message: 'Failed to delete post',
+              backgoundColor: AppColors.redColor,
+              ColorText: Colors.white,
             );
           }
         } catch (e) {
@@ -2857,11 +2860,12 @@ class _MessageboardState extends State<Messageboard> {
               isSending1 = false;
             });
           }
-          Get.snackbar(
-            'Error',
-            'An error occurred while deleting post',
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
+          showSnackBar(
+            context: context,
+            title: 'Error',
+            message: 'An error occurred while deleting post',
+            backgoundColor: AppColors.redColor,
+            ColorText: Colors.white,
           );
         }
       } else {
@@ -3010,25 +3014,26 @@ class _MessageboardState extends State<Messageboard> {
                   });
                 }
               } else if (response.statusCode == 429) {
-                Get.snackbar(
-                  'Error',
-                  'Too many requests',
-                  backgroundColor: Colors.red.withValues(alpha: 0.7),
-                  colorText: Colors.white,
-                  snackPosition: SnackPosition.BOTTOM,
+                showSnackBar(
+                  context: context,
+                  title: 'Error',
+                  message: 'Too many requests',
+                  backgoundColor: AppColors.redColor,
+                  ColorText: Colors.white,
                 );
+
                 if (mounted) {
                   setState(() {
                     isSending1 = false;
                   });
                 }
               } else {
-                Get.snackbar(
-                  'Error',
-                  'Internal Server Error',
-                  backgroundColor: Colors.red.withValues(alpha: 0.7),
-                  colorText: Colors.white,
-                  snackPosition: SnackPosition.BOTTOM,
+                showSnackBar(
+                  context: context,
+                  title: 'Error',
+                  message: 'Internal server error',
+                  backgoundColor: AppColors.redColor,
+                  ColorText: Colors.white,
                 );
               }
 

@@ -21,7 +21,7 @@ class MaintenanceProvider {
       }
 
       final dio = await DioHelper.getDio();
-      String? token = await SaveDataLocal.getToken();
+      String token = await SaveDataLocal.getValidToken();
 
       final formData = FormData.fromMap({
         'user_id': userId,
@@ -39,7 +39,7 @@ class MaintenanceProvider {
         data: formData,
         options: Options(
           headers: {
-            'X-Auth-Token': token ?? '',
+            'X-Auth-Token': token,
             'Content-Type': 'multipart/form-data',
           },
         ),
@@ -55,15 +55,17 @@ class MaintenanceProvider {
   Future<Response> getMaintanceApi(Map<String, String> bodyData) async {
     try {
       final dio = await DioHelper.getDio();
-      String? token = await SaveDataLocal.getToken();
+      String token = await SaveDataLocal.getValidToken();
       final response = await dio.post(
         ApiEndpoint.getMaintance,
         data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 }

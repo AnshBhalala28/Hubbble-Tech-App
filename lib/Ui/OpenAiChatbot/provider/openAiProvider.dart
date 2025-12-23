@@ -6,18 +6,12 @@ import 'package:http/http.dart' as http;
 import '../../../Utils/const.dart';
 import '../../../Utils/responses.dart';
 import '../../../Utils/storeUserData.dart';
-import '../../Authentication/modal/login_model.dart';
 
 class ChatBotAiProvider extends ChangeNotifier {
   Future<http.Response> chatbotDataApi(Map<String, String> bodyData) async {
     String url = '$baseUrl/ai_chat';
 
-    LoginModel? userData = await SaveDataLocal.getDataFromLocal();
-    String token = userData?.data?.token ?? '';
-
-    if (token.isEmpty) {
-      throw Exception('Token not found');
-    }
+    String token = await SaveDataLocal.getValidToken();
 
     Map<String, String> headers = {'Authorization': 'Bearer $token'};
 
@@ -51,12 +45,7 @@ class ChatBotAiProvider extends ChangeNotifier {
   Future<http.Response> chatBotReceiveData(String userId) async {
     String url = '$baseUrl/get_chat_history?user_id=$userId';
 
-    LoginModel? userData = await SaveDataLocal.getDataFromLocal();
-    String token = userData?.data?.token ?? '';
-
-    if (token.isEmpty) {
-      throw Exception('Token not found');
-    }
+    String token = await SaveDataLocal.getValidToken();
 
     Map<String, String> headers = {'Authorization': 'Bearer $token'};
 
@@ -90,12 +79,7 @@ class ChatBotAiProvider extends ChangeNotifier {
   Future<http.Response> clearChatBotData(Map<String, String> bodyData) async {
     String url = '$baseUrl/clear_chat_messages';
 
-    LoginModel? userData = await SaveDataLocal.getDataFromLocal();
-    String token = userData?.data?.token ?? '';
-
-    if (token.isEmpty) {
-      throw Exception('Token not found');
-    }
+    String token = await SaveDataLocal.getValidToken();
 
     Map<String, String> headers = {'Authorization': 'Bearer $token'};
 

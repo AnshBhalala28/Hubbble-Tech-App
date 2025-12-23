@@ -36,70 +36,74 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<Response> forgetPasswordApi(Map<String, String> bodyData) async {
-    String? token = await SaveDataLocal.getToken();
-
     try {
+      String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
       final response = await dio.post(
         ApiEndpoint.forgetPassword,
         data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
 
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 
   Future<Response> changePass(Map<String, String> bodyData) async {
-    String? token = await SaveDataLocal.getToken();
-
     try {
+      String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
       final response = await dio.post(
         ApiEndpoint.changePassword,
         data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
 
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 
   Future<Response> deleteAccApi(id) async {
     try {
-      String? token = await SaveDataLocal.getToken();
-
+      String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
       final response = await dio.delete(
         ApiEndpoint.deleteAccount,
         queryParameters: {'id': id},
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
 
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 
   Future<Response> logoutApi(Map<String, String> bodyData) async {
     try {
-      String? token = await SaveDataLocal.getToken();
-
+      String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
       final response = await dio.post(
         ApiEndpoint.logout,
         data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
 
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -110,6 +114,8 @@ class AuthProvider extends ChangeNotifier {
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 }

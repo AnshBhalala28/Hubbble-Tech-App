@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../Ui/Authentication/modal/login_model.dart';
+import 'CustomExpection.dart';
 
 class SaveDataLocal {
   static const String userData = 'UserData';
@@ -44,6 +45,15 @@ class SaveDataLocal {
   /// Get token
   static Future<String?> getToken() async {
     return await _secureStorage.read(key: userToken);
+  }
+
+  /// Get token or throw UnauthorisedException if missing
+  static Future<String> getValidToken() async {
+    String? token = await getToken();
+    if (token == null || token.isEmpty) {
+      throw UnauthorisedException("Session expired. Please log in again.");
+    }
+    return token;
   }
 
   /// Get saved email

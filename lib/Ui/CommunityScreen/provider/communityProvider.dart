@@ -16,15 +16,12 @@ class CommunityProvider extends ChangeNotifier {
     longitude,
   ) async {
     try {
-      String? token = await SaveDataLocal.getToken();
-      if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': token};
-      }
+      String token = await SaveDataLocal.getValidToken();
 
       final dio = await DioHelper.getDio();
       final response = await dio.get(
         ApiEndpoint.businessProfile,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
         queryParameters: {
           'user_id': userId,
           'longitude': longitude,
@@ -35,76 +32,64 @@ class CommunityProvider extends ChangeNotifier {
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 
   Future<Response> businessProfileViewApi(String id, lat, lon) async {
     try {
-      // '${baseUrl}/businessProfile/$UserId/$id?longitude=$lon&latitude=$lat';
-      String? token = await SaveDataLocal.getToken();
-      if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': token};
-      }
+      String token = await SaveDataLocal.getValidToken();
 
       final dio = await DioHelper.getDio();
       final response = await dio.get(
         "${ApiEndpoint.businessProfileView}${loginModel?.data?.user?.id.toString()}/$id?latitude=$lat&longitude=$lon",
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
-      );
-      log(
-        "URL AVE CHE CEHE${ApiEndpoint.businessProfileView}${loginModel?.data?.user?.id.toString()}/$id?latitude=$lat&longitude=$lon",
+        options: Options(headers: {'X-Auth-Token': token}),
       );
 
       return response;
     } on DioException catch (e) {
-      log(
-        "URL AVE CHE CEHE${ApiEndpoint.businessProfileView}${loginModel?.data?.user?.id.toString()}/$id?latitude=$lat&longitude=$lon",
-      );
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 
   Future<Response> businessLikeApi(Map<String, String> bodyData) async {
     try {
-      String? token = await SaveDataLocal.getToken();
-      if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': token};
-      }
+      String token = await SaveDataLocal.getValidToken();
 
       final dio = await DioHelper.getDio();
       final response = await dio.post(
         ApiEndpoint.likeBusiness,
         data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
     } catch (e) {
       debugLog("Error in businessLikeApi: $e");
-      throw Exception("Something went wrong.");
+      rethrow;
     }
   }
 
   Future<Response> searchBusinessApi(Map<String, String> bodyData) async {
     try {
-      String? token = await SaveDataLocal.getToken();
-      if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': token};
-      }
+      String token = await SaveDataLocal.getValidToken();
 
       final dio = await DioHelper.getDio();
       final response = await dio.post(
         ApiEndpoint.searchBusiness,
         data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
     } catch (e) {
       debugLog("Error in searchBusinessApi: $e");
-      throw Exception("Something went wrong.");
+      rethrow;
     }
   }
 
@@ -115,14 +100,11 @@ class CommunityProvider extends ChangeNotifier {
   ) async {
     try {
       final dio = await DioHelper.getDio();
-      String? token = await SaveDataLocal.getToken();
-      if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': token};
-      }
+      String token = await SaveDataLocal.getValidToken();
 
       final response = await dio.get(
         ApiEndpoint.getLikeBusiness,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
         queryParameters: {
           'user_id': userId,
           'longitude': longitude,
@@ -133,20 +115,19 @@ class CommunityProvider extends ChangeNotifier {
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 
   Future<Response> getVisitorApi(String userId, latitude, longitude) async {
     try {
       final dio = await DioHelper.getDio();
-      String? token = await SaveDataLocal.getToken();
-      if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': token};
-      }
+      String token = await SaveDataLocal.getValidToken();
 
       final response = await dio.get(
         ApiEndpoint.getVisitor,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
         queryParameters: {
           'user_id': userId,
           'longitude': longitude,
@@ -157,25 +138,26 @@ class CommunityProvider extends ChangeNotifier {
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 
   Future<Response> getCategoryApi() async {
     try {
       final dio = await DioHelper.getDio();
-      String? token = await SaveDataLocal.getToken();
-      if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': token};
-      }
+      String token = await SaveDataLocal.getValidToken();
 
       final response = await dio.get(
         ApiEndpoint.category,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
 
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -187,14 +169,11 @@ class CommunityProvider extends ChangeNotifier {
   ) async {
     try {
       final dio = await DioHelper.getDio();
-      String? token = await SaveDataLocal.getToken();
-      if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': token};
-      }
+      String token = await SaveDataLocal.getValidToken();
 
       final response = await dio.get(
         ApiEndpoint.categoryView,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
         queryParameters: {
           'user_id': userId,
           'longitude': longitude,
@@ -208,115 +187,102 @@ class CommunityProvider extends ChangeNotifier {
       throw Exception(handleDioError(e));
     } catch (e) {
       debugLog("Error in categoryViewApi: $e");
-      throw Exception("Something went wrong.");
+      rethrow;
     }
   }
 
   Future<Response> postLikeApi(Map<String, String> bodyData) async {
     try {
-      String? token = await SaveDataLocal.getToken();
-      if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': token};
-      }
+      String token = await SaveDataLocal.getValidToken();
 
       final dio = await DioHelper.getDio();
       final response = await dio.post(
         ApiEndpoint.postLike,
         data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
     } catch (e) {
       debugLog("Error in postLikeApi: $e");
-      throw Exception("Something went wrong.");
+      rethrow;
     }
   }
 
   Future<Response> recoedDwellApi(Map<String, String> bodyData) async {
     try {
       final dio = await DioHelper.getDio();
-      String? token = await SaveDataLocal.getToken();
-      if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': token};
-      }
+      String token = await SaveDataLocal.getValidToken();
 
       final response = await dio.post(
         ApiEndpoint.recordTime,
         data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
     } catch (e) {
       debugLog("Error in recoedDwellApi: $e");
-      throw Exception("Something went wrong.");
+      rethrow;
     }
   }
 
   Future<Response> postMarkViewApi(Map<String, String> bodyData) async {
     try {
       final dio = await DioHelper.getDio();
-      String? token = await SaveDataLocal.getToken();
-      if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': token};
-      }
+      String token = await SaveDataLocal.getValidToken();
 
       final response = await dio.post(
         ApiEndpoint.postView,
         data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
     } catch (e) {
       debugLog("Error in postMarkViewApi: $e");
-      throw Exception("Something went wrong.");
+      rethrow;
     }
   }
 
   Future<Response> markOfferPromoApi(Map<String, String> bodyData) async {
     try {
       final dio = await DioHelper.getDio();
-      String? token = await SaveDataLocal.getToken();
-      if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': token};
-      }
+      String token = await SaveDataLocal.getValidToken();
 
       final response = await dio.post(
         ApiEndpoint.markOfferPromo,
         data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
     } catch (e) {
       debugLog("Error in markOfferPromoApi: $e");
-      throw Exception("Something went wrong.");
+      rethrow;
     }
   }
 
   Future<Response> storyViewApi(String userId, businessId) async {
     try {
       final dio = await DioHelper.getDio();
-      String? token = await SaveDataLocal.getToken();
-      if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': token};
-      }
+      String token = await SaveDataLocal.getValidToken();
 
       final response = await dio.get(
         ApiEndpoint.featuredPosts,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
         queryParameters: {'user_id': userId, 'business_id': businessId},
       );
 
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 }

@@ -11,15 +11,11 @@ class ChatProvider extends ChangeNotifier {
     try {
       final dio = await DioHelper.getDio();
 
-      String? token = await SaveDataLocal.getToken();
-      if (token != null && token.isNotEmpty) {
-        Map<String, String> headers = {'X-Auth-Token': token};
-      }
+      String token = await SaveDataLocal.getValidToken();
+
       final response = await dio.get(
         '${ApiEndpoint.getConcierge}?user_id=$userId&longitude=$lon&latitude=$lat',
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
-
-        // queryParameters: {'user_id': userId, 'longitude': lon, 'latitude': lat},
+        options: Options(headers: {'X-Auth-Token': token}),
       );
 
       return response;
@@ -27,19 +23,19 @@ class ChatProvider extends ChangeNotifier {
       throw Exception(handleDioError(e));
     } catch (e) {
       debugLog("Error in chatApi: $e");
-      throw Exception("Something went wrong.");
+      rethrow;
     }
   }
 
   Future<Response> chatStoryApi(Map<String, String> bodyData) async {
     try {
-      String? token = await SaveDataLocal.getToken();
+      String token = await SaveDataLocal.getValidToken();
 
       final dio = await DioHelper.getDio();
       final response = await dio.post(
         ApiEndpoint.allStory,
         data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
 
       return response;
@@ -47,7 +43,7 @@ class ChatProvider extends ChangeNotifier {
       throw Exception(handleDioError(e));
     } catch (e) {
       debugLog("Error in chatStoryApi: $e");
-      throw Exception("Something went wrong.");
+      rethrow;
     }
   }
 }

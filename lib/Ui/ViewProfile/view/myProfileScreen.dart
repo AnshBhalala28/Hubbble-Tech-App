@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Utils/customSnackBars.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
@@ -253,11 +254,12 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
         showButton = true;
       });
     } else {
-      Get.snackbar(
-        "No Image Selected",
-        "Please choose an image.",
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
+      showSnackBar(
+        context: context,
+        title: "No Image Selected",
+        message: "Please choose an image.",
+        backgoundColor: Colors.orange,
+        ColorText: Colors.white,
       );
     }
   }
@@ -283,37 +285,42 @@ class _Myprofile_ScreenState extends State<Myprofile_Screen> {
               setState(() {});
 
               Get.offAll(HomePage(userName: ""));
-              Get.snackbar(
-                "Success",
-                "Profile updated successfully",
-                backgroundColor: AppColors.maincolor,
-                colorText: Colors.white,
+              showSnackBar(
+                context: context,
+                title: "Success",
+                message: "Profile updated successfully",
+                backgoundColor: AppColors.maincolor,
+                ColorText: Colors.white,
               );
             } else {
-              Get.snackbar(
-                "Error",
-                "Failed to update profile",
-                backgroundColor: Colors.red,
-                colorText: Colors.white,
+              showSnackBar(
+                context: context,
+                title: "Error",
+                message: "Failed to update profile",
+                backgoundColor: AppColors.redColor,
+                ColorText: Colors.white,
               );
             }
           } else {
-            Get.snackbar(
-              "Error",
-              "Server error, please try again",
-              backgroundColor: Colors.red,
-              colorText: Colors.white,
+            showSnackBar(
+              context: context,
+              title: "Error",
+              message: "Server error, please try again",
+              backgoundColor: AppColors.redColor,
+              ColorText: Colors.white,
             );
           }
 
           setState(() => isEditing = false);
         });
       } else {
-        Get.snackbar(
-          "Error",
-          "Internet Required",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+        showSnackBar(
+          context: context,
+          title: "Error",
+
+          message: "Internet Required",
+          backgoundColor: AppColors.maincolor,
+          ColorText: Colors.white,
         );
       }
     });

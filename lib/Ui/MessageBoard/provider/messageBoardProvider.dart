@@ -17,7 +17,7 @@ class MessageBoardProvider extends ChangeNotifier {
         await FileValidation.validate(image.path);
       }
 
-      String? token = await SaveDataLocal.getToken();
+      String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
       FormData formData = FormData.fromMap({
         ...bodyData,
@@ -34,7 +34,7 @@ class MessageBoardProvider extends ChangeNotifier {
       final response = await dio.post(
         ApiEndpoint.createPost,
         data: formData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
       return response;
     } on DioException catch (e) {
@@ -46,7 +46,7 @@ class MessageBoardProvider extends ChangeNotifier {
 
   Future<Response> localPostApi(Map<String, String> bodyData) async {
     try {
-      String? token = await SaveDataLocal.getToken();
+      String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
 
       // Increase timeouts
@@ -58,7 +58,7 @@ class MessageBoardProvider extends ChangeNotifier {
         data: FormData.fromMap(bodyData), // send as form-data
         options: Options(
           headers: {
-            'X-Auth-Token': token ?? '',
+            'X-Auth-Token': token,
             'Content-Type': 'application/x-www-form-urlencoded',
           },
         ),
@@ -82,7 +82,7 @@ class MessageBoardProvider extends ChangeNotifier {
         await FileValidation.validate(images.first.path);
       }
 
-      String? token = await SaveDataLocal.getToken();
+      String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
       final Map<String, dynamic> formMap = {
         ...bodyData,
@@ -102,7 +102,7 @@ class MessageBoardProvider extends ChangeNotifier {
       final response = await dio.post(
         ApiEndpoint.addGroup,
         data: formData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
       return response;
     } on DioException catch (e) {
@@ -114,7 +114,7 @@ class MessageBoardProvider extends ChangeNotifier {
 
   Future<Response> sendMessageApi(Map<String, String> bodyData) async {
     try {
-      String? token = await SaveDataLocal.getToken();
+      String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
 
       String? filePath = bodyData['files'];
@@ -141,7 +141,7 @@ class MessageBoardProvider extends ChangeNotifier {
       final response = await dio.post(
         ApiEndpoint.sendMessage,
         data: formData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
 
       return response;
@@ -155,7 +155,7 @@ class MessageBoardProvider extends ChangeNotifier {
 
   Future<Response> addLikeCommentApi(Map<String, String> bodyData) async {
     try {
-      String? token = await SaveDataLocal.getToken();
+      String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
 
       // Increase timeouts
@@ -167,7 +167,7 @@ class MessageBoardProvider extends ChangeNotifier {
         data: FormData.fromMap(bodyData), // safer for Laravel form data
         options: Options(
           headers: {
-            'X-Auth-Token': token ?? '',
+            'X-Auth-Token': token,
             'Content-Type': 'application/x-www-form-urlencoded',
           },
         ),
@@ -183,31 +183,35 @@ class MessageBoardProvider extends ChangeNotifier {
 
   Future<Response> getPostCommentApi(Map<String, String> bodyData) async {
     try {
-      String? token = await SaveDataLocal.getToken();
+      String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
       final response = await dio.post(
         ApiEndpoint.getPostComment,
         data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 
   Future<Response> localPostDeleteApi(Map<String, String> bodyData) async {
     try {
-      String? token = await SaveDataLocal.getToken();
+      String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
       final response = await dio.post(
         ApiEndpoint.localPostDelete,
         data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -215,17 +219,19 @@ class MessageBoardProvider extends ChangeNotifier {
     Map<String, String> bodyData,
   ) async {
     try {
-      String? token = await SaveDataLocal.getToken();
+      String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
       final response = await dio.post(
         ApiEndpoint.profile,
         data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
 
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -238,7 +244,7 @@ class MessageBoardProvider extends ChangeNotifier {
         await FileValidation.validate(image.path);
       }
 
-      String? token = await SaveDataLocal.getToken();
+      String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
       FormData formData = FormData.fromMap({
         ...bodyData,
@@ -254,7 +260,7 @@ class MessageBoardProvider extends ChangeNotifier {
       final response = await dio.post(
         ApiEndpoint.editPostLocal,
         data: formData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
       return response;
     } on DioException catch (e) {

@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/Ui/ProductDetailPage/model/all_review_model.dart';
+import 'package:wavee/Utils/customSnackBars.dart';
 
 import '../../../Utils/bottomBar.dart';
 import '../../../Utils/checkInternetConnection.dart';
@@ -1164,15 +1165,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               String reviewText = reviewController.text.trim();
 
                               if (reviewText.isNotEmpty) {
-                                Navigator.pop(context);
+                                Get.back();
                                 AddReview();
                               } else {
-                                Get.snackbar(
-                                  "Oops!",
-                                  "Please write something before submitting.",
-                                  backgroundColor: Colors.red.shade100,
-                                  snackPosition: SnackPosition.BOTTOM,
+                                showSnackBar(
+                                  context: context,
+                                  title:  "Oops!",
+                                  message:"Please write something before submitting.",
+                                  backgoundColor: AppColors.redColor,
+                                  ColorText: Colors.white,
                                 );
+
                               }
                             },
                             color: AppColors.maincolor,

@@ -7,6 +7,7 @@ import 'package:sizer/sizer.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wavee/Utils/customSnackBars.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
@@ -593,13 +594,12 @@ class _BuyProductViewState extends State<BuyProductView> {
                             GestureDetector(
                               onTap: () {
                                 if (selectedPayment.isEmpty) {
-                                  Get.snackbar(
-                                    "Payment Method Required",
-                                    "Please select a payment method before placing your order.",
-                                    backgroundColor: Colors.red,
-                                    colorText: Colors.white,
-                                    margin: const EdgeInsets.all(10),
-                                    snackPosition: SnackPosition.TOP,
+                                  showSnackBar(
+                                    context: context,
+                                    title:  'Payment Method Required',
+                                    message:'Please select a payment method before placing your order.',
+                                    backgoundColor: AppColors.redColor,
+                                    ColorText: Colors.white,
                                   );
                                 } else if (selectedPayment.toLowerCase() ==
                                     "stripe") {

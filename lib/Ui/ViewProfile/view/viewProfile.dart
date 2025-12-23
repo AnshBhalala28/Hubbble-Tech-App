@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Utils/customSnackBars.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
@@ -360,12 +361,14 @@ class _ViewProfileState extends State<ViewProfile> {
     if (Platform.isAndroid) {
       var status = await Permission.storage.request();
       if (!status.isGranted) {
-        Get.snackbar(
-          "Permission Denied",
-          "Please enable storage permission from settings",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+        showSnackBar(
+          context: context,
+          title: "Permission Denied",
+          message: "Please enable storage permission from settings",
+          backgoundColor: AppColors.redColor,
+          ColorText: Colors.white,
         );
+
         return;
       }
     }
@@ -399,73 +402,6 @@ class _ViewProfileState extends State<ViewProfile> {
       });
     }
   }
-
-  // void EditProfile() {
-  //   List<String> addressParts = fullAddressController.text.trim().split(",");
-  //   String address = addressParts.isNotEmpty ? addressParts[0] : "";
-  //   String city = addressParts.length > 1 ? addressParts[1].trim() : "";
-  //   String country = addressParts.length > 2 ? addressParts[2].trim() : "";
-  //   final Map<String, String> data = {
-  //     'update_id': profileModel?.data?.id.toString() ?? '',
-  //     'apartment_number': "15",
-  //     "member_type": "tenant",
-  //     'gender': genderController.text.trim(),
-  //     'frist_name': nameController.text.trim().split(" ").first,
-  //     'last_name': nameController.text.trim().split(" ").last,
-  //     'contact_no': phoneController.text.trim(),
-  //     'address': address,
-  //     'city': city,
-  //     'country': country,
-  //     'zip_code': zipCodeController.text.trim(),
-  //   };
-  //   checkInternet().then((internet) async {
-  //     if (internet) {
-  //       ProfileProvider().ProfileEdit(data, selectedImage).then((
-  //         response,
-  //       ) async {
-  //         if (response.statusCode == 200) {
-  //           var profileModel = ProfileModel.fromJson(jsonDecode(response.body));
-  //           if (profileModel.status == 200) {
-  //
-  //             Get.snackbar(
-  //               "Success",
-  //               "Profile updated successfully",
-  //               backgroundColor: AppColors.maincolor,
-  //               colorText: Colors.white,
-  //             );
-  //             setState(() {
-  //               isEditing = false;
-  //             });
-  //             Future.delayed(Duration(microseconds: 100), () {
-  //               Get.offAll(HomePage(userName: ""));
-  //             });
-  //           } else {
-  //             Get.snackbar(
-  //               "Error",
-  //               "Failed to update profile",
-  //               backgroundColor: Colors.red,
-  //               colorText: Colors.white,
-  //             );
-  //           }
-  //         } else {
-  //           Get.snackbar(
-  //             "Error",
-  //             "Server error, please try again",
-  //             backgroundColor: Colors.red,
-  //             colorText: Colors.white,
-  //           );
-  //         }
-  //       });
-  //     } else {
-  //       Get.snackbar(
-  //         "Error",
-  //         "Internet Required",
-  //         backgroundColor: Colors.red,
-  //         colorText: Colors.white,
-  //       );
-  //     }
-  //   });
-  // }
 
   void Logout() {
     final Map<String, String> data = {};

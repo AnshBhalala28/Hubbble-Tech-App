@@ -452,7 +452,7 @@
 //                                             busnessviewmodal.data!.business!.id
 //                                                 .toString();
 //
-//                                         Navigator.pop(context);
+//                                         Get.back();
 //                                         moveToLocation();
 //                                       } else {}
 //                                     },

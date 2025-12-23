@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Utils/customSnackBars.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
@@ -61,11 +62,12 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
     checkInternet().then((internet) async {
       if (!internet) {
         setState(() => isLoading = false);
-        Get.snackbar(
-          "Error",
-          "Internet Required",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+        showSnackBar(
+          context: context,
+          title: 'Error',
+          message: 'Internet Required',
+          backgoundColor: AppColors.redColor,
+          ColorText: Colors.white,
         );
         return;
       }
@@ -125,12 +127,14 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
 
     checkInternet().then((internet) async {
       if (!internet) {
-        Get.snackbar(
-          "Error",
-          "Internet Required",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+        showSnackBar(
+          context: context,
+          title: 'Error',
+          message: 'Internet Required',
+          backgoundColor: AppColors.redColor,
+          ColorText: Colors.white,
         );
+
         return;
       }
 
@@ -141,36 +145,41 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
         if (response.statusCode == 200) {
           var updatedModel = ProfileModel.fromJson(response.data);
           if (updatedModel.status == 200) {
-            Get.snackbar(
-              "Success",
-              "Home Updated Successfully",
-              backgroundColor: AppColors.maincolor,
-              colorText: Colors.white,
+            showSnackBar(
+              context: context,
+              title: 'Success',
+              message: 'Home Updated Successfully',
+              backgoundColor: AppColors.maincolor,
+              ColorText: Colors.white,
             );
+
             GetProfile();
             // Get.offAll(HomePage(userName: ""));
           } else {
-            Get.snackbar(
-              "Error",
-              updatedModel.message ?? "Update failed",
-              backgroundColor: Colors.red,
-              colorText: Colors.white,
+            showSnackBar(
+              context: context,
+              title: 'Error',
+              message: updatedModel.message ?? "Update failed",
+              backgoundColor: AppColors.redColor,
+              ColorText: Colors.white,
             );
           }
         } else {
-          Get.snackbar(
-            "Error",
-            "Server Error",
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
+          showSnackBar(
+            context: context,
+            title: 'Error',
+            message: 'Server Error',
+            backgoundColor: AppColors.redColor,
+            ColorText: Colors.white,
           );
         }
       } catch (e) {
-        Get.snackbar(
-          "Error",
-          "An error occurred: $e",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+        showSnackBar(
+          context: context,
+          title: 'Error',
+          message: 'An error occurred: $e',
+          backgoundColor: AppColors.redColor,
+          ColorText: Colors.white,
         );
       } finally {
         setState(() => isEditing = false);

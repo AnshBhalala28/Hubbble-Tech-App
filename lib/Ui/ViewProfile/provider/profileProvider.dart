@@ -15,33 +15,37 @@ import '../../../Utils/storeUserData.dart';
 class ProfileProvider extends ChangeNotifier {
   Future<Response> profileApi(Map<String, String> bodyData) async {
     try {
-      String? token = await SaveDataLocal.getToken();
+      String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
       final response = await dio.post(
         ApiEndpoint.profile,
         data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
       return response;
     } on DioException catch (e) {
       log("error in profileApi${e.response?.data}");
       log("error in profileApi${e.message}");
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 
   Future<Response> updateProfile(Map<String, String> bodyData) async {
     try {
-      String? token = await SaveDataLocal.getToken();
+      String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
       final response = await dio.post(
         ApiEndpoint.updateProfile,
         data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
       return response;
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -50,9 +54,9 @@ class ProfileProvider extends ChangeNotifier {
     File? imageFile,
   ) async {
     String url = ApiEndpoint.updateProfile;
-    String? token = await SaveDataLocal.getToken();
-
     try {
+      String token = await SaveDataLocal.getValidToken();
+
       FormData formData = FormData.fromMap(bodyData);
 
       if (imageFile != null && imageFile.path.isNotEmpty) {
@@ -77,7 +81,7 @@ class ProfileProvider extends ChangeNotifier {
       final response = await dio.post(
         url,
         data: formData,
-        options: Options(headers: {'X-Auth-Token': token ?? ''}),
+        options: Options(headers: {'X-Auth-Token': token}),
       );
 
       return response;

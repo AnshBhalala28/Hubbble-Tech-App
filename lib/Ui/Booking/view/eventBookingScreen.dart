@@ -689,8 +689,8 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                     Expanded(
                       child: OutlinedButton(
                         onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
+                          Get.back();
+                          Get.back();
                           RSVPAttendApi(eventid, 'no', rsvp);
                         },
                         style: OutlinedButton.styleFrom(
@@ -714,8 +714,8 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
+                          Get.back();
+                          Get.back();
                           RSVPAttendApi(eventid, 'yes', rsvp);
                         },
                         style: ElevatedButton.styleFrom(
@@ -839,8 +839,8 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
+                          Get.back();
+                          Get.back();
                           RsvpToEventApi(eventID, 'maybe');
                         },
                         style: ElevatedButton.styleFrom(
@@ -864,8 +864,8 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
+                          Get.back();
+                          Get.back();
                           RsvpToEventApi(eventID, 'decline');
                         },
                         style: ElevatedButton.styleFrom(
@@ -889,8 +889,8 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
+                          Get.back();
+                          Get.back();
                           RsvpToEventApi(eventID, 'accept');
                         },
                         style: ElevatedButton.styleFrom(

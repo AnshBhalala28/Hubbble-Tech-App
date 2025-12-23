@@ -390,7 +390,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
                               ],
                             ),
                             onTap: () {
-                              Navigator.pop(context);
+                              Get.back();
                             },
                           ),
                         ),

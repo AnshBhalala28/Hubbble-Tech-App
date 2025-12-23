@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:wavee/Utils/colors.dart';
+import 'package:wavee/Utils/customSnackBars.dart';
 
 import 'CustomExpection.dart';
 
@@ -44,7 +46,7 @@ responses(http.Response response) {
           message = decoded['message'].toString();
         }
       } catch (_) {}
-      
+
       throw BadRequestException(
         kDebugMode ? "($message) Details: ${response.body}" : message,
       );
@@ -56,14 +58,16 @@ responses(http.Response response) {
       throw UnauthorisedException("Unauthorized access. Please log in again.");
 
     case 429:
-      Get.snackbar(
-        "Server Unavailable",
-        "Too many requests. Please try again later.",
-        snackPosition: SnackPosition.TOP,
-        duration: const Duration(seconds: 3),
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      if (Get.context != null) {
+        showSnackBar(
+          context: Get.context!, // <--- Use Get.context! here
+          title: "Server Unavailable",
+          message: "Too many requests. Please try again later.",
+          backgoundColor: AppColors.redColor,
+          ColorText: Colors.white,
+        );
+      }
+
       throw FetchDataException("Rate limit exceeded.");
 
     case 500:

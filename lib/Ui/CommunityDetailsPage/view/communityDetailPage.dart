@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Utils/customSnackBars.dart';
 
 import '../../../Utils/bottomBar.dart';
 import '../../../Utils/checkInternetConnection.dart';
@@ -256,10 +257,14 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                               subject: "Share Business",
                                             );
                                           } catch (e) {
-                                            Get.snackbar(
-                                              "Error",
-                                              "Could not share business details.",
+                                            showSnackBar(
+                                              context: context,
+                                              title:  'Error',
+                                              message:'Could not share business details.',
+                                              backgoundColor: AppColors.redColor,
+                                              ColorText: Colors.white,
                                             );
+
                                           }
                                         },
                                       ),

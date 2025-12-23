@@ -1823,7 +1823,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                                   ),
                                 ),
                                 GestureDetector(
-                                  onTap: () => Navigator.pop(context),
+                                  onTap: () => Get.back(),
                                   child: Icon(
                                     Icons.close,
                                     size: 24.sp,

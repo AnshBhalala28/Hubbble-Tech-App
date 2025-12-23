@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Utils/customSnackBars.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
@@ -465,11 +466,12 @@ class _EventDetailState extends State<EventDetail> {
                   isBooking = false;
                 });
                 Get.to(const EventbookingScreen());
-                Get.snackbar(
-                  "Event Request",
-                  "Event access has been requested",
-                  backgroundColor: AppColors.maincolor,
-                  colorText: AppColors.white,
+                showSnackBar(
+                  context: context,
+                  title: "Event Request",
+                  message: "Event access has been requested",
+                  backgoundColor: AppColors.maincolor,
+                  ColorText: AppColors.white,
                 );
               } else if (response.statusCode == 422) {
                 setState(() {

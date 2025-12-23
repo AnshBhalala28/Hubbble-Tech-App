@@ -10,6 +10,7 @@ import 'package:sizer/sizer.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:torn_ticket/torn_ticket.dart';
 import 'package:wavee/Ui/Booking/modal/statusModal.dart';
+import 'package:wavee/Utils/customSnackBars.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
@@ -2301,7 +2302,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                     Expanded(
                       child: OutlinedButton(
                         onPressed: () {
-                          Navigator.pop(context);
+                          Get.back();
                         },
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(color: Colors.grey.shade400),
@@ -2892,12 +2893,16 @@ class _Form_ScreenState extends State<Form_Screen> {
             isGlobalLoading = false;
           });
         }
-        Get.snackbar(
-          "Booking Failed",
-          response.data['message'] ?? "Something went wrong. Please try again.",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+        showSnackBar(
+          context: context,
+          title: "Booking Failed",
+          message:
+              response.data['message'] ??
+              "Something went wrong. Please try again.",
+          backgoundColor: AppColors.redColor,
+          ColorText: Colors.white,
         );
+
         return false;
       }
     } catch (e) {
@@ -2906,12 +2911,14 @@ class _Form_ScreenState extends State<Form_Screen> {
           isGlobalLoading = false;
         });
       }
-      Get.snackbar(
-        "Error",
-        "Something went wrong. Please try again later.",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+      showSnackBar(
+        context: context,
+        title: "Error",
+        message: "Something went wrong. Please try again later.",
+        backgoundColor: AppColors.redColor,
+        ColorText: Colors.white,
       );
+
       return false;
     }
   }
@@ -2927,19 +2934,31 @@ class _Form_ScreenState extends State<Form_Screen> {
         var response = await AmenitiesProvider().rsvpToAmenityApi(data);
         if (response.statusCode == 200) {
           if (mounted) {
-            Navigator.pop(context);
+            Get.back();
             Get.offAll(() => const BookingScreen());
-            Get.snackbar("RSVP Updated", "Your response has been recorded.");
+            showSnackBar(
+              context: context,
+              title: "RSVP Updated",
+              message: "Your response has been recorded.",
+              backgoundColor: AppColors.maincolor,
+              ColorText: Colors.white,
+            );
           }
         } else {
           if (mounted) {
-            Navigator.pop(context);
-            Get.snackbar("Error", "Failed to update RSVP.");
+            Get.back();
+            showSnackBar(
+              context: context,
+              title: "Error",
+              message: "Failed to update RSVP.",
+              backgoundColor: AppColors.maincolor,
+              ColorText: Colors.white,
+            );
           }
         }
       } catch (e) {
         print("RSVPApi Error: $e");
-        if (mounted) Navigator.pop(context);
+        if (mounted) Get.back();
       } finally {
         if (mounted) {
           setState(() {
@@ -2974,19 +2993,31 @@ class _Form_ScreenState extends State<Form_Screen> {
         var response = await AmenitiesProvider().rsvpToAmenityApi(data);
         if (response.statusCode == 200) {
           if (mounted) {
-            Navigator.pop(context);
+            Get.back();
             Get.offAll(() => const BookingScreen());
-            Get.snackbar("Attendance Marked", "Thank you for attending!");
+            showSnackBar(
+              context: context,
+              title: "Attendance Marked",
+              message: "Thank you for attending!",
+              backgoundColor: AppColors.maincolor,
+              ColorText: Colors.white,
+            );
           }
         } else {
           if (mounted) {
-            Navigator.pop(context);
-            Get.snackbar("Error", "Failed to mark attendance.");
+            Get.back();
+            showSnackBar(
+              context: context,
+              title: "Error",
+              message: "Failed to mark attendance.",
+              backgoundColor: AppColors.maincolor,
+              ColorText: Colors.white,
+            );
           }
         }
       } catch (e) {
         print("AttendApi Error: $e");
-        if (mounted) Navigator.pop(context);
+        if (mounted) Get.back();
       } finally {
         if (mounted) {
           setState(() {
