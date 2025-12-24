@@ -91,6 +91,10 @@ const String baseUrl = "https://portal.wavee.ai/api";
 // const String baseUrl = "https://staging-portal.wavee.ai/api";
 const String jsonString = "assets/google_pay.json";
 
+/// ============================================================
+/// HELPER FUNCTIONS
+/// ============================================================
+
 String formatDateTime(String? createdAt) {
   if (createdAt == null || createdAt.isEmpty) return "N/A";
   DateTime parsedDate = DateTime.parse(createdAt);
@@ -155,36 +159,43 @@ class AppConstants {
   static const String waveePet = "${path}waveePet.svg";
 }
 
+/// ============================================================
+/// GLOBAL VARIABLES (STATE)
+/// ============================================================
+
+/// --- Authentication & Profile ---
 LoginModel? loginModel;
 Forgotpasswordmodel? forgotpasswordmodel;
 DeleteAccountModel? deleteAccountModel;
-ParcelViewModal? parcelViewModal;
-BusinessProfileModel? businessprofileModel;
-BusnessViewModal? busnessviewmodal;
 ProfileModel? profileModel;
+UserPersonalInfoModel? userpersonalInfoModel;
+ResidentAppUserprofileModel? residentappuserprofileModel;
+
+/// --- Home & Dashboard ---
+ParcelViewModal? parcelViewModal;
 ParcelShowCountModel? parcelShowCountModel;
 VisitorShowCountModel? visitorShowCountModel;
-BussinessLikeModel? bussinesslikemodel;
 LatestVisitorModal? latestVisitorModal;
 ChatShowCountModal? chatShowCountModal;
-MessageBoardModal? messageBoardModal;
-ChatModel? chatModel;
-MessageModel? messageModel;
+NotificationModel? notificationmodel;
+
+/// --- Community & Business ---
+BusinessProfileModel? businessprofileModel;
+BusnessViewModal? busnessviewmodal;
+BussinessLikeModel? bussinesslikemodel;
 BusnessSearchModal? busnesssearchModal;
 GetLikeModal? getlikeModal;
 GetVisitedModal? getvisitedModal;
-SendMessageModel? sendMessageModel;
-RequestModal? requestmodal;
-EventlistModel? eventlistModel;
-NotificationModel? notificationmodel;
-EventlistModel? event_list_Model;
-SendeventModel? sendeventModel;
 CategoriesModel? categoriesModel;
 ViewCategoriesModel? viewcategoriesmodel;
-PostLikeModel? postlikemodel;
 DwellTimeModel? dwelltimemodel;
 PostAsViewedModel? postasviewedmodel;
 OfferPromoAsViewedModel? offerpromoAsviewedmodel;
+SearchProductModel? searchproductmodel;
+
+/// --- Message Board & Groups ---
+MessageBoardModal? messageBoardModal;
+PostLikeModel? postlikemodel;
 ChatUserListModel? chatuserlistmodel;
 GetGroupListModel? getgrouplistmodel;
 CreateGroupModel? creategroupmodel;
@@ -192,26 +203,59 @@ GroupProfileModel? groupprofileModel;
 RemoveGroupMemberModel? removegroupMemberModel;
 AddGroupMemberModel? addgroupMemberModel;
 DeleteGroupModel? deletegroupModel;
-RemoveFriendModel? removefriendModel;
-UserPersonalInfoModel? userpersonalInfoModel;
+GetPostCommentsModel? getpostCommentsModel;
+MessageboardpostLikeModel? messageboardpostlikeModel;
+SendPostCommentsModel? sendpostCommentsModel;
+Localpost_model? localpost_model;
+Localpost_comments_Model? localpostCommentsModel;
+Add_Post_Model? add_Post_Model;
+
+/// --- Chat & Messaging ---
+ChatModel? chatModel;
+MessageModel? messageModel;
+SendMessageModel? sendMessageModel;
 SendMsgModel? sendmsgModel;
 GetMsgModel? getmsgModel;
-CreateFriendModel? createfriendModel;
-GetFriendListModel? getfriendListModel;
 ChatbotDataModal? chatbotDataModal;
 SendChatModal? sendChatModal;
+OrdersendMessageModel? ordersendmessagemodel;
+ChatStoryModal? chatStories;
+
+/// --- Friends & Requests ---
+RequestModal? requestmodal;
+RemoveFriendModel? removefriendModel;
+CreateFriendModel? createfriendModel;
+GetFriendListModel? getfriendListModel;
+GetRequestModel? getrequestModel;
+MyRequestModel? myRequestModel;
+OnGoingFreindRequestModel? onGoingFreindRequestModel;
+MyGroupRequestModel? myGroupRequestModel;
+
+/// --- Events ---
+EventlistModel? eventlistModel;
+EventlistModel? event_list_Model;
+SendeventModel? sendeventModel;
+EventBookingModal? eventBookingModal;
+EventDetailModel? eventDetailModel;
+EventDetailModal? eventDetailModal;
+
+/// --- Booking & Amenities ---
 AmenitiesModel? amenitiesModel;
 AmenitiesModel? aneminitiesDataModel;
 AllAmenitiesModel? allAmenitiesModel;
 RejectBookingModel? rejectBookingModel;
 BookAmenitiesStatusModel? bookAmenitiesStatusModel;
+StatusModal? statusModal;
+
+/// --- Maintenance & Services ---
 MaintenanceModel? maintenanceModel;
-EventBookingModal? eventBookingModal;
-GetPostCommentsModel? getpostCommentsModel;
-MessageboardpostLikeModel? messageboardpostlikeModel;
-SendPostCommentsModel? sendpostCommentsModel;
 MaintenanceDetailModel? maintenanceDetailModel;
-EventDetailModel? eventDetailModel;
+ServiceDetailsModel? servicedetailsmodel;
+ServiceOrderDetail? serviceOrderDetail;
+ServiceViewModel? serviceViewModel;
+ServiceBookingModel? serviceBookingModel;
+
+/// --- E-Commerce & Cart ---
 ProductViewModel? productViewModel;
 ShowAllReviewModel? showAllReviewModel;
 CartDetailsModel? cartDetailsModel;
@@ -219,26 +263,129 @@ CartDetailsModel? checkoutTotal;
 MyOrderModel? myOrderModel;
 OrderDetailModel? orderDetailModel;
 PlaceOrderModel? placeOrderModel;
-StroyModel? stroymodel;
-GetRequestModel? getrequestModel;
-MyRequestModel? myRequestModel;
-OnGoingFreindRequestModel? onGoingFreindRequestModel;
-MyGroupRequestModel? myGroupRequestModel;
-ResidentAppUserprofileModel? residentappuserprofileModel;
-ServiceDetailsModel? servicedetailsmodel;
-ServiceOrderDetail? serviceOrderDetail;
-ServiceViewModel? serviceViewModel;
-ServiceBookingModel? serviceBookingModel;
-Localpost_model? localpost_model;
-Localpost_comments_Model? localpostCommentsModel;
-Add_Post_Model? add_Post_Model;
 CategoryModal? categoryModal;
 CategoryDetailModal? categoryDetailModal;
-OrdersendMessageModel? ordersendmessagemodel;
-SearchProductModel? searchproductmodel;
-ChatStoryModal? chatStories;
-EventDetailModal? eventDetailModal;
-StatusModal? statusModal;
 AmendOrderModal? amendOrderModal;
 AmendPaymentModal? amendPaymentModal;
 RemoveAmendModal? removeAmend;
+
+/// --- Stories ---
+StroyModel? stroymodel;
+
+/// ============================================================
+/// DATA CLEANUP (LOGOUT)
+/// ============================================================
+void handleDataClear() {
+  print("🧹 GlobalStore: Wiping all sensitive user data...");
+
+  /// --- Authentication & Profile ---
+  loginModel = null;
+  forgotpasswordmodel = null;
+  deleteAccountModel = null;
+  profileModel = null;
+  userpersonalInfoModel = null;
+  residentappuserprofileModel = null;
+
+  /// --- Home & Dashboard ---
+  parcelViewModal = null;
+  parcelShowCountModel = null;
+  visitorShowCountModel = null;
+  latestVisitorModal = null;
+  chatShowCountModal = null;
+  notificationmodel = null;
+
+  /// --- Community & Business ---
+  businessprofileModel = null;
+  busnessviewmodal = null;
+  bussinesslikemodel = null;
+  busnesssearchModal = null;
+  getlikeModal = null;
+  getvisitedModal = null;
+  categoriesModel = null;
+  viewcategoriesmodel = null;
+  dwelltimemodel = null;
+  postasviewedmodel = null;
+  offerpromoAsviewedmodel = null;
+  searchproductmodel = null;
+
+  /// --- Message Board & Groups ---
+  messageBoardModal = null;
+  postlikemodel = null;
+  chatuserlistmodel = null;
+  getgrouplistmodel = null;
+  creategroupmodel = null;
+  groupprofileModel = null;
+  removegroupMemberModel = null;
+  addgroupMemberModel = null;
+  deletegroupModel = null;
+  getpostCommentsModel = null;
+  messageboardpostlikeModel = null;
+  sendpostCommentsModel = null;
+  localpost_model = null;
+  localpostCommentsModel = null;
+  add_Post_Model = null;
+
+  /// --- Chat & Messaging ---
+  chatModel = null;
+  messageModel = null;
+  sendMessageModel = null;
+  sendmsgModel = null;
+  getmsgModel = null;
+  chatbotDataModal = null;
+  sendChatModal = null;
+  ordersendmessagemodel = null;
+  chatStories = null;
+
+  /// --- Friends & Requests ---
+  requestmodal = null;
+  removefriendModel = null;
+  createfriendModel = null;
+  getfriendListModel = null;
+  getrequestModel = null;
+  myRequestModel = null;
+  onGoingFreindRequestModel = null;
+  myGroupRequestModel = null;
+
+  /// --- Events ---
+  eventlistModel = null;
+  event_list_Model = null;
+  sendeventModel = null;
+  eventBookingModal = null;
+  eventDetailModel = null;
+  eventDetailModal = null;
+
+  /// --- Booking & Amenities ---
+  amenitiesModel = null;
+  aneminitiesDataModel = null;
+  allAmenitiesModel = null;
+  rejectBookingModel = null;
+  bookAmenitiesStatusModel = null;
+  statusModal = null;
+
+  /// --- Maintenance & Services ---
+  maintenanceModel = null;
+  maintenanceDetailModel = null;
+  servicedetailsmodel = null;
+  serviceOrderDetail = null;
+  serviceViewModel = null;
+  serviceBookingModel = null;
+
+  /// --- E-Commerce & Cart ---
+  productViewModel = null;
+  showAllReviewModel = null;
+  cartDetailsModel = null;
+  checkoutTotal = null;
+  myOrderModel = null;
+  orderDetailModel = null;
+  placeOrderModel = null;
+  categoryModal = null;
+  categoryDetailModal = null;
+  amendOrderModal = null;
+  amendPaymentModal = null;
+  removeAmend = null;
+
+  /// --- Stories ---
+  stroymodel = null;
+
+  print("✅ All global data wiped successfully.");
+}

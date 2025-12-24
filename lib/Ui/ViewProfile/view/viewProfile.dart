@@ -414,6 +414,7 @@ class _ViewProfileState extends State<ViewProfile> {
             setState(() {
               isLoading = false;
             });
+            handleDataClear();
           } else {
             setState(() {
               isLoading = false;

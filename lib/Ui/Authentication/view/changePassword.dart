@@ -323,6 +323,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             setState(() {
               isLoading = false;
             });
+            handleDataClear();
           } else {
             setState(() {
               isLoading = false;
