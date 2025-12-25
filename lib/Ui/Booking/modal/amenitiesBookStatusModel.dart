@@ -291,65 +291,47 @@ class Amenity {
     return data;
   }
 }
-
 class OperatingHours {
-  Monday? monday;
-  Monday? tuesday;
-  Monday? wednesday;
-  Monday? thursday;
-  Monday? friday;
-  Monday? saturday;
-  Monday? sunday;
-
-  OperatingHours({
-    this.monday,
-    this.tuesday,
-    this.wednesday,
-    this.thursday,
-    this.friday,
-    this.saturday,
-    this.sunday,
-  });
+  List<Monday> monday = [];
+  List<Monday> tuesday = [];
+  List<Monday> wednesday = [];
+  List<Monday> thursday = [];
+  List<Monday> friday = [];
+  List<Monday> saturday = [];
+  List<Monday> sunday = [];
 
   OperatingHours.fromJson(Map<String, dynamic> json) {
-    monday = json['monday'] != null ? Monday.fromJson(json['monday']) : null;
-    tuesday = json['tuesday'] != null ? Monday.fromJson(json['tuesday']) : null;
-    wednesday =
-        json['wednesday'] != null ? Monday.fromJson(json['wednesday']) : null;
-    thursday =
-        json['thursday'] != null ? Monday.fromJson(json['thursday']) : null;
-    friday = json['friday'] != null ? Monday.fromJson(json['friday']) : null;
-    saturday =
-        json['saturday'] != null ? Monday.fromJson(json['saturday']) : null;
-    sunday = json['sunday'] != null ? Monday.fromJson(json['sunday']) : null;
+    monday = _parseDay(json['monday']);
+    tuesday = _parseDay(json['tuesday']);
+    wednesday = _parseDay(json['wednesday']);
+    thursday = _parseDay(json['thursday']);
+    friday = _parseDay(json['friday']);
+    saturday = _parseDay(json['saturday']);
+    sunday = _parseDay(json['sunday']);
+  }
+
+  static List<Monday> _parseDay(dynamic dayData) {
+    if (dayData is List) {
+      return dayData
+          .map((e) => Monday.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+    return [];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (this.monday != null) {
-      data['monday'] = this.monday!.toJson();
-    }
-    if (this.tuesday != null) {
-      data['tuesday'] = this.tuesday!.toJson();
-    }
-    if (this.wednesday != null) {
-      data['wednesday'] = this.wednesday!.toJson();
-    }
-    if (this.thursday != null) {
-      data['thursday'] = this.thursday!.toJson();
-    }
-    if (this.friday != null) {
-      data['friday'] = this.friday!.toJson();
-    }
-    if (this.saturday != null) {
-      data['saturday'] = this.saturday!.toJson();
-    }
-    if (this.sunday != null) {
-      data['sunday'] = this.sunday!.toJson();
-    }
-    return data;
+    return {
+      'monday': monday.map((e) => e.toJson()).toList(),
+      'tuesday': tuesday.map((e) => e.toJson()).toList(),
+      'wednesday': wednesday.map((e) => e.toJson()).toList(),
+      'thursday': thursday.map((e) => e.toJson()).toList(),
+      'friday': friday.map((e) => e.toJson()).toList(),
+      'saturday': saturday.map((e) => e.toJson()).toList(),
+      'sunday': sunday.map((e) => e.toJson()).toList(),
+    };
   }
 }
+
 
 class Monday {
   String? open;

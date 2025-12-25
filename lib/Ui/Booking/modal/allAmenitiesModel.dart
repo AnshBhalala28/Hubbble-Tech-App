@@ -140,14 +140,22 @@ class OperatingHours {
   Monday? wednesday;
   Monday? friday;
   Monday? sunday;
+  Monday? tuesday;
 
-  OperatingHours({this.monday, this.wednesday, this.friday, this.sunday});
+  OperatingHours({
+    this.monday,
+    this.tuesday,
+    this.wednesday,
+    this.friday,
+    this.sunday,
+  });
 
   OperatingHours.fromJson(Map<String, dynamic> json) {
     monday = json['monday'] != null ? Monday.fromJson(json['monday']) : null;
     wednesday =
         json['wednesday'] != null ? Monday.fromJson(json['wednesday']) : null;
     friday = json['friday'] != null ? Monday.fromJson(json['friday']) : null;
+    tuesday = json['tuesday'] != null ? Monday.fromJson(json['tuesday']) : null;
     sunday = json['sunday'] != null ? Monday.fromJson(json['sunday']) : null;
   }
 
@@ -158,6 +166,9 @@ class OperatingHours {
     }
     if (this.wednesday != null) {
       data['wednesday'] = this.wednesday!.toJson();
+    }
+    if (this.tuesday != null) {
+      data['tuesday'] = this.tuesday!.toJson();
     }
     if (this.friday != null) {
       data['friday'] = this.friday!.toJson();

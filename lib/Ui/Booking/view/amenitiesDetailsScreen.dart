@@ -11,6 +11,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:torn_ticket/torn_ticket.dart';
 import 'package:wavee/Ui/Booking/modal/statusModal.dart';
 import 'package:wavee/Utils/customSnackBars.dart';
+import 'package:wavee/Utils/viewPdfFunction.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
@@ -170,81 +171,107 @@ class _Form_ScreenState extends State<Form_Screen> {
         );
       } catch (e2) {
         print("!!! Failed to parse time: '$timeStr' !!!");
-
         return DateTime.now();
       }
     }
   }
 
-  List<String> _generateAvailableSlots(
-    String operatingHoursStr,
-    List<ExistingBooking> existingBookings,
-    int bufferInMinutes,
+  // Get operating hours for a specific day
+  String getOperatingHours(DateTime selectedDate, OperatingHours? hours) {
+    if (hours == null) return "No operating hours available";
+
+    final weekday = getWeekdayName(selectedDate).toLowerCase();
+    List<TimeSlot>? timeSlots;
+
+    switch (weekday) {
+      case 'monday':
+        timeSlots = hours.monday;
+        break;
+      case 'tuesday':
+        timeSlots = hours.tuesday;
+        break;
+      case 'wednesday':
+        timeSlots = hours.wednesday;
+        break;
+      case 'thursday':
+        timeSlots = hours.thursday;
+        break;
+      case 'friday':
+        timeSlots = hours.friday;
+        break;
+      case 'saturday':
+        timeSlots = hours.saturday;
+        break;
+      case 'sunday':
+        timeSlots = hours.sunday;
+        break;
+    }
+
+    if (timeSlots == null || timeSlots.isEmpty) {
+      return "Closed";
+    }
+
+    // Format multiple time slots
+    List<String> formattedSlots = [];
+    for (var slot in timeSlots) {
+      if (slot.open != null &&
+          slot.close != null &&
+          slot.open!.isNotEmpty &&
+          slot.close!.isNotEmpty) {
+        formattedSlots.add('${slot.open} - ${slot.close}');
+      }
+    }
+
+    return formattedSlots.isEmpty ? "Closed" : formattedSlots.join(', ');
+  }
+
+  // Extract all start times from operating hours
+  List<String> _extractStartTimesFromOperatingHours(
+    OperatingHours? hours,
+    DateTime selectedDate,
   ) {
-    List<String> availableSlots = [];
-    final DateTime now = DateTime.now();
-    final DateTime selectedDay = calendar1SelectedDate!;
+    List<String> startTimes = [];
 
-    if (operatingHoursStr == "Closed" ||
-        operatingHoursStr == "No operating hours available" ||
-        !operatingHoursStr.contains(" - ")) {
-      return [];
-    }
-    final parts = operatingHoursStr.split(" - ");
-    final DateTime openingTime = _parseTime(parts[0].trim(), selectedDay);
-    final DateTime closingTime = _parseTime(parts[1].trim(), selectedDay);
+    if (hours == null) return startTimes;
 
-    DateTime currentTime = openingTime;
+    final weekday = getWeekdayName(selectedDate).toLowerCase();
+    List<TimeSlot>? timeSlots;
 
-    while (currentTime.isBefore(closingTime)) {
-      final DateTime slotStartTime = currentTime;
-
-      final DateTime slotEndTime = slotStartTime.add(
-        Duration(minutes: selectedDurationInMinutes),
-      );
-
-      bool isAvailable = true;
-
-      if (slotEndTime.isAfter(closingTime)) {
-        isAvailable = false;
-      }
-
-      if (isSameDay(selectedDay, now) && slotStartTime.isBefore(now)) {
-        isAvailable = false;
-      }
-
-      if (isAvailable) {
-        for (final booking in existingBookings) {
-          if (booking.startTime == null || booking.endTime == null) continue;
-
-          final DateTime bookingStart = _parseTime(
-            booking.startTime!,
-            selectedDay,
-          );
-          final DateTime bookingEnd = _parseTime(booking.endTime!, selectedDay);
-
-          final DateTime bufferEndTime = bookingEnd.add(
-            Duration(minutes: bufferInMinutes),
-          );
-
-          if ((slotStartTime.isBefore(bufferEndTime)) &&
-              (slotEndTime.isAfter(bookingStart))) {
-            isAvailable = false;
-            break;
-          }
-        }
-      }
-
-      if (isAvailable) {
-        availableSlots.add(DateFormat("h:mm a").format(slotStartTime));
-      }
-
-      final int increment =
-          selectedDurationInMinutes > 0 ? selectedDurationInMinutes : 30;
-      currentTime = currentTime.add(Duration(minutes: increment));
+    switch (weekday) {
+      case 'monday':
+        timeSlots = hours.monday;
+        break;
+      case 'tuesday':
+        timeSlots = hours.tuesday;
+        break;
+      case 'wednesday':
+        timeSlots = hours.wednesday;
+        break;
+      case 'thursday':
+        timeSlots = hours.thursday;
+        break;
+      case 'friday':
+        timeSlots = hours.friday;
+        break;
+      case 'saturday':
+        timeSlots = hours.saturday;
+        break;
+      case 'sunday':
+        timeSlots = hours.sunday;
+        break;
     }
 
-    return availableSlots;
+    if (timeSlots == null || timeSlots.isEmpty) {
+      return startTimes;
+    }
+
+    for (var slot in timeSlots) {
+      if (slot.open != null && slot.open!.isNotEmpty) {
+        startTimes.add(slot.open!);
+      }
+    }
+
+    return startTimes;
   }
 
   @override
@@ -548,68 +575,134 @@ class _Form_ScreenState extends State<Form_Screen> {
                                               ),
                                             ),
                                             SizedBox(height: 2.h),
-                                            SingleChildScrollView(
-                                              scrollDirection: Axis.horizontal,
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                bottom: 2.h,
+                                              ),
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 4.w,
+                                                vertical: 1.h,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    booking?.status == "active"
+                                                        ? Colors.white
+                                                        : booking?.status ==
+                                                            "inactive"
+                                                        ? Colors.red.shade50
+                                                        : Colors.grey.shade200,
+                                                borderRadius:
+                                                    BorderRadius.circular(14),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.05),
+                                                    blurRadius: 10,
+                                                    offset: const Offset(0, 4),
+                                                  ),
+                                                ],
+                                                border: Border.all(
+                                                  color:
+                                                      booking?.status ==
+                                                              "active"
+                                                          ? Colors.grey.shade400
+                                                          : booking?.status ==
+                                                              "inactive"
+                                                          ? Colors.red
+                                                          : Colors
+                                                              .grey
+                                                              .shade400,
+                                                  width: 1,
+                                                ),
+                                              ),
                                               child: Row(
                                                 children: [
+                                                  /// 🔹 Status Icon
                                                   Container(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                          horizontal: 3.w,
-                                                          vertical: 1.h,
-                                                        ),
-                                                    margin: EdgeInsets.only(
-                                                      right: 2.w,
+                                                    padding: EdgeInsets.all(
+                                                      2.w,
                                                     ),
                                                     decoration: BoxDecoration(
                                                       color:
                                                           booking?.status ==
                                                                   "active"
                                                               ? AppColors
-                                                                  .bgcolor
+                                                                  .maincolor
+                                                                  .withOpacity(
+                                                                    0.12,
+                                                                  )
                                                               : booking
                                                                       ?.status ==
                                                                   "inactive"
                                                               ? Colors.red
-                                                              : AppColors
-                                                                  .bgcolor,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            12,
-                                                          ),
+                                                                  .withOpacity(
+                                                                    0.12,
+                                                                  )
+                                                              : Colors
+                                                                  .grey
+                                                                  .shade300,
+                                                      shape: BoxShape.circle,
                                                     ),
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
+                                                    child: Icon(
+                                                      booking?.status ==
+                                                              "active"
+                                                          ? Icons
+                                                              .check_circle_rounded
+                                                          : booking?.status ==
+                                                              "inactive"
+                                                          ? Icons.cancel_rounded
+                                                          : Icons.info_outline,
+                                                      size: 18.sp,
+                                                      color:
                                                           booking?.status ==
                                                                   "active"
-                                                              ? Icons
-                                                                  .check_circle
+                                                              ? AppColors
+                                                                  .maincolor
                                                               : booking
                                                                       ?.status ==
                                                                   "inactive"
-                                                              ? Icons.cancel
-                                                              : null,
-                                                          size: 18.sp,
-                                                          color:
-                                                              booking?.status ==
-                                                                      "active"
-                                                                  ? AppColors
-                                                                      .maincolor
-                                                                  : booking
-                                                                          ?.status ==
-                                                                      "inactive"
-                                                                  ? Colors.white
-                                                                  : Colors
-                                                                      .white,
-                                                        ),
-                                                        SizedBox(width: 2.w),
+                                                              ? Colors.red
+                                                              : Colors
+                                                                  .grey
+                                                                  .shade700,
+                                                    ),
+                                                  ),
+
+                                                  SizedBox(width: 3.w),
+
+                                                  /// 🔹 Text
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
                                                         Text(
-                                                          "Status: ${booking?.status.toString().capitalizeFirst ?? ''}",
+                                                          "Session Status",
+                                                          style: TextStyle(
+                                                            fontSize: 13.sp,
+                                                            fontFamily:
+                                                                AppConstants
+                                                                    .manrope,
+                                                            color:
+                                                                Colors
+                                                                    .grey
+                                                                    .shade600,
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 0.4.h),
+                                                        Text(
+                                                          booking?.status
+                                                                  ?.toString()
+                                                                  .capitalizeFirst ??
+                                                              "Unknown",
                                                           style: TextStyle(
                                                             fontSize: 15.sp,
                                                             fontWeight:
                                                                 FontWeight.bold,
+                                                            fontFamily:
+                                                                AppConstants
+                                                                    .manropeBold,
                                                             color:
                                                                 booking?.status ==
                                                                         "active"
@@ -618,51 +711,10 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                     : booking
                                                                             ?.status ==
                                                                         "inactive"
-                                                                    ? Colors
-                                                                        .white
+                                                                    ? Colors.red
                                                                     : Colors
-                                                                        .white,
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manropeBold,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                          horizontal: 3.w,
-                                                          vertical: 1.h,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: AppColors.bgcolor,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            12,
-                                                          ),
-                                                    ),
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.book,
-                                                          size: 18.sp,
-                                                          color:
-                                                              AppColors
-                                                                  .maincolor,
-                                                        ),
-                                                        SizedBox(width: 2.w),
-                                                        Text(
-                                                          "Max Booking per Resident: ${booking?.maxBookingPerDay ?? 'N/A'}",
-                                                          style: TextStyle(
-                                                            fontSize: 15.sp,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: Colors.black,
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manropeBold,
+                                                                        .grey
+                                                                        .shade800,
                                                           ),
                                                         ),
                                                       ],
@@ -671,91 +723,254 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                 ],
                                               ),
                                             ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                if (booking?.rulesNotice ==
+                                                        null ||
+                                                    booking!
+                                                        .rulesNotice!
+                                                        .isEmpty) {
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text(
+                                                        "No rules available",
+                                                      ),
+                                                    ),
+                                                  );
+                                                  return;
+                                                }
+
+                                                /// 🔹 Open PDF / Image
+                                                Get.to(
+                                                  PdfView(
+                                                    link: booking!.rulesNotice!,
+                                                  ),
+                                                );
+                                              },
+                                              child: Container(
+                                                margin: EdgeInsets.symmetric(
+                                                  vertical: 1.h,
+                                                ),
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 4.w,
+                                                  vertical: 1.6.h,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color:
+                                                      booking?.status ==
+                                                              "active"
+                                                          ? Colors.white
+                                                          : Colors
+                                                              .grey
+                                                              .shade300,
+                                                  borderRadius:
+                                                      BorderRadius.circular(14),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black
+                                                          .withOpacity(0.05),
+                                                      blurRadius: 10,
+                                                      offset: const Offset(
+                                                        0,
+                                                        4,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                  border: Border.all(
+                                                    color: Colors.grey.shade400,
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    /// 🔹 Leading Icon
+                                                    Container(
+                                                      padding: EdgeInsets.all(
+                                                        2.w,
+                                                      ),
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            booking?.status ==
+                                                                    "active"
+                                                                ? AppColors
+                                                                    .maincolor
+                                                                    .withOpacity(
+                                                                      0.12,
+                                                                    )
+                                                                : Colors
+                                                                    .grey
+                                                                    .shade400,
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                      child: Icon(
+                                                        Icons
+                                                            .picture_as_pdf_rounded,
+                                                        size: 18.sp,
+                                                        color:
+                                                            booking?.status ==
+                                                                    "active"
+                                                                ? AppColors
+                                                                    .maincolor
+                                                                : Colors
+                                                                    .grey
+                                                                    .shade700,
+                                                      ),
+                                                    ),
+
+                                                    SizedBox(width: 3.w),
+
+                                                    /// 🔹 Text
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            "Rules & Notices",
+                                                            style: TextStyle(
+                                                              fontSize: 14.sp,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manropeBold,
+                                                              color:
+                                                                  booking?.status ==
+                                                                          "active"
+                                                                      ? Colors
+                                                                          .black
+                                                                      : Colors
+                                                                          .grey
+                                                                          .shade700,
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 0.4.h,
+                                                          ),
+                                                          Text(
+                                                            "Tap to view guidelines & instructions",
+                                                            style: TextStyle(
+                                                              fontSize: 11.sp,
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manrope,
+                                                              color:
+                                                                  Colors
+                                                                      .grey
+                                                                      .shade600,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+
+                                                    /// 🔹 Arrow
+                                                    Icon(
+                                                      Icons
+                                                          .arrow_forward_ios_rounded,
+                                                      size: 14.sp,
+                                                      color:
+                                                          booking?.status ==
+                                                                  "active"
+                                                              ? Colors.black54
+                                                              : Colors
+                                                                  .grey
+                                                                  .shade600,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+
                                             SizedBox(height: 1.h),
-                                            SingleChildScrollView(
-                                              scrollDirection: Axis.horizontal,
-                                              child: Row(
-                                                children: [
-                                                  Container(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                          horizontal: 3.w,
-                                                          vertical: 1.h,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: AppColors.bgcolor,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            12,
-                                                          ),
-                                                    ),
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.timer,
-                                                          size: 18.sp,
-                                                          color:
-                                                              AppColors
-                                                                  .maincolor,
-                                                        ),
-                                                        SizedBox(width: 2.w),
-                                                        Text(
-                                                          "Duration: ${_formatDuration(booking?.durationOptions)}",
-                                                          style: TextStyle(
-                                                            fontSize: 15.sp,
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manrope,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: Colors.black,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 1.h),
-                                                  Container(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                          horizontal: 3.w,
-                                                          vertical: 1.h,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: AppColors.bgcolor,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            12,
-                                                          ),
-                                                    ),
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.people,
-                                                          size: 18.sp,
-                                                          color:
-                                                              AppColors
-                                                                  .maincolor,
-                                                        ),
-                                                        SizedBox(width: 2.w),
-                                                        Text(
-                                                          "Capacity: ${booking?.capacity ?? ''}",
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manrope,
-                                                            fontSize: 15.sp,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: Colors.black,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
+                                            // SingleChildScrollView(
+                                            //   scrollDirection: Axis.horizontal,
+                                            //   child: Row(
+                                            //     children: [
+                                            //       Container(
+                                            //         padding:
+                                            //         EdgeInsets.symmetric(
+                                            //           horizontal: 3.w,
+                                            //           vertical: 1.h,
+                                            //         ),
+                                            //         decoration: BoxDecoration(
+                                            //           color: AppColors.bgcolor,
+                                            //           borderRadius:
+                                            //           BorderRadius.circular(
+                                            //             12,
+                                            //           ),
+                                            //         ),
+                                            //         child: Row(
+                                            //           children: [
+                                            //             Icon(
+                                            //               Icons.timer,
+                                            //               size: 18.sp,
+                                            //               color:
+                                            //               AppColors
+                                            //                   .maincolor,
+                                            //             ),
+                                            //             SizedBox(width: 2.w),
+                                            //             Text(
+                                            //               "Duration: ${_formatDuration(booking?.durationOptions)}",
+                                            //               style: TextStyle(
+                                            //                 fontSize: 15.sp,
+                                            //                 fontFamily:
+                                            //                 AppConstants
+                                            //                     .manrope,
+                                            //                 fontWeight:
+                                            //                 FontWeight.bold,
+                                            //                 color: Colors.black,
+                                            //               ),
+                                            //             ),
+                                            //           ],
+                                            //         ),
+                                            //       ),
+                                            //       SizedBox(width: 1.h),
+                                            //       Container(
+                                            //         padding:
+                                            //         EdgeInsets.symmetric(
+                                            //           horizontal: 3.w,
+                                            //           vertical: 1.h,
+                                            //         ),
+                                            //         decoration: BoxDecoration(
+                                            //           color: AppColors.bgcolor,
+                                            //           borderRadius:
+                                            //           BorderRadius.circular(
+                                            //             12,
+                                            //           ),
+                                            //         ),
+                                            //         child: Row(
+                                            //           children: [
+                                            //             Icon(
+                                            //               Icons.people,
+                                            //               size: 18.sp,
+                                            //               color:
+                                            //               AppColors
+                                            //                   .maincolor,
+                                            //             ),
+                                            //             SizedBox(width: 2.w),
+                                            //             Text(
+                                            //               "Capacity: ${booking?.capacity ?? ''}",
+                                            //               style: TextStyle(
+                                            //                 fontFamily:
+                                            //                 AppConstants
+                                            //                     .manrope,
+                                            //                 fontSize: 15.sp,
+                                            //                 fontWeight:
+                                            //                 FontWeight.bold,
+                                            //                 color: Colors.black,
+                                            //               ),
+                                            //             ),
+                                            //           ],
+                                            //         ),
+                                            //       ),
+                                            //     ],
+                                            //   ),
+                                            // ),
                                             SizedBox(height: 2.h),
                                             Column(
                                               crossAxisAlignment:
@@ -1160,34 +1375,20 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                       widget.status == null &&
                                                       !calendar1Loading) ...[
                                                     Divider(height: 3.h),
-                                                    _buildTimeSlotPicker(
+                                                    _buildOperatingHoursDisplay(
                                                       operatingHoursString,
                                                       selectedAmenity
                                                               ?.existingBookings ??
                                                           [],
-                                                      30,
                                                     ),
-                                                    if (showPlus30)
-                                                      SizedBox(height: 1.h),
-                                                    if (showPlus30)
-                                                      Text(
-                                                        'Sorry, maintenance in progress, it will be ready in 30 mins.',
-                                                        style: TextStyle(
-                                                          color:
-                                                              AppColors
-                                                                  .redColor,
-                                                          fontFamily:
-                                                              AppConstants
-                                                                  .manrope,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          decorationColor:
-                                                              Colors.black
-                                                                  .withValues(
-                                                                    alpha: 0.4,
-                                                                  ),
-                                                        ),
-                                                      ),
+
+                                                    SizedBox(height: 2.h),
+
+                                                    // Time Selection from Operating Hours
+                                                    _buildTimeSelectionFromOperatingHours(
+                                                      selectedAmenity
+                                                          ?.operatingHours,
+                                                    ),
                                                   ] else if (calendar1Loading)
                                                     Padding(
                                                       padding:
@@ -1554,7 +1755,8 @@ class _Form_ScreenState extends State<Form_Screen> {
                               return;
                             }
 
-                            if (selectedStartTime == null) {
+                            if (selectedStartTime == null ||
+                                selectedStartTime!.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   duration: Duration(milliseconds: 800),
@@ -1655,17 +1857,10 @@ class _Form_ScreenState extends State<Form_Screen> {
     );
   }
 
-  Widget _buildTimeSlotPicker(
+  Widget _buildOperatingHoursDisplay(
     String operatingHoursStr,
     List<ExistingBooking> existingBookings,
-    int bufferInMinutes,
   ) {
-    final List<String> availableSlots = _generateAvailableSlots(
-      operatingHoursStr,
-      existingBookings,
-      bufferInMinutes,
-    );
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1702,158 +1897,233 @@ class _Form_ScreenState extends State<Form_Screen> {
                 color: Colors.green,
               ),
             ),
-            const SizedBox(width: 6),
           ],
         ),
 
         SizedBox(height: 2.h),
 
-        Text(
-          "Select Start Time",
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.bold,
-            fontFamily: AppConstants.manropeBold,
-          ),
-        ),
-        SizedBox(height: 1.h),
-
-        if (availableSlots.isEmpty)
-          Container(
-            padding: EdgeInsets.all(4.w),
-            decoration: BoxDecoration(
-              color: AppColors.bgcolor,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              "No available slots for the selected date.",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: AppConstants.manrope,
-                fontSize: 14.sp,
-              ),
-            ),
-          )
-        else
-          Wrap(
-            spacing: 8.0,
-            runSpacing: 8.0,
-            children:
-                availableSlots.asMap().entries.map((entry) {
-                  final int index = entry.key;
-                  final String time = entry.value;
-
-                  // 🔁 use selectedSlotTime for highlight (must exist in your State)
-                  final bool isSelected = selectedSlotTime == time;
-
-                  final bool isAlreadyBooked = _isSlotAlreadyBookedByMe(
-                    time,
-                    calendar1SelectedDate!,
-                  );
-
-                  final Color bgColor =
-                      isAlreadyBooked
-                          ? AppColors.maincolor
-                          : isSelected
-                          ? AppColors.maincolor
-                          : AppColors.bgcolor;
-
-                  final Color textColor =
-                      isAlreadyBooked
-                          ? Colors.white
-                          : isSelected
-                          ? Colors.white
-                          : Colors.black;
-
-                  return GestureDetector(
-                    onTap:
-                        isAlreadyBooked
-                            ? null
-                            : () {
-                              setState(() {
-                                // keep selection color on the tapped slot
-                                selectedSlotTime = time;
-
-                                // store start time (+30 mins for non-first)
-                                final inputFormat = DateFormat("hh:mm a");
-                                final DateTime parsedTime = inputFormat.parse(
-                                  time,
-                                );
-
-                                if (index > 0) {
-                                  final DateTime newTime = parsedTime.add(
-                                    const Duration(minutes: 30),
-                                  );
-                                  selectedStartTime = inputFormat.format(
-                                    newTime,
-                                  );
-                                } else {
-                                  selectedStartTime = time;
-                                }
-
-                                showPlus30 = index > 0;
-                                log(
-                                  'selected time (stored): $selectedStartTime | tapped: $selectedSlotTime',
-                                );
-                              });
-                            },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 3.w,
-                        vertical: 1.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: bgColor,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color:
-                              isAlreadyBooked
-                                  ? Colors.grey.shade400
-                                  : isSelected
-                                  ? AppColors.maincolor
-                                  : Colors.grey.shade300,
+        // Container(
+        //   padding: EdgeInsets.all(4.w),
+        //   decoration: BoxDecoration(
+        //     color: AppColors.bgcolor,
+        //     borderRadius: BorderRadius.circular(12),
+        //     border: Border.all(color: Colors.grey.shade300),
+        //   ),
+        //   child: Column(
+        //     crossAxisAlignment: CrossAxisAlignment.start,
+        //     children: [
+        //       Text(
+        //         "Operating Hours:",
+        //         style: TextStyle(
+        //           fontSize: 16.sp,
+        //           fontWeight: FontWeight.bold,
+        //           fontFamily: AppConstants.manropeBold,
+        //         ),
+        //       ),
+        //       SizedBox(height: 1.h),
+        //       Text(
+        //         operatingHoursStr,
+        //         style: TextStyle(
+        //           fontSize: 15.sp,
+        //           color: Colors.black87,
+        //           fontFamily: AppConstants.manrope,
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        if (existingBookings.isNotEmpty)
+          Column(
+            children: [
+              SizedBox(height: 2.h),
+              Container(
+                padding: EdgeInsets.all(4.w),
+                decoration: BoxDecoration(
+                  color: Colors.orange.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.orange.shade200),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.event_busy,
+                          size: 18,
+                          color: Colors.orange.shade700,
                         ),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            time,
-                            style: TextStyle(
-                              color: textColor,
-                              fontFamily: AppConstants.manrope,
-                              fontWeight:
-                                  isSelected
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                              decorationColor: Colors.black.withValues(
-                                alpha: 0.4,
-                              ),
-                            ),
+                        SizedBox(width: 1.w),
+                        Text(
+                          "Already Booked:",
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange.shade800,
+                            fontFamily: AppConstants.manropeBold,
                           ),
-
-                          // Show "+ 30 minutes" only when selected AND not first slot
-                          if (isSelected && index > 0)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 2),
-                              child: Text(
-                                "+ 30 minutes",
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  color: textColor.withValues(alpha: 0.9),
-                                  fontFamily: AppConstants.manrope,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 1.h),
+                    ...existingBookings.map((booking) {
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 0.5.h),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.schedule,
+                              size: 16,
+                              color: Colors.orange.shade700,
+                            ),
+                            SizedBox(width: 1.w),
+                            Text(
+                              "${booking.startTime ?? ''} - ${booking.endTime ?? ''}",
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: Colors.orange.shade900,
+                                fontFamily: AppConstants.manrope,
                               ),
                             ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ],
+                ),
+              ),
+            ],
           ),
       ],
+    );
+  }
+
+  Widget _buildTimeSelectionFromOperatingHours(OperatingHours? hours) {
+    List<String> startTimes = _extractStartTimesFromOperatingHours(
+      hours,
+      calendar1SelectedDate!,
+    );
+
+    return Container(
+      padding: EdgeInsets.all(3.w),
+      decoration: BoxDecoration(
+        color: AppColors.bgcolor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Select Start Time",
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.bold,
+              fontFamily: AppConstants.manropeBold,
+            ),
+          ),
+          SizedBox(height: 1.h),
+
+          if (startTimes.isEmpty)
+            Container(
+              padding: EdgeInsets.all(4.w),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                "No operating hours available for selected date",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.grey.shade600,
+                  fontFamily: AppConstants.manrope,
+                ),
+              ),
+            )
+          else
+            Wrap(
+              spacing: 8.0,
+              runSpacing: 8.0,
+              children:
+                  startTimes.map((time) {
+                    final bool isSelected = selectedStartTime == time;
+                    final bool isAlreadyBooked = _isSlotAlreadyBookedByMe(
+                      time,
+                      calendar1SelectedDate!,
+                    );
+
+                    return GestureDetector(
+                      onTap:
+                          isAlreadyBooked
+                              ? null
+                              : () {
+                                setState(() {
+                                  selectedStartTime = time;
+                                });
+                              },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 3.w,
+                          vertical: 1.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color:
+                              isAlreadyBooked
+                                  ? Colors.grey.shade300
+                                  : isSelected
+                                  ? AppColors.maincolor
+                                  : AppColors.bgcolor,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color:
+                                isAlreadyBooked
+                                    ? Colors.grey.shade400
+                                    : isSelected
+                                    ? AppColors.maincolor
+                                    : Colors.grey.shade300,
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              time,
+                              style: TextStyle(
+                                color:
+                                    isAlreadyBooked
+                                        ? Colors.grey.shade600
+                                        : isSelected
+                                        ? Colors.white
+                                        : Colors.black,
+                                fontFamily: AppConstants.manrope,
+                                fontWeight:
+                                    isSelected
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                              ),
+                            ),
+                            if (isAlreadyBooked)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2),
+                                child: Text(
+                                  "Booked",
+                                  style: TextStyle(
+                                    fontSize: 10.sp,
+                                    color: Colors.red,
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
+            ),
+        ],
+      ),
     );
   }
 
@@ -1922,44 +2192,21 @@ class _Form_ScreenState extends State<Form_Screen> {
     }
   }
 
-  String getOperatingHours(DateTime selectedDate, OperatingHours? hours) {
-    if (hours == null) return "No operating hours available";
-    final weekday = selectedDate.weekday;
-    Monday? selectedDayHours;
-    switch (weekday) {
-      case DateTime.monday:
-        selectedDayHours = hours.monday;
-        break;
-      case DateTime.tuesday:
-        selectedDayHours = hours.tuesday;
-        break;
-      case DateTime.wednesday:
-        selectedDayHours = hours.wednesday;
-        break;
-      case DateTime.thursday:
-        selectedDayHours = hours.thursday;
-        break;
-      case DateTime.friday:
-        selectedDayHours = hours.friday;
-        break;
-      case DateTime.saturday:
-        selectedDayHours = hours.saturday;
-        break;
-      case DateTime.sunday:
-        selectedDayHours = hours.sunday;
-        break;
-    }
-    if (selectedDayHours != null &&
-        selectedDayHours.open != null &&
-        selectedDayHours.close != null) {
-      if (selectedDayHours.open!.isNotEmpty &&
-          selectedDayHours.close!.isNotEmpty) {
-        return "${selectedDayHours.open} - ${selectedDayHours.close}";
-      } else {
-        return "Closed";
+  String formatTime12(String? time24) {
+    if (time24 == null || time24.isEmpty) return '';
+
+    try {
+      final format24 = DateFormat("HH:mm");
+      final dt = format24.parse(time24);
+      return DateFormat("h:mm a").format(dt);
+    } catch (e) {
+      try {
+        final format12 = DateFormat("h:mm a");
+        final dt = format12.parse(time24);
+        return DateFormat("h:mm a").format(dt);
+      } catch (e2) {
+        return time24;
       }
-    } else {
-      return "Closed";
     }
   }
 
@@ -2365,8 +2612,6 @@ class _Form_ScreenState extends State<Form_Screen> {
     }
   }
 
-  //
-
   void showTornTicketDialog({
     required BuildContext context,
     required String selectedDate,
@@ -2394,7 +2639,6 @@ class _Form_ScreenState extends State<Form_Screen> {
                     padding: const EdgeInsets.all(20),
                     width: double.infinity,
 
-                    // 🔥 SCROLL ADDED HERE
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2884,7 +3128,7 @@ class _Form_ScreenState extends State<Form_Screen> {
           duration: durationStr,
           endTime: DateFormat(
             "hh:mm a",
-          ).format(DateFormat("HH:mm:ss").parse(endTime)),
+          ).format(DateFormat("HH:mm").parse(endTime)),
         );
         return true;
       } else {
@@ -2905,7 +3149,9 @@ class _Form_ScreenState extends State<Form_Screen> {
 
         return false;
       }
-    } catch (e) {
+    } catch (e, stacktrace) {
+      print("AddBookingApi Error: $e");
+      print("AddBookingApi Error: $stacktrace");
       if (mounted) {
         setState(() {
           isGlobalLoading = false;
@@ -3033,37 +3279,13 @@ class _Form_ScreenState extends State<Form_Screen> {
     }
   }
 
-  // bool _isSlotAlreadyBookedByMe(String slotTime, DateTime selectedDate) {
-  //   if (statusModal?.data == null || statusModal!.data!.isEmpty) {
-  //     return false;
-  //   }
-  //
-  //   final String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
-  //
-  //   final String timeStr = convertTo24(slotTime);
-  //
-  //   for (final booking in statusModal!.data!) {
-  //     if (booking.bookingDate == null || booking.startTime == null) {
-  //       continue;
-  //     }
-  //
-  //     if (booking.bookingDate == dateStr && booking.startTime == timeStr) {
-  //       return true;
-  //     }
-  //   }
-  //
-  //   return false;
-  // }
-
   String _toHms(String time) {
-    // Accepts "HH:mm" or "HH:mm:ss" and returns "HH:mm:ss"
     final parts = time.split(':');
     if (parts.length == 2) {
       return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}:00';
     } else if (parts.length == 3) {
       return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}:${parts[2].padLeft(2, '0')}';
     }
-    // Fallback (unexpected format): return as-is
     return time;
   }
 
@@ -3072,12 +3294,8 @@ class _Form_ScreenState extends State<Form_Screen> {
     if (data == null || data.isEmpty) return false;
 
     final String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
-
-    // Your slot from UI (could be "05:00" or "05:00:00")
-    final String uiTime24 = convertTo24(
-      slotTime,
-    ); // e.g., "05:00" or "05:00:00"
-    final String uiHms = _toHms(uiTime24); // → "05:00:00"
+    final String uiTime24 = convertTo24(slotTime);
+    final String uiHms = _toHms(uiTime24);
 
     for (final booking in data) {
       final String? bDate = booking.bookingDate;
@@ -3085,17 +3303,14 @@ class _Form_ScreenState extends State<Form_Screen> {
       if (bDate == null || bStart == null) continue;
       if (bDate != dateStr) continue;
 
-      // Server time is usually "HH:mm:ss"
       String bookingHms = _toHms(bStart);
 
-      // If not first slot → subtract 30 minutes from booking start
       if (booking.isFirstSlot == "false") {
         final DateTime parsed = DateFormat('HH:mm:ss').parseStrict(bookingHms);
         final DateTime adjusted = parsed.subtract(const Duration(minutes: 30));
         bookingHms = DateFormat('HH:mm:ss').format(adjusted);
       }
 
-      // Debug print
       print('Comparing >> UI Slot: $uiHms  |  Booking Final Time: $bookingHms');
 
       if (bookingHms == uiHms) {

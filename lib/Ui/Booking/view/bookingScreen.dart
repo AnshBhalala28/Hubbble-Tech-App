@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -720,7 +722,8 @@ class _BookingScreenState extends State<BookingScreen> {
               isLoading = false;
             });
           }
-        } catch (e) {
+        } catch (e,stacktrace) {
+          log("stacktracestacktracestacktrace$stacktrace");
           setState(() {
             isLoading = false;
           });

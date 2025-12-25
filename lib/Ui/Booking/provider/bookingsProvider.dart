@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -45,6 +47,7 @@ class AmenitiesProvider extends ChangeNotifier {
       );
       return response;
     } on DioException catch (e) {
+      log("error ${e.response!.data}");
       throw Exception(handleDioError(e));
     } catch (e) {
       rethrow;
