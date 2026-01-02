@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:readmore/readmore.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Services/themeServices.dart';
+import 'package:wavee/Utils/colors.dart';
 
-import '../../../Utils/colors.dart';
 import '../../../Utils/const.dart';
 import '../../../Utils/customAppBar.dart';
 import '../Provider/parcelProvider.dart';
@@ -18,255 +20,293 @@ class ParcelScreen extends StatefulWidget {
 }
 
 class _ParcelScreenState extends State<ParcelScreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKeyParcel =
-      GlobalKey<ScaffoldState>();
   final PagingController<int, Data1> _pagingController = PagingController(
     firstPageKey: 1,
   );
-
   int selectedCategory = 0;
-
-  final List<String> categories = ['All', 'Collected', 'Awaiting Collection'];
+  final List<String> categories = ['All', 'Collected', 'Awaiting'];
 
   @override
   void initState() {
     super.initState();
-    _pagingController.addPageRequestListener((pageKey) {
-      ParselViewApi(pageKey);
-    });
+    _pagingController.addPageRequestListener(
+      (pageKey) => ParselViewApi(pageKey),
+    );
   }
 
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
-  }
+  // bool isDark = false;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
+    final theme = context.watch<ThemeController>();
 
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 2.h),
-        child: Column(
-          children: [
-            SizedBox(height: 4.h),
-            TitleBar(
-              back: () => Get.back(),
-              title: "Parcels",
-              drawerCallback: () {},
-            ),
-            SizedBox(height: 3.h),
-            SizedBox(
-              height: 5.h,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: categories.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      if (selectedCategory != index) {
-                        setState(() {
-                          selectedCategory = index;
-                        });
-                        _pagingController.refresh(); // Reload data
-                      }
-                    },
-                    child: Container(
-                      height: 5.h,
-                      padding: EdgeInsets.symmetric(
-                        vertical: 1.h,
-                        horizontal: 7.w,
-                      ),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 0.5, color: Colors.grey),
+    return Scaffold(
+      backgroundColor: theme.isDark ? AppColors.darkBack : Color(0xf01A1A1A),
+      body: Column(
+        children: [
+          SizedBox(height: 6.h),
+          TitleBar(
+            back: () => Get.back(),
+            title: "Parcels",
+            drawerCallback: () {},
+          ),
+          SizedBox(height: 3.h),
+
+          // --- UPDATED CATEGORY TABS ---
+          SizedBox(
+            height: 5.h,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: categories.length,
+              padding: EdgeInsets.zero,
+              itemBuilder: (context, index) {
+                bool isSelected = selectedCategory == index;
+                return GestureDetector(
+                  onTap: () {
+                    if (selectedCategory != index) {
+                      setState(() => selectedCategory = index);
+                      _pagingController.refresh();
+                    }
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(right: 3.w),
+                    padding: EdgeInsets.symmetric(horizontal: 8.w),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color:
+                          theme.isDark
+                              ? isSelected
+                                  ? AppColors.white
+                                  : const Color(0xFF212121)
+                              : isSelected
+                              ? const Color(0xFF1A1A1A)
+                              : Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        if (!isSelected)
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                      ],
+                    ),
+                    child: Text(
+                      categories[index],
+                      style: TextStyle(
+                        fontSize: 15.sp,
                         color:
-                            selectedCategory == index
-                                ? AppColors.maincolor
-                                : Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      margin: EdgeInsets.symmetric(horizontal: 2.w),
-                      child: Text(
-                        categories[index],
-                        style: TextStyle(
-                          fontSize: 17.sp,
-                          color:
-                              selectedCategory == index
-                                  ? Colors.white
-                                  : Colors.black,
-                          fontFamily:
-                              selectedCategory == index
-                                  ? AppConstants.manropeBold
-                                  : AppConstants.manrope,
-                          // fontWeight: FontWeight.bold,
-                          letterSpacing: 1,
-                        ),
+                            theme.isDark
+                                ? isSelected
+                                    ? Colors.black
+                                    : Colors.grey[600]
+                                : isSelected
+                                ? Colors.white
+                                : Colors.grey[600],
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.w500,
+                        fontFamily: AppConstants.manropeBold,
                       ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
-            SizedBox(height: 2.h),
-            Expanded(
+          ),
+          SizedBox(height: 3.h),
+
+          // --- UPDATED LIST ---
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.only(left: 2.w, right: 2.w, top: 2.h),
+              decoration: BoxDecoration(
+                color: theme.isDark ? AppColors.darkOptional : AppColors.white,
+
+                borderRadius: BorderRadius.circular(22),
+              ),
               child: PagedListView<int, Data1>(
                 pagingController: _pagingController,
                 padding: EdgeInsets.zero,
 
                 builderDelegate: PagedChildBuilderDelegate<Data1>(
                   itemBuilder: (context, parcel, index) {
-                    if (!_isParcelVisible(parcel)) return const SizedBox();
+                    // Status Logic
+                    bool isCollected =
+                        parcel.deliveryStatus?.toLowerCase() == "collected";
+                    Color statusColor =
+                        isCollected
+                            ? const Color(0xFF00A67E)
+                            : theme.isDark
+                            ? Color(0xf0CBB88C)
+                            : const Color(0xFF4A6FA5);
+                    IconData statusIcon =
+                        isCollected
+                            ? Icons.check_circle_outline
+                            : Icons.access_time;
 
-                    Map<String, Color> statusColors = {
-                      "Pending": Colors.orange,
-                      "Collected": Colors.green,
-                      "Cancelled": Colors.red,
-                      "Shipped": Colors.blue,
-                      "Processing": Colors.purple,
-                    };
-
-                    String status = parcel.deliveryStatus ?? "Pending";
-                    Color statusColor = statusColors[status] ?? Colors.grey;
-
-                    return Material(
-                      elevation: 2,
-                      borderRadius: BorderRadius.circular(20),
-
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        // margin: const EdgeInsets.only(bottom: 16),
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.pending_rounded,
-                                  color: statusColor,
-                                  size: 18.sp,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  '${status[0].toUpperCase()}${status.substring(1)}',
-                                  style: TextStyle(
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 2.h),
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: theme.isDark ? Color(0xf0252525) : Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                        border: Border.all(color: Colors.grey.withOpacity(0.1)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Top Status Row
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    statusIcon,
                                     color: statusColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: AppConstants.manropeBold,
+                                    size: 18,
                                   ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 1.h),
-                            ReadMoreText(
-                              parcel.comment?.isNotEmpty == true
-                                  ? '${parcel.comment![0].toUpperCase()}${parcel.comment!.substring(1)}'
-                                  : '',
-                              style: TextStyle(
-                                fontSize: 17.sp,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: AppConstants.manrope,
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    isCollected ? "Collected" : "Awaiting",
+                                    style: TextStyle(
+                                      color: statusColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.sp,
+                                      fontFamily: AppConstants.manropeBold,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              trimLines: 2,
-                              colorClickableText: Colors.blue,
-                              trimMode: TrimMode.Line,
-                              trimCollapsedText: ' Read More',
-                              trimExpandedText: ' Read Less',
-                              moreStyle: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.maincolor,
-                              ),
-                              lessStyle: const TextStyle(
-                                fontSize: 16,
-                                fontFamily: AppConstants.manrope,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.maincolor,
-                              ),
-                            ),
-                            if (parcel.unitsnumber != null)
                               Text(
-                                'Apartment No: ${parcel.unitsnumber?.blockNumber ?? ""}-${parcel.unitsnumber?.flatNumber ?? ""}',
-                                style: const TextStyle(
-                                  color: Colors.black,
+                                formatDateTime(parcel.createdAt),
+                                // Ensure this helper exists
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14.sp,
                                   fontFamily: AppConstants.manrope,
                                 ),
                               ),
-                            SizedBox(height: 2.h),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  ' ${parcel.amount ?? ""}',
-                                  style: const TextStyle(
-                                    fontFamily: AppConstants.manrope,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  formatDateTime(parcel.createdAt),
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontFamily: AppConstants.manrope,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ).paddingOnly(bottom: 16);
-                  },
-                  noItemsFoundIndicatorBuilder:
-                      (context) => Center(
-                        child: Text(
-                          'No Parcels Available',
-                          style: TextStyle(
-                            fontFamily: AppConstants.manrope,
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.bold,
+                            ],
                           ),
-                        ),
+                          SizedBox(height: 2.h),
+
+                          // Content Row (Icon + Text)
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Circular Box Icon
+                              Container(
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color:
+                                      theme.isDark
+                                          ? Color(0xf036342F)
+                                          : const Color(0xFFF0F2F5),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: SvgPicture.asset(
+                                  AppConstants.parcel,
+                                  width: 8.w,
+                                  color:
+                                      theme.isDark
+                                          ? Color(0xf0CBB88C)
+                                          : AppColors.lightText,
+                                ),
+                              ),
+                              const SizedBox(width: 15),
+
+                              // Merchant Details
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      parcel.comment ?? "Merchant Name",
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color:
+                                            theme.isDark
+                                                ? AppColors.white
+                                                : Colors.black,
+                                        fontFamily: AppConstants.manrope,
+                                      ),
+                                    ),
+                                    // Text(
+                                    //   "Fashion & Accessories",
+                                    //   style: TextStyle(
+                                    //     color: Colors.grey,
+                                    //     fontSize: 14.sp,
+                                    //     fontFamily: AppConstants.manrope,
+                                    //   ),
+                                    // ),
+                                    SizedBox(height: 1.5.h),
+
+                                    // Footer Info (ID and Location)
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "ID-${parcel.id ?? '0000'}",
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 13.sp,
+                                            fontFamily: AppConstants.manrope,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Icon(
+                                          Icons.location_on_outlined,
+                                          size: 14,
+                                          color: Colors.grey,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          isCollected
+                                              ? "Concierge Desk"
+                                              : "In Transit",
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 13.sp,
+                                            fontFamily: AppConstants.manrope,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
+                    );
+
+                  },
                   firstPageProgressIndicatorBuilder:
-                      (context) => const Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.maincolor,
-                        ),
-                      ),
+                      (_) =>  Center(
+                    child: CircularProgressIndicator(
+                      color:theme.isDark?Colors.white: AppColors.maincolor,
+                    ),
+                  ),
                   newPageProgressIndicatorBuilder:
-                      (context) => const Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.maincolor,
-                        ),
-                      ),
+                      (_) =>  Center(
+                    child: CircularProgressIndicator(
+                      color:theme.isDark?Colors.white: AppColors.maincolor,
+                    ),
+                  ),
                 ),
+
+
               ),
-            ),
-          ],
-        ),
-      ),
+            ).paddingOnly(bottom: 1.h),
+          ),
+        ],
+      ).paddingOnly(left: 3.w, right: 3.w),
     );
   }
 
-  bool _isParcelVisible(Data1 parcel) {
-    if (selectedCategory == 1 && parcel.deliveryStatus != "Collected") {
-      return false;
-    }
-    if (selectedCategory == 2 && parcel.deliveryStatus != "Pending") {
-      return false;
-    }
-    return true;
-  }
-
+  // API Call Logic (Filtered to match tabs)
   Future<void> ParselViewApi(int pageKey) async {
     final Map<String, String> data = {
       "user_id": loginModel?.data?.user?.id.toString() ?? "",
@@ -276,34 +316,26 @@ class _ParcelScreenState extends State<ParcelScreen> {
       final response = await ParcelProvider().getParcelApi(data);
       final parcelViewModal = ParcelViewModal.fromJson(response.data);
       final allItems = parcelViewModal.data?.data ?? [];
-      final newItems =
+
+      // Filter logic based on tab index
+      final filteredItems =
           allItems.where((parcel) {
-            if (selectedCategory == 1) {
-              return parcel.deliveryStatus == "Collected";
-            }
-            if (selectedCategory == 2) {
-              return parcel.deliveryStatus == "Pending";
-            }
+            if (selectedCategory == 1)
+              return parcel.deliveryStatus?.toLowerCase() == "collected";
+            if (selectedCategory == 2)
+              return parcel.deliveryStatus?.toLowerCase() ==
+                  "pending"; // or your 'awaiting' status
             return true;
           }).toList();
 
-      final totalPages = parcelViewModal.data?.totalPages ?? 1;
-      final isLastPage = pageKey >= totalPages;
-
-      await Future.delayed(const Duration(milliseconds: 600));
-
+      final isLastPage = pageKey >= (parcelViewModal.data?.totalPages ?? 1);
       if (isLastPage) {
-        _pagingController.appendLastPage(newItems);
+        _pagingController.appendLastPage(filteredItems);
       } else {
-        final nextPageKey = pageKey + 1;
-        _pagingController.appendPage(newItems, nextPageKey);
+        _pagingController.appendPage(filteredItems, pageKey + 1);
       }
-      if (pageKey == 1 && newItems.isEmpty) {
-        _pagingController.appendLastPage([]);
-      }
-    } catch (error, stacktrace) {
+    } catch (error) {
       _pagingController.error = error;
-      print("errorerrorerror$stacktrace");
     }
   }
 }

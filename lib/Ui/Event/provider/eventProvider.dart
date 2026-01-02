@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -20,6 +22,9 @@ class EventProvider extends ChangeNotifier {
 
       return response;
     } on DioException catch (e) {
+      log("Error VE che ee$e");
+      log("Error VE che ee${e.message}");
+      log("Error VE che ee${e.response!.data}");
       throw Exception(handleDioError(e));
     } catch (e) {
       rethrow;

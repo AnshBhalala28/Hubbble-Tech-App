@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
-import 'package:readmore/readmore.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Services/themeServices.dart';
 
 import '../../../Utils/colors.dart';
 import '../../../Utils/const.dart';
@@ -85,10 +87,14 @@ class _VisitorScreenState extends State<VisitorScreen> {
         .join(' ');
   }
 
+  // bool isDark = true;
+
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeController>();
+
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: theme.isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 2.h),
         child: Column(
@@ -101,277 +107,254 @@ class _VisitorScreenState extends State<VisitorScreen> {
             ),
             SizedBox(height: 1.5.h),
             Expanded(
-              child: PagedListView<int, Data1>(
-                padding: EdgeInsets.zero,
-                pagingController: _pagingController,
-                builderDelegate: PagedChildBuilderDelegate<Data1>(
-                  itemBuilder:
-                      (ctx, visitor, _) => Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Material(
-                          elevation: 0.5,
-                          borderRadius: BorderRadius.circular(20),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(color: Colors.grey.shade100),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+              child: Container(
+                padding: EdgeInsets.only(left: 2.w, right: 2.w),
+                decoration: BoxDecoration(
+                  color:
+                      theme.isDark ? AppColors.darkOptional : AppColors.white,
+
+                  borderRadius: BorderRadius.circular(22),
+                ),
+                child: PagedListView<int, Data1>(
+                  padding: EdgeInsets.zero,
+                  pagingController: _pagingController,
+                  builderDelegate: PagedChildBuilderDelegate<Data1>(
+                    itemBuilder: (ctx, visitor, _) {
+                      bool isCheckedIn = visitor.checkOutDate?.isEmpty ?? true;
+
+                      return Container(
+                        margin: EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 2,
+                        ),
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color:
+                              theme.isDark ? Color(0xFF252525) : Colors.white,
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
+                            color:
+                                theme.isDark
+                                    ? Color(0xf0313131)
+                                    : Colors.grey.shade200,
+                            width: 1,
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      isCheckedIn
+                                          ? Icons.check_circle_outline
+                                          : Icons.access_time,
+                                      size: 20,
+                                      color:
+                                          isCheckedIn
+                                              ? const Color(0xFF27AE60)
+                                              : Colors.grey.shade600,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      isCheckedIn
+                                          ? "Checked In"
+                                          : "Checked Out",
+                                      style: TextStyle(
+                                        color:
+                                            isCheckedIn
+                                                ? const Color(0xFF27AE60)
+                                                : Colors.grey.shade600,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 15.sp,
+                                        fontFamily: AppConstants.manropeBold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                                 Text(
-                                  "Checked In: ${_formatCheckIn(visitor.checkInDate, visitor.checkInTime)}",
+                                  _formatDateTimeDesign(
+                                    isCheckedIn
+                                        ? visitor.checkInDate
+                                        : visitor.checkOutDate,
+                                    isCheckedIn
+                                        ? visitor.checkInTime
+                                        : visitor.checkOutTime,
+                                  ),
                                   style: TextStyle(
-                                    fontSize: 16.5.sp,
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.normal,
+                                    color: Colors.grey.shade400,
+                                    fontSize: 14.sp,
+
+                                    fontWeight: FontWeight.w500,
                                     fontFamily: AppConstants.manrope,
                                   ),
                                 ),
-                                if (visitor.checkOutDate?.isNotEmpty == true)
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 0.5.h),
-                                    child: Text(
-                                      "Checked Out: ${_formatCheckIn(visitor.checkOutDate, visitor.checkOutTime)}",
-                                      style: TextStyle(
-                                        letterSpacing: 1,
-                                        color: AppColors.redColor,
-                                        fontSize: 16.5.sp,
-                                        fontWeight: FontWeight.normal,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
-                                    ),
-                                  ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 0.5.h),
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.person,
-                                        size: 22,
-                                        color: Colors.black54,
-                                      ),
-                                      SizedBox(width: 2.w),
-                                      Text(
-                                        "Name: ${capitalizeEachWord(visitor.visitorName ?? '')}",
-                                        style: TextStyle(
-                                          fontSize: 16.5.sp,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: AppConstants.manrope,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                if (visitor.isContractors?.isNotEmpty == true)
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 0.5.h),
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.badge,
-                                          size: 22,
-                                          color: Colors.black54,
-                                        ),
-                                        SizedBox(width: 2.w),
-                                        Text(
-                                          "Type: ${capitalizeEachWord(visitor.isContractors)}",
-                                          style: TextStyle(
-                                            fontSize: 16.5.sp,
-                                            fontWeight: FontWeight.w500,
-                                            fontFamily: AppConstants.manrope,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 0.5.h),
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.vpn_key,
-                                        size: 22,
-                                        color: Colors.black54,
-                                      ),
-                                      SizedBox(width: 2.w),
-                                      Text(
-                                        (visitor.keyLog != null &&
-                                                int.tryParse(visitor.keyLog!) !=
-                                                    null)
-                                            ? (int.parse(visitor.keyLog!) >= 0
-                                                ? "Key: Yes"
-                                                : "Key: No")
-                                            : "Key: No",
-                                        style: TextStyle(
-                                          fontSize: 16.5.sp,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: AppConstants.manrope,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-
-                                // if (visitor.inNote?.isNotEmpty == true)
-                                //   Padding(
-                                //     padding: EdgeInsets.only(top: 0.5.h),
-                                //     child: Row(
-                                //       children: [
-                                //         const Icon(
-                                //           Icons.note,
-                                //           size: 22,
-                                //           color: Colors.black54,
-                                //         ),
-                                //         SizedBox(width: 2.w),
-                                //         Expanded(
-                                //           child: Text(
-                                //             "Note: ${visitor.inNote}",
-                                //             style: TextStyle(
-                                //               fontSize: 16.5.sp,
-                                //               fontWeight: FontWeight.w500,
-                                //               fontFamily: AppConstants.manrope,
-                                //             ),
-                                //           ),
-                                //         ),
-                                //       ],
-                                //     ),
-                                //   ),
-                                if (visitor.inNote?.isNotEmpty == true)
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 0.5.h),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Icon(
-                                          Icons.note,
-                                          size: 22,
-                                          color: Colors.black54,
-                                        ),
-                                        SizedBox(width: 2.w),
-
-                                        Expanded(
-                                          child: ReadMoreText(
-                                            "Note: ${visitor.inNote}",
-                                            trimLines: 2,
-                                            colorClickableText: Colors.black,
-                                            trimMode: TrimMode.Line,
-                                            trimCollapsedText: " Read more",
-                                            trimExpandedText: " Read less",
-                                            moreStyle: TextStyle(
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.w600,
-                                              fontFamily:
-                                                  AppConstants.manropeBold,
-                                              color: AppColors.maincolor,
-                                            ),
-                                            lessStyle: TextStyle(
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.w600,
-                                              color: AppColors.maincolor,
-                                              fontFamily:
-                                                  AppConstants.manropeBold,
-                                            ),
-                                            style: TextStyle(
-                                              fontSize: 16.5.sp,
-                                              fontWeight: FontWeight.w500,
-                                              fontFamily: AppConstants.manrope,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                if (visitor.reason?.reason?.isNotEmpty == true)
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 0.5.h),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Icon(
-                                          Icons.help_outline,
-                                          size: 22,
-                                          color: Colors.black54,
-                                        ),
-                                        SizedBox(width: 2.w),
-                                        Expanded(
-                                          child: ReadMoreText(
-                                            "Reason: ${visitor.reason?.reason}",
-                                            trimLines: 2,
-                                            colorClickableText: Colors.blue,
-                                            trimMode: TrimMode.Line,
-                                            trimCollapsedText: ' Read More',
-                                            trimExpandedText: ' Read Less',
-                                            style: TextStyle(
-                                              fontSize: 16.5.sp,
-                                              fontWeight: FontWeight.w500,
-                                              fontFamily: AppConstants.manrope,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
                               ],
+                            ),
+                            const SizedBox(height: 12),
+
+                            // 2. મીડલ રો: અવતાર અને વિગતો
+                            Row(
+                              children: [
+                                // સર્ક્યુલર પ્રોફાઇલ આઈકોન
+                                Container(
+                                  padding: EdgeInsets.all(12),
+
+                                  decoration: BoxDecoration(
+                                    color:
+                                        theme.isDark
+                                            ? Color(0xf036342F)
+                                            : const Color(0xFFF0F2F5),
+                                    // લાઈટ બ્લુઈશ ગ્રે બેકગ્રાઉન્ડ
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: SvgPicture.asset(
+                                    "assets/Svg/visitor1.svg",
+                                    width: 8.w,
+                                    color:
+                                        theme.isDark
+                                            ? Color(0xf0CBB88C)
+                                            : AppColors.lightText,
+                                  ),
+                                ),
+                                const SizedBox(width: 15),
+
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        capitalizeEachWord(
+                                          visitor.visitorName ?? '',
+                                        ),
+                                        style: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              theme.isDark
+                                                  ? AppColors.white
+                                                  : Color(0xFF2D3748),
+                                          fontFamily: AppConstants.manropeBold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        capitalizeEachWord(
+                                          visitor.isContractors ?? 'Visitor',
+                                        ),
+                                        style: TextStyle(
+                                          fontSize: 14.sp,
+                                          color: Colors.grey.shade500,
+                                          fontFamily: AppConstants.manrope,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+
+                                      // કી આઈકોન અને ટેક્સ્ટ
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.vpn_key_outlined,
+                                            size: 16,
+                                            color: Colors.grey,
+                                          ),
+                                          const SizedBox(width: 5),
+                                          Text(
+                                            (visitor.keyLog != null &&
+                                                    int.tryParse(
+                                                          visitor.keyLog!,
+                                                        ) !=
+                                                        null &&
+                                                    int.parse(
+                                                          visitor.keyLog!,
+                                                        ) >=
+                                                        0)
+                                                ? "Key: Yes"
+                                                : "Key: No",
+                                            style: TextStyle(
+                                              fontSize: 14.sp,
+                                              color: Colors.grey.shade400,
+                                              fontFamily: AppConstants.manrope,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ).paddingOnly(top: 1.h);
+                    },
+
+                    firstPageProgressIndicatorBuilder:
+                        (_) =>  Center(
+                          child: CircularProgressIndicator(
+                            color:theme.isDark?Colors.white: AppColors.maincolor,
+                          ),
+                        ),
+                    newPageProgressIndicatorBuilder:
+                        (_) =>  Center(
+                          child: CircularProgressIndicator(
+                            color:theme.isDark?Colors.white: AppColors.maincolor,
+                          ),
+                        ),
+                    noItemsFoundIndicatorBuilder:
+                        (_) => Center(
+                          child: Text(
+                            'No Visitors Available',
+                            style: TextStyle(
+                              fontFamily: AppConstants.manrope,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                      ),
-                  firstPageProgressIndicatorBuilder:
-                      (_) => const Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.maincolor,
-                        ),
-                      ),
-                  newPageProgressIndicatorBuilder:
-                      (_) => const Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.maincolor,
-                        ),
-                      ),
-                  noItemsFoundIndicatorBuilder:
-                      (_) => Center(
-                        child: Text(
-                          'No Visitors Available',
-                          style: TextStyle(
-                            fontFamily: AppConstants.manrope,
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.bold,
+                    firstPageErrorIndicatorBuilder:
+                        (_) => Center(
+                          child: Text(
+                            'No Visitors Available',
+                            style: TextStyle(
+                              fontFamily: AppConstants.manrope,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                  firstPageErrorIndicatorBuilder:
-                      (_) => Center(
-                        child: Text(
-                          'No Visitors Available',
-                          style: TextStyle(
-                            fontFamily: AppConstants.manrope,
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.bold,
+                    newPageErrorIndicatorBuilder:
+                        (_) => Center(
+                          child: Text(
+                            'Failed to load more',
+                            style: TextStyle(
+                              fontFamily: AppConstants.manrope,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                  newPageErrorIndicatorBuilder:
-                      (_) => Center(
-                        child: Text(
-                          'Failed to load more',
-                          style: TextStyle(
-                            fontFamily: AppConstants.manrope,
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+                  ),
                 ),
               ),
             ),
+
           ],
         ),
       ),
     );
+  }
+
+  String _formatDateTimeDesign(String? date, String? time) {
+    if (date == null || time == null || date.isEmpty) return "";
+    try {
+      final dt = DateTime.parse("$date $time");
+      return DateFormat('dd MMM, hh:mm a').format(dt);
+    } catch (_) {
+      return "";
+    }
   }
 }

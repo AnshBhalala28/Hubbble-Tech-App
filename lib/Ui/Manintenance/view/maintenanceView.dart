@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -5,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Services/themeServices.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
@@ -40,6 +43,8 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
   String? dateErrorText;
   bool isDetailLoading = false;
 
+  // bool theme.isDark = false;
+
   @override
   void initState() {
     super.initState();
@@ -51,8 +56,10 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeController>();
+
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: theme.isDark ? Color(0xff1A1A1A) : AppColors.white,
 
       body: Stack(
         children: [
@@ -74,9 +81,11 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: List.generate(categories.length, (index) {
+                        final isSelected = selectedCategory == index;
+
                         return InkWell(
                           onTap: () {
-                            if (selectedCategory != index) {
+                            if (!isSelected) {
                               setState(() {
                                 selectedCategory = index;
                                 isLoading = true;
@@ -91,28 +100,38 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                               horizontal: 5.w,
                             ),
                             alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 0.5,
-                                color: Colors.grey,
-                              ),
-                              color:
-                                  selectedCategory == index
-                                      ? AppColors.maincolor
-                                      : Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
                             margin: EdgeInsets.symmetric(horizontal: 1.2.w),
+                            decoration: BoxDecoration(
+
+                              color:
+                                  theme.isDark
+                                      ? (isSelected
+                                          ? Colors
+                                              .white // selected → white (image jevu)
+                                          : const Color(
+                                            0xFF212121
+                                          )) // dark chip bg
+                                      : (isSelected
+                                          ? AppColors.maincolor
+                                          : Colors.white),
+                              borderRadius: BorderRadius.circular(
+                                25  ,
+                              ), // image ma more round
+                            ),
                             child: Text(
                               categories[index],
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 color:
-                                    selectedCategory == index
-                                        ? Colors.white
-                                        : Colors.black,
+                                    theme.isDark
+                                        ? (isSelected
+                                            ? Colors.black
+                                            : Colors.grey.shade300)
+                                        : (isSelected
+                                            ? Colors.white
+                                            : Colors.black),
                                 fontFamily:
-                                    selectedCategory == index
+                                    isSelected
                                         ? AppConstants.manropeBold
                                         : AppConstants.manrope,
                                 fontWeight: FontWeight.w500,
@@ -145,139 +164,268 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                     : SizedBox(
                       child: Column(
                         children: [
+                          // ListView.builder(
+                          //   shrinkWrap: true,
+                          //   scrollDirection: Axis.vertical,
+                          //   physics: const NeverScrollableScrollPhysics(),
+                          //   padding: EdgeInsets.zero,
+                          //   itemCount:
+                          //       maintenanceModel?.data?.data?.length ?? 0,
+                          //   itemBuilder: (context, index) {
+                          //     var booking =
+                          //         maintenanceModel?.data?.data?[index];
+                          //     return GestureDetector(
+                          //       onTap: () {
+                          //         MaintenanceDetailApi(
+                          //           booking?.id.toString() ?? "",
+                          //         );
+                          //       },
+                          //       child: Container(
+                          //         decoration: BoxDecoration(
+                          //           color:
+                          //               theme.isDark
+                          //                   ? Color(0xff242424)
+                          //                   : Colors.white,
+                          //           borderRadius: BorderRadius.circular(20),
+                          //           boxShadow:
+                          //               theme.isDark
+                          //                   ? [] // Dark mode ma box shadow nahi aavse
+                          //                   : [
+                          //                     BoxShadow(
+                          //                       color: Colors.grey.withValues(
+                          //                         alpha: 0.2,
+                          //                       ),
+                          //                       spreadRadius: 2,
+                          //                       blurRadius: 5,
+                          //                       offset: const Offset(0, 3),
+                          //                     ),
+                          //                   ],
+                          //         ),
+                          //         margin: EdgeInsets.symmetric(
+                          //           horizontal: 1.w,
+                          //           vertical: 1.h,
+                          //         ),
+                          //         padding: const EdgeInsets.all(12),
+                          //         child: Row(
+                          //           crossAxisAlignment:
+                          //               CrossAxisAlignment.start,
+                          //           children: [
+                          //             SizedBox(width: 2.h),
+                          //             Expanded(
+                          //               child: Stack(
+                          //                 children: [
+                          //                   Align(
+                          //                     alignment: Alignment.centerLeft,
+                          //                     child: Column(
+                          //                       crossAxisAlignment:
+                          //                           CrossAxisAlignment.start,
+                          //                       children: [
+                          //                         Text(
+                          //                           formatDateTime(
+                          //                             booking?.createdAt ?? "",
+                          //                           ),
+                          //                           style: TextStyle(
+                          //                             fontSize: 13,
+                          //                             fontWeight:
+                          //                                 FontWeight.w600,
+                          //                             color:
+                          //                                 theme.isDark
+                          //                                     ? Colors.white
+                          //                                     : Colors.black54,
+                          //                             fontFamily:
+                          //                                 AppConstants
+                          //                                     .manropeBold,
+                          //                           ),
+                          //                         ),
+                          //                         const SizedBox(height: 4),
+                          //                         SizedBox(
+                          //                           width: 70.w,
+                          //
+                          //                           child: Text(
+                          //                             booking
+                          //                                     ?.subject
+                          //                                     ?.capitalizeFirst ??
+                          //                                 '',
+                          //                             maxLines: 2,
+                          //                             style: TextStyle(
+                          //                               fontSize: 16.sp,
+                          //                               fontWeight:
+                          //                                   FontWeight.w500,
+                          //                               fontFamily:
+                          //                                   AppConstants
+                          //                                       .manropeBold,
+                          //                               color:
+                          //                                   theme.isDark
+                          //                                       ? Colors.white
+                          //                                       : Colors
+                          //                                           .black87,
+                          //                             ),
+                          //                           ),
+                          //                         ),
+                          //                         const SizedBox(height: 4),
+                          //                       ],
+                          //                     ),
+                          //                   ),
+                          //                   Align(
+                          //                     alignment: Alignment.topRight,
+                          //                     child: Row(
+                          //                       mainAxisSize: MainAxisSize.min,
+                          //                       children: [
+                          //                         Container(
+                          //                           padding:
+                          //                               EdgeInsets.symmetric(
+                          //                                 horizontal: 10,
+                          //                                 vertical: 4,
+                          //                               ),
+                          //                           decoration: BoxDecoration(
+                          //                             color:
+                          //                                 theme.isDark
+                          //                                     ? Color(
+                          //                                       0xff3f3c35,
+                          //                                     )
+                          //                                     : getStatusColor(
+                          //                                       booking?.status ??
+                          //                                           '',
+                          //                                     ),
+                          //                             borderRadius:
+                          //                                 BorderRadius.circular(
+                          //                                   10,
+                          //                                 ),
+                          //                           ),
+                          //                           child: Text(
+                          //                             booking?.status ==
+                          //                                     "status_in_review"
+                          //                                 ? "In Review"
+                          //                                 : booking?.status
+                          //                                         .toString()
+                          //                                         .capitalizeFirst ??
+                          //                                     "",
+                          //                             style: TextStyle(
+                          //                               fontSize: 13,
+                          //                               fontWeight:
+                          //                                   FontWeight.bold,
+                          //                               color:
+                          //                                   theme.isDark
+                          //                                       ? Color(
+                          //                                         0xffCBB88C,
+                          //                                       )
+                          //                                       : Colors.white,
+                          //                               fontFamily:
+                          //                                   AppConstants
+                          //                                       .manrope,
+                          //                             ),
+                          //                           ),
+                          //                         ),
+                          //                       ],
+                          //                     ),
+                          //                   ),
+                          //                 ],
+                          //               ),
+                          //             ),
+                          //           ],
+                          //         ),
+                          //       ),
+                          //     );
+                          //   },
+                          // ),
                           ListView.builder(
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
                             physics: const NeverScrollableScrollPhysics(),
                             padding: EdgeInsets.zero,
-                            itemCount:
-                                maintenanceModel?.data?.data?.length ?? 0,
+                            itemCount: maintenanceModel?.data?.data?.length ?? 0,
                             itemBuilder: (context, index) {
-                              var booking =
-                                  maintenanceModel?.data?.data?[index];
+                              var booking = maintenanceModel?.data?.data?[index];
+                              Color statusColor = getStatusColor(booking?.status ?? '');
+
                               return GestureDetector(
                                 onTap: () {
-                                  MaintenanceDetailApi(
-                                    booking?.id.toString() ?? "",
-                                  );
+                                  MaintenanceDetailApi(booking?.id.toString() ?? "");
                                 },
                                 child: Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 1.w, vertical: 1.h),
+                                  padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: theme.isDark ? const Color(0xff252525) : Colors.white,
                                     borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
+                                    boxShadow: theme.isDark
+                                        ? []
+                                        : [
                                       BoxShadow(
-                                        color: Colors.grey.withValues(
-                                          alpha: 0.2,
-                                        ),
-                                        spreadRadius: 2,
-                                        blurRadius: 5,
-                                        offset: const Offset(0, 3),
+                                        color: Colors.black.withOpacity(0.05),
+                                        spreadRadius: 1,
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 4),
                                       ),
                                     ],
                                   ),
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal: 1.w,
-                                    vertical: 1.h,
-                                  ),
-                                  padding: const EdgeInsets.all(12),
                                   child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
                                     children: [
-                                      SizedBox(width: 2.h),
-                                      Expanded(
-                                        child: Stack(
-                                          children: [
-                                            Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    formatDateTime(
-                                                      booking?.createdAt ?? "",
-                                                    ),
-                                                    style: const TextStyle(
-                                                      fontSize: 13,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.black54,
-                                                      fontFamily:
-                                                          AppConstants
-                                                              .manropeBold,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 4),
-                                                  SizedBox(
-                                                    width: 70.w,
+                                      // Status Icon with background
+                                        Container(
+                                          height: 55,
+                                          width: 55,
+                                          decoration: BoxDecoration(
+                                            color: statusColor.withValues(alpha: .2),
+                                            // borderRadius: BorderRadius.circular(15),
+                                            shape: BoxShape.circle
+                                          ),
+                                          child: Icon(
+                                            _getStatusIcon(booking?.status ?? ''),
+                                            color: statusColor,
+                                            size: 28,
+                                          ),
+                                        ),
+                                      const SizedBox(width: 15),
 
-                                                    child: Text(
-                                                      booking
-                                                              ?.subject
-                                                              ?.capitalizeFirst ??
-                                                          '',
-                                                      maxLines: 2,
-                                                      style: TextStyle(
-                                                        fontSize: 16.sp,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontFamily:
-                                                            AppConstants
-                                                                .manropeBold,
-                                                        color: Colors.black87,
-                                                      ),
-                                                    ),
+                                      // Content
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  formatDate(booking?.createdAt), // Updated Date Helper
+                                                  style: TextStyle(
+                                                    fontSize: 14.sp,
+                                                    color: Colors.grey,
+                                                    fontFamily: AppConstants.manrope,
                                                   ),
-                                                  const SizedBox(height: 4),
-                                                ],
+                                                ),
+                                                _buildMiniBadge(booking?.status ?? '', theme),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 6),
+                                            Text(
+                                              booking?.subject?.capitalizeFirst ?? '',
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 15.5.sp,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily: AppConstants.manropeBold,
+                                                color: theme.isDark ? Colors.white : Colors.black87,
                                               ),
                                             ),
-                                            Align(
-                                              alignment: Alignment.topRight,
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Container(
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                          horizontal: 10,
-                                                          vertical: 4,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: getStatusColor(
-                                                        booking?.status ?? '',
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            10,
-                                                          ),
-                                                    ),
-                                                    child: Text(
-                                                      booking?.status ==
-                                                              "status_in_review"
-                                                          ? "In Review"
-                                                          : booking?.status
-                                                                  .toString()
-                                                                  .capitalizeFirst ??
-                                                              "",
-                                                      style: const TextStyle(
-                                                        fontSize: 13,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white,
-                                                        fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              "ID: #${booking?.id ?? '00'}",
+                                              style: TextStyle(
+                                                fontSize: 13.sp,
+                                                fontFamily: AppConstants.manrope,
+
+                                                color: theme.isDark ? Colors.white54 : Colors.black45,
                                               ),
                                             ),
                                           ],
                                         ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        size: 16,
+                                        color: theme.isDark ? Colors.white24 : Colors.black26,
                                       ),
                                     ],
                                   ),
@@ -309,7 +457,8 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(900),
                     ),
-                    backgroundColor: Colors.white,
+                    backgroundColor:
+                        theme.isDark ? Color(0xffCBB88C) : Colors.white,
                     onPressed: () {
                       showAddRequestBottomSheet(context);
                     },
@@ -349,10 +498,36 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
               ),
     );
   }
+  IconData _getStatusIcon(String status) {
+    status = status.toLowerCase();
+    if (status.contains('pending')) return Icons.hourglass_top_rounded;
+    if (status.contains('review')) return Icons.find_in_page_rounded;
+    if (status.contains('completed')) return Icons.check_circle_rounded;
+    return Icons.build_circle_rounded;
+  }
 
+  Widget _buildMiniBadge(String status, var theme) {
+    Color sColor = getStatusColor(status);
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
+      decoration: BoxDecoration(
+        color: theme.isDark ? Colors.white.withOpacity(0.05) : sColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Text(
+        status == "status_in_review" ? "In Review" : status.capitalizeFirst ?? "",
+        style: TextStyle(
+          fontSize: 12.sp,
+          fontWeight: FontWeight.bold,
+          fontFamily: AppConstants.manropeBold,
+          color: theme.isDark ? const Color(0xffCBB88C) : sColor,
+        ),
+      ),
+    );
+  }
   Color getStatusColor(String status) {
     return status == "pending" || status == "Pending"
-        ? Colors.yellow.shade800
+        ? Color(0xf0BEAC84)
         : status == "Status_in_review" || status == "status_in_review"
         ? Colors.green
         : status == "completed" || status == "Completed"
@@ -385,143 +560,14 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
     }
   }
 
-  // void showAddRequestBottomSheet(BuildContext context) {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     backgroundColor: Colors.white,
-  //     isScrollControlled: true,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-  //     ),
-  //     builder: (context) {
-  //       return Padding(
-  //         padding: EdgeInsets.only(
-  //           bottom: MediaQuery.of(context).viewInsets.bottom,
-  //           left: 16,
-  //           right: 16,
-  //           top: 24,
-  //         ),
-  //         child: StatefulBuilder(
-  //           builder: (context, setState) {
-  //             return SingleChildScrollView(
-  //               child: Form(
-  //                 key: _formKey,
-  //                 child: Column(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   children: [
-  //                     const Text(
-  //                       'Add Maintenance',
-  //                       style: TextStyle(
-  //                         fontSize: 18,
-  //                         fontWeight: FontWeight.bold,
-  //                         fontFamily: AppConstants.manrope,
-  //                       ),
-  //                     ),
-  //                     SizedBox(height: 2.h),
-  //                     SizedBox(height: 1.5.h),
-  //                     Align(
-  //                       alignment: Alignment.topLeft,
-  //                       child: Text(
-  //                         "Subject",
-  //                         style: TextStyle(
-  //                           fontFamily: AppConstants.manrope,
-  //                           fontSize: 16.sp,
-  //                           fontWeight: FontWeight.bold,
-  //                         ),
-  //                       ),
-  //                     ).paddingOnly(bottom: 1.h),
-  //                     TextFormField(
-  //                       controller: subjectController,
-  //                       validator: (value) {
-  //                         if (value == null || value.trim().isEmpty) {
-  //                           return 'Please enter subject';
-  //                         }
-  //                         return null;
-  //                       },
-  //                       style: const TextStyle(
-  //                         fontFamily: AppConstants.manrope,
-  //                         fontWeight: FontWeight.bold,
-  //                       ),
-  //                       decoration: inputDecoration(
-  //                         cr: AppColors.black,
-  //                         hintText: "Enter Subject",
-  //                       ),
-  //                     ),
-  //                     SizedBox(height: 1.5.h),
-  //                     Align(
-  //                       alignment: Alignment.topLeft,
-  //                       child: Text(
-  //                         "Note",
-  //                         style: TextStyle(
-  //                           fontFamily: AppConstants.manrope,
-  //                           fontSize: 16.sp,
-  //                           fontWeight: FontWeight.bold,
-  //                         ),
-  //                       ),
-  //                     ).paddingOnly(bottom: 1.h),
-  //                     TextFormField(
-  //                       controller: noteController,
-  //                       validator: (value) {
-  //                         if (value == null || value.trim().isEmpty) {
-  //                           return 'Please enter note';
-  //                         }
-  //                         return null;
-  //                       },
-  //                       style: const TextStyle(
-  //                         fontFamily: AppConstants.manrope,
-  //                         fontWeight: FontWeight.bold,
-  //                       ),
-  //                       decoration: inputDecoration(
-  //                         hintText: "Enter Note",
-  //                         cr: AppColors.black,
-  //                       ),
-  //                       maxLines: 4,
-  //                     ),
-  //                     SizedBox(height: 2.h),
-  //                     isLoading
-  //                         ? const CircularProgressIndicator(
-  //                           color: AppColors.maincolor,
-  //                         )
-  //                         : batan(
-  //                           title: "Submit",
-  //                           route: () {
-  //                             bool isValid = _formKey.currentState!.validate();
-  //
-  //                             if (isValid) {
-  //                               setState(() {
-  //                                 isLoading = true;
-  //                               });
-  //                               AddMaintenance();
-  //                               Navigator.of(context).pop();
-  //                             }
-  //                           },
-  //                           color: AppColors.maincolor,
-  //                           fontcolor: Colors.white,
-  //                           height: 5.5.h,
-  //                           width: double.infinity,
-  //                           fontsize: 16.sp,
-  //                           radius: 20.0,
-  //                         ),
-  //                     SizedBox(height: 5.h),
-  //                   ],
-  //                 ),
-  //               ),
-  //             );
-  //           },
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
   File? selectedImage;
 
   void showAddRequestBottomSheet(BuildContext context) {
     final ImagePicker picker = ImagePicker();
-
+    final theme = Provider.of<ThemeController>(context, listen: false);
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: theme.isDark ? Color(0xff1A1A1A) : AppColors.white,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
@@ -548,6 +594,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                           fontSize: 19.sp,
                           fontWeight: FontWeight.bold,
                           fontFamily: AppConstants.manropeBold,
+                          color: theme.isDark ? Colors.white : Colors.black,
                         ),
                       ),
                       SizedBox(height: 2.h),
@@ -561,6 +608,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                             fontFamily: AppConstants.manrope,
                             fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
+                            color: theme.isDark ? Colors.white : Colors.black,
                           ),
                         ),
                       ).paddingOnly(bottom: 1.h),
@@ -592,6 +640,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                             fontFamily: AppConstants.manrope,
                             fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
+                            color: theme.isDark ? Colors.white : Colors.black,
                           ),
                         ),
                       ).paddingOnly(bottom: 1.h),
@@ -624,6 +673,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                             fontFamily: AppConstants.manrope,
                             fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
+                            color: theme.isDark ? Colors.white : Colors.black,
                           ),
                         ),
                       ).paddingOnly(bottom: 1.h),
@@ -646,7 +696,10 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey),
                             borderRadius: BorderRadius.circular(12),
-                            color: Colors.grey.shade100,
+                            color:
+                                theme.isDark
+                                    ? Color(0xff252525)
+                                    : Colors.grey.shade100,
                           ),
                           child:
                               selectedImage != null
@@ -658,19 +711,27 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                       width: double.infinity,
                                     ),
                                   )
-                                  : const Center(
+                                  : Center(
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
                                         Icon(
                                           Icons.add_a_photo,
-                                          color: Colors.grey,
+                                          color:
+                                              theme.isDark
+                                                  ? Colors.white
+                                                  : Colors.grey,
                                         ),
                                         SizedBox(height: 5),
                                         Text(
                                           "Pick an Image",
-                                          style: TextStyle(color: Colors.grey),
+                                          style: TextStyle(
+                                            color:
+                                                theme.isDark
+                                                    ? Colors.white
+                                                    : Colors.grey,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -700,8 +761,12 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                 Navigator.of(context).pop();
                               }
                             },
-                            color: AppColors.maincolor,
-                            fontcolor: Colors.white,
+                            color:
+                                theme.isDark
+                                    ? Color(0xffCBB88C)
+                                    : AppColors.maincolor,
+                            fontcolor:
+                                theme.isDark ? Colors.black : Colors.white,
                             height: 5.5.h,
                             width: double.infinity,
                             fontsize: 16.sp,
@@ -719,43 +784,6 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
     );
   }
 
-  //   void AddMaintenance(File? file) {
-  //     final Map<String, String> data = {
-  //       'user_id': loginModel?.data?.user?.id.toString() ?? '',
-  //       "subject": subjectController.text.trim(),
-  //       "note": noteController.text.trim(),
-  //       'file[]': file?.path ?? "",
-  //     };
-  //
-  //     setState(() {
-  //       isLoading = true;
-  //     });
-  //
-  //     checkInternet().then((internet) async {
-  //       if (internet) {
-  //         MaintenanceProvider().addMaintanceRequestApi(data).then((
-  //           response,
-  //         ) async {
-  //           if (response.statusCode == 200) {
-  //             AllMaintenanceApi();
-  //             setState(() {
-  //               subjectController.clear();
-  //               noteController.clear();
-  //             });
-  //           } else {
-  //             setState(() {
-  //               isLoading = false;
-  //             });
-  //           }
-  //         });
-  //       } else {
-  //         setState(() {
-  //           isLoading = false;
-  //         });
-  //         buildErrorDialog(context, 'Error', "Internet Required");
-  //       }
-  //     });
-  //   }
   void AddMaintenance(File? file) {
     setState(() {
       isLoading = true;
@@ -874,7 +902,8 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
           });
         }
       }
-    } catch (e) {
+    } catch (e,stacktrace) {
+      log("errererer$stacktrace");
       if (mounted) {
         setState(() {
           isDetailLoading = false;
@@ -887,10 +916,12 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
     BuildContext context,
     MaintenanceDetailModel detail,
   ) {
+    final theme = Provider.of<ThemeController>(context, listen: false);
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: theme.isDark ? Color(0xff1A1A1A) : AppColors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -932,6 +963,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
                       fontFamily: AppConstants.manropeBold,
+                      color: theme.isDark ? Colors.white : Colors.black,
                     ),
                   ),
                   SizedBox(height: 2.h),
@@ -969,6 +1001,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                             fontFamily: AppConstants.manropeBold,
                             fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
+                            color: theme.isDark ? Colors.white : Colors.black,
                           ),
                         ),
                         SizedBox(height: 1.h),
@@ -1008,8 +1041,9 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                     route: () {
                       Get.back();
                     },
-                    color: AppColors.maincolor,
-                    fontcolor: AppColors.white,
+                    color:
+                        theme.isDark ? Color(0xffCBB88C) : AppColors.maincolor,
+                    fontcolor: theme.isDark ? Colors.black : Colors.white,
                     height: 5.h,
                     width: double.infinity,
                     fontsize: 18.sp,
@@ -1029,6 +1063,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
     final isExpandable =
         title.toLowerCase().contains('subject') ||
         title.toLowerCase().contains('note');
+    final theme = context.watch<ThemeController>();
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -1043,6 +1078,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                 fontWeight: FontWeight.w600,
                 fontFamily: AppConstants.manropeBold,
                 fontSize: 15.sp,
+                color: theme.isDark ? Colors.white : Colors.black,
               ),
             ),
           ),
@@ -1059,7 +1095,10 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                       trimCollapsedText: ' Show More',
                       trimExpandedText: ' Show Less',
                       style: TextStyle(
-                        color: color ?? Colors.black,
+                        color:
+                            theme.isDark
+                                ? Colors.white
+                                : (color ?? Colors.black),
                         fontSize: 15,
                         fontFamily: AppConstants.manrope,
                       ),
@@ -1075,7 +1114,10 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                     : Text(
                       value,
                       style: TextStyle(
-                        color: color ?? Colors.black,
+                        color:
+                            theme.isDark
+                                ? Colors.white
+                                : (color ?? Colors.black),
                         fontSize: 15,
                         fontFamily: AppConstants.manrope,
                       ),

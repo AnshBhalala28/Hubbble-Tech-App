@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Services/themeServices.dart';
 import 'package:wavee/Utils/customSnackBars.dart';
 
 import '../../../Utils/bottomBar.dart';
@@ -57,6 +59,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
   bool _showTitle = false;
   List<String> options = [];
 
+  // bool isDark = true;
   @override
   void initState() {
     setState(() {
@@ -117,6 +120,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
   @override
   Widget build(BuildContext context) {
     final todayKey = getTodayKey();
+    final theme = context.watch<ThemeController>();
 
     final openingHours =
         busnessviewmodal?.data?.business?.openingHours?.toJson();
@@ -126,7 +130,8 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
     final closeTime = !isClosedToday ? (todayHours?['close'] ?? '') : '';
     final business = busnessviewmodal?.data?.business;
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: theme.isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
+
       body:
           isLoading
               ? Loader()
@@ -138,10 +143,14 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                       padding: EdgeInsets.symmetric(vertical: 2.h),
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: const Color(0xffdedfe5),
+                          color:
+                              theme.isDark
+                                  ? Color(0xffbdab82)
+                                  : Color(0xffdedfe5),
                           width: 1,
                         ),
-                        color: AppColors.white,
+                        color:
+                            theme.isDark ? Color(0xff272727) : AppColors.white,
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(45),
                           topRight: Radius.circular(45),
@@ -176,7 +185,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                               alignment: Alignment.center,
                                               child: Icon(
                                                 Icons.arrow_back,
-                                                color: AppColors.maincolor,
+                                                color:
+                                                    theme.isDark
+                                                        ? Color(0xffbdab82)
+                                                        : AppColors.maincolor,
                                                 size: 20.sp,
                                               ),
                                             ),
@@ -187,7 +199,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                             child: Text(
                                               business?.businessName ?? "",
                                               style: TextStyle(
-                                                color: Colors.black,
+                                                color:
+                                                    theme.isDark
+                                                        ? Color(0xffbdab82)
+                                                        : Colors.black,
                                                 fontSize: 20.sp,
                                                 fontFamily:
                                                     AppConstants.manrope,
@@ -288,7 +303,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                           borderRadius: BorderRadius.circular(
                                             20,
                                           ),
-                                          color: Colors.black,
+                                          color:
+                                              theme.isDark
+                                                  ? Colors.white
+                                                  : Colors.black,
                                         ),
                                       ),
                                     ],
@@ -304,10 +322,16 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                   height: 5.h,
                                   margin: EdgeInsets.symmetric(horizontal: 2.w),
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color:
+                                        theme.isDark
+                                            ? Color(0xff272727)
+                                            : Colors.white,
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
-                                      color: const Color(0xffc7c7c7),
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xffbdab82)
+                                              : Color(0xffc7c7c7),
                                     ),
                                   ),
                                   child: TextField(
@@ -339,7 +363,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                           ),
                                       prefixIcon: Icon(
                                         Icons.search,
-                                        color: Colors.grey[600],
+                                        color:
+                                            theme.isDark
+                                                ? Color(0xffbdab82)
+                                                : Colors.grey[600],
                                         size: 20,
                                       ),
                                       suffixIcon:
@@ -347,7 +374,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                               ? IconButton(
                                                 icon: Icon(
                                                   Icons.close,
-                                                  color: Colors.grey[600],
+                                                  color:
+                                                      theme.isDark
+                                                          ? Color(0xffbdab82)
+                                                          : Colors.grey[600],
                                                   size: 18,
                                                 ),
                                                 onPressed: () {
@@ -372,7 +402,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                       Text(
                                         "All Products",
                                         style: TextStyle(
-                                          color: Colors.black,
+                                          color:
+                                              theme.isDark
+                                                  ? AppColors.white
+                                                  : Colors.black,
                                           fontSize: 19.sp,
                                           // fontWeight: FontWeight.bold,
                                           fontFamily: AppConstants.manropeBold,
@@ -396,9 +429,15 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                           horizontal: 12,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: Colors.white,
+                                          color:
+                                              theme.isDark
+                                                  ? Color(0xff272727)
+                                                  : Colors.white,
                                           border: Border.all(
-                                            color: Colors.grey.shade300,
+                                            color:
+                                                theme.isDark
+                                                    ? Color(0xffbdab82)
+                                                    : Colors.grey.shade300,
                                             width: 1,
                                           ),
                                           borderRadius: BorderRadius.circular(
@@ -413,7 +452,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                           ],
                                         ),
                                         child: DropdownButton<String>(
-                                          dropdownColor: Colors.white,
+                                          dropdownColor:
+                                              theme.isDark
+                                                  ? Color(0xff272727)
+                                                  : Colors.white,
                                           borderRadius: BorderRadius.circular(
                                             10,
                                           ),
@@ -422,11 +464,19 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                             style: TextStyle(
                                               fontFamily: AppConstants.manrope,
                                               fontSize: 16.sp,
+                                              color:
+                                                  theme.isDark
+                                                      ? Color(0xffbdab82)
+                                                      : Colors.black87,
                                             ),
                                           ),
                                           underline: Container(),
                                           value: selectedOption,
-                                          icon: const Icon(
+                                          icon: Icon(
+                                            color:
+                                                theme.isDark
+                                                    ? Color(0xffbdab82)
+                                                    : Colors.black87,
                                             Icons.keyboard_arrow_down,
                                           ),
                                           items:
@@ -436,6 +486,15 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                       value: item['name'],
                                                       child: Text(
                                                         item['name'] ?? "",
+                                                        style: TextStyle(
+                                                          color:
+                                                              theme.isDark
+                                                                  ? Color(
+                                                                    0xffbdab82,
+                                                                  )
+                                                                  : Colors
+                                                                      .black87,
+                                                        ),
                                                       ),
                                                     ),
                                                   )
@@ -513,10 +572,16 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                               borderRadius:
                                                   BorderRadius.circular(12),
                                               border: Border.all(
-                                                color: const Color(0xffc7c7c7),
+                                                color:
+                                                    theme.isDark
+                                                        ? Color(0xffbdab82)
+                                                        : Color(0xffc7c7c7),
                                                 width: 1,
                                               ),
-                                              color: Colors.white,
+                                              color:
+                                                  theme.isDark
+                                                      ? Color(0xff272727)
+                                                      : Colors.white,
                                             ),
                                             child: Stack(
                                               clipBehavior: Clip.none,
@@ -572,12 +637,22 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                         ),
                                                     width: 29.w,
                                                     decoration: BoxDecoration(
-                                                      color: Colors.white,
+                                                      color:
+                                                          theme.isDark
+                                                              ? Color(
+                                                                0xff272727,
+                                                              )
+                                                              : Colors.white,
                                                       border: Border.all(
                                                         width: 1,
-                                                        color: const Color(
-                                                          0xffc7c7c7,
-                                                        ),
+                                                        color:
+                                                            theme.isDark
+                                                                ? Color(
+                                                                  0xffbdab82,
+                                                                )
+                                                                : Color(
+                                                                  0xffc7c7c7,
+                                                                ),
                                                       ),
                                                       borderRadius:
                                                           const BorderRadius.only(
@@ -613,7 +688,13 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                             fontFamily:
                                                                 AppConstants
                                                                     .manropeBold,
-                                                            color: Colors.black,
+                                                            color:
+                                                                theme.isDark
+                                                                    ? Color(
+                                                                      0xffbdab82,
+                                                                    )
+                                                                    : Colors
+                                                                        .black,
                                                           ),
                                                         ),
                                                         Text(
@@ -657,8 +738,11 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                         AppConstants
                                                                             .manrope,
                                                                     color:
-                                                                        Colors
-                                                                            .grey,
+                                                                        theme.isDark
+                                                                            ? Color(
+                                                                              0xffbdab82,
+                                                                            )
+                                                                            : Colors.grey,
                                                                     decoration:
                                                                         TextDecoration
                                                                             .lineThrough,
@@ -679,8 +763,9 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                         AppConstants
                                                                             .manrope,
                                                                     color:
-                                                                        Colors
-                                                                            .black,
+                                                                        theme.isDark
+                                                                            ? Colors.white
+                                                                            : Colors.black,
                                                                   ),
                                                                 ),
                                                               ],
@@ -895,7 +980,12 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                       alignment:
                                                           Alignment.center,
                                                       decoration: BoxDecoration(
-                                                        color: Colors.white,
+                                                        color:
+                                                            theme.isDark
+                                                                ? Color(
+                                                                  0xff272727,
+                                                                )
+                                                                : Colors.white,
                                                         borderRadius:
                                                             BorderRadius.circular(
                                                               5,
@@ -924,6 +1014,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                     "0"
                                                                 ? AppColors
                                                                     .redColor
+                                                                : theme.isDark
+                                                                ? Color(
+                                                                  0xffbdab82,
+                                                                )
                                                                 : AppColors
                                                                     .maincolor,
                                                       ),
@@ -964,10 +1058,16 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                       topLeft: Radius.circular(45),
                                     ),
                                     border: Border.all(
-                                      color: const Color(0xffc7c7c7),
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xffbdab82)
+                                              : Color(0xffc7c7c7),
                                       width: 1,
                                     ),
-                                    color: const Color(0xfff2f2f2),
+                                    color:
+                                        theme.isDark
+                                            ? Color(0xff272727)
+                                            : Color(0xfff2f2f2),
                                   ),
                                   child: SingleChildScrollView(
                                     controller: scrollController,
@@ -981,7 +1081,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                             height: 1.h,
                                             width: 20.w,
                                             decoration: BoxDecoration(
-                                              color: const Color(0xf0D9D9D9),
+                                              color:
+                                                  theme.isDark
+                                                      ? Color(0xffbdab82)
+                                                      : Color(0xf0D9D9D9),
                                               borderRadius:
                                                   BorderRadius.circular(10),
                                             ),
@@ -992,7 +1095,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                           style: TextStyle(
                                             fontSize: 19.sp,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.black,
+                                            color:
+                                                theme.isDark
+                                                    ? Color(0xffbdab82)
+                                                    : Colors.black,
                                             fontFamily:
                                                 AppConstants.manropeBold,
                                           ),
@@ -1005,7 +1111,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                             borderRadius: BorderRadius.circular(
                                               20,
                                             ),
-                                            color: Colors.black,
+                                            color:
+                                                theme.isDark
+                                                    ? Colors.white
+                                                    : Colors.black,
                                           ),
                                         ),
                                         SizedBox(height: 0.5.h),
@@ -1026,11 +1135,25 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                           vertical: 1.h,
                                                         ),
                                                     decoration: BoxDecoration(
-                                                      color: Colors.white,
+                                                      color:
+                                                          theme.isDark
+                                                              ? Color(
+                                                                0xff272727,
+                                                              )
+                                                              : Colors.white,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                             12,
                                                           ),
+                                                      border: Border.all(
+                                                        color:
+                                                            theme.isDark
+                                                                ? Color(
+                                                                  0xffbdab82,
+                                                                )
+                                                                : Colors.white,
+                                                        width: 0.2.w,
+                                                      ),
                                                     ),
                                                     child: Row(
                                                       children: [
@@ -1039,8 +1162,12 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                               .location_history,
                                                           size: 18.sp,
                                                           color:
-                                                              AppColors
-                                                                  .maincolor,
+                                                              theme.isDark
+                                                                  ? Color(
+                                                                    0xffbdab82,
+                                                                  )
+                                                                  : AppColors
+                                                                      .maincolor,
                                                         ),
                                                         SizedBox(width: 2.w),
                                                         Text(
@@ -1049,7 +1176,13 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                             fontSize: 15.sp,
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            color: Colors.black,
+                                                            color:
+                                                                theme.isDark
+                                                                    ? Color(
+                                                                      0xffbdab82,
+                                                                    )
+                                                                    : Colors
+                                                                        .black,
                                                             fontFamily:
                                                                 AppConstants
                                                                     .manrope,
@@ -1071,11 +1204,25 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                           vertical: 1.h,
                                                         ),
                                                     decoration: BoxDecoration(
-                                                      color: Colors.white,
+                                                      color:
+                                                          theme.isDark
+                                                              ? Color(
+                                                                0xff272727,
+                                                              )
+                                                              : Colors.white,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                             12,
                                                           ),
+                                                      border: Border.all(
+                                                        color:
+                                                            theme.isDark
+                                                                ? Color(
+                                                                  0xffbdab82,
+                                                                )
+                                                                : Colors.white,
+                                                        width: 0.2.w,
+                                                      ),
                                                     ),
                                                     child: Row(
                                                       children: [
@@ -1083,8 +1230,12 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                           Icons.timer,
                                                           size: 18.sp,
                                                           color:
-                                                              AppColors
-                                                                  .maincolor,
+                                                              theme.isDark
+                                                                  ? Color(
+                                                                    0xffbdab82,
+                                                                  )
+                                                                  : AppColors
+                                                                      .maincolor,
                                                         ),
                                                         SizedBox(width: 2.w),
                                                         Text(
@@ -1095,7 +1246,13 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                             fontSize: 14.6.sp,
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            color: Colors.black,
+                                                            color:
+                                                                theme.isDark
+                                                                    ? Color(
+                                                                      0xffbdab82,
+                                                                    )
+                                                                    : Colors
+                                                                        .black,
                                                             fontFamily:
                                                                 AppConstants
                                                                     .manrope,
@@ -1141,7 +1298,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                 ),
                                                 style: TextStyle(
                                                   fontSize: 16.sp,
-                                                  color: Colors.black,
+                                                  color:
+                                                      theme.isDark
+                                                          ? Colors.white
+                                                          : Colors.black,
                                                   fontWeight: FontWeight.normal,
                                                   fontFamily:
                                                       AppConstants.manrope,
@@ -1194,11 +1354,21 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                           BorderRadius.circular(
                                                             10,
                                                           ),
-                                                      color: Colors.white,
+                                                      color:
+                                                          theme.isDark
+                                                              ? Color(
+                                                                0xff272727,
+                                                              )
+                                                              : Colors.white,
                                                       border: Border.all(
-                                                        color: const Color(
-                                                          0xffc0c0c0,
-                                                        ),
+                                                        color:
+                                                            theme.isDark
+                                                                ? Color(
+                                                                  0xffbdab82,
+                                                                )
+                                                                : Color(
+                                                                  0xffc0c0c0,
+                                                                ),
                                                         width: 1,
                                                       ),
                                                     ),
@@ -1208,7 +1378,10 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                         fontSize: 15.sp,
                                                         fontWeight:
                                                             FontWeight.bold,
-                                                        color: Colors.black,
+                                                        color:
+                                                            theme.isDark
+                                                                ? Colors.white
+                                                                : Colors.black,
                                                         fontFamily:
                                                             AppConstants
                                                                 .manrope,
@@ -1238,11 +1411,21 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                           BorderRadius.circular(
                                                             8,
                                                           ),
-                                                      color: Colors.white,
+                                                      color:
+                                                          theme.isDark
+                                                              ? Color(
+                                                                0xff272727,
+                                                              )
+                                                              : Colors.white,
                                                       border: Border.all(
-                                                        color: const Color(
-                                                          0xffc0c0c0,
-                                                        ),
+                                                        color:
+                                                            theme.isDark
+                                                                ? Color(
+                                                                  0xffbdab82,
+                                                                )
+                                                                : Color(
+                                                                  0xffc0c0c0,
+                                                                ),
                                                         width: 1,
                                                       ),
                                                     ),
@@ -1260,6 +1443,8 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                                                                       ?.isLiked ==
                                                                   true
                                                               ? Colors.red
+                                                              : theme.isDark
+                                                              ? Colors.white
                                                               : Colors.black,
                                                       size: 18.sp,
                                                     ),

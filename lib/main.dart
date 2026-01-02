@@ -7,11 +7,14 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Services/appTheme.dart';
+import 'package:wavee/Services/themeServices.dart';
+import 'package:wavee/Ui/InitScreens/view/welcomeScreen.dart';
 
 import 'Ui/Authentication/modal/login_model.dart';
-import 'Ui/welcomeScreen.dart';
 import 'Utils/chatCounter.dart';
 import 'Utils/colors.dart';
 import 'Utils/storeUserData.dart';
@@ -121,7 +124,12 @@ void main() async {
     AwesomeNotifications().requestPermissionToSendNotifications();
   }
 
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeController(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -161,15 +169,15 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeController>();
     return Sizer(
       builder: (context, orientation, screenType) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Wavee Ai',
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-          ),
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: theme.isDark ? ThemeMode.dark : ThemeMode.light,
           home: const WelcomeScreen(),
         );
       },

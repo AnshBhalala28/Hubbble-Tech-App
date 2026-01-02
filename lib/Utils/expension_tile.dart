@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Services/themeServices.dart';
+import 'package:wavee/Utils/const.dart';
 
 class CustomExpansionTile extends StatefulWidget {
   final String title;
@@ -25,6 +28,8 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeController>();
+    final isDark = theme.isDark;
     return Column(
       children: [
         InkWell(
@@ -40,13 +45,17 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
               children: [
                 Row(
                   children: [
-                    Icon(widget.leadingIcon, color: Colors.black, size: 20.sp),
+                    Icon(
+                      widget.leadingIcon,
+                      color: isDark ? Colors.white : Colors.black,
+                      size: 20.sp,
+                    ),
                     SizedBox(width: 9.w),
                     Text(
                       widget.title,
                       style: TextStyle(
-                        fontFamily: 'Manrope',
-                        color: Colors.black,
+                        fontFamily: AppConstants.manrope,
+                        color: isDark ? Colors.white : Colors.black,
                         fontSize: widget.fontSize ?? 18.sp,
                         letterSpacing: 1,
                       ),
@@ -57,7 +66,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
                   isExpanded
                       ? CupertinoIcons.chevron_down
                       : CupertinoIcons.right_chevron,
-                  color: Colors.black,
+                  color: isDark ? Colors.white : Colors.black,
                   size: 20.sp,
                 ),
               ],

@@ -4,20 +4,22 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Services/themeServices.dart';
 import 'package:wavee/Ui/CartScreen/model/amendOrderModal.dart';
 import 'package:wavee/Ui/CartScreen/model/amendPaymentModal.dart';
 import 'package:wavee/Ui/CartScreen/model/cartDetailsModal.dart'
     hide ItemDetails;
 import 'package:wavee/Utils/customSnackBars.dart';
 import 'package:wavee/Utils/stripeWebView.dart';
+import 'package:wavee/Utils/themeButton.dart';
 
 import '../../../Utils/bottomBar.dart';
 import '../../../Utils/chatCounter.dart';
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
 import '../../../Utils/const.dart';
-import '../../../Utils/customAppBar.dart';
 import '../../../Utils/customBatan.dart';
 import '../../../Utils/errorDialog.dart';
 import '../../../Utils/loader.dart';
@@ -78,6 +80,7 @@ class _AddToCartViewState extends State<AddToCartView> {
   // Use SelectedItem instead of storing qty in product.id
   List<SelectedItem> selectedProducts = [];
 
+  // bool isDark = true;
   @override
   void initState() {
     super.initState();
@@ -94,29 +97,48 @@ class _AddToCartViewState extends State<AddToCartView> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeController>();
+    final isDark = theme.isDark;
     return WillPopScope(
       onWillPop: () async {
         Get.offAll(() => HomePage(selected: 1, userName: ''));
         return false;
       },
       child: Scaffold(
-        backgroundColor: AppColors.white,
+        backgroundColor: theme.isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
+
         body: Column(
           children: [
             SizedBox(height: 6.h),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 2.w),
-              child: TitleBar(
-                back: () {
-                  if (widget.fromBottomBar) {
-                    Get.offAll(HomePage(userName: ""));
-                  } else {
-                    Get.back();
-                  }
-                },
-                title: widget.isAmend == true ? "Amend Order" : "Your Cart",
-                drawerCallback: () {},
-              ),
+            Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.isAmend == true ? "Amend Order" : "My Cart",
+                      style: TextStyle(
+                        fontSize: 22.sp,
+                        color: isDark ? Colors.white : Colors.black,
+                        fontFamily: AppConstants.manropeBold,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 1.h),
+                    Container(
+                      width: 12.w,
+                      height: 1.h,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: isDark ? Color(0xffbdab82) : Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+                Spacer(),
+                ThemeToggleButton().paddingOnly(bottom: 2.5.h),
+              ],
             ),
             SizedBox(height: 5.h),
 
@@ -127,8 +149,8 @@ class _AddToCartViewState extends State<AddToCartView> {
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 2.h),
                 decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xffdedfe5), width: 1),
-                  color: AppColors.white,
+                  // border: Border.all(color: const Color(0xff373737), width: 1),
+                  color: isDark ? Color(0xff242424) : AppColors.white,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(45),
                     topRight: Radius.circular(45),
@@ -155,34 +177,22 @@ class _AddToCartViewState extends State<AddToCartView> {
                           Container(
                             margin: EdgeInsets.all(2.w),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: isDark ? Color(0xff272727) : Colors.white,
                               borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color:
+                                    isDark
+                                        ? Color(0xff373737)
+                                        : Color(0xffbdab82),
+                                width: 0.2.w,
+                              ),
                             ),
                             child: Padding(
                               padding: EdgeInsets.all(3.w),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    widget.isAmend == true
-                                        ? "Amend Order"
-                                        : "My Cart",
-                                    style: TextStyle(
-                                      fontSize: 22.sp,
-                                      color: Colors.black,
-                                      fontFamily: AppConstants.manropeBold,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(height: 1.h),
-                                  Container(
-                                    width: 12.w,
-                                    height: 1.h,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.black,
-                                    ),
-                                  ),
+
                                   SizedBox(height: 0.5.h),
                                   Text(
                                     widget.isAmend == true
@@ -214,63 +224,45 @@ class _AddToCartViewState extends State<AddToCartView> {
 
                           if (widget.isAmend != true &&
                               cartDetailsModel?.data?[0].type == "product") ...[
-                            const Padding(
+                            Padding(
                               padding: EdgeInsets.symmetric(horizontal: 12),
                               child: Text(
                                 "People also added",
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
+                                  fontFamily: AppConstants.manropeBold,
+                                  color: isDark ? Colors.white : Colors.black,
                                 ),
                               ),
                             ),
                             _buildSuggestedList(),
                           ],
-
-                          SizedBox(height: 50.h),
-                        ],
-                      ),
-
-                    if (!isLoading && _hasItems())
-                      Positioned(
-                        top: widget.isAmend == true ? 15.h : 10.h,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: DraggableScrollableSheet(
-                          initialChildSize: 0.65,
-                          minChildSize: 0.60,
-                          builder: (context, scrollController) {
-                            return Container(
+                          if (!isLoading && _hasItems())
+                            Container(
                               padding: EdgeInsets.symmetric(
                                 horizontal: 3.w,
                                 vertical: 1.h,
                               ),
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(45),
-                                  topLeft: Radius.circular(45),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
                                 ),
-                                border: Border(
-                                  top: BorderSide(
-                                    color: Color(0xffc7c7c7),
-                                    width: 1,
-                                  ),
-                                  left: BorderSide(
-                                    color: Color(0xffc7c7c7),
-                                    width: 1,
-                                  ),
-                                  right: BorderSide(
-                                    color: Color(0xffc7c7c7),
-                                    width: 1,
-                                  ),
-                                  // bottom: BorderSide.none, // ← default none, optional
+                                border: Border.all(
+                                  color:
+                                      isDark
+                                          ? Color(0xff383838)
+                                          : Colors.grey.shade200,
+                                  width: 0.3.w,
                                 ),
-                                color: Color(0xfff2f2f2),
+                                color:
+                                    isDark
+                                        ? Color(0xff2b2b2b)
+                                        : Color(0xfff2f2f2),
                               ),
 
-                              child: ListView(
-                                controller: scrollController,
+                              child: Column(
+                                // controller: scrollController,
                                 children: [
                                   _buildSectionCard(
                                     title: "Order Summary",
@@ -291,50 +283,58 @@ class _AddToCartViewState extends State<AddToCartView> {
                                   ),
                                 ],
                               ),
-                            );
-                          },
-                        ),
-                      ),
-
-                    if (!isLoading && _hasItems())
-                      Positioned(
-                        top: widget.isAmend == true ? 62.h : 60.h,
-                        left: 30.w,
-                        child: InkWell(
-                          onTap: _handleCheckoutTap,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 7.w,
-                              vertical: 1.h,
                             ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white,
-                              border: Border.all(
-                                color: const Color(0xffd9d9d9),
+                          if (!isLoading && _hasItems()) SizedBox(height: 2.h),
+                          InkWell(
+                            onTap: _handleCheckoutTap,
+                            child: Container(
+                              height: 5.h,
+                              alignment: Alignment.center,
+                              // padding: EdgeInsets.symmetric(
+                              //   horizontal: 7.w,
+                              //   vertical: 1.h,
+                              // ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                color:
+                                    isDark ? Color(0xffbdab82) : Colors.white,
+                                border: Border.all(
+                                  color: const Color(0xffd9d9d9),
+                                ),
                               ),
-                            ),
-                            child: Text(
-                              widget.isAmend == true
-                                  ? "Amend Order"
-                                  : "Checkout",
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                color: Colors.black,
-                                fontFamily:
-                                    widget.isAmend == true
-                                        ? AppConstants.manropeBold
-                                        : AppConstants.manrope,
-                                fontWeight: FontWeight.w600,
+                              child: Text(
+                                widget.isAmend == true
+                                    ? "Amend Order"
+                                    : "Checkout",
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  color: Colors.black,
+                                  fontFamily:
+                                      widget.isAmend == true
+                                          ? AppConstants.manropeBold
+                                          : AppConstants.manrope,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                          SizedBox(height: 50.h),
+                        ],
                       ),
 
                     if (isUpdateQuantity)
                       Container(
-                        color: Colors.white,
+                        decoration: BoxDecoration(
+                          color:
+                              isDark
+                                  ? Color(0xff2B2B2B)
+                                  : Colors.black.withValues(alpha: .2),
+
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(45),
+                            topRight: Radius.circular(45),
+                          ),
+                        ),
                         child: Center(child: Loader()),
                       ),
                   ],
@@ -342,7 +342,7 @@ class _AddToCartViewState extends State<AddToCartView> {
               ),
             ),
           ],
-        ),
+        ).paddingSymmetric(horizontal: 3.w),
         bottomNavigationBar: Obx(
           () => BottomBar(
             selected: 4,
@@ -1020,6 +1020,8 @@ class _AddToCartViewState extends State<AddToCartView> {
   }
 
   Widget _buildEmptyBasketView() {
+    final theme = Provider.of<ThemeController>(context, listen: false);
+    final isDark = theme.isDark;
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Padding(
@@ -1029,14 +1031,14 @@ class _AddToCartViewState extends State<AddToCartView> {
             Container(
               width: 25.w,
               height: 25.w,
-              decoration: const BoxDecoration(
-                color: Color(0xFFF0F0F0),
+              decoration:  BoxDecoration(
+                color:isDark?Color(0xf035332E): Color(0xFFF0F0F0),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.shopping_basket_outlined,
                 size: 12.w,
-                color: Colors.grey[400],
+                color:isDark?Color(0xf0CBB88C): Colors.grey[400],
               ),
             ),
             SizedBox(height: 3.h),
@@ -1046,7 +1048,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                 fontFamily: AppConstants.manrope,
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF2E3333),
+                color: isDark ? Colors.white : Color(0xFF2E3333),
               ),
             ),
             SizedBox(height: 1.h),
@@ -1067,8 +1069,8 @@ class _AddToCartViewState extends State<AddToCartView> {
                   route: () {
                     Get.to(() => CommunityScreen());
                   },
-                  color: AppColors.maincolor,
-                  fontcolor: Colors.white,
+                  color: isDark ? Color(0xffbdab82) : AppColors.maincolor,
+                  fontcolor: isDark ? Colors.black : Colors.white,
                   height: 5.h,
                   fontsize: 16.sp,
                   radius: 12.0,
@@ -1083,8 +1085,8 @@ class _AddToCartViewState extends State<AddToCartView> {
                   route: () {
                     Get.to(() => Order_Screen());
                   },
-                  color: AppColors.maincolor,
-                  fontcolor: Colors.white,
+                  color: isDark ? Color(0xffbdab82) : AppColors.maincolor,
+                  fontcolor: isDark ? Colors.black : Colors.white,
                   height: 5.h,
                   fontsize: 16.5.sp,
                   radius: 12.0,
@@ -1104,14 +1106,18 @@ class _AddToCartViewState extends State<AddToCartView> {
   Widget _buildCartItem(dynamic item) {
     final product = item.itemDetails;
     if (product == null) return const SizedBox();
-
+    final theme = Provider.of<ThemeController>(context, listen: false);
+    final isDark = theme.isDark;
     return Container(
       margin: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 2.w),
       padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFF969696), width: 1),
+        color: isDark ? Color(0xff272727) : Colors.white,
+        border: Border.all(
+          color: isDark ? Color(0xff373737) : Color(0xFF969696),
+          width: 1,
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1161,7 +1167,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                           fontFamily: AppConstants.manropeBold,
-                          color: const Color(0xFF2E3333),
+                          color: isDark ? Colors.white : Color(0xFF2E3333),
                         ),
                       ),
                     ),
@@ -1174,13 +1180,13 @@ class _AddToCartViewState extends State<AddToCartView> {
                       },
                       child: Container(
                         padding: EdgeInsets.all(1.w),
-                        decoration: const BoxDecoration(
-                          color: Color(0xFFF5F5F5),
+                        decoration: BoxDecoration(
+                          color: isDark ? Color(0xff3b3935) : Color(0xFFF5F5F5),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
                           Icons.delete,
-                          color: Colors.black,
+                          color: isDark ? Colors.white : Colors.black,
                           size: 18.sp,
                         ),
                       ),
@@ -1197,7 +1203,7 @@ class _AddToCartViewState extends State<AddToCartView> {
                         fontSize: 17.sp,
                         fontWeight: FontWeight.w700,
                         fontFamily: AppConstants.manrope,
-                        color: AppColors.maincolor,
+                        color: isDark ? Color(0xffbdab82) : AppColors.maincolor,
                       ),
                     ),
                     const Spacer(),
@@ -1213,22 +1219,30 @@ class _AddToCartViewState extends State<AddToCartView> {
   }
 
   Widget _buildQuantityControl(dynamic item) {
-    int qty = (item.quantity ?? 1) as int;
+    final theme = Provider.of<ThemeController>(context, listen: false);
+    final isDark = theme.isDark;
+    int qty = item.quantity ?? 1;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xff969696)),
+        // ram
+        color: isDark ? Color(0xff3A3934) : Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(20),
+        // ram
+        // border: Border.all(color: const Color(0xffE0E0E0)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          /// ➖ Minus Button
           InkWell(
+            borderRadius: BorderRadius.circular(50),
             onTap: () {
               if (qty > 1) {
                 setState(() {
                   item.quantity = qty - 1;
                 });
+
                 updateQuantityApi(
                   item.productId ?? 0,
                   item.quantity ?? 1,
@@ -1238,41 +1252,53 @@ class _AddToCartViewState extends State<AddToCartView> {
                 RemoveFromCartApi(item.productId ?? 0, item.type ?? "product");
               }
             },
-            child: Text(
-              "-",
-              style: TextStyle(
-                fontSize: 17.sp,
-                color: Colors.black,
-                fontFamily: AppConstants.manrope,
-                fontWeight: FontWeight.bold,
+            child: Container(
+              height: 26,
+              width: 26,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isDark ? Color(0xff2F2F2F) : Colors.white,
+              ),
+              child: Center(
+                child: Text(
+                  "-",
+                  style: TextStyle(
+                    color: isDark ? AppColors.white : Colors.black,
+                    fontSize: 18,
+                    fontFamily: AppConstants.manrope,
+                  ),
+                ),
               ),
             ),
           ),
-          SizedBox(width: 2.w),
+
+          const SizedBox(width: 12),
+
           Text(
-            "${item.quantity ?? 1}",
+            qty.toString(),
             style: TextStyle(
-              fontSize: 16.sp,
-              color: Colors.black,
+              fontSize: 16,
+              fontWeight: FontWeight.normal,
               fontFamily: AppConstants.manrope,
-              fontWeight: FontWeight.bold,
+              // ram
+              color: isDark ? Colors.white : Colors.black,
             ),
           ),
-          SizedBox(width: 2.w),
-          InkWell(
-            onTap: () {
-              log('item.maxQuantity : ${item.maxQuantity}');
 
+          const SizedBox(width: 12),
+
+          /// ➕ Plus Button
+          InkWell(
+            borderRadius: BorderRadius.circular(50),
+            onTap: () {
               final int currentQty = item.quantity ?? 1;
               final dynamic maxQ = item.maxQuantity;
 
               bool canIncrease = false;
 
-              // Check unlimited
               if (maxQ == "unlimited") {
                 canIncrease = true;
               } else {
-                // Convert to number safely
                 final int maxQty = int.tryParse(maxQ.toString()) ?? 0;
                 canIncrease = currentQty < maxQty;
               }
@@ -1296,7 +1322,19 @@ class _AddToCartViewState extends State<AddToCartView> {
                 );
               }
             },
-            child: Icon(Icons.add, color: Colors.black, size: 16.sp),
+            child: Container(
+              height: 26,
+              width: 26,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isDark ? Color(0xff2F2F2F) : Colors.white,
+              ),
+              child: Icon(
+                Icons.add,
+                size: 16,
+                color: isDark ? Colors.white : AppColors.black,
+              ),
+            ),
           ),
         ],
       ),
@@ -1308,9 +1346,11 @@ class _AddToCartViewState extends State<AddToCartView> {
     required IconData icon,
     required Widget child,
   }) {
+    final theme = Provider.of<ThemeController>(context, listen: false);
+    final isDark = theme.isDark;
     return Card(
       elevation: 0,
-      color: Colors.white,
+      color: isDark ? Color(0xff2B2B2B) : Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: EdgeInsets.all(3.w),
@@ -1319,13 +1359,16 @@ class _AddToCartViewState extends State<AddToCartView> {
           children: [
             Row(
               children: [
-                Icon(icon),
+                Icon(icon, color: isDark ? Colors.white : Colors.black),
                 SizedBox(width: 2.w),
                 Text(
                   title,
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w700,
+                    fontFamily: AppConstants.manrope,
+
+                    color: isDark ? Colors.white : Colors.black,
                   ),
                 ),
               ],
@@ -1409,6 +1452,8 @@ class _AddToCartViewState extends State<AddToCartView> {
     bool isTotal = false,
     bool isDiscount = false,
   }) {
+    final theme = Provider.of<ThemeController>(context, listen: false);
+    final isDark = theme.isDark;
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 0.5.h),
       child: Row(
@@ -1423,7 +1468,13 @@ class _AddToCartViewState extends State<AddToCartView> {
               color:
                   isDiscount
                       ? Colors.green[700]
-                      : (isTotal ? Colors.black : Colors.grey[800]),
+                      : (isTotal
+                          ? isDark
+                              ? Colors.white
+                              : Colors.black
+                          : isDark
+                          ? Colors.white
+                          : Colors.grey[800]),
             ),
           ),
           Text(
@@ -1437,7 +1488,13 @@ class _AddToCartViewState extends State<AddToCartView> {
               color:
                   isDiscount
                       ? Colors.green[700]
-                      : (isTotal ? AppColors.maincolor : Colors.black),
+                      : (isTotal
+                          ? isDark
+                              ? Colors.white
+                              : AppColors.maincolor
+                          : isDark
+                          ? Colors.white
+                          : Colors.black),
             ),
           ),
         ],
@@ -1594,6 +1651,170 @@ class _AddToCartViewState extends State<AddToCartView> {
     return subtotal - loyaltyDiscount;
   }
 
+  ///hiren
+  // Widget _buildSuggestedList() {
+  //   final List<BusinessProducts> allProducts =
+  //       (cartDetailsModel?.data?.expand(
+  //                 (item) => item.itemDetails?.businessProducts ?? [],
+  //               ) ??
+  //               [])
+  //           .whereType<BusinessProducts>()
+  //           .toList();
+  //   return Container(
+  //     margin: const EdgeInsets.symmetric(vertical: 8),
+  //     height: 10.h,
+  //     child: ListView.builder(
+  //       scrollDirection: Axis.horizontal,
+  //       itemCount: allProducts.length,
+  //       padding: const EdgeInsets.symmetric(horizontal: 12),
+  //       itemBuilder: (context, index) {
+  //         final product = allProducts[index];
+  //
+  //         return Container(
+  //           margin: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 1.w),
+  //           alignment: Alignment.center,
+  //           padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
+  //           decoration: BoxDecoration(
+  //             borderRadius: BorderRadius.circular(20),
+  //             color: Colors.white,
+  //             border: Border.all(color: const Color(0xFF969696), width: 1),
+  //           ),
+  //           child: Column(
+  //             mainAxisAlignment: MainAxisAlignment.start,
+  //             children: [
+  //               Row(
+  //                 children: [
+  //                   ClipRRect(
+  //                     borderRadius: BorderRadius.circular(10),
+  //                     child: CachedNetworkImage(
+  //                       imageUrl:
+  //                           (product.image != null && product.image!.isNotEmpty)
+  //                               ? product.image!
+  //                               : (product.images != null &&
+  //                                   product.images!.isNotEmpty)
+  //                               ? product.images!.first
+  //                               : "",
+  //                       fit: BoxFit.cover,
+  //                       width: 14.w,
+  //                       height: 14.w,
+  //                       placeholder:
+  //                           (context, url) => const Center(
+  //                             child: CircularProgressIndicator(
+  //                               color: AppColors.maincolor,
+  //                               strokeWidth: 2,
+  //                             ),
+  //                           ),
+  //                       errorWidget:
+  //                           (context, url, error) => Icon(
+  //                             Icons.image_outlined,
+  //                             color: Colors.grey[400],
+  //                             size: 30,
+  //                           ),
+  //                     ),
+  //                   ),
+  //                   SizedBox(width: 2.w),
+  //                   Column(
+  //                     mainAxisAlignment: MainAxisAlignment.start,
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text(
+  //                         product.name ?? "",
+  //                         maxLines: 2,
+  //                         overflow: TextOverflow.ellipsis,
+  //                         style: const TextStyle(
+  //                           fontSize: 14,
+  //                           fontWeight: FontWeight.w600,
+  //                         ),
+  //                       ),
+  //                       (product.offerPrice != null &&
+  //                               product.offerPrice != "0.00" &&
+  //                               product.offerPrice != product.price)
+  //                           ? Row(
+  //                             children: [
+  //                               Text(
+  //                                 "£${product.price}",
+  //                                 style: TextStyle(
+  //                                   fontSize: 14.sp,
+  //                                   fontWeight: FontWeight.normal,
+  //                                   fontFamily: AppConstants.manrope,
+  //                                   color: Colors.grey,
+  //                                   decoration: TextDecoration.lineThrough,
+  //                                   decorationColor: AppColors.maincolor,
+  //                                 ),
+  //                               ),
+  //                               const SizedBox(width: 5),
+  //                               Text(
+  //                                 "£${product.offerPrice}",
+  //                                 style: TextStyle(
+  //                                   fontSize: 15.sp,
+  //                                   fontWeight: FontWeight.bold,
+  //                                   fontFamily: AppConstants.manrope,
+  //                                   color: Colors.black,
+  //                                 ),
+  //                               ),
+  //                               SizedBox(width: 4.w),
+  //                               InkWell(
+  //                                 onTap: () {
+  //                                   AddCartProductApi(
+  //                                     product.id.toString() ?? "",
+  //                                   );
+  //                                 },
+  //                                 child: Container(
+  //                                   decoration: BoxDecoration(
+  //                                     borderRadius: BorderRadius.circular(3),
+  //                                     color: Colors.black,
+  //                                   ),
+  //                                   child: Icon(
+  //                                     Icons.add,
+  //                                     size: 17.sp,
+  //                                     color: AppColors.white,
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             ],
+  //                           )
+  //                           : Row(
+  //                             children: [
+  //                               Text(
+  //                                 "£${product.price ?? ""}",
+  //                                 style: TextStyle(
+  //                                   fontSize: 15.sp,
+  //                                   fontWeight: FontWeight.bold,
+  //                                   fontFamily: AppConstants.manrope,
+  //                                   color: Colors.black,
+  //                                 ),
+  //                               ),
+  //                               InkWell(
+  //                                 onTap: () {
+  //                                   AddCartProductApi(
+  //                                     product.id.toString() ?? "",
+  //                                   );
+  //                                 },
+  //                                 child: Container(
+  //                                   decoration: BoxDecoration(
+  //                                     borderRadius: BorderRadius.circular(10),
+  //                                     color: Colors.black,
+  //                                   ),
+  //                                   child: Icon(
+  //                                     Icons.add,
+  //                                     size: 17.sp,
+  //                                     color: AppColors.white,
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             ],
+  //                           ),
+  //                     ],
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
   Widget _buildSuggestedList() {
     final List<BusinessProducts> allProducts =
         (cartDetailsModel?.data?.expand(
@@ -1602,153 +1823,104 @@ class _AddToCartViewState extends State<AddToCartView> {
                 [])
             .whereType<BusinessProducts>()
             .toList();
+    final theme = Provider.of<ThemeController>(context, listen: false);
+    final isDark = theme.isDark;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
-      height: 10.h,
+      height: 190,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: allProducts.length,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         itemBuilder: (context, index) {
           final product = allProducts[index];
-
           return Container(
-            margin: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 1.w),
-            alignment: Alignment.center,
-            padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
+            width: 140,
+            margin: const EdgeInsets.only(right: 12),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.white,
-              border: Border.all(color: const Color(0xFF969696), width: 1),
+              color: isDark ? Color(0xff1F1F1F) : Color(0xffFAFAFA),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: isDark ? Color(0xff383838) : Color(0xffE6E7ED),
+              ),
             ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: CachedNetworkImage(
-                        imageUrl:
-                            (product.image != null && product.image!.isNotEmpty)
-                                ? product.image!
-                                : (product.images != null &&
-                                    product.images!.isNotEmpty)
-                                ? product.images!.first
-                                : "",
-                        fit: BoxFit.cover,
-                        width: 14.w,
-                        height: 14.w,
-                        placeholder:
-                            (context, url) => const Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.maincolor,
-                                strokeWidth: 2,
-                              ),
-                            ),
-                        errorWidget:
-                            (context, url, error) => Icon(
-                              Icons.image_outlined,
-                              color: Colors.grey[400],
-                              size: 30,
-                            ),
+                /// 🖼 Product Image
+                Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          (product.image != null && product.image!.isNotEmpty)
+                              ? product.image!
+                              : (product.images != null &&
+                                  product.images!.isNotEmpty)
+                              ? product.images!.first
+                              : "",
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                /// 🏷 Product Name (CENTER)
+                Text(
+                  product.name ?? "",
+                  maxLines: 2,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+
+                const SizedBox(height: 6),
+
+                /// 💰 Price (CENTER)
+                Text(
+                  "£${product.offerPrice != null && product.offerPrice != "0.00" ? product.offerPrice : product.price}",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    // ram
+                    color: isDark ? Color(0xffbdab82) : Colors.grey,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const Spacer(),
+
+                /// ➕ Add Button
+                InkWell(
+                  onTap: () {
+                    AddCartProductApi(product.id.toString());
+                  },
+                  child: Container(
+                    height: 32,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      // ram
+                      border: Border.all(
+                        color: isDark ? Color(0xffbdab82) : Color(0xff7380A4),
                       ),
                     ),
-                    SizedBox(width: 2.w),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          product.name ?? "",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        (product.offerPrice != null &&
-                                product.offerPrice != "0.00" &&
-                                product.offerPrice != product.price)
-                            ? Row(
-                              children: [
-                                Text(
-                                  "£${product.price}",
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.normal,
-                                    fontFamily: AppConstants.manrope,
-                                    color: Colors.grey,
-                                    decoration: TextDecoration.lineThrough,
-                                    decorationColor: AppColors.maincolor,
-                                  ),
-                                ),
-                                const SizedBox(width: 5),
-                                Text(
-                                  "£${product.offerPrice}",
-                                  style: TextStyle(
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: AppConstants.manrope,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                SizedBox(width: 4.w),
-                                InkWell(
-                                  onTap: () {
-                                    AddCartProductApi(
-                                      product.id.toString() ?? "",
-                                    );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      color: Colors.black,
-                                    ),
-                                    child: Icon(
-                                      Icons.add,
-                                      size: 17.sp,
-                                      color: AppColors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                            : Row(
-                              children: [
-                                Text(
-                                  "£${product.price ?? ""}",
-                                  style: TextStyle(
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: AppConstants.manrope,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    AddCartProductApi(
-                                      product.id.toString() ?? "",
-                                    );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.black,
-                                    ),
-                                    child: Icon(
-                                      Icons.add,
-                                      size: 17.sp,
-                                      color: AppColors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                      ],
+                    child: Center(
+                      child: Icon(
+                        Icons.add,
+                        color: isDark ? Color(0xffbdab82) : Color(0xff7380A4),
+                        size: 18,
+                      ),
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),
@@ -1766,7 +1938,8 @@ class _AddToCartViewState extends State<AddToCartView> {
                 [])
             .whereType<BusinessProducts>()
             .toList();
-
+    final theme = Provider.of<ThemeController>(context, listen: false);
+    final isDark = theme.isDark;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1779,8 +1952,8 @@ class _AddToCartViewState extends State<AddToCartView> {
             expand: false,
             builder:
                 (_, controller) => Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
+                  decoration: BoxDecoration(
+                    color: isDark ? Color(0xff2B2B2B) : Colors.white,
 
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(20),
@@ -1805,7 +1978,8 @@ class _AddToCartViewState extends State<AddToCartView> {
                                 width: 10.w,
                                 height: 0.5.h,
                                 decoration: BoxDecoration(
-                                  color: Colors.grey[300],
+                                  color:
+                                      isDark ? Colors.white : Colors.grey[300],
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
@@ -1819,7 +1993,10 @@ class _AddToCartViewState extends State<AddToCartView> {
                                     fontSize: 20.sp,
                                     fontWeight: FontWeight.w700,
                                     fontFamily: AppConstants.manrope,
-                                    color: const Color(0xFF2E3333),
+                                    color:
+                                        isDark
+                                            ? Colors.white
+                                            : Color(0xFF2E3333),
                                   ),
                                 ),
                                 GestureDetector(
@@ -1827,7 +2004,10 @@ class _AddToCartViewState extends State<AddToCartView> {
                                   child: Icon(
                                     Icons.close,
                                     size: 24.sp,
-                                    color: Colors.grey[600],
+                                    color:
+                                        isDark
+                                            ? Colors.white
+                                            : Colors.grey[600],
                                   ),
                                 ),
                               ],
@@ -1842,7 +2022,10 @@ class _AddToCartViewState extends State<AddToCartView> {
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w600,
                                     fontFamily: AppConstants.manrope,
-                                    color: const Color(0xFF2E3333),
+                                    color:
+                                        isDark
+                                            ? Colors.white
+                                            : Color(0xFF2E3333),
                                   ),
                                 ),
                                 SizedBox(height: 0.5.h),
@@ -1865,7 +2048,10 @@ class _AddToCartViewState extends State<AddToCartView> {
                                     "No suggested items available",
                                     style: TextStyle(
                                       fontSize: 14.sp,
-                                      color: Colors.grey[500],
+                                      color:
+                                          isDark
+                                              ? Colors.white
+                                              : Colors.grey[500],
                                     ),
                                   ),
                                 ),
@@ -1886,9 +2072,15 @@ class _AddToCartViewState extends State<AddToCartView> {
                                   final product = suggestedProducts[index];
                                   return Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color:
+                                          isDark
+                                              ? Color(0xff242424)
+                                              : Colors.white,
                                       border: Border.all(
-                                        color: const Color(0xFFE5E5E5),
+                                        color:
+                                            isDark
+                                                ? Color(0xff383838)
+                                                : Color(0xFFE5E5E5),
                                         width: 1,
                                       ),
                                       borderRadius: BorderRadius.circular(12),
@@ -1969,7 +2161,10 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                   width: 11.w,
                                                   height: 11.w,
                                                   decoration: BoxDecoration(
-                                                    color: Colors.white,
+                                                    color:
+                                                        isDark
+                                                            ? Color(0xff242424)
+                                                            : Colors.white,
                                                     shape: BoxShape.circle,
                                                     boxShadow: [
                                                       BoxShadow(
@@ -1989,7 +2184,11 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                   child: Icon(
                                                     Icons.add,
                                                     size: 22.sp,
-                                                    color: AppColors.maincolor,
+                                                    color:
+                                                        isDark
+                                                            ? Colors.white
+                                                            : AppColors
+                                                                .maincolor,
                                                   ),
                                                 ),
                                               ),
@@ -2014,9 +2213,10 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                     fontFamily:
                                                         AppConstants
                                                             .manropeBold,
-                                                    color: const Color(
-                                                      0xFF2E3333,
-                                                    ),
+                                                    color:
+                                                        isDark
+                                                            ? Colors.white
+                                                            : Color(0xFF2E3333),
                                                   ),
                                                 ),
                                                 const Spacer(),
@@ -2052,14 +2252,20 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                                         AppConstants
                                                                             .manrope,
                                                                     color:
-                                                                        Colors
-                                                                            .grey,
+                                                                        isDark
+                                                                            ? Color(
+                                                                              0xffbdab82,
+                                                                            )
+                                                                            : Colors.grey,
                                                                     decoration:
                                                                         TextDecoration
                                                                             .lineThrough,
                                                                     decorationColor:
-                                                                        AppColors
-                                                                            .maincolor,
+                                                                        isDark
+                                                                            ? Color(
+                                                                              0xffbdab82,
+                                                                            )
+                                                                            : AppColors.maincolor,
                                                                   ),
                                                                 ),
                                                                 const SizedBox(
@@ -2077,8 +2283,9 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                                         AppConstants
                                                                             .manrope,
                                                                     color:
-                                                                        Colors
-                                                                            .black,
+                                                                        isDark
+                                                                            ? Colors.white
+                                                                            : Colors.black,
                                                                   ),
                                                                 ),
                                                               ],
@@ -2095,7 +2302,11 @@ class _AddToCartViewState extends State<AddToCartView> {
                                                                   AppConstants
                                                                       .manrope,
                                                               color:
-                                                                  Colors.black,
+                                                                  isDark
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
                                                             ),
                                                           ),
                                                 ),
@@ -2118,8 +2329,8 @@ class _AddToCartViewState extends State<AddToCartView> {
                         right: 0,
                         child: Container(
                           padding: EdgeInsets.all(4.w),
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
+                          decoration: BoxDecoration(
+                            color: isDark ? Color(0xff2b2b2b) : Colors.white,
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black12,
@@ -2164,7 +2375,10 @@ class _AddToCartViewState extends State<AddToCartView> {
                                             "You're getting closer to an exclusive reward! Complete ${cartDetailsModel?.data?[0].loyaltyDetails?.loyaltyOrderThreshold} more orders to unlock a ${cartDetailsModel?.data?[0].loyaltyDetails?.loyaltyDiscountPercentage?.replaceAll(RegExp(r'\\.0+\$'), '')}% discount on your next purchase.",
                                             style: TextStyle(
                                               fontSize: 14.sp,
-                                              color: const Color(0xFF3C1361),
+                                              color:
+                                                  isDark
+                                                      ? Colors.white
+                                                      : Color(0xFF3C1361),
                                               fontFamily: AppConstants.manrope,
                                               fontWeight: FontWeight.w600,
                                             ),
@@ -2173,14 +2387,20 @@ class _AddToCartViewState extends State<AddToCartView> {
                                         Container(
                                           width: 28,
                                           height: 28,
-                                          decoration: const BoxDecoration(
-                                            color: AppColors.maincolor,
+                                          decoration: BoxDecoration(
+                                            color:
+                                                isDark
+                                                    ? Colors.white
+                                                    : AppColors.maincolor,
                                             shape: BoxShape.circle,
                                           ),
-                                          child: const Icon(
+                                          child: Icon(
                                             Icons.card_giftcard,
                                             size: 16,
-                                            color: Colors.white,
+                                            color:
+                                                isDark
+                                                    ? Colors.black
+                                                    : Colors.white,
                                           ),
                                         ),
                                       ],
@@ -2195,15 +2415,21 @@ class _AddToCartViewState extends State<AddToCartView> {
                                 child: Container(
                                   height: 6.h,
                                   decoration: BoxDecoration(
-                                    color: AppColors.maincolor,
-                                    borderRadius: BorderRadius.circular(12),
+                                    color:
+                                        isDark
+                                            ? Color(0xffbdab82)
+                                            : AppColors.maincolor,
+                                    borderRadius: BorderRadius.circular(100),
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Icon(
                                         Icons.shopping_cart_checkout,
-                                        color: Colors.white,
+                                        color:
+                                            isDark
+                                                ? Colors.black
+                                                : Colors.white,
                                         size: 20.sp,
                                       ),
                                       SizedBox(width: 3.w),
@@ -2211,7 +2437,10 @@ class _AddToCartViewState extends State<AddToCartView> {
                                         "Checkout",
                                         style: TextStyle(
                                           fontSize: 18.sp,
-                                          color: Colors.white,
+                                          color:
+                                              isDark
+                                                  ? Colors.black
+                                                  : Colors.white,
                                           fontFamily: AppConstants.manrope,
                                           fontWeight: FontWeight.w600,
                                         ),
@@ -2785,47 +3014,6 @@ class _AddToCartViewState extends State<AddToCartView> {
     }
     return "";
   }
-
-  // Widget _buildAmendOrderSummary() {
-  //   double subtotal = _getAmendSubtotal();
-  //   double discount =
-  //       double.tryParse(
-  //         amendOrderModal?.amendOrderData?.discountApplied ?? '0',
-  //       ) ??
-  //       0.0;
-  //   double loyaltyDiscount =
-  //       (amendOrderModal?.amendOrderData?.loyaltyDiscountApplied ?? 0)
-  //           .toDouble();
-  //   double total =
-  //       double.tryParse(amendOrderModal?.amendOrderData?.totalAmount ?? '0') ??
-  //       0.0;
-  //
-  //   return Column(
-  //     children: [
-  //       _buildSummaryRow("Subtotal", subtotal),
-  //       if (discount > 0)
-  //         _buildSummaryRow("Discount", discount, isDiscount: true),
-  //       if (loyaltyDiscount > 0)
-  //         _buildSummaryRow(
-  //           "Loyalty Discount",
-  //           loyaltyDiscount,
-  //           isDiscount: true,
-  //         ),
-  //       Divider(height: 3.h, thickness: 1),
-  //       _buildSummaryRow("Total", total, isTotal: true),
-  //       SizedBox(height: 2.h),
-  //       Text(
-  //         "Note: Price differences will be adjusted in the final payment",
-  //         style: TextStyle(
-  //           fontSize: 12.sp,
-  //           color: Colors.grey[600],
-  //           fontStyle: FontStyle.italic,
-  //         ),
-  //         textAlign: TextAlign.center,
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget _buildServiceOrderSummary() {
     return Column(

@@ -2,13 +2,17 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Services/themeServices.dart';
 import 'package:wavee/Ui/ChatScreen/modal/ChatStoryModal.dart';
 import 'package:wavee/Ui/ChatScreen/modal/chatScreenModel.dart';
+import 'package:wavee/Utils/themeButton.dart';
 
 import '../../../Utils/bottomBar.dart';
 import '../../../Utils/chatCounter.dart';
@@ -104,11 +108,15 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
         parsedDate.day,
       );
 
+      // સમય ફોર્મેટ કરવા માટે (દા.ત. 18:38)
+      String timeStr = DateFormat("HH:mm").format(parsedDate);
+
       if (dateToCompare == today) {
-        return "Today";
+        return timeStr; // આજે હોય તો ફક્ત સમય બતાવો
       } else if (dateToCompare == yesterday) {
         return "Yesterday";
       } else {
+        // જૂની તારીખ હોય તો તારીખ બતાવો
         return DateFormat("dd-MM-yyyy").format(parsedDate);
       }
     } catch (e) {
@@ -174,7 +182,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   void _startTimer() {
     _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 2), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
       if (mounted) {
         _getCurrentLocation().then((value) {
           ChatApi();
@@ -215,587 +223,967 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeController>();
+
     return WillPopScope(
       onWillPop: () async {
         Get.offAll(() => HomePage(selected: 1, userName: ''));
         return false;
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: theme.isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
         bottomNavigationBar: Obx(
           () => BottomBar(
             selected: 3,
             chatCount: countsController.chatCount.value,
           ),
         ),
-        body: Container(
-          width: double.infinity,
-          height: Get.height,
-          decoration: BoxDecoration(
-            color: const Color(0xfff0f0f0),
-            borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(45),
-              topLeft: Radius.circular(45),
-            ),
-            border: Border.all(color: const Color(0xffdfe0e6), width: 1),
-          ),
-          child: Padding(
-            padding: EdgeInsets.only(top: 7.h, left: 5.5.w, right: 5.5.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        body: Column(
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    Text(
-                      "$selectedValue Chat",
-                      style: TextStyle(
-                        fontSize: 20.sp,
-                        fontFamily: AppConstants.manrope,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Spacer(),
-                    Container(
-                      width: 35.w,
-                      height: 5.h,
-                      padding: EdgeInsets.symmetric(horizontal: 3.w),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(25),
-                        border: Border.all(
-                          color: AppColors.borderColor,
-                          width: 1,
-                        ),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          dropdownColor: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                          value: selectedValue,
-                          isExpanded: true,
-                          icon: const Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            color: Colors.grey,
-                          ),
-                          style: TextStyle(
-                            fontFamily: AppConstants.manrope,
-                            fontSize: 12.sp,
-                            color: Colors.black,
-                          ),
-                          items:
-                              options.map((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: 1.2.h,
-                                    ),
-                                    child: Text(
-                                      value,
-                                      style: TextStyle(
-                                        fontSize: 17.sp,
-                                        color:
-                                            value == 'Select option'
-                                                ? Colors.grey
-                                                : Colors.black,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                          onChanged: (newValue) {
-                            setState(() {
-                              selectedValue = newValue!;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 1.5.h),
-                Container(
-                  height: 0.6.h,
-                  width: 18.w,
-                  decoration: BoxDecoration(
-                    color: AppColors.blackColor,
-                    borderRadius: BorderRadius.circular(10),
+                Text(
+                  "$selectedValue Chat",
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontFamily: AppConstants.manropeBold,
+                    // fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 1.h),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
+                const Spacer(),
+                const ThemeToggleButton().paddingOnly(bottom: 2.h),
+              ],
+            ),
+            SizedBox(height: 2.h),
+
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color:
+                      theme.isDark ? const Color(0xFF242424) : AppColors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  // --- Box Shadow Implementation ---
+                  boxShadow: [
+                    BoxShadow(
+                      color:
+                          theme.isDark
+                              ? Colors.black.withValues(
+                                alpha: 0.5,
+                              ) // Deeper shadow for dark mode
+                              : Colors.grey.withValues(
+                                alpha: 0.2,
+                              ), // Soft shadow for light mode
+                      blurRadius: 15,
+                      spreadRadius: 1,
+                      offset: const Offset(0, 4), // Moves shadow downwards
+                    ),
+                  ],
+                  // ---------------------------------
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        if (selectedValue == "Businesses") ...[
-                          chatStories?.data?.length == 0 ||
-                                  chatStories?.data?.length == null
-                              ? const SizedBox()
-                              : Text(
-                                "Business Spotlight",
-                                style: TextStyle(
-                                  fontSize: 20.sp,
-                                  fontFamily: AppConstants.manrope,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                        Text(
+                          selectedValue == "Concierge"
+                              ? "${chatModel?.data?.concierges?.length.toString() ?? "0"} Contacts"
+                              : "${chatModel?.data?.businessUsers?.length.toString() ?? "0"} Contacts",
+                          style: TextStyle(
+                            fontSize: 17.sp,
+                            fontFamily: AppConstants.manrope,
+                            color: theme.isDark ? Colors.grey : AppColors.black,
+                          ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          width: 35.w,
+                          height: 5.h,
+                          padding: EdgeInsets.symmetric(horizontal: 3.w),
+                          decoration: BoxDecoration(
+                            color:
+                                theme.isDark
+                                    ? Color(0xf035332F)
+                                    : AppColors.lightText.withValues(alpha: .2),
+                            borderRadius: BorderRadius.circular(25),
+                            border: Border.all(
+                              color:
+                                  theme.isDark
+                                      ? AppColors.batanColor
+                                      : AppColors.lightText.withValues(
+                                        alpha: .2,
+                                      ),
+                              width: 1,
+                            ),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              dropdownColor:
+                                  theme.isDark
+                                      ? const Color(0xFF333333)
+                                      : Colors.white,
+                              borderRadius: BorderRadius.circular(15),
+                              value: selectedValue,
+                              isExpanded: true,
+                              icon: Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color:
+                                    theme.isDark
+                                        ? AppColors.batanColor
+                                        : AppColors.lightText,
                               ),
-                          chatStories?.data?.length == 0 ||
-                                  chatStories?.data?.length == null
-                              ? const SizedBox()
-                              : SizedBox(height: 1.h),
-                          chatStories?.data?.length == 0 ||
-                                  chatStories?.data?.length == null
-                              ? const SizedBox()
-                              : SizedBox(
-                                height: 17.h,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  shrinkWrap: true,
-                                  physics: const ClampingScrollPhysics(),
-                                  itemCount: chatStories?.data?.length,
-                                  itemBuilder: (context, index) {
-                                    final item = chatStories?.data?[index];
-                                    return item?.posts?.isEmpty == true
-                                        ? Container()
-                                        : InkWell(
-                                          onTap: () {
-                                            if (item?.posts?.isNotEmpty ==
-                                                true) {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder:
-                                                      (_) => StoryViewerScreen(
-                                                        userId:
-                                                            chatStories
-                                                                ?.data?[index]
-                                                                .id ??
-                                                            0,
-                                                      ),
-                                                ),
-                                              ).then((value) {
-                                                _restartTimer();
-                                              });
-                                            }
-                                          },
-                                          child: Container(
-                                            width: 23.w,
-                                            margin: EdgeInsets.only(right: 4.w),
-                                            child: Column(
-                                              children: [
-                                                ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  child: CachedNetworkImage(
-                                                    imageUrl: item?.logo ?? '',
-                                                    height: 9.h,
-                                                    width: 9.h,
-                                                    fit: BoxFit.contain,
-                                                    placeholder:
-                                                        (
-                                                          context,
-                                                          url,
-                                                        ) => const Center(
-                                                          child: CircularProgressIndicator(
+                              style: TextStyle(
+                                fontFamily: AppConstants.manrope,
+                                fontSize: 12.sp,
+                                color:
+                                    theme.isDark
+                                        ? AppColors.batanColor
+                                        : AppColors.lightText,
+                              ),
+                              items:
+                                  options.map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 1.2.h,
+                                        ),
+                                        child: Text(
+                                          value,
+                                          style: TextStyle(
+                                            fontSize: 17.sp,
+                                            color:
+                                                theme.isDark
+                                                    ? Color(0xf0CBB880)
+                                                    : AppColors.lightText,
+                                            fontFamily: AppConstants.manrope,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  selectedValue = newValue!;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ).paddingOnly(left: 6.w, right: 6.w, top: 4.h, bottom: 2.h),
+                    Container(
+                      height: 0.2.h,
+                      decoration: BoxDecoration(
+                        color:
+                            theme.isDark
+                                ? Colors.white10
+                                : Colors.grey.shade100,
+                      ),
+                    ),
+
+                    if (selectedValue == "Businesses") ...[
+                      chatStories?.data?.length == 0 ||
+                              chatStories?.data?.length == null
+                          ? const SizedBox()
+                          : Text(
+                            "Business Spotlight",
+                            style: TextStyle(
+                              fontSize: 20.sp,
+                              fontFamily: AppConstants.manrope,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                      chatStories?.data?.length == 0 ||
+                              chatStories?.data?.length == null
+                          ? const SizedBox()
+                          : SizedBox(height: 1.h),
+                      chatStories?.data?.length == 0 ||
+                              chatStories?.data?.length == null
+                          ? const SizedBox()
+                          : SizedBox(
+                            height: 17.h,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              physics: const ClampingScrollPhysics(),
+                              itemCount: chatStories?.data?.length,
+                              itemBuilder: (context, index) {
+                                final item = chatStories?.data?[index];
+                                return item?.posts?.isEmpty == true
+                                    ? Container()
+                                    : InkWell(
+                                      onTap: () {
+                                        if (item?.posts?.isNotEmpty == true) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (_) => StoryViewerScreen(
+                                                    userId:
+                                                        chatStories
+                                                            ?.data?[index]
+                                                            .id ??
+                                                        0,
+                                                  ),
+                                            ),
+                                          ).then((value) {
+                                            _restartTimer();
+                                          });
+                                        }
+                                      },
+                                      child: Container(
+                                        width: 23.w,
+                                        margin: EdgeInsets.only(right: 4.w),
+                                        child: Column(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              child: CachedNetworkImage(
+                                                imageUrl: item?.logo ?? '',
+                                                height: 9.h,
+                                                width: 9.h,
+                                                fit: BoxFit.contain,
+                                                placeholder:
+                                                    (
+                                                      context,
+                                                      url,
+                                                    ) => const Center(
+                                                      child:
+                                                          CircularProgressIndicator(
                                                             color:
                                                                 AppColors
                                                                     .blackColor,
                                                           ),
-                                                        ),
-                                                    errorWidget:
-                                                        (
-                                                          context,
-                                                          url,
-                                                          error,
-                                                        ) => Image.asset(
-                                                          'assets/images/waveeLogoShort.png',
-                                                          height: 9.h,
-                                                          width: 9.h,
-                                                          fit: BoxFit.contain,
-                                                        ),
-                                                  ),
-                                                ),
-                                                SizedBox(height: 1.h),
-                                                Text(
-                                                  item?.businessName ?? '',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: 15.sp,
-                                                    fontFamily:
-                                                        AppConstants
-                                                            .manropeBold,
-                                                  ),
-                                                ),
-                                              ],
+                                                    ),
+                                                errorWidget:
+                                                    (
+                                                      context,
+                                                      url,
+                                                      error,
+                                                    ) => Image.asset(
+                                                      'assets/images/waveeLogoShort.png',
+                                                      height: 9.h,
+                                                      width: 9.h,
+                                                      fit: BoxFit.contain,
+                                                    ),
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                  },
-                                ),
-                              ),
-                          chatStories?.data?.length == 0 ||
-                                  chatStories?.data?.length == null
-                              ? const SizedBox()
-                              : SizedBox(height: 1.h),
-                          chatStories?.data?.length == 0 ||
-                                  chatStories?.data?.length == null
-                              ? const SizedBox()
-                              : Container(
-                                height: 0.14,
-                                width: double.infinity,
-                                decoration: const BoxDecoration(
-                                  color: AppColors.batanColor,
-                                ),
-                              ),
-                          SizedBox(height: 2.h),
-                          if (chatModel?.data?.businessUsers == null ||
-                              chatModel?.data?.businessUsers == "" ||
-                              chatModel?.data?.businessUsers == 0)
-                            Center(child: Loader()).paddingOnly(bottom: 2.h)
-                          else ...[
-                            Builder(
-                              builder: (context) {
-                                List businessUsersList =
-                                    chatModel?.data?.businessUsers ?? [];
-
-                                List filteredList =
-                                    businessUsersList.where((user) {
-                                      String businessName =
-                                          user.business?.businessName
-                                              ?.toLowerCase() ??
-                                          "";
-                                      String lastMessage =
-                                          user.lastMessage?.toLowerCase() ?? "";
-                                      String searchQueryLower =
-                                          searchQuery.toLowerCase();
-                                      return searchQuery.isEmpty ||
-                                          businessName.contains(
-                                            searchQueryLower,
-                                          ) ||
-                                          lastMessage.contains(
-                                            searchQueryLower,
-                                          );
-                                    }).toList();
-
-                                if (filteredList.isEmpty) {
-                                  return Center(
-                                    child: Text(
-                                      "No Chats Found",
-                                      style: TextStyle(
-                                        fontSize: 16.8.sp,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                        fontFamily: AppConstants.manropeBold,
+                                            SizedBox(height: 1.h),
+                                            Text(
+                                              item?.businessName ?? '',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 15.sp,
+                                                fontFamily:
+                                                    AppConstants.manropeBold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                }
+                                    );
+                              },
+                            ),
+                          ),
+                      chatStories?.data?.length == 0 ||
+                              chatStories?.data?.length == null
+                          ? const SizedBox()
+                          : SizedBox(height: 1.h),
+                      chatStories?.data?.length == 0 ||
+                              chatStories?.data?.length == null
+                          ? const SizedBox()
+                          : Container(
+                            height: 0.14,
+                            width: double.infinity,
+                            decoration: const BoxDecoration(
+                              color: AppColors.batanColor,
+                            ),
+                          ),
+                      SizedBox(height: 2.h),
+                      if (chatModel?.data?.businessUsers == null ||
+                          chatModel?.data?.businessUsers == "" ||
+                          chatModel?.data?.businessUsers == 0)
+                        Center(child: Loader()).paddingOnly(bottom: 2.h)
+                      else ...[
+                        Builder(
+                          builder: (context) {
+                            List businessUsersList =
+                                chatModel?.data?.businessUsers ?? [];
 
-                                return Column(
-                                  children: [
-                                    for (
-                                      var i = 0;
-                                      i < filteredList.length;
-                                      i++
-                                    )
-                                      Builder(
-                                        builder: (context) {
-                                          var user = filteredList[i];
-                                          String displayName =
-                                              user.business?.businessName ??
-                                              "Unknown Business";
-                                          return InkWell(
-                                            onTap: () {
-                                              _timer?.cancel();
+                            List filteredList =
+                                businessUsersList.where((user) {
+                                  String businessName =
+                                      user.business?.businessName
+                                          ?.toLowerCase() ??
+                                      "";
+                                  String lastMessage =
+                                      user.lastMessage?.toLowerCase() ?? "";
+                                  String searchQueryLower =
+                                      searchQuery.toLowerCase();
+                                  return searchQuery.isEmpty ||
+                                      businessName.contains(searchQueryLower) ||
+                                      lastMessage.contains(searchQueryLower);
+                                }).toList();
 
-                                              // Get.to(
-                                              //   MessageScreen(
-                                              //     chatName: displayName,
-                                              //     image: user.business?.logo,
-                                              //     conciergeID:
-                                              //         user.id.toString() ?? '',
-                                              //     type: "business",
-                                              //     chatStatus:
-                                              //         user
-                                              //             .business
-                                              //             ?.chatStatus ??
-                                              //         0,
-                                              //     businessID:
-                                              //         user.business?.id
-                                              //             .toString() ??
-                                              //         "",
-                                              //   ),
-                                              // )?.then((value) {
-                                              //   // Restart timer when returning from MessageScreen
-                                              //   _restartTimer();
-                                              //   ChatApi();
-                                              // });
-                                              Get.to(
-                                                MessageScreen(
-                                                  chatName: displayName,
-                                                  image: user.business?.logo,
-                                                  conciergeID:
-                                                      user.id.toString() ?? '',
-                                                  type: "business",
-                                                  chatStatus:
-                                                      user
-                                                          .business
-                                                          ?.chatStatus ??
-                                                      0,
-                                                  businessID:
-                                                      user.business?.id
-                                                          .toString() ??
-                                                      "",
+                            if (filteredList.isEmpty) {
+                              return Center(
+                                child: Text(
+                                  "No Chats Found",
+                                  style: TextStyle(
+                                    fontSize: 16.8.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                    fontFamily: AppConstants.manropeBold,
+                                  ),
+                                ),
+                              );
+                            }
+                            return Column(
+                              children: [
+                                for (var i = 0; i < filteredList.length; i++)
+                                  Builder(
+                                    builder: (context) {
+                                      var user = filteredList[i];
+                                      String displayName =
+                                          user.business?.businessName ??
+                                          "Unknown Business";
+
+                                      return GestureDetector(
+                                        onTap: () {
+                                          _timer?.cancel();
+                                          Get.to(
+                                            MessageScreen(
+                                              chatName: displayName,
+                                              image: user.business?.logo,
+                                              conciergeID:
+                                                  user.id.toString() ?? '',
+                                              type: "business",
+                                              chatStatus:
+                                                  user.business?.chatStatus ??
+                                                  0,
+                                              businessID:
+                                                  user.business?.id
+                                                      .toString() ??
+                                                  "",
+                                            ),
+                                          )?.then((value) {
+                                            _restartTimer();
+                                            ChatApi();
+                                            StoryApi();
+                                            setState(() {});
+                                          });
+                                        },
+                                        child: Container(
+                                          margin: EdgeInsets.only(
+                                            bottom: 2.h,
+                                            left: 4.w,
+                                            right: 4.w,
+                                          ),
+                                          padding: EdgeInsets.all(4.w),
+                                          decoration: BoxDecoration(
+                                            color:
+                                            theme.isDark
+                                                ? const Color(
+                                              0xFF242424,
+                                            )
+                                                : Colors.white,
+                                            borderRadius:
+                                            BorderRadius.circular(25),
+                                            border: Border.all(
+                                              color:
+                                              theme.isDark
+                                                  ? Color(0xf0313131)
+                                                  : Colors.grey
+                                                  .withValues(
+                                                alpha: 0.2,
+                                              ),
+                                              width: 1,
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black
+                                                    .withValues(
+                                                  alpha: 0.03,
                                                 ),
-                                              )?.then((value) {
-                                                _restartTimer();
-                                                ChatApi();
-                                                StoryApi();
-                                                setState(() {});
-                                              });
-                                            },
-                                            child: Stack(
-                                              children: [
-                                                Container(
-                                                  margin: EdgeInsets.only(
-                                                    bottom: 1.5.h,
-                                                  ),
-                                                  padding: EdgeInsets.all(2.w),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
+                                                blurRadius: 10,
+                                                offset: const Offset(
+                                                  0,
+                                                  4,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              // --- બિઝનેસ લોગો અને ઓનલાઇન સ્ટેટસ ---
+                                              Stack(
+                                                children: [
+                                                  ClipRRect(
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                          20,
+                                                          30,
                                                         ),
-                                                    border: Border.all(
-                                                      color: Colors.grey,
-                                                      width: 0.5,
-                                                    ),
-                                                    boxShadow: const [
-                                                      BoxShadow(
-                                                        color: Colors.black12,
-                                                        blurRadius: 4,
-                                                        offset: Offset(0, 2),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              30,
+                                                    child: CachedNetworkImage(
+                                                      imageUrl:
+                                                          user.business?.logo ??
+                                                          "",
+                                                      height: 56,
+                                                      width: 56,
+                                                      fit: BoxFit.cover,
+                                                      placeholder:
+                                                          (
+                                                            context,
+                                                            url,
+                                                          ) => Container(
+                                                            height: 56,
+                                                            width: 56,
+                                                            color:
+                                                                Colors
+                                                                    .grey
+                                                                    .shade100,
+                                                            child: const Center(
+                                                              child:
+                                                                  CupertinoActivityIndicator(),
                                                             ),
-                                                        child: CachedNetworkImage(
-                                                          imageUrl:
-                                                              user
-                                                                  .business
-                                                                  ?.logo
-                                                                  ?.toString() ??
-                                                              "",
-                                                          placeholder:
-                                                              (
-                                                                context,
-                                                                url,
-                                                              ) => CircleAvatar(
-                                                                radius: 24,
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .grey
-                                                                        .shade300,
+                                                          ),
+                                                      errorWidget:
+                                                          (
+                                                            context,
+                                                            url,
+                                                            error,
+                                                          ) => Container(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                  12,
+                                                                ),
+                                                            decoration: BoxDecoration(
+                                                              shape:
+                                                                  BoxShape
+                                                                      .circle,
+                                                              border: Border.all(
+                                                                width: 1,
+                                                                color:
+                                                                    theme.isDark
+                                                                        ? const Color(
+                                                                          0xFFCBB880,
+                                                                        )
+                                                                        : AppColors.lightText.withValues(
+                                                                          alpha:
+                                                                              .2,
+                                                                        ),
                                                               ),
-                                                          errorWidget:
-                                                              (
-                                                                context,
-                                                                url,
-                                                                error,
-                                                              ) => Image.asset(
-                                                                'assets/images/waveeLogoShort.png',
-                                                                height: 9.h,
-                                                                width: 9.h,
-                                                                fit:
-                                                                    BoxFit
-                                                                        .contain,
-                                                              ),
-                                                          width: 60,
-                                                          height: 60,
-                                                          fit: BoxFit.contain,
+                                                            ),
+                                                            child: Image.asset(
+                                                              "assets/images/Applogo_remove_background.png",
+                                                              // fit: BoxFit.cover,
+                                                            ),
+                                                          ),
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                    right: 1,
+                                                    bottom: 1,
+                                                    child: Container(
+                                                      height: 13,
+                                                      width: 13,
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            user.isOnline ==
+                                                                    "online"
+                                                                ? Colors.green
+                                                                : Colors.grey,
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(
+                                                          color:
+                                                              theme.isDark
+                                                                  ? const Color(
+                                                                    0xFF2E2E2E,
+                                                                  )
+                                                                  : Colors
+                                                                      .white,
+                                                          width: 2,
                                                         ),
                                                       ),
-                                                      SizedBox(width: 3.w),
-                                                      Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Row(
-                                                            children: [
-                                                              Row(
-                                                                children: [
-                                                                  Container(
-                                                                    width: 10,
-                                                                    height: 10,
-                                                                    decoration: BoxDecoration(
-                                                                      color:
-                                                                          user.isOnline ==
-                                                                                  "online"
-                                                                              ? Colors.green
-                                                                              : Colors.red,
-                                                                      shape:
-                                                                          BoxShape
-                                                                              .circle,
-                                                                      border: Border.all(
-                                                                        color:
-                                                                            Colors.white,
-                                                                        width:
-                                                                            1.5,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 1.w,
-                                                                  ),
-                                                                  user.isOnline ==
-                                                                          "online"
-                                                                      ? Text(
-                                                                        user.isOnline.toString().capitalizeFirst ??
-                                                                            "Offline",
-                                                                        style: TextStyle(
-                                                                          fontSize:
-                                                                              14.sp,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                          fontFamily:
-                                                                              AppConstants.manrope,
-                                                                        ),
-                                                                      )
-                                                                      : Text(
-                                                                        formatLastOnline(
-                                                                          user?.lastOnlineAt.toString() ??
-                                                                              "",
-                                                                        ),
-                                                                        style: TextStyle(
-                                                                          fontSize:
-                                                                              14.sp,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                          fontFamily:
-                                                                              AppConstants.manrope,
-                                                                        ),
-                                                                      ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Text(
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(width: 4.w),
+
+                                              // --- નામ, સમય અને છેલ્લો મેસેજ ---
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
                                                             displayName,
                                                             style: TextStyle(
-                                                              fontSize: 16.8.sp,
+                                                              fontSize: 16.sp,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
                                                               fontFamily:
                                                                   AppConstants
-                                                                      .manrope,
-                                                              color:
-                                                                  const Color(
-                                                                    0XFF000000,
-                                                                  ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            height: 0.5.h,
-                                                          ),
-                                                          SizedBox(
-                                                            width: 60.w,
-                                                            child: Text(
-                                                              user.lastMessage ??
-                                                                  'No messages available',
-                                                              style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontFamily:
-                                                                    AppConstants
-                                                                        .manrope,
-                                                                color:
-                                                                    Colors.grey,
-                                                                fontSize:
-                                                                    14.5.sp,
-                                                              ),
-                                                              maxLines: 2,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      SizedBox(width: 2.w),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Positioned(
-                                                  right: 2.w,
-                                                  top: 1.5.h,
-                                                  child: Column(
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          Icon(
-                                                            Icons
-                                                                .arrow_forward_ios_rounded,
-                                                            size: 15.sp,
-                                                          ),
-                                                        ],
-                                                      ),
+                                                                      .manropeBold,
 
-                                                      SizedBox(height: 2.h),
-                                                      if (user.unreadCount != 0)
-                                                        CircleAvatar(
-                                                          radius: 13,
-                                                          backgroundColor:
-                                                              AppColors
-                                                                  .maincolor,
-                                                          child: Center(
-                                                            child: Text(
-                                                              user.unreadCount
-                                                                  .toString(),
-                                                              style: TextStyle(
-                                                                fontFamily:
-                                                                    AppConstants
-                                                                        .manrope,
-                                                                fontSize: 14.sp,
-                                                                color:
-                                                                    Colors
-                                                                        .white,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
+                                                              color:
+                                                                  theme.isDark
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
                                                             ),
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                           ),
                                                         ),
-                                                    ],
-                                                  ),
+                                                        Text(
+                                                          _formatTime(
+                                                            user.lastMessageTime
+                                                                ?.toString(),
+                                                          ),
+                                                          style: TextStyle(
+                                                            fontSize: 13.sp,
+                                                            color:
+                                                                Colors
+                                                                    .grey
+                                                                    .shade500,
+                                                            fontFamily:
+                                                                AppConstants
+                                                                    .manrope,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(height: 0.5.h),
+
+                                                    // --- બિઝનેસ કેટેગરી બેજ ---
+                                                    Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                            horizontal: 2.5.w,
+                                                            vertical: 0.9.h,
+                                                          ),
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            theme.isDark
+                                                                ? Colors.white
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.05,
+                                                                    )
+                                                                : const Color(
+                                                                  0xFFF0F4FF,
+                                                                ),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              15,
+                                                            ),
+                                                      ),
+                                                      child: Text(
+                                                        "Business",
+                                                        style: TextStyle(
+                                                          fontSize: 12.sp,
+                                                          fontFamily:
+                                                              AppConstants
+                                                                  .manrope,
+                                                          color:
+                                                              theme.isDark
+                                                                  ? const Color(
+                                                                    0xFFCBB880,
+                                                                  )
+                                                                  : const Color(
+                                                                    0xFF4A78FF,
+                                                                  ),
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 0.8.h),
+
+                                                    Text(
+                                                      user.lastMessage ??
+                                                          'No messages available',
+                                                      style: TextStyle(
+                                                        fontSize: 13.5.sp,
+                                                        color:
+                                                            Colors
+                                                                .grey
+                                                                .shade500,
+                                                        fontFamily:
+                                                            AppConstants
+                                                                .manrope,
+                                                      ),
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                  ],
                                                 ),
-                                              ],
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ],
-                        ],
-                        if (selectedValue != "Businesses") ...[
-                          Container(
+                                              ),
+
+                                              // --- એરો આઇકોન અને અનરીડ કાઉન્ટ ---
+                                              SizedBox(width: 2.w),
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons
+                                                        .arrow_forward_ios_rounded,
+                                                    size: 14.sp,
+                                                    color: Colors.grey.shade400,
+                                                  ),
+                                                  if (user.unreadCount !=
+                                                          null &&
+                                                      user.unreadCount != 0)
+                                                    Container(
+                                                      margin: EdgeInsets.only(
+                                                        top: 1.h,
+                                                      ),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                            6,
+                                                          ),
+                                                      decoration:
+                                                          const BoxDecoration(
+                                                            color:
+                                                                AppColors
+                                                                    .maincolor,
+                                                            shape:
+                                                                BoxShape.circle,
+                                                          ),
+                                                      child: Text(
+                                                        user.unreadCount
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 10.sp,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                              ],
+                            );
+                            // return Column(
+                            //   children: [
+                            //     for (var i = 0; i < filteredList.length; i++)
+                            //       Builder(
+                            //         builder: (context) {
+                            //           var user = filteredList[i];
+                            //           String displayName =
+                            //               user.business?.businessName ??
+                            //               "Unknown Business";
+                            //           return InkWell(
+                            //             onTap: () {
+                            //               _timer?.cancel();
+
+                            //               // Get.to(
+                            //               //   MessageScreen(
+                            //               //     chatName: displayName,
+                            //               //     image: user.business?.logo,
+                            //               //     conciergeID:
+                            //               //         user.id.toString() ?? '',
+                            //               //     type: "business",
+                            //               //     chatStatus:
+                            //               //         user
+                            //               //             .business
+                            //               //             ?.chatStatus ??
+                            //               //         0,
+                            //               //     businessID:
+                            //               //         user.business?.id
+                            //               //             .toString() ??
+                            //               //         "",
+                            //               //   ),
+                            //               // )?.then((value) {
+                            //               //   // Restart timer when returning from MessageScreen
+                            //               //   _restartTimer();
+                            //               //   ChatApi();
+                            //               // });
+                            //               Get.to(
+                            //                 MessageScreen(
+                            //                   chatName: displayName,
+                            //                   image: user.business?.logo,
+                            //                   conciergeID:
+                            //                       user.id.toString() ?? '',
+                            //                   type: "business",
+                            //                   chatStatus:
+                            //                       user.business?.chatStatus ??
+                            //                       0,
+                            //                   businessID:
+                            //                       user.business?.id
+                            //                           .toString() ??
+                            //                       "",
+                            //                 ),
+                            //               )?.then((value) {
+                            //                 _restartTimer();
+                            //                 ChatApi();
+                            //                 StoryApi();
+                            //                 setState(() {});
+                            //               });
+                            //             },
+                            //             child: Stack(
+                            //               children: [
+                            //                 Container(
+                            //                   margin: EdgeInsets.only(
+                            //                     bottom: 1.5.h,
+                            //                   ),
+                            //                   padding: EdgeInsets.all(2.w),
+                            //                   decoration: BoxDecoration(
+                            //                     color: Colors.white,
+                            //                     borderRadius:
+                            //                         BorderRadius.circular(20),
+                            //                     border: Border.all(
+                            //                       color: Colors.grey,
+                            //                       width: 0.5,
+                            //                     ),
+                            //                     boxShadow: const [
+                            //                       BoxShadow(
+                            //                         color: Colors.black12,
+                            //                         blurRadius: 4,
+                            //                         offset: Offset(0, 2),
+                            //                       ),
+                            //                     ],
+                            //                   ),
+                            //                   child: Row(
+                            //                     crossAxisAlignment:
+                            //                         CrossAxisAlignment.center,
+                            //                     children: [
+                            //                       ClipRRect(
+                            //                         borderRadius:
+                            //                             BorderRadius.circular(
+                            //                               30,
+                            //                             ),
+                            //                         child: CachedNetworkImage(
+                            //                           imageUrl:
+                            //                               user.business?.logo
+                            //                                   ?.toString() ??
+                            //                               "",
+                            //                           placeholder:
+                            //                               (
+                            //                                 context,
+                            //                                 url,
+                            //                               ) => CircleAvatar(
+                            //                                 radius: 24,
+                            //                                 backgroundColor:
+                            //                                     Colors
+                            //                                         .grey
+                            //                                         .shade300,
+                            //                               ),
+                            //                           errorWidget:
+                            //                               (
+                            //                                 context,
+                            //                                 url,
+                            //                                 error,
+                            //                               ) => Image.asset(
+                            //                                 'assets/images/waveeLogoShort.png',
+                            //                                 height: 9.h,
+                            //                                 width: 9.h,
+                            //                                 fit: BoxFit.contain,
+                            //                               ),
+                            //                           width: 60,
+                            //                           height: 60,
+                            //                           fit: BoxFit.contain,
+                            //                         ),
+                            //                       ),
+                            //                       SizedBox(width: 3.w),
+                            //                       Column(
+                            //                         crossAxisAlignment:
+                            //                             CrossAxisAlignment
+                            //                                 .start,
+                            //                         children: [
+                            //                           Row(
+                            //                             children: [
+                            //                               Row(
+                            //                                 children: [
+                            //                                   Container(
+                            //                                     width: 10,
+                            //                                     height: 10,
+                            //                                     decoration: BoxDecoration(
+                            //                                       color:
+                            //                                           user.isOnline ==
+                            //                                                   "online"
+                            //                                               ? Colors
+                            //                                                   .green
+                            //                                               : Colors
+                            //                                                   .red,
+                            //                                       shape:
+                            //                                           BoxShape
+                            //                                               .circle,
+                            //                                       border: Border.all(
+                            //                                         color:
+                            //                                             Colors
+                            //                                                 .white,
+                            //                                         width: 1.5,
+                            //                                       ),
+                            //                                     ),
+                            //                                   ),
+                            //                                   SizedBox(
+                            //                                     width: 1.w,
+                            //                                   ),
+                            //                                   user.isOnline ==
+                            //                                           "online"
+                            //                                       ? Text(
+                            //                                         user.isOnline
+                            //                                                 .toString()
+                            //                                                 .capitalizeFirst ??
+                            //                                             "Offline",
+                            //                                         style: TextStyle(
+                            //                                           fontSize:
+                            //                                               14.sp,
+                            //                                           fontWeight:
+                            //                                               FontWeight
+                            //                                                   .bold,
+                            //                                           fontFamily:
+                            //                                               AppConstants
+                            //                                                   .manrope,
+                            //                                         ),
+                            //                                       )
+                            //                                       : Text(
+                            //                                         formatLastOnline(
+                            //                                           user?.lastOnlineAt
+                            //                                                   .toString() ??
+                            //                                               "",
+                            //                                         ),
+                            //                                         style: TextStyle(
+                            //                                           fontSize:
+                            //                                               14.sp,
+                            //                                           fontWeight:
+                            //                                               FontWeight
+                            //                                                   .bold,
+                            //                                           fontFamily:
+                            //                                               AppConstants
+                            //                                                   .manrope,
+                            //                                         ),
+                            //                                       ),
+                            //                                 ],
+                            //                               ),
+                            //                             ],
+                            //                           ),
+                            //                           Text(
+                            //                             displayName,
+                            //                             style: TextStyle(
+                            //                               fontSize: 16.8.sp,
+                            //                               fontWeight:
+                            //                                   FontWeight.bold,
+                            //                               fontFamily:
+                            //                                   AppConstants
+                            //                                       .manrope,
+                            //                               color: const Color(
+                            //                                 0XFF000000,
+                            //                               ),
+                            //                             ),
+                            //                           ),
+                            //                           SizedBox(height: 0.5.h),
+                            //                           SizedBox(
+                            //                             width: 60.w,
+                            //                             child: Text(
+                            //                               user.lastMessage ??
+                            //                                   'No messages available',
+                            //                               style: TextStyle(
+                            //                                 fontWeight:
+                            //                                     FontWeight.bold,
+                            //                                 fontFamily:
+                            //                                     AppConstants
+                            //                                         .manrope,
+                            //                                 color: Colors.grey,
+                            //                                 fontSize: 14.5.sp,
+                            //                               ),
+                            //                               maxLines: 2,
+                            //                               overflow:
+                            //                                   TextOverflow
+                            //                                       .ellipsis,
+                            //                             ),
+                            //                           ),
+                            //                         ],
+                            //                       ),
+                            //                       SizedBox(width: 2.w),
+                            //                     ],
+                            //                   ),
+                            //                 ),
+                            //                 Positioned(
+                            //                   right: 2.w,
+                            //                   top: 1.5.h,
+                            //                   child: Column(
+                            //                     children: [
+                            //                       Row(
+                            //                         children: [
+                            //                           Icon(
+                            //                             Icons
+                            //                                 .arrow_forward_ios_rounded,
+                            //                             size: 15.sp,
+                            //                           ),
+                            //                         ],
+                            //                       ),
+
+                            //                       SizedBox(height: 2.h),
+                            //                       if (user.unreadCount != 0)
+                            //                         CircleAvatar(
+                            //                           radius: 13,
+                            //                           backgroundColor:
+                            //                               AppColors.maincolor,
+                            //                           child: Center(
+                            //                             child: Text(
+                            //                               user.unreadCount
+                            //                                   .toString(),
+                            //                               style: TextStyle(
+                            //                                 fontFamily:
+                            //                                     AppConstants
+                            //                                         .manrope,
+                            //                                 fontSize: 14.sp,
+                            //                                 color: Colors.white,
+                            //                                 fontWeight:
+                            //                                     FontWeight.bold,
+                            //                               ),
+                            //                             ),
+                            //                           ),
+                            //                         ),
+                            //                     ],
+                            //                   ),
+                            //                 ),
+                            //               ],
+                            //             ),
+                            //           );
+                            //         },
+                            //       ),
+                            //   ],
+                            // );
+                          },
+                        ),
+                      ],
+                      SizedBox(height: 2.h,)
+
+                    ],
+
+                    if (selectedValue != "Businesses") ...[
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Container(
                             padding: EdgeInsets.zero,
                             child:
                                 isLoading
@@ -805,17 +1193,14 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                     )
                                     : chatModel?.data?.concierges?.isEmpty ??
                                         true
-                                    ? Container(
-                                      child: Center(
-                                        child: Text(
-                                          "No Concierges Available",
-                                          style: TextStyle(
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.grey,
-                                            fontFamily:
-                                                AppConstants.manropeBold,
-                                          ),
+                                    ? Center(
+                                      child: Text(
+                                        "No Concierges Available",
+                                        style: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey,
+                                          fontFamily: AppConstants.manropeBold,
                                         ),
                                       ),
                                     )
@@ -866,11 +1251,9 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                           itemCount: filteredList.length,
                                           itemBuilder: (context, index) {
                                             var concierge = filteredList[index];
-
                                             return GestureDetector(
                                               onTap: () {
                                                 _timer?.cancel();
-
                                                 Get.to(
                                                   MessageScreen(
                                                     chatName:
@@ -897,42 +1280,51 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                         'Not Available',
                                                   ),
                                                 )?.then((value) {
-                                                  // Restart timer when returning from MessageScreen
                                                   _restartTimer();
                                                   ChatApi();
                                                 });
                                               },
-                                              child: Stack(
-                                                children: [
-                                                  Container(
-                                                    margin: EdgeInsets.only(
-                                                      bottom: 1.5.h,
-                                                    ),
-                                                    padding: EdgeInsets.all(
-                                                      2.w,
-                                                    ),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            20,
+                                              child: Container(
+                                                padding: EdgeInsets.all(4.w),
+                                                decoration: BoxDecoration(
+                                                  color:
+                                                      theme.isDark
+                                                          ? const Color(
+                                                            0xFF242424,
+                                                          )
+                                                          : Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                  border: Border.all(
+                                                    color:
+                                                        theme.isDark
+                                                            ? Color(0xf0313131)
+                                                            : Colors.grey
+                                                                .withValues(
+                                                                  alpha: 0.2,
+                                                                ),
+                                                    width: 1,
+                                                  ),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black
+                                                          .withValues(
+                                                            alpha: 0.03,
                                                           ),
-                                                      border: Border.all(
-                                                        color: Colors.grey,
-                                                        width: 0.5,
+                                                      blurRadius: 10,
+                                                      offset: const Offset(
+                                                        0,
+                                                        4,
                                                       ),
-                                                      boxShadow: const [
-                                                        BoxShadow(
-                                                          color: Colors.black12,
-                                                          blurRadius: 4,
-                                                          offset: Offset(0, 2),
-                                                        ),
-                                                      ],
                                                     ),
-                                                    child: Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
+                                                  ],
+                                                ),
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    // --- પ્રોફાઇલ પિક્ચર અને ઓનલાઇન સ્ટેટસ ---
+                                                    Stack(
                                                       children: [
                                                         ClipRRect(
                                                           borderRadius:
@@ -942,234 +1334,678 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                           child: CachedNetworkImage(
                                                             imageUrl:
                                                                 concierge
-                                                                    .conciergeImage
-                                                                    ?.toString() ??
+                                                                    .conciergeImage ??
                                                                 "",
+                                                            height: 56,
+                                                            width: 56,
+                                                            fit: BoxFit.cover,
                                                             placeholder:
                                                                 (
                                                                   context,
                                                                   url,
-                                                                ) => CircleAvatar(
-                                                                  radius: 24,
-                                                                  backgroundColor:
+                                                                ) => Container(
+                                                                  height: 56,
+                                                                  width: 56,
+                                                                  color:
                                                                       Colors
                                                                           .grey
-                                                                          .shade300,
+                                                                          .shade100,
+                                                                  child: const Center(
+                                                                    child:
+                                                                        CupertinoActivityIndicator(),
+                                                                  ),
                                                                 ),
                                                             errorWidget:
                                                                 (
                                                                   context,
                                                                   url,
                                                                   error,
-                                                                ) => Image.asset(
-                                                                  'assets/images/waveeLogoShort.png',
-                                                                  height: 9.h,
-                                                                  width: 9.h,
-                                                                  fit:
-                                                                      BoxFit
-                                                                          .contain,
-                                                                ),
-                                                            width: 60,
-                                                            height: 60,
-                                                            fit: BoxFit.contain,
-                                                          ),
-                                                        ),
-                                                        SizedBox(width: 3.w),
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Row(
-                                                              children: [
-                                                                Row(
-                                                                  children: [
-                                                                    Container(
-                                                                      width: 10,
-                                                                      height:
-                                                                          10,
-                                                                      decoration: BoxDecoration(
-                                                                        color:
-                                                                            concierge.livestatus ==
-                                                                                    "Active"
-                                                                                ? Colors.green
-                                                                                : Colors.red,
-                                                                        shape:
-                                                                            BoxShape.circle,
-                                                                        border: Border.all(
-                                                                          color:
-                                                                              Colors.white,
-                                                                          width:
-                                                                              1.5,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width:
-                                                                          1.w,
-                                                                    ),
-                                                                    concierge.livestatus ==
-                                                                            "Active"
-                                                                        ? Text(
-                                                                          concierge.livestatus ==
-                                                                                  "Active"
-                                                                              ? "Online"
-                                                                              : "Offline",
-                                                                          style: TextStyle(
-                                                                            fontSize:
-                                                                                14.sp,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                            fontFamily:
-                                                                                AppConstants.manrope,
-                                                                          ),
-                                                                        )
-                                                                        : Text(
-                                                                          formatLastOnline(
-                                                                            concierge?.lastMessageTime.toString() ??
-                                                                                "",
-                                                                          ),
-                                                                          style: TextStyle(
-                                                                            fontSize:
-                                                                                14.sp,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                            fontFamily:
-                                                                                AppConstants.manrope,
-                                                                          ),
-                                                                        ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            SizedBox(
-                                                              width: 50.w,
-                                                              child: Text(
-                                                                "${concierge.firstName ?? ""} ${concierge.lastName ?? ""}",
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                style: TextStyle(
-                                                                  fontSize:
-                                                                      16.8.sp,
-
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontFamily:
-                                                                      AppConstants
-                                                                          .manropeBold,
-                                                                  color: const Color(
-                                                                    0XFF000000,
+                                                                ) => Container(
+                                                                  height: 56,
+                                                                  width: 56,
+                                                                  color:
+                                                                      Colors
+                                                                          .grey
+                                                                          .shade200,
+                                                                  child: const Icon(
+                                                                    Icons
+                                                                        .person,
+                                                                    color:
+                                                                        Colors
+                                                                            .grey,
                                                                   ),
                                                                 ),
+                                                          ),
+                                                        ),
+                                                        Positioned(
+                                                          right: 1,
+                                                          bottom: 1,
+                                                          child: concierge.livestatus ==
+                                                              "Active"?LiveIndicator(): Container(
+                                                            height: 13,
+                                                            width: 13,
+                                                            decoration: BoxDecoration(
+                                                              color:
+
+
+                                                                      Colors
+                                                                          .grey,
+                                                              shape:
+                                                                  BoxShape
+                                                                      .circle,
+                                                              border: Border.all(
+                                                                color:
+                                                                    theme.isDark
+                                                                        ? const Color(
+                                                                          0xFF2E2E2E,
+                                                                        )
+                                                                        : Colors
+                                                                            .white,
+                                                                width: 2,
                                                               ),
                                                             ),
-                                                            SizedBox(
-                                                              height: 0.5.h,
-                                                            ),
-                                                            SizedBox(
-                                                              width: 60.w,
-                                                              child: Text(
-                                                                concierge
-                                                                        .lastMessage ??
-                                                                    'No messages available',
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(width: 4.w),
+
+                                                    // --- નામ, સમય, કેટેગરી અને મેસેજ ---
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Text(
+                                                                "${concierge.firstName ?? ""} ${concierge.lastName ?? ""}",
                                                                 style: TextStyle(
+                                                                  fontSize:
+                                                                      16.sp,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
-
                                                                   fontFamily:
                                                                       AppConstants
                                                                           .manropeBold,
                                                                   color:
-                                                                      Colors
-                                                                          .grey,
-                                                                  fontSize:
-                                                                      14.5.sp,
+                                                                      theme.isDark
+                                                                          ? Colors
+                                                                              .white
+                                                                          : Colors
+                                                                              .black,
                                                                 ),
-                                                                maxLines: 2,
+                                                                maxLines: 1,
                                                                 overflow:
                                                                     TextOverflow
                                                                         .ellipsis,
                                                               ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        SizedBox(width: 2.w),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    right: 2.w,
-                                                    top: 1.5.h,
-                                                    child: Column(
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            Icon(
-                                                              Icons
-                                                                  .arrow_forward_ios_rounded,
-                                                              size: 15.sp,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        concierge.unreadCount ==
-                                                                0
-                                                            ? const SizedBox(
-                                                              height: 1,
-                                                              width: 1,
-                                                            )
-                                                            : CircleAvatar(
-                                                              radius: 13,
-                                                              backgroundColor:
-                                                                  AppColors
-                                                                      .maincolor,
-                                                              child: ClipOval(
-                                                                child: Center(
-                                                                  child: Text(
-                                                                    concierge
-                                                                        .unreadCount
-                                                                        .toString(),
-                                                                    style: TextStyle(
-                                                                      fontFamily:
-                                                                          AppConstants
-                                                                              .manrope,
-                                                                      fontSize:
-                                                                          15.sp,
-                                                                      color:
-                                                                          Colors
-                                                                              .white,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                    ),
-                                                                  ),
+                                                              Text(
+                                                                _formatTime(
+                                                                  concierge
+                                                                      ?.lastMessageTime
+                                                                      .toString(),
+                                                                ),
+                                                                style: TextStyle(
+                                                                  fontSize:
+                                                                      12.sp,
+                                                                  color:
+                                                                      Colors
+                                                                          .grey
+                                                                          .shade500,
+                                                                  fontFamily:
+                                                                      AppConstants
+                                                                          .manrope,
                                                                 ),
                                                               ),
-                                                            ).paddingOnly(
-                                                              top: 2.h,
+                                                            ],
+                                                          ),
+                                                          SizedBox(
+                                                            height: 0.5.h,
+                                                          ),
+                                                          Container(
+                                                            padding:
+                                                                EdgeInsets.symmetric(
+                                                                  horizontal:
+                                                                      2.5.w,
+                                                                  vertical:
+                                                                      0.9.h,
+                                                                ),
+                                                            decoration: BoxDecoration(
+                                                              color:
+                                                                  theme.isDark
+                                                                      ? Colors
+                                                                          .white
+                                                                          .withValues(
+                                                                            alpha:
+                                                                                0.05,
+                                                                          )
+                                                                      : const Color(
+                                                                        0xFFF0F4FF,
+                                                                      ),
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    15,
+                                                                  ),
                                                             ),
+                                                            child: Text(
+                                                              "Personal Concierge",
+                                                              style: TextStyle(
+                                                                fontSize: 12.sp,
+                                                                fontFamily:
+                                                                    AppConstants
+                                                                        .manrope,
+                                                                color:
+                                                                    theme.isDark
+                                                                        ? const Color(
+                                                                          0xFFCBB880,
+                                                                        )
+                                                                        : const Color(
+                                                                          0xFF4A78FF,
+                                                                        ),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 0.8.h,
+                                                          ),
+                                                          Text(
+                                                            concierge
+                                                                    .lastMessage ??
+                                                                'No messages available',
+                                                            style: TextStyle(
+                                                              fontSize: 13.5.sp,
+                                                              color:
+                                                                  Colors
+                                                                      .grey
+                                                                      .shade500,
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manrope,
+                                                            ),
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+
+                                                    // --- જમણી બાજુનો એરો અને અનરીડ કાઉન્ટ ---
+                                                    SizedBox(width: 2.w),
+                                                    Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Icon(
+                                                          Icons
+                                                              .arrow_forward_ios_rounded,
+                                                          size: 14.sp,
+                                                          color:
+                                                              Colors
+                                                                  .grey
+                                                                  .shade400,
+                                                        ),
+                                                        // Unread Count Logic
+                                                        if (concierge
+                                                                    .unreadCount !=
+                                                                null &&
+                                                            concierge
+                                                                    .unreadCount! >
+                                                                0)
+                                                          Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                  top: 1.h,
+                                                                ),
+                                                            padding:
+                                                                const EdgeInsets.all(
+                                                                  8,
+                                                                ),
+                                                            decoration: BoxDecoration(
+                                                              color:
+                                                                  theme.isDark
+                                                                      ? const Color(
+                                                                        0xFFCBB880,
+                                                                      )
+                                                                      : AppColors
+                                                                          .maincolor,
+                                                              // લાલ અથવા તમારો થીમ કલર
+                                                              shape:
+                                                                  BoxShape
+                                                                      .circle,
+                                                            ),
+                                                            constraints:
+                                                                BoxConstraints(
+                                                                  minWidth:
+                                                                      18.sp,
+                                                                  minHeight:
+                                                                      18.sp,
+                                                                ),
+                                                            child: Center(
+                                                              child: Text(
+                                                                concierge
+                                                                    .unreadCount
+                                                                    .toString(),
+                                                                style: TextStyle(
+                                                                  color:
+                                                                      Colors
+                                                                          .white,
+                                                                  fontSize:
+                                                                      12.sp,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
                                                       ],
                                                     ),
-                                                  ),
-                                                ],
-                                              ).marginOnly(bottom: 1.h),
+                                                  ],
+                                                ),
+                                              ),
+                                            ).paddingOnly(
+                                              left: 3.w,
+                                              right: 3.w,
+                                              top: 2.h,
                                             );
+                                            // return GestureDetector(
+                                            //   onTap: () {
+                                            //     _timer?.cancel();
+
+                                            //     Get.to(
+                                            //       MessageScreen(
+                                            //         chatName:
+                                            //             "${concierge.firstName ?? ''} ${concierge.lastName ?? ''}",
+                                            //         image:
+                                            //             concierge
+                                            //                 .conciergeImage,
+                                            //         conciergeID:
+                                            //             concierge.id
+                                            //                 .toString() ??
+                                            //             '',
+                                            //         type: "concierge",
+                                            //         address:
+                                            //             concierge.address ??
+                                            //             'Not Available',
+                                            //         phone:
+                                            //             concierge.phoneNumber ??
+                                            //             'Not Available',
+                                            //         dob:
+                                            //             concierge.dateOfBirth ??
+                                            //             'Not Available',
+                                            //         email:
+                                            //             concierge.email ??
+                                            //             'Not Available',
+                                            //       ),
+                                            //     )?.then((value) {
+                                            //       // Restart timer when returning from MessageScreen
+                                            //       _restartTimer();
+                                            //       ChatApi();
+                                            //     });
+                                            //   },
+                                            //   child: Stack(
+                                            //     children: [
+                                            //       Container(
+                                            //         // margin: EdgeInsets.only(
+                                            //         //   bottom: 1.5.h,
+                                            //         // ),
+                                            //         padding: EdgeInsets.all(
+                                            //           2.w,
+                                            //         ),
+                                            //         decoration: BoxDecoration(
+                                            //           color: Colors.white,
+                                            //           borderRadius:
+                                            //               BorderRadius.circular(
+                                            //                 20,
+                                            //               ),
+                                            //           border: Border.all(
+                                            //             color: Colors.grey,
+                                            //             width: 0.5,
+                                            //           ),
+                                            //           boxShadow: const [
+                                            //             BoxShadow(
+                                            //               color: Colors.black12,
+                                            //               blurRadius: 4,
+                                            //               offset: Offset(0, 2),
+                                            //             ),
+                                            //           ],
+                                            //         ),
+                                            //         child: Row(
+                                            //           crossAxisAlignment:
+                                            //               CrossAxisAlignment
+                                            //                   .center,
+                                            //           children: [
+                                            //             ClipRRect(
+                                            //               borderRadius:
+                                            //                   BorderRadius.circular(
+                                            //                     30,
+                                            //                   ),
+                                            //               child: CachedNetworkImage(
+                                            //                 imageUrl:
+                                            //                     concierge
+                                            //                         .conciergeImage
+                                            //                         ?.toString() ??
+                                            //                     "",
+                                            //                 placeholder:
+                                            //                     (
+                                            //                       context,
+                                            //                       url,
+                                            //                     ) => CircleAvatar(
+                                            //                       radius: 24,
+                                            //                       backgroundColor:
+                                            //                           Colors
+                                            //                               .grey
+                                            //                               .shade300,
+                                            //                     ),
+                                            //                 errorWidget:
+                                            //                     (
+                                            //                       context,
+                                            //                       url,
+                                            //                       error,
+                                            //                     ) => Image.asset(
+                                            //                       'assets/images/waveeLogoShort.png',
+                                            //                       height: 9.h,
+                                            //                       width: 9.h,
+                                            //                       fit:
+                                            //                           BoxFit
+                                            //                               .contain,
+                                            //                     ),
+                                            //                 width: 60,
+                                            //                 height: 60,
+                                            //                 fit: BoxFit.contain,
+                                            //               ),
+                                            //             ),
+                                            //             SizedBox(width: 3.w),
+                                            //             Column(
+                                            //               crossAxisAlignment:
+                                            //                   CrossAxisAlignment
+                                            //                       .start,
+                                            //               children: [
+                                            //                 Row(
+                                            //                   crossAxisAlignment:
+                                            //                       CrossAxisAlignment
+                                            //                           .end,
+                                            //                   mainAxisAlignment:
+                                            //                       MainAxisAlignment
+                                            //                           .end,
+                                            //                   children: [
+                                            //                     Text(
+                                            //                       _formatTime(
+                                            //                         concierge
+                                            //                             .lastMessageTime,
+                                            //                       ),
+                                            //                       style: TextStyle(
+                                            //                         fontSize:
+                                            //                             15.sp,
+                                            //                         fontFamily:
+                                            //                             AppConstants
+                                            //                                 .manrope,
+                                            //                       ),
+                                            //                     ),
+                                            //                   ],
+                                            //                 ),
+                                            //                 // Row(
+                                            //                 //   children: [
+                                            //                 //     Row(
+                                            //                 //       children: [
+                                            //                 //         Container(
+                                            //                 //           width: 10,
+                                            //                 //           height: 10,
+                                            //                 //           decoration: BoxDecoration(
+                                            //                 //             color:
+                                            //                 //                 concierge.livestatus ==
+                                            //                 //                         "Active"
+                                            //                 //                     ? Colors.green
+                                            //                 //                     : Colors.red,
+                                            //                 //             shape:
+                                            //                 //                 BoxShape
+                                            //                 //                     .circle,
+                                            //                 //             border: Border.all(
+                                            //                 //               color:
+                                            //                 //                   Colors
+                                            //                 //                       .white,
+                                            //                 //               width:
+                                            //                 //                   1.5,
+                                            //                 //             ),
+                                            //                 //           ),
+                                            //                 //         ),
+                                            //                 //         SizedBox(
+                                            //                 //           width: 1.w,
+                                            //                 //         ),
+                                            //                 //         concierge.livestatus ==
+                                            //                 //                 "Active"
+                                            //                 //             ? Text(
+                                            //                 //               concierge.livestatus ==
+                                            //                 //                       "Active"
+                                            //                 //                   ? "Online"
+                                            //                 //                   : "Offline",
+                                            //                 //               style: TextStyle(
+                                            //                 //                 fontSize:
+                                            //                 //                     14.sp,
+                                            //                 //                 fontWeight:
+                                            //                 //                     FontWeight.bold,
+                                            //                 //                 fontFamily:
+                                            //                 //                     AppConstants.manrope,
+                                            //                 //               ),
+                                            //                 //             )
+                                            //                 //             : Text(
+                                            //                 //               formatLastOnline(
+                                            //                 //                 concierge?.lastMessageTime.toString() ??
+                                            //                 //                     "",
+                                            //                 //               ),
+                                            //                 //               style: TextStyle(
+                                            //                 //                 fontSize:
+                                            //                 //                     14.sp,
+                                            //                 //                 fontWeight:
+                                            //                 //                     FontWeight.bold,
+                                            //                 //                 fontFamily:
+                                            //                 //                     AppConstants.manrope,
+                                            //                 //               ),
+                                            //                 //             ),
+                                            //                 //       ],
+                                            //                 //     ),
+                                            //                 //   ],
+                                            //                 // ),
+                                            //                 Row(
+                                            //                   children: [
+                                            //                     SizedBox(
+                                            //                       width: 50.w,
+                                            //                       child: Text(
+                                            //                         "${concierge.firstName ?? ""} ${concierge.lastName ?? ""}",
+                                            //                         overflow:
+                                            //                             TextOverflow
+                                            //                                 .ellipsis,
+                                            //                         style: TextStyle(
+                                            //                           fontSize:
+                                            //                               16.8.sp,
+
+                                            //                           fontWeight:
+                                            //                               FontWeight
+                                            //                                   .bold,
+                                            //                           fontFamily:
+                                            //                               AppConstants
+                                            //                                   .manropeBold,
+                                            //                           color: const Color(
+                                            //                             0XFF000000,
+                                            //                           ),
+                                            //                         ),
+                                            //                       ),
+                                            //                     ),
+                                            //                   ],
+                                            //                 ),
+                                            //                 SizedBox(
+                                            //                   height: 0.5.h,
+                                            //                 ),
+                                            //                 SizedBox(
+                                            //                   width: 60.w,
+                                            //                   child: Text(
+                                            //                     concierge
+                                            //                             .lastMessage ??
+                                            //                         'No messages available',
+                                            //                     style: TextStyle(
+                                            //                       fontWeight:
+                                            //                           FontWeight
+                                            //                               .bold,
+
+                                            //                       fontFamily:
+                                            //                           AppConstants
+                                            //                               .manropeBold,
+                                            //                       color:
+                                            //                           Colors
+                                            //                               .grey,
+                                            //                       fontSize:
+                                            //                           14.5.sp,
+                                            //                     ),
+                                            //                     maxLines: 2,
+                                            //                     overflow:
+                                            //                         TextOverflow
+                                            //                             .ellipsis,
+                                            //                   ),
+                                            //                 ),
+                                            //               ],
+                                            //             ),
+                                            //             SizedBox(width: 2.w),
+                                            //           ],
+                                            //         ),
+                                            //       ),
+                                            //       // Positioned(
+                                            //       //   right: 2.w,
+                                            //       //   top: 1.5.h,
+                                            //       //   child: Column(
+                                            //       //     children: [
+                                            //       //       Row(
+                                            //       //         children: [
+                                            //       //           Text("18:00"),
+
+                                            //       //           Icon(
+                                            //       //             Icons
+                                            //       //                 .arrow_forward_ios_rounded,
+                                            //       //             size: 15.sp,
+                                            //       //           ),
+                                            //       //         ],
+                                            //       //       ),
+                                            //       //       concierge.unreadCount == 0
+                                            //       //           ? const SizedBox(
+                                            //       //             height: 1,
+                                            //       //             width: 1,
+                                            //       //           )
+                                            //       //           : CircleAvatar(
+                                            //       //             radius: 13,
+                                            //       //             backgroundColor:
+                                            //       //                 AppColors
+                                            //       //                     .maincolor,
+                                            //       //             child: ClipOval(
+                                            //       //               child: Center(
+                                            //       //                 child: Text(
+                                            //       //                   concierge
+                                            //       //                       .unreadCount
+                                            //       //                       .toString(),
+                                            //       //                   style: TextStyle(
+                                            //       //                     fontFamily:
+                                            //       //                         AppConstants
+                                            //       //                             .manrope,
+                                            //       //                     fontSize:
+                                            //       //                         15.sp,
+                                            //       //                     color:
+                                            //       //                         Colors
+                                            //       //                             .white,
+                                            //       //                     fontWeight:
+                                            //       //                         FontWeight
+                                            //       //                             .bold,
+                                            //       //                   ),
+                                            //       //                 ),
+                                            //       //               ),
+                                            //       //             ),
+                                            //       //           ).paddingOnly(top: 2.h),
+                                            //       //     ],
+                                            //       //   ),
+                                            //       // ),ositioned(
+                                            //       //   right: 2.w,
+                                            //       //   top: 1.5.h,
+                                            //       //   child: Column(
+                                            //       //     children: [
+                                            //       //       Row(
+                                            //       //         children: [
+                                            //       //           Text("18:00"),
+
+                                            //       //           Icon(
+                                            //       //             Icons
+                                            //       //                 .arrow_forward_ios_rounded,
+                                            //       //             size: 15.sp,
+                                            //       //           ),
+                                            //       //         ],
+                                            //       //       ),
+                                            //       //       concierge.unreadCount == 0
+                                            //       //           ? const SizedBox(
+                                            //       //             height: 1,
+                                            //       //             width: 1,
+                                            //       //           )
+                                            //       //           : CircleAvatar(
+                                            //       //             radius: 13,
+                                            //       //             backgroundColor:
+                                            //       //                 AppColors
+                                            //       //                     .maincolor,
+                                            //       //             child: ClipOval(
+                                            //       //               child: Center(
+                                            //       //                 child: Text(
+                                            //       //                   concierge
+                                            //       //                       .unreadCount
+                                            //       //                       .toString(),
+                                            //       //                   style: TextStyle(
+                                            //       //                     fontFamily:
+                                            //       //                         AppConstants
+                                            //       //                             .manrope,
+                                            //       //                     fontSize:
+                                            //       //                         15.sp,
+                                            //       //                     color:
+                                            //       //                         Colors
+                                            //       //                             .white,
+                                            //       //                     fontWeight:
+                                            //       //                         FontWeight
+                                            //       //                             .bold,
+                                            //       //                   ),
+                                            //       //                 ),
+                                            //       //               ),
+                                            //       //             ),
+                                            //       //           ).paddingOnly(top: 2.h),
+                                            //       //     ],
+                                            //       //   ),
+                                            //       // ),
+                                            //     ],
+                                            //   ),
+                                            // ).paddingOnly(
+                                            //   left: 3.w,
+                                            //   right: 3.w,
+                                            //   top: 3.h,
+                                            // );
                                           },
                                         );
                                       },
                                     ),
                           ),
-                        ],
-                      ],
-                    ),
-                  ),
+                        ),
+                      ),
+                      SizedBox(height: 2.h,)
+                    ],
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ).paddingOnly(top: 8.h),
+          ],
+        ).paddingOnly(top: 5.h, left: 4.w, right: 4.w),
+
       ),
     );
   }
@@ -1276,5 +2112,87 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
         buildErrorDialog(context, 'Error', "Internet Required");
       }
     });
+  }
+}
+class LiveIndicator extends StatefulWidget {
+  const LiveIndicator({super.key});
+
+  @override
+  State<LiveIndicator> createState() => _LiveIndicatorState();
+}
+
+class _LiveIndicatorState extends State<LiveIndicator>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    // ૧.૫ સેકન્ડનું લૂપ જે સતત ચાલશે
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            // ૧. પહેલું મોટું તરંગ (Outer Ripple)
+            _buildRipple(scale: 1.0 + (_controller.value * 1.5), opacity: (1 - _controller.value)),
+
+            // ૨. બીજું નાનું તરંગ (Inner Ripple - થોડું મોડું શરૂ થાય તેવું લાગે)
+            _buildRipple(
+                scale: 1.0 + (((_controller.value + 0.5) % 1.0) * 1.2),
+                opacity: (1 - ((_controller.value + 0.5) % 1.0)) * 0.5
+            ),
+
+            // ૩. મુખ્ય ગ્રીન ડોટ (સ્થિર અને Glow સાથે)
+            Container(
+              height: 2.8.w,
+              width: 2.8.w,
+              decoration: BoxDecoration(
+                color: const Color(0xFF00C853),
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 1.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF00C853).withOpacity(0.6),
+                    blurRadius: 6,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // રિપલ વિજેટ બનાવવા માટેનું હેલ્પર ફંક્શન
+  Widget _buildRipple({required double scale, required double opacity}) {
+    return Transform.scale(
+      scale: scale,
+      child: Container(
+        height: 2.5.w,
+        width: 2.5.w,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: const Color(0xFF00C853).withOpacity(opacity.clamp(0.0, 1.0)),
+        ),
+      ),
+    );
   }
 }

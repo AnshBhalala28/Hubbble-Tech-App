@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+import 'package:wavee/Services/themeServices.dart';
 import 'package:wavee/Utils/customSnackBars.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
@@ -56,12 +58,15 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
+  // bool isDark = true;
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeController>();
+    final isDark = theme.isDark;
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: isDark ? AppColors.black : AppColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? AppColors.black : Colors.white,
         elevation: 0.5,
         automaticallyImplyLeading: false,
         toolbarHeight: 60,
@@ -69,7 +74,10 @@ class _SearchScreenState extends State<SearchScreen> {
         title: Row(
           children: [
             IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black),
+              icon: Icon(
+                Icons.arrow_back,
+                color: isDark ? Color(0xffbdab82) : Colors.black,
+              ),
               onPressed: () => Get.back(),
             ),
             Expanded(
@@ -77,7 +85,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 height: 38,
                 margin: const EdgeInsets.only(right: 10),
                 decoration: BoxDecoration(
-                  color: Colors.grey[200],
+                  color: isDark ? Color(0xff272727) : Colors.grey[200],
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: TextField(
@@ -94,7 +102,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                     prefixIcon: Icon(
                       Icons.search,
-                      color: Colors.grey[600],
+                      color: isDark ? Color(0xffbdab82) : Colors.grey[600],
                       size: 20,
                     ),
                     suffixIcon:
@@ -102,7 +110,10 @@ class _SearchScreenState extends State<SearchScreen> {
                             ? IconButton(
                               icon: Icon(
                                 Icons.close,
-                                color: Colors.grey[600],
+                                color:
+                                    isDark
+                                        ? Color(0xffbdab82)
+                                        : Colors.grey[600],
                                 size: 18,
                               ),
                               onPressed: () {
@@ -117,7 +128,10 @@ class _SearchScreenState extends State<SearchScreen> {
                             )
                             : null,
                   ),
-                  style: const TextStyle(fontSize: 14),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
                 ),
               ),
             ),
@@ -126,21 +140,27 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
       body:
           isLoading
-              ? const Center(
-                child: CircularProgressIndicator(color: AppColors.maincolor),
+              ? Center(
+                child: CircularProgressIndicator(
+                  color: isDark ? Color(0xffbdab82) : AppColors.maincolor,
+                ),
               )
               : searchResults.isEmpty
               ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.search, size: 60, color: Colors.grey[300]),
+                    Icon(
+                      Icons.search,
+                      size: 60,
+                      color: isDark ? Color(0xffbdab82) : Colors.grey[300],
+                    ),
                     const SizedBox(height: 16),
                     Text(
                       "Search for products",
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.grey[500],
+                        color: isDark ? Color(0xffbdab82) : Colors.grey[500],
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -156,11 +176,14 @@ class _SearchScreenState extends State<SearchScreen> {
                     margin: const EdgeInsets.only(bottom: 12),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDark ? Color(0xff272727) : Colors.white,
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
+                          color:
+                              isDark
+                                  ? Colors.white.withValues(alpha: 0.05)
+                                  : Colors.black.withValues(alpha: 0.05),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -213,10 +236,13 @@ class _SearchScreenState extends State<SearchScreen> {
                                 children: [
                                   Text(
                                     product.name ?? '',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
-                                      color: Colors.black87,
+                                      color:
+                                          isDark
+                                              ? Color(0xffbdab82)
+                                              : Colors.black87,
                                     ),
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
@@ -230,7 +256,10 @@ class _SearchScreenState extends State<SearchScreen> {
                                           "£${product.price}",
                                           style: TextStyle(
                                             fontSize: 12,
-                                            color: Colors.grey[500],
+                                            color:
+                                                isDark
+                                                    ? Colors.white
+                                                    : Colors.grey[500],
                                             decoration:
                                                 TextDecoration.lineThrough,
                                           ),
@@ -240,10 +269,13 @@ class _SearchScreenState extends State<SearchScreen> {
                                         const SizedBox(width: 8),
                                       Text(
                                         "£${product.offerPrice ?? product.price}",
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600,
-                                          color: AppColors.maincolor,
+                                          color:
+                                              isDark
+                                                  ? Color(0xffbdab82)
+                                                  : AppColors.maincolor,
                                         ),
                                       ),
                                     ],

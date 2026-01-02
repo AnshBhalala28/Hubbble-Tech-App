@@ -109,18 +109,11 @@ class AuthProvider extends ChangeNotifier {
 
   Future<Response> updateFCM(Map<String, String> bodyData) async {
     try {
-      String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
-      final response = await dio.post(
-        ApiEndpoint.updateFcm,
-        data: bodyData,
-        options: Options(headers: {'X-Auth-Token': token}),
-      );
+      final response = await dio.post(ApiEndpoint.updateFcm, data: bodyData);
       return response;
     } on DioException catch (e) {
-      throw Exception(handleDioError(e));
-    } catch (e) {
-      rethrow;
+      throw Exception('error $e');
     }
   }
 }

@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Services/themeServices.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
@@ -45,6 +47,8 @@ class _Order_ScreenState extends State<Order_Screen> {
   int servicePage = 1;
   bool serviceHasNextPage = true;
   bool isLoadMoreServices = false;
+
+  // bool isDark = true;
 
   // --- End Pagination State Variables ---
 
@@ -115,8 +119,10 @@ class _Order_ScreenState extends State<Order_Screen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeController>();
+    final isDark = theme.isDark;
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: isDark ? Color(0xff1A1A1A) : AppColors.white,
       body: Stack(
         children: [
           Padding(
@@ -134,7 +140,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                         Text(
                           "Filter Orders By",
                           style: TextStyle(
-                            color: Colors.black,
+                            color: isDark ? Colors.white : Colors.black,
                             fontSize: 17.sp,
                             fontWeight: FontWeight.w600,
                             fontFamily: AppConstants.manropeBold,
@@ -144,7 +150,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                         Icon(
                           Icons.arrow_forward_ios,
                           size: 17.sp,
-                          color: Colors.black,
+                          color: isDark ? Colors.white : Colors.black,
                         ),
                       ],
                     ),
@@ -156,7 +162,8 @@ class _Order_ScreenState extends State<Order_Screen> {
                         height: 4.5.h,
                         width: 32.w,
                         decoration: BoxDecoration(
-                          color: AppColors.maincolor,
+                          color:
+                              isDark ? Color(0xffCBB88C) : Color(0xffC4B5D8B),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: PopupMenuButton<String>(
@@ -182,7 +189,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                               OrderListViewApi1(value, servicePage);
                             }
                           },
-                          color: Colors.white,
+                          color: isDark ? Color(0xff1A1A1A) : Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -194,7 +201,8 @@ class _Order_ScreenState extends State<Order_Screen> {
                                   child: Text(
                                     "Products",
                                     style: TextStyle(
-                                      color: Colors.black,
+                                      color:
+                                          isDark ? Colors.white : Colors.black,
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w500,
                                       fontFamily: AppConstants.manrope,
@@ -206,7 +214,8 @@ class _Order_ScreenState extends State<Order_Screen> {
                                   child: Text(
                                     "Services",
                                     style: TextStyle(
-                                      color: Colors.black,
+                                      color:
+                                          isDark ? Colors.white : Colors.black,
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w500,
                                       fontFamily: AppConstants.manrope,
@@ -223,7 +232,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                 Text(
                                   selectedType.toString().capitalizeFirst ?? "",
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: isDark ? Colors.black : Colors.white,
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w500,
                                     fontFamily: AppConstants.manropeBold,
@@ -232,7 +241,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                                 SizedBox(width: 2.w),
                                 Icon(
                                   CupertinoIcons.chevron_down,
-                                  color: Colors.white,
+                                  color: isDark ? Colors.black : Colors.white,
                                   size: 15.sp,
                                 ),
                               ],
@@ -277,9 +286,13 @@ class _Order_ScreenState extends State<Order_Screen> {
                                   color: Colors.grey,
                                 ),
                                 color:
-                                    selectedCategory == index
-                                        ? AppColors.maincolor
-                                        : Colors.white,
+                                selectedCategory == index
+                                    ? isDark
+                                    ? Color(0xffbdab82)
+                                    : Color(0xffC4B5D8B)
+                                    : isDark
+                                    ? Colors.black
+                                    : Colors.white,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               margin: EdgeInsets.symmetric(horizontal: 2.w),
@@ -288,9 +301,13 @@ class _Order_ScreenState extends State<Order_Screen> {
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   color:
-                                      selectedCategory == index
-                                          ? Colors.white
-                                          : Colors.black,
+                                  selectedCategory == index
+                                      ? isDark
+                                      ? Colors.white
+                                      : Colors.white
+                                      : isDark
+                                      ? Colors.white
+                                      : Colors.black,
                                   fontFamily:
                                       selectedCategory == index
                                           ? AppConstants.manropeBold
@@ -339,7 +356,11 @@ class _Order_ScreenState extends State<Order_Screen> {
                                 ),
                                 color:
                                     selectedCategory == index
-                                        ? AppColors.maincolor
+                                        ? isDark
+                                            ? Color(0xffbdab82)
+                                            : Color(0xffC4B5D8B)
+                                        : isDark
+                                        ? Colors.black
                                         : Colors.white,
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -350,6 +371,10 @@ class _Order_ScreenState extends State<Order_Screen> {
                                   fontSize: 16.sp,
                                   color:
                                       selectedCategory == index
+                                          ? isDark
+                                              ? Colors.white
+                                              : Colors.white
+                                          : isDark
                                           ? Colors.white
                                           : Colors.black,
                                   fontFamily:
@@ -385,7 +410,8 @@ class _Order_ScreenState extends State<Order_Screen> {
 
   // --- Widget Builder for Product List ---
   Widget _buildProductList() {
-    // Check for empty list (after initial load)
+    final theme = Provider.of<ThemeController>(context, listen: false);
+    final isDark = theme.isDark;
     if (myOrderModel?.data?.data?.isEmpty ?? true) {
       return Text(
         "No Orders Found",
@@ -393,29 +419,25 @@ class _Order_ScreenState extends State<Order_Screen> {
           fontWeight: FontWeight.bold,
           fontSize: 17.sp,
           fontFamily: AppConstants.manropeBold,
+          color: primaryText(isDark),
         ),
       ).paddingOnly(top: 30.h);
     }
 
     return ListView.builder(
       controller: _scrollController,
-      padding: const EdgeInsets.only(top: 8.0, bottom: 20.0),
-      // Add 1 to the item count for the loading indicator
+      padding: const EdgeInsets.only(top: 8, bottom: 20),
       itemCount:
           (myOrderModel?.data?.data?.length ?? 0) +
           (isLoadMoreProducts ? 1 : 0),
-      itemBuilder: (BuildContext context, int index) {
-        // If this is the last item, show the loader
+      itemBuilder: (context, index) {
         if (index == (myOrderModel?.data?.data?.length ?? 0)) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: CircularProgressIndicator(),
-            ),
+          return const Padding(
+            padding: EdgeInsets.all(12),
+            child: Center(child: CircularProgressIndicator()),
           );
         }
 
-        // --- Build the regular order item ---
         final order = myOrderModel?.data?.data?[index];
         final orderProduct =
             order?.orderProducts?.isNotEmpty == true
@@ -437,131 +459,133 @@ class _Order_ScreenState extends State<Order_Screen> {
             }
           },
           child: Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.grey.shade100, width: 1),
-              borderRadius: BorderRadius.circular(20),
+              color: cardColor(isDark),
+              borderRadius: BorderRadius.circular(18),
+              boxShadow: [
+                BoxShadow(
+                  color:
+                      isDark
+                          ? Colors.black.withOpacity(0.6)
+                          : Colors.grey.withOpacity(0.15),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-            margin: const EdgeInsets.only(bottom: 7),
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: CachedNetworkImage(
+                    imageUrl: orderProduct?.product?.image ?? "",
+                    height: 65,
+                    width: 65,
+                    fit: BoxFit.cover,
+                    placeholder:
+                        (_, __) =>
+                            const CircularProgressIndicator(strokeWidth: 2),
+                    errorWidget:
+                        (_, __, ___) => const Image(
+                          image: AssetImage("assets/images/waveeLogoShort.png"),
+                        ),
+                  ),
+                ),
+
+                const SizedBox(width: 12),
+
+                /// DETAILS
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          SizedBox(
-                            height: 15.h,
-                            width: 30.w,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: CachedNetworkImage(
-                                imageUrl: orderProduct?.product?.image ?? "",
-                                fit: BoxFit.cover,
-                                placeholder:
-                                    (context, url) => const Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                errorWidget:
-                                    (context, url, error) => const Image(
-                                      image: AssetImage(
-                                        "assets/images/waveeLogoShort.png",
-                                      ),
-                                    ),
+                      /// STATUS CHIP
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        // decoration: BoxDecoration(
+                        //   color: statusColor.withOpacity(0.15),
+                        //   borderRadius: BorderRadius.circular(20),
+                        // ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.circle, size: 8, color: statusColor),
+                            const SizedBox(width: 6),
+                            Text(
+                              status.capitalize ?? "",
+                              style: TextStyle(
+                                color: statusColor,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: AppConstants.manropeBold,
                               ),
                             ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 6),
+
+                      /// PRODUCT NAME
+                      Text(
+                        orderProduct?.product?.name?.capitalizeFirst ?? "",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.black,
+                          fontFamily: AppConstants.manropeBold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      /// ORDER NO
+                      Text(
+                        '#ORD-${order?.orderNo ?? ""}',
+                        style: TextStyle(
+                          color: secondaryText(isDark),
+                          fontSize: 14.sp,
+                          fontFamily: AppConstants.manrope,
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      /// PRICE + DATE
+                      Row(
+                        children: [
+                          Text(
+                            "£${orderProduct?.totalPrice ?? ""}",
+                            style: TextStyle(
+                              color: primaryText(isDark),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15.sp,
+                              fontFamily: AppConstants.manrope,
+                            ),
                           ),
-                          SizedBox(width: 1.h),
-                          SizedBox(
-                            height: 15.h,
-                            width: 55.w,
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.pending_rounded,
-                                      color: statusColor,
-                                      size: 18.sp,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      status.capitalize ?? "",
-                                      style: TextStyle(
-                                        color: statusColor,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: SizedBox(
-                                    width: 60.w,
-                                    child: Text(
-                                      orderProduct
-                                              ?.product
-                                              ?.name
-                                              ?.capitalizeFirst ??
-                                          "",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 0.5.h),
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    '#ORDERNO${order?.orderNo ?? ""}',
-                                    style: const TextStyle(
-                                      color: Colors.grey,
-                                      fontFamily: AppConstants.manrope,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 0.5.h),
-                                Row(
-                                  children: [
-                                    Text(
-                                      "£${orderProduct?.totalPrice ?? ""}",
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    Text(
-                                      formatDate(
-                                        orderProduct?.createdAt ?? "",
-                                      ), // Using your format function
-                                      style: const TextStyle(
-                                        color: Colors.grey,
-                                        fontFamily: AppConstants.manrope,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                          const Spacer(),
+                          Text(
+                            formatDate(orderProduct?.createdAt ?? ""),
+                            style: TextStyle(
+                              color: secondaryText(isDark),
+                              fontSize: 14.sp,
+                              fontFamily: AppConstants.manrope,
                             ),
                           ),
                         ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );
@@ -569,9 +593,10 @@ class _Order_ScreenState extends State<Order_Screen> {
     );
   }
 
-  // --- Widget Builder for Service List ---
   Widget _buildServiceList() {
     // Check for empty list (after initial load)
+    final theme = Provider.of<ThemeController>(context, listen: false);
+    final isDark = theme.isDark;
     if (serviceViewModel?.data?.data?.isEmpty ?? true) {
       return Text(
         "No Service Orders",
@@ -586,7 +611,6 @@ class _Order_ScreenState extends State<Order_Screen> {
     return ListView.builder(
       controller: _scrollController,
       padding: const EdgeInsets.only(top: 8.0, bottom: 20.0),
-      // Add 1 to the item count for the loading indicator
       itemCount:
           (serviceViewModel?.data?.data?.length ?? 0) +
           (isLoadMoreServices ? 1 : 0),
@@ -623,133 +647,173 @@ class _Order_ScreenState extends State<Order_Screen> {
             }
           },
           child: Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.grey.shade100, width: 1),
-              borderRadius: BorderRadius.circular(20),
+              color: cardColor(isDark),
+              borderRadius: BorderRadius.circular(18),
+              boxShadow: [
+                BoxShadow(
+                  color:
+                      isDark
+                          ? Colors.black.withOpacity(0.6)
+                          : Colors.grey.withOpacity(0.15),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-            margin: const EdgeInsets.only(bottom: 7),
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// IMAGE
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: CachedNetworkImage(
+                    imageUrl: orderProduct?.service?.images ?? "",
+                    height: 65,
+                    width: 65,
+                    fit: BoxFit.cover,
+                    placeholder:
+                        (_, __) => const Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                    errorWidget:
+                        (_, __, ___) => const Image(
+                          image: AssetImage("assets/images/waveeLogoShort.png"),
+                        ),
+                  ),
+                ),
+
+                const SizedBox(width: 12),
+
+                /// DETAILS
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      /// STATUS
+                      // Row(
+                      //   children: [
+                      //     Container(
+                      //       padding: const EdgeInsets.symmetric(
+                      //         horizontal: 8,
+                      //         vertical: 3,
+                      //       ),
+                      //       decoration: BoxDecoration(
+                      //         color: getStatusColor(status).withOpacity(0.15),
+                      //         borderRadius: BorderRadius.circular(20),
+                      //       ),
+                      //       child: Row(
+                      //         children: [
+                      //           Icon(
+                      //             Icons.circle,
+                      //             size: 8,
+                      //             color: getStatusColor(status),
+                      //           ),
+                      //           const SizedBox(width: 6),
+                      //           Text(
+                      //             status.capitalize ?? "",
+                      //             style: TextStyle(
+                      //               color: getStatusColor(status),
+                      //               fontSize: 12,
+                      //               fontWeight: FontWeight.w600,
+                      //               fontFamily: AppConstants.manrope,
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                       Row(
                         children: [
-                          SizedBox(
-                            height: 15.h,
-                            width: 30.w,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: CachedNetworkImage(
-                                imageUrl: orderProduct?.service?.images ?? "",
-                                fit: BoxFit.cover,
-                                placeholder:
-                                    (context, url) => const Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                errorWidget:
-                                    (context, url, error) => const Image(
-                                      image: AssetImage(
-                                        "assets/images/waveeLogoShort.png",
-                                      ),
-                                    ),
-                              ),
+                          Icon(
+                            Icons.circle,
+                            size: 8,
+                            color: getStatusColor(status),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            status.capitalize ?? "",
+                            style: TextStyle(
+                              color: getStatusColor(status),
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: AppConstants.manrope,
                             ),
                           ),
-                          SizedBox(width: 1.h),
-                          SizedBox(
-                            height: 15.h,
-                            width: 55.w,
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.pending_rounded,
-                                      color: getStatusColor(status),
-                                      size: 18.sp,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      status.capitalize ?? "",
-                                      style: TextStyle(
-                                        color: getStatusColor(status),
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    orderProduct
-                                            ?.service
-                                            ?.title
-                                            ?.capitalizeFirst ??
-                                        "",
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: AppConstants.manropeBold,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 0.5.h),
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    '#ORDERNO${order?.orderNo ?? ""}',
-                                    style: const TextStyle(
-                                      color: Colors.grey,
-                                      fontFamily: AppConstants.manrope,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 0.5.h),
-                                Row(
-                                  children: [
-                                    Text(
-                                      "£${orderProduct?.totalPrice ?? ""}",
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    Text(
-                                      formatDate(
-                                        orderProduct?.createdAt ?? "",
-                                      ), // Using your format function
-                                      style: const TextStyle(
-                                        color: Colors.grey,
-                                        fontFamily: AppConstants.manrope,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+
+                      /// TITLE
+                      Text(
+                        orderProduct?.service?.title?.capitalizeFirst ?? "",
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          // fontWeight: FontWeight.bold,
+                          color: primaryText(isDark),
+                          fontFamily: AppConstants.manropeBold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      /// ORDER NO
+                      Text(
+                        '#ORD-${order?.orderNo ?? ""}',
+                        style: TextStyle(
+                          color: secondaryText(isDark),
+                          fontSize: 14.sp,
+                          fontFamily: AppConstants.manrope,
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      /// PRICE + DATE
+                      Row(
+                        children: [
+                          Text(
+                            "£${orderProduct?.totalPrice ?? ""}",
+                            style: TextStyle(
+                              color: primaryText(isDark),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15.sp,
+                              fontFamily: AppConstants.manrope,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            formatDate(orderProduct?.createdAt ?? ""),
+                            style: TextStyle(
+                              color: secondaryText(isDark),
+                              fontSize: 14.sp,
+                              fontFamily: AppConstants.manrope,
                             ),
                           ),
                         ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );
       },
     );
   }
+
+  Color cardColor(bool isDark) =>
+      isDark ? const Color(0xFF1E1E1E) : Colors.white;
+
+  Color primaryText(bool isDark) =>
+      isDark ? Color(0xffbdab82) : Colors.black;
+
+  Color secondaryText(bool isDark) =>
+      isDark ? Colors.grey.shade400 : Colors.grey;
 
   String formatDate(String? dateTime) {
     if (dateTime == null || dateTime.isEmpty) return "N/A";

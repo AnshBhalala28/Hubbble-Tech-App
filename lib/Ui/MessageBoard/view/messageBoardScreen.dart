@@ -4,19 +4,24 @@ import 'dart:io' as io;
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wavee/Services/themeServices.dart';
 import 'package:wavee/Utils/customSnackBars.dart';
 import 'package:wavee/Utils/linkView.dart';
+import 'package:wavee/Utils/loader.dart';
+import 'package:wavee/Utils/viewPdfFunction.dart';
 
 import '../../../Utils/bottomBar.dart';
 import '../../../Utils/checkInternetConnection.dart';
@@ -25,8 +30,6 @@ import '../../../Utils/const.dart';
 import '../../../Utils/customBatan.dart';
 import '../../../Utils/customInputDecoration.dart';
 import '../../../Utils/errorDialog.dart';
-import '../../../Utils/loader.dart';
-import '../../../Utils/viewPdfFunction.dart';
 import '../../HomeScreen/Provider/homescreenProvider.dart';
 import '../../HomeScreen/modal/messageBoardModal.dart';
 import '../../MessageBoard/modal/Add_Post_Model.dart';
@@ -47,7 +50,6 @@ class Messageboard extends StatefulWidget {
 
 TextEditingController _descController = TextEditingController();
 TextEditingController _title = TextEditingController();
-final PageController _pageController = PageController();
 int _currentPage = 0;
 
 class _MessageboardState extends State<Messageboard> {
@@ -293,7 +295,7 @@ class _MessageboardState extends State<Messageboard> {
   }
 
   List<String> options = ['All', 'My Building', 'Local', 'Friends', 'Group'];
-  String selectedOption = 'My Building';
+  String selectedOption = 'All Updates';
 
   int cartCount = cartDetailsModel?.data?.length ?? 0;
 
@@ -301,1545 +303,1693 @@ class _MessageboardState extends State<Messageboard> {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> scaffoldkeyMessageboard =
-        GlobalKey<ScaffoldState>();
+    final theme = context.watch<ThemeController>();
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: theme.isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
       body: Stack(
         children: [
-          // SizedBox(height: 10.h),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 2.h),
-            margin: EdgeInsets.symmetric(horizontal: 0.5.w),
-            height: 95.h,
-            decoration: BoxDecoration(
-              color: AppColors.bgcolor,
-              border: const Border(
-                top: BorderSide(color: Colors.grey),
-                left: BorderSide(color: Colors.grey),
-                right: BorderSide(color: Colors.grey),
-              ),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(45),
-                topRight: Radius.circular(45),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 2.h),
-                Text(
-                  "Message Board",
-                  style: TextStyle(
-                    fontFamily: AppConstants.manropeBold,
-                    fontSize: 19.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ThemeToggleButton(),
+              Row(
+                children: [
+                  Text(
+                    "Message Board",
+                    style: TextStyle(
+                      fontSize: 20.sp,
+                      color:
+                          theme.isDark
+                              ? Color(0xf0C4B595)
+                              : AppColors.lightText,
+                      fontFamily: AppConstants.manropeBold,
+                      // fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                SizedBox(height: 1.h),
-                Container(
-                  height: 0.5.h,
-                  width: 23.w,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(35),
-                    color: AppColors.maincolor,
-                  ),
-                ),
-                SizedBox(height: 1.h),
-                Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      height: 5.h,
-                      width: 40.w,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                  Spacer(),
+                  GestureDetector(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(20),
+                        color:
+                            theme.isDark
+                                ? Color(0xf0262626)
+                                : AppColors.black.withValues(alpha: .1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.arrow_back_ios_rounded,
+                        color: theme.isDark ? AppColors.white : AppColors.black,
+                      ),
+                    ),
+                  ),
+                ],
+              ).paddingOnly(bottom: 2.h),
+              Row(
+                children: [
+                  Material(
+                    elevation: 2,
+                    borderRadius: BorderRadius.circular(30),
+
+                    child: Container(
+                      height: 5.h,
+                      width: 45.w,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: theme.isDark ? Color(0xf0262626) : Colors.white,
+                        border: Border.all(
+                          color:
+                              theme.isDark
+                                  ? Color(0xf0262626)
+                                  : Colors.grey.shade200,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                          30,
+                        ), // Pill shape mate
                       ),
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
-                          dropdownColor: AppColors.white,
-                          borderRadius: BorderRadius.circular(10),
-
-                          hint: Text(
-                            "Select option",
-                            style: TextStyle(
-                              fontFamily: AppConstants.manrope,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey,
-                            ),
-                          ),
                           value: selectedOption,
-                          icon: const Icon(Icons.keyboard_arrow_down),
+                          icon: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Colors.grey, // Image mujab no color
+                          ),
+                          elevation: 16,
+                          borderRadius: BorderRadius.circular(20),
+                          dropdownColor: Colors.white,
+
+                          selectedItemBuilder: (BuildContext context) {
+                            return [
+                              'All Updates',
+                              'My Building',
+                              'Announcements',
+                              // 'Events',
+                            ].map((String value) {
+                              return Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  selectedOption ?? "All Updates",
+                                  style: TextStyle(
+                                    fontFamily: AppConstants.manrope,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color:
+                                        theme.isDark
+                                            ? Color(0xf0C4B595)
+                                            : AppColors.lightText,
+                                  ),
+                                ),
+                              );
+                            }).toList();
+                          },
                           items:
-                              ['My Building', 'Local']
-                                  .map(
-                                    (option) => DropdownMenuItem(
-                                      value: option,
-                                      child: Container(
-                                        child: Text(
-                                          option,
-                                          style: TextStyle(
-                                            fontFamily: AppConstants.manrope,
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
+                              [
+                                'All Updates',
+                                'My Building',
+                                'Announcements',
+                                // 'Events',
+                              ].map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 8.0,
+                                    ),
+                                    child: Text(
+                                      value,
+                                      style: TextStyle(
+                                        fontFamily: AppConstants.manrope,
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.normal,
+                                        color:
+                                            theme.isDark
+                                                ? value == selectedOption
+                                                    ? Color(0xf0C4B595)
+                                                    : Colors.black
+                                                : value == selectedOption
+                                                ? AppColors.lightText
+                                                : Colors.black,
                                       ),
                                     ),
-                                  )
-                                  .toList(),
-                          onChanged: (value) {
+                                  ),
+                                );
+                              }).toList(),
+
+                          onChanged: (newValue) {
                             setState(() {
-                              selectedOption = value!;
+                              selectedOption = newValue!;
                             });
                           },
                         ),
                       ),
                     ),
-                    selectedOption == "Local"
-                        ? GestureDetector(
-                          onTap: () {
-                            final List<String> buildingNames =
-                                (localpost_model?.data?.data ?? [])
-                                    .map(
-                                      (item) =>
-                                          item.users?.isNotEmpty == true
-                                              ? item.users![0].buildingName ??
-                                                  ""
-                                              : "",
-                                    )
-                                    .where((name) => name.isNotEmpty)
-                                    .toList();
-                            final uniqueBuildings =
-                                buildingNames.toSet().toList();
+                  ),
+                  selectedOption == "Announcements"
+                      ? GestureDetector(
+                        onTap: () {
+                          final List<String> buildingNames =
+                              (localpost_model?.data?.data ?? [])
+                                  .map(
+                                    (item) =>
+                                        item.users?.isNotEmpty == true
+                                            ? item.users![0].buildingName ?? ""
+                                            : "",
+                                  )
+                                  .where((name) => name.isNotEmpty)
+                                  .toList();
+                          final uniqueBuildings =
+                              buildingNames.toSet().toList();
 
-                            showDialog(
-                              context: context,
-                              builder:
-                                  (context) => AlertDialog(
-                                    backgroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    title: Row(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.all(6),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.maincolor
-                                                .withValues(alpha: 0.15),
-                                            shape: BoxShape.circle,
+                          showDialog(
+                            context: context,
+                            builder:
+                                (context) => AlertDialog(
+                                  backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  title: Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(6),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.maincolor.withValues(
+                                            alpha: 0.15,
                                           ),
-                                          child: const Icon(
-                                            Icons.info_rounded,
-                                            color: AppColors.maincolor,
-                                            size: 24,
-                                          ),
+                                          shape: BoxShape.circle,
                                         ),
-                                        const SizedBox(width: 10),
-                                        Text(
-                                          "Information",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w700,
-                                            fontFamily: AppConstants.manrope,
-                                            fontSize: 18.sp,
-                                            color: AppColors.blackColor,
-                                          ),
+                                        child: const Icon(
+                                          Icons.info_rounded,
+                                          color: AppColors.maincolor,
+                                          size: 24,
                                         ),
-                                      ],
-                                    ),
-                                    content: SingleChildScrollView(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            uniqueBuildings.isEmpty
-                                                ? "No posts available yet in your neighbourhood"
-                                                : "The following buildings in your neighbourhood posted on Wavee Ai:",
-                                            style: TextStyle(
-                                              fontFamily: AppConstants.manrope,
-                                              fontSize: 15.5.sp,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black87,
-                                            ),
-                                          ),
-                                          SizedBox(height: 2.h),
-                                          uniqueBuildings.isEmpty
-                                              ? Container(
-                                                padding: EdgeInsets.all(2.h),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.grey.shade100,
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    "No buildings found",
-                                                    style: TextStyle(
-                                                      fontFamily:
-                                                          AppConstants.manrope,
-                                                      fontSize: 15.sp,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color:
-                                                          Colors.grey.shade600,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                              : SizedBox(
-                                                child: SingleChildScrollView(
-                                                  child: Column(
-                                                    children: [
-                                                      ...uniqueBuildings.map(
-                                                        (name) => Card(
-                                                          elevation: 1,
-                                                          color:
-                                                              AppColors.white,
-                                                          shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  12,
-                                                                ),
-                                                          ),
-                                                          margin:
-                                                              const EdgeInsets.only(
-                                                                bottom: 8,
-                                                              ),
-                                                          child: Padding(
-                                                            padding:
-                                                                EdgeInsets.symmetric(
-                                                                  horizontal:
-                                                                      5.w,
-                                                                  vertical: 1.h,
-                                                                ),
-                                                            child: Row(
-                                                              children: [
-                                                                Icon(
-                                                                  Icons
-                                                                      .location_city,
-                                                                  size: 20.sp,
-                                                                  color:
-                                                                      AppColors
-                                                                          .maincolor,
-                                                                ),
-                                                                const SizedBox(
-                                                                  width: 8,
-                                                                ),
-                                                                // 1129.29 2588.44
-                                                                Expanded(
-                                                                  child: Text(
-                                                                    capitalizeEachWord(
-                                                                      name,
-                                                                    ),
-                                                                    style: TextStyle(
-                                                                      fontFamily:
-                                                                          AppConstants
-                                                                              .manrope,
-                                                                      fontSize:
-                                                                          15.sp,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w400,
-                                                                      color:
-                                                                          Colors
-                                                                              .black87,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                        ],
                                       ),
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        style: TextButton.styleFrom(
-                                          foregroundColor: Colors.white,
-                                          backgroundColor: AppColors.maincolor,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
-                                          ),
-                                        ),
-                                        onPressed: () => Get.back(),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 16,
-                                            vertical: 6,
-                                          ),
-                                          child: Text(
-                                            "Close",
-                                            style: TextStyle(
-                                              fontFamily: AppConstants.manrope,
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        "Information",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontFamily: AppConstants.manrope,
+                                          fontSize: 18.sp,
+                                          color: AppColors.blackColor,
                                         ),
                                       ),
                                     ],
                                   ),
-                            );
-                          },
-                          child: Material(
-                            elevation: 1,
-                            borderRadius: BorderRadius.circular(20),
-                            color: AppColors.white,
-                            child: Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppColors.white.withValues(alpha: 0.1),
-                              ),
-                              child: Icon(
-                                Icons.info_outline_rounded,
-                                color: AppColors.maincolor,
-                                size: 19.sp,
-                              ),
-                            ),
-                          ),
-                        ).paddingOnly(right: 9.w, left: 1.w)
-                        : const SizedBox(),
-
-                    selectedOption == "My Building"
-                        ? const SizedBox()
-                        : GestureDetector(
-                          onTap: () {},
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 4.w,
-                              vertical: 0.8.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Colors.grey.shade300),
-                            ),
-                            child:
-                                selectedOption == "My Building"
-                                    ? const SizedBox()
-                                    : selectedOption == "Local"
-                                    ? InkWell(
-                                      onTap: () {
-                                        addpostsheet(
-                                          context,
-                                          (loginModel?.data?.user?.id)
-                                              .toString(),
-                                        );
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            "Add Post",
-                                            style: TextStyle(
-                                              fontFamily: AppConstants.manrope1,
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.grey,
-                                            ),
+                                  content: SingleChildScrollView(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          uniqueBuildings.isEmpty
+                                              ? "No posts available yet in your neighbourhood"
+                                              : "The following buildings in your neighbourhood posted on Wavee Ai:",
+                                          style: TextStyle(
+                                            fontFamily: AppConstants.manrope,
+                                            fontSize: 15.5.sp,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.black87,
                                           ),
-                                          SizedBox(width: 2.w),
-                                          const Icon(
-                                            Icons.add_circle_outline_rounded,
-                                            color: Colors.grey,
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                    : const SizedBox(),
-                          ),
-                        ),
-                  ],
-                ),
-                SizedBox(height: 0.5.h),
-
-                SizedBox(height: 1.h),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        selectedOption == "My Building"
-                            ? messageBoardModal?.data?.length == 0 ||
-                                    messageBoardModal?.data?.length == null
-                                ? Center(
-                                  child: SizedBox(
-                                    height: 70.h,
-                                    child: Text(
-                                      "No Posts available",
-                                      style: TextStyle(
-                                        fontSize: 17.sp,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.normal,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                                : SizedBox(
-                                  height: 60.h,
-                                  child: ListView.builder(
-                                    padding: EdgeInsets.zero,
-                                    itemCount: messageBoardModal?.data?.length,
-                                    itemBuilder: (context, index) {
-                                      final post =
-                                          messageBoardModal?.data?[index];
-                                      return Container(
-                                        margin: EdgeInsets.symmetric(
-                                          vertical: 0.5.h,
                                         ),
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 3.w,
-                                          vertical: 2.h,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Colors.black12,
-                                            width: 0.2.w,
-                                          ),
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(
-                                            20,
-                                          ),
-                                          boxShadow: const [
-                                            BoxShadow(
-                                              color: Colors.black12,
-                                              blurRadius: 1,
-                                              offset: Offset(0, 1),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                // Profile Image
-                                                CachedNetworkImage(
-                                                  imageUrl:
-                                                      messageBoardModal
-                                                          ?.data?[index]
-                                                          .user
-                                                          ?.conciergeImage ??
-                                                      "",
-                                                  imageBuilder:
-                                                      (
-                                                        context,
-                                                        imageProvider,
-                                                      ) => Container(
-                                                        width: 40,
-                                                        height: 40,
-                                                        decoration: BoxDecoration(
-                                                          shape:
-                                                              BoxShape.circle,
-                                                          image: DecorationImage(
-                                                            image:
-                                                                imageProvider,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                  placeholder:
-                                                      (
-                                                        context,
-                                                        url,
-                                                      ) => const SizedBox(
-                                                        width: 40,
-                                                        height: 40,
-                                                        child: Center(
-                                                          child:
-                                                              CircularProgressIndicator(
-                                                                strokeWidth: 2,
-                                                              ),
-                                                        ),
-                                                      ),
-                                                  errorWidget:
-                                                      (context, url, error) =>
-                                                          const Icon(
-                                                            Icons.error,
-                                                            size: 40,
-                                                          ),
-                                                ),
-
-                                                SizedBox(width: 2.w),
-
-                                                // Text container that adapts to screen width
-                                                Expanded(
-                                                  child: Row(
-                                                    children: [
-                                                      // User name
-                                                      Flexible(
-                                                        child: Text(
-                                                          "${messageBoardModal?.data?[index].user?.firstName ?? ""} ${messageBoardModal?.data?[index].user?.lastName ?? ""}",
-                                                          overflow:
-                                                              TextOverflow
-                                                                  .ellipsis,
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manrope1,
-                                                            fontSize: 15.sp,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-
-                                                      SizedBox(width: 1.w),
-
-                                                      // Dot and time
-                                                      Flexible(
-                                                        child: Text(
-                                                          "• ${formatPostDate(messageBoardModal?.data?[index].createdAt)}",
-                                                          overflow:
-                                                              TextOverflow
-                                                                  .ellipsis,
-                                                          style: TextStyle(
-                                                            fontSize: 14.sp,
-                                                            color: Colors.grey,
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manrope,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-
-                                            Text(
-                                              messageBoardModal
-                                                      ?.data?[index]
-                                                      .title ??
-                                                  "",
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    AppConstants.manrope1,
-                                                fontSize: 15.sp,
-                                                fontWeight: FontWeight.bold,
-                                                color: AppColors.maincolor,
+                                        SizedBox(height: 2.h),
+                                        uniqueBuildings.isEmpty
+                                            ? Container(
+                                              padding: EdgeInsets.all(2.h),
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey.shade100,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
                                               ),
-                                            ),
-                                            ExpandableClickableText(
-                                              text:
-                                                  messageBoardModal
-                                                      ?.data?[index]
-                                                      .text ??
-                                                  "N/A",
-                                              trimLength: 140,
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.grey.shade600,
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                              ),
-                                            ),
-
-                                            post?.nocomment == 1
-                                                ? Text(
-                                                  "[COMMENT ARE DISABLED IN THIS POST]",
+                                              child: Center(
+                                                child: Text(
+                                                  "No buildings found",
                                                   style: TextStyle(
                                                     fontFamily:
-                                                        AppConstants
-                                                            .manropeBold,
-                                                    fontSize: 14.sp,
-                                                    color: const Color(
-                                                      0XFF3E3E3E,
-                                                    ),
+                                                        AppConstants.manrope,
+                                                    fontSize: 15.sp,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.grey.shade600,
                                                   ),
-                                                )
-                                                : SizedBox(),
-
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                vertical: 1.h,
-                                                horizontal: 2.5.w,
+                                                ),
                                               ),
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                child:
-                                                    post?.file?.isNotEmpty ==
-                                                            true
-                                                        ? (post!.file![0]
-                                                                .toLowerCase()
-                                                                .endsWith(
-                                                                  '.pdf',
-                                                                )
-                                                            ? GestureDetector(
-                                                              onTap: () async {
-                                                                final url =
-                                                                    post.file![0];
-                                                                final uri =
-                                                                    Uri.parse(
-                                                                      url,
-                                                                    );
-                                                                Get.to(
-                                                                  PdfView(
-                                                                    link:
-                                                                        uri.toString(),
-                                                                  ),
-                                                                );
-                                                                // if (await canLaunchUrl(uri)) {
-                                                                //   final launched = await launchUrl(
-                                                                //     uri,
-                                                                //     mode: LaunchMode.externalApplication,
-                                                                //   );
-                                                                //   if (!launched) {
-                                                                //     ScaffoldMessenger.of(context).showSnackBar(
-                                                                //       SnackBar(content: Text("Failed to open externally")),
-                                                                //     );
-                                                                //   }
-                                                                // } else {
-                                                                //   ScaffoldMessenger.of(context).showSnackBar(
-                                                                //     SnackBar(content: Text("Cannot open PDF")),
-                                                                //   );
-                                                                // }
-                                                              },
-
-                                                              child: Container(
-                                                                width:
-                                                                    double
-                                                                        .infinity,
-                                                                height: 8.h,
+                                            )
+                                            : SizedBox(
+                                              child: SingleChildScrollView(
+                                                child: Column(
+                                                  children: [
+                                                    ...uniqueBuildings.map(
+                                                      (name) => Card(
+                                                        elevation: 1,
+                                                        color: AppColors.white,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                12,
+                                                              ),
+                                                        ),
+                                                        margin:
+                                                            const EdgeInsets.only(
+                                                              bottom: 8,
+                                                            ),
+                                                        child: Padding(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal: 5.w,
+                                                                vertical: 1.h,
+                                                              ),
+                                                          child: Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .location_city,
+                                                                size: 20.sp,
                                                                 color:
-                                                                    Colors
-                                                                        .grey
-                                                                        .shade200,
-                                                                child: Center(
-                                                                  child: Row(
-                                                                    mainAxisSize:
-                                                                        MainAxisSize
-                                                                            .min,
-                                                                    children: [
-                                                                      Icon(
-                                                                        Icons
-                                                                            .picture_as_pdf,
-                                                                        color:
-                                                                            Colors.red,
-                                                                        size:
-                                                                            25.sp,
-                                                                      ),
-                                                                      SizedBox(
-                                                                        width:
-                                                                            2.w,
-                                                                      ),
-                                                                      Text(
-                                                                        "View PDF",
-                                                                        style: TextStyle(
-                                                                          fontSize:
-                                                                              16.sp,
-                                                                          fontFamily:
-                                                                              AppConstants.manrope,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                        ),
-                                                                      ),
-                                                                    ],
+                                                                    AppColors
+                                                                        .maincolor,
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 8,
+                                                              ),
+                                                              // 1129.29 2588.44
+                                                              Expanded(
+                                                                child: Text(
+                                                                  capitalizeEachWord(
+                                                                    name,
+                                                                  ),
+                                                                  style: TextStyle(
+                                                                    fontFamily:
+                                                                        AppConstants
+                                                                            .manrope,
+                                                                    fontSize:
+                                                                        15.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    color:
+                                                                        Colors
+                                                                            .black87,
                                                                   ),
                                                                 ),
                                                               ),
-                                                            )
-                                                            : CachedNetworkImage(
-                                                              imageUrl:
-                                                                  post.file![0],
-                                                              placeholder:
-                                                                  (
-                                                                    context,
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                        backgroundColor: AppColors.maincolor,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () => Get.back(),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 6,
+                                        ),
+                                        child: Text(
+                                          "Close",
+                                          style: TextStyle(
+                                            fontFamily: AppConstants.manrope,
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                          );
+                        },
+                        child: Material(
+                          elevation: 1,
+                          borderRadius: BorderRadius.circular(20),
+                          color: AppColors.white,
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color:
+                                  theme.isDark
+                                      ? Color(0xf0262626)
+                                      : Colors.white,
+                            ),
+                            child: Icon(
+                              Icons.info_outline_rounded,
+                              color:
+                                  theme.isDark
+                                      ? Color(0xf0C4B595)
+                                      : Color(0xf0809DCD),
+                              size: 19.sp,
+                            ),
+                          ),
+                        ),
+                      ).paddingOnly(right: 9.w, left: 1.w)
+                      : const SizedBox(),
+                  selectedOption == "Announcements"
+                      ? InkWell(
+                        onTap: () {
+                          addpostsheet(
+                            context,
+                            (loginModel?.data?.user?.id).toString(),
+                          );
+                        },
+                        child: Material(
+                          elevation: 2,
+                          borderRadius: BorderRadius.circular(18),
+                          child: Container(
+                            height: 5.h,
+                            padding: EdgeInsets.all(8),
+
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color:
+                                  theme.isDark
+                                      ? Color(0xf0262626)
+                                      : Colors.white,
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Add Post",
+                                  style: TextStyle(
+                                    fontFamily: AppConstants.manrope,
+                                    fontSize: 15.sp,
+
+                                    color:
+                                        theme.isDark
+                                            ? Color(0xf0C4B595)
+                                            : Color(0xf0809DCD),
+                                  ),
+                                ),
+                                SizedBox(width: 2.w),
+                                Icon(
+                                  Icons.add_circle_outline_rounded,
+                                  color:
+                                      theme.isDark
+                                          ? Color(0xf0C4B595)
+                                          : Color(0xf0809DCD),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                      : const SizedBox(),
+                ],
+              ).paddingOnly(bottom: 1.h),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      selectedOption == "All Updates" ||
+                              selectedOption == "My Building"
+                          ? messageBoardModal?.data?.length == 0 ||
+                                  messageBoardModal?.data?.length == null
+                              ? Center(
+                                child: SizedBox(
+                                  height: 70.h,
+                                  child: Text(
+                                    "No Posts available",
+                                    style: TextStyle(
+                                      fontSize: 17.sp,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.normal,
+                                      fontFamily: AppConstants.manrope,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              : SizedBox(
+                                height: Get.height,
+                                child: ListView.builder(
+                                  padding: EdgeInsets.zero,
+                                  itemCount: messageBoardModal?.data?.length,
+                                  itemBuilder: (context, index) {
+                                    final post =
+                                        messageBoardModal?.data?[index];
+                                    return Container(
+                                      margin: EdgeInsets.symmetric(
+                                        vertical: 0.5.h,
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 3.w,
+                                        vertical: 2.h,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: Colors.black12,
+                                          width: 0.2.w,
+                                        ),
+                                        color:
+                                            theme.isDark
+                                                ? Color(0xFF242424)
+                                                : Colors.white,
+                                        borderRadius: BorderRadius.circular(20),
+
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              // Profile Image
+                                              CachedNetworkImage(
+                                                imageUrl:
+                                                    messageBoardModal
+                                                        ?.data?[index]
+                                                        .user
+                                                        ?.conciergeImage ??
+                                                    "",
+                                                imageBuilder:
+                                                    (
+                                                      context,
+                                                      imageProvider,
+                                                    ) => Container(
+                                                      width: 40,
+                                                      height: 40,
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        image: DecorationImage(
+                                                          image: imageProvider,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                placeholder:
+                                                    (
+                                                      context,
+                                                      url,
+                                                    ) => const SizedBox(
+                                                      width: 40,
+                                                      height: 40,
+                                                      child: Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                              strokeWidth: 2,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        const Icon(
+                                                          Icons.error,
+                                                          size: 40,
+                                                        ),
+                                              ),
+
+                                              SizedBox(width: 2.w),
+
+                                              // Text container that adapts to screen width
+                                              Expanded(
+                                                child: Row(
+                                                  children: [
+                                                    // User name
+                                                    Flexible(
+                                                      child: Text(
+                                                        "${messageBoardModal?.data?[index].user?.firstName ?? ""} ${messageBoardModal?.data?[index].user?.lastName ?? ""}",
+                                                        overflow:
+                                                            TextOverflow
+                                                                .ellipsis,
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              AppConstants
+                                                                  .manrope1,
+                                                          fontSize: 15.sp,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color:
+                                                              theme.isDark
+                                                                  ? Colors.white
+                                                                  : AppColors
+                                                                      .maincolor,
+                                                        ),
+                                                      ),
+                                                    ),
+
+                                                    SizedBox(width: 1.w),
+
+                                                    // Dot and time
+                                                    Flexible(
+                                                      child: Text(
+                                                        "• ${formatPostDate(messageBoardModal?.data?[index].createdAt)}",
+                                                        overflow:
+                                                            TextOverflow
+                                                                .ellipsis,
+                                                        style: TextStyle(
+                                                          fontSize: 14.sp,
+                                                          color: Colors.grey,
+                                                          fontFamily:
+                                                              AppConstants
+                                                                  .manrope,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ).paddingOnly(bottom: 2.h),
+
+                                          Text(
+                                            messageBoardModal
+                                                    ?.data?[index]
+                                                    .title ??
+                                                "",
+                                            style: TextStyle(
+                                              fontFamily: AppConstants.manrope,
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.normal,
+                                              color:
+                                                  theme.isDark
+                                                      ? Colors.white
+                                                      : AppColors.maincolor,
+                                            ),
+                                          ),
+                                          ExpandableClickableText(
+                                            text:
+                                                messageBoardModal
+                                                    ?.data?[index]
+                                                    .text ??
+                                                "N/A",
+                                            trimLength: 140,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.grey.shade600,
+                                              fontFamily: AppConstants.manrope,
+                                            ),
+                                          ),
+
+                                          post?.nocomment == 1
+                                              ? Text(
+                                                "[COMMENT ARE DISABLED IN THIS POST]",
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                      AppConstants.manropeBold,
+                                                  fontSize: 14.sp,
+                                                  color:
+                                                      theme.isDark
+                                                          ? Colors.white
+                                                          : AppColors.maincolor,
+                                                ),
+                                              )
+                                              : SizedBox(),
+
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 1.h,
+                                              horizontal: 2.5.w,
+                                            ),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child:
+                                                  post?.file?.isNotEmpty == true
+                                                      ? (post!.file![0]
+                                                              .toLowerCase()
+                                                              .endsWith('.pdf')
+                                                          ? GestureDetector(
+                                                            onTap: () async {
+                                                              final url =
+                                                                  post.file![0];
+                                                              final uri =
+                                                                  Uri.parse(
                                                                     url,
-                                                                  ) => SizedBox(
-                                                                    height:
-                                                                        30.h,
-                                                                    width:
-                                                                        double
-                                                                            .infinity,
-                                                                    child: const Center(
-                                                                      child:
-                                                                          CircularProgressIndicator(),
-                                                                    ),
-                                                                  ),
-                                                              errorWidget:
-                                                                  (
-                                                                    context,
-                                                                    url,
-                                                                    error,
-                                                                  ) => Icon(
-                                                                    Icons.error,
-                                                                    size: 24.sp,
-                                                                  ),
+                                                                  );
+                                                              Get.to(
+                                                                PdfView(
+                                                                  link:
+                                                                      uri.toString(),
+                                                                ),
+                                                              );
+                                                              // if (await canLaunchUrl(uri)) {
+                                                              //   final launched = await launchUrl(
+                                                              //     uri,
+                                                              //     mode: LaunchMode.externalApplication,
+                                                              //   );
+                                                              //   if (!launched) {
+                                                              //     ScaffoldMessenger.of(context).showSnackBar(
+                                                              //       SnackBar(content: Text("Failed to open externally")),
+                                                              //     );
+                                                              //   }
+                                                              // } else {
+                                                              //   ScaffoldMessenger.of(context).showSnackBar(
+                                                              //     SnackBar(content: Text("Cannot open PDF")),
+                                                              //   );
+                                                              // }
+                                                            },
+
+                                                            child: Container(
                                                               width:
                                                                   double
                                                                       .infinity,
-                                                              height: 30.h,
-                                                              fit: BoxFit.cover,
-                                                            ))
-                                                        : SizedBox(height: 0.h),
-                                              ),
+                                                              height: 8.h,
+                                                              color:
+                                                                  Colors
+                                                                      .grey
+                                                                      .shade200,
+                                                              child: Center(
+                                                                child: Row(
+                                                                  mainAxisSize:
+                                                                      MainAxisSize
+                                                                          .min,
+                                                                  children: [
+                                                                    Icon(
+                                                                      Icons
+                                                                          .picture_as_pdf,
+                                                                      color:
+                                                                          Colors
+                                                                              .red,
+                                                                      size:
+                                                                          25.sp,
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width:
+                                                                          2.w,
+                                                                    ),
+                                                                    Text(
+                                                                      "View PDF",
+                                                                      style: TextStyle(
+                                                                        fontSize:
+                                                                            16.sp,
+                                                                        fontFamily:
+                                                                            AppConstants.manrope,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          )
+                                                          : CachedNetworkImage(
+                                                            imageUrl:
+                                                                post.file![0],
+                                                            placeholder:
+                                                                (
+                                                                  context,
+                                                                  url,
+                                                                ) => SizedBox(
+                                                                  height: 30.h,
+                                                                  width:
+                                                                      double
+                                                                          .infinity,
+                                                                  child: const Center(
+                                                                    child:
+                                                                        CircularProgressIndicator(),
+                                                                  ),
+                                                                ),
+                                                            errorWidget:
+                                                                (
+                                                                  context,
+                                                                  url,
+                                                                  error,
+                                                                ) => Icon(
+                                                                  Icons.error,
+                                                                  size: 24.sp,
+                                                                ),
+                                                            width:
+                                                                double.infinity,
+                                                            height: 30.h,
+                                                            fit: BoxFit.cover,
+                                                          ))
+                                                      : SizedBox(height: 0.h),
                                             ),
-                                            SizedBox(height: 1.5.h),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      "${messageBoardModal?.data?[index].totalComments} Replies",
-                                                      style: TextStyle(
-                                                        fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                        fontSize: 16.sp,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: const Color(
-                                                          0XFF3E3E3E,
-                                                        ),
-                                                      ),
+                                          ),
+                                          SizedBox(height: 1.5.h),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    "${messageBoardModal?.data?[index].totalComments} Replies",
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                      fontSize: 16.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color:
+                                                          theme.isDark
+                                                              ? Colors.grey[400]
+                                                              : Colors
+                                                                  .grey[600],
                                                     ),
-                                                    SizedBox(width: 2.w),
-                                                    Text(
-                                                      "${messageBoardModal?.data?[index].totalLikes} Likes",
-                                                      style: TextStyle(
-                                                        fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                        fontSize: 16.sp,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: const Color(
-                                                          0XFF3E3E3E,
-                                                        ),
-                                                      ),
+                                                  ),
+                                                  SizedBox(width: 4.w),
+                                                  Text(
+                                                    "${messageBoardModal?.data?[index].totalLikes} Likes",
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                      fontSize: 16.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color:
+                                                          theme.isDark
+                                                              ? Colors.grey[400]
+                                                              : Colors
+                                                                  .grey[600],
                                                     ),
-                                                  ],
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    StatefulBuilder(
-                                                      builder: (
-                                                        context,
-                                                        localSetState,
-                                                      ) {
-                                                        bool isLiked =
-                                                            index <
-                                                                    isLikedList
-                                                                        .length
-                                                                ? isLikedList[index]
-                                                                : false;
-                                                        bool isInProgress =
-                                                            index <
-                                                                    isLikeInProgressList
-                                                                        .length
-                                                                ? isLikeInProgressList[index]
-                                                                : false;
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ).paddingOnly(bottom: 1.h),
+                                          Container(
+                                            height: 0.2.h,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  theme.isDark
+                                                      ? Colors.white10
+                                                      : Colors.grey.shade100,
+                                            ),
+                                          ).paddingOnly(bottom: 1.h),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              // Like Button
+                                              StatefulBuilder(
+                                                builder: (
+                                                  context,
+                                                  setLocalState,
+                                                ) {
+                                                  bool isLiked =
+                                                      index < isLikedList.length
+                                                          ? isLikedList[index]
+                                                          : false;
+                                                  bool isInProgress =
+                                                      index <
+                                                              isLikeInProgressList
+                                                                  .length
+                                                          ? isLikeInProgressList[index]
+                                                          : false;
 
-                                                        return GestureDetector(
-                                                          onTap:
-                                                              isInProgress
-                                                                  ? null
-                                                                  : () {
-                                                                    if (index <
-                                                                            isLikedList.length &&
-                                                                        index <
-                                                                            isLikeInProgressList.length) {
-                                                                      localSetState(() {
-                                                                        isLikedList[index] =
-                                                                            !isLikedList[index];
-                                                                        isLikeInProgressList[index] =
-                                                                            true;
-                                                                      });
-                                                                      _saveLikeStatus(
-                                                                        index,
-                                                                        isLikedList[index],
-                                                                      );
-                                                                      postslikeap(
-                                                                        index,
-                                                                        () {
-                                                                          localSetState(() {
-                                                                            isLikeInProgressList[index] =
-                                                                                false;
-                                                                          });
-                                                                        },
-                                                                      );
-                                                                    }
-                                                                  },
-                                                          child: Text(
+                                                  return InkWell(
+                                                    onTap:
+                                                        isInProgress
+                                                            ? null
+                                                            : () {
+                                                              handleLikeToggle(
+                                                                index,
+                                                                setLocalState,
+                                                              );
+                                                            },
+                                                    child: Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                            horizontal: 5.w,
+                                                            vertical: 1.h,
+                                                          ),
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            theme.isDark
+                                                                ? Color(0xf02F2F2F)
+                                                                : Colors
+                                                                    .grey[100],
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              15,
+                                                            ),
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(
+                                                            isLiked
+                                                                ? Icons.favorite
+                                                                : Icons
+                                                                    .favorite_border,
+                                                            size: 18.sp,
+                                                            color:
+                                                                isLiked
+                                                                    ? Colors.red
+                                                                    : (theme.isDark
+                                                                        ? Colors
+                                                                            .white70
+                                                                        : Colors
+                                                                            .grey[700]),
+                                                          ),
+                                                          SizedBox(width: 1.w),
+                                                          Text(
                                                             "Like",
                                                             style: TextStyle(
-                                                              fontFamily:
-                                                                  AppConstants
-                                                                      .manrope,
-                                                              fontSize: 16.sp,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                              fontSize: 14.sp,
                                                               color:
                                                                   isLiked
                                                                       ? Colors
                                                                           .red
-                                                                      : const Color(
-                                                                        0XFF3E3E3E,
-                                                                      ),
+                                                                      : (theme.isDark
+                                                                          ? Colors
+                                                                              .white70
+                                                                          : Colors
+                                                                              .grey[700]),
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manrope,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
                                                             ),
                                                           ),
-                                                        );
-                                                      },
-                                                    ),
-                                                    SizedBox(width: 2.w),
-                                                    Container(
-                                                      height: 2.h,
-                                                      width: 0.5.w,
-                                                      decoration: BoxDecoration(
-                                                        color: const Color(
-                                                          0XFF3E3E3E,
-                                                        ),
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              20,
-                                                            ),
+                                                        ],
                                                       ),
                                                     ),
-                                                    SizedBox(width: 2.w),
-                                                    InkWell(
-                                                      onTap: () async {
-                                                        await getComments(
-                                                          context,
-                                                          (post?.id).toString(),
-                                                          post?.nocomment,
-                                                        );
-                                                      },
-                                                      child: Text(
+                                                  );
+                                                },
+                                              ),
+
+                                              // Comment Button
+                                              InkWell(
+                                                onTap: () {
+                                                  getComments(
+                                                    context,
+                                                    post?.id?.toString() ?? "",
+                                                    post?.nocomment ?? 0,
+                                                  );
+                                                },
+                                                child: Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 4.w,
+                                                    vertical: 1.h,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        theme.isDark
+                                                            ? Colors.white
+                                                                .withOpacity(
+                                                                  0.05,
+                                                                )
+                                                            : Colors.grey[100],
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          15,
+                                                        ),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        CupertinoIcons
+                                                            .chat_bubble,
+                                                        size: 18.sp,
+                                                        color:
+                                                            theme.isDark
+                                                                ? Colors.white70
+                                                                : Colors
+                                                                    .grey[700],
+                                                      ),
+                                                      SizedBox(width: 1.w),
+                                                      Text(
                                                         "Comment",
                                                         style: TextStyle(
+                                                          fontSize: 14.sp,
+                                                          color:
+                                                              theme.isDark
+                                                                  ? Colors
+                                                                      .white70
+                                                                  : Colors
+                                                                      .grey[700],
                                                           fontFamily:
                                                               AppConstants
                                                                   .manrope,
-                                                          fontSize: 16.sp,
                                                           fontWeight:
-                                                              FontWeight.bold,
-                                                          color: const Color(
-                                                            0XFF3E3E3E,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                )
-                            : selectedOption == "Local"
-                            ? localpost_model?.data?.data?.length == null ||
-                                    localpost_model?.data?.data?.length == 0
-                                ? Center(
-                                  child: SizedBox(
-                                    height: 70.h,
-                                    child: Text(
-                                      "No Posts available",
-                                      style: TextStyle(
-                                        fontSize: 17.sp,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.normal,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                                : SizedBox(
-                                  height: 58.5.h,
-                                  child: ListView.builder(
-                                    controller: _scrollController,
-                                    padding: EdgeInsets.zero,
-                                    itemCount:
-                                        localpost_model?.data?.data?.length,
-                                    itemBuilder: (context, index) {
-                                      final post =
-                                          localpost_model?.data?.data?[index];
-                                      return Container(
-                                        margin: EdgeInsets.symmetric(
-                                          vertical: 0.5.h,
-                                        ),
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 3.w,
-                                          vertical: 2.h,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Colors.black12,
-                                            width: 0.2.w,
-                                          ),
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(
-                                            20,
-                                          ),
-                                          boxShadow: const [
-                                            BoxShadow(
-                                              color: Colors.black12,
-                                              blurRadius: 1,
-                                              offset: Offset(0, 1),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Container(
-                                                  height: 9.w,
-                                                  width: 9.w,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    border: Border.all(
-                                                      color:
-                                                          AppColors.maincolor,
-                                                      width: 1,
-                                                    ),
-                                                    image: DecorationImage(
-                                                      image:
-                                                          (localpost_model
-                                                                      ?.data
-                                                                      ?.data?[index]
-                                                                      .users?[0]
-                                                                      .profiles
-                                                                      ?.isNotEmpty ??
-                                                                  false)
-                                                              ? CachedNetworkImageProvider(
-                                                                localpost_model!
-                                                                    .data!
-                                                                    .data![index]
-                                                                    .users![0]
-                                                                    .profiles!,
-                                                              )
-                                                              : const AssetImage(
-                                                                    'assets/images/waveeLogoShort.png',
-                                                                  )
-                                                                  as ImageProvider,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-
-                                                SizedBox(width: 2.w),
-
-                                                // Text(
-                                                //   localpost_model
-                                                //           ?.data
-                                                //           ?.data?[index]
-                                                //           .users?[0]
-                                                //           .name ??
-                                                //       "",
-                                                //   style: TextStyle(
-                                                //     fontFamily:
-                                                //         AppConstants.manrope1,
-                                                //     fontSize: 15.sp,
-                                                //     fontWeight: FontWeight.bold,
-                                                //   ),
-                                                // ),
-                                                // SizedBox(width: 2.w),
-                                                // Text(
-                                                //   "•${formatPostDate(localpost_model?.data?.data?[index].createdAt)}",
-                                                //   style: TextStyle(
-                                                //     fontSize: 14.sp,
-                                                //     color: Colors.grey,
-                                                //     fontFamily:
-                                                //         AppConstants.manrope,
-                                                //     fontWeight: FontWeight.bold,
-                                                //   ),
-                                                // ),
-                                                Expanded(
-                                                  child: Row(
-                                                    children: [
-                                                      // User name
-                                                      Flexible(
-                                                        child: Text(
-                                                          localpost_model
-                                                                  ?.data
-                                                                  ?.data?[index]
-                                                                  .users?[0]
-                                                                  .name ??
-                                                              "",
-                                                          overflow:
-                                                              TextOverflow
-                                                                  .ellipsis,
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manrope1,
-                                                            fontSize: 15.sp,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-
-                                                      SizedBox(width: 1.w),
-
-                                                      // Dot and time
-                                                      Flexible(
-                                                        child: Text(
-                                                          "•${formatPostDate(localpost_model?.data?.data?[index].createdAt)}",
-                                                          overflow:
-                                                              TextOverflow
-                                                                  .ellipsis,
-                                                          style: TextStyle(
-                                                            fontSize: 14.sp,
-                                                            color: Colors.grey,
-                                                            fontFamily:
-                                                                AppConstants
-                                                                    .manrope,
-                                                          ),
+                                                              FontWeight.w500,
                                                         ),
                                                       ),
                                                     ],
                                                   ),
                                                 ),
+                                              ),
 
-                                                // const Spacer(),
-                                                loginModel?.data?.user?.id ==
-                                                        post?.userId
-                                                    ? PopupMenuButton<String>(
-                                                      color: Colors.white,
-                                                      icon: const Icon(
-                                                        Icons.more_vert,
-                                                        color: Colors.black87,
-                                                      ),
-                                                      onSelected: (value) {
-                                                        if (value == 'edit') {
-                                                          UpdatePostData(
-                                                            context,
-                                                            post,
-                                                          );
-                                                        } else if (value ==
-                                                            'delete') {
-                                                          showCancelConfirmationDialog(
-                                                            context: context,
-                                                            post!.id.toString() ??
-                                                                "",
-                                                          );
-                                                        }
-                                                        // else if (value ==
-                                                        //     'report') {
-                                                        //   showBlockUserDialog(
-                                                        //     context,
-                                                        //     supportUrl,
-                                                        //   );
-                                                        // }
-                                                      },
-                                                      itemBuilder:
-                                                          (
-                                                            BuildContext
-                                                            context,
-                                                          ) => [
-                                                            PopupMenuItem(
-                                                              value: 'edit',
-                                                              child: Text(
-                                                                'Edit',
-                                                                style: TextStyle(
-                                                                  fontSize:
-                                                                      16.sp,
-                                                                  fontFamily:
-                                                                      AppConstants
-                                                                          .manrope,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            PopupMenuItem(
-                                                              value: 'delete',
-                                                              child: Text(
-                                                                'Delete',
-                                                                style: TextStyle(
-                                                                  fontSize:
-                                                                      16.sp,
-                                                                  fontFamily:
-                                                                      AppConstants
-                                                                          .manrope,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            // PopupMenuItem(
-                                                            //   value: 'report',
-                                                            //   child: Text(
-                                                            //     'Report',
-                                                            //     style: TextStyle(
-                                                            //       fontSize: 16.sp,
-                                                            //       fontFamily:
-                                                            //       AppConstants
-                                                            //           .manrope,
-                                                            //     ),
-                                                            //   ),
-                                                            // ),
-                                                          ],
-                                                    )
-                                                    : InkWell(
-                                                      onTap: () {
-                                                        showBlockUserDialog(
-                                                          context,
-                                                          supportUrl,
-                                                        );
-                                                      },
-                                                      child: const Icon(
-                                                        Icons
-                                                            .more_vert_outlined,
-                                                      ).paddingOnly(right: 2.w),
-                                                    ),
-                                              ],
-                                            ),
-                                            Text(
-                                              localpost_model
-                                                      ?.data
-                                                      ?.data?[index]
-                                                      .title ??
-                                                  "",
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    AppConstants.manrope1,
-                                                fontSize: 16.sp,
-                                                fontWeight: FontWeight.bold,
-                                                color: AppColors.maincolor,
-                                              ),
-                                            ),
-
-                                            // localpost_model
-                                            //             ?.data
-                                            //             ?.data?[index]
-                                            //             .users?[0]
-                                            //             .areaName ==
-                                            //         null
-                                            //     ? const SizedBox()
-                                            //     : Text(
-                                            //       "Area: ${localpost_model?.data?.data?[index].users?[0].areaName ?? ""}",
-                                            //       style: TextStyle(
-                                            //         fontFamily:
-                                            //             AppConstants.manrope,
-                                            //         fontSize: 16.sp,
-                                            //         fontWeight: FontWeight.normal,
-                                            //         color: Colors.grey,
-                                            //       ),
-                                            //     ),
-                                            // localpost_model
-                                            //             ?.data
-                                            //             ?.data?[index]
-                                            //             .users?[0]
-                                            //             .buildingName ==
-                                            //         null
-                                            //     ? const SizedBox()
-                                            //     : Text(
-                                            //       "Building:${localpost_model?.data?.data?[index].users?[0].buildingName ?? ""}",
-                                            //       style: TextStyle(
-                                            //         fontFamily:
-                                            //             AppConstants.manrope,
-                                            //         fontSize: 16.sp,
-                                            //         fontWeight: FontWeight.normal,
-                                            //         color: Colors.grey,
-                                            //       ),
-                                            //     ),
-                                            ReadMoreText(
-                                              localpost_model
-                                                              ?.data
-                                                              ?.data?[index]
-                                                              .text ==
-                                                          null ||
-                                                      localpost_model
-                                                              ?.data
-                                                              ?.data?[index]
-                                                              .text ==
-                                                          ""
-                                                  ? "N/A"
-                                                  : "${localpost_model?.data?.data?[index].text}",
-                                              trimLines: 4,
-                                              trimLength: 146,
-                                              colorClickableText: Colors.blue,
-                                              trimMode: TrimMode.Length,
-                                              trimCollapsedText: ' Show more',
-                                              trimExpandedText: ' Show less',
-                                              moreStyle: TextStyle(
-                                                fontSize: 15.sp,
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                                letterSpacing: 1,
-                                                color: AppColors.maincolor,
-                                              ),
-                                              lessStyle: TextStyle(
-                                                fontSize: 15.sp,
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                                letterSpacing: 1,
-                                                color: AppColors.maincolor,
-                                              ),
-                                              style: TextStyle(
-                                                fontSize: 16.sp,
-                                                color: Colors.grey.shade500,
-                                                fontWeight: FontWeight.normal,
-                                                fontFamily:
-                                                    AppConstants.manrope,
-                                              ),
-                                            ),
-                                            post?.file?.length == 0 ||
-                                                    post?.file?.length == null
-                                                ? const SizedBox()
-                                                : Padding(
+                                              // Save Button
+                                              InkWell(
+                                                onTap: () {
+                                                  // Bookmark functionality
+                                                },
+                                                child: Container(
                                                   padding: EdgeInsets.symmetric(
+                                                    horizontal: 4.w,
                                                     vertical: 1.h,
-                                                    horizontal: 2.5.w,
                                                   ),
-                                                  child: StatefulBuilder(
-                                                    builder: (
-                                                      context,
-                                                      setState,
-                                                    ) {
-                                                      final pageCount =
-                                                          post?.file?.length ??
-                                                          0;
-                                                      return SizedBox(
-                                                        height: 35.h,
-                                                        child: Stack(
-                                                          children: [
-                                                            PageView.builder(
-                                                              controller:
-                                                                  _pageController,
-                                                              itemCount:
-                                                                  pageCount,
-                                                              onPageChanged: (
-                                                                index,
-                                                              ) {
-                                                                setState(
-                                                                  () =>
-                                                                      _currentPage =
-                                                                          index,
-                                                                );
-                                                              },
-                                                              itemBuilder: (
-                                                                context,
-                                                                index,
-                                                              ) {
-                                                                final imageUrl =
-                                                                    post?.file?[index] ??
-                                                                    "";
-                                                                return ClipRRect(
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        10,
-                                                                      ),
-                                                                  child: CachedNetworkImage(
-                                                                    imageUrl:
-                                                                        imageUrl,
-                                                                    placeholder:
-                                                                        (
-                                                                          context,
-                                                                          url,
-                                                                        ) => const Center(
-                                                                          child:
-                                                                              CircularProgressIndicator(),
-                                                                        ),
-                                                                    errorWidget:
-                                                                        (
-                                                                          context,
-                                                                          url,
-                                                                          error,
-                                                                        ) => Image.asset(
-                                                                          "assets/images/waveeLogoShort.png",
-                                                                          fit:
-                                                                              BoxFit.cover,
-                                                                        ),
-                                                                    width:
-                                                                        double
-                                                                            .infinity,
-                                                                    height:
-                                                                        35.h,
-                                                                    fit:
-                                                                        BoxFit
-                                                                            .cover,
-                                                                  ),
-                                                                ).marginOnly(
-                                                                  right: 1.w,
-                                                                );
-                                                              },
-                                                            ),
-                                                            Positioned(
-                                                              top: 8,
-                                                              right: 16,
-                                                              child: Container(
-                                                                padding:
-                                                                    const EdgeInsets.symmetric(
-                                                                      horizontal:
-                                                                          10,
-                                                                      vertical:
-                                                                          4,
-                                                                    ),
-                                                                decoration: BoxDecoration(
-                                                                  color: Colors
-                                                                      .black
-                                                                      .withValues(
-                                                                        alpha:
-                                                                            0.6,
-                                                                      ),
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        20,
-                                                                      ),
-                                                                ),
-                                                                child: Text(
-                                                                  '${_currentPage + 1}/$pageCount',
-                                                                  style: TextStyle(
-                                                                    color:
-                                                                        Colors
-                                                                            .white,
-                                                                    fontSize:
-                                                                        12.sp,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        theme.isDark
+                                                            ? Colors.white
+                                                                .withOpacity(
+                                                                  0.05,
+                                                                )
+                                                            : Colors.grey[100],
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          15,
                                                         ),
-                                                      );
-                                                    },
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.bookmark_border,
+                                                    size: 18.sp,
+                                                    color:
+                                                        theme.isDark
+                                                            ? Colors.white70
+                                                            : Colors.grey[700],
                                                   ),
                                                 ),
-                                            SizedBox(height: 1.5.h),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Row(
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                          : selectedOption == "Announcements"
+                          ? localpost_model?.data?.data?.length == null ||
+                                  localpost_model?.data?.data?.length == 0
+                              ? Center(
+                                child: SizedBox(
+                                  height: Get.height,
+                                  child: Text(
+                                    "No Posts available",
+                                    style: TextStyle(
+                                      fontSize: 17.sp,
+                                      color:
+                                          theme.isDark
+                                              ? Colors.white
+                                              : AppColors.black,
+                                      fontWeight: FontWeight.normal,
+                                      fontFamily: AppConstants.manrope,
+                                    ),
+                                  ),
+                                ),
+                              ).paddingOnly(top: 25.h)
+                              : SizedBox(
+                                height:Get.height,
+                                child: ListView.builder(
+                                  controller: _scrollController,
+                                  padding: EdgeInsets.zero,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount:
+                                      localpost_model?.data?.data?.length,
+                                  itemBuilder: (context, index) {
+                                    final post =
+                                        localpost_model?.data?.data?[index];
+                                    return Container(
+                                      margin: EdgeInsets.symmetric(
+                                        vertical: 0.5.h,
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 3.w,
+                                        vertical: 2.h,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: Colors.black12,
+                                          width: 0.2.w,
+                                        ),
+                                        color:
+                                            theme.isDark
+                                                ? Color(0xFF1E1E1E)
+                                                : Colors.white,
+                                        borderRadius: BorderRadius.circular(20),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(
+                                              theme.isDark ? 0.3 : 0.05,
+                                            ),
+                                            blurRadius: 10,
+                                            offset: Offset(0, 4),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                height: 9.w,
+                                                width: 9.w,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: AppColors.maincolor,
+                                                    width: 1,
+                                                  ),
+                                                  image: DecorationImage(
+                                                    image:
+                                                        (localpost_model
+                                                                    ?.data
+                                                                    ?.data?[index]
+                                                                    .users?[0]
+                                                                    .profiles
+                                                                    ?.isNotEmpty ??
+                                                                false)
+                                                            ? CachedNetworkImageProvider(
+                                                              localpost_model!
+                                                                  .data!
+                                                                  .data![index]
+                                                                  .users![0]
+                                                                  .profiles!,
+                                                            )
+                                                            : const AssetImage(
+                                                                  'assets/images/waveeLogoShort.png',
+                                                                )
+                                                                as ImageProvider,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+
+                                              SizedBox(width: 2.w),
+                                              Expanded(
+                                                child: Row(
                                                   children: [
-                                                    Text(
-                                                      "${localpost_model?.data?.data?[index].totalComments} Replies",
-                                                      style: TextStyle(
-                                                        fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                        fontSize: 16.sp,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: const Color(
-                                                          0XFF3E3E3E,
+                                                    // User name
+                                                    Flexible(
+                                                      child: Text(
+                                                        localpost_model
+                                                                ?.data
+                                                                ?.data?[index]
+                                                                .users?[0]
+                                                                .name ??
+                                                            "",
+                                                        overflow:
+                                                            TextOverflow
+                                                                .ellipsis,
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              AppConstants
+                                                                  .manrope1,
+                                                          fontSize: 15.sp,
+                                                          fontWeight:
+                                                              FontWeight.bold,
                                                         ),
                                                       ),
                                                     ),
-                                                    SizedBox(width: 2.w),
-                                                    Text(
-                                                      "${localpost_model?.data?.data?[index].totalLikes} Likes",
-                                                      style: TextStyle(
-                                                        fontFamily:
-                                                            AppConstants
-                                                                .manrope,
-                                                        fontSize: 16.sp,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: const Color(
-                                                          0XFF3E3E3E,
+
+                                                    SizedBox(width: 1.w),
+
+                                                    // Dot and time
+                                                    Flexible(
+                                                      child: Text(
+                                                        "•${formatPostDate(localpost_model?.data?.data?[index].createdAt)}",
+                                                        overflow:
+                                                            TextOverflow
+                                                                .ellipsis,
+                                                        style: TextStyle(
+                                                          fontSize: 14.sp,
+                                                          color: Colors.grey,
+                                                          fontFamily:
+                                                              AppConstants
+                                                                  .manrope,
                                                         ),
                                                       ),
                                                     ),
-                                                    SizedBox(width: 2.w),
-                                                    // GestureDetector(
-                                                    //   onTap: () {
-                                                    //     try {
-                                                    //       final imageUrl =
-                                                    //           messageBoardModal
-                                                    //               ?.data?[
-                                                    //                   index]
-                                                    //               ?.file
-                                                    //               .toString();
-                                                    //       final linkToShare = (imageUrl ==
-                                                    //                   null ||
-                                                    //               imageUrl
-                                                    //                   .isEmpty)
-                                                    //           ? "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png"
-                                                    //           : imageUrl;
-                                                    //       shareConciergeImage(
-                                                    //           linkToShare);
-                                                    //     } catch (e) {
-                                                    //
-                                                    //     }
-                                                    //   },
-                                                    //   child: Icon(
-                                                    //     Icons
-                                                    //         .share_outlined,
-                                                    //     size: 18.sp,
-                                                    //     color: Color(
-                                                    //         0XFF3E3E3E),
-                                                    //   ),
-                                                    // ),
                                                   ],
                                                 ),
-                                                Row(
-                                                  children: [
-                                                    StatefulBuilder(
-                                                      builder: (
-                                                        context,
-                                                        localSetState,
-                                                      ) {
-                                                        bool isLiked =
-                                                            index <
-                                                                    isLikedListLocal
-                                                                        .length
-                                                                ? isLikedListLocal[index]
-                                                                : false;
-                                                        bool isInProgress =
-                                                            index <
-                                                                    isLikeInProgressListLocal
-                                                                        .length
-                                                                ? isLikeInProgressListLocal[index]
-                                                                : false;
+                                              ),
 
-                                                        return GestureDetector(
-                                                          onTap:
-                                                              isInProgress
-                                                                  ? null
-                                                                  : () {
-                                                                    if (index <
-                                                                            isLikedListLocal.length &&
-                                                                        index <
-                                                                            isLikeInProgressListLocal.length) {
-                                                                      localSetState(() {
-                                                                        isLikedListLocal[index] =
-                                                                            !isLikedListLocal[index];
-                                                                        isLikeInProgressListLocal[index] =
-                                                                            true;
-                                                                      });
-                                                                      _saveLikeStatusLocal(
+                                              // const Spacer(),
+                                              loginModel?.data?.user?.id ==
+                                                      post?.userId
+                                                  ? PopupMenuButton<String>(
+                                                    color:
+                                                        theme.isDark
+                                                            ? Color(0xFF1E1E1E)
+                                                            : AppColors.white,
+
+                                                    icon: Icon(
+                                                      Icons.more_vert,
+                                                      color:
+                                                          theme.isDark
+                                                              ? AppColors.white
+                                                              : Colors.black87,
+                                                    ),
+                                                    onSelected: (value) {
+                                                      if (value == 'edit') {
+                                                        UpdatePostData(
+                                                          context,
+                                                          post,
+                                                        );
+                                                      } else if (value ==
+                                                          'delete') {
+                                                        showCancelConfirmationDialog(
+                                                          context: context,
+                                                          post!.id.toString() ??
+                                                              "",
+                                                        );
+                                                      }
+                                                      // else if (value ==
+                                                      //     'report') {
+                                                      //   showBlockUserDialog(
+                                                      //     context,
+                                                      //     supportUrl,
+                                                      //   );
+                                                      // }
+                                                    },
+                                                    itemBuilder:
+                                                        (
+                                                          BuildContext context,
+                                                        ) => [
+                                                          PopupMenuItem(
+                                                            value: 'edit',
+                                                            child: Text(
+                                                              'Edit',
+                                                              style: TextStyle(
+                                                                fontSize: 16.sp,
+                                                                fontFamily:
+                                                                    AppConstants
+                                                                        .manrope,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          PopupMenuItem(
+                                                            value: 'delete',
+                                                            child: Text(
+                                                              'Delete',
+                                                              style: TextStyle(
+                                                                fontSize: 16.sp,
+                                                                fontFamily:
+                                                                    AppConstants
+                                                                        .manrope,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                  )
+                                                  : InkWell(
+                                                    onTap: () {
+                                                      showBlockUserDialog(
+                                                        context,
+                                                        supportUrl,
+                                                      );
+                                                    },
+                                                    child: const Icon(
+                                                      Icons.more_vert_outlined,
+                                                    ).paddingOnly(right: 2.w),
+                                                  ),
+                                            ],
+                                          ),
+                                          Text(
+                                            localpost_model
+                                                    ?.data
+                                                    ?.data?[index]
+                                                    .title ??
+                                                "",
+                                            style: TextStyle(
+                                              fontFamily: AppConstants.manrope1,
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color:
+                                                  theme.isDark
+                                                      ? AppColors.white
+                                                      : AppColors.maincolor,
+                                            ),
+                                          ),
+                                          ReadMoreText(
+                                            localpost_model
+                                                            ?.data
+                                                            ?.data?[index]
+                                                            .text ==
+                                                        null ||
+                                                    localpost_model
+                                                            ?.data
+                                                            ?.data?[index]
+                                                            .text ==
+                                                        ""
+                                                ? "N/A"
+                                                : "${localpost_model?.data?.data?[index].text}",
+                                            trimLines: 4,
+                                            trimLength: 146,
+                                            colorClickableText: Colors.blue,
+                                            trimMode: TrimMode.Length,
+                                            trimCollapsedText: ' Show more',
+                                            trimExpandedText: ' Show less',
+                                            moreStyle: TextStyle(
+                                              fontSize: 15.sp,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: AppConstants.manrope,
+                                              letterSpacing: 1,
+                                              color: AppColors.maincolor,
+                                            ),
+                                            lessStyle: TextStyle(
+                                              fontSize: 15.sp,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: AppConstants.manrope,
+                                              letterSpacing: 1,
+                                              color: AppColors.maincolor,
+                                            ),
+                                            style: TextStyle(
+                                              fontSize: 16.sp,
+                                              color: Colors.grey.shade500,
+                                              fontWeight: FontWeight.normal,
+                                              fontFamily: AppConstants.manrope,
+                                            ),
+                                          ),
+                                          post?.file?.length == 0 ||
+                                                  post?.file?.length == null
+                                              ? const SizedBox()
+                                              : Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                  vertical: 1.h,
+                                                  horizontal: 2.5.w,
+                                                ),
+                                                child: StatefulBuilder(
+                                                  builder: (context, setState) {
+                                                    final pageCount =
+                                                        post?.file?.length ?? 0;
+                                                    return SizedBox(
+                                                      height: 35.h,
+                                                      child: Stack(
+                                                        children: [
+                                                          PageView.builder(
+                                                            controller:
+                                                                _pageController,
+                                                            itemCount:
+                                                                pageCount,
+                                                            onPageChanged: (
+                                                              index,
+                                                            ) {
+                                                              setState(
+                                                                () =>
+                                                                    _currentPage =
                                                                         index,
-                                                                        isLikedListLocal[index],
-                                                                      );
-                                                                      postslikelocalap(
-                                                                        index,
-                                                                        () {
-                                                                          localSetState(() {
-                                                                            isLikeInProgressListLocal[index] =
-                                                                                false;
-                                                                          });
-                                                                        },
-                                                                      );
-                                                                    }
+                                                              );
+                                                            },
+                                                            itemBuilder: (
+                                                              context,
+                                                              index,
+                                                            ) {
+                                                              final imageUrl =
+                                                                  post?.file?[index] ??
+                                                                  "";
+                                                              return ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      10,
+                                                                    ),
+                                                                child: CachedNetworkImage(
+                                                                  imageUrl:
+                                                                      imageUrl,
+                                                                  placeholder:
+                                                                      (
+                                                                        context,
+                                                                        url,
+                                                                      ) => const Center(
+                                                                        child:
+                                                                            CircularProgressIndicator(),
+                                                                      ),
+                                                                  errorWidget:
+                                                                      (
+                                                                        context,
+                                                                        url,
+                                                                        error,
+                                                                      ) => Image.asset(
+                                                                        "assets/images/waveeLogoShort.png",
+                                                                        fit:
+                                                                            BoxFit.cover,
+                                                                      ),
+                                                                  width:
+                                                                      double
+                                                                          .infinity,
+                                                                  height: 35.h,
+                                                                  fit:
+                                                                      BoxFit
+                                                                          .cover,
+                                                                ),
+                                                              ).marginOnly(
+                                                                right: 1.w,
+                                                              );
+                                                            },
+                                                          ),
+                                                          Positioned(
+                                                            top: 8,
+                                                            right: 16,
+                                                            child: Container(
+                                                              padding:
+                                                                  const EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        10,
+                                                                    vertical: 4,
+                                                                  ),
+                                                              decoration: BoxDecoration(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.6,
+                                                                    ),
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      20,
+                                                                    ),
+                                                              ),
+                                                              child: Text(
+                                                                '${_currentPage + 1}/$pageCount',
+                                                                style: TextStyle(
+                                                                  color:
+                                                                      Colors
+                                                                          .white,
+                                                                  fontSize:
+                                                                      12.sp,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+
+                                          SizedBox(height: 1.5.h),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    "${localpost_model?.data?.data?[index].totalComments} Replies",
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                      fontSize: 16.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color:
+                                                          theme.isDark
+                                                              ? Colors.grey[400]
+                                                              : Colors
+                                                                  .grey[600],
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 2.w),
+                                                  Text(
+                                                    "${localpost_model?.data?.data?[index].totalLikes} Likes",
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                      fontSize: 16.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color:
+                                                          theme.isDark
+                                                              ? Colors.grey[400]
+                                                              : Colors
+                                                                  .grey[600],
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 2.w),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          Container(
+                                            height: 0.2.h,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  theme.isDark
+                                                      ? Colors.white10
+                                                      : Colors.grey.shade100,
+                                            ),
+                                          ).paddingOnly(bottom: 1.h, top: 1.h),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              // Like Button
+                                              StatefulBuilder(
+                                                builder: (
+                                                  context,
+                                                  setLocalState,
+                                                ) {
+                                                  bool isLiked =
+                                                      index <
+                                                              isLikedListLocal
+                                                                  .length
+                                                          ? isLikedListLocal[index]
+                                                          : false;
+                                                  bool isInProgress =
+                                                      index <
+                                                              isLikeInProgressListLocal
+                                                                  .length
+                                                          ? isLikeInProgressListLocal[index]
+                                                          : false;
+
+                                                  return InkWell(
+                                                    onTap:
+                                                        isInProgress
+                                                            ? null
+                                                            : () {
+                                                              if (index <
+                                                                      isLikedListLocal
+                                                                          .length &&
+                                                                  index <
+                                                                      isLikeInProgressListLocal
+                                                                          .length) {
+                                                                setLocalState(() {
+                                                                  isLikedListLocal[index] =
+                                                                      !isLikedListLocal[index];
+                                                                  isLikeInProgressListLocal[index] =
+                                                                      true;
+                                                                });
+                                                                _saveLikeStatusLocal(
+                                                                  index,
+                                                                  isLikedListLocal[index],
+                                                                );
+                                                                postslikelocalap(
+                                                                  index,
+                                                                  () {
+                                                                    setLocalState(() {
+                                                                      isLikeInProgressListLocal[index] =
+                                                                          false;
+                                                                    });
                                                                   },
-                                                          child: Text(
+                                                                );
+                                                              }
+                                                            },
+                                                    child: Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                            horizontal: 5.w,
+                                                            vertical: 1.h,
+                                                          ),
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            theme.isDark
+                                                                ? Colors.white
+                                                                    .withOpacity(
+                                                                      0.05,
+                                                                    )
+                                                                : Colors
+                                                                    .grey[100],
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              15,
+                                                            ),
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(
+                                                            isLiked
+                                                                ? Icons.favorite
+                                                                : Icons
+                                                                    .favorite_border,
+                                                            size: 18.sp,
+                                                            color:
+                                                                isLiked
+                                                                    ? Colors.red
+                                                                    : (theme.isDark
+                                                                        ? Colors
+                                                                            .white70
+                                                                        : Colors
+                                                                            .grey[700]),
+                                                          ),
+                                                          SizedBox(width: 1.w),
+                                                          Text(
                                                             "Like",
                                                             style: TextStyle(
-                                                              fontFamily:
-                                                                  AppConstants
-                                                                      .manrope,
-                                                              fontSize: 16.sp,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                              fontSize: 14.sp,
                                                               color:
                                                                   isLiked
                                                                       ? Colors
                                                                           .red
-                                                                      : const Color(
-                                                                        0XFF3E3E3E,
-                                                                      ),
+                                                                      : (theme.isDark
+                                                                          ? Colors
+                                                                              .white70
+                                                                          : Colors
+                                                                              .grey[700]),
+                                                              fontFamily:
+                                                                  AppConstants
+                                                                      .manrope,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
                                                             ),
                                                           ),
-                                                        );
-                                                      },
-                                                    ),
-                                                    SizedBox(width: 2.w),
-                                                    Container(
-                                                      height: 2.h,
-                                                      width: 0.5.w,
-                                                      decoration: BoxDecoration(
-                                                        color: const Color(
-                                                          0XFF3E3E3E,
-                                                        ),
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              20,
-                                                            ),
+                                                        ],
                                                       ),
                                                     ),
-                                                    SizedBox(width: 2.w),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        getComments1(
-                                                          context,
-                                                          post?.id?.toString() ??
-                                                              "",
-                                                        );
-                                                      },
-                                                      child: Text(
+                                                  );
+                                                },
+                                              ),
+
+                                              // Comment Button
+                                              InkWell(
+                                                onTap: () {
+                                                  getComments1(
+                                                    context,
+                                                    post?.id?.toString() ?? "",
+                                                  );
+                                                },
+                                                child: Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 4.w,
+                                                    vertical: 1.h,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        theme.isDark
+                                                            ? Colors.white
+                                                                .withOpacity(
+                                                                  0.05,
+                                                                )
+                                                            : Colors.grey[100],
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          15,
+                                                        ),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        CupertinoIcons
+                                                            .chat_bubble,
+                                                        size: 18.sp,
+                                                        color:
+                                                            theme.isDark
+                                                                ? Colors.white70
+                                                                : Colors
+                                                                    .grey[700],
+                                                      ),
+                                                      SizedBox(width: 1.w),
+                                                      Text(
                                                         "Comment",
                                                         style: TextStyle(
+                                                          fontSize: 14.sp,
+                                                          color:
+                                                              theme.isDark
+                                                                  ? Colors
+                                                                      .white70
+                                                                  : Colors
+                                                                      .grey[700],
                                                           fontFamily:
                                                               AppConstants
                                                                   .manrope,
-                                                          fontSize: 16.sp,
                                                           fontWeight:
-                                                              FontWeight.bold,
-                                                          color: const Color(
-                                                            0XFF3E3E3E,
-                                                          ),
+                                                              FontWeight.w500,
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ],
-                                            ),
-                                            if (isLoadingMore)
-                                              const Padding(
-                                                padding: EdgeInsets.all(8.0),
-                                                child:
-                                                    CircularProgressIndicator(
-                                                      color:
-                                                          AppColors.blackColor,
-                                                    ),
                                               ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                )
-                            : const SizedBox(),
-                      ],
-                    ),
+
+                                              // Bookmark Button
+                                              InkWell(
+                                                onTap: () {
+                                                  // Bookmark functionality
+                                                },
+                                                child: Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 4.w,
+                                                    vertical: 1.h,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        theme.isDark
+                                                            ? Colors.white
+                                                                .withOpacity(
+                                                                  0.05,
+                                                                )
+                                                            : Colors.grey[100],
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          15,
+                                                        ),
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.bookmark_border,
+                                                    size: 18.sp,
+                                                    color:
+                                                        theme.isDark
+                                                            ? Colors.white70
+                                                            : Colors.grey[700],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+
+                                          if (isLoadingMore)
+                                            const Padding(
+                                              padding: EdgeInsets.all(8.0),
+                                              child: CircularProgressIndicator(
+                                                color: AppColors.blackColor,
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                          : const SizedBox(),
+
+                    ],
                   ),
                 ),
-              ],
+              ),
+            ],
+          ).paddingOnly(left: 4.w, right: 4.w, top: 8.h),
+          if (isComment)
+            Container(
+              color: AppColors.black.withValues(alpha: .2),
+              child: Loader(),
             ),
-          ).paddingOnly(top: 10.h),
           if (isSending1)
             Container(
               color: Colors.black.withValues(alpha: 0.3),
@@ -1878,9 +2028,11 @@ class _MessageboardState extends State<Messageboard> {
             });
           }
         } catch (e) {
-          setState(() {
-            isLoading = false;
-          });
+          if (mounted) {
+            setState(() {
+              isLoading = false;
+            });
+          }
         }
       } else {
         setState(() {
@@ -1915,9 +2067,11 @@ class _MessageboardState extends State<Messageboard> {
     int comment,
   ) {
     bool isLoading = true;
+    final theme = Provider.of<ThemeController>(context, listen: false);
+
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: theme.isDark ? Color(0xFF252525) : Colors.white,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -1975,8 +2129,40 @@ class _MessageboardState extends State<Messageboard> {
                                   : getpostCommentsModel == null ||
                                       getpostCommentsModel?.data == null ||
                                       getpostCommentsModel!.data!.isEmpty
-                                  ? const Center(
-                                    child: Text("No comments found"),
+                                  ? Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        // એક સરસ ચેટ કે કમેન્ટ આઇકન
+                                        Icon(
+                                          Icons.chat_bubble_outline_rounded,
+                                          size: 80,
+                                          color: Colors.grey[400],
+                                        ),
+                                        const SizedBox(height: 16),
+                                        Text(
+                                          "No comments found",
+                                          style: TextStyle(
+                                            fontFamily:
+                                                AppConstants.manropeBold,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        // સબ ટેક્સ્ટ (વધારાની વિગત માટે)
+                                        Text(
+                                          "Be the first one to start the conversation!",
+                                          style: TextStyle(
+                                            fontFamily: AppConstants.manrope,
+                                            fontSize: 14,
+                                            color: Colors.grey[500],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   )
                                   : ListView.builder(
                                     controller: scrollController,
@@ -2040,9 +2226,23 @@ class _MessageboardState extends State<Messageboard> {
                                 Expanded(
                                   child: TextField(
                                     controller: commentController,
+                                    style: TextStyle(
+                                      color:
+                                          theme.isDark
+                                              ? AppColors.black
+                                              : AppColors.black,
+                                      fontFamily: AppConstants.manrope,
+                                    ),
                                     decoration: InputDecoration(
                                       hintText: "Write a comment...",
                                       filled: true,
+                                      hintStyle: TextStyle(
+                                        color:
+                                            theme.isDark
+                                                ? AppColors.black
+                                                : AppColors.black,
+                                        fontFamily: AppConstants.manrope,
+                                      ),
                                       fillColor: Colors.grey.shade100,
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(30),
@@ -2111,9 +2311,10 @@ class _MessageboardState extends State<Messageboard> {
   final addPostFormkey = GlobalKey<FormState>();
 
   void addpostsheet(BuildContext parentContext, String userid) {
+    final theme = Provider.of<ThemeController>(context, listen: false);
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: theme.isDark ? Color(0xFF252525) : Colors.white,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
@@ -2170,8 +2371,16 @@ class _MessageboardState extends State<Messageboard> {
                           }
                           return null;
                         },
+
+                        style: TextStyle(
+                          color:
+                              theme.isDark ? AppColors.black : AppColors.black,
+                          fontFamily: AppConstants.manrope,
+                        ),
                         decoration: inputDecoration(
                           hintText: 'Enter Title',
+                          isDark: theme.isDark,
+
                           searchIcon: Icon(
                             Icons.title,
                             size: 20.sp,
@@ -2193,7 +2402,11 @@ class _MessageboardState extends State<Messageboard> {
                         cursorColor: AppColors.black,
                         controller: _descController,
                         keyboardType: TextInputType.text,
-
+                        style: TextStyle(
+                          color:
+                              theme.isDark ? AppColors.black : AppColors.black,
+                          fontFamily: AppConstants.manrope,
+                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Please enter your Description";
@@ -2202,6 +2415,7 @@ class _MessageboardState extends State<Messageboard> {
                         },
                         decoration: inputDecoration(
                           hintText: 'Enter Description',
+                          isDark: theme.isDark,
                           searchIcon: Icon(
                             Icons.contact_mail,
                             size: 20.sp,
@@ -2339,13 +2553,14 @@ class _MessageboardState extends State<Messageboard> {
     TextEditingController titleUpdate = TextEditingController(
       text: post?.title?.toString() ?? '',
     );
+    final theme = Provider.of<ThemeController>(context, listen: false);
 
     List<String> existingImages = List<String>.from(post?.file ?? []);
     List<XFile> newImages0 = [];
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: theme.isDark ? Color(0xFF252525) : Colors.white,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
@@ -2390,13 +2605,21 @@ class _MessageboardState extends State<Messageboard> {
                         controller: titleUpdate,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Please enter your Description";
+                            return "Please enter your title";
                           }
                           return null;
                         },
+                        style: TextStyle(
+                          color:
+                              theme.isDark ? AppColors.black : AppColors.black,
+                          fontFamily: AppConstants.manrope,
+                        ),
                         decoration: inputDecoration(
-                          hintText: 'Enter Description',
-                          searchIcon: const Icon(Icons.description),
+                          hintText: 'Enter Title',
+                          searchIcon: const Icon(
+                            Icons.title,
+                            color: AppColors.black,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -2417,9 +2640,17 @@ class _MessageboardState extends State<Messageboard> {
                           }
                           return null;
                         },
+                        style: TextStyle(
+                          color:
+                              theme.isDark ? AppColors.black : AppColors.black,
+                          fontFamily: AppConstants.manrope,
+                        ),
                         decoration: inputDecoration(
                           hintText: 'Enter Description',
-                          searchIcon: const Icon(Icons.description),
+                          searchIcon: const Icon(
+                            Icons.description,
+                            color: AppColors.black,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -2829,10 +3060,6 @@ class _MessageboardState extends State<Messageboard> {
                 isSending1 = false;
               });
             }
-
-            await localpostapi(page: 1);
-
-            // Show success message
             showSnackBar(
               context: context,
               title: 'Success',
@@ -2840,6 +3067,7 @@ class _MessageboardState extends State<Messageboard> {
               backgoundColor: Colors.green,
               ColorText: Colors.white,
             );
+            await localpostapi();
           } else {
             if (mounted) {
               setState(() {
@@ -3052,11 +3280,16 @@ class _MessageboardState extends State<Messageboard> {
     });
   }
 
+  bool isComment = false;
+
   Future<void> getComments(
     BuildContext context,
     String postId,
     int? comment,
   ) async {
+    setState(() {
+      isComment = true;
+    });
     comment = comment ?? 0; // prevent null → default 0
 
     currentPostId = postId;
@@ -3064,6 +3297,9 @@ class _MessageboardState extends State<Messageboard> {
 
     bool internet = await checkInternet();
     if (!internet) {
+      setState(() {
+        isComment = false;
+      });
       buildErrorDialog(context, 'Error', "Internet Required");
       return;
     }
@@ -3074,24 +3310,42 @@ class _MessageboardState extends State<Messageboard> {
       if (response.statusCode == 200) {
         getpostCommentsModel = GetPostCommentsModel.fromJson(response.data);
         MessageBoardApi();
+        setState(() {
+          isComment = false;
+        });
       } else {
         getpostCommentsModel = null;
+        setState(() {
+          isComment = false;
+        });
       }
     } catch (e) {
       getpostCommentsModel = null;
+      setState(() {
+        isComment = false;
+      });
     }
 
     if (context.mounted) {
       showCommentBottomSheet(context, postId, comment);
+      setState(() {
+        isComment = false;
+      });
     }
   }
 
   Future<void> getComments1(BuildContext context, String postId) async {
+    setState(() {
+      isComment = true;
+    });
     currentPostId = postId;
     final Map<String, String> data = {'post_id': postId};
 
     bool internet = await checkInternet();
     if (!internet) {
+      setState(() {
+        isComment = false;
+      });
       buildErrorDialog(context, 'Error', "Internet Required");
       return;
     }
@@ -3102,14 +3356,26 @@ class _MessageboardState extends State<Messageboard> {
       if (response.statusCode == 200) {
         getpostCommentsModel = GetPostCommentsModel.fromJson(response.data);
         localpostapi();
+        setState(() {
+          isComment = false;
+        });
       } else {
         getpostCommentsModel = null;
+        setState(() {
+          isComment = false;
+        });
       }
     } catch (e) {
       getpostCommentsModel = null;
+      setState(() {
+        isComment = false;
+      });
     }
 
     if (context.mounted) {
+      setState(() {
+        isComment = false;
+      });
       showCommentBottomSheet(context, postId, 0);
     }
   }
@@ -3312,5 +3578,44 @@ class _MessageboardState extends State<Messageboard> {
           return word[0].toUpperCase() + word.substring(1).toLowerCase();
         })
         .join(' ');
+  }
+
+  Widget buildActionButton({
+    required IconData icon,
+    required String label,
+    required bool isDark,
+    required VoidCallback onTap,
+    bool onlyIcon = false,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+        decoration: BoxDecoration(
+          color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey[100],
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 20,
+              color: isDark ? Colors.white70 : Colors.black87,
+            ),
+            if (!onlyIcon) ...[
+              SizedBox(width: 2.w),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isDark ? Colors.white70 : Colors.black87,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: AppConstants.manrope,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 }

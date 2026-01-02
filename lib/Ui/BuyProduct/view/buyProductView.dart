@@ -3,10 +3,12 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wavee/Services/themeServices.dart';
 import 'package:wavee/Utils/customSnackBars.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
@@ -45,6 +47,8 @@ class _BuyProductViewState extends State<BuyProductView> {
   String AppLat = '';
   String AppLon = '';
   final bool _mapVisible = false;
+
+  // bool isDark = false;
 
   List<Map<String, dynamic>> timeSlots = [];
 
@@ -165,9 +169,11 @@ class _BuyProductViewState extends State<BuyProductView> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeController>();
+    final isDark = theme.isDark;
     double subtotal = getSubtotal();
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? Color(0xff1A1A1A) : AppColors.white,
       body: Stack(
         children: [
           Padding(
@@ -230,7 +236,11 @@ class _BuyProductViewState extends State<BuyProductView> {
                                   padding: EdgeInsets.all(3.w),
                                   margin: EdgeInsets.only(top: 0.5.h),
                                   decoration: BoxDecoration(
-                                    color: Colors.blue[50],
+                                    color:
+                                        isDark
+                                            ? Color(0xff2B2B2B)
+                                            : Colors.blue[50],
+                                    // border: Border.all(color: isDark?Color(0xff383838):Colors.grey),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Column(
@@ -240,11 +250,24 @@ class _BuyProductViewState extends State<BuyProductView> {
                                           Container(
                                             padding: EdgeInsets.all(2.w),
                                             decoration: BoxDecoration(
-                                              color: Colors.grey[100],
+                                              color:
+                                                  isDark
+                                                      ? Color(0xff2B2B2B)
+                                                      : Colors.grey[100],
+
+                                              border: Border.all(
+                                                color:
+                                                    isDark
+                                                        ? Color(0xff383838)
+                                                        : Colors.grey,
+                                              ),
                                             ),
                                             child: Icon(
                                               Icons.map,
-                                              color: Colors.grey[600],
+                                              color:
+                                                  isDark
+                                                      ? Colors.white
+                                                      : Colors.grey[600],
                                               size: 20.sp,
                                             ),
                                           ),
@@ -259,7 +282,10 @@ class _BuyProductViewState extends State<BuyProductView> {
                                                   style: TextStyle(
                                                     fontSize: 14.sp,
                                                     fontWeight: FontWeight.w600,
-                                                    color: Colors.grey[600],
+                                                    color:
+                                                        isDark
+                                                            ? Colors.white
+                                                            : Colors.grey[600],
                                                   ),
                                                 ),
                                                 SizedBox(height: 0.2.h),
@@ -282,7 +308,10 @@ class _BuyProductViewState extends State<BuyProductView> {
                                                       : "${busnessviewmodal?.data?.business?.user?.address?.address}",
                                                   style: TextStyle(
                                                     fontSize: 12.sp,
-                                                    color: Colors.grey[600],
+                                                    color:
+                                                        isDark
+                                                            ? Colors.white
+                                                            : Colors.grey[600],
                                                   ),
                                                   maxLines: 2,
                                                   overflow:
@@ -373,16 +402,23 @@ class _BuyProductViewState extends State<BuyProductView> {
                                     ],
                                   ),
                                 ),
+                                SizedBox(height: 1.h),
                                 _buildSectionCard(
                                   title: "Opening Hours",
                                   icon: Icons.access_time,
                                   child: Container(
                                     padding: EdgeInsets.all(2.w),
                                     decoration: BoxDecoration(
-                                      color: Colors.grey[50],
+                                      color:
+                                          isDark
+                                              ? Color(0xff2B2B2B)
+                                              : Colors.grey[50],
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(
-                                        color: Colors.grey.shade300,
+                                        color:
+                                            isDark
+                                                ? Color(0xff383838)
+                                                : Colors.grey.shade300,
                                         width: 1,
                                       ),
                                     ),
@@ -390,6 +426,7 @@ class _BuyProductViewState extends State<BuyProductView> {
                                       fontSize: 16.sp,
                                       title: _getCurrentDayStatus(),
                                       leadingIcon: Icons.timer,
+
                                       children: [
                                         Container(
                                           padding: const EdgeInsets.symmetric(
@@ -463,6 +500,7 @@ class _BuyProductViewState extends State<BuyProductView> {
                                 ),
                               ],
                             ),
+                            SizedBox(height: 1.h),
                             _buildSectionCard(
                               title: "Payment Method",
                               icon: Icons.payment,
@@ -475,79 +513,10 @@ class _BuyProductViewState extends State<BuyProductView> {
                                     subtitle: "Pay securely with Stripe",
                                     value: "Stripe",
                                   ),
-                                  // Platform.isAndroid
-                                  //     ? GooglePayButton(
-                                  //         paymentConfiguration:
-                                  //             PaymentConfiguration
-                                  //                 .fromJsonString(
-                                  //                     defaultGooglePay),
-                                  //         paymentItems: [
-                                  //           PaymentItem(
-                                  //             label: 'Total',
-                                  //             amount:
-                                  //                 subtotal.toStringAsFixed(2),
-                                  //             status: PaymentItemStatus
-                                  //                 .final_price,
-                                  //           )
-                                  //         ],
-                                  //         onPressed: () {},
-                                  //         type: GooglePayButtonType.pay,
-                                  //         width: double.infinity,
-                                  //         margin: const EdgeInsets.only(
-                                  //             top: 15.0),
-                                  //         onPaymentResult: (result) {
-                                  //           debug
-                                  //           debugPrint(
-                                  //               '💳 Card Description: ${result['paymentMethodData']['description']}');
-                                  //           debugPrint(
-                                  //               '📞 Phone: ${result['paymentMethodData']['info']['billingAddress']['phoneNumber']}');
-                                  //           debugPrint(
-                                  //               '🏠 Address: ${result['paymentMethodData']['info']['billingAddress']['address1']}');
-                                  //           debugPrint(
-                                  //               '🌍 Country: ${result['paymentMethodData']['info']['billingAddress']['countryCode']}');
-                                  //           debugPrint(
-                                  //               '🧾 Card Last 4 Digits: ${result['paymentMethodData']['info']['cardDetails']}');
-                                  //           debugPrint(
-                                  //               '📦 Token: ${result['paymentMethodData']['tokenizationData']['token']}');
-                                  //         },
-                                  //         loadingIndicator: const Center(
-                                  //           child: CircularProgressIndicator(
-                                  //             color: AppColors.white,
-                                  //           ),
-                                  //         ),
-                                  //       )
-                                  //     : ApplePayButton(
-                                  //         paymentConfiguration:
-                                  //             PaymentConfiguration
-                                  //                 .fromJsonString(
-                                  //                     defaultApplePay),
-                                  //         paymentItems: [
-                                  //           PaymentItem(
-                                  //             label: 'Item A',
-                                  //             amount:
-                                  //                 subtotal.toStringAsFixed(2),
-                                  //             status: PaymentItemStatus
-                                  //                 .final_price,
-                                  //           ),
-                                  //         ],
-                                  //         style: ApplePayButtonStyle.black,
-                                  //         width: double.infinity,
-                                  //         height: 50,
-                                  //         type: ApplePayButtonType.buy,
-                                  //         margin: const EdgeInsets.only(
-                                  //             top: 15.0),
-                                  //         onPaymentResult: (result) {
-                                  //           debugPrint(
-                                  //               'Payment Result $result');
-                                  //         },
-                                  //         loadingIndicator: const Center(
-                                  //           child:
-                                  //               CircularProgressIndicator(),
-                                  //         ),
-                                  //       ),
                                 ],
                               ),
                             ),
+                            SizedBox(height: 1.h),
                             _buildSectionCard(
                               title: "Order Summary",
                               icon: Icons.receipt,
@@ -617,10 +586,14 @@ class _BuyProductViewState extends State<BuyProductView> {
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [
-                                      AppColors.maincolor,
-                                      AppColors.maincolor.withValues(
-                                        alpha: 0.8,
-                                      ),
+                                      isDark
+                                          ? Color(0xffcbb88c)
+                                          : AppColors.maincolor,
+                                      isDark
+                                          ? Color(0xffcbb88c)
+                                          : AppColors.maincolor.withValues(
+                                            alpha: 0.8,
+                                          ),
                                     ],
                                     begin: Alignment.centerLeft,
                                     end: Alignment.centerRight,
@@ -641,7 +614,10 @@ class _BuyProductViewState extends State<BuyProductView> {
                                   children: [
                                     Icon(
                                       Icons.shopping_bag,
-                                      color: Colors.white,
+                                      color:
+                                          isDark
+                                              ? AppColors.black
+                                              : Colors.white,
                                       size: 22.sp,
                                     ),
                                     SizedBox(width: 3.w),
@@ -649,7 +625,10 @@ class _BuyProductViewState extends State<BuyProductView> {
                                       "Click & Collect",
                                       style: TextStyle(
                                         fontSize: 16.sp,
-                                        color: Colors.white,
+                                        color:
+                                            isDark
+                                                ? AppColors.black
+                                                : Colors.white,
                                         fontFamily: AppConstants.manrope,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -936,10 +915,12 @@ class _BuyProductViewState extends State<BuyProductView> {
     required IconData icon,
     required Widget child,
   }) {
+    final theme = Provider.of<ThemeController>(context, listen: false);
+    final isDark = theme.isDark;
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Color(0xff2B2B2B) : Colors.white,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -948,7 +929,8 @@ class _BuyProductViewState extends State<BuyProductView> {
           Container(
             padding: EdgeInsets.all(3.w),
             decoration: BoxDecoration(
-              color: Colors.grey[50],
+              color: isDark ? Color(0xff2B2B2B) : Colors.grey[50],
+              // border: Border.all(color: isDark?Color(0xff383838):Colors.grey),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
@@ -960,9 +942,16 @@ class _BuyProductViewState extends State<BuyProductView> {
                   padding: EdgeInsets.all(2.w),
                   decoration: BoxDecoration(
                     color: AppColors.maincolor.withValues(alpha: 0.1),
+                    border: Border.all(
+                      color: isDark ? Color(0xff383838) : Colors.grey,
+                    ),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(icon, color: AppColors.maincolor, size: 20.sp),
+                  child: Icon(
+                    icon,
+                    color: isDark ? Colors.white : AppColors.maincolor,
+                    size: 20.sp,
+                  ),
                 ),
                 SizedBox(width: 3.w),
                 Text(
@@ -971,7 +960,7 @@ class _BuyProductViewState extends State<BuyProductView> {
                     fontSize: 16.sp,
                     fontFamily: AppConstants.manropeBold,
                     fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+                    color: isDark ? Colors.white : Colors.black87,
                   ),
                 ),
               ],
@@ -988,6 +977,8 @@ class _BuyProductViewState extends State<BuyProductView> {
     required String subtitle,
     required VoidCallback ontap,
   }) {
+    final theme = Provider.of<ThemeController>(context, listen: false);
+    final isDark = theme.isDark;
     return InkWell(
       onTap: ontap,
       child: Container(
@@ -1013,7 +1004,7 @@ class _BuyProductViewState extends State<BuyProductView> {
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontFamily: AppConstants.manropeBold,
-                      color: Colors.black87,
+                      color: isDark ? Colors.white : Colors.black87,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -1032,6 +1023,8 @@ class _BuyProductViewState extends State<BuyProductView> {
     bool isTotal = false,
     bool isDiscount = false,
   }) {
+    final theme = Provider.of<ThemeController>(context, listen: false);
+    final isDark = theme.isDark;
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 0.5.h),
       child: Row(
@@ -1044,7 +1037,11 @@ class _BuyProductViewState extends State<BuyProductView> {
               fontWeight: FontWeight.bold,
               fontFamily: AppConstants.manrope,
               color:
-                  isDiscount
+                  isDark
+                      ? isDiscount
+                          ? Colors.green[700]
+                          : (isTotal ? Colors.white : Colors.white)
+                      : isDiscount
                       ? Colors.green[700]
                       : (isTotal ? Colors.black : Colors.black),
             ),
@@ -1058,7 +1055,11 @@ class _BuyProductViewState extends State<BuyProductView> {
               fontWeight: FontWeight.bold,
               fontFamily: AppConstants.manrope,
               color:
-                  isDiscount
+                  isDark
+                      ? isDiscount
+                          ? Colors.green[700]
+                          : (isTotal ? AppColors.white : Colors.white)
+                      : isDiscount
                       ? Colors.green[700]
                       : (isTotal ? AppColors.maincolor : Colors.black),
             ),
@@ -1075,7 +1076,8 @@ class _BuyProductViewState extends State<BuyProductView> {
     required String value,
   }) {
     bool isSelected = selectedPayment == value;
-
+    final theme = Provider.of<ThemeController>(context, listen: false);
+    final isDark = theme.isDark;
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -1102,7 +1104,9 @@ class _BuyProductViewState extends State<BuyProductView> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey[200]!),
+                border: Border.all(
+                  color: isDark ? Colors.white : Colors.grey[200]!,
+                ),
               ),
               child: Image.asset(
                 image,
@@ -1121,19 +1125,38 @@ class _BuyProductViewState extends State<BuyProductView> {
                     style: TextStyle(
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? AppColors.maincolor : Colors.black87,
+                      color:
+                          isSelected
+                              ? isDark
+                                  ? Colors.white
+                                  : AppColors.maincolor
+                              : Colors.black87,
+                      fontFamily: AppConstants.manrope,
                     ),
                   ),
                   SizedBox(height: 0.5.h),
                   Text(
                     subtitle,
-                    style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color:
+                          isSelected
+                              ? isDark
+                                  ? Colors.white
+                                  : AppColors.maincolor
+                              : Colors.black87,
+                      fontFamily: AppConstants.manrope,
+                    ),
                   ),
                 ],
               ),
             ),
             if (isSelected)
-              Icon(Icons.check_circle, color: AppColors.maincolor, size: 20.sp),
+              Icon(
+                Icons.check_circle,
+                color: isDark ? Colors.white : AppColors.maincolor,
+                size: 20.sp,
+              ),
           ],
         ),
       ),
@@ -1191,14 +1214,18 @@ class _BuyProductViewState extends State<BuyProductView> {
 
   Widget _buildHoursRow(String day, dynamic dayHours) {
     final isToday = day == _getDayName(DateTime.now().weekday);
-
+    final theme = Provider.of<ThemeController>(context, listen: false);
+    final isDark = theme.isDark;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6),
       decoration:
           isToday
               ? BoxDecoration(
-                color: AppColors.maincolor,
+                color: isDark ? Color(0xff373737) : AppColors.maincolor,
                 borderRadius: BorderRadius.circular(6),
+                border: Border.all(
+                  color: isDark ? Color(0xff383838) : Colors.grey,
+                ),
               )
               : null,
       child: Padding(
@@ -1210,7 +1237,12 @@ class _BuyProductViewState extends State<BuyProductView> {
               day,
               style: TextStyle(
                 fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-                color: isToday ? Colors.white : Colors.black87,
+                color:
+                    isDark
+                        ? Colors.white
+                        : isToday
+                        ? Colors.white
+                        : Colors.black87,
                 fontFamily: AppConstants.manrope,
               ),
             ),
@@ -1218,7 +1250,12 @@ class _BuyProductViewState extends State<BuyProductView> {
               _getHoursText(dayHours),
               style: TextStyle(
                 fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-                color: isToday ? Colors.white : Colors.grey[600],
+                color:
+                    isDark
+                        ? Colors.white
+                        : isToday
+                        ? Colors.white
+                        : Colors.grey[600],
                 fontFamily: AppConstants.manrope,
               ),
             ),

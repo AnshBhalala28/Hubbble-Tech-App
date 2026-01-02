@@ -4,7 +4,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Services/themeServices.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
@@ -37,6 +39,8 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
   String? userId;
   bool isGlobalLoading = false;
 
+  // bool isDark = true;
+
   @override
   void initState() {
     super.initState();
@@ -66,7 +70,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
           } else {
             _pagingController.appendPage(newItems, pageKey + 1);
           }
-        } catch (e,stacktrace) {
+        } catch (e, stacktrace) {
           log("stacktracestacktracestacktracestacktrace$stacktrace");
           _pagingController.error = e;
         }
@@ -78,8 +82,10 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeController>();
+
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: theme.isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
       body: Stack(
         children: [
           Padding(
@@ -115,9 +121,14 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                           (context, booking, index) => Stack(
                             alignment: Alignment.topRight,
                             children: [
-                              Material(
-                                elevation: 1,
-                                borderRadius: BorderRadius.circular(12),
+                              Container(
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.white30),
+                                  borderRadius: BorderRadius.circular(12),
+                                  color:
+                                      theme.isDark ? Color(0xff252525) : null,
+                                ),
                                 child: GestureDetector(
                                   onTap:
                                       () => Get.to(
@@ -130,7 +141,10 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                     height: 33.h,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(12),
-                                      color: Colors.white,
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xff252525)
+                                              : Colors.white,
                                     ),
                                     child: Column(
                                       crossAxisAlignment:
@@ -177,6 +191,10 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
+                                              color:
+                                                  theme.isDark
+                                                      ? Colors.white
+                                                      : Colors.black,
                                               fontSize: 17.sp,
                                               fontWeight: FontWeight.bold,
                                               fontFamily:
@@ -196,7 +214,10 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                               fontSize: 15.sp,
-                                              color: Colors.grey[700],
+                                              color:
+                                                  theme.isDark
+                                                      ? Colors.white
+                                                      : Colors.grey[700],
                                               fontFamily: AppConstants.manrope,
                                             ),
                                           ),
@@ -212,7 +233,10 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                             child: Icon(
                                               Icons.arrow_forward,
                                               size: 18.sp,
-                                              color: AppColors.maincolor,
+                                              color:
+                                                  theme.isDark
+                                                      ? Colors.white
+                                                      : AppColors.maincolor,
                                             ),
                                           ),
                                         ),
@@ -222,8 +246,8 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                 ),
                               ).marginOnly(bottom: 1.h),
                               Positioned(
-                                top: 1.h,
-                                right: 1.w,
+                                top: 2.h,
+                                right: 3.w,
                                 child: batan(
                                   title: "Book Now",
                                   route:
@@ -233,8 +257,14 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                           isPage: false,
                                         ),
                                       ),
-                                  color: AppColors.maincolor,
-                                  fontcolor: Colors.white,
+                                  color:
+                                      theme.isDark
+                                          ? Color(0xffCBB88C)
+                                          : AppColors.maincolor,
+                                  fontcolor:
+                                      theme.isDark
+                                          ? Colors.black
+                                          : Colors.white,
                                   height: 4.h,
                                   width: 22.w,
                                   fontsize: 15.sp,

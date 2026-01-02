@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wavee/Services/themeServices.dart';
 
 void showSnackBar({
   required BuildContext context,
@@ -69,38 +71,33 @@ class _TopSnackBarState extends State<_TopSnackBar>
   void initState() {
     super.initState();
 
-    // 1. Setup the animation controller
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 600), // Smooth entry duration
+      duration: const Duration(milliseconds: 600),
       vsync: this,
     );
 
-    // 2. Define the Slide Animation (From top -1.0 to normal 0.0)
     _offsetAnimation = Tween<Offset>(
       begin: const Offset(0, -1.0),
       end: Offset.zero,
     ).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: Curves.easeOutCubic, // Makes it slide in smoothly
+        curve: Curves.easeOutCubic,
         reverseCurve: Curves.easeInCubic,
       ),
     );
 
-    // 3. Define Fade Animation
     _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
 
-    // 4. Start Animation and set Auto-Dismiss Timer
     _controller.forward();
     Future.delayed(const Duration(seconds: 2), () {
       _dismiss();
     });
   }
 
-  // Helper to reverse animation before removing from Overlay
   Future<void> _dismiss() async {
     if (mounted) {
-      await _controller.reverse(); // Wait for exit animation
+      await _controller.reverse();
       widget.onDismiss();
     }
   }
@@ -113,6 +110,21 @@ class _TopSnackBarState extends State<_TopSnackBar>
 
   @override
   Widget build(BuildContext context) {
+    // --- DYNAMIC THEME LOGIC ---
+    final themeController = Provider.of<ThemeController>(context);
+    final isDark = themeController.isDark;
+
+    // Define your dynamic accent colors
+    final Color accentColor =
+        isDark
+            ? const Color(0xFFCFB583) // Gold/Beige for Dark Mode
+            : const Color(0xFF4C5588); // Blue for Light Mode
+
+    // Determine final colors (Argument overrides Theme, Theme overrides Default)
+    final Color finalBackgroundColor = widget.backgoundColor ?? accentColor;
+    final Color finalTextColor = widget.ColorText ?? Colors.white;
+    final Color finalIconColor = widget.IconColor ?? Colors.white;
+
     return Positioned(
       top: MediaQuery.of(context).padding.top + 10,
       left: 10,
@@ -125,11 +137,12 @@ class _TopSnackBarState extends State<_TopSnackBar>
             color: Colors.transparent,
             child: Container(
               decoration: BoxDecoration(
-                color: widget.backgoundColor ?? Colors.blue,
+                color: finalBackgroundColor, // Uses dynamic color
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.2),
+                    color: Colors.black.withOpacity(0.2),
+                    // Updated from withValues for broader compatibility
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
@@ -139,14 +152,11 @@ class _TopSnackBarState extends State<_TopSnackBar>
               child: InkWell(
                 onTap: () {
                   widget.ontap?.call();
-                  _dismiss(); // Animate out on tap
+                  _dismiss();
                 },
                 child: Row(
                   children: [
-                    Icon(
-                      widget.IconName ?? Icons.error,
-                      color: widget.IconColor ?? Colors.white,
-                    ),
+                    Icon(widget.IconName ?? Icons.error, color: finalIconColor),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Column(
@@ -156,7 +166,7 @@ class _TopSnackBarState extends State<_TopSnackBar>
                           Text(
                             widget.title,
                             style: TextStyle(
-                              color: widget.ColorText ?? Colors.white,
+                              color: finalTextColor,
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                             ),
@@ -165,7 +175,7 @@ class _TopSnackBarState extends State<_TopSnackBar>
                           Text(
                             widget.message,
                             style: TextStyle(
-                              color: widget.ColorText ?? Colors.white,
+                              color: finalTextColor,
                               fontSize: 14,
                             ),
                           ),

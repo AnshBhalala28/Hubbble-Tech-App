@@ -25,8 +25,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Color kDarkBackground = const Color(0xFF1E1E1E);
+    final Color kDarkBorder = const Color(0xFF333333);
+    final Color kWhiteText = Colors.white;
+    final Color kHintText = Colors.grey;
+    final Color kAccentColor = const Color(0xFFCFB583);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFF121212),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,28 +47,27 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     width: 12.w,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
-                      color: AppColors.maincolor,
+                      color: kAccentColor.withValues(alpha: 0.15),
                     ),
                     child: Icon(
-                      Icons.arrow_back,
+                      Icons.arrow_back_ios_rounded,
                       size: 20.sp,
-                      color: Colors.white,
+                      color: kAccentColor,
                     ),
                   ),
                 ),
               ],
-            ).paddingOnly(bottom: 0.h, top: 3.h),
-            SizedBox(height: 5.h),
+            ).paddingOnly(bottom: 0.h, top: 4.h),
+            SizedBox(height: 1.h),
 
             Center(
               child: Image.asset(
-                "assets/images/Applogo_remove_background.png",
-                height: 25.h,
-                // width: 65.w,
-                // fit: BoxFit.cover,
+                "assets/initLogo.png",
+                height: 20.h,
+                width: 55.w,
               ),
             ),
-            SizedBox(height: 2.h),
+            SizedBox(height: 5.h),
             SizedBox(
               width: 100.w,
               child: Text(
@@ -71,7 +75,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: AppConstants.manropeBold,
-                  color: AppColors.maincolor,
+                  color: kAccentColor,
                   fontWeight: FontWeight.bold,
                   fontSize: 18.sp,
                 ),
@@ -81,8 +85,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             Container(
               height: 6.h,
               decoration: BoxDecoration(
-                color: AppColors.maincolor,
-                borderRadius: BorderRadius.circular(20),
+                color: kAccentColor,
+                borderRadius: BorderRadius.circular(90),
               ),
               child: InkWell(
                 onTap: () {
@@ -94,7 +98,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     "Back To Log in",
                     style: TextStyle(
                       fontSize: 18,
-                      color: Colors.white,
+                      color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontFamily: AppConstants.manrope,
                     ),

@@ -5,8 +5,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Services/themeServices.dart';
 import 'package:wavee/Ui/ProductDetailPage/model/all_review_model.dart';
 import 'package:wavee/Utils/customSnackBars.dart';
 
@@ -25,6 +27,7 @@ import '../../CartScreen/view/cartViewScreen.dart';
 import '../../productDetailPage/model/product_model.dart';
 import '../../productDetailPage/provider/productProvider.dart';
 
+// bool isDark = true;
 class ProductDetailPage extends StatefulWidget {
   final String? productID;
   final String? type;
@@ -68,8 +71,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeController>();
+    final isDark = theme.isDark;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
       body: Stack(
         children: [
           Column(
@@ -79,11 +84,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               Container(
                 padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 3.w),
                 decoration: BoxDecoration(
-                  color: AppColors.bgcolor,
-                  border: const Border(
-                    top: BorderSide(color: Colors.grey),
-                    left: BorderSide(color: Colors.grey),
-                    right: BorderSide(color: Colors.grey),
+                  color: isDark ? Color(0xff272727) : AppColors.bgcolor,
+                  border: Border(
+                    top: BorderSide(
+                      color: isDark ? Color(0xffbdab82) : Colors.grey,
+                    ),
+                    left: BorderSide(
+                      color: isDark ? Color(0xffbdab82) : Colors.grey,
+                    ),
+                    right: BorderSide(
+                      color: isDark ? Color(0xffbdab82) : Colors.grey,
+                    ),
                   ),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(45),
@@ -111,7 +122,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                         alignment: Alignment.center,
                                         child: Icon(
                                           Icons.arrow_back,
-                                          color: AppColors.maincolor,
+                                          color:
+                                              isDark
+                                                  ? Color(0xffbdab82)
+                                                  : AppColors.maincolor,
                                           size: 20.sp,
                                         ),
                                       ),
@@ -127,6 +141,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                         style: TextStyle(
                                           fontFamily: AppConstants.manropeBold,
                                           fontSize: 19.sp,
+                                          color:
+                                              isDark
+                                                  ? Color(0xffbdab82)
+                                                  : AppColors.maincolor,
                                         ),
                                       ),
                                     ),
@@ -136,8 +154,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                 Container(
                                   height: 20.h,
                                   width: double.infinity,
-                                  decoration: const BoxDecoration(
-                                    color: AppColors.white,
+                                  decoration: BoxDecoration(
+                                    color:
+                                        isDark
+                                            ? AppColors.black
+                                            : AppColors.white,
                                   ),
                                   child:
                                       (productViewModel?.data?.images == null ||
@@ -220,11 +241,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                                   (
                                                                     context,
                                                                     url,
-                                                                  ) => const Center(
+                                                                  ) => Center(
                                                                     child: CircularProgressIndicator(
                                                                       color:
-                                                                          AppColors
-                                                                              .maincolor,
+                                                                          isDark
+                                                                              ? Color(
+                                                                                0xffbdab82,
+                                                                              )
+                                                                              : AppColors.maincolor,
                                                                     ),
                                                                   ),
                                                               errorWidget:
@@ -305,6 +329,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                 .capitalizeFirst ??
                                             "",
                                         style: TextStyle(
+                                          color:
+                                              isDark
+                                                  ? AppColors.white
+                                                  : AppColors.black,
                                           fontFamily: AppConstants.manrope,
                                           fontSize: 20.sp,
                                           fontWeight: FontWeight.w500,
@@ -318,7 +346,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                         vertical: 0.3.h,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: AppColors.white,
+                                        color:
+                                            isDark
+                                                ? AppColors.white
+                                                : AppColors.white,
                                         borderRadius: BorderRadius.circular(30),
                                         border: Border.all(
                                           color: AppColors.maincolor.withValues(
@@ -352,7 +383,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   width: 24.w,
                                   height: 0.7.h,
                                   decoration: BoxDecoration(
-                                    color: Colors.grey.shade300,
+                                    color:
+                                        isDark
+                                            ? Colors.grey.shade300
+                                            : Colors.grey.shade300,
                                     borderRadius: BorderRadius.circular(90),
                                   ),
                                 ),
@@ -379,11 +413,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                 fontWeight: FontWeight.normal,
                                                 fontFamily:
                                                     AppConstants.manrope,
-                                                color: Colors.grey,
+                                                color:
+                                                    isDark
+                                                        ? Color(0xffbdab82)
+                                                        : Colors.grey,
                                                 decoration:
                                                     TextDecoration.lineThrough,
                                                 decorationColor:
-                                                    AppColors.maincolor,
+                                                    isDark
+                                                        ? Color(0xffbdab82)
+                                                        : AppColors.maincolor,
                                               ),
                                             ),
                                             SizedBox(width: 2.w),
@@ -394,6 +433,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                 fontWeight: FontWeight.bold,
                                                 fontFamily:
                                                     AppConstants.manrope,
+                                                color:
+                                                    isDark
+                                                        ? Colors.white
+                                                        : AppColors.maincolor,
                                               ),
                                             ),
                                           ],
@@ -404,6 +447,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                             fontSize: 18.sp,
                                             fontWeight: FontWeight.bold,
                                             fontFamily: AppConstants.manrope,
+                                            color:
+                                                isDark
+                                                    ? Colors.white
+                                                    : AppColors.maincolor,
                                           ),
                                         ),
                                   ],
@@ -438,7 +485,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                     ),
                                     style: TextStyle(
                                       fontSize: 17.sp,
-                                      color: AppColors.maincolor,
+                                      color:
+                                          isDark
+                                              ? Colors.white
+                                              : AppColors.maincolor,
                                       fontWeight: FontWeight.normal,
                                       fontFamily: AppConstants.manrope,
                                     ),
@@ -456,12 +506,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                           fontSize: 18.sp,
                                           fontWeight: FontWeight.bold,
                                           fontFamily: AppConstants.manrope,
-                                          color: AppColors.maincolor,
+                                          color:
+                                              isDark
+                                                  ? Colors.white
+                                                  : AppColors.maincolor,
                                         ),
                                       ),
                                       SizedBox(height: 1.h),
                                       ...featuresList.map((feature) {
                                         return CustomFeatureCard(
+                                          isDark: isDark,
                                           icon: Icons.check_circle_rounded,
                                           icnSize: 18.sp,
                                           title: feature,
@@ -481,7 +535,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                           ),
                                           decoration: BoxDecoration(
                                             border: Border.all(
-                                              color: Colors.grey.shade300,
+                                              color:
+                                                  isDark
+                                                      ? Color(0xffbdab82)
+                                                      : Colors.grey.shade300,
                                             ),
                                             borderRadius: BorderRadius.circular(
                                               20,
@@ -491,9 +548,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
                                               IconButton(
-                                                icon: const Icon(
+                                                icon: Icon(
                                                   Icons.remove,
                                                   size: 18,
+                                                  color:
+                                                      isDark
+                                                          ? Color(0xffbdab82)
+                                                          : AppColors.black,
                                                 ),
                                                 padding: EdgeInsets.zero,
                                                 constraints:
@@ -507,15 +568,25 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                               const SizedBox(width: 16),
                                               Text(
                                                 '$count',
-                                                style: const TextStyle(
+                                                style: TextStyle(
                                                   fontSize: 16,
+                                                  color:
+                                                      isDark
+                                                          ? Color(0xffbdab82)
+                                                          : AppColors.black,
                                                 ),
                                               ),
                                               const SizedBox(width: 16),
                                               count == 10
                                                   ? Container()
                                                   : IconButton(
-                                                    icon: const Icon(
+                                                    icon: Icon(
+                                                      color:
+                                                          isDark
+                                                              ? Color(
+                                                                0xffbdab82,
+                                                              )
+                                                              : AppColors.black,
                                                       Icons.add,
                                                       size: 18,
                                                     ),
@@ -557,8 +628,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 width: double.infinity * 0.5,
                 padding: EdgeInsets.symmetric(horizontal: 25.w),
                 margin: EdgeInsets.only(bottom: 2.h),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.black : Colors.white,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                 ),
                 child:
@@ -568,6 +639,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             Expanded(
                               child: Material(
                                 elevation: 1,
+
                                 borderRadius: BorderRadius.circular(12),
                                 child: batan(
                                   title: "Add $count to Cart",
@@ -707,8 +779,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                       offset: Offset(0, 2),
                                     ),
                                   ],
-                                  color: AppColors.white,
-                                  fontcolor: AppColors.maincolor,
+                                  color:
+                                      isDark
+                                          ? Color(0xff272727)
+                                          : AppColors.white,
+                                  fontcolor:
+                                      isDark
+                                          ? Colors.white
+                                          : AppColors.maincolor,
                                   height: 5.h,
                                   fontsize: 15.sp,
                                   fontFamily: AppConstants.manropeBold,
@@ -1396,11 +1474,13 @@ class CustomFeatureCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final double? icnSize;
+  final bool isDark;
 
   const CustomFeatureCard({
     super.key,
     required this.icon,
     required this.title,
+    required this.isDark,
     this.icnSize,
   });
 
@@ -1410,12 +1490,20 @@ class CustomFeatureCard extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 1.2.h),
       padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Color(0xff272727) : Colors.white,
+        border: Border.all(
+          color: isDark ? Color(0xffbdab82) : AppColors.white,
+          width: 0.2.w,
+        ),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
-          Icon(icon, size: icnSize ?? 24.sp, color: AppColors.maincolor),
+          Icon(
+            icon,
+            size: icnSize ?? 24.sp,
+            color: isDark ? Color(0xffbdab82) : AppColors.maincolor,
+          ),
           SizedBox(width: 4.w),
           Expanded(
             child: Column(
@@ -1439,18 +1527,18 @@ class CustomFeatureCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       fontFamily: AppConstants.manrope,
                       letterSpacing: 1,
-                      color: AppColors.maincolor,
+                      color: isDark ? Color(0xffbdab82) : AppColors.maincolor,
                     ),
                     lessStyle: TextStyle(
                       fontSize: 15.sp,
                       fontFamily: AppConstants.manrope,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1,
-                      color: AppColors.maincolor,
+                      color: isDark ? Color(0xffbdab82) : AppColors.maincolor,
                     ),
                     style: TextStyle(
                       fontSize: 16.sp,
-                      color: Colors.black,
+                      color: isDark ? Colors.white : AppColors.black,
                       fontWeight: FontWeight.normal,
                       fontFamily: AppConstants.manrope,
                     ),

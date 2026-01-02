@@ -6,37 +6,47 @@ import 'const.dart';
 
 InputDecoration inputDecoration({
   required String hintText,
+  bool isDark = false,
   String? errortext,
   Widget? searchIcon,
   Widget? ico,
   Color? cr,
 }) {
+  // થીમ મુજબ કલર લોજિક
+  final Color fillColor = isDark ? const Color(0xFF252525) : Colors.white;
+  final Color borderColor = isDark ? const Color(0xFF404040) : AppColors.maincolor;
+  final Color hintColor = cr ?? (isDark ? Colors.grey[500]! : Colors.grey[400]!);
+
   return InputDecoration(
-    contentPadding: EdgeInsets.symmetric(vertical: 0.80.h, horizontal: 4.w),
+    contentPadding: EdgeInsets.symmetric(vertical: 1.2.h, horizontal: 4.w),
     suffixIcon: ico,
     suffixIconConstraints: BoxConstraints(maxHeight: 5.h),
     errorText: errortext,
     hintText: hintText,
     prefixIcon: searchIcon,
+
     errorStyle: TextStyle(
       fontFamily: AppConstants.manrope,
       color: Colors.red,
       fontWeight: FontWeight.normal,
-      fontSize: 15.sp,
-      letterSpacing: 1,
+      fontSize: 12.sp,
+      letterSpacing: 0.5,
     ),
     hintStyle: TextStyle(
       fontFamily: AppConstants.manrope,
-      color: cr,
+      color: hintColor,
       fontWeight: FontWeight.normal,
-      fontSize: 15.sp,
-      letterSpacing: 1,
+      fontSize: 14.sp,
+      letterSpacing: 0.5,
     ),
-    fillColor: Colors.white,
+
+    fillColor: fillColor,
     filled: true,
+
+    // Borders
     disabledBorder: OutlineInputBorder(
       borderSide: BorderSide(
-        color: Colors.pink.withValues(alpha: 0.1),
+        color: isDark ? Colors.white10 : Colors.pink.withOpacity(0.1),
         width: 1,
       ),
       borderRadius: BorderRadius.circular(30),
@@ -46,19 +56,22 @@ InputDecoration inputDecoration({
       borderRadius: BorderRadius.circular(30),
     ),
     enabledBorder: OutlineInputBorder(
-      borderSide: const BorderSide(color: AppColors.maincolor, width: 1),
+      borderSide: BorderSide(color: borderColor, width: 1),
       borderRadius: BorderRadius.circular(30),
     ),
     focusedErrorBorder: OutlineInputBorder(
-      borderSide: const BorderSide(color: Colors.red, width: 1),
+      borderSide: const BorderSide(color: Colors.red, width: 1.5),
       borderRadius: BorderRadius.circular(30),
     ),
     focusedBorder: OutlineInputBorder(
-      borderSide: const BorderSide(color: AppColors.maincolor, width: 1),
+      borderSide: BorderSide(
+        color: isDark ? const Color(0xFF00C853) : AppColors.maincolor,
+        width: 1.5,
+      ),
       borderRadius: BorderRadius.circular(30),
     ),
     border: OutlineInputBorder(
-      borderSide: const BorderSide(color: AppColors.maincolor, width: 1),
+      borderSide: BorderSide(color: borderColor, width: 1),
       borderRadius: BorderRadius.circular(30),
     ),
   );

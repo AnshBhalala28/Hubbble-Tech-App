@@ -15,6 +15,21 @@ class AppColors {
   static const Color offWhite = Color(0xf0ffffff);
   static const Color borderColor = Color(0xf0d9d9d9);
   static const Color batanColor = Color(0xFF4A4A4A);
+  static const Color lightText = Color(0xFF4C6394);
+  static const Color darkBack = Color(0xf01A1A1A);
+  static const Color darkOptional = Color(0xf0212121);
+  static const Color lightBack = Color(0xFFF0F2F5);
+
+  // 2. Define Dark Mode colors based on your screenshot
+  static const Color darkBgColor = const Color(0xFF1C1C1C); // Main Background
+  static const Color darkPillColor = const Color(0xFF2B2B2C); // Pill Background
+  static const Color creamTextColor = const Color(
+    0xFFEAE0C8,
+  ); // "Good Afternoon" & Info Text
+  static const Color goldDateColor = const Color(0xFFCDBA81); // Date Text
+  static Color darkBorderColor = Colors.white.withValues(
+    alpha: 0.1,
+  ); // Subtle border
 }
 
 String image = 'assets/images/waveeLogoShort.png';

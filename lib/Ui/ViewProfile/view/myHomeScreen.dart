@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Services/themeServices.dart';
 import 'package:wavee/Utils/customSnackBars.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
@@ -199,8 +201,33 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
       profileModel?.data?.buildingDocument?.documentsFilesLabel,
     );
 
+    final theme = context.watch<ThemeController>();
+    final bool isDark = theme.isDark;
+
+    final Color backgroundColor =
+        isDark ? const Color(0xFF111214) : const Color(0xFFF2F4F7);
+    final Color cardBackgroundColor =
+        isDark ? const Color(0xFF1D1D1F) : Colors.white;
+
+    // Text Colors
+    final Color titleColor = isDark ? Colors.white : const Color(0xFF1A1A1A);
+    final Color subtitleColor =
+        isDark ? Colors.grey.shade500 : Colors.grey.shade600;
+
+    // Accent/Button Colors
+    final Color goldColor = const Color(0xFFC7B283);
+    final Color blueColor = const Color(0xFF5A6385);
+
+    final Color primaryButtonColor = isDark ? goldColor : blueColor;
+
+    // Icon Containers
+    final Color iconBgColor =
+        isDark
+            ? goldColor.withValues(alpha: 0.2)
+            : blueColor.withValues(alpha: 0.15);
+    final Color iconColor = isDark ? goldColor : blueColor;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: backgroundColor,
       body: Stack(
         children: [
           isLoading
@@ -208,7 +235,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
               : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 6.h),
+                  SizedBox(height: 7.h),
                   TitleBar(
                     back: () => Get.back(),
                     title: "My Home",
@@ -220,15 +247,29 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          infoCard(
-                            "Property Address",
-                            fullAddress,
-                            Icons.location_on,
+                          _buildSingleInfoCard(
+                            icon: Icons.location_on,
+                            label: "Property Address",
+                            value: fullAddress,
+                            iconBg:theme.isDark? Color(0xf036342F):Color(0xf0E9EAEF),
+
+                            iconColor: iconColor,
+                            labelColor: subtitleColor,
+                            valueColor: titleColor,
+                            cardColor: cardBackgroundColor,
+                            isDark: isDark,
                           ),
-                          infoCard(
-                            "Property Details",
-                            propertyDetails,
-                            Icons.apartment,
+                          _buildSingleInfoCard(
+                            icon: Icons.apartment,
+                            label: "Property Details",
+                            value: propertyDetails,
+                            iconBg:theme.isDark? Color(0xf036342F):Color(0xf0E9EAEF),
+
+                            iconColor: iconColor,
+                            labelColor: subtitleColor,
+                            valueColor: titleColor,
+                            cardColor: cardBackgroundColor,
+                            isDark: isDark,
                           ),
 
                           // 🔑 Key Waivers (Premium Editable Card)
@@ -239,7 +280,8 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                             child: Container(
                               // margin: EdgeInsets.only(bottom: 2.h),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: cardBackgroundColor,
+                                border: Border.all(color: iconBgColor),
                                 borderRadius: BorderRadius.circular(16),
                               ),
                               child: Padding(
@@ -256,14 +298,15 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                                           width: 11.w,
                                           height: 11.w,
                                           decoration: BoxDecoration(
-                                            color: AppColors.maincolor,
+                                        color:theme.isDark? Color(0xf036342F):Color(0xf0E9EAEF),
+
                                             borderRadius: BorderRadius.circular(
-                                              12,
+                                              90,
                                             ),
                                           ),
                                           child: Icon(
                                             Icons.vpn_key_rounded,
-                                            color: Colors.white,
+                                            color: iconColor,
                                             size: 20.sp,
                                           ),
                                         ),
@@ -272,9 +315,9 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                                           "Key Waivers",
                                           style: TextStyle(
                                             fontFamily: AppConstants.manrope,
-                                            fontSize: 17.sp,
+                                            fontSize: 16.5.sp,
                                             fontWeight: FontWeight.bold,
-                                            color: AppColors.maincolor,
+                                            color: theme.isDark? Colors.grey.shade500 : Colors.grey.shade600,
                                           ),
                                         ),
                                       ],
@@ -285,13 +328,15 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                                       style: TextStyle(
                                         fontFamily: AppConstants.manrope,
                                         fontSize: 15.sp,
-                                        color: Colors.grey.shade700,
+                                        color: subtitleColor,
                                       ),
                                     ),
                                     SizedBox(height: 1.5.h),
                                     Container(
                                       decoration: BoxDecoration(
-                                        color: Colors.grey.shade100,
+                                        color: iconBgColor.withValues(
+                                          alpha: 0.05,
+                                        ),
                                         borderRadius: BorderRadius.circular(12),
                                         border: Border.all(
                                           color: Colors.grey.shade300,
@@ -307,13 +352,13 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                                         style: TextStyle(
                                           fontFamily: AppConstants.manrope,
                                           fontSize: 15.sp,
-                                          color: Colors.black87,
+                                          color: iconColor,
                                         ),
                                         decoration: InputDecoration(
                                           hintText:
                                               "Enter your key waiver details...",
                                           hintStyle: TextStyle(
-                                            color: Colors.grey.shade500,
+                                            color: titleColor,
                                             fontSize: 15.sp,
                                             fontFamily: AppConstants.manrope,
                                           ),
@@ -337,7 +382,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                                             vertical: 1.2.h,
                                           ),
                                           decoration: BoxDecoration(
-                                            color: AppColors.maincolor,
+                                            color: iconColor,
                                             borderRadius: BorderRadius.circular(
                                               10,
                                             ),
@@ -347,7 +392,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                                             children: [
                                               Icon(
                                                 Icons.save_rounded,
-                                                color: Colors.white,
+                                                color: backgroundColor,
                                                 size: 16.sp,
                                               ),
                                               SizedBox(width: 1.w),
@@ -357,7 +402,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                                                   fontFamily:
                                                       AppConstants.manrope,
                                                   fontSize: 15.sp,
-                                                  color: Colors.white,
+                                                  color: backgroundColor,
                                                   fontWeight: FontWeight.w600,
                                                 ),
                                               ),
@@ -377,11 +422,13 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                             Text(
                               "Apartment Documents",
                               style: TextStyle(
-                                fontFamily: AppConstants.manrope,
                                 fontSize: 17.sp,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w500,
+                                color: theme.isDark? Colors.white : Colors.black,
+
+                                fontFamily: AppConstants.manrope,
                               ),
-                            ),
+                            ).paddingOnly(bottom: 1.h),
 
                             GridView.builder(
                               shrinkWrap: true,
@@ -403,20 +450,23 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                                   child: Column(
                                     children: [
                                       Container(
-                                        height: 7.h,
-                                        width: 15.w,
+                                        height: 8.5.h,
+                                        width: 18.w,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(
                                             10,
                                           ),
+                                          color: iconBgColor.withValues(
+                                            alpha: 0.05,
+                                          ),
                                           border: Border.all(
                                             width: 1,
-                                            color: AppColors.maincolor,
+                                            color: iconColor,
                                           ),
                                         ),
                                         child: Icon(
                                           Icons.picture_as_pdf,
-                                          color: AppColors.maincolor,
+                                          color: iconColor,
                                           size: 30.sp,
                                         ),
                                       ),
@@ -427,12 +477,15 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                                           textAlign: TextAlign.center,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 2,
-                                          style: TextStyle(fontSize: 14.sp),
+                                          style: TextStyle(
+                                            fontSize: 14.sp,
+                                            color: iconColor,
+                                          ),
                                         ),
                                       ),
                                     ],
                                   ),
-                                ).paddingOnly(top: 1.5.h);
+                                );
                               },
                             ),
                           ],
@@ -442,9 +495,11 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                             Text(
                               "Building Documents",
                               style: TextStyle(
-                                fontFamily: AppConstants.manropeBold,
                                 fontSize: 17.sp,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w500,
+                                color: theme.isDark? Colors.white : Colors.black,
+
+                                fontFamily: AppConstants.manrope,
                               ),
                             ),
                             SizedBox(height: 2.h),
@@ -469,20 +524,23 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                                   child: Column(
                                     children: [
                                       Container(
-                                        height: 7.h,
-                                        width: 15.w,
+                                        height: 8.5.h,
+                                        width: 18.w,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(
                                             10,
                                           ),
+                                          color: iconBgColor.withValues(
+                                            alpha: 0.05,
+                                          ),
                                           border: Border.all(
                                             width: 1,
-                                            color: AppColors.maincolor,
+                                            color: iconColor,
                                           ),
                                         ),
                                         child: Icon(
                                           Icons.picture_as_pdf,
-                                          color: AppColors.maincolor,
+                                          color: iconColor,
                                           size: 30.sp,
                                         ),
                                       ),
@@ -493,7 +551,10 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                                           textAlign: TextAlign.center,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 2,
-                                          style: TextStyle(fontSize: 14.sp),
+                                          style: TextStyle(
+                                            fontSize: 14.sp,
+                                            color: iconColor,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -516,6 +577,77 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
               color: Colors.black.withValues(alpha: 0.3),
               child: Center(child: Loader()),
             ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSingleInfoCard({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color iconBg,
+    required Color iconColor,
+    required Color labelColor,
+    required Color valueColor,
+    required Color cardColor,
+    required bool isDark,
+  }) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 0.5.h),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: iconBg),
+        boxShadow:
+            isDark
+                ? []
+                : [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.08),
+                    blurRadius: 20,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.8.h),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(color: iconBg, shape: BoxShape.circle),
+            child: Icon(icon, color: iconColor, size: 19.sp),
+          ),
+          SizedBox(width: 3.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 15.5.sp,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.5,
+                    color: labelColor,
+                    fontFamily: AppConstants.manropeBold,
+                  ),
+                ),
+                SizedBox(height: 0.3.h),
+                Text(
+                  value == '' ? "--" : value,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w500,
+                    color: valueColor,
+                    fontFamily: AppConstants.manrope,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

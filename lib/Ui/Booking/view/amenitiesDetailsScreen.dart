@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -13,6 +14,7 @@ import 'package:wavee/Ui/Booking/modal/statusModal.dart';
 import 'package:wavee/Utils/customSnackBars.dart';
 import 'package:wavee/Utils/viewPdfFunction.dart';
 
+import '../../../Services/themeServices.dart';
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
 import '../../../Utils/const.dart';
@@ -145,6 +147,8 @@ class _Form_ScreenState extends State<Form_Screen> {
   String calendar1SelectedDateStr = '';
   bool calendar1Loading = false;
 
+  // bool isDark = true;
+
   DateTime _parseTime(String timeStr, DateTime onDate) {
     final String cleanTimeStr = timeStr.trim();
 
@@ -276,6 +280,8 @@ class _Form_ScreenState extends State<Form_Screen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeController>();
+
     final selectedAmenity = amenitiesModel?.data?.data?.first;
     DateTime now = DateTime.now();
 
@@ -314,7 +320,7 @@ class _Form_ScreenState extends State<Form_Screen> {
       },
       child: Scaffold(
         key: _scaffoldKeyForm,
-        backgroundColor: AppColors.white,
+        backgroundColor: theme.isDark ? Color(0xff1A1A1A) : AppColors.white,
         body: Stack(
           children: [
             isLoading
@@ -522,8 +528,11 @@ class _Form_ScreenState extends State<Form_Screen> {
                                             SizedBox(height: 1.h),
                                             Text(
                                               booking?.name ?? '',
-                                              style: const TextStyle(
-                                                color: AppColors.black,
+                                              style: TextStyle(
+                                                color:
+                                                    theme.isDark
+                                                        ? Colors.white
+                                                        : AppColors.black,
                                                 fontFamily:
                                                     AppConstants.manropeBold,
                                                 fontSize: 19,
@@ -555,7 +564,10 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                   fontFamily:
                                                       AppConstants.manrope,
                                                   letterSpacing: 1,
-                                                  color: AppColors.maincolor,
+                                                  color:
+                                                      theme.isDark
+                                                          ? Colors.white
+                                                          : AppColors.maincolor,
                                                 ),
                                                 lessStyle: TextStyle(
                                                   fontSize: 15.sp,
@@ -563,11 +575,19 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                       AppConstants.manrope,
                                                   fontWeight: FontWeight.bold,
                                                   letterSpacing: 1,
-                                                  color: AppColors.maincolor,
+                                                  color:
+                                                      theme.isDark
+                                                          ? Colors.white
+                                                          : AppColors.maincolor,
                                                 ),
                                                 style: TextStyle(
                                                   fontSize: 16.sp,
-                                                  color: Colors.grey.shade500,
+                                                  color:
+                                                      theme.isDark
+                                                          ? Colors.white
+                                                          : Colors
+                                                              .grey
+                                                              .shade500,
                                                   fontWeight: FontWeight.normal,
                                                   fontFamily:
                                                       AppConstants.manrope,
@@ -586,7 +606,9 @@ class _Form_ScreenState extends State<Form_Screen> {
                                               decoration: BoxDecoration(
                                                 color:
                                                     booking?.status == "active"
-                                                        ? Colors.white
+                                                        ? theme.isDark
+                                                            ? Color(0xff262626)
+                                                            : Colors.white
                                                         : booking?.status ==
                                                             "inactive"
                                                         ? Colors.red.shade50
@@ -626,11 +648,15 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                       color:
                                                           booking?.status ==
                                                                   "active"
-                                                              ? AppColors
-                                                                  .maincolor
-                                                                  .withOpacity(
-                                                                    0.12,
+                                                              ? theme.isDark
+                                                                  ? Color(
+                                                                    0xff262626,
                                                                   )
+                                                                  : AppColors
+                                                                      .maincolor
+                                                                      .withOpacity(
+                                                                        0.12,
+                                                                      )
                                                               : booking
                                                                       ?.status ==
                                                                   "inactive"
@@ -656,8 +682,10 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                       color:
                                                           booking?.status ==
                                                                   "active"
-                                                              ? AppColors
-                                                                  .maincolor
+                                                              ? theme.isDark
+                                                                  ? Colors.white
+                                                                  : AppColors
+                                                                      .maincolor
                                                               : booking
                                                                       ?.status ==
                                                                   "inactive"
@@ -685,9 +713,12 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                 AppConstants
                                                                     .manrope,
                                                             color:
-                                                                Colors
-                                                                    .grey
-                                                                    .shade600,
+                                                                theme.isDark
+                                                                    ? Colors
+                                                                        .white
+                                                                    : Colors
+                                                                        .grey
+                                                                        .shade600,
                                                           ),
                                                         ),
                                                         SizedBox(height: 0.4.h),
@@ -706,8 +737,11 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                             color:
                                                                 booking?.status ==
                                                                         "active"
-                                                                    ? Colors
-                                                                        .black
+                                                                    ? theme.isDark
+                                                                        ? Colors
+                                                                            .white
+                                                                        : Colors
+                                                                            .black
                                                                     : booking
                                                                             ?.status ==
                                                                         "inactive"
@@ -723,6 +757,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                 ],
                                               ),
                                             ),
+
                                             GestureDetector(
                                               onTap: () {
                                                 if (booking?.rulesNotice ==
@@ -761,7 +796,11 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                   color:
                                                       booking?.status ==
                                                               "active"
-                                                          ? Colors.white
+                                                          ? theme.isDark
+                                                              ? Color(
+                                                                0xff262626,
+                                                              )
+                                                              : Colors.white
                                                           : Colors
                                                               .grey
                                                               .shade300,
@@ -794,11 +833,14 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                         color:
                                                             booking?.status ==
                                                                     "active"
-                                                                ? AppColors
-                                                                    .maincolor
-                                                                    .withOpacity(
-                                                                      0.12,
-                                                                    )
+                                                                ? theme.isDark
+                                                                    ? Colors
+                                                                        .white
+                                                                    : AppColors
+                                                                        .maincolor
+                                                                        .withOpacity(
+                                                                          0.12,
+                                                                        )
                                                                 : Colors
                                                                     .grey
                                                                     .shade400,
@@ -841,8 +883,11 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                               color:
                                                                   booking?.status ==
                                                                           "active"
-                                                                      ? Colors
-                                                                          .black
+                                                                      ? theme.isDark
+                                                                          ? Colors
+                                                                              .white
+                                                                          : Colors
+                                                                              .black
                                                                       : Colors
                                                                           .grey
                                                                           .shade700,
@@ -859,9 +904,12 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                   AppConstants
                                                                       .manrope,
                                                               color:
-                                                                  Colors
-                                                                      .grey
-                                                                      .shade600,
+                                                                  theme.isDark
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .grey
+                                                                          .shade600,
                                                             ),
                                                           ),
                                                         ],
@@ -876,7 +924,10 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                       color:
                                                           booking?.status ==
                                                                   "active"
-                                                              ? Colors.black54
+                                                              ? theme.isDark
+                                                                  ? Colors.white
+                                                                  : Colors
+                                                                      .black54
                                                               : Colors
                                                                   .grey
                                                                   .shade600,
@@ -1066,10 +1117,13 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                         ),
                                                       ),
                                                       const Spacer(),
-                                                      const Icon(
+                                                      Icon(
                                                         Icons.calendar_month,
                                                         color:
-                                                            AppColors.maincolor,
+                                                            theme.isDark
+                                                                ? Colors.white
+                                                                : AppColors
+                                                                    .maincolor,
                                                       ),
                                                     ],
                                                   ),
@@ -1084,9 +1138,9 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                             CalendarFormat
                                                                 .month,
                                                         headerVisible: false,
-                                                        daysOfWeekStyle:
-                                                            const DaysOfWeekStyle(
-                                                              weekdayStyle: TextStyle(
+                                                        daysOfWeekStyle: DaysOfWeekStyle(
+                                                          weekdayStyle:
+                                                              TextStyle(
                                                                 color:
                                                                     Colors
                                                                         .black,
@@ -1098,7 +1152,8 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                     FontWeight
                                                                         .normal,
                                                               ),
-                                                              weekendStyle: TextStyle(
+                                                          weekendStyle:
+                                                              TextStyle(
                                                                 color:
                                                                     Colors
                                                                         .black,
@@ -1110,7 +1165,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                     FontWeight
                                                                         .normal,
                                                               ),
-                                                            ),
+                                                        ),
                                                         calendarStyle: const CalendarStyle(
                                                           todayDecoration:
                                                               BoxDecoration(
@@ -1362,8 +1417,10 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                           letterSpacing: 1,
                                                           fontSize: 16.sp,
                                                           color:
-                                                              AppColors
-                                                                  .maincolor,
+                                                              theme.isDark
+                                                                  ? Colors.white
+                                                                  : AppColors
+                                                                      .maincolor,
                                                           fontFamily:
                                                               AppConstants
                                                                   .manropeBold,
@@ -1412,7 +1469,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                         ),
                                                     width: double.infinity,
                                                     decoration: BoxDecoration(
-                                                      color: AppColors.bgcolor,
+                                                      color:theme.isDark?Color(0xf0252525): AppColors.bgcolor,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                             12,
@@ -1457,7 +1514,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                         .calendar_month,
                                                                     size: 22.sp,
                                                                     color:
-                                                                        AppColors
+                                                                    theme.isDark?AppColors.white:  AppColors
                                                                             .maincolor,
                                                                   ),
                                                                   const SizedBox(
@@ -1496,7 +1553,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                     Icons.timer,
                                                                     size: 22.sp,
                                                                     color:
-                                                                        AppColors
+                                                                    theme.isDark?AppColors.white:    AppColors
                                                                             .maincolor,
                                                                   ),
                                                                   const SizedBox(
@@ -1514,7 +1571,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                       fontSize:
                                                                           15.sp,
                                                                       color:
-                                                                          Colors
+                                                                      theme.isDark?AppColors.white:    Colors
                                                                               .black,
                                                                       fontFamily:
                                                                           AppConstants
@@ -1532,7 +1589,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                         .timelapse,
                                                                     size: 22.sp,
                                                                     color:
-                                                                        AppColors
+                                                                    theme.isDark?AppColors.white:  AppColors
                                                                             .maincolor,
                                                                   ),
                                                                   const SizedBox(
@@ -1554,7 +1611,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                       fontSize:
                                                                           15.sp,
                                                                       color:
-                                                                          Colors
+                                                                      theme.isDark?AppColors.white:     Colors
                                                                               .black,
                                                                       fontFamily:
                                                                           AppConstants
@@ -1861,6 +1918,8 @@ class _Form_ScreenState extends State<Form_Screen> {
     String operatingHoursStr,
     List<ExistingBooking> existingBookings,
   ) {
+    final theme = context.watch<ThemeController>();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1874,7 +1933,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                     amenitiesModel?.data?.data?[0].totalBookingSlots
                         .toString() ??
                     "0",
-                color: Colors.blue,
+                color: theme.isDark ? Color(0xff262626) : Colors.blue,
               ),
             ),
             const SizedBox(width: 6),
@@ -1884,7 +1943,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                 value:
                     amenitiesModel?.data?.data?[0].bookedSlots.toString() ??
                     "0",
-                color: Colors.red,
+                color: theme.isDark ? Color(0xff262626) : Colors.red,
               ),
             ),
             const SizedBox(width: 6),
@@ -1894,7 +1953,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                 value:
                     amenitiesModel?.data?.data?[0].availableSlots.toString() ??
                     "0",
-                color: Colors.green,
+                color: theme.isDark ? Color(0xff262626) : Colors.green,
               ),
             ),
           ],
@@ -2003,11 +2062,12 @@ class _Form_ScreenState extends State<Form_Screen> {
       hours,
       calendar1SelectedDate!,
     );
+    final theme = context.watch<ThemeController>();
 
     return Container(
       padding: EdgeInsets.all(3.w),
       decoration: BoxDecoration(
-        color: AppColors.bgcolor,
+        color: theme.isDark ? Color(0xff262626) : AppColors.bgcolor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade300),
       ),
@@ -2020,6 +2080,8 @@ class _Form_ScreenState extends State<Form_Screen> {
               fontSize: 16.sp,
               fontWeight: FontWeight.bold,
               fontFamily: AppConstants.manropeBold,
+
+              color: theme.isDark ? Colors.white : Colors.black,
             ),
           ),
           SizedBox(height: 1.h),
@@ -2132,12 +2194,15 @@ class _Form_ScreenState extends State<Form_Screen> {
     required String value,
     required Color color,
   }) {
+    final theme = context.watch<ThemeController>();
+
     return Container(
       height: 5.h,
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white38),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -2146,7 +2211,7 @@ class _Form_ScreenState extends State<Form_Screen> {
             "$label : ",
             style: TextStyle(
               fontSize: 15.sp,
-              color: Colors.black87,
+              color: theme.isDark ? Colors.white : Colors.black87,
               fontFamily: AppConstants.manropeBold,
               fontWeight: FontWeight.w600,
             ),
@@ -2162,7 +2227,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                 fontSize: 15.sp,
                 fontFamily: AppConstants.manrope,
                 fontWeight: FontWeight.w600,
-                color: color,
+                color: theme.isDark ? Colors.white : color,
               ),
             ),
           ),
@@ -2621,6 +2686,8 @@ class _Form_ScreenState extends State<Form_Screen> {
     required String location,
     required String attendeeInitials,
   }) {
+    final theme = context.watch<ThemeController>();
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -2631,14 +2698,16 @@ class _Form_ScreenState extends State<Form_Screen> {
             alignment: Alignment.topCenter,
             children: [
               Container(
-                margin: const EdgeInsets.only(top: 40),
+                margin: EdgeInsets.only(top: 40),
                 child: TornTicket(
+                  backgroundColor:
+                      theme.isDark ? Color(0xff262626) : Colors.white,
                   height: 51.h,
                   borderRadius: 12,
+
                   child: Container(
                     padding: const EdgeInsets.all(20),
                     width: double.infinity,
-
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2651,17 +2720,20 @@ class _Form_ScreenState extends State<Form_Screen> {
                                 fontSize: 20.sp,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: AppConstants.manrope,
+                                color:
+                                    theme.isDark ? Colors.white : Colors.black,
                               ),
                             ),
                           ),
                           SizedBox(height: 1.h),
-                          const Center(
+                          Center(
                             child: Text(
                               "Your booking was successful",
                               style: TextStyle(
                                 fontSize: 14,
                                 fontFamily: AppConstants.manrope,
-                                color: Colors.grey,
+                                color:
+                                    theme.isDark ? Colors.white : Colors.grey,
                               ),
                             ),
                           ),
@@ -2670,7 +2742,10 @@ class _Form_ScreenState extends State<Form_Screen> {
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
-                              color: Colors.grey.withValues(alpha: 0.20),
+                              color:
+                                  theme.isDark
+                                      ? Color(0xff262626)
+                                      : Colors.grey.withValues(alpha: 0.20),
                             ),
                             padding: const EdgeInsets.all(12),
                             child: Column(
@@ -2680,7 +2755,10 @@ class _Form_ScreenState extends State<Form_Screen> {
                                   children: [
                                     Icon(
                                       Icons.calendar_today,
-                                      color: Colors.amber[800],
+                                      color:
+                                          theme.isDark
+                                              ? Colors.white
+                                              : Colors.amber[800],
                                       size: 20,
                                     ),
                                     const SizedBox(width: 10),
@@ -2690,6 +2768,10 @@ class _Form_ScreenState extends State<Form_Screen> {
                                         fontSize: 15.sp,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: AppConstants.manrope,
+                                        color:
+                                            theme.isDark
+                                                ? Colors.white
+                                                : Colors.black,
                                       ),
                                     ),
                                   ],
@@ -2700,7 +2782,10 @@ class _Form_ScreenState extends State<Form_Screen> {
                                   children: [
                                     Icon(
                                       Icons.access_time_filled,
-                                      color: Colors.green[700],
+                                      color:
+                                          theme.isDark
+                                              ? Colors.white
+                                              : Colors.green[700],
                                       size: 22,
                                     ),
                                     SizedBox(width: 8),
@@ -2710,12 +2795,19 @@ class _Form_ScreenState extends State<Form_Screen> {
                                         fontSize: 15.sp,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: AppConstants.manrope,
+                                        color:
+                                            theme.isDark
+                                                ? Colors.white
+                                                : Colors.black,
                                       ),
                                     ),
                                     const SizedBox(width: 6),
                                     Icon(
                                       Icons.arrow_forward,
-                                      color: Colors.black,
+                                      color:
+                                          theme.isDark
+                                              ? Colors.white
+                                              : Colors.black,
                                       size: 15.sp,
                                     ),
                                     const SizedBox(width: 6),
@@ -2725,6 +2817,10 @@ class _Form_ScreenState extends State<Form_Screen> {
                                         fontSize: 15.sp,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: AppConstants.manrope,
+                                        color:
+                                            theme.isDark
+                                                ? Colors.white
+                                                : Colors.black,
                                       ),
                                     ),
                                   ],
@@ -2735,7 +2831,10 @@ class _Form_ScreenState extends State<Form_Screen> {
                                   children: [
                                     Icon(
                                       Icons.timelapse,
-                                      color: Colors.blue[700],
+                                      color:
+                                          theme.isDark
+                                              ? Colors.white
+                                              : Colors.blue[700],
                                       size: 22,
                                     ),
                                     SizedBox(width: 10),
@@ -2745,6 +2844,10 @@ class _Form_ScreenState extends State<Form_Screen> {
                                         fontSize: 15.sp,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: AppConstants.manrope,
+                                        color:
+                                            theme.isDark
+                                                ? Colors.white
+                                                : Colors.black,
                                       ),
                                     ),
                                   ],
@@ -2759,7 +2862,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                             "Amenities",
                             style: TextStyle(
                               fontSize: 14.sp,
-                              color: Colors.black,
+                              color: theme.isDark ? Colors.white : Colors.black,
                               fontFamily: AppConstants.manropeBold,
                               letterSpacing: 1,
                             ),
@@ -2767,10 +2870,11 @@ class _Form_ScreenState extends State<Form_Screen> {
 
                           Text(
                             location,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               fontFamily: AppConstants.manropeBold,
+                              color: theme.isDark ? Colors.white : Colors.black,
                             ),
                           ),
 
@@ -2781,8 +2885,12 @@ class _Form_ScreenState extends State<Form_Screen> {
                             route: () {
                               Get.offAll(() => const BookingScreen());
                             },
-                            color: AppColors.maincolor,
-                            fontcolor: Colors.white,
+                            color:
+                                theme.isDark
+                                    ? Color(0xffCBB88C)
+                                    : AppColors.maincolor,
+                            fontcolor:
+                                theme.isDark ? Colors.black : Colors.white,
                             height: 5.h,
                             width: double.infinity,
                             fontsize: 18.sp,
@@ -2858,10 +2966,18 @@ class _Form_ScreenState extends State<Form_Screen> {
   Widget _buildCalendar1View() {
     final DateTime now = DateTime.now();
     final DateTime todayOnly = DateTime(now.year, now.month, now.day);
+
     calendar1SelectedDate ??= todayOnly;
-    calendar1SelectedDateStr = DateFormat(
-      'dd/MM/yyyy',
-    ).format(calendar1SelectedDate!);
+    calendar1SelectedDateStr = DateFormat('dd/MM/yyyy').format(calendar1SelectedDate!);
+
+    final theme = context.watch<ThemeController>();
+    final bool isDark = theme.isDark;
+
+    // Theme based colors
+    final Color primaryTextColor = isDark ? Colors.white : Colors.black;
+    final Color secondaryTextColor = isDark ? Colors.white70 : Colors.black87;
+    final Color disabledTextColor = isDark ? Colors.white30 : Colors.grey;
+    final Color todayBgColor = isDark ? Colors.white24 : Colors.grey[300]!;
 
     final DateTime kFirstDay = DateTime(now.year - 1, now.month, 1);
     final DateTime kLastDay = DateTime(now.year + 1, now.month + 1, 0);
@@ -2869,12 +2985,16 @@ class _Form_ScreenState extends State<Form_Screen> {
     return TableCalendar(
       firstDay: kFirstDay,
       lastDay: kLastDay,
-
       focusedDay: calendar1FocusedMonth,
-
       calendarFormat: CalendarFormat.month,
-      headerVisible: false,
+      headerVisible: false, // Header tame custom banavyu hoy em lage che
+
       selectedDayPredicate: (day) => isSameDay(calendar1SelectedDate, day),
+
+      enabledDayPredicate: (day) {
+        final DateTime dayOnly = DateTime(day.year, day.month, day.day);
+        return !dayOnly.isBefore(todayOnly);
+      },
 
       onPageChanged: (focusedDay) {
         setState(() {
@@ -2882,17 +3002,10 @@ class _Form_ScreenState extends State<Form_Screen> {
         });
       },
 
-      enabledDayPredicate: (day) {
-        final DateTime dayOnly = DateTime(day.year, day.month, day.day);
-        return !dayOnly.isBefore(todayOnly);
-      },
-
       onDaySelected: (newSelectedDay, focusedDay) {
         setState(() {
           calendar1SelectedDate = newSelectedDay;
-          calendar1SelectedDateStr = DateFormat(
-            'dd/MM/yyyy',
-          ).format(newSelectedDay);
+          calendar1SelectedDateStr = DateFormat('dd/MM/yyyy').format(newSelectedDay);
           calendar1FocusedMonth = focusedDay;
           calendar1Loading = true;
           selectedStartTime = null;
@@ -2904,82 +3017,91 @@ class _Form_ScreenState extends State<Form_Screen> {
           });
         });
       },
-      calendarStyle: const CalendarStyle(
-        todayDecoration: BoxDecoration(
-          color: Colors.grey,
-          shape: BoxShape.circle,
-        ),
-        selectedDecoration: BoxDecoration(
-          color: AppColors.maincolor,
-          shape: BoxShape.circle,
-        ),
-        selectedTextStyle: TextStyle(
-          color: Colors.white,
-          fontFamily: AppConstants.manrope,
-        ),
-        todayTextStyle: TextStyle(
-          color: Colors.white,
-          fontFamily: AppConstants.manrope,
-        ),
-        defaultTextStyle: TextStyle(
-          color: Colors.black,
-          fontFamily: AppConstants.manrope,
-        ),
-        weekendTextStyle: TextStyle(
-          color: Colors.black,
-          fontFamily: AppConstants.manrope,
-        ),
-        outsideTextStyle: TextStyle(color: Colors.grey),
 
-        disabledTextStyle: TextStyle(
-          color: Colors.grey,
-          fontFamily: AppConstants.manrope,
-        ),
+      // --- Styling Section ---
+      daysOfWeekStyle: DaysOfWeekStyle(
+        weekdayStyle: TextStyle(color: secondaryTextColor, fontFamily: AppConstants.manrope, fontWeight: FontWeight.w600),
+        weekendStyle: TextStyle(color: secondaryTextColor, fontFamily: AppConstants.manrope, fontWeight: FontWeight.w600),
       ),
-      daysOfWeekStyle: const DaysOfWeekStyle(
-        weekdayStyle: TextStyle(
-          color: Colors.black,
-          fontFamily: AppConstants.manrope,
-        ),
-        weekendStyle: TextStyle(
-          color: Colors.black,
-          fontFamily: AppConstants.manrope,
-        ),
+
+      calendarStyle: CalendarStyle(
+        // Ahiya default styles che, pan Builders badhu override kari deshe
+        outsideDaysVisible: true,
       ),
+
       calendarBuilders: CalendarBuilders(
+        // 1. Regular Days
         defaultBuilder: (context, day, focusedDay) {
-          final bool isSelected = isSameDay(calendar1SelectedDate, day);
-          final DateTime dayOnly = DateTime(day.year, day.month, day.day);
-          final bool isPastDate = dayOnly.isBefore(todayOnly);
-          final bool isToday = isSameDay(dayOnly, todayOnly);
-          Color? bgColor;
-          Color fgColor;
-
-          if (isSelected) {
-            bgColor = AppColors.maincolor;
-            fgColor = Colors.white;
-          } else if (isToday) {
-            bgColor = Colors.grey[300];
-            fgColor = isPastDate ? Colors.grey : Colors.black;
-          } else {
-            bgColor = Colors.transparent;
-            fgColor = isPastDate ? Colors.grey : Colors.black;
-          }
-
-          return Container(
-            margin: const EdgeInsets.all(6.0),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
-            child: Text(
-              '${day.day}',
-              style: TextStyle(
-                color: fgColor,
-                fontWeight: FontWeight.bold,
-                fontFamily: AppConstants.manrope,
-              ),
-            ),
+          return _buildCalendarDay(
+            day: day,
+            textColor: primaryTextColor,
+            isBold: false,
           );
         },
+
+        // 2. Selected Day
+        selectedBuilder: (context, day, focusedDay) {
+          return _buildCalendarDay(
+            day: day,
+            textColor: Colors.white,
+            bgColor: AppColors.maincolor,
+            isBold: true,
+          );
+        },
+
+        // 3. Today
+        todayBuilder: (context, day, focusedDay) {
+          return _buildCalendarDay(
+            day: day,
+            textColor: primaryTextColor,
+            bgColor: todayBgColor,
+            isBold: true,
+          );
+        },
+
+        // 4. Disabled Days (Past dates)
+        disabledBuilder: (context, day, focusedDay) {
+          return _buildCalendarDay(
+            day: day,
+            textColor: disabledTextColor,
+            isBold: false,
+          );
+        },
+
+        // 5. Outside Days (Next/Prev month dates)
+        outsideBuilder: (context, day, focusedDay) {
+          return _buildCalendarDay(
+            day: day,
+            textColor: disabledTextColor,
+            isBold: false,
+          );
+        },
+      ),
+    );
+  }
+
+// Common Helper function for cleaner code
+  Widget _buildCalendarDay({
+    required DateTime day,
+    required Color textColor,
+    Color? bgColor,
+    bool isBold = false,
+  }) {
+    return Container(
+      margin: const EdgeInsets.all(6.0),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: bgColor ?? Colors.transparent,
+        shape: BoxShape.circle,
+      ),
+      child: Text(
+        '${day.day}',
+        style: TextStyle(
+          color: textColor,
+          fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+          fontFamily: AppConstants.manrope,
+          fontSize: 14,
+        ),
       ),
     );
   }
@@ -3224,7 +3346,8 @@ class _Form_ScreenState extends State<Form_Screen> {
     String bookingid,
     String attended,
     String rsvp,
-  ) async {
+  ) async
+  {
     setState(() {
       isRsvpLoading = true;
     });

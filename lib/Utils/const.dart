@@ -1,9 +1,13 @@
 // ignore_for_file: non_constant_identifier_names, constant_identifier_names
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:wavee/Services/themeServices.dart';
 import 'package:wavee/Ui/CartScreen/model/amendOrderModal.dart'
     show AmendOrderModal;
 import 'package:wavee/Ui/CartScreen/model/removeAmendModal.dart';
+import 'package:wavee/Utils/storeUserData.dart' show SaveDataLocal;
 
 import '../Ui/Authentication/modal/DeleteAccountModel.dart';
 import '../Ui/Authentication/modal/forgotPasswordModel.dart';
@@ -71,6 +75,7 @@ import '../Ui/MessageScreen/modal/RemoveFriendModel.dart';
 import '../Ui/MessageScreen/modal/SendMessageModel.dart';
 import '../Ui/MessageScreen/modal/UserPersonalInfoModel.dart';
 import '../Ui/MessageScreen/modal/messagescreen_model.dart';
+import '../Ui/NotificationPage/modal/Notification_Model.dart';
 import '../Ui/OpenAiChatbot/modal/chat_bot_data_modal.dart';
 import '../Ui/OpenAiChatbot/modal/send_data_model.dart';
 import '../Ui/OrderScreen/modal/order_detail_model.dart';
@@ -129,7 +134,7 @@ class AppConstants {
   static const String path = "assets/Svg/";
   static const String manrope1 = "AlbertSans-SemiBold";
 
-  // static const String manropeBold = "AlbertSans-Bold";
+  static const String manropeSemiBold = "AlbertSans-Bold";
   static const String manropeBold = "AlbertSans-SemiBold";
   static const String manrope = "AlbertSans";
   static const String AlbertSansLight = "AlbertSans-Light";
@@ -140,7 +145,7 @@ class AppConstants {
   static const String chat1 = "${path}chat1.svg";
   static const String community = "${path}community.svg";
   static const String chat = "${path}chat.svg";
-  static const String parcel = "${path}parcel.svg";
+  static const String parcel = "${path}parcels.svg";
   static const String visitor = "${path}visitor.svg";
   static const String amenities = "${path}amenities.svg";
   static const String building = "${path}building.svg";
@@ -157,6 +162,29 @@ class AppConstants {
   static const String messageBoard = "${path}messageboard.svg";
   static const String eventBooking = "${path}eventbookin.svg";
   static const String waveePet = "${path}waveePet.svg";
+  static const String visitorScreen = "${path}visitorScreen.svg";
+
+  /// bottombar svgs
+  static const String bottomOne = "assets/bottomSvgs/bottom-one.svg";
+  static const String bottomTwo = "assets/bottomSvgs/bottom-two.svg";
+  static const String bottomThree = "assets/bottomSvgs/bottom-three.svg";
+  static const String bottomFour = "assets/bottomSvgs/bottom-four.svg";
+  static const String spotlightIcon = "assets/bottomSvgs/spotlight.svg";
+  static const String chatHomeIcon = "assets/bottomSvgs/chatHome.svg";
+  static const String aprtmentIcon = "assets/bottomSvgs/aprtment.svg";
+  static const String visitorHomeIcon = "assets/bottomSvgs/visitorHome.svg";
+  static const String maintainIcon = "assets/bottomSvgs/maintain.svg";
+  static const String amenityIcon = "assets/bottomSvgs/amentiti.svg";
+  static const String calendrIcon = "assets/bottomSvgs/clndr.svg";
+  static const String ordrsIcon = "assets/bottomSvgs/ordrs.svg";
+  static const String bookinsIcon = "assets/bottomSvgs/bookins.svg";
+  static const String eventsIcon = "assets/bottomSvgs/event.svg";
+  static const String shoppinsIcon = "assets/bottomSvgs/shoping.svg";
+  static const String petsIcon = "assets/bottomSvgs/pets.svg";
+  static const String termsIcon = "assets/bottomSvgs/termas.svg";
+  static const String securityIcon = "assets/bottomSvgs/securty.svg";
+  static const String piracyIcon = "assets/bottomSvgs/priicy.svg";
+  static const String personIcon = "assets/bottomSvgs/person.svg";
 }
 
 /// ============================================================
@@ -177,7 +205,7 @@ ParcelShowCountModel? parcelShowCountModel;
 VisitorShowCountModel? visitorShowCountModel;
 LatestVisitorModal? latestVisitorModal;
 ChatShowCountModal? chatShowCountModal;
-NotificationModel? notificationmodel;
+NotificationModell? notificationmodel;
 
 /// --- Community & Business ---
 BusinessProfileModel? businessprofileModel;
@@ -275,7 +303,7 @@ StroyModel? stroymodel;
 /// ============================================================
 /// DATA CLEANUP (LOGOUT)
 /// ============================================================
-void handleDataClear() {
+ handleDataClear(BuildContext context) async {
   print("🧹 GlobalStore: Wiping all sensitive user data...");
 
   /// --- Authentication & Profile ---
@@ -387,5 +415,16 @@ void handleDataClear() {
   /// --- Stories ---
   stroymodel = null;
 
+  // Clear Local Storage
+  await SaveDataLocal.clearUserData();
+
+  // Reset Theme (Wait for this to finish!)
+  if (context.mounted) {
+    final themeController = Provider.of<ThemeController>(
+      context,
+      listen: false,
+    );
+    await themeController.resetTheme();
+  }
   print("✅ All global data wiped successfully.");
 }

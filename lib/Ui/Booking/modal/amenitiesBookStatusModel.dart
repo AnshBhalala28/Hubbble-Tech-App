@@ -291,6 +291,7 @@ class Amenity {
     return data;
   }
 }
+
 class OperatingHours {
   List<Monday> monday = [];
   List<Monday> tuesday = [];
@@ -331,7 +332,6 @@ class OperatingHours {
     };
   }
 }
-
 
 class Monday {
   String? open;

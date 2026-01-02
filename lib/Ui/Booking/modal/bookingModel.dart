@@ -11,10 +11,7 @@ class ExistingBooking {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'start_time': startTime,
-      'end_time': endTime,
-    };
+    return {'start_time': startTime, 'end_time': endTime};
   }
 }
 
@@ -29,17 +26,14 @@ class AmenitiesModel {
   AmenitiesModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] is Map<String, dynamic>
-        ? Data.fromJson(json['data'])
-        : null;
+    data =
+        json['data'] is Map<String, dynamic>
+            ? Data.fromJson(json['data'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'status': status,
-      'message': message,
-      'data': data?.toJson(),
-    };
+    return {'status': status, 'message': message, 'data': data?.toJson()};
   }
 }
 
@@ -64,9 +58,7 @@ class Data {
     currentPage = json['current_page'];
 
     if (json['data'] is List) {
-      data = (json['data'] as List)
-          .map((e) => Data1.fromJson(e))
-          .toList();
+      data = (json['data'] as List).map((e) => Data1.fromJson(e)).toList();
     } else {
       data = [];
     }
@@ -77,8 +69,7 @@ class Data {
     lastPageUrl = json['last_page_url'];
 
     if (json['links'] is List) {
-      links =
-          (json['links'] as List).map((e) => Links.fromJson(e)).toList();
+      links = (json['links'] as List).map((e) => Links.fromJson(e)).toList();
     }
 
     nextPageUrl = json['next_page_url'];
@@ -140,7 +131,7 @@ class Data1 {
     description = json['description'];
 
     imageUrl =
-    json['image_url'] is List ? List<String>.from(json['image_url']) : [];
+        json['image_url'] is List ? List<String>.from(json['image_url']) : [];
 
     rulesNotice = json['rules_notice'];
 
@@ -154,9 +145,10 @@ class Data1 {
 
     bookingLimitDuration = json['booking_limit_duration'];
 
-    durationOptions = json['duration_options'] is List
-        ? List<String>.from(json['duration_options'])
-        : [];
+    durationOptions =
+        json['duration_options'] is List
+            ? List<String>.from(json['duration_options'])
+            : [];
 
     capacity = json['capacity'];
     maxBookingPerDay = json['max_booking_per_day'];
@@ -170,9 +162,10 @@ class Data1 {
 
     /// ✅ FIXED existing_bookings
     if (json['existing_bookings'] is List) {
-      existingBookings = (json['existing_bookings'] as List)
-          .map((e) => ExistingBooking.fromJson(e))
-          .toList();
+      existingBookings =
+          (json['existing_bookings'] as List)
+              .map((e) => ExistingBooking.fromJson(e))
+              .toList();
     } else {
       existingBookings = [];
     }
@@ -198,8 +191,7 @@ class Data1 {
       'total_booking_slots': totalBookingSlots,
       'booked_slots': bookedSlots,
       'available_slots': availableSlots,
-      'existing_bookings':
-      existingBookings.map((e) => e.toJson()).toList(),
+      'existing_bookings': existingBookings.map((e) => e.toJson()).toList(),
     };
   }
 }
@@ -216,10 +208,7 @@ class TimeSlot {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'open': open,
-      'close': close,
-    };
+    return {'open': open, 'close': close};
   }
 }
 
@@ -289,10 +278,6 @@ class Links {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'url': url,
-      'label': label,
-      'active': active,
-    };
+    return {'url': url, 'label': label, 'active': active};
   }
 }

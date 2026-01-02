@@ -15,11 +15,14 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
+import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wavee/Services/themeServices.dart';
 import 'package:wavee/Utils/colors.dart';
+import 'package:wavee/Utils/themeButton.dart';
 
 import '../../../../Utils/const.dart';
 import '../../../../Utils/loader.dart';
@@ -129,44 +132,6 @@ class _CommunityScreenState extends State<CommunityScreen>
       isLoading = true;
       isMapLoading = true;
     });
-
-    _mapStyle = '''[
-    {
-      "featureType": "poi",
-      "elementType": "all",
-      "stylers": [
-        { "visibility": "off" }
-      ]
-    },
-    {
-      "featureType": "poi.business",
-      "elementType": "all",
-      "stylers": [
-        { "visibility": "off" }
-      ]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "all",
-      "stylers": [
-        { "visibility": "off" }
-      ]
-    },
-    {
-      "featureType": "poi.attraction",
-      "elementType": "all",
-      "stylers": [
-        { "visibility": "off" }
-      ]
-    },
-    {
-      "featureType": "poi.place_of_worship",
-      "elementType": "all",
-      "stylers": [
-        { "visibility": "off" }
-      ]
-    }
-  ]''';
     WidgetsBinding.instance.addObserver(this);
     _getCurrentLocation(context);
     GetProfile();
@@ -213,36 +178,6 @@ class _CommunityScreenState extends State<CommunityScreen>
           infoWindow: const InfoWindow(
             title: "My Location",
             snippet: "You are here",
-          ),
-        );
-
-        setState(() {
-          _markers.add(currentLocationMarker);
-        });
-      }
-    }
-  }
-
-  void _addCustomCurrentLocationMarker() async {
-    if (AppLat.isNotEmpty && AppLon.isNotEmpty) {
-      double latitude = double.tryParse(AppLat) ?? 0.0;
-      double longitude = double.tryParse(AppLon) ?? 0.0;
-
-      if (latitude != 0.0 && longitude != 0.0) {
-        // Custom marker icon બનાવો
-        BitmapDescriptor customIcon = await BitmapDescriptor.fromAssetImage(
-          const ImageConfiguration(size: Size(48, 48)),
-          'assets/images/current_location_marker.png', // તમારું custom icon
-        );
-
-        Marker currentLocationMarker = Marker(
-          markerId: const MarkerId("current_location"),
-          position: LatLng(latitude, longitude),
-          icon: customIcon,
-          anchor: const Offset(0.5, 0.5),
-          infoWindow: const InfoWindow(
-            title: "My Current Location",
-            snippet: "This is where I am",
           ),
         );
 
@@ -509,38 +444,6 @@ class _CommunityScreenState extends State<CommunityScreen>
     }
   }
 
-  void _addStyledCurrentLocationMarker() {
-    if (AppLat.isNotEmpty && AppLon.isNotEmpty) {
-      double latitude = double.tryParse(AppLat) ?? 0.0;
-      double longitude = double.tryParse(AppLon) ?? 0.0;
-
-      if (latitude != 0.0 && longitude != 0.0) {
-        Marker currentLocationMarker = Marker(
-          markerId: const MarkerId("current_location"),
-          position: LatLng(latitude, longitude),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueAzure,
-          ),
-          consumeTapEvents: true,
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("This is your current location")),
-            );
-          },
-          infoWindow: const InfoWindow(
-            title: "📍 My Location",
-            snippet: "You are here",
-          ),
-          zIndex: 2, // બીજા markers ઉપર દેખાવા માટે
-        );
-
-        setState(() {
-          _markers.add(currentLocationMarker);
-        });
-      }
-    }
-  }
-
   void _onCameraIdle() {
     mapController.getZoomLevel().then((zoom) {
       if (zoom < 16.0) {
@@ -552,7 +455,8 @@ class _CommunityScreenState extends State<CommunityScreen>
   Future<BitmapDescriptor> _getClusterMarker(
     int count,
     String profileImageUrl,
-  ) async {
+  ) async
+  {
     const int size = 120;
     final ui.PictureRecorder recorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(recorder);
@@ -650,7 +554,8 @@ class _CommunityScreenState extends State<CommunityScreen>
     String? storyPreviewUrl,
     bool showOnlyStory = false,
     bool showOnlyProfile = false,
-  }) async {
+  }) async
+  {
     try {
       final Uint8List markerIcon = await getBytesFromCanvas(
         imageUrl,
@@ -673,7 +578,8 @@ class _CommunityScreenState extends State<CommunityScreen>
     String? storyPreviewUrl,
     bool showOnlyStory = false,
     bool showOnlyProfile = false,
-  }) async {
+  }) async
+  {
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
     final Paint paint = Paint();
@@ -915,7 +821,8 @@ class _CommunityScreenState extends State<CommunityScreen>
     required String message,
     bool openSettings = false,
     bool showCancel = false,
-  }) {
+  })
+  {
     if (_isDialogVisible) return;
 
     _isDialogVisible = true;
@@ -1060,14 +967,97 @@ class _CommunityScreenState extends State<CommunityScreen>
     }
   }
 
+  String _darkMapStyle = '''
+[
+  {
+    "elementType": "geometry",
+    "stylers": [{"color": "#212121"}]
+  },
+  {
+    "elementType": "labels.text.fill",
+    "stylers": [{"color": "#757575"}]
+  },
+  {
+    "elementType": "labels.text.stroke",
+    "stylers": [{"color": "#212121"}]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry",
+    "stylers": [{"color": "#2c2c2c"}]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry",
+    "stylers": [{"color": "#000000"}]
+  }
+]
+''';
+  String _lightMapStyle = '''
+[
+  {
+    "featureType": "all",
+    "elementType": "all",
+    "stylers": [
+      {"saturation": "0"},
+      {"gamma": "1.0"},
+      {"lightness": "0"},
+      {"visibility": "on"}
+    ]
+  }
+]
+''';
+
+  // 3. _applyMapStyle મેથડમાં ફેરફાર
+  void _applyMapStyle(bool isDark) {
+    if (mapController != null) {
+      try {
+        // Clear any previous style first
+        mapController!.setMapStyle(null);
+
+        // Add small delay
+        Future.delayed(Duration(milliseconds: 50), () {
+          if (mapController != null) {
+            // Apply appropriate style
+            if (isDark) {
+              mapController!.setMapStyle(_darkMapStyle);
+            } else {
+              mapController!.setMapStyle(_lightMapStyle);
+            }
+          }
+        });
+      } catch (e) {
+        print("Error applying map style: $e");
+      }
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant CommunityScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _applyMapStyle(
+            Provider.of<ThemeController>(context, listen: false).isDark,
+          );
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeController>();
+
     return Scaffold(
       bottomNavigationBar: Obx(
         () =>
             BottomBar(selected: 2, chatCount: countsController.chatCount.value),
       ),
-      backgroundColor: AppColors.white,
+      backgroundColor: theme.isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
+
       body: WillPopScope(
         onWillPop: () async {
           Get.offAll(() => HomePage(selected: 1, userName: ""));
@@ -1077,12 +1067,16 @@ class _CommunityScreenState extends State<CommunityScreen>
           children: [
             isLocationFetched
                 ? GoogleMap(
-                  onMapCreated: (GoogleMapController controller) {
+                  key: ValueKey(theme.isDark),
+                  // આ લાઇન જરૂરી છે
+                  onMapCreated: (GoogleMapController controller) async {
                     mapController = controller;
                     _customInfoWindowController.googleMapController =
                         controller;
 
-                    mapController.setMapStyle(_mapStyle);
+                    // Map create થયા પછી તરત જ style અપ્લાય કરો
+                    await Future.delayed(Duration(milliseconds: 300));
+                    _applyMapStyle(theme.isDark);
                   },
                   onCameraIdle: _onCameraIdle,
                   myLocationButtonEnabled: false,
@@ -1180,206 +1174,243 @@ class _CommunityScreenState extends State<CommunityScreen>
                       ),
                     ),
                   ),
+                  Spacer(),
+                  ThemeToggleButton().paddingOnly(bottom: 0.5.h),
                 ],
               ),
             ),
+
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 5,
-                  horizontal: 10,
-                ),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(30),
-                  ),
-                ),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          _showSearchBottomSheet(context);
-                        },
-                        child: Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.grey[200],
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        _showSearchBottomSheet(context);
+                      },
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color:
+                                theme.isDark ? Color(0xffbdab82) : Colors.white,
+                            width: 3.sp,
                           ),
-                          child: const Icon(
-                            Icons.search,
-                            color: Colors.black87,
-                            size: 25,
-                          ),
+                          color:
+                              theme.isDark ? Color(0xff1c1d1c) : Colors.white,
+                        ),
+                        child: Icon(
+                          Icons.search,
+                          color:
+                              theme.isDark ? Color(0xffbdab82) : Colors.black87,
+                          size: 18.sp,
                         ),
                       ),
-                      SizedBox(width: 1.w),
-                      SizedBox(width: 1.w),
-                      GestureDetector(
-                        onTap: () {
-                          getlikeapi();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          width: 33.w,
-                          height: 5.h,
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
-                              ui.Radius.circular(20),
+                    ),
+                    SizedBox(width: 1.w),
+                    SizedBox(width: 1.w),
+                    GestureDetector(
+                      onTap: () {
+                        getlikeapi();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 2.w,
+                          vertical: 1.h,
+                        ),
+                        // width: 33.w,
+                        // height: 5.h,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(
+                            ui.Radius.circular(20),
+                          ),
+                          border: Border.all(
+                            color:
+                                theme.isDark ? Color(0xffbdab82) : Colors.white,
+                            width: 3.sp,
+                          ),
+                          color:
+                              theme.isDark ? Color(0xff1c1d1c) : Colors.white,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.favorite,
+                              color:
+                                  theme.isDark ? Color(0xffbdab82) : Colors.red,
+                              size: 17.sp,
                             ),
-                            color: Colors.grey[200],
-                          ),
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 12,
-                                backgroundColor: Colors.pink,
-                                child: Icon(
-                                  Icons.favorite,
-                                  color: Colors.white,
-                                  size: 17.sp,
-                                ),
+                            const SizedBox(width: 10),
+                            Text(
+                              "Favourites",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontFamily: AppConstants.manrope,
+                                fontWeight: FontWeight.bold,
+                                color:
+                                    theme.isDark
+                                        ? Color(0xffbdab82)
+                                        : Colors.black87,
                               ),
-                              const SizedBox(width: 10),
-                              Text(
-                                "Favourites",
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontFamily: AppConstants.manrope,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 1.w),
-                      GestureDetector(
-                        onTap: () {
-                          getvisitedapi();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          width: 29.w,
-                          height: 5.h,
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
-                              ui.Radius.circular(20),
                             ),
-                            color: Colors.grey[200],
-                          ),
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 12,
-                                backgroundColor: Colors.purpleAccent,
-                                child: Icon(
-                                  Icons.location_on,
-                                  color: Colors.white,
-                                  size: 17.sp,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                "Visited",
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontFamily: AppConstants.manrope,
-                                ),
-                              ),
-                            ],
-                          ),
+                          ],
                         ),
                       ),
-                      SizedBox(width: 1.w),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 7,
-                        children: [
-                          for (
-                            int i = 0;
-                            i < (categoriesModel?.data?.length ?? 0);
-                            i++
-                          )
-                            GestureDetector(
-                              onTap: () {
-                                String categoryId =
-                                    categoriesModel?.data?[i].id.toString() ??
-                                    "";
-                                String categoryName =
-                                    categoriesModel?.data?[i].categoryName ??
-                                    "";
-                                String categoryImage =
-                                    categoriesModel?.data?[i].img ?? "";
+                    ),
+                    SizedBox(width: 1.w),
+                    GestureDetector(
+                      onTap: () {
+                        getvisitedapi();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 3.w,
+                          vertical: 1.h,
+                        ),
+                        // width: 29.w,
+                        // height: 5.h,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(
+                            ui.Radius.circular(20),
+                          ),
+                          border: Border.all(
+                            color:
+                                theme.isDark ? Color(0xffbdab82) : Colors.white,
+                            width: 3.sp,
+                          ),
+                          color:
+                              theme.isDark ? Color(0xff1c1d1c) : Colors.white,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.location_on,
+                              color:
+                                  theme.isDark
+                                      ? Color(0xffbdab82)
+                                      : Colors.black87,
+                              size: 17.sp,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              "Visited",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontFamily: AppConstants.manropeBold,
+                                fontWeight: FontWeight.bold,
+                                color:
+                                    theme.isDark
+                                        ? Color(0xffbdab82)
+                                        : Colors.black87,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 1.w),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 7,
+                      children: [
+                        for (
+                          int i = 0;
+                          i < (categoriesModel?.data?.length ?? 0);
+                          i++
+                        )
+                          GestureDetector(
+                            onTap: () {
+                              String categoryId =
+                                  categoriesModel?.data?[i].id.toString() ?? "";
+                              String categoryName =
+                                  categoriesModel?.data?[i].categoryName ?? "";
+                              String categoryImage =
+                                  categoriesModel?.data?[i].img ?? "";
 
-                                CategoriesProfileView(
-                                  categoryId,
-                                  categoryName,
-                                  categoryImage,
-                                );
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
+                              CategoriesProfileView(
+                                categoryId,
+                                categoryName,
+                                categoryImage,
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
+                              height: 5.h,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color:
+                                      theme.isDark
+                                          ? Color(0xffbdab82)
+                                          : Colors.white,
+                                  width: 3.sp,
                                 ),
-                                height: 5.h,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors.grey[200],
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      height: 3.5.h,
-                                      width: 3.5.h,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: getCategoryColor(
-                                          categoriesModel
-                                                  ?.data?[i]
-                                                  .categoryName ??
-                                              "",
-                                        ),
+                                borderRadius: BorderRadius.circular(20),
+                                color:
+                                    theme.isDark
+                                        ? Color(0xff1c1d1c)
+                                        : Colors.white,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    height: 3.5.h,
+                                    width: 3.5.h,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: getCategoryColor(
+                                        categoriesModel
+                                                ?.data?[i]
+                                                .categoryName ??
+                                            "",
                                       ),
-                                      child: Center(
-                                        child: ClipOval(
-                                          child: Image.network(
-                                            categoriesModel?.data?[i].img ?? "",
-                                            height: 2.h,
-                                            width: 2.h,
-                                            fit: BoxFit.cover,
-                                          ),
+                                    ),
+                                    child: Center(
+                                      child: ClipOval(
+                                        child: Image.network(
+                                          categoriesModel?.data?[i].img ?? "",
+                                          height: 2.h,
+                                          width: 2.h,
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
                                     ),
-                                    SizedBox(width: 2.w),
-                                    Text(
-                                      categoriesModel?.data?[i].categoryName ??
-                                          "",
-                                      style: TextStyle(
-                                        fontSize: 16.sp,
-                                        fontFamily: AppConstants.manrope,
-                                      ),
+                                  ),
+                                  SizedBox(width: 2.w),
+                                  Text(
+                                    categoriesModel?.data?[i].categoryName ??
+                                        "",
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontFamily: AppConstants.manropeBold,
+
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xffbdab82)
+                                              : Colors.black87,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
-                        ],
-                      ),
-                    ],
-                  ),
+                          ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
+
             if (isMapLoading)
               Positioned.fill(
                 child: Container(
@@ -1435,265 +1466,9 @@ class _CommunityScreenState extends State<CommunityScreen>
     });
   }
 
-  // void _showFavouriteBottomSheet() async {
-  //   if (_isBottomSheetOpen) return;
-  //
-  //   _isBottomSheetOpen = true;
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-  //     ),
-  //     builder: (context) {
-  //       return DraggableScrollableSheet(
-  //         expand: false,
-  //         initialChildSize: 0.6,
-  //         maxChildSize: 1.0,
-  //         minChildSize: 0.3,
-  //         builder: (context, scrollController) {
-  //           return StatefulBuilder(
-  //             builder: (context, setState) {
-  //               return Container(
-  //                 padding: EdgeInsets.all(16),
-  //                 decoration: BoxDecoration(
-  //                   color: AppColors.bgcolor,
-  //                   borderRadius: BorderRadius.vertical(
-  //                     top: Radius.circular(20),
-  //                   ),
-  //                 ),
-  //                 child: Column(
-  //                   crossAxisAlignment: CrossAxisAlignment.start,
-  //                   children: [
-  //                     Center(
-  //                       child: Container(
-  //                         width: 40,
-  //                         height: 4,
-  //                         decoration: BoxDecoration(
-  //                           color: Colors.grey[400],
-  //                           borderRadius: BorderRadius.circular(10),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                     SizedBox(height: 10),
-  //                     Row(
-  //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                       children: [
-  //                         Row(
-  //                           children: [
-  //                             CircleAvatar(
-  //                               backgroundColor: Colors.pink,
-  //                               child: Icon(
-  //                                 Icons.favorite,
-  //                                 color: Colors.white,
-  //                               ),
-  //                             ),
-  //                             SizedBox(width: 8),
-  //                             Column(
-  //                               crossAxisAlignment: CrossAxisAlignment.start,
-  //                               children: [
-  //                                 Text(
-  //                                   "Favourites",
-  //                                   style: TextStyle(
-  //                                     fontSize: 16,
-  //                                     fontWeight: FontWeight.bold,
-  //                                   ),
-  //                                 ),
-  //                                 Text(
-  //                                   "${getlikeModal?.data?.length ?? "No"} Favourites",
-  //                                   style: TextStyle(
-  //                                     color: Colors.grey,
-  //                                     fontSize: 14,
-  //                                   ),
-  //                                 ),
-  //                               ],
-  //                             ),
-  //                           ],
-  //                         ),
-  //                         Container(
-  //                           width: 8.w,
-  //                           height: 8.w,
-  //                           decoration: BoxDecoration(
-  //                             color: Colors.grey[300],
-  //                             shape: BoxShape.circle,
-  //                           ),
-  //                           child: Center(
-  //                             child: IconButton(
-  //                               icon: Icon(
-  //                                 Icons.close_rounded,
-  //                                 color: Colors.black,
-  //                                 size: 5.w,
-  //                               ),
-  //                               onPressed: () {
-  //                                 Get.back();
-  //                               },
-  //                               padding: EdgeInsets.zero,
-  //                               constraints: BoxConstraints(),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ],
-  //                     ),
-  //                     SizedBox(height: 10),
-  //                     Expanded(
-  //                       child:
-  //                       (getlikeModal?.data == null ||
-  //                           getlikeModal!.data!.isEmpty)
-  //                           ? Center(
-  //                         child: Text(
-  //                           "No Favourites Added!",
-  //                           style: TextStyle(
-  //                             fontSize: 16,
-  //                             color: Colors.grey,
-  //                           ),
-  //                         ),
-  //                       )
-  //                           : ListView.builder(
-  //                         controller: scrollController,
-  //                         padding: EdgeInsets.zero,
-  //                         itemCount: getlikeModal?.data?.length ?? 0,
-  //                         itemBuilder: (context, index) {
-  //                           bool isFirst = index == 0;
-  //                           bool isLast =
-  //                               index ==
-  //                                   (getlikeModal?.data?.length ?? 1) - 1;
-  //
-  //                           return Column(
-  //                             children: [
-  //                               InkWell(
-  //                                 onTap: () {
-  //                                   Get.back();
-  //                                   BussinessViewProfile(
-  //                                     (getlikeModal
-  //                                         ?.data?[index]
-  //                                         .businessId)
-  //                                         .toString(),
-  //                                   );
-  //                                 },
-  //                                 child: Container(
-  //                                   padding: EdgeInsets.symmetric(
-  //                                     vertical: 10,
-  //                                     horizontal: 10,
-  //                                   ),
-  //                                   decoration: BoxDecoration(
-  //                                     color: Colors.white,
-  //                                     borderRadius: BorderRadius.only(
-  //                                       topLeft:
-  //                                       isFirst
-  //                                           ? Radius.circular(15)
-  //                                           : Radius.zero,
-  //                                       topRight:
-  //                                       isFirst
-  //                                           ? Radius.circular(15)
-  //                                           : Radius.zero,
-  //                                       bottomLeft:
-  //                                       isLast
-  //                                           ? Radius.circular(15)
-  //                                           : Radius.zero,
-  //                                       bottomRight:
-  //                                       isLast
-  //                                           ? Radius.circular(15)
-  //                                           : Radius.zero,
-  //                                     ),
-  //                                   ),
-  //                                   child: Row(
-  //                                     children: [
-  //                                       CircleAvatar(
-  //                                         radius: 30,
-  //                                         backgroundColor:
-  //                                         Colors.grey[200],
-  //                                         backgroundImage:
-  //                                         (getlikeModal
-  //                                             ?.data?[index]
-  //                                             .business
-  //                                             ?.logo
-  //                                             ?.isEmpty ??
-  //                                             true)
-  //                                             ? const AssetImage(
-  //                                           "assets/images/waveeLogoShort.png",
-  //                                         )
-  //                                             : CachedNetworkImageProvider(
-  //                                           getlikeModal
-  //                                               ?.data?[index]
-  //                                               .business
-  //                                               ?.logo ??
-  //                                               "",
-  //                                         )
-  //                                         as ImageProvider,
-  //                                       ),
-  //                                       SizedBox(width: 15),
-  //                                       Expanded(
-  //                                         child: Column(
-  //                                           crossAxisAlignment:
-  //                                           CrossAxisAlignment
-  //                                               .start,
-  //                                           children: [
-  //                                             Text(
-  //                                               getlikeModal
-  //                                                   ?.data?[index]
-  //                                                   .business
-  //                                                   ?.businessName ??
-  //                                                   "N/A",
-  //                                               style: TextStyle(
-  //                                                 fontSize: 16,
-  //                                                 fontWeight:
-  //                                                 FontWeight.bold,
-  //                                                 color: Colors.black87,
-  //                                               ),
-  //                                               maxLines: 1,
-  //                                               overflow:
-  //                                               TextOverflow
-  //                                                   .ellipsis,
-  //                                             ),
-  //                                             SizedBox(height: 3),
-  //                                             Text(
-  //                                               "${(getlikeModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
-  //                                               style: TextStyle(
-  //                                                 fontSize: 14,
-  //                                                 color: Colors.black54,
-  //                                               ),
-  //                                             ),
-  //                                           ],
-  //                                         ),
-  //                                       ),
-  //                                       GestureDetector(
-  //                                         onTap: () {
-  //                                           unlikeBusiness(index);
-  //                                         },
-  //                                         child: Icon(
-  //                                           Icons.favorite,
-  //                                           color: Colors.red,
-  //                                           size: 28,
-  //                                         ),
-  //                                       ),
-  //                                     ],
-  //                                   ),
-  //                                 ),
-  //                               ),
-  //                               if (!isLast)
-  //                                 Divider(
-  //                                   color: Colors.grey[300],
-  //                                   thickness: 1,
-  //                                   height: 0,
-  //                                 ),
-  //                             ],
-  //                           );
-  //                         },
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               );
-  //             },
-  //           );
-  //         },
-  //       );
-  //     },
-  //   ).whenComplete(() {
-  //     _isBottomSheetOpen = false;
-  //   });
-  // }
   void _showFavouriteBottomSheet() async {
+    final theme = Provider.of<ThemeController>(context, listen: false);
+
     if (_isBottomSheetOpen) return;
 
     _isBottomSheetOpen = true;
@@ -1715,7 +1490,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                 return Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppColors.bgcolor,
+                    color: theme.isDark ? Color(0xff1a1a1a) : Colors.white,
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(20),
                     ),
@@ -1739,11 +1514,15 @@ class _CommunityScreenState extends State<CommunityScreen>
                         children: [
                           Row(
                             children: [
-                              const CircleAvatar(
-                                backgroundColor: Colors.pink,
+                              CircleAvatar(
+                                backgroundColor:
+                                    theme.isDark
+                                        ? Color(0xffbdab82)
+                                        : Color(0xfff5f5f5),
                                 child: Icon(
                                   Icons.favorite,
-                                  color: Colors.white,
+                                  color:
+                                      theme.isDark ? Colors.white : Colors.red,
                                 ),
                               ),
                               const SizedBox(width: 8),
@@ -1754,6 +1533,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     "Favourites",
                                     style: TextStyle(
                                       fontSize: 18.sp,
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xffbdab82)
+                                              : Colors.black87,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: AppConstants.manropeBold,
                                     ),
@@ -1774,14 +1557,27 @@ class _CommunityScreenState extends State<CommunityScreen>
                             width: 8.w,
                             height: 8.w,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color:
+                                  theme.isDark
+                                      ? Color(0xff272727)
+                                      : AppColors.blackColor,
+                              border: Border.all(
+                                color:
+                                    theme.isDark
+                                        ? Color(0xffbdab82)
+                                        : Colors.black87,
+                                width: 0.2.w,
+                              ),
                               shape: BoxShape.circle,
                             ),
                             child: Center(
                               child: IconButton(
                                 icon: Icon(
                                   Icons.close_rounded,
-                                  color: Colors.black,
+                                  color:
+                                      theme.isDark
+                                          ? Color(0xffbdab82)
+                                          : Colors.white,
                                   size: 5.w,
                                 ),
                                 onPressed: () {
@@ -1837,7 +1633,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                               horizontal: 10,
                                             ),
                                             decoration: BoxDecoration(
-                                              color: Colors.white,
+                                              color:
+                                                  theme.isDark
+                                                      ? Color(0xff272727)
+                                                      : Color(0xfff5f5f5),
                                               borderRadius: BorderRadius.only(
                                                 topLeft:
                                                     isFirst
@@ -1907,7 +1706,13 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                           fontSize: 16.sp,
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                          color: Colors.black87,
+                                                          color:
+                                                              theme.isDark
+                                                                  ? Color(
+                                                                    0xffbdab82,
+                                                                  )
+                                                                  : Colors
+                                                                      .black87,
                                                           fontFamily:
                                                               AppConstants
                                                                   .manropeBold,
@@ -1922,7 +1727,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                         "${(getlikeModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
                                                         style: TextStyle(
                                                           fontSize: 14.sp,
-                                                          color: Colors.black54,
+                                                          color: Colors.grey,
                                                           fontFamily:
                                                               AppConstants
                                                                   .manrope,
@@ -2024,6 +1829,8 @@ class _CommunityScreenState extends State<CommunityScreen>
   }
 
   void _showvisitedBottomSheet() async {
+    final theme = Provider.of<ThemeController>(context, listen: false);
+
     if (_isBottomSheetOpen) return;
 
     _isBottomSheetOpen = true;
@@ -2046,7 +1853,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                 return Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: AppColors.bgcolor,
+                    color: theme.isDark ? Color(0xff1a1a1a) : Colors.white,
+
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(20),
                     ),
@@ -2070,11 +1878,17 @@ class _CommunityScreenState extends State<CommunityScreen>
                         children: [
                           Row(
                             children: [
-                              const CircleAvatar(
-                                backgroundColor: Colors.purpleAccent,
+                              CircleAvatar(
+                                backgroundColor:
+                                Colors.grey.shade300,
+
                                 child: Icon(
                                   Icons.location_on,
-                                  color: Colors.white,
+                                  color:
+                                      theme.isDark
+                                          ? Color(0xffbdab82)
+                                          : Colors.black
+                                  ,
                                 ),
                               ),
                               const SizedBox(width: 8),
@@ -2084,6 +1898,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   Text(
                                     "Recently Visited",
                                     style: TextStyle(
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xffbdab82)
+                                              : Colors.black87,
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: AppConstants.manropeBold,
@@ -2105,14 +1923,28 @@ class _CommunityScreenState extends State<CommunityScreen>
                             width: 8.w,
                             height: 8.w,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color:
+                                  theme.isDark
+                                      ? Color(0xff272727)
+                                      : Colors.black,
+                              border: Border.all(
+                                color:
+                                    theme.isDark
+                                        ? Color(0xffbdab82)
+                                        : Colors.black,
+                                width: 0.2.w,
+                              ),
+
                               shape: BoxShape.circle,
                             ),
                             child: Center(
                               child: IconButton(
                                 icon: Icon(
                                   Icons.close_rounded,
-                                  color: Colors.black,
+                                  color:
+                                      theme.isDark
+                                          ? Color(0xffbdab82)
+                                          : Colors.white,
                                   size: 5.w,
                                 ),
                                 onPressed: () {
@@ -2168,7 +2000,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                                           child: Container(
                                             padding: const EdgeInsets.all(12),
                                             decoration: BoxDecoration(
-                                              color: Colors.white,
+                                              color:
+                                                  theme.isDark
+                                                      ? Color(0xff272727)
+                                                      : Color(0xfff5f5f5),
+
                                               borderRadius: BorderRadius.only(
                                                 topLeft:
                                                     isFirst
@@ -2238,7 +2074,13 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                           fontSize: 16.sp,
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                          color: Colors.black87,
+                                                          color:
+                                                              theme.isDark
+                                                                  ? Color(
+                                                                    0xffbdab82,
+                                                                  )
+                                                                  : Colors
+                                                                      .black87,
                                                           fontFamily:
                                                               AppConstants
                                                                   .manropeBold,
@@ -2253,7 +2095,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                         "${(getvisitedModal?.data?[index].distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
                                                         style: TextStyle(
                                                           fontSize: 14.sp,
-                                                          color: Colors.black54,
+                                                          color: Colors.grey,
                                                           fontFamily:
                                                               AppConstants
                                                                   .manrope,
@@ -2296,6 +2138,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     String categoryImage,
   ) async {
     if (_isBottomSheetOpen) return;
+    final theme = Provider.of<ThemeController>(context, listen: false);
 
     _isBottomSheetOpen = true;
 
@@ -2317,7 +2160,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                 return Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppColors.bgcolor,
+                    color: theme.isDark ? Color(0xff1a1a1a) : Colors.white,
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(20),
                     ),
@@ -2374,9 +2217,13 @@ class _CommunityScreenState extends State<CommunityScreen>
                                 children: [
                                   Text(
                                     categoryName,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xffbdab82)
+                                              : Colors.black87,
                                     ),
                                   ),
                                   Text(
@@ -2394,14 +2241,24 @@ class _CommunityScreenState extends State<CommunityScreen>
                             width: 8.w,
                             height: 8.w,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color: Color(0xff272727),
+                              border: Border.all(
+                                color:
+                                    theme.isDark
+                                        ? Color(0xffbdab82)
+                                        : Color(0xfff5f5f5),
+                                width: 0.2.w,
+                              ),
                               shape: BoxShape.circle,
                             ),
                             child: Center(
                               child: IconButton(
                                 icon: Icon(
                                   Icons.close_rounded,
-                                  color: Colors.black,
+                                  color:
+                                      theme.isDark
+                                          ? Color(0xffbdab82)
+                                          : Colors.white,
                                   size: 5.w,
                                 ),
                                 onPressed: () {
@@ -2476,7 +2333,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                   isLastItem ? 15 : 0,
                                                 ),
                                               ),
-                                              color: Colors.white,
+                                              color:
+                                                  theme.isDark
+                                                      ? Color(0xff272727)
+                                                      : Colors.white,
                                             ),
                                             child: Row(
                                               children: [
@@ -2513,11 +2373,17 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                 .data?[index]
                                                                 .businessName ??
                                                             "N/A",
-                                                        style: const TextStyle(
+                                                        style: TextStyle(
                                                           fontSize: 16,
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                          color: Colors.black87,
+                                                          color:
+                                                              theme.isDark
+                                                                  ? Color(
+                                                                    0xffbdab82,
+                                                                  )
+                                                                  : Colors
+                                                                      .black87,
                                                         ),
                                                         maxLines: 1,
                                                         overflow:
@@ -2529,7 +2395,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                         "${(viewcategoriesmodel.data?[index].distance ?? 0).toStringAsFixed(2)} Miles",
                                                         style: const TextStyle(
                                                           fontSize: 14,
-                                                          color: Colors.black54,
+                                                          color: Colors.grey,
                                                         ),
                                                       ),
                                                     ],
@@ -2566,6 +2432,8 @@ class _CommunityScreenState extends State<CommunityScreen>
   void _showSearchBottomSheet(BuildContext context) {
     bool isSearching = false;
     search.clear();
+    final theme = Provider.of<ThemeController>(context, listen: false);
+
     List<dynamic> filteredList = List.from(businessprofileModel?.data ?? []);
     if (_isBottomSheetOpen) return;
     _isBottomSheetOpen = true;
@@ -2587,7 +2455,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                 return Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppColors.bgcolor,
+                    color: theme.isDark ? Color(0xff1a1a1a) : Colors.white,
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(20),
                     ),
@@ -2604,8 +2472,15 @@ class _CommunityScreenState extends State<CommunityScreen>
                               padding: EdgeInsets.symmetric(horizontal: 5.w),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(30),
+                                color:
+                                    theme.isDark
+                                        ? Color(0xff272727)
+                                        : Color(0xfff5f5f5),
                                 border: Border.all(
-                                  color: Colors.black12,
+                                  color:
+                                      theme.isDark
+                                          ? Color(0xffbdab82)
+                                          : Color(0xffe8eaee),
                                   width: 0.2.w,
                                 ),
                               ),
@@ -2618,16 +2493,22 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     fontFamily: AppConstants.manrope,
                                     fontSize: 16.sp,
                                   ),
-                                  prefixIcon: const Icon(
+                                  prefixIcon: Icon(
                                     Icons.search,
-                                    color: Colors.black87,
+                                    color:
+                                        theme.isDark
+                                            ? Color(0xffbdab82)
+                                            : Colors.black87,
                                   ),
                                   border: InputBorder.none,
                                 ),
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.black,
+                                  color:
+                                      theme.isDark
+                                          ? Color(0xffbdab82)
+                                          : Colors.black87,
                                   fontFamily: AppConstants.manrope,
                                 ),
                                 onTap: () {
@@ -2707,32 +2588,57 @@ class _CommunityScreenState extends State<CommunityScreen>
                             ),
                           ),
                           const SizedBox(width: 8),
-                          Container(
-                            width: 8.w,
-                            height: 8.w,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[300],
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.close_rounded,
-                                  color: Colors.black,
-                                  size: 5.w,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    search.clear();
-                                    isSearching = false;
-                                    filteredList = List.from(
-                                      businessprofileModel?.data ?? [],
-                                    );
-                                  });
-                                  Get.back();
-                                },
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
+                          // Container(
+                          //   width: 8.w,
+                          //   height: 8.w,
+                          //   decoration: BoxDecoration(
+                          //     color: Colors.grey[300],
+                          //     shape: BoxShape.circle,
+                          //   ),
+                          //   child: Center(
+                          //     child:
+                          //     IconButton(
+                          //       icon: Icon(
+                          //         Icons.close_rounded,
+                          //         color: Colors.black,
+                          //         size: 5.w,
+                          //       ),
+                          //       onPressed: () {
+                          //         setState(() {
+                          //           search.clear();
+                          //           isSearching = false;
+                          //           filteredList = List.from(
+                          //             businessprofileModel?.data ?? [],
+                          //           );
+                          //         });
+                          //         Get.back();
+                          //       },
+                          //       padding: EdgeInsets.zero,
+                          //       constraints: const BoxConstraints(),
+                          //     ),
+                          //   ),
+                          // ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                search.clear();
+                                isSearching = false;
+                                filteredList = List.from(
+                                  businessprofileModel?.data ?? [],
+                                );
+                              });
+                              Get.back();
+                            },
+                            child: Text(
+                              "Cancel",
+                              style: TextStyle(
+                                fontSize: 17.sp,
+                                fontWeight: FontWeight.w600,
+                                color:
+                                    theme.isDark
+                                        ? Color(0xffbdab82)
+                                        : Colors.black87,
+                                fontFamily: AppConstants.manropeBold,
                               ),
                             ),
                           ),
@@ -2813,7 +2719,17 @@ class _CommunityScreenState extends State<CommunityScreen>
                                             borderRadius: BorderRadius.circular(
                                               12,
                                             ),
-                                            color: Colors.grey[200],
+                                            color:
+                                                theme.isDark
+                                                    ? Color(0xff272727)
+                                                    : Color(0xfff5f5f5),
+                                            border: Border.all(
+                                              color:
+                                                  theme.isDark
+                                                      ? Color(0xffbdab82)
+                                                      : Color(0xfff5f5f5),
+                                              width: 0.2.w,
+                                            ),
                                           ),
                                           child: FittedBox(
                                             fit: BoxFit.scaleDown,
@@ -2839,7 +2755,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                   style: TextStyle(
                                                     fontSize: 14.sp,
                                                     fontWeight: FontWeight.w600,
-                                                    color: AppColors.black,
+                                                    color:
+                                                        theme.isDark
+                                                            ? Color(0xffbdab82)
+                                                            : Colors.black87,
                                                     fontFamily:
                                                         AppConstants
                                                             .manropeBold,
@@ -2909,7 +2828,14 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       child: Container(
                                         padding: EdgeInsets.all(1.w),
                                         decoration: BoxDecoration(
-                                          color: Colors.white,
+                                          color:
+                                              theme.isDark
+                                                  ? Color(0xff272727)
+                                                  : Colors.white,
+                                          // border: Border.all(
+                                          //   color: Color(0xffbdab82),
+                                          //   width: 0.2.w,
+                                          // ),
                                           borderRadius: BorderRadius.only(
                                             topLeft: Radius.circular(
                                               index == 0 ? 15 : 0,
@@ -2975,7 +2901,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                   fontWeight: FontWeight.w500,
                                                   fontFamily:
                                                       AppConstants.manropeBold,
-                                                  color: Colors.black87,
+                                                  color:
+                                                      theme.isDark
+                                                          ? Color(0xffd4d4d4)
+                                                          : Colors.black87,
                                                 ),
                                               ),
                                               subtitle: Row(
@@ -2990,7 +2919,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                       fontSize: 13.sp,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Colors.grey,
+                                                      color: Color(0xff656565),
                                                       fontFamily:
                                                           AppConstants.manrope,
                                                     ),
@@ -3000,8 +2929,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                     "${(filteredList[index].distance ?? 0.0).toStringAsFixed(2)} Miles",
                                                     style: TextStyle(
                                                       fontSize: 13.sp,
-                                                      color:
-                                                          Colors.grey.shade600,
+                                                      color: Color(0xff656565),
                                                       fontFamily:
                                                           AppConstants.manrope,
                                                     ),
@@ -3013,12 +2941,25 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                 height: 10.w,
                                                 decoration: BoxDecoration(
                                                   shape: BoxShape.circle,
-                                                  color: Colors.grey[100],
+                                                  color:
+                                                      theme.isDark
+                                                          ? Color(0xff272727)
+                                                          : Color(0xfff5f5f5),
+                                                  border: Border.all(
+                                                    color:
+                                                        theme.isDark
+                                                            ? Color(0xffbdab82)
+                                                            : Color(0xfff5f5f5),
+                                                    width: 0.2.w,
+                                                  ),
                                                 ),
                                                 child: IconButton(
                                                   icon: Icon(
                                                     Icons.location_on,
-                                                    color: Colors.black,
+                                                    color:
+                                                        theme.isDark
+                                                            ? Color(0xffbdab82)
+                                                            : Colors.black87,
                                                     size: 5.w,
                                                   ),
                                                   onPressed: () {
@@ -3156,8 +3097,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                       "No Tags",
                                                                   style: TextStyle(
                                                                     color:
-                                                                        AppColors
-                                                                            .black,
+                                                                        theme.isDark
+                                                                            ? AppColors.white
+                                                                            : AppColors.black,
                                                                     fontSize:
                                                                         16.sp,
                                                                     fontWeight:
@@ -3209,6 +3151,8 @@ class _CommunityScreenState extends State<CommunityScreen>
     Color iconColor,
     Color textColor,
   ) {
+    final theme = Provider.of<ThemeController>(context, listen: false);
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -3217,20 +3161,28 @@ class _CommunityScreenState extends State<CommunityScreen>
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 7),
           decoration: BoxDecoration(
-            color: Colors.grey[200],
+            color: theme.isDark ? Color(0xff272727) : Color(0xfff5f5f5),
+            border: Border.all(
+              color: theme.isDark ? Color(0xffbdab82) : Color(0xfff5f5f5),
+              width: 0.2.w,
+            ),
             borderRadius: BorderRadius.circular(18),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Icon(icon, size: 15.sp, color: iconColor),
+              Icon(
+                icon,
+                size: 15.sp,
+                color: theme.isDark ? Color(0xffbdab82) : Colors.black87,
+              ),
               SizedBox(width: 1.w),
               Text(
                 text,
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
-                  color: textColor,
+                  color: theme.isDark ? Color(0xffbdab82) : Colors.black87,
                   fontFamily: AppConstants.manropeBold,
                 ),
               ),
@@ -3244,6 +3196,8 @@ class _CommunityScreenState extends State<CommunityScreen>
   Future<void> _showBottomSheet(BusnessViewModal? busnessviewmodal) async {
     if (_isBottomSheetOpen) return;
     _isBottomSheetOpen = true;
+    final theme = Provider.of<ThemeController>(context, listen: false);
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -3260,7 +3214,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                   return Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppColors.bgcolor,
+                      color:
+                          theme.isDark ? Color(0xff1a1a1a) : AppColors.bgcolor,
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(20),
                       ),
@@ -3271,7 +3226,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Material(
-                            color: Colors.white70,
+                            color:
+                                theme.isDark
+                                    ? Color(0xff272727)
+                                    : Colors.white70,
                             borderRadius: BorderRadius.circular(20),
                             child: Container(
                               padding: EdgeInsets.symmetric(vertical: 1.h),
@@ -3320,6 +3278,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                   "N/A",
                                               style: TextStyle(
                                                 fontSize: 19.sp,
+                                                color:
+                                                    theme.isDark
+                                                        ? Color(0xffbdab82)
+                                                        : Colors.black87,
                                                 // fontWeight: FontWeight.w900,
                                                 fontFamily:
                                                     AppConstants.manropeBold,
@@ -3329,6 +3291,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                             Text(
                                               "${(busnessviewmodal?.data?.distanceToBusiness ?? 0).toStringAsFixed(2)} Miles",
                                               style: TextStyle(
+                                                color:
+                                                    theme.isDark
+                                                        ? Colors.white
+                                                        : Colors.black,
                                                 fontSize: 15.sp,
                                                 fontFamily:
                                                     AppConstants.manrope,
@@ -3373,6 +3339,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                       : "N/A",
                                                   style: TextStyle(
                                                     fontSize: 15.sp,
+                                                    color:
+                                                        theme.isDark
+                                                            ? Colors.white
+                                                            : Colors.black,
                                                     fontFamily:
                                                         AppConstants.manrope,
                                                   ),
@@ -3388,14 +3358,27 @@ class _CommunityScreenState extends State<CommunityScreen>
                                             width: 8.w,
                                             height: 8.w,
                                             decoration: BoxDecoration(
-                                              color: Colors.grey.shade300,
+                                              color:
+                                                  theme.isDark
+                                                      ? Color(0xff272727)
+                                                      : Colors.grey.shade300,
+                                              border: Border.all(
+                                                color:
+                                                    theme.isDark
+                                                        ? Color(0xffbdab82)
+                                                        : Colors.white,
+                                                width: 0.2.w,
+                                              ),
                                               shape: BoxShape.circle,
                                             ),
                                             child: Center(
                                               child: IconButton(
                                                 icon: Icon(
                                                   Icons.close_rounded,
-                                                  color: Colors.black,
+                                                  color:
+                                                      theme.isDark
+                                                          ? Color(0xffbdab82)
+                                                          : Colors.black,
                                                   size: 18.sp,
                                                 ),
                                                 onPressed: () {
@@ -3437,7 +3420,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                               borderRadius:
                                                   BorderRadius.circular(15),
                                               border: Border.all(
-                                                color: Colors.grey.shade200,
+                                                color:
+                                                    theme.isDark
+                                                        ? Color(0xffbdab82)
+                                                        : Colors.black.withValues(alpha: .2),
                                               ),
                                             ),
                                             child: Row(
@@ -3495,7 +3481,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                           .name ??
                                                       "No Tags",
                                                   style: TextStyle(
-                                                    color: AppColors.black,
+                                                    color:
+                                                        theme.isDark
+                                                            ? Color(0xffbdab82)
+                                                            : Colors.black87,
                                                     fontSize: 14.sp,
                                                     fontWeight: FontWeight.w400,
                                                     fontFamily:
@@ -3572,7 +3561,17 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       vertical: 5,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Colors.grey.shade300,
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xff272727)
+                                              : Colors.grey.shade300,
+                                      border: Border.all(
+                                        color:
+                                            theme.isDark
+                                                ? Color(0xffbdab82)
+                                                : Color(0xfff5f5f5),
+                                        width: 0.2.w,
+                                      ),
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: Row(
@@ -3588,6 +3587,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                                               busnessviewmodal?.data?.isLiked ==
                                                       true
                                                   ? Colors.red
+                                                  : theme.isDark
+                                                  ? Color(0xffbdab82)
                                                   : Colors.black,
                                         ),
                                       ],
@@ -3606,13 +3607,26 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     vertical: 5,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.grey.shade300,
+                                    color:
+                                        theme.isDark
+                                            ? Color(0xff272727)
+                                            : Colors.grey.shade300,
+                                    border: Border.all(
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xffbdab82)
+                                              : Color(0xfff5f5f5),
+                                      width: 0.2.w,
+                                    ),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: IconButton(
                                     icon: Icon(
                                       Icons.location_on,
-                                      color: Colors.black,
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xffbdab82)
+                                              : Colors.black87,
                                       size: 6.w,
                                     ),
                                     onPressed: () {
@@ -3653,13 +3667,26 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     vertical: 5,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.grey.shade300,
+                                    color:
+                                        theme.isDark
+                                            ? Color(0xff272727)
+                                            :Colors.grey.shade300,
+                                    border: Border.all(
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xffbdab82)
+                                              : Color(0xfff5f5f5),
+                                      width: 0.2.w,
+                                    ),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: IconButton(
                                     icon: Icon(
                                       CupertinoIcons.chat_bubble_text,
-                                      color: AppColors.black,
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xffbdab82)
+                                              : Colors.black87,
                                       size: 5.w,
                                     ),
                                     onPressed: () {
@@ -3751,6 +3778,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       "Events",
                                       style: TextStyle(
                                         fontSize: 16.sp,
+                                        color:
+                                            theme.isDark
+                                                ? Color(0xffbdab82)
+                                                : Colors.black87,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: AppConstants.manropeBold,
                                       ),
@@ -3771,6 +3802,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       "Offers & Promotions",
                                       style: TextStyle(
                                         fontSize: 16.sp,
+                                        color:
+                                            theme.isDark
+                                                ? Color(0xffbdab82)
+                                                : Colors.black87,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: AppConstants.manropeBold,
                                       ),
@@ -3803,6 +3838,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       "Services",
                                       style: TextStyle(
                                         fontSize: 16.sp,
+                                        color:
+                                            theme.isDark
+                                                ? Color(0xffbdab82)
+                                                : Colors.black87,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: AppConstants.manropeBold,
                                       ),
@@ -3886,6 +3925,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     child: Text(
                                       "Products",
                                       style: TextStyle(
+                                        color:
+                                            theme.isDark
+                                                ? Color(0xffbdab82)
+                                                : Colors.black87,
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: AppConstants.manropeBold,
@@ -3950,12 +3993,31 @@ class _CommunityScreenState extends State<CommunityScreen>
                             width: 110.w,
                             padding: EdgeInsets.symmetric(vertical: 2.h),
                             decoration: BoxDecoration(
-                              color: Colors.white,
                               borderRadius: BorderRadius.circular(12),
+                              color:
+                                  theme.isDark
+                                      ? Color(0xff272727)
+                                      : Color(0xfff5f5f5),
                               border: Border.all(
-                                color: Colors.grey.shade300,
-                                width: 1,
+                                color:
+                                    theme.isDark
+                                        ? Color(0xffbdab82)
+                                        : Color(0xFFE5E5E5),
+                                width: 0.2.w,
                               ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black
+                                      .withValues(
+                                    alpha: 0.05,
+                                  ),
+                                  blurRadius: 10,
+                                  offset: const Offset(
+                                    0,
+                                    2,
+                                  ),
+                                ),
+                              ],
                             ),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -3986,8 +4048,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                                         ),
                                         builder: (BuildContext context) {
                                           return Container(
-                                            decoration: const BoxDecoration(
-                                              color: Colors.white,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  theme.isDark
+                                                      ? Color(0xff1a1a1a)
+                                                      : Colors.white,
                                               borderRadius:
                                                   BorderRadius.vertical(
                                                     top: Radius.circular(20),
@@ -4004,14 +4069,17 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                     bottom: 20,
                                                   ),
                                                   decoration: BoxDecoration(
-                                                    color: Colors.black,
+                                                    color:
+                                                        theme.isDark
+                                                            ? Colors.black
+                                                            : Color(0xfff5f5f5),
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                           2,
                                                         ),
                                                   ),
                                                 ),
-                                                const Padding(
+                                                Padding(
                                                   padding: EdgeInsets.symmetric(
                                                     horizontal: 20,
                                                   ),
@@ -4022,9 +4090,15 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                       "Get There",
                                                       style: TextStyle(
                                                         fontSize: 18,
+                                                        color:
+                                                            theme.isDark
+                                                                ? Color(
+                                                                  0xffbdab82,
+                                                                )
+                                                                : Colors
+                                                                    .black87,
                                                         fontWeight:
                                                             FontWeight.w600,
-                                                        color: Colors.black,
                                                       ),
                                                     ),
                                                   ),
@@ -4036,7 +4110,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                         horizontal: 16,
                                                       ),
                                                   decoration: BoxDecoration(
-                                                    color: Colors.white,
+                                                    color:
+                                                        theme.isDark
+                                                            ? Color(0xff272727)
+                                                            : Color(0xfff5f5f5),
+
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                           14,
@@ -4102,8 +4180,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                         child: const Icon(
                                                                           Icons
                                                                               .map,
-                                                                          color:
-                                                                              Colors.white,
+                                                                          color: Color(
+                                                                            0xffbdab82,
+                                                                          ),
                                                                           size:
                                                                               18,
                                                                         ),
@@ -4112,7 +4191,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                   ),
                                                                 ),
                                                               ),
-                                                              title: const Text(
+                                                              title: Text(
                                                                 "Open in Apple Maps",
                                                                 style: TextStyle(
                                                                   fontSize: 17,
@@ -4120,8 +4199,12 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                       FontWeight
                                                                           .w400,
                                                                   color:
-                                                                      Colors
-                                                                          .black,
+                                                                      theme.isDark
+                                                                          ? Color(
+                                                                            0xffbdab82,
+                                                                          )
+                                                                          : Colors
+                                                                              .black87,
                                                                   fontFamily:
                                                                       AppConstants
                                                                           .manrope,
@@ -4198,12 +4281,15 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                             6,
                                                                           ),
                                                                     ),
-                                                                    child: const Icon(
+                                                                    child: Icon(
                                                                       Icons
                                                                           .location_on,
                                                                       color:
-                                                                          Colors
-                                                                              .white,
+                                                                          theme.isDark
+                                                                              ? Color(
+                                                                                0xffbdab82,
+                                                                              )
+                                                                              : Colors.black87,
                                                                       size: 18,
                                                                     ),
                                                                   );
@@ -4211,7 +4297,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                               ),
                                                             ),
                                                           ),
-                                                          title: const Text(
+                                                          title: Text(
                                                             "Open in Google Maps",
                                                             style: TextStyle(
                                                               fontSize: 17,
@@ -4219,7 +4305,12 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                   FontWeight
                                                                       .w400,
                                                               color:
-                                                                  Colors.black,
+                                                                  theme.isDark
+                                                                      ? Color(
+                                                                        0xffbdab82,
+                                                                      )
+                                                                      : Colors
+                                                                          .black87,
                                                               fontFamily:
                                                                   AppConstants
                                                                       .manrope,
@@ -4228,8 +4319,12 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                           trailing: Icon(
                                                             Icons.chevron_right,
                                                             color:
-                                                                Colors
-                                                                    .grey[400],
+                                                                theme.isDark
+                                                                    ? Color(
+                                                                      0xffbdab82,
+                                                                    )
+                                                                    : Colors
+                                                                        .black87,
                                                             size: 20,
                                                           ),
                                                           onTap: () {
@@ -4287,8 +4382,20 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                     height: 32,
                                                                     decoration: BoxDecoration(
                                                                       color:
-                                                                          Colors
-                                                                              .grey[200],
+                                                                          theme.isDark
+                                                                              ? Color(
+                                                                                0xff272727,
+                                                                              )
+                                                                              : Color(
+                                                                                0xfff5f5f5,
+                                                                              ),
+                                                                      border: Border.all(
+                                                                        color: Color(
+                                                                          0xffbdab82,
+                                                                        ),
+                                                                        width:
+                                                                            0.2.w,
+                                                                      ),
                                                                       borderRadius:
                                                                           BorderRadius.circular(
                                                                             6,
@@ -4298,8 +4405,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                       Icons
                                                                           .content_copy,
                                                                       color:
-                                                                          Colors
-                                                                              .grey[600],
+                                                                          theme.isDark
+                                                                              ? Color(
+                                                                                0xffbdab82,
+                                                                              )
+                                                                              : Colors.black87,
                                                                       size: 18,
                                                                     ),
                                                                   );
@@ -4312,7 +4422,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                 CrossAxisAlignment
                                                                     .start,
                                                             children: [
-                                                              const Text(
+                                                              Text(
                                                                 "Copy Address",
                                                                 style: TextStyle(
                                                                   fontSize: 17,
@@ -4320,8 +4430,12 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                       FontWeight
                                                                           .w400,
                                                                   color:
-                                                                      Colors
-                                                                          .black,
+                                                                      theme.isDark
+                                                                          ? Color(
+                                                                            0xffbdab82,
+                                                                          )
+                                                                          : Colors
+                                                                              .black87,
                                                                   fontFamily:
                                                                       AppConstants
                                                                           .manrope,
@@ -4339,7 +4453,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                                           .w400,
                                                                   color:
                                                                       Colors
-                                                                          .grey[600],
+                                                                          .grey,
                                                                 ),
                                                                 maxLines: 2,
                                                                 overflow:
@@ -4405,7 +4519,13 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                     },
                                                     style: ElevatedButton.styleFrom(
                                                       backgroundColor:
-                                                          Colors.white,
+                                                          theme.isDark
+                                                              ? Color(
+                                                                0xff272727,
+                                                              )
+                                                              : Color(
+                                                                0xfff5f5f5,
+                                                              ),
                                                       foregroundColor:
                                                           Colors.black,
                                                       elevation: 0,
@@ -4425,9 +4545,16 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                         ),
                                                       ),
                                                     ),
-                                                    child: const Text(
+                                                    child: Text(
                                                       "Done",
                                                       style: TextStyle(
+                                                        color:
+                                                            theme.isDark
+                                                                ? Color(
+                                                                  0xffbdab82,
+                                                                )
+                                                                : Colors
+                                                                    .black87,
                                                         fontSize: 17,
                                                         fontWeight:
                                                             FontWeight.w600,
@@ -4444,6 +4571,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     }
                                   },
                                   child: buildListTile(
+                                    context: context,
                                     icon: Icons.location_on,
                                     title: "Address",
                                     subtitle:
@@ -4518,6 +4646,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   child: buildListTile(
                                     icon: Icons.phone,
                                     title: "Phone",
+                                    context: context,
                                     subtitle:
                                         busnessviewmodal
                                                     ?.data
@@ -4531,13 +4660,20 @@ class _CommunityScreenState extends State<CommunityScreen>
                                 ),
                                 Divider(color: Colors.grey.shade300),
                                 ExpansionTile(
-                                  leading: const Icon(
+                                  leading: Icon(
                                     Icons.access_time,
-                                    color: Colors.grey,
+                                    color:
+                                        theme.isDark
+                                            ? Colors.grey
+                                            : Colors.black87,
                                   ),
-                                  title: const Text(
+                                  title: Text(
                                     "Opening Hours",
                                     style: TextStyle(
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xffbdab82)
+                                              : Colors.black87,
                                       fontWeight: FontWeight.w500,
                                       fontFamily: AppConstants.manropeBold,
                                     ),
@@ -4545,7 +4681,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   subtitle: Text(
                                     _getCurrentDayStatus(),
                                     style: TextStyle(
-                                      color: Colors.grey[600],
+                                      color: Colors.grey,
                                       fontFamily: AppConstants.manropeBold,
                                     ),
                                   ),
@@ -4644,6 +4780,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   child: buildListTile(
                                     icon: Icons.language,
                                     title: "Website",
+                                    context: context,
                                     subtitle:
                                         busnessviewmodal
                                                     ?.data
@@ -4667,7 +4804,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                             style: TextStyle(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                              color:
+                                  theme.isDark
+                                      ? Color(0xffbdab82)
+                                      : Colors.black87,
                               fontFamily: AppConstants.manrope,
                             ),
                           ),
@@ -4704,9 +4844,19 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     margin: const EdgeInsets.symmetric(
                                       vertical: 4,
                                     ),
-                                    padding: const EdgeInsets.all(12),
+                                    padding: EdgeInsets.all(12),
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xff272727)
+                                              : Color(0xfff5f5f5),
+                                      border: Border.all(
+                                        color:
+                                            theme.isDark
+                                                ? Color(0xffbdab82)
+                                                : Color(0xfff5f5f5),
+                                        width: 0.2.w,
+                                      ),
                                       borderRadius: BorderRadius.circular(12),
                                       boxShadow: const [
                                         BoxShadow(
@@ -4768,6 +4918,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                   fontWeight: FontWeight.w500,
                                                   fontFamily:
                                                       AppConstants.manrope,
+                                                  color:
+                                                      theme.isDark
+                                                          ? Color(0xffbdab82)
+                                                          : Colors.black87,
                                                 ),
                                               ),
                                               const SizedBox(height: 4),
@@ -4814,7 +4968,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                   ),
                                                   style: TextStyle(
                                                     fontSize: 16.sp,
-                                                    color: Colors.grey.shade500,
+                                                    color: Colors.grey,
                                                     fontWeight:
                                                         FontWeight.normal,
                                                     fontFamily:
@@ -4826,10 +4980,16 @@ class _CommunityScreenState extends State<CommunityScreen>
                                               RichText(
                                                 text: TextSpan(
                                                   children: [
-                                                    const TextSpan(
+                                                    TextSpan(
                                                       text: "Distance : ",
                                                       style: TextStyle(
-                                                        color: Colors.black,
+                                                        color:
+                                                            theme.isDark
+                                                                ? Color(
+                                                                  0xffbdab82,
+                                                                )
+                                                                : Colors
+                                                                    .black87,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                         fontSize: 14,
@@ -5263,50 +5423,6 @@ class _CommunityScreenState extends State<CommunityScreen>
     });
   }
 
-  // CategoriesProfileView(String id, String categoryName, String categoryImage) {
-  //   setState(() {
-  //     isSending = true;
-  //   });
-  //
-  //   checkInternet().then((internet) async {
-  //     if (internet) {
-  //       CommunityProvider()
-  //           .categoryViewApi(
-  //             (loginModel?.data?.user?.id).toString(),
-  //             AppLon,
-  //             AppLat,
-  //             id,
-  //           )
-  //           .then((response) async {
-  //             viewcategoriesmodel = ViewCategoriesModel.fromJson(response.data);
-  //             if (response.statusCode == 200) {
-  //               setState(() {
-  //                 isSending = false;
-  //               });
-  //
-  //               await _showcategoriesdBottomSheet(
-  //                 viewcategoriesmodel,
-  //                 categoryName,
-  //                 categoryImage,
-  //               );
-  //             } else if (response.statusCode == 422) {
-  //               setState(() {
-  //                 isSending = false;
-  //               });
-  //             } else {
-  //               setState(() {
-  //                 isSending = false;
-  //               });
-  //             }
-  //           });
-  //     } else {
-  //       setState(() {
-  //         isSending = false;
-  //       });
-  //       buildErrorDialog(context, 'Error', "Internet Required");
-  //     }
-  //   });
-  // }
   void CategoriesProfileView(
     String id,
     String categoryName,
@@ -5656,6 +5772,7 @@ class _CommunityScreenState extends State<CommunityScreen>
         busnessviewmodal!.data!.services!.isEmpty) {
       return const Center();
     }
+    final theme = Provider.of<ThemeController>(context, listen: false);
 
     // Get today’s weekday name (like Monday, Tuesday, etc.)
     String todayWeekday = DateFormat('EEEE').format(DateTime.now());
@@ -5694,8 +5811,13 @@ class _CommunityScreenState extends State<CommunityScreen>
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
-                    color: Colors.white,
+                    border: Border.all(
+                      color:
+                          theme.isDark ? Color(0xffbdab82) : Colors.grey.shade300,
+                      width: 0.2.w,
+                    ),
+                    color: theme.isDark ? Color(0xff272727) : Color(0xfff5f5f5),
+
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: ListTile(
@@ -5749,7 +5871,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
-
+                        color:
+                            theme.isDark ? Color(0xffbdab82) : Colors.black,
                         fontFamily: AppConstants.manrope,
                       ),
                       maxLines: 1,
@@ -5839,10 +5962,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                         ),
                       ],
                     ),
-                    trailing: const Icon(
+                    trailing: Icon(
                       Icons.arrow_forward_ios,
                       size: 16,
-                      color: Colors.black54,
+                      color: theme.isDark ? Color(0xffbdab82) : Colors.black87,
                     ),
                   ),
                 ),
@@ -5859,6 +5982,7 @@ class _CommunityScreenState extends State<CommunityScreen>
         busnessviewmodal!.data!.events!.isEmpty) {
       return const Center();
     }
+    final theme = Provider.of<ThemeController>(context, listen: false);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -5887,14 +6011,20 @@ class _CommunityScreenState extends State<CommunityScreen>
                     return StatefulBuilder(
                       builder: (context, setDialogState) {
                         return Dialog(
-                          backgroundColor: Colors.white,
+                          backgroundColor:
+                              theme.isDark
+                                  ? Color(0xff1a1a1a)
+                                  : AppColors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color:
+                                  theme.isDark
+                                      ? Color(0xff1a1a1a)
+                                      : Color(0xfff5f5f5),
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: Form(
@@ -5916,7 +6046,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                             "${profileModel?.data?.user?.name?.firstName.toString().capitalizeFirst ?? ""} "
                                             "${profileModel?.data?.user?.name?.lastName.toString().capitalizeFirst ?? ""}",
                                             style: TextStyle(
-                                              color: Colors.black,
+                                              color:
+                                                  theme.isDark
+                                                      ? Colors.white
+                                                      : Colors.black87,
                                               fontSize: 18.sp,
                                               fontFamily: AppConstants.manrope,
                                               fontWeight: FontWeight.bold,
@@ -5941,7 +6074,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       fontFamily: AppConstants.manrope,
                                       fontSize: 17.sp,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.black38,
+                                      color: Colors.grey,
                                     ),
                                   ),
                                   const SizedBox(height: 10),
@@ -5964,7 +6097,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       fontFamily: AppConstants.manrope,
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.black38,
+                                      color: Colors.grey,
                                     ),
                                   ),
                                   const SizedBox(height: 12),
@@ -6067,8 +6200,12 @@ class _CommunityScreenState extends State<CommunityScreen>
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
-                    color: AppColors.white,
+                    color: theme.isDark ? Color(0xff272727) : Color(0xfff5f5f5),
+                    border: Border.all(
+                      color:
+                          theme.isDark ? Color(0xffbdab82) : Colors.grey.shade300,
+                      width: 0.2.w,
+                    ),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: ListTile(
@@ -6132,6 +6269,13 @@ class _CommunityScreenState extends State<CommunityScreen>
                           "No Title",
                       style: TextStyle(
                         fontSize: 16.sp,
+                        color:
+                            theme.isDark ? Color(0xffbdab82) : Colors.black,
+                        // color: Color(0xff272727),
+                        // border: Border.all(
+                        //   color: Color(0xffbdab82),
+                        //   width: 0.2.w,
+                        // ),
                         fontWeight: FontWeight.w500,
                         fontFamily: AppConstants.manrope,
                       ),
@@ -6146,7 +6290,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                           children: [
                             Icon(
                               Icons.location_on,
-                              color: Colors.red,
+                              color:
+                                  theme.isDark
+                                      ? Color(0xffbdab82)
+                                      : Colors.black87,
                               size: 16.sp,
                             ),
                             const SizedBox(width: 4),
@@ -6159,7 +6306,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     'No Location',
                                 style: TextStyle(
                                   fontSize: 14.sp,
-                                  color: Colors.grey[600],
+                                  color: Colors.grey,
                                   fontFamily: AppConstants.manrope,
                                 ),
                                 maxLines: 1,
@@ -6173,7 +6320,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                           children: [
                             Icon(
                               Icons.access_time,
-                              color: Colors.blue,
+                              color:
+                                  theme.isDark
+                                      ? Color(0xffbdab82)
+                                      : Colors.black87,
                               size: 16.sp,
                             ),
                             const SizedBox(width: 4),
@@ -6198,7 +6348,8 @@ class _CommunityScreenState extends State<CommunityScreen>
                                 ),
                                 style: TextStyle(
                                   fontSize: 12.sp,
-                                  color: Colors.grey[700],
+                                  color: Colors.grey,
+                                  fontFamily: AppConstants.manrope
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -6234,7 +6385,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       : const Icon(
                                         Icons.arrow_forward_ios,
                                         size: 16,
-                                        color: Colors.black54,
+                                        color: Color(0xffbdab82),
                                       ),
                             ),
                   ),
@@ -6506,6 +6657,7 @@ class _CommunityScreenState extends State<CommunityScreen>
 
   Widget _buildHoursRow(String day, dynamic dayHours) {
     final isToday = day == _getDayName(DateTime.now().weekday);
+    final theme = Provider.of<ThemeController>(context, listen: false);
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -6525,14 +6677,24 @@ class _CommunityScreenState extends State<CommunityScreen>
               day,
               style: TextStyle(
                 fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-                color: isToday ? Colors.blue : Colors.black87,
+                color:
+                    isToday
+                        ? Colors.blue
+                        : theme.isDark
+                        ? Color(0xffbdab82)
+                        : Colors.black87,
               ),
             ),
             Text(
               _getHoursText(dayHours),
               style: TextStyle(
                 fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-                color: isToday ? Colors.blue : Colors.grey[600],
+                color:
+                    isToday
+                        ? Colors.blue
+                        : theme.isDark
+                        ? Color(0xffbdab82)
+                        : Colors.black87,
               ),
             ),
           ],
@@ -6556,6 +6718,8 @@ class _CommunityScreenState extends State<CommunityScreen>
     required String subtitle,
     required VoidCallback onTap,
   }) {
+    final theme = Provider.of<ThemeController>(context, listen: false);
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 0.5.w, vertical: 1.2.h),
       child: InkWell(
@@ -6565,14 +6729,21 @@ class _CommunityScreenState extends State<CommunityScreen>
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.2.h),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: theme.isDark ? Color(0xff272727) : Color(0xfff5f5f5),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFE5E5E5), width: 1),
+            border: Border.all(
+              color: theme.isDark ? Color(0xffbdab82) : Color(0xFFE5E5E5),
+              width: 1,
+            ),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(icon, size: 26, color: Colors.black54),
+              Icon(
+                icon,
+                size: 26,
+                color: theme.isDark ? Color(0xffbdab82) : Colors.black87,
+              ),
               SizedBox(width: 4.w),
               Expanded(
                 child: Column(
@@ -6584,7 +6755,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                         fontFamily: AppConstants.manrope,
-                        color: Colors.black,
+
+                        color:
+                            theme.isDark ? Color(0xffbdab82) : Colors.black87,
                       ),
                     ),
                     SizedBox(height: 0.6.h),
@@ -6593,16 +6766,16 @@ class _CommunityScreenState extends State<CommunityScreen>
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontFamily: AppConstants.manrope,
-                        color: Colors.grey[700],
+                        color: Colors.grey,
                       ),
                     ),
                   ],
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.arrow_forward_ios,
                 size: 16,
-                color: Colors.black54,
+                color: theme.isDark ? Color(0xffbdab82) : Colors.black87,
               ),
             ],
           ),
@@ -6616,13 +6789,20 @@ Widget buildListTile({
   required IconData icon,
   required String title,
   required String subtitle,
+  required BuildContext context,
 }) {
+  final theme = Provider.of<ThemeController>(context, listen: false);
+
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(icon, size: 25, color: Colors.black54),
+        Icon(
+          icon,
+          size: 25,
+          color: theme.isDark ? Color(0xffbdab82) : Colors.black87,
+        ),
         SizedBox(width: 4.w),
         Expanded(
           child: Column(
@@ -6632,6 +6812,7 @@ Widget buildListTile({
                 title,
                 style: TextStyle(
                   fontSize: 15.sp,
+                  color: theme.isDark ? Color(0xffbdab82) : Colors.black87,
                   fontWeight: FontWeight.w500,
                   fontFamily: AppConstants.manropeBold,
                 ),
@@ -6641,14 +6822,18 @@ Widget buildListTile({
                 subtitle,
                 style: TextStyle(
                   fontSize: 15.sp,
-                  color: Colors.black87,
+                  color: Colors.grey,
                   fontFamily: AppConstants.manrope,
                 ),
               ),
             ],
           ),
         ),
-        const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
+        Icon(
+          Icons.arrow_forward_ios,
+          size: 16,
+          color: theme.isDark ? Color(0xffbdab82) : Colors.black87,
+        ),
       ],
     ),
   );

@@ -2,8 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Services/themeServices.dart';
 import 'package:wavee/Utils/customSnackBars.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
@@ -47,15 +49,18 @@ class _EventDetailState extends State<EventDetail> {
     });
   }
 
+  // bool isDark = false;
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeController>();
+
     return WillPopScope(
       onWillPop: () async {
         Navigator.pop(context, null);
         return false;
       },
       child: Scaffold(
-        backgroundColor: AppColors.white,
+        backgroundColor: theme.isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
         body:
             isLoading
                 ? Loader()
@@ -71,11 +76,29 @@ class _EventDetailState extends State<EventDetail> {
                             horizontal: 3.w,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.bgcolor,
-                            border: const Border(
-                              top: BorderSide(color: Colors.grey),
-                              left: BorderSide(color: Colors.grey),
-                              right: BorderSide(color: Colors.grey),
+                            color:
+                                theme.isDark
+                                    ? Color(0xff272727)
+                                    : AppColors.bgcolor,
+                            border: Border(
+                              top: BorderSide(
+                                color:
+                                    theme.isDark
+                                        ? Color(0xffbdab82)
+                                        : Colors.grey,
+                              ),
+                              left: BorderSide(
+                                color:
+                                    theme.isDark
+                                        ? Color(0xffbdab82)
+                                        : Colors.grey,
+                              ),
+                              right: BorderSide(
+                                color:
+                                    theme.isDark
+                                        ? Color(0xffbdab82)
+                                        : Colors.grey,
+                              ),
                             ),
                             borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(45),
@@ -99,7 +122,10 @@ class _EventDetailState extends State<EventDetail> {
                                       alignment: Alignment.center,
                                       child: Icon(
                                         Icons.arrow_back,
-                                        color: AppColors.maincolor,
+                                        color:
+                                            theme.isDark
+                                                ? Color(0xffbdab82)
+                                                : AppColors.maincolor,
                                         size: 20.sp,
                                       ),
                                     ),
@@ -127,7 +153,10 @@ class _EventDetailState extends State<EventDetail> {
                                             decoration: BoxDecoration(
                                               border: Border.all(
                                                 width: 1,
-                                                color: AppColors.borderColor,
+                                                color:
+                                                    theme.isDark
+                                                        ? Color(0xffbdab82)
+                                                        : AppColors.borderColor,
                                               ),
                                               borderRadius:
                                                   BorderRadius.circular(20),
@@ -144,7 +173,10 @@ class _EventDetailState extends State<EventDetail> {
                                   Text(
                                     eventDetailModal?.data?.title ?? "",
                                     style: TextStyle(
-                                      color: AppColors.maincolor,
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xffbdab82)
+                                              : AppColors.maincolor,
                                       fontSize: 19.sp,
                                       fontFamily: AppConstants.manropeBold,
                                       fontWeight: FontWeight.bold,
@@ -154,7 +186,10 @@ class _EventDetailState extends State<EventDetail> {
                                     height: 0.6.h,
                                     width: 25.w,
                                     decoration: BoxDecoration(
-                                      color: AppColors.borderColor,
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xffbdab82)
+                                              : AppColors.borderColor,
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                   ).paddingOnly(right: 5.w, bottom: 2.h),
@@ -196,7 +231,10 @@ class _EventDetailState extends State<EventDetail> {
                                   Text(
                                     "Business Overview",
                                     style: TextStyle(
-                                      color: AppColors.maincolor,
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xffbdab82)
+                                              : AppColors.maincolor,
                                       fontSize: 18.sp,
                                       fontFamily: AppConstants.manrope,
                                       fontWeight: FontWeight.bold,
@@ -207,7 +245,10 @@ class _EventDetailState extends State<EventDetail> {
                                     height: 0.6.h,
                                     width: 25.w,
                                     decoration: BoxDecoration(
-                                      color: AppColors.borderColor,
+                                      color:
+                                          theme.isDark
+                                              ? Color(0xffbdab82)
+                                              : AppColors.borderColor,
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                   ).paddingOnly(right: 5.w, bottom: 2.h),
@@ -235,7 +276,12 @@ class _EventDetailState extends State<EventDetail> {
                                     child: Container(
                                       height: 7.h,
                                       decoration: BoxDecoration(
-                                        color: AppColors.white,
+                                        border: Border.all(
+                                          color:
+                                              theme.isDark
+                                                  ? Color(0xffbdab82)
+                                                  : AppColors.black,
+                                        ),
 
                                         borderRadius: BorderRadius.circular(15),
                                       ),
@@ -300,6 +346,10 @@ class _EventDetailState extends State<EventDetail> {
                                                     .businessName ??
                                                 "",
                                             style: TextStyle(
+                                              color:
+                                                  theme.isDark
+                                                      ? Color(0xffbdab82)
+                                                      : AppColors.blackColor,
                                               fontFamily: AppConstants.manrope,
                                               fontSize: 17.sp,
                                               fontWeight: FontWeight.normal,
@@ -314,13 +364,22 @@ class _EventDetailState extends State<EventDetail> {
                                     width: double.infinity,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(15),
-                                      color: AppColors.white,
+                                      border: Border.all(
+                                        color:
+                                            theme.isDark
+                                                ? Color(0xffbdab82)
+                                                : AppColors.black,
+                                        width: 0.2.w,
+                                      ),
                                     ),
                                     child: Row(
                                       children: [
-                                        const Icon(
+                                        Icon(
                                           Icons.location_on,
-                                          color: AppColors.maincolor,
+                                          color:
+                                              theme.isDark
+                                                  ? Color(0xffbdab82)
+                                                  : AppColors.maincolor,
                                         ).paddingOnly(right: 2.w),
 
                                         SizedBox(
@@ -331,6 +390,10 @@ class _EventDetailState extends State<EventDetail> {
                                             style: TextStyle(
                                               fontFamily: AppConstants.manrope,
                                               fontSize: 15.sp,
+                                              color:
+                                                  theme.isDark
+                                                      ? Color(0xffbdab82)
+                                                      : AppColors.maincolor,
                                             ),
                                           ),
                                         ),
@@ -344,17 +407,31 @@ class _EventDetailState extends State<EventDetail> {
                                     width: double.infinity,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(15),
-                                      color: AppColors.white,
+                                      border: Border.all(
+                                        color:
+                                            theme.isDark
+                                                ? Color(0xffbdab82)
+                                                : AppColors.blackColor,
+                                        width: 0.2.w,
+                                      ),
                                     ),
                                     child: Row(
                                       children: [
-                                        const Icon(
+                                        Icon(
                                           Icons.calendar_month,
+                                          color:
+                                              theme.isDark
+                                                  ? Color(0xffbdab82)
+                                                  : AppColors.maincolor,
                                         ).paddingOnly(right: 2.w),
                                         Text(
                                           "Event Date: ${formatDateTime(eventDetailModal?.data?.eventDate ?? "")}",
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontFamily: AppConstants.manrope,
+                                            color:
+                                                theme.isDark
+                                                    ? Color(0xffbdab82)
+                                                    : AppColors.maincolor,
                                           ),
                                         ),
                                       ],
@@ -367,7 +444,13 @@ class _EventDetailState extends State<EventDetail> {
                                     width: 40.w,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(15),
-                                      color: AppColors.white,
+                                      border: Border.all(
+                                        color:
+                                            theme.isDark
+                                                ? Color(0xffbdab82)
+                                                : AppColors.maincolor,
+                                        width: 0.2.w,
+                                      ),
                                     ),
                                     child: Row(
                                       children: [
@@ -379,13 +462,19 @@ class _EventDetailState extends State<EventDetail> {
                                           color:
                                               eventDetailModal?.data?.status ==
                                                       'active'
-                                                  ? AppColors.maincolor
+                                                  ? theme.isDark
+                                                      ? Color(0xffbdab82)
+                                                      : AppColors.maincolor
                                                   : AppColors.redColor,
                                         ).paddingOnly(right: 2.w),
                                         Text(
                                           "Status: ${eventDetailModal?.data?.status?.capitalizeFirst ?? ""}",
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontFamily: AppConstants.manrope,
+                                            color:
+                                                theme.isDark
+                                                    ? Color(0xffbdab82)
+                                                    : AppColors.maincolor,
                                           ),
                                         ),
                                       ],
@@ -396,7 +485,10 @@ class _EventDetailState extends State<EventDetail> {
                                         child: batan(
                                           title: 'Inactive',
                                           route: () {},
-                                          color: AppColors.maincolor,
+                                          color:
+                                              theme.isDark
+                                                  ? Color(0xffbdab82)
+                                                  : AppColors.maincolor,
                                           fontcolor: AppColors.white,
                                           height: 5.h,
                                           width: 50.w,

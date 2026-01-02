@@ -127,7 +127,7 @@ class Data {
   int? lastPage;
   String? lastPageUrl;
   List<Links>? links;
-  Null nextPageUrl;
+  var nextPageUrl;
   String? path;
   int? perPage;
   Null prevPageUrl;
@@ -203,13 +203,13 @@ class Data1 {
   int? id;
   int? creatorId;
   String? title;
-  Null description;
-  Null apartmentNumber;
+  var description;
+  var apartmentNumber;
   String? attachment;
   String? eventDate;
   String? location;
-  Null latitude;
-  Null longitude;
+  var latitude;
+  var longitude;
   String? status;
   String? createdAt;
   String? updatedAt;

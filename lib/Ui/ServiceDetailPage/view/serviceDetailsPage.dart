@@ -2,8 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/Services/themeServices.dart';
 
 import '../../../Utils/bottomBar.dart';
 import '../../../Utils/checkInternetConnection.dart';
@@ -44,6 +46,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
   List<String> featuresList = [];
   List<String> benefitsList = [];
 
+  // bool isDark = true;
   @override
   void initState() {
     super.initState();
@@ -64,8 +67,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeController>();
+    final isDark = theme.isDark;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
       body: Stack(
         children: [
           Column(
@@ -81,11 +86,17 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                       horizontal: 3.w,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.bgcolor,
-                      border: const Border(
-                        top: BorderSide(color: Colors.grey),
-                        left: BorderSide(color: Colors.grey),
-                        right: BorderSide(color: Colors.grey),
+                      color: isDark ? Color(0xff272727) : AppColors.bgcolor,
+                      border: Border(
+                        top: BorderSide(
+                          color: isDark ? Color(0xffbdab82) : Colors.grey,
+                        ),
+                        left: BorderSide(
+                          color: isDark ? Color(0xffbdab82) : Colors.grey,
+                        ),
+                        right: BorderSide(
+                          color: isDark ? Color(0xffbdab82) : Colors.grey,
+                        ),
                       ),
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(45),
@@ -110,7 +121,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                     alignment: Alignment.center,
                                     child: Icon(
                                       Icons.arrow_back,
-                                      color: AppColors.maincolor,
+                                      color:
+                                          isDark
+                                              ? Color(0xffbdab82)
+                                              : AppColors.maincolor,
                                       size: 20.sp,
                                     ),
                                   ),
@@ -124,6 +138,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                     style: TextStyle(
                                       fontFamily: AppConstants.manropeBold,
                                       fontSize: 19.sp,
+                                      color:
+                                          isDark
+                                              ? Color(0xffbdab82)
+                                              : AppColors.maincolor,
                                     ),
                                   ),
                                 ),
@@ -133,8 +151,11 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                             Container(
                               height: 25.h,
                               width: double.infinity,
-                              decoration: const BoxDecoration(
-                                color: AppColors.white,
+                              decoration: BoxDecoration(
+                                color:
+                                    isDark
+                                        ? Color(0xff272727)
+                                        : AppColors.white,
                               ),
                               child:
                                   (servicedetailsmodel?.data?.galleryImages ==
@@ -206,11 +227,15 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                                               (
                                                                 context,
                                                                 url,
-                                                              ) => const Center(
+                                                              ) => Center(
                                                                 child: CircularProgressIndicator(
                                                                   color:
-                                                                      AppColors
-                                                                          .maincolor,
+                                                                      isDark
+                                                                          ? Color(
+                                                                            0xffbdab82,
+                                                                          )
+                                                                          : AppColors
+                                                                              .maincolor,
                                                                 ),
                                                               ),
                                                           errorWidget:
@@ -275,7 +300,11 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                               shape: BoxShape.circle,
                                               color:
                                                   _currentIndex == entry.key
-                                                      ? AppColors.maincolor
+                                                      ? isDark
+                                                          ? Color(0xffbdab82)
+                                                          : AppColors.maincolor
+                                                      : isDark
+                                                      ? Colors.white
                                                       : Colors.grey,
                                             ),
                                           ),
@@ -292,6 +321,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                   style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 19.sp,
+                                    color:
+                                        isDark
+                                            ? Colors.white
+                                            : AppColors.blackColor,
                                     fontFamily: AppConstants.manrope,
                                   ),
                                 ),
@@ -336,7 +369,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                               width: 24.w,
                               height: 0.7.h,
                               decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
+                                color:
+                                    isDark
+                                        ? Colors.white
+                                        : AppColors.blackColor,
                                 borderRadius: BorderRadius.circular(90),
                               ),
                             ),
@@ -371,11 +407,16 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                             fontSize: 18.sp,
                                             fontWeight: FontWeight.normal,
                                             fontFamily: AppConstants.manrope,
-                                            color: Colors.grey,
+                                            color:
+                                                isDark
+                                                    ? Color(0xffbdab82)
+                                                    : Colors.grey,
                                             decoration:
                                                 TextDecoration.lineThrough,
                                             decorationColor:
-                                                AppColors.maincolor,
+                                                isDark
+                                                    ? Colors.white
+                                                    : AppColors.maincolor,
                                           ),
                                         ),
                                         SizedBox(width: 2.w),
@@ -385,6 +426,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                             fontSize: 18.sp,
                                             fontWeight: FontWeight.bold,
                                             fontFamily: AppConstants.manrope,
+                                            color:
+                                                isDark
+                                                    ? Colors.white
+                                                    : AppColors.black,
                                           ),
                                         ),
                                       ],
@@ -395,6 +440,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                         fontSize: 18.sp,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: AppConstants.manrope,
+                                        color:
+                                            isDark
+                                                ? Colors.white
+                                                : AppColors.black,
                                       ),
                                     ),
                               ],
@@ -419,18 +468,27 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                   fontWeight: FontWeight.bold,
                                   fontFamily: AppConstants.manrope,
                                   letterSpacing: 1,
-                                  color: AppColors.maincolor1,
+                                  color:
+                                      isDark
+                                          ? Color(0xffbdab82)
+                                          : AppColors.maincolor1,
                                 ),
                                 lessStyle: TextStyle(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: AppConstants.manrope,
                                   letterSpacing: 1,
-                                  color: AppColors.maincolor1,
+                                  color:
+                                      isDark
+                                          ? Color(0xffbdab82)
+                                          : AppColors.maincolor1,
                                 ),
                                 style: TextStyle(
                                   fontSize: 17.sp,
-                                  color: AppColors.maincolor,
+                                  color:
+                                      isDark
+                                          ? Colors.white
+                                          : AppColors.maincolor,
                                   fontWeight: FontWeight.normal,
                                   fontFamily: AppConstants.manrope,
                                 ),
@@ -447,12 +505,16 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: AppConstants.manrope,
-                                      color: AppColors.maincolor,
+                                      color:
+                                          isDark
+                                              ? Colors.white
+                                              : AppColors.maincolor,
                                     ),
                                   ),
                                   SizedBox(height: 2.h),
                                   ...featuresList.map((feature) {
                                     return CustomFeatureCard(
+                                      isDark: isDark,
                                       icon: Icons.check_circle_outline,
                                       title: feature,
                                     );
@@ -470,12 +532,16 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: AppConstants.manrope,
-                                      color: AppColors.maincolor,
+                                      color:
+                                          isDark
+                                              ? Colors.white
+                                              : AppColors.maincolor,
                                     ),
                                   ),
                                   SizedBox(height: 2.h),
                                   ...benefitsList.map((benefit) {
                                     return CustomFeatureCard(
+                                      isDark: isDark,
                                       icon: Icons.check_circle_outline,
                                       title: benefit,
                                     );
@@ -724,8 +790,9 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                               AddCartServiceApi();
                             }
                           },
-                          color: AppColors.white,
-                          fontcolor: AppColors.maincolor,
+                          color: isDark ? Color(0xff272727) : AppColors.white,
+                          fontcolor:
+                              isDark ? Colors.white : AppColors.maincolor,
                           height: 5.h,
                           fontsize: 15.sp,
                           iconData: Icons.add_shopping_cart_outlined,
