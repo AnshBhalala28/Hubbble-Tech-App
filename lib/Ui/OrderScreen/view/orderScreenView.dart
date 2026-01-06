@@ -68,7 +68,7 @@ class _Order_ScreenState extends State<Order_Screen> {
     "Booking Confirmed",
   ];
 
-  String selectedType = "products";
+    String selectedType = "products";
 
   @override
   void initState() {
@@ -163,7 +163,7 @@ class _Order_ScreenState extends State<Order_Screen> {
                         width: 32.w,
                         decoration: BoxDecoration(
                           color:
-                              isDark ? Color(0xffCBB88C) : Color(0xffC4B5D8B),
+                              isDark ? Color(0xffCBB88C) : AppColors.maincolor,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: PopupMenuButton<String>(
@@ -283,16 +283,16 @@ class _Order_ScreenState extends State<Order_Screen> {
                               decoration: BoxDecoration(
                                 border: Border.all(
                                   width: 0.5,
-                                  color: Colors.grey,
+                                  color: Colors.grey.withValues(alpha: .2),
                                 ),
                                 color:
-                                selectedCategory == index
-                                    ? isDark
-                                    ? Color(0xffbdab82)
-                                    : Color(0xffC4B5D8B)
-                                    : isDark
-                                    ? Colors.black
-                                    : Colors.white,
+                                    selectedCategory == index
+                                        ? isDark
+                                            ? Color(0xffbdab82)
+                                            : AppColors.maincolor
+                                        : isDark
+                                        ? Color(0xf0212121)
+                                        : Colors.white,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               margin: EdgeInsets.symmetric(horizontal: 2.w),
@@ -301,13 +301,13 @@ class _Order_ScreenState extends State<Order_Screen> {
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   color:
-                                  selectedCategory == index
-                                      ? isDark
-                                      ? Colors.white
-                                      : Colors.white
-                                      : isDark
-                                      ? Colors.white
-                                      : Colors.black,
+                                      selectedCategory == index
+                                          ? isDark
+                                              ? Colors.white
+                                              : Colors.white
+                                          : isDark
+                                          ? Colors.white
+                                          : Colors.black,
                                   fontFamily:
                                       selectedCategory == index
                                           ? AppConstants.manropeBold
@@ -352,15 +352,15 @@ class _Order_ScreenState extends State<Order_Screen> {
                               decoration: BoxDecoration(
                                 border: Border.all(
                                   width: 0.5,
-                                  color: Colors.grey,
+                                  color: Colors.grey.withValues(alpha: .2),
                                 ),
                                 color:
                                     selectedCategory == index
                                         ? isDark
                                             ? Color(0xffbdab82)
-                                            : Color(0xffC4B5D8B)
+                                            : AppColors.maincolor
                                         : isDark
-                                        ? Colors.black
+                                        ? Color(0xf0212121)
                                         : Colors.white,
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -809,8 +809,7 @@ class _Order_ScreenState extends State<Order_Screen> {
   Color cardColor(bool isDark) =>
       isDark ? const Color(0xFF1E1E1E) : Colors.white;
 
-  Color primaryText(bool isDark) =>
-      isDark ? Color(0xffbdab82) : Colors.black;
+  Color primaryText(bool isDark) => isDark ? Color(0xffbdab82) : Colors.black;
 
   Color secondaryText(bool isDark) =>
       isDark ? Colors.grey.shade400 : Colors.grey;

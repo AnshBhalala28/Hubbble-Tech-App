@@ -150,7 +150,7 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
             showSnackBar(
               context: context,
               title: 'Success',
-              message: 'Home Updated Successfully',
+              message: 'Key waivers updated successfully',
               backgoundColor: AppColors.maincolor,
               ColorText: Colors.white,
             );
@@ -251,7 +251,10 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                             icon: Icons.location_on,
                             label: "Property Address",
                             value: fullAddress,
-                            iconBg:theme.isDark? Color(0xf036342F):Color(0xf0E9EAEF),
+                            iconBg:
+                                theme.isDark
+                                    ? Color(0xf036342F)
+                                    : Color(0xf0E9EAEF),
 
                             iconColor: iconColor,
                             labelColor: subtitleColor,
@@ -263,7 +266,10 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                             icon: Icons.apartment,
                             label: "Property Details",
                             value: propertyDetails,
-                            iconBg:theme.isDark? Color(0xf036342F):Color(0xf0E9EAEF),
+                            iconBg:
+                                theme.isDark
+                                    ? Color(0xf036342F)
+                                    : Color(0xf0E9EAEF),
 
                             iconColor: iconColor,
                             labelColor: subtitleColor,
@@ -298,7 +304,10 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                                           width: 11.w,
                                           height: 11.w,
                                           decoration: BoxDecoration(
-                                        color:theme.isDark? Color(0xf036342F):Color(0xf0E9EAEF),
+                                            color:
+                                                theme.isDark
+                                                    ? Color(0xf036342F)
+                                                    : Color(0xf0E9EAEF),
 
                                             borderRadius: BorderRadius.circular(
                                               90,
@@ -317,7 +326,10 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                                             fontFamily: AppConstants.manrope,
                                             fontSize: 16.5.sp,
                                             fontWeight: FontWeight.bold,
-                                            color: theme.isDark? Colors.grey.shade500 : Colors.grey.shade600,
+                                            color:
+                                                theme.isDark
+                                                    ? Colors.grey.shade500
+                                                    : Colors.grey.shade600,
                                           ),
                                         ),
                                       ],
@@ -424,7 +436,8 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                               style: TextStyle(
                                 fontSize: 17.sp,
                                 fontWeight: FontWeight.w500,
-                                color: theme.isDark? Colors.white : Colors.black,
+                                color:
+                                    theme.isDark ? Colors.white : Colors.black,
 
                                 fontFamily: AppConstants.manrope,
                               ),
@@ -497,7 +510,8 @@ class _MyHome_ScreenState extends State<MyHome_Screen> {
                               style: TextStyle(
                                 fontSize: 17.sp,
                                 fontWeight: FontWeight.w500,
-                                color: theme.isDark? Colors.white : Colors.black,
+                                color:
+                                    theme.isDark ? Colors.white : Colors.black,
 
                                 fontFamily: AppConstants.manrope,
                               ),

@@ -70,7 +70,7 @@ class _BottomBarState extends State<BottomBar> {
 
     // DARK MODE (Gold & Charcoal)
     final darkBg = const Color(0xFF1C1C1C); // Dark Charcoal
-    final darkBorder = const Color(0xFFCDBA81); // Gold Border
+    final darkBorder = const Color(0xFF33302B); // Gold Border
     final darkActiveFill = const Color(
       0xFFCDBA81,
     ).withOpacity(0.2); // Semi-transparent Gold circle

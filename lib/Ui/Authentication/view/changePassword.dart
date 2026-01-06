@@ -493,7 +493,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
     // Requirements Box
     final Color reqBoxColor =
-        isDark ? Color(0xf0282623): const Color(0xFFE9EEF5);
+        isDark ? Color(0xf0282623) : const Color(0xFFE9EEF5);
     final Color reqDefaultTextColor =
         isDark ? const Color(0xFFCFB583) : Colors.blue.shade900;
     final BoxBorder? reqBoxBorder =
@@ -762,8 +762,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         fontSize: 13.sp,
                         fontWeight: FontWeight.bold,
                         color: reqDefaultTextColor,
-                          fontFamily: AppConstants.manrope
-
+                        fontFamily: AppConstants.manrope,
                       ),
                     ),
                     SizedBox(height: 1.5.h),
@@ -842,7 +841,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       },
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: TextStyle(color: hintColor, fontSize: 13.sp,fontFamily: AppConstants.manrope),
+        hintStyle: TextStyle(
+          color: hintColor,
+          fontSize: 13.sp,
+          fontFamily: AppConstants.manrope,
+        ),
 
         // --- PREFIX ICON (LOCK) ---
         prefixIcon: Padding(
@@ -923,7 +926,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             style: TextStyle(
               color: isMet ? activeColor : defaultColor,
               fontSize: 13.5.sp,
-              fontFamily: AppConstants.manrope
+              fontFamily: AppConstants.manrope,
             ),
           ),
         ],

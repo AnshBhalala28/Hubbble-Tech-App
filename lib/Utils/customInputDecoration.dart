@@ -14,8 +14,10 @@ InputDecoration inputDecoration({
 }) {
   // થીમ મુજબ કલર લોજિક
   final Color fillColor = isDark ? const Color(0xFF252525) : Colors.white;
-  final Color borderColor = isDark ? const Color(0xFF404040) : AppColors.maincolor;
-  final Color hintColor = cr ?? (isDark ? Colors.grey[500]! : Colors.grey[400]!);
+  final Color borderColor =
+      isDark ? const Color(0xFF404040) : AppColors.maincolor;
+  final Color hintColor =
+      cr ?? (isDark ? Colors.grey[500]! : Colors.grey[400]!);
 
   return InputDecoration(
     contentPadding: EdgeInsets.symmetric(vertical: 1.2.h, horizontal: 4.w),

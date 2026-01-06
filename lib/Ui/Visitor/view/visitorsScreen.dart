@@ -293,15 +293,21 @@ class _VisitorScreenState extends State<VisitorScreen> {
                     },
 
                     firstPageProgressIndicatorBuilder:
-                        (_) =>  Center(
+                        (_) => Center(
                           child: CircularProgressIndicator(
-                            color:theme.isDark?Colors.white: AppColors.maincolor,
+                            color:
+                                theme.isDark
+                                    ? Colors.white
+                                    : AppColors.maincolor,
                           ),
                         ),
                     newPageProgressIndicatorBuilder:
-                        (_) =>  Center(
+                        (_) => Center(
                           child: CircularProgressIndicator(
-                            color:theme.isDark?Colors.white: AppColors.maincolor,
+                            color:
+                                theme.isDark
+                                    ? Colors.white
+                                    : AppColors.maincolor,
                           ),
                         ),
                     noItemsFoundIndicatorBuilder:
@@ -341,7 +347,6 @@ class _VisitorScreenState extends State<VisitorScreen> {
                 ),
               ),
             ),
-
           ],
         ),
       ),

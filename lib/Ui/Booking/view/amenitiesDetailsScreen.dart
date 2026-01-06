@@ -1469,7 +1469,13 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                         ),
                                                     width: double.infinity,
                                                     decoration: BoxDecoration(
-                                                      color:theme.isDark?Color(0xf0252525): AppColors.bgcolor,
+                                                      color:
+                                                          theme.isDark
+                                                              ? Color(
+                                                                0xf0252525,
+                                                              )
+                                                              : AppColors
+                                                                  .bgcolor,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                             12,
@@ -1514,8 +1520,9 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                         .calendar_month,
                                                                     size: 22.sp,
                                                                     color:
-                                                                    theme.isDark?AppColors.white:  AppColors
-                                                                            .maincolor,
+                                                                        theme.isDark
+                                                                            ? AppColors.white
+                                                                            : AppColors.maincolor,
                                                                   ),
                                                                   const SizedBox(
                                                                     height: 4,
@@ -1553,8 +1560,9 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                     Icons.timer,
                                                                     size: 22.sp,
                                                                     color:
-                                                                    theme.isDark?AppColors.white:    AppColors
-                                                                            .maincolor,
+                                                                        theme.isDark
+                                                                            ? AppColors.white
+                                                                            : AppColors.maincolor,
                                                                   ),
                                                                   const SizedBox(
                                                                     height: 4,
@@ -1571,8 +1579,9 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                       fontSize:
                                                                           15.sp,
                                                                       color:
-                                                                      theme.isDark?AppColors.white:    Colors
-                                                                              .black,
+                                                                          theme.isDark
+                                                                              ? AppColors.white
+                                                                              : Colors.black,
                                                                       fontFamily:
                                                                           AppConstants
                                                                               .manropeBold,
@@ -1589,8 +1598,9 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                         .timelapse,
                                                                     size: 22.sp,
                                                                     color:
-                                                                    theme.isDark?AppColors.white:  AppColors
-                                                                            .maincolor,
+                                                                        theme.isDark
+                                                                            ? AppColors.white
+                                                                            : AppColors.maincolor,
                                                                   ),
                                                                   const SizedBox(
                                                                     height: 4,
@@ -1611,8 +1621,9 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                                       fontSize:
                                                                           15.sp,
                                                                       color:
-                                                                      theme.isDark?AppColors.white:     Colors
-                                                                              .black,
+                                                                          theme.isDark
+                                                                              ? AppColors.white
+                                                                              : Colors.black,
                                                                       fontFamily:
                                                                           AppConstants
                                                                               .manropeBold,
@@ -2968,7 +2979,9 @@ class _Form_ScreenState extends State<Form_Screen> {
     final DateTime todayOnly = DateTime(now.year, now.month, now.day);
 
     calendar1SelectedDate ??= todayOnly;
-    calendar1SelectedDateStr = DateFormat('dd/MM/yyyy').format(calendar1SelectedDate!);
+    calendar1SelectedDateStr = DateFormat(
+      'dd/MM/yyyy',
+    ).format(calendar1SelectedDate!);
 
     final theme = context.watch<ThemeController>();
     final bool isDark = theme.isDark;
@@ -2987,8 +3000,9 @@ class _Form_ScreenState extends State<Form_Screen> {
       lastDay: kLastDay,
       focusedDay: calendar1FocusedMonth,
       calendarFormat: CalendarFormat.month,
-      headerVisible: false, // Header tame custom banavyu hoy em lage che
+      headerVisible: false,
 
+      // Header tame custom banavyu hoy em lage che
       selectedDayPredicate: (day) => isSameDay(calendar1SelectedDate, day),
 
       enabledDayPredicate: (day) {
@@ -3005,7 +3019,9 @@ class _Form_ScreenState extends State<Form_Screen> {
       onDaySelected: (newSelectedDay, focusedDay) {
         setState(() {
           calendar1SelectedDate = newSelectedDay;
-          calendar1SelectedDateStr = DateFormat('dd/MM/yyyy').format(newSelectedDay);
+          calendar1SelectedDateStr = DateFormat(
+            'dd/MM/yyyy',
+          ).format(newSelectedDay);
           calendar1FocusedMonth = focusedDay;
           calendar1Loading = true;
           selectedStartTime = null;
@@ -3020,8 +3036,16 @@ class _Form_ScreenState extends State<Form_Screen> {
 
       // --- Styling Section ---
       daysOfWeekStyle: DaysOfWeekStyle(
-        weekdayStyle: TextStyle(color: secondaryTextColor, fontFamily: AppConstants.manrope, fontWeight: FontWeight.w600),
-        weekendStyle: TextStyle(color: secondaryTextColor, fontFamily: AppConstants.manrope, fontWeight: FontWeight.w600),
+        weekdayStyle: TextStyle(
+          color: secondaryTextColor,
+          fontFamily: AppConstants.manrope,
+          fontWeight: FontWeight.w600,
+        ),
+        weekendStyle: TextStyle(
+          color: secondaryTextColor,
+          fontFamily: AppConstants.manrope,
+          fontWeight: FontWeight.w600,
+        ),
       ),
 
       calendarStyle: CalendarStyle(
@@ -3080,7 +3104,7 @@ class _Form_ScreenState extends State<Form_Screen> {
     );
   }
 
-// Common Helper function for cleaner code
+  // Common Helper function for cleaner code
   Widget _buildCalendarDay({
     required DateTime day,
     required Color textColor,
@@ -3346,8 +3370,7 @@ class _Form_ScreenState extends State<Form_Screen> {
     String bookingid,
     String attended,
     String rsvp,
-  ) async
-  {
+  ) async {
     setState(() {
       isRsvpLoading = true;
     });

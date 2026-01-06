@@ -937,11 +937,11 @@ class _MessageScreenState extends State<MessageScreen> {
             ),
             child: Stack(
               children: [
-                if (message.thumbnail != null)
+                if (message.file != null)
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: CachedNetworkImage(
-                      imageUrl: message.thumbnail!,
+                      imageUrl: message.file!,
                       width: 200,
                       height: 150,
                       fit: BoxFit.cover,

@@ -15,6 +15,8 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wavee/Services/themeServices.dart';
+import 'package:wavee/Services/weatherModal.dart';
+import 'package:wavee/Services/weatherService.dart';
 import 'package:wavee/Ui/Authentication/modal/login_model.dart';
 import 'package:wavee/Ui/Booking/View/eventBookingScreen.dart';
 import 'package:wavee/Ui/Booking/view/bookAmenities.dart';
@@ -54,6 +56,7 @@ import '../modal/chatShowCountModal.dart';
 import '../modal/messageBoardModal.dart';
 import '../modal/parcelShowCount.dart';
 import '../modal/visitorShowCountModel.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class HomePage extends StatefulWidget {
   int? selected;
@@ -109,6 +112,7 @@ class _HomePageState extends State<HomePage>
     setState(() {
       isLoading = true;
     });
+    _fetchWeather();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkDefaultPassword();
     });
@@ -199,21 +203,20 @@ class _HomePageState extends State<HomePage>
               colors:
                   isDark
                       ? [
-                        const Color(0xFFEAE0C8),
+                        const Color(0xf0CBB88C),
                         const Color(0xFFFFE181),
-                        const Color(0xFFEAE0C8),
+                        const Color(0xf0CBB88C),
                       ]
                       : [
-                        const Color(0xFF2D3A5A),
+                        const Color(0xFF4B5D8A),
                         const Color(0xFF6B80B6),
-                        const Color(0xFF2D3A5A),
+                        const Color(0xFF4B5D8A),
                       ],
               stops: const [0.0, 0.5, 1.0],
             ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height));
           },
           child: Text(
             "${_getGreeting()}, $fullName",
-            // Dynamic Greeting
             style: TextStyle(
               fontSize: 20.sp, // Slightly larger to match the screenshot weight
               color: Colors.white, // Required for ShaderMask
@@ -282,11 +285,11 @@ class _HomePageState extends State<HomePage>
                             // 5. Toggle between Gold (Dark) and LightText (Light)
                             color:
                                 theme.isDark
-                                    ? AppColors.goldDateColor
-                                    : AppColors.lightText,
-                            fontFamily: AppConstants.manropeSemiBold,
+                                    ? Color(0xf0C5B288)
+                                    : Color(0xFF4B5D8A),
+                            fontFamily: AppConstants.manrope,
                             fontSize: 15.sp,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.normal,
                             letterSpacing: 1.5,
                           ),
                         ),
@@ -326,13 +329,22 @@ class _HomePageState extends State<HomePage>
                               padding: EdgeInsets.all(5),
                               child: Row(
                                 children: [
-                                  Icon(
-                                    Icons.apartment,
+                                  // Icon(
+                                  //   Icons.apartment,
+                                  //   color:
+                                  //       theme.isDark
+                                  //           ? Color(0xf0AC9D79)
+                                  //           : AppColors.lightText,
+                                  // ),
+                                  SvgPicture.asset(
+                                    AppConstants.aprtmentIcon,
+                                    width: 10.w,
                                     color:
                                         theme.isDark
-                                            ? AppColors.goldDateColor
+                                            ? Color(0xf0AC9D79)
                                             : AppColors.lightText,
                                   ),
+
                                   SizedBox(width: 2.w),
                                   Text(
                                     capitalize(
@@ -345,16 +357,15 @@ class _HomePageState extends State<HomePage>
                                     style: TextStyle(
                                       color:
                                           theme.isDark
-                                              ? AppColors.creamTextColor
+                                              ? Color(0xf0BDBDBE)
                                               : AppColors.lightText,
                                       fontFamily: AppConstants.manropeBold,
-                                      fontSize: 15.sp,
+                                      fontSize: 14.sp,
                                     ),
                                   ),
                                 ],
                               ).paddingSymmetric(horizontal: 3.w),
                             ).paddingOnly(top: 2.h, left: 2.w, right: 2.w),
-
                             Container(
                               height: 4.h,
                               decoration: BoxDecoration(
@@ -379,37 +390,102 @@ class _HomePageState extends State<HomePage>
                                           BoxShadow(
                                             color: AppColors.lightText
                                                 .withValues(alpha: 0.15),
-                                            spreadRadius: 0,
                                             blurRadius: 10,
-                                            offset: Offset(0, 5),
+                                            offset: const Offset(0, 5),
                                           ),
                                         ],
                               ),
                               child: Row(
                                 children: [
-                                  Icon(
-                                    Icons.wb_sunny_outlined,
-                                    color:
-                                        theme.isDark
-                                            ? AppColors.goldDateColor
-                                            : AppColors.lightText,
-                                    size: 18.sp,
+                                  SvgPicture.asset(
+                                    getWeatherSvg(_weathermodel?.mainCondition),
+                                    width: getWeatherIconSize(
+                                      _weathermodel?.mainCondition,
+                                    ),
+                                    colorFilter: ColorFilter.mode(
+                                      theme.isDark
+                                          ? const Color(0xffAC9D79)
+                                          : AppColors.lightText,
+                                      BlendMode.srcIn,
+                                    ),
                                   ),
+
                                   SizedBox(width: 2.w),
+
+                                  /// 🌡 Temperature
                                   Text(
-                                    "12 C",
+                                    _weathermodel == null
+                                        ? "loading.."
+                                        : "${_weathermodel!.temperature.round()}°C",
                                     style: TextStyle(
                                       color:
                                           theme.isDark
-                                              ? AppColors.creamTextColor
+                                              ? Color(0xf0BDBDBE)
                                               : AppColors.lightText,
                                       fontFamily: AppConstants.manropeBold,
-                                      fontSize: 15.sp,
+                                      fontSize: 14.sp,
                                     ),
                                   ),
                                 ],
                               ).paddingSymmetric(horizontal: 3.w),
                             ).paddingOnly(top: 2.h, left: 2.w),
+
+                            // Container(
+                            //   height: 4.h,
+                            //   decoration: BoxDecoration(
+                            //     color:
+                            //         theme.isDark
+                            //             ? AppColors.darkPillColor
+                            //             : AppColors.white,
+                            //     borderRadius: BorderRadius.circular(25),
+                            //     border: Border.all(
+                            //       color:
+                            //           theme.isDark
+                            //               ? AppColors.darkBorderColor
+                            //               : AppColors.lightText.withValues(
+                            //                 alpha: 0.3,
+                            //               ),
+                            //       width: 1,
+                            //     ),
+                            //     boxShadow:
+                            //         theme.isDark
+                            //             ? []
+                            //             : [
+                            //               BoxShadow(
+                            //                 color: AppColors.lightText
+                            //                     .withValues(alpha: 0.15),
+                            //                 spreadRadius: 0,
+                            //                 blurRadius: 10,
+                            //                 offset: Offset(0, 5),
+                            //               ),
+                            //             ],
+                            //   ),
+                            //   child: Row(
+                            //     children: [
+                            //
+                            //       SvgPicture.asset(AppConstants.light, width: 5.w,
+                            //         color:
+                            //         theme.isDark
+                            //             ? Color(0xf0AC9D79)
+                            //             : AppColors.lightText,
+                            //       ),
+                            //       SizedBox(width: 2.w),
+                            //       Text(
+                            //         (_weathermodel?.temperature.round() == null)
+                            //             ? "loading.."
+                            //             : "${_weathermodel?.temperature.round()}°C",
+                            //         style: TextStyle(
+                            //           color: theme.isDark
+                            //               ? AppColors.creamTextColor
+                            //               : AppColors.lightText,
+                            //           fontFamily: AppConstants.manropeBold,
+                            //           fontSize: 15.sp,
+                            //         ),
+                            //       ),
+                            //
+                            //     ],
+                            //   ).paddingSymmetric(horizontal: 3.w),
+                            // ).paddingOnly(top: 2.h, left: 2.w),
                           ],
                         ),
                         parcelCount == 0
@@ -525,7 +601,7 @@ class _HomePageState extends State<HomePage>
                                         theme.isDark
                                             ? const Color(0xFFCDBA81)
                                             : const Color(0xFF3E5481),
-                                    size: 24.sp,
+                                    size: 22.sp,
                                   ),
                                 ],
                               ),
@@ -533,7 +609,7 @@ class _HomePageState extends State<HomePage>
                         if (parcelCount == 0) SizedBox(height: 1.h),
                         GestureDetector(
                           onTap: () {
-                            Get.to(Spotlightview());
+                            // Get.to(Spotlightview());
                           },
                           child: Container(
                             margin: EdgeInsets.symmetric(vertical: 2.h),
@@ -610,7 +686,7 @@ class _HomePageState extends State<HomePage>
                                     color:
                                         theme.isDark
                                             ? const Color(0xFF2D4A3E)
-                                            : const Color(0xFFCDEEE0),
+                                            : const Color(0xFFBBE1DB),
                                     // આઈકોન પાછળનું આછું ગ્રીન સર્કલ
                                     shape: BoxShape.circle,
                                   ),
@@ -622,7 +698,7 @@ class _HomePageState extends State<HomePage>
                                           theme.isDark
                                               ? const Color(0xFF4ADE80)
                                               : const Color(
-                                                0xFF00A651,
+                                                0xFF009966,
                                               ), // ડાર્ક ગ્રીન આઈકોન
                                     ),
                                   ),
@@ -633,7 +709,8 @@ class _HomePageState extends State<HomePage>
                                 // --- Text Section ---
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
@@ -651,7 +728,7 @@ class _HomePageState extends State<HomePage>
                                       ),
                                       SizedBox(height: 0.2.h),
                                       Text(
-                                        "24 trees planted • 5 badges earned",
+                                        "Coming Soon",
                                         style: TextStyle(
                                           color:
                                               theme.isDark
@@ -666,14 +743,14 @@ class _HomePageState extends State<HomePage>
                                 ),
 
                                 // --- Arrow Icon ---
-                                Icon(
-                                  Icons.chevron_right,
-                                  color:
-                                      theme.isDark
-                                          ? const Color(0xFF4ADE80)
-                                          : const Color(0xFF00A651),
-                                  size: 22.sp,
-                                ),
+                                // Icon(
+                                //   Icons.chevron_right,
+                                //   color:
+                                //       theme.isDark
+                                //           ? const Color(0xFF4ADE80)
+                                //           : const Color(0xFF00A651),
+                                //   size: 22.sp,
+                                // ),
                               ],
                             ),
                           ),
@@ -685,6 +762,11 @@ class _HomePageState extends State<HomePage>
                       ],
                     ).paddingOnly(left: 3.w, right: 3.w, top: 6.h),
                   ),
+                  if (isRegistration)
+                    Container(
+                      color: AppColors.black.withValues(alpha: .2),
+                      child: Loader(),
+                    ),
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: BottomBar(selected: 1, chatCount: chatCount),
@@ -946,7 +1028,7 @@ class _HomePageState extends State<HomePage>
                   Text(
                     "Latest from your community",
                     style: TextStyle(
-                      fontSize: 14.5.sp,
+                      fontSize: 15.sp,
                       color: subTextColor,
                       fontFamily: AppConstants.manrope,
                     ),
@@ -1088,10 +1170,10 @@ class _HomePageState extends State<HomePage>
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w600,
-                                                  fontSize: 14.sp,
+                                                  fontSize: 15.sp,
                                                   color: mainTextColor,
                                                   fontFamily:
-                                                      AppConstants.manrope,
+                                                      AppConstants.manropeBold,
                                                 ),
                                               ),
                                             ),
@@ -1099,7 +1181,7 @@ class _HomePageState extends State<HomePage>
                                             Text(
                                               formatPostDate(item.createdAt),
                                               style: TextStyle(
-                                                fontSize: 13.sp,
+                                                fontSize: 14.sp,
                                                 fontFamily:
                                                     AppConstants.manrope,
                                                 color: subTextColor,
@@ -1113,7 +1195,7 @@ class _HomePageState extends State<HomePage>
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                            fontSize: 13.8.sp,
+                                            fontSize: 14.sp,
                                             fontWeight: FontWeight.bold,
                                             fontFamily: AppConstants.manrope,
                                             color: accentColor,
@@ -1125,7 +1207,7 @@ class _HomePageState extends State<HomePage>
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                            fontSize: 13.8.sp,
+                                            fontSize: 14.sp,
                                             color:
                                                 isDark
                                                     ? Colors.grey[400]
@@ -1397,11 +1479,7 @@ class _HomePageState extends State<HomePage>
             color: Colors.transparent,
             child: InkWell(
               onTap: () async {
-                showWaveePet(
-                  context: context,
-                  bgcolor: cardBgColor,
-                  accentClr: accentColor,
-                );
+                handleWaveePetClick();
               },
               borderRadius: BorderRadius.circular(20),
               child: Container(
@@ -2245,6 +2323,54 @@ class _HomePageState extends State<HomePage>
     });
   }
 
+  Future<void> handleWaveePetClick() async {
+    setState(() {
+      isRegistration = true; // Loader chalu thase
+    });
+
+    String? savedEmail = await SaveDataLocal.getEmail();
+    final Map<String, String> data = {"email": savedEmail ?? ""};
+
+    checkInternet().then((internet) async {
+      if (internet) {
+        try {
+          // Tamari AuthProvider ni checkMail API call karo
+          var response = await AuthProvider().checkMail(data);
+
+          setState(() {
+            isRegistration = false;
+          });
+
+          if (response.statusCode == 422) {
+            launchStore();
+          }
+          // CASE 2: User nathi (200) -> Registration Dialog show karo
+          else if (response.statusCode == 200) {
+            final theme = context.read<ThemeController>();
+            final accentColor =
+                theme.isDark ? const Color(0xFFDCC688) : Color(0xf04B5D8A);
+            final cardBgColor =
+                theme.isDark ? const Color(0xFF212121) : Color(0xf0F8FAFC);
+
+            showWaveePet(
+              context: context,
+              bgcolor: cardBgColor,
+              accentClr: accentColor,
+            );
+          } else {
+            print("CheckMail Error: ");
+          }
+        } catch (e) {
+          setState(() => isRegistration = false);
+          print("CheckMail Error: $e");
+        }
+      } else {
+        setState(() => isRegistration = false);
+        buildErrorDialog(context, 'Error', "Internet Required");
+      }
+    });
+  }
+
   Future<void> showWaveePet({
     required BuildContext context,
     required bgcolor,
@@ -2633,6 +2759,58 @@ class _HomePageState extends State<HomePage>
       },
     );
   }
+
+  final _weatherService = WeatherService(AppConstants.weatherApi);
+  WeatherModel? _weathermodel;
+
+  _fetchWeather() async {
+    String cityName = await _weatherService.getCurrentCity();
+
+    try {
+      final weather = await _weatherService.getWeather(cityName);
+
+      setState(() {
+        _weathermodel = weather;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  String getWeatherSvg(String? condition) {
+    if (condition == null) return AppConstants.weatherCloudy;
+
+    final c = condition.toLowerCase();
+
+    if (c.contains('clear')) {
+      return AppConstants.light;
+    } else if (c.contains('cloud')) {
+      return AppConstants.weatherCloudy;
+    } else if (c.contains('rain') || c.contains('drizzle')) {
+      return AppConstants.weatherRainy;
+    } else if (c.contains('thunder')) {
+      return AppConstants.weatherThunder;
+    } else if (c.contains('snow')) {
+      return AppConstants.weatherSnow;
+    } else if (c.contains('mist') || c.contains('fog') || c.contains('haze')) {
+      return AppConstants.weatherFog;
+    } else {
+      return AppConstants.weatherCloudy;
+    }
+  }
+
+  double getWeatherIconSize(String? condition) {
+    if (condition == null) return 5.w;
+
+    switch (condition.toLowerCase()) {
+      case 'thunderstorm':
+        return 3.w;
+      case 'snow':
+        return 4.w;
+      default:
+        return 5.w;
+    }
+  }
 }
 
 class LiveIndicator extends StatefulWidget {
@@ -2649,7 +2827,7 @@ class _LiveIndicatorState extends State<LiveIndicator>
   @override
   void initState() {
     super.initState();
-    // ૧.૫ સેકન્ડનું લૂપ જે સતત ચાલશે
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1800),

@@ -19,6 +19,8 @@ import 'Utils/chatCounter.dart';
 import 'Utils/colors.dart';
 import 'Utils/storeUserData.dart';
 import 'firebase_options.dart';
+import "package:flutter_dotenv/flutter_dotenv.dart";
+
 
 String? myDeviceToken;
 
@@ -123,6 +125,7 @@ void main() async {
   if (!isAllowed) {
     AwesomeNotifications().requestPermissionToSendNotifications();
   }
+  await dotenv.load(fileName: ".env");
 
   runApp(
     ChangeNotifierProvider(

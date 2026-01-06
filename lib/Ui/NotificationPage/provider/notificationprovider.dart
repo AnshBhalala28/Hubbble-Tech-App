@@ -5,7 +5,6 @@ import 'package:wavee/Utils/apiEndpoint.dart';
 import 'package:wavee/Utils/responses.dart';
 import 'package:wavee/Utils/storeUserData.dart';
 
-
 class NotificationProvider extends ChangeNotifier {
   Future<Response> notificationApi(String userId) async {
     try {

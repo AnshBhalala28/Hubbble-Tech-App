@@ -228,7 +228,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     .toList(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          
+
           children: [
             Text(
               selectedType.capitalizeFirst!,

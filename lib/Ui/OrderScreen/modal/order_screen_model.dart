@@ -395,7 +395,7 @@ class OrderProducts {
   String? price;
   String? totalPrice;
   int? isWithdrawn;
-  Null isBooked;
+  var isBooked;
   String? createdAt;
   String? updatedAt;
   Product? product;

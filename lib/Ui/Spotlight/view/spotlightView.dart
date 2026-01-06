@@ -742,7 +742,9 @@ class _SpotlightviewState extends State<Spotlightview> {
       children: [
         CircleAvatar(
           backgroundColor:
-              theme.isDark ? const Color(0xFF0D2D1D) : Colors.green.withValues(alpha: .2),
+              theme.isDark
+                  ? const Color(0xFF0D2D1D)
+                  : Colors.green.withValues(alpha: .2),
           child: Icon(icon, color: const Color(0xFF4CAF50), size: 20),
         ),
         const SizedBox(width: 12),
@@ -857,7 +859,10 @@ class _SpotlightviewState extends State<Spotlightview> {
             width: 60,
             height: 60,
             decoration: BoxDecoration(
-              color:theme.isDark? Colors.grey[900]:Colors.grey.withValues(alpha: .2),
+              color:
+                  theme.isDark
+                      ? Colors.grey[900]
+                      : Colors.grey.withValues(alpha: .2),
               borderRadius: BorderRadius.circular(15),
             ),
             child: const Icon(Icons.business, color: Colors.grey),

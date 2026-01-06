@@ -228,7 +228,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: CircularProgressIndicator(
                                 color: Colors.white,
                                 strokeWidth: 3,
-
                               ),
                             )
                             : Text(
@@ -271,7 +270,8 @@ class _LoginScreenState extends State<LoginScreen> {
       obscureText: isPassword ? !isVisible : false,
       keyboardType: keyboardType,
       validator: validator,
-      style: TextStyle(color: kWhiteText),
+
+      style: TextStyle(color: kWhiteText,fontFamily: AppConstants.manrope),
       cursorColor: kAccentColor,
       decoration: InputDecoration(
         hintText: hint,
@@ -356,7 +356,6 @@ class _LoginScreenState extends State<LoginScreen> {
         'password': password.text.trim(),
         'role': '4',
         "fcm_token": fcmToken,
-        // "fcm_token": "jack sardhara",
       };
 
       bool internet = await checkInternet();

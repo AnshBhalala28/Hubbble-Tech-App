@@ -16,11 +16,20 @@ class OrderProvider extends ChangeNotifier {
         "${ApiEndpoint.myOrder}?user_id=$userID&type=$type&status=$status&page=$page",
         options: Options(headers: {'X-Auth-Token': token}),
       );
-
+      print(
+        "URL VAE${ApiEndpoint.myOrder}?user_id=$userID&type=$type&status=$status&page=$page",
+      );
       return response;
     } on DioException catch (e) {
+      print(
+        "URL VAE${ApiEndpoint.myOrder}?user_id=$userID&type=$type&status=$status&page=$page",
+      );
       throw Exception(handleDioError(e));
+
     } catch (e) {
+      print(
+        "URL VAE${ApiEndpoint.myOrder}?user_id=$userID&type=$type&status=$status&page=$page",
+      );
       rethrow;
     }
   }

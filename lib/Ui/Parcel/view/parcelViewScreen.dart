@@ -281,23 +281,22 @@ class _ParcelScreenState extends State<ParcelScreen> {
                         ],
                       ),
                     );
-
                   },
                   firstPageProgressIndicatorBuilder:
-                      (_) =>  Center(
-                    child: CircularProgressIndicator(
-                      color:theme.isDark?Colors.white: AppColors.maincolor,
-                    ),
-                  ),
+                      (_) => Center(
+                        child: CircularProgressIndicator(
+                          color:
+                              theme.isDark ? Colors.white : AppColors.maincolor,
+                        ),
+                      ),
                   newPageProgressIndicatorBuilder:
-                      (_) =>  Center(
-                    child: CircularProgressIndicator(
-                      color:theme.isDark?Colors.white: AppColors.maincolor,
-                    ),
-                  ),
+                      (_) => Center(
+                        child: CircularProgressIndicator(
+                          color:
+                              theme.isDark ? Colors.white : AppColors.maincolor,
+                        ),
+                      ),
                 ),
-
-
               ),
             ).paddingOnly(bottom: 1.h),
           ),

@@ -83,7 +83,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                       children: List.generate(categories.length, (index) {
                         final isSelected = selectedCategory == index;
 
-                        return InkWell(
+                        return GestureDetector(
                           onTap: () {
                             if (!isSelected) {
                               setState(() {
@@ -102,20 +102,19 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                             alignment: Alignment.center,
                             margin: EdgeInsets.symmetric(horizontal: 1.2.w),
                             decoration: BoxDecoration(
-
                               color:
                                   theme.isDark
                                       ? (isSelected
                                           ? Colors
                                               .white // selected → white (image jevu)
                                           : const Color(
-                                            0xFF212121
+                                            0xFF212121,
                                           )) // dark chip bg
                                       : (isSelected
                                           ? AppColors.maincolor
                                           : Colors.white),
                               borderRadius: BorderRadius.circular(
-                                25  ,
+                                25,
                               ), // image ma more round
                             ),
                             child: Text(
@@ -333,80 +332,114 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                             scrollDirection: Axis.vertical,
                             physics: const NeverScrollableScrollPhysics(),
                             padding: EdgeInsets.zero,
-                            itemCount: maintenanceModel?.data?.data?.length ?? 0,
+                            itemCount:
+                                maintenanceModel?.data?.data?.length ?? 0,
                             itemBuilder: (context, index) {
-                              var booking = maintenanceModel?.data?.data?[index];
-                              Color statusColor = getStatusColor(booking?.status ?? '');
+                              var booking =
+                                  maintenanceModel?.data?.data?[index];
+                              Color statusColor = getStatusColor(
+                                booking?.status ?? '',
+                              );
 
                               return GestureDetector(
                                 onTap: () {
-                                  MaintenanceDetailApi(booking?.id.toString() ?? "");
+                                  MaintenanceDetailApi(
+                                    booking?.id.toString() ?? "",
+                                  );
                                 },
                                 child: Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 1.w, vertical: 1.h),
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: 1.w,
+                                    vertical: 1.h,
+                                  ),
                                   padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
-                                    color: theme.isDark ? const Color(0xff252525) : Colors.white,
+                                    color:
+                                        theme.isDark
+                                            ? const Color(0xff252525)
+                                            : Colors.white,
                                     borderRadius: BorderRadius.circular(20),
-                                    boxShadow: theme.isDark
-                                        ? []
-                                        : [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.05),
-                                        spreadRadius: 1,
-                                        blurRadius: 10,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
+                                    boxShadow:
+                                        theme.isDark
+                                            ? []
+                                            : [
+                                              BoxShadow(
+                                                color: Colors.black.withOpacity(
+                                                  0.05,
+                                                ),
+                                                spreadRadius: 1,
+                                                blurRadius: 10,
+                                                offset: const Offset(0, 4),
+                                              ),
+                                            ],
                                   ),
                                   child: Row(
                                     children: [
                                       // Status Icon with background
-                                        Container(
-                                          height: 55,
-                                          width: 55,
-                                          decoration: BoxDecoration(
-                                            color: statusColor.withValues(alpha: .2),
-                                            // borderRadius: BorderRadius.circular(15),
-                                            shape: BoxShape.circle
+                                      Container(
+                                        height: 55,
+                                        width: 55,
+                                        decoration: BoxDecoration(
+                                          color: statusColor.withValues(
+                                            alpha: .2,
                                           ),
-                                          child: Icon(
-                                            _getStatusIcon(booking?.status ?? ''),
-                                            color: statusColor,
-                                            size: 28,
-                                          ),
+                                          // borderRadius: BorderRadius.circular(15),
+                                          shape: BoxShape.circle,
                                         ),
+                                        child: Icon(
+                                          _getStatusIcon(booking?.status ?? ''),
+                                          color: statusColor,
+                                          size: 28,
+                                        ),
+                                      ),
                                       const SizedBox(width: 15),
 
                                       // Content
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Text(
-                                                  formatDate(booking?.createdAt), // Updated Date Helper
+                                                  formatDate(
+                                                    booking?.createdAt,
+                                                  ),
+                                                  // Updated Date Helper
                                                   style: TextStyle(
                                                     fontSize: 14.sp,
                                                     color: Colors.grey,
-                                                    fontFamily: AppConstants.manrope,
+                                                    fontFamily:
+                                                        AppConstants.manrope,
                                                   ),
                                                 ),
-                                                _buildMiniBadge(booking?.status ?? '', theme),
+                                                _buildMiniBadge(
+                                                  booking?.status ?? '',
+                                                  theme,
+                                                ),
                                               ],
                                             ),
                                             const SizedBox(height: 6),
                                             Text(
-                                              booking?.subject?.capitalizeFirst ?? '',
+                                              booking
+                                                      ?.subject
+                                                      ?.capitalizeFirst ??
+                                                  '',
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
                                                 fontSize: 15.5.sp,
                                                 fontWeight: FontWeight.bold,
-                                                fontFamily: AppConstants.manropeBold,
-                                                color: theme.isDark ? Colors.white : Colors.black87,
+                                                fontFamily:
+                                                    AppConstants.manropeBold,
+                                                color:
+                                                    theme.isDark
+                                                        ? Colors.white
+                                                        : Colors.black87,
                                               ),
                                             ),
                                             const SizedBox(height: 4),
@@ -414,9 +447,13 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                               "ID: #${booking?.id ?? '00'}",
                                               style: TextStyle(
                                                 fontSize: 13.sp,
-                                                fontFamily: AppConstants.manrope,
+                                                fontFamily:
+                                                    AppConstants.manrope,
 
-                                                color: theme.isDark ? Colors.white54 : Colors.black45,
+                                                color:
+                                                    theme.isDark
+                                                        ? Colors.white54
+                                                        : Colors.black45,
                                               ),
                                             ),
                                           ],
@@ -425,7 +462,10 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                       Icon(
                                         Icons.arrow_forward_ios_rounded,
                                         size: 16,
-                                        color: theme.isDark ? Colors.white24 : Colors.black26,
+                                        color:
+                                            theme.isDark
+                                                ? Colors.white24
+                                                : Colors.black26,
                                       ),
                                     ],
                                   ),
@@ -498,6 +538,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
               ),
     );
   }
+
   IconData _getStatusIcon(String status) {
     status = status.toLowerCase();
     if (status.contains('pending')) return Icons.hourglass_top_rounded;
@@ -511,11 +552,16 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
       decoration: BoxDecoration(
-        color: theme.isDark ? Colors.white.withOpacity(0.05) : sColor.withOpacity(0.1),
+        color:
+            theme.isDark
+                ? Colors.white.withOpacity(0.05)
+                : sColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(15),
       ),
       child: Text(
-        status == "status_in_review" ? "In Review" : status.capitalizeFirst ?? "",
+        status == "status_in_review"
+            ? "In Review"
+            : status.capitalizeFirst ?? "",
         style: TextStyle(
           fontSize: 12.sp,
           fontWeight: FontWeight.bold,
@@ -525,13 +571,18 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
       ),
     );
   }
+
   Color getStatusColor(String status) {
+    final theme = Provider.of<ThemeController>(context, listen: false);
+
     return status == "pending" || status == "Pending"
         ? Color(0xf0BEAC84)
         : status == "Status_in_review" || status == "status_in_review"
         ? Colors.green
         : status == "completed" || status == "Completed"
-        ? AppColors.maincolor
+        ? theme.isDark
+            ? Colors.green
+            : AppColors.maincolor
         : status == "rejected"
         ? Colors.orange
         : Colors.black;
@@ -678,7 +729,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                         ),
                       ).paddingOnly(bottom: 1.h),
 
-                      InkWell(
+                      GestureDetector(
                         onTap: () async {
                           final pickedFile = await picker.pickImage(
                             source: ImageSource.gallery,
@@ -902,7 +953,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
           });
         }
       }
-    } catch (e,stacktrace) {
+    } catch (e, stacktrace) {
       log("errererer$stacktrace");
       if (mounted) {
         setState(() {

@@ -455,8 +455,7 @@ class _CommunityScreenState extends State<CommunityScreen>
   Future<BitmapDescriptor> _getClusterMarker(
     int count,
     String profileImageUrl,
-  ) async
-  {
+  ) async {
     const int size = 120;
     final ui.PictureRecorder recorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(recorder);
@@ -554,8 +553,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     String? storyPreviewUrl,
     bool showOnlyStory = false,
     bool showOnlyProfile = false,
-  }) async
-  {
+  }) async {
     try {
       final Uint8List markerIcon = await getBytesFromCanvas(
         imageUrl,
@@ -578,8 +576,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     String? storyPreviewUrl,
     bool showOnlyStory = false,
     bool showOnlyProfile = false,
-  }) async
-  {
+  }) async {
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
     final Paint paint = Paint();
@@ -821,8 +818,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     required String message,
     bool openSettings = false,
     bool showCancel = false,
-  })
-  {
+  }) {
     if (_isDialogVisible) return;
 
     _isDialogVisible = true;
@@ -970,6 +966,10 @@ class _CommunityScreenState extends State<CommunityScreen>
   String _darkMapStyle = '''
 [
   {
+    "featureType": "poi",
+    "stylers": [{"visibility": "off"}]
+  },
+  {
     "elementType": "geometry",
     "stylers": [{"color": "#212121"}]
   },
@@ -993,16 +993,26 @@ class _CommunityScreenState extends State<CommunityScreen>
   }
 ]
 ''';
+
   String _lightMapStyle = '''
 [
   {
-    "featureType": "all",
-    "elementType": "all",
+    "featureType": "poi",
     "stylers": [
-      {"saturation": "0"},
-      {"gamma": "1.0"},
-      {"lightness": "0"},
-      {"visibility": "on"}
+      { "visibility": "off" }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },
+  {
+    "featureType": "all",
+    "elementType": "labels.icon",
+    "stylers": [
+      { "visibility": "off" }
     ]
   }
 ]
@@ -1879,16 +1889,14 @@ class _CommunityScreenState extends State<CommunityScreen>
                           Row(
                             children: [
                               CircleAvatar(
-                                backgroundColor:
-                                Colors.grey.shade300,
+                                backgroundColor: Colors.grey.shade300,
 
                                 child: Icon(
                                   Icons.location_on,
                                   color:
                                       theme.isDark
                                           ? Color(0xffbdab82)
-                                          : Colors.black
-                                  ,
+                                          : Colors.black,
                                 ),
                               ),
                               const SizedBox(width: 8),
@@ -3423,7 +3431,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                                                 color:
                                                     theme.isDark
                                                         ? Color(0xffbdab82)
-                                                        : Colors.black.withValues(alpha: .2),
+                                                        : Colors.black
+                                                            .withValues(
+                                                              alpha: .2,
+                                                            ),
                                               ),
                                             ),
                                             child: Row(
@@ -3670,7 +3681,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     color:
                                         theme.isDark
                                             ? Color(0xff272727)
-                                            :Colors.grey.shade300,
+                                            : Colors.grey.shade300,
                                     border: Border.all(
                                       color:
                                           theme.isDark
@@ -4007,15 +4018,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black
-                                      .withValues(
-                                    alpha: 0.05,
-                                  ),
+                                  color: Colors.black.withValues(alpha: 0.05),
                                   blurRadius: 10,
-                                  offset: const Offset(
-                                    0,
-                                    2,
-                                  ),
+                                  offset: const Offset(0, 2),
                                 ),
                               ],
                             ),
@@ -5813,7 +5818,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                   decoration: BoxDecoration(
                     border: Border.all(
                       color:
-                          theme.isDark ? Color(0xffbdab82) : Colors.grey.shade300,
+                          theme.isDark
+                              ? Color(0xffbdab82)
+                              : Colors.grey.shade300,
                       width: 0.2.w,
                     ),
                     color: theme.isDark ? Color(0xff272727) : Color(0xfff5f5f5),
@@ -5871,8 +5878,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
-                        color:
-                            theme.isDark ? Color(0xffbdab82) : Colors.black,
+                        color: theme.isDark ? Color(0xffbdab82) : Colors.black,
                         fontFamily: AppConstants.manrope,
                       ),
                       maxLines: 1,
@@ -6203,7 +6209,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                     color: theme.isDark ? Color(0xff272727) : Color(0xfff5f5f5),
                     border: Border.all(
                       color:
-                          theme.isDark ? Color(0xffbdab82) : Colors.grey.shade300,
+                          theme.isDark
+                              ? Color(0xffbdab82)
+                              : Colors.grey.shade300,
                       width: 0.2.w,
                     ),
                     borderRadius: BorderRadius.circular(8),
@@ -6269,8 +6277,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                           "No Title",
                       style: TextStyle(
                         fontSize: 16.sp,
-                        color:
-                            theme.isDark ? Color(0xffbdab82) : Colors.black,
+                        color: theme.isDark ? Color(0xffbdab82) : Colors.black,
                         // color: Color(0xff272727),
                         // border: Border.all(
                         //   color: Color(0xffbdab82),
@@ -6349,7 +6356,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                 style: TextStyle(
                                   fontSize: 12.sp,
                                   color: Colors.grey,
-                                  fontFamily: AppConstants.manrope
+                                  fontFamily: AppConstants.manrope,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,

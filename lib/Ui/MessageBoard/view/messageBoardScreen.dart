@@ -23,7 +23,6 @@ import 'package:wavee/Utils/linkView.dart';
 import 'package:wavee/Utils/loader.dart';
 import 'package:wavee/Utils/viewPdfFunction.dart';
 
-import '../../../Utils/bottomBar.dart';
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
 import '../../../Utils/const.dart';
@@ -100,6 +99,10 @@ class _MessageboardState extends State<Messageboard> {
   );
   final PageController _pageController = PageController();
 
+  // For managing like counts locally
+  Map<String, int> messageBoardLikeCounts = {};
+  Map<String, int> localPostLikeCounts = {};
+
   String formatPostDate(String? createdAt) {
     if (createdAt == null) return "";
     tz.initializeTimeZones();
@@ -145,11 +148,6 @@ class _MessageboardState extends State<Messageboard> {
     });
     MessageBoardApi();
     fetchData();
-    // listconciergerapi();
-    setState(() {
-      // GetMyJoinGroup();
-      // getfriendlistdAp();
-    });
 
     loadGroups();
     Future.delayed(const Duration(milliseconds: 100), () {
@@ -181,8 +179,6 @@ class _MessageboardState extends State<Messageboard> {
       isSending = true;
     });
 
-    // await GetMyJoinGroup();
-
     setState(() {
       isSending = false;
     });
@@ -196,14 +192,20 @@ class _MessageboardState extends State<Messageboard> {
       isLikedList = List.generate(totalPosts, (index) => false);
       isLikeInProgressList = List.generate(totalPosts, (index) => false);
 
+      // Initialize like counts from API data
       for (int i = 0; i < totalPosts; i++) {
         if (i < isLikedList.length &&
             i < (messageBoardModal?.data?.length ?? 0)) {
           final postId = messageBoardModal?.data?[i].id.toString();
           if (postId != null) {
+            // Load like status
             final key = 'image_like_${postId}_$userId';
             final value = await secureStorage.read(key: key);
             isLikedList[i] = value == 'true';
+
+            // Store initial like count
+            final likeCount = messageBoardModal?.data?[i].totalLikes ?? 0;
+            messageBoardLikeCounts[postId] = likeCount;
           }
         }
       }
@@ -225,9 +227,14 @@ class _MessageboardState extends State<Messageboard> {
             i < (localpost_model?.data?.data?.length ?? 0)) {
           final postId = localpost_model?.data?.data?[i].id.toString();
           if (postId != null) {
+            // Load like status
             final key = 'image_like_${postId}_$userId';
             final value = await secureStorage.read(key: key);
             isLikedListLocal[i] = value == 'true';
+
+            // Store initial like count
+            final likeCount = localpost_model?.data?.data?[i].totalLikes ?? 0;
+            localPostLikeCounts[postId] = likeCount;
           }
         }
       }
@@ -260,13 +267,38 @@ class _MessageboardState extends State<Messageboard> {
   ) {
     if (isLikeInProgressList[index]) return;
 
+    final postId = messageBoardModal?.data?[index].id.toString();
+    if (postId == null) return;
+
+    final currentCount =
+        messageBoardLikeCounts[postId] ??
+        messageBoardModal?.data?[index].totalLikes ??
+        0;
+    final isCurrentlyLiked = isLikedList[index];
+
+    // OPTIMISTIC UPDATE: Update UI immediately
     localSetState(() {
-      isLikedList[index] = !isLikedList[index];
+      isLikedList[index] = !isCurrentlyLiked;
       isLikeInProgressList[index] = true;
+
+      // Update local like count immediately
+      if (!isCurrentlyLiked) {
+        // User is liking the post
+        messageBoardLikeCounts[postId] = currentCount + 1;
+        messageBoardModal?.data?[index].totalLikes = currentCount + 1;
+      } else {
+        // User is unliking the post
+        messageBoardLikeCounts[postId] =
+            currentCount > 0 ? currentCount - 1 : 0;
+        messageBoardModal?.data?[index].totalLikes =
+            currentCount > 0 ? currentCount - 1 : 0;
+      }
     });
 
+    // Save like status locally
     _saveLikeStatus(index, isLikedList[index]);
 
+    // Call API
     postslikeap(index, () {
       localSetState(() {
         isLikeInProgressList[index] = false;
@@ -280,13 +312,37 @@ class _MessageboardState extends State<Messageboard> {
   ) {
     if (isLikeInProgressListLocal[index]) return;
 
+    final postId = localpost_model?.data?.data?[index].id.toString();
+    if (postId == null) return;
+
+    final currentCount =
+        localPostLikeCounts[postId] ??
+        localpost_model?.data?.data?[index].totalLikes ??
+        0;
+    final isCurrentlyLiked = isLikedListLocal[index];
+
+    // OPTIMISTIC UPDATE: Update UI immediately
     localSetState(() {
-      isLikedListLocal[index] = !isLikedListLocal[index];
+      isLikedListLocal[index] = !isCurrentlyLiked;
       isLikeInProgressListLocal[index] = true;
+
+      // Update local like count immediately
+      if (!isCurrentlyLiked) {
+        // User is liking the post
+        localPostLikeCounts[postId] = currentCount + 1;
+        localpost_model?.data?.data?[index].totalLikes = currentCount + 1;
+      } else {
+        // User is unliking the post
+        localPostLikeCounts[postId] = currentCount > 0 ? currentCount - 1 : 0;
+        localpost_model?.data?.data?[index].totalLikes =
+            currentCount > 0 ? currentCount - 1 : 0;
+      }
     });
 
+    // Save like status locally
     _saveLikeStatusLocal(index, isLikedListLocal[index]);
 
+    // Call API
     postslikelocalap(index, () {
       localSetState(() {
         isLikeInProgressListLocal[index] = false;
@@ -295,7 +351,7 @@ class _MessageboardState extends State<Messageboard> {
   }
 
   List<String> options = ['All', 'My Building', 'Local', 'Friends', 'Group'];
-  String selectedOption = 'All Updates';
+  String selectedOption = 'My Building';
 
   int cartCount = cartDetailsModel?.data?.length ?? 0;
 
@@ -312,7 +368,6 @@ class _MessageboardState extends State<Messageboard> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ThemeToggleButton(),
               Row(
                 children: [
                   Text(
@@ -324,7 +379,6 @@ class _MessageboardState extends State<Messageboard> {
                               ? Color(0xf0C4B595)
                               : AppColors.lightText,
                       fontFamily: AppConstants.manropeBold,
-                      // fontWeight: FontWeight.bold,
                     ),
                   ),
                   Spacer(),
@@ -354,7 +408,6 @@ class _MessageboardState extends State<Messageboard> {
                   Material(
                     elevation: 2,
                     borderRadius: BorderRadius.circular(30),
-
                     child: Container(
                       height: 5.h,
                       width: 45.w,
@@ -367,27 +420,23 @@ class _MessageboardState extends State<Messageboard> {
                                   ? Color(0xf0262626)
                                   : Colors.grey.shade200,
                         ),
-                        borderRadius: BorderRadius.circular(
-                          30,
-                        ), // Pill shape mate
+                        borderRadius: BorderRadius.circular(30),
                       ),
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           value: selectedOption,
                           icon: Icon(
                             Icons.keyboard_arrow_down,
-                            color: Colors.grey, // Image mujab no color
+                            color: Colors.grey,
                           ),
                           elevation: 16,
                           borderRadius: BorderRadius.circular(20),
                           dropdownColor: Colors.white,
-
                           selectedItemBuilder: (BuildContext context) {
                             return [
-                              'All Updates',
+
                               'My Building',
-                              'Announcements',
-                              // 'Events',
+                              'Local',
                             ].map((String value) {
                               return Align(
                                 alignment: Alignment.centerLeft,
@@ -408,10 +457,9 @@ class _MessageboardState extends State<Messageboard> {
                           },
                           items:
                               [
-                                'All Updates',
+
                                 'My Building',
-                                'Announcements',
-                                // 'Events',
+                                'Local',
                               ].map((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
@@ -438,7 +486,6 @@ class _MessageboardState extends State<Messageboard> {
                                   ),
                                 );
                               }).toList(),
-
                           onChanged: (newValue) {
                             setState(() {
                               selectedOption = newValue!;
@@ -448,7 +495,7 @@ class _MessageboardState extends State<Messageboard> {
                       ),
                     ),
                   ),
-                  selectedOption == "Announcements"
+                  selectedOption == "Local"
                       ? GestureDetector(
                         onTap: () {
                           final List<String> buildingNames =
@@ -575,7 +622,6 @@ class _MessageboardState extends State<Messageboard> {
                                                               const SizedBox(
                                                                 width: 8,
                                                               ),
-                                                              // 1129.29 2588.44
                                                               Expanded(
                                                                 child: Text(
                                                                   capitalizeEachWord(
@@ -664,7 +710,7 @@ class _MessageboardState extends State<Messageboard> {
                         ),
                       ).paddingOnly(right: 9.w, left: 1.w)
                       : const SizedBox(),
-                  selectedOption == "Announcements"
+                  selectedOption == "Local"
                       ? InkWell(
                         onTap: () {
                           addpostsheet(
@@ -678,7 +724,6 @@ class _MessageboardState extends State<Messageboard> {
                           child: Container(
                             height: 5.h,
                             padding: EdgeInsets.all(8),
-
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30),
                               color:
@@ -693,7 +738,6 @@ class _MessageboardState extends State<Messageboard> {
                                   style: TextStyle(
                                     fontFamily: AppConstants.manrope,
                                     fontSize: 15.sp,
-
                                     color:
                                         theme.isDark
                                             ? Color(0xf0C4B595)
@@ -720,7 +764,7 @@ class _MessageboardState extends State<Messageboard> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      selectedOption == "All Updates" ||
+
                               selectedOption == "My Building"
                           ? messageBoardModal?.data?.length == 0 ||
                                   messageBoardModal?.data?.length == null
@@ -746,6 +790,14 @@ class _MessageboardState extends State<Messageboard> {
                                   itemBuilder: (context, index) {
                                     final post =
                                         messageBoardModal?.data?[index];
+                                    final postId = post?.id.toString();
+                                    final likeCount =
+                                        postId != null
+                                            ? messageBoardLikeCounts[postId] ??
+                                                post?.totalLikes ??
+                                                0
+                                            : post?.totalLikes ?? 0;
+
                                     return Container(
                                       margin: EdgeInsets.symmetric(
                                         vertical: 0.5.h,
@@ -764,7 +816,6 @@ class _MessageboardState extends State<Messageboard> {
                                                 ? Color(0xFF242424)
                                                 : Colors.white,
                                         borderRadius: BorderRadius.circular(20),
-
                                       ),
                                       child: Column(
                                         mainAxisAlignment:
@@ -820,14 +871,10 @@ class _MessageboardState extends State<Messageboard> {
                                                           size: 40,
                                                         ),
                                               ),
-
                                               SizedBox(width: 2.w),
-
-                                              // Text container that adapts to screen width
                                               Expanded(
                                                 child: Row(
                                                   children: [
-                                                    // User name
                                                     Flexible(
                                                       child: Text(
                                                         "${messageBoardModal?.data?[index].user?.firstName ?? ""} ${messageBoardModal?.data?[index].user?.lastName ?? ""}",
@@ -849,10 +896,7 @@ class _MessageboardState extends State<Messageboard> {
                                                         ),
                                                       ),
                                                     ),
-
                                                     SizedBox(width: 1.w),
-
-                                                    // Dot and time
                                                     Flexible(
                                                       child: Text(
                                                         "• ${formatPostDate(messageBoardModal?.data?[index].createdAt)}",
@@ -873,7 +917,6 @@ class _MessageboardState extends State<Messageboard> {
                                               ),
                                             ],
                                           ).paddingOnly(bottom: 2.h),
-
                                           Text(
                                             messageBoardModal
                                                     ?.data?[index]
@@ -902,7 +945,6 @@ class _MessageboardState extends State<Messageboard> {
                                               fontFamily: AppConstants.manrope,
                                             ),
                                           ),
-
                                           post?.nocomment == 1
                                               ? Text(
                                                 "[COMMENT ARE DISABLED IN THIS POST]",
@@ -917,7 +959,6 @@ class _MessageboardState extends State<Messageboard> {
                                                 ),
                                               )
                                               : SizedBox(),
-
                                           Padding(
                                             padding: EdgeInsets.symmetric(
                                               vertical: 1.h,
@@ -945,23 +986,7 @@ class _MessageboardState extends State<Messageboard> {
                                                                       uri.toString(),
                                                                 ),
                                                               );
-                                                              // if (await canLaunchUrl(uri)) {
-                                                              //   final launched = await launchUrl(
-                                                              //     uri,
-                                                              //     mode: LaunchMode.externalApplication,
-                                                              //   );
-                                                              //   if (!launched) {
-                                                              //     ScaffoldMessenger.of(context).showSnackBar(
-                                                              //       SnackBar(content: Text("Failed to open externally")),
-                                                              //     );
-                                                              //   }
-                                                              // } else {
-                                                              //   ScaffoldMessenger.of(context).showSnackBar(
-                                                              //     SnackBar(content: Text("Cannot open PDF")),
-                                                              //   );
-                                                              // }
                                                             },
-
                                                             child: Container(
                                                               width:
                                                                   double
@@ -1064,7 +1089,8 @@ class _MessageboardState extends State<Messageboard> {
                                                   ),
                                                   SizedBox(width: 4.w),
                                                   Text(
-                                                    "${messageBoardModal?.data?[index].totalLikes} Likes",
+                                                    "$likeCount Likes",
+                                                    // Use local count
                                                     style: TextStyle(
                                                       fontFamily:
                                                           AppConstants.manrope,
@@ -1131,7 +1157,9 @@ class _MessageboardState extends State<Messageboard> {
                                                       decoration: BoxDecoration(
                                                         color:
                                                             theme.isDark
-                                                                ? Color(0xf02F2F2F)
+                                                                ? Color(
+                                                                  0xf02F2F2F,
+                                                                )
                                                                 : Colors
                                                                     .grey[100],
                                                         borderRadius:
@@ -1184,7 +1212,6 @@ class _MessageboardState extends State<Messageboard> {
                                                   );
                                                 },
                                               ),
-
                                               // Comment Button
                                               InkWell(
                                                 onTap: () {
@@ -1246,7 +1273,6 @@ class _MessageboardState extends State<Messageboard> {
                                                   ),
                                                 ),
                                               ),
-
                                               // Save Button
                                               InkWell(
                                                 onTap: () {
@@ -1288,7 +1314,7 @@ class _MessageboardState extends State<Messageboard> {
                                   },
                                 ),
                               )
-                          : selectedOption == "Announcements"
+                          : selectedOption == "Local"
                           ? localpost_model?.data?.data?.length == null ||
                                   localpost_model?.data?.data?.length == 0
                               ? Center(
@@ -1309,7 +1335,7 @@ class _MessageboardState extends State<Messageboard> {
                                 ),
                               ).paddingOnly(top: 25.h)
                               : SizedBox(
-                                height:Get.height,
+                                height: Get.height,
                                 child: ListView.builder(
                                   controller: _scrollController,
                                   padding: EdgeInsets.zero,
@@ -1319,6 +1345,14 @@ class _MessageboardState extends State<Messageboard> {
                                   itemBuilder: (context, index) {
                                     final post =
                                         localpost_model?.data?.data?[index];
+                                    final postId = post?.id.toString();
+                                    final likeCount =
+                                        postId != null
+                                            ? localPostLikeCounts[postId] ??
+                                                post?.totalLikes ??
+                                                0
+                                            : post?.totalLikes ?? 0;
+
                                     return Container(
                                       margin: EdgeInsets.symmetric(
                                         vertical: 0.5.h,
@@ -1390,12 +1424,10 @@ class _MessageboardState extends State<Messageboard> {
                                                   ),
                                                 ),
                                               ),
-
                                               SizedBox(width: 2.w),
                                               Expanded(
                                                 child: Row(
                                                   children: [
-                                                    // User name
                                                     Flexible(
                                                       child: Text(
                                                         localpost_model
@@ -1417,10 +1449,7 @@ class _MessageboardState extends State<Messageboard> {
                                                         ),
                                                       ),
                                                     ),
-
                                                     SizedBox(width: 1.w),
-
-                                                    // Dot and time
                                                     Flexible(
                                                       child: Text(
                                                         "•${formatPostDate(localpost_model?.data?.data?[index].createdAt)}",
@@ -1439,8 +1468,6 @@ class _MessageboardState extends State<Messageboard> {
                                                   ],
                                                 ),
                                               ),
-
-                                              // const Spacer(),
                                               loginModel?.data?.user?.id ==
                                                       post?.userId
                                                   ? PopupMenuButton<String>(
@@ -1448,7 +1475,6 @@ class _MessageboardState extends State<Messageboard> {
                                                         theme.isDark
                                                             ? Color(0xFF1E1E1E)
                                                             : AppColors.white,
-
                                                     icon: Icon(
                                                       Icons.more_vert,
                                                       color:
@@ -1470,13 +1496,6 @@ class _MessageboardState extends State<Messageboard> {
                                                               "",
                                                         );
                                                       }
-                                                      // else if (value ==
-                                                      //     'report') {
-                                                      //   showBlockUserDialog(
-                                                      //     context,
-                                                      //     supportUrl,
-                                                      //   );
-                                                      // }
                                                     },
                                                     itemBuilder:
                                                         (
@@ -1693,7 +1712,6 @@ class _MessageboardState extends State<Messageboard> {
                                                   },
                                                 ),
                                               ),
-
                                           SizedBox(height: 1.5.h),
                                           Row(
                                             mainAxisAlignment:
@@ -1718,7 +1736,8 @@ class _MessageboardState extends State<Messageboard> {
                                                   ),
                                                   SizedBox(width: 2.w),
                                                   Text(
-                                                    "${localpost_model?.data?.data?[index].totalLikes} Likes",
+                                                    "$likeCount Likes",
+                                                    // Use local count
                                                     style: TextStyle(
                                                       fontFamily:
                                                           AppConstants.manrope,
@@ -1866,7 +1885,6 @@ class _MessageboardState extends State<Messageboard> {
                                                   );
                                                 },
                                               ),
-
                                               // Comment Button
                                               InkWell(
                                                 onTap: () {
@@ -1927,7 +1945,6 @@ class _MessageboardState extends State<Messageboard> {
                                                   ),
                                                 ),
                                               ),
-
                                               // Bookmark Button
                                               InkWell(
                                                 onTap: () {
@@ -1963,7 +1980,6 @@ class _MessageboardState extends State<Messageboard> {
                                               ),
                                             ],
                                           ),
-
                                           if (isLoadingMore)
                                             const Padding(
                                               padding: EdgeInsets.all(8.0),
@@ -1978,7 +1994,6 @@ class _MessageboardState extends State<Messageboard> {
                                 ),
                               )
                           : const SizedBox(),
-
                     ],
                   ),
                 ),
@@ -1997,11 +2012,10 @@ class _MessageboardState extends State<Messageboard> {
             ),
         ],
       ),
-      bottomNavigationBar: const BottomBar(selected: 0),
     );
   }
 
-  void MessageBoardApi() {
+  MessageBoardApi() {
     final Map<String, String> data = {};
     data["user_id"] = loginModel?.data?.user?.id.toString() ?? "31";
 
@@ -2013,6 +2027,17 @@ class _MessageboardState extends State<Messageboard> {
           if (response.statusCode == 200) {
             try {
               messageBoardModal = MessageBoardModal.fromJson(response.data);
+
+              // Update local like counts with fresh data
+              if (messageBoardModal?.data != null) {
+                for (int i = 0; i < messageBoardModal!.data!.length; i++) {
+                  final postId = messageBoardModal!.data![i].id.toString();
+                  final likeCount = messageBoardModal!.data![i].totalLikes ?? 0;
+                  if (postId != null) {
+                    messageBoardLikeCounts[postId] = likeCount;
+                  }
+                }
+              }
 
               setState(() {
                 isLoading = false;
@@ -2038,7 +2063,6 @@ class _MessageboardState extends State<Messageboard> {
         setState(() {
           isLoading = false;
         });
-
         buildErrorDialog(
           context,
           'No Internet',
@@ -2134,7 +2158,6 @@ class _MessageboardState extends State<Messageboard> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        // એક સરસ ચેટ કે કમેન્ટ આઇકન
                                         Icon(
                                           Icons.chat_bubble_outline_rounded,
                                           size: 80,
@@ -2152,7 +2175,6 @@ class _MessageboardState extends State<Messageboard> {
                                           ),
                                         ),
                                         const SizedBox(height: 8),
-                                        // સબ ટેક્સ્ટ (વધારાની વિગત માટે)
                                         Text(
                                           "Be the first one to start the conversation!",
                                           style: TextStyle(
@@ -2220,7 +2242,7 @@ class _MessageboardState extends State<Messageboard> {
                                   ),
                         ),
                         comment == 1
-                            ? SizedBox() // Disable comment input if value = 1
+                            ? SizedBox()
                             : Row(
                               children: [
                                 Expanded(
@@ -2371,7 +2393,6 @@ class _MessageboardState extends State<Messageboard> {
                           }
                           return null;
                         },
-
                         style: TextStyle(
                           color:
                               theme.isDark ? AppColors.black : AppColors.black,
@@ -2380,7 +2401,6 @@ class _MessageboardState extends State<Messageboard> {
                         decoration: inputDecoration(
                           hintText: 'Enter Title',
                           isDark: theme.isDark,
-
                           searchIcon: Icon(
                             Icons.title,
                             size: 20.sp,
@@ -2854,58 +2874,7 @@ class _MessageboardState extends State<Messageboard> {
     return null;
   }
 
-  // Future<void> listconciergerapi() async {
-  //   await checkInternet().then((internet) async {
-  //     if (internet) {
-  //       try {
-  //         final response = await MessageBoardProvider().listConciergeApi(
-  //           (loginModel?.data?.user?.id).toString(),
-  //         );
-  //
-  //         if (response.statusCode == 200) {
-  //           chatuserlistmodel = ChatUserListModel.fromJson(response.data);
-  //
-  //           for (var user in chatuserlistmodel!.data!) {
-  //             user.requestStatuses ??= [];
-  //           }
-  //         }
-  //       } catch (e) {}
-  //     } else {
-  //       buildErrorDialog(context, 'Error', "Internet Required");
-  //     }
-  //   });
-  // }
-
-  // GetMyJoinGroup() {
-  //   final Map<String, String> data = {
-  //     'user_id': (loginModel?.data?.user?.id).toString(),
-  //   };
-  //
-  //   setState(() {
-  //     isSending = true;
-  //   });
-  //   checkInternet().then((internet) async {
-  //     if (internet) {
-  //       MessageBoardProvider().getMyJoinGroupApi(data).then((response) async {
-  //         if (response.statusCode == 200) {
-  //           getgrouplistmodel = GetGroupListModel.fromJson(response.data);
-  //
-  //           setState(() {
-  //             isSending = false;
-  //           });
-  //         } else if (response.statusCode == 429 || response.statusCode == 500) {
-  //           isSending = false;
-  //         } else {
-  //           isSending = false;
-  //         }
-  //       });
-  //     } else {
-  //       buildErrorDialog(context, 'Error', "Internet Required");
-  //     }
-  //   });
-  // }
-
-  Future<void> showCancelConfirmationDialog(
+  void showCancelConfirmationDialog(
     String PostId, {
     required BuildContext context,
   }) async {
@@ -3015,7 +2984,17 @@ class _MessageboardState extends State<Messageboard> {
                   localpost_model?.data?.data?.addAll(newData.data?.data ?? []);
                 }
 
-                // If API returns less than 10 items, no more data to load
+                // Update local like counts
+                if (newData.data?.data != null) {
+                  for (final post in newData.data!.data!) {
+                    final postId = post.id.toString();
+                    final likeCount = post.totalLikes ?? 0;
+                    if (postId != null) {
+                      localPostLikeCounts[postId] = likeCount;
+                    }
+                  }
+                }
+
                 hasMoreData = (newData.data?.data?.length ?? 0) == 10;
                 isLoadingMore = false;
                 isSending = false;
@@ -3053,13 +3032,9 @@ class _MessageboardState extends State<Messageboard> {
             data,
           );
           if (response.statusCode == 200) {
-            // Remove the deleted post from the local list immediately
-            if (mounted) {
-              setState(() {
-                // localpost_model?.data?.data?.removeWhere((post) => post.id.toString() == id);
-                isSending1 = false;
-              });
-            }
+            setState(() {
+              isSending1 = false;
+            });
             showSnackBar(
               context: context,
               title: 'Success',
@@ -3122,7 +3097,21 @@ class _MessageboardState extends State<Messageboard> {
             messageboardpostlikeModel = MessageboardpostLikeModel.fromJson(
               response.data,
             );
-            MessageBoardApi();
+
+            // Update local like count from response if available
+            if (response.data['total_likes'] != null) {
+              final postId = messageBoardModal?.data?[index].id.toString();
+              if (postId != null) {
+                setState(() {
+                  messageBoardLikeCounts[postId] = response.data['total_likes'];
+                  messageBoardModal?.data?[index].totalLikes =
+                      response.data['total_likes'];
+                });
+              }
+            }
+
+            // Refresh to get latest data
+            await MessageBoardApi();
           }
           if (mounted) {
             onComplete();
@@ -3150,10 +3139,23 @@ class _MessageboardState extends State<Messageboard> {
             messageboardpostlikeModel = MessageboardpostLikeModel.fromJson(
               response.data,
             );
+
+            // Update local like count from response if available
+            if (response.data['total_likes'] != null) {
+              final postId = localpost_model?.data?.data?[index].id.toString();
+              if (postId != null) {
+                setState(() {
+                  localPostLikeCounts[postId] = response.data['total_likes'];
+                  localpost_model?.data?.data?[index].totalLikes =
+                      response.data['total_likes'];
+                });
+              }
+            }
+
+            // Refresh to get latest data
+            await localpostapi();
           }
           onComplete();
-          // _pagingController.refresh();
-          localpostapi();
         });
       } else {
         onComplete();
@@ -3249,7 +3251,6 @@ class _MessageboardState extends State<Messageboard> {
                   backgoundColor: AppColors.redColor,
                   ColorText: Colors.white,
                 );
-
                 if (mounted) {
                   setState(() {
                     isSending1 = false;
@@ -3264,7 +3265,6 @@ class _MessageboardState extends State<Messageboard> {
                   ColorText: Colors.white,
                 );
               }
-
               if (mounted) {
                 setState(() {
                   isSending1 = false;
@@ -3290,7 +3290,7 @@ class _MessageboardState extends State<Messageboard> {
     setState(() {
       isComment = true;
     });
-    comment = comment ?? 0; // prevent null → default 0
+    comment = comment ?? 0;
 
     currentPostId = postId;
     final Map<String, String> data = {'post_id': postId};
@@ -3423,24 +3423,6 @@ class _MessageboardState extends State<Messageboard> {
     });
   }
 
-  // showrequestapi() {
-  //   checkInternet().then((internet) async {
-  //     if (internet) {
-  //       try {
-  //         final response = await MessageBoardProvider().getRequestAppApi(
-  //           (loginModel?.data?.user?.id).toString(),
-  //         );
-  //
-  //         if (response.statusCode == 200) {
-  //           getrequestModel = GetRequestModel.fromJson(response.data);
-  //         }
-  //       } catch (e) {}
-  //     } else {
-  //       buildErrorDialog(context, 'Error', "Internet Required");
-  //     }
-  //   });
-  // }
-
   final String supportUrl = "https://www.wavee.ai/help-center";
 
   void showBlockUserDialog(BuildContext context, String supportUrl) {
@@ -3559,7 +3541,6 @@ class _MessageboardState extends State<Messageboard> {
       }
     } catch (e) {
       log("Error launching URL: $e");
-      // You can show an error message here if needed
     } finally {
       if (mounted) {
         setState(() {

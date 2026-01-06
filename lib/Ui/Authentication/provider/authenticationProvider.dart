@@ -25,6 +25,24 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<Response> checkMail(Map<String, String> data) async {
+    try {
+      final Dio dio = await DioHelper.getDio();
+
+      final response = await dio.post(
+        ApiEndpoint.checkMail,
+        data: data,
+        options: Options(
+          validateStatus: (status) => status == 200 || status == 422,
+        ),
+      );
+
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> changePasswordApi(Map<String, String> data) async {
     try {
       final dio = await DioHelper.getDio();

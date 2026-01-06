@@ -3,6 +3,7 @@ import 'const.dart';
 class ApiEndpoint {
   static String baseUrl = AppConstants.BASEURL;
   static String login = "${baseUrl}login";
+  static String checkMail = "https://pets.wavee.ai/api/check-email";
   static String updateFcm = "${baseUrl}update-fcm-token";
   static String changePassword = "${baseUrl}changePasswordApp";
   static String forgetPassword = "${baseUrl}forget-password";

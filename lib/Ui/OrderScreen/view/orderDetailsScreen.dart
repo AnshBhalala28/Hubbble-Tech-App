@@ -42,9 +42,10 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
   String selectedDate = '25-05-2025';
   bool isLoading = false;
   bool isCancleOrder = false;
+
   // bool isDark = true;
   String? selectedGateway =
-  orderDetailModel?.data?.order?.paymentGateway?.toLowerCase();
+      orderDetailModel?.data?.order?.paymentGateway?.toLowerCase();
 
   @override
   void initState() {
@@ -61,7 +62,7 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeController>();
-final isDark =theme.isDark;
+    final isDark = theme.isDark;
     DateTime? bookingDateTime = DateTime.tryParse(
       serviceOrderDetail?.data?.products?.bookingDetails?.bookingDatetime ?? '',
     );
@@ -78,1007 +79,1010 @@ final isDark =theme.isDark;
     final service = serviceOrderDetail?.data?.products?.service;
     final List<String>? galleryImages = service?.galleryImages;
     return Scaffold(
-      backgroundColor: isDark ? Color(0xff1A1A1A) : AppColors.white,
+      backgroundColor: theme.isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
       body: Stack(
         children: [
           orderDetailModel?.data?.products?.type == "service"
               ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 6.h),
-              TitleBar(
-                title:
-                serviceOrderDetail?.data?.products?.service?.title
-                    .toString()
-                    .capitalizeFirst ??
-                    "",
-                drawerCallback: () {},
-                back: () {
-                  Get.back();
-                },
-              ),
-              SizedBox(height: 2.h),
-              isLoading
-                  ? Loader().paddingOnly(top: 0.h)
-                  : Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // serviceOrderDetail!
-                      //         .data!
-                      //         .products!
-                      //         .service!
-                      //         .galleryImages!
-                      //         .isEmpty
-                      //     ? Container(
-                      //       height: 25.h,
-                      //       width: double.infinity,
-                      //       decoration: BoxDecoration(
-                      //         borderRadius: BorderRadius.circular(10),
-                      //         color: Colors.grey[200],
-                      //       ),
-                      //       alignment: Alignment.center,
-                      //       child: ClipRRect(
-                      //         borderRadius: BorderRadius.circular(10),
-                      //         child: CachedNetworkImage(
-                      //           width: double.infinity,
-                      //           imageUrl:
-                      //               serviceOrderDetail!
-                      //                   .data!
-                      //                   .products!
-                      //                   .service!
-                      //                   .images ??
-                      //               "",
-                      //           fit: BoxFit.fill,
-                      //           placeholder:
-                      //               (context, url) => const Center(
-                      //                 child: CircularProgressIndicator(
-                      //                   color: AppColors.maincolor,
-                      //                 ),
-                      //               ),
-                      //           errorWidget:
-                      //               (
-                      //                 context,
-                      //                 url,
-                      //                 error,
-                      //               ) => const Image(
-                      //                 image: AssetImage(
-                      //                   'assets/images/Applogo_remove_background.png',
-                      //                 ),
-                      //               ),
-                      //         ),
-                      //       ),
-                      //     )
-                      //     : CarouselSlider(
-                      //       carouselController: _controller,
-                      //       options: CarouselOptions(
-                      //         height: 25.h,
-                      //         autoPlay: true,
-                      //         enlargeCenterPage: true,
-                      //         viewportFraction: 1.0,
-                      //         onPageChanged: (index, reason) {
-                      //           setState(() {
-                      //             _currentIndex = index;
-                      //           });
-                      //         },
-                      //       ),
-                      //       items:
-                      //           serviceOrderDetail!
-                      //               .data!
-                      //               .products!
-                      //               .service!
-                      //               .galleryImages!
-                      //               .map((imageUrl) {
-                      //                 return Builder(
-                      //                   builder: (
-                      //                     BuildContext context,
-                      //                   ) {
-                      //                     return Stack(
-                      //                       children: [
-                      //                         ClipRRect(
-                      //                           borderRadius:
-                      //                               BorderRadius.circular(
-                      //                                 10,
-                      //                               ),
-                      //                           child: CachedNetworkImage(
-                      //                             imageUrl: imageUrl,
-                      //                             fit: BoxFit.cover,
-                      //                             width:
-                      //                                 double.infinity,
-                      //                             placeholder:
-                      //                                 (
-                      //                                   context,
-                      //                                   url,
-                      //                                 ) => const Center(
-                      //                                   child: CircularProgressIndicator(
-                      //                                     color:
-                      //                                         AppColors
-                      //                                             .maincolor,
-                      //                                   ),
-                      //                                 ),
-                      //                             errorWidget:
-                      //                                 (
-                      //                                   context,
-                      //                                   url,
-                      //                                   error,
-                      //                                 ) => const Image(
-                      //                                   image: AssetImage(
-                      //                                     'assets/images/Applogo_remove_background.png',
-                      //                                   ),
-                      //                                 ),
-                      //                           ),
-                      //                         ),
-                      //                       ],
-                      //                     );
-                      //                   },
-                      //                 );
-                      //               })
-                      //               .toList(),
-                      //     ),
-                      (service == null ||
-                          galleryImages == null ||
-                          galleryImages.isEmpty)
-                          ? Container(
-                        height: 25.h,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.grey[200],
-                        ),
-                        alignment: Alignment.center,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: CachedNetworkImage(
-                            width: double.infinity,
-                            imageUrl: service?.images ?? "",
-                            fit: BoxFit.fill,
-                            placeholder:
-                                (context, url) => const Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.maincolor,
-                              ),
-                            ),
-                            errorWidget:
-                                (
-                                context,
-                                url,
-                                error,
-                                ) => const Image(
-                              image: AssetImage(
-                                'assets/images/Applogo_remove_background.png',
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                          : CarouselSlider(
-                        carouselController: _controller,
-                        options: CarouselOptions(
-                          height: 25.h,
-                          autoPlay: true,
-                          enlargeCenterPage: true,
-                          viewportFraction: 1.0,
-                          onPageChanged: (index, reason) {
-                            setState(() {
-                              _currentIndex = index;
-                            });
-                          },
-                        ),
-                        items:
-                        galleryImages
-                            .where(
-                              (img) => img.isNotEmpty,
-                        ) // khali string hata hoy to filter
-                            .map((imageUrl) {
-                          return Builder(
-                            builder: (
-                                BuildContext context,
-                                ) {
-                              return Stack(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius:
-                                    BorderRadius.circular(
-                                      10,
-                                    ),
-                                    child: CachedNetworkImage(
-                                      imageUrl: imageUrl,
-                                      fit: BoxFit.cover,
-                                      width:
-                                      double.infinity,
-                                      placeholder:
-                                          (
-                                          context,
-                                          url,
-                                          ) => const Center(
-                                        child: CircularProgressIndicator(
-                                          color:
-                                          AppColors
-                                              .maincolor,
-                                        ),
-                                      ),
-                                      errorWidget:
-                                          (
-                                          context,
-                                          url,
-                                          error,
-                                          ) => const Image(
-                                        image: AssetImage(
-                                          'assets/images/Applogo_remove_background.png',
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        })
-                            .toList(),
-                      ),
-                      SizedBox(height: 1.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children:
-                        serviceOrderDetail!
-                            .data!
-                            .products!
-                            .service!
-                            .galleryImages!
-                            .asMap()
-                            .entries
-                            .map((entry) {
-                          return GestureDetector(
-                            onTap:
-                                () => _controller.animateToPage(
-                              entry.key,
-                            ),
-                            child: Container(
-                              width:
-                              _currentIndex == entry.key
-                                  ? 10
-                                  : 8,
-                              height:
-                              _currentIndex == entry.key
-                                  ? 10
-                                  : 8,
-                              margin:
-                              const EdgeInsets.symmetric(
-                                horizontal: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color:
-                                _currentIndex == entry.key
-                                    ? AppColors.maincolor
-                                    : Colors.grey,
-                              ),
-                            ),
-                          );
-                        })
-                            .toList(),
-                      ),
-                      SizedBox(height: 1.h),
-                      SizedBox(height: 1.h),
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.local_mall,
-                                size: 18.sp,
-                                color:
-                                isDark
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                              SizedBox(width: 2.w),
-                              Text(
-                                "Order Id: #ORDERNO${serviceOrderDetail?.data?.order?.orderNo}",
-                                style: TextStyle(
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color:
-                                  isDark
-                                      ? Colors.white
-                                      : Colors.black,
-                                  fontFamily: AppConstants.manropeBold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 1.h),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.inventory,
-                                size: 18.sp,
-                                color:
-                                isDark
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                              SizedBox(width: 2.w),
-                              Text(
-                                "Collect Token: ${serviceOrderDetail?.data?.order?.tokenNo}",
-                                style: TextStyle(
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color:
-                                  isDark
-                                      ? Colors.white
-                                      : Colors.black,
-                                  fontFamily: AppConstants.manropeBold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          serviceOrderDetail
-                              ?.data
-                              ?.products
-                              ?.bookingDetails ==
-                              null
-                              ? const SizedBox()
-                              : SizedBox(height: 1.h),
-                          serviceOrderDetail
-                              ?.data
-                              ?.products
-                              ?.bookingDetails ==
-                              null
-                              ? const SizedBox()
-                              : Row(
-                            children: [
-                              Icon(
-                                Icons.date_range,
-                                size: 18.sp,
-                                color:
-                                isDark
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                              SizedBox(width: 2.w),
-                              Text(
-                                "Booking Confirm: ${formatDateTime(serviceOrderDetail?.data?.products?.bookingDetails?.bookingDatetime ?? "")}",
-                                style: TextStyle(
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color:
-                                  isDark
-                                      ? Colors.white
-                                      : Colors.black,
-                                  fontFamily:
-                                  AppConstants.manropeBold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 1.h),
-                          Row(
-                            children: [
-                              Icon(
-                                getStatusIconData(
-                                  serviceOrderDetail
-                                      ?.data
-                                      ?.order
-                                      ?.status ??
-                                      "",
-                                ),
-                                size: 18.sp,
-                                color: getStatusColor(
-                                  serviceOrderDetail
-                                      ?.data
-                                      ?.order
-                                      ?.status
-                                      ?.toString()
-                                      .capitalizeFirst ??
-                                      "",
-                                ),
-                              ),
-                              SizedBox(width: 2.w),
-                              Text(
-                                "Status: ${serviceOrderDetail?.data?.order?.status?.toString().capitalizeFirst ?? "Status"}",
-                                style: TextStyle(
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: getStatusColor(
-                                    orderDetailModel
-                                        ?.data
-                                        ?.order
-                                        ?.status
-                                        ?.toString()
-                                        .capitalizeFirst ??
-                                        "",
-                                  ),
-                                  fontFamily: AppConstants.manropeBold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 1.5.h),
-                      Text(
-                        serviceOrderDetail
-                            ?.data
-                            ?.products
-                            ?.service
-                            ?.title
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 6.h),
+                  TitleBar(
+                    title:
+                        serviceOrderDetail?.data?.products?.service?.title
                             .toString()
                             .capitalizeFirst ??
-                            "",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: AppConstants.manropeBold,
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text:
-                              "£${serviceOrderDetail?.data?.order?.totalAmount ?? ""}",
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.bold,
-                                color:
-                                isDark
-                                    ? Colors.white
-                                    : Colors.black,
-                                fontFamily: AppConstants.manrope,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      Container(
-                        width: 92.w,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: ReadMoreText(
-                          serviceOrderDetail
-                              ?.data
-                              ?.products
-                              ?.service
-                              ?.description ??
-                              "",
-                          trimLines: 4,
-                          trimLength: 145,
-                          colorClickableText: Colors.blue,
-                          trimMode: TrimMode.Length,
-                          trimCollapsedText: ' Show more',
-                          trimExpandedText: ' Show less',
-                          moreStyle: TextStyle(
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: AppConstants.manrope,
-                            letterSpacing: 1,
-                            color: AppColors.maincolor,
-                          ),
-                          lessStyle: TextStyle(
-                            fontSize: 15.sp,
-                            fontFamily: AppConstants.manrope,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1,
-                            color: AppColors.maincolor,
-                          ),
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            color: Colors.grey.shade500,
-                            fontWeight: FontWeight.normal,
-                            fontFamily: AppConstants.manrope,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      Text(
-                        "Payment Method",
-                        style: TextStyle(
-                          fontSize: 19.sp,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: AppConstants.manropeBold,
-                          color:
-                          isDark
-                              ? Colors.white
-                              : AppColors.maincolor,
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      serviceOrderDetail != null &&
-                          serviceOrderDetail
-                              ?.data
-                              ?.order
-                              ?.paymentGateway !=
-                              null
-                          ? Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 1.5.h),
-                          if (orderDetailModel!
-                              .data!
-                              .order
-                              ?.paymentGateway!
-                              .toLowerCase() ==
-                              'stripe')
-                            paymentOptionContainer(
-                              image:
-                              "assets/images/stripe_pay_image2.png",
-                              value: "Stripe",
-                            ),
-                          if (serviceOrderDetail!
-                              .data!
-                              .order
-                              ?.paymentGateway!
-                              .toLowerCase() ==
-                              'googlepay')
-                            paymentOptionContainer(
-                              image: "assets/images/google_pay.png",
-                              value: "Google Pay",
-                            ),
-                          if (serviceOrderDetail!
-                              .data!
-                              .order
-                              ?.paymentGateway!
-                              .toLowerCase() ==
-                              'applepay')
-                            paymentOptionContainer(
-                              image: "assets/images/apple_pay.png",
-                              value: "Apple Pay",
-                            ),
-                        ],
-                      )
-                          : const SizedBox(),
-                      SizedBox(height: 10.h),
-                    ],
+                        "",
+                    drawerCallback: () {},
+                    back: () {
+                      Get.back();
+                    },
                   ),
-                ),
-              ),
-            ],
-          ).paddingOnly(left: 3.w, right: 2.w)
-              : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 4.h),
-              TitleBar(
-                title:
-                orderDetailModel?.data?.products?.product?.name
-                    .toString()
-                    .capitalizeFirst ??
-                    "",
-                drawerCallback: () {},
-                back: () {
-                  Get.back();
-                },
-              ),
-              SizedBox(height: 2.h),
-              isLoading
-                  ? Loader().paddingOnly(top: 0.h)
-                  : Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      (orderDetailModel
-                          ?.data
-                          ?.products
-                          ?.product
-                          ?.images ==
-                          null ||
-                          (orderDetailModel
-                              ?.data
-                              ?.products
-                              ?.product
-                              ?.images)!
-                              .isEmpty)
-                          ? Container(
-                        height: 25.h,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.grey[200],
-                        ),
-                        alignment: Alignment.center,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: CachedNetworkImage(
-                            width: double.infinity,
-                            imageUrl:
-                            (orderDetailModel
-                                ?.data
-                                ?.products
-                                ?.product
-                                ?.image)
-                                .toString(),
-                            fit: BoxFit.fill,
-                            placeholder:
-                                (context, url) => const Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.maincolor,
-                              ),
-                            ),
-                            errorWidget:
-                                (
-                                context,
-                                url,
-                                error,
-                                ) => const Image(
-                              image: AssetImage(
-                                'assets/images/Applogo_remove_background.png',
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                          : CarouselSlider(
-                        carouselController: _controller,
-                        options: CarouselOptions(
-                          height: 25.h,
-                          autoPlay: true,
-                          enlargeCenterPage: true,
-                          viewportFraction: 1.0,
-                          onPageChanged: (index, reason) {
-                            setState(() {
-                              _currentIndex = index;
-                            });
-                          },
-                        ),
-                        items:
-                        orderDetailModel!
-                            .data!
-                            .products!
-                            .product!
-                            .images!
-                            .map((imageUrl) {
-                          return Builder(
-                            builder: (
-                                BuildContext context,
-                                ) {
-                              return ClipRRect(
-                                borderRadius:
-                                BorderRadius.circular(
-                                  10,
-                                ),
-                                child: CachedNetworkImage(
-                                  imageUrl: imageUrl,
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  placeholder:
-                                      (
-                                      context,
-                                      url,
-                                      ) => const Center(
-                                    child: CircularProgressIndicator(
-                                      color:
-                                      AppColors
-                                          .maincolor,
+                  SizedBox(height: 2.h),
+                  isLoading
+                      ? Loader().paddingOnly(top: 0.h)
+                      : Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // serviceOrderDetail!
+                              //         .data!
+                              //         .products!
+                              //         .service!
+                              //         .galleryImages!
+                              //         .isEmpty
+                              //     ? Container(
+                              //       height: 25.h,
+                              //       width: double.infinity,
+                              //       decoration: BoxDecoration(
+                              //         borderRadius: BorderRadius.circular(10),
+                              //         color: Colors.grey[200],
+                              //       ),
+                              //       alignment: Alignment.center,
+                              //       child: ClipRRect(
+                              //         borderRadius: BorderRadius.circular(10),
+                              //         child: CachedNetworkImage(
+                              //           width: double.infinity,
+                              //           imageUrl:
+                              //               serviceOrderDetail!
+                              //                   .data!
+                              //                   .products!
+                              //                   .service!
+                              //                   .images ??
+                              //               "",
+                              //           fit: BoxFit.fill,
+                              //           placeholder:
+                              //               (context, url) => const Center(
+                              //                 child: CircularProgressIndicator(
+                              //                   color: AppColors.maincolor,
+                              //                 ),
+                              //               ),
+                              //           errorWidget:
+                              //               (
+                              //                 context,
+                              //                 url,
+                              //                 error,
+                              //               ) => const Image(
+                              //                 image: AssetImage(
+                              //                   'assets/images/Applogo_remove_background.png',
+                              //                 ),
+                              //               ),
+                              //         ),
+                              //       ),
+                              //     )
+                              //     : CarouselSlider(
+                              //       carouselController: _controller,
+                              //       options: CarouselOptions(
+                              //         height: 25.h,
+                              //         autoPlay: true,
+                              //         enlargeCenterPage: true,
+                              //         viewportFraction: 1.0,
+                              //         onPageChanged: (index, reason) {
+                              //           setState(() {
+                              //             _currentIndex = index;
+                              //           });
+                              //         },
+                              //       ),
+                              //       items:
+                              //           serviceOrderDetail!
+                              //               .data!
+                              //               .products!
+                              //               .service!
+                              //               .galleryImages!
+                              //               .map((imageUrl) {
+                              //                 return Builder(
+                              //                   builder: (
+                              //                     BuildContext context,
+                              //                   ) {
+                              //                     return Stack(
+                              //                       children: [
+                              //                         ClipRRect(
+                              //                           borderRadius:
+                              //                               BorderRadius.circular(
+                              //                                 10,
+                              //                               ),
+                              //                           child: CachedNetworkImage(
+                              //                             imageUrl: imageUrl,
+                              //                             fit: BoxFit.cover,
+                              //                             width:
+                              //                                 double.infinity,
+                              //                             placeholder:
+                              //                                 (
+                              //                                   context,
+                              //                                   url,
+                              //                                 ) => const Center(
+                              //                                   child: CircularProgressIndicator(
+                              //                                     color:
+                              //                                         AppColors
+                              //                                             .maincolor,
+                              //                                   ),
+                              //                                 ),
+                              //                             errorWidget:
+                              //                                 (
+                              //                                   context,
+                              //                                   url,
+                              //                                   error,
+                              //                                 ) => const Image(
+                              //                                   image: AssetImage(
+                              //                                     'assets/images/Applogo_remove_background.png',
+                              //                                   ),
+                              //                                 ),
+                              //                           ),
+                              //                         ),
+                              //                       ],
+                              //                     );
+                              //                   },
+                              //                 );
+                              //               })
+                              //               .toList(),
+                              //     ),
+                              (service == null ||
+                                      galleryImages == null ||
+                                      galleryImages.isEmpty)
+                                  ? Container(
+                                    height: 25.h,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.grey[200],
                                     ),
-                                  ),
-                                  errorWidget:
-                                      (
-                                      context,
-                                      url,
-                                      error,
-                                      ) => const Center(
-                                    child: Icon(
-                                      Icons.error,
-                                      color:
-                                      AppColors
-                                          .maincolor,
+                                    alignment: Alignment.center,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: CachedNetworkImage(
+                                        width: double.infinity,
+                                        imageUrl: service?.images ?? "",
+                                        fit: BoxFit.fill,
+                                        placeholder:
+                                            (context, url) => const Center(
+                                              child: CircularProgressIndicator(
+                                                color: AppColors.maincolor,
+                                              ),
+                                            ),
+                                        errorWidget:
+                                            (
+                                              context,
+                                              url,
+                                              error,
+                                            ) => const Image(
+                                              image: AssetImage(
+                                                'assets/images/Applogo_remove_background.png',
+                                              ),
+                                            ),
+                                      ),
                                     ),
+                                  )
+                                  : CarouselSlider(
+                                    carouselController: _controller,
+                                    options: CarouselOptions(
+                                      height: 25.h,
+                                      autoPlay: true,
+                                      enlargeCenterPage: true,
+                                      viewportFraction: 1.0,
+                                      onPageChanged: (index, reason) {
+                                        setState(() {
+                                          _currentIndex = index;
+                                        });
+                                      },
+                                    ),
+                                    items:
+                                        galleryImages
+                                            .where(
+                                              (img) => img.isNotEmpty,
+                                            ) // khali string hata hoy to filter
+                                            .map((imageUrl) {
+                                              return Builder(
+                                                builder: (
+                                                  BuildContext context,
+                                                ) {
+                                                  return Stack(
+                                                    children: [
+                                                      ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              10,
+                                                            ),
+                                                        child: CachedNetworkImage(
+                                                          imageUrl: imageUrl,
+                                                          fit: BoxFit.cover,
+                                                          width:
+                                                              double.infinity,
+                                                          placeholder:
+                                                              (
+                                                                context,
+                                                                url,
+                                                              ) => const Center(
+                                                                child: CircularProgressIndicator(
+                                                                  color:
+                                                                      AppColors
+                                                                          .maincolor,
+                                                                ),
+                                                              ),
+                                                          errorWidget:
+                                                              (
+                                                                context,
+                                                                url,
+                                                                error,
+                                                              ) => const Image(
+                                                                image: AssetImage(
+                                                                  'assets/images/Applogo_remove_background.png',
+                                                                ),
+                                                              ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            })
+                                            .toList(),
                                   ),
-                                ),
-                              );
-                            },
-                          );
-                        })
-                            .toList(),
-                      ),
-
-                      SizedBox(height: 1.h),
-                      if (orderDetailModel
-                          ?.data
-                          ?.products
-                          ?.product
-                          ?.images !=
-                          null &&
-                          orderDetailModel!
-                              .data!
-                              .products!
-                              .product!
-                              .images!
-                              .isNotEmpty)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children:
-                          orderDetailModel!
-                              .data!
-                              .products!
-                              .product!
-                              .images!
-                              .asMap()
-                              .entries
-                              .map((entry) {
-                            return GestureDetector(
-                              onTap:
-                                  () => _controller
-                                  .animateToPage(entry.key),
-                              child: Container(
-                                width:
-                                _currentIndex == entry.key
-                                    ? 10
-                                    : 8,
-                                height:
-                                _currentIndex == entry.key
-                                    ? 10
-                                    : 8,
-                                margin:
-                                const EdgeInsets.symmetric(
-                                  horizontal: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color:
-                                  _currentIndex == entry.key
-                                      ? AppColors.maincolor
-                                      : Colors.grey,
-                                ),
+                              SizedBox(height: 1.h),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children:
+                                    serviceOrderDetail!
+                                        .data!
+                                        .products!
+                                        .service!
+                                        .galleryImages!
+                                        .asMap()
+                                        .entries
+                                        .map((entry) {
+                                          return GestureDetector(
+                                            onTap:
+                                                () => _controller.animateToPage(
+                                                  entry.key,
+                                                ),
+                                            child: Container(
+                                              width:
+                                                  _currentIndex == entry.key
+                                                      ? 10
+                                                      : 8,
+                                              height:
+                                                  _currentIndex == entry.key
+                                                      ? 10
+                                                      : 8,
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 4,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    _currentIndex == entry.key
+                                                        ? AppColors.maincolor
+                                                        : Colors.grey,
+                                              ),
+                                            ),
+                                          );
+                                        })
+                                        .toList(),
                               ),
-                            );
-                          })
-                              .toList(),
-                        )
-                      else
-                        const SizedBox.shrink(), // Or show a placeholder
-
-                      SizedBox(height: 1.h),
-                      SizedBox(height: 1.h),
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.local_mall,
-                                size: 18.sp,
-                                color:
-                                isDark
-                                    ? Colors.white
-                                    : Colors.black,
+                              SizedBox(height: 1.h),
+                              SizedBox(height: 1.h),
+                              Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.local_mall,
+                                        size: 18.sp,
+                                        color:
+                                            isDark
+                                                ? Colors.white
+                                                : Colors.black,
+                                      ),
+                                      SizedBox(width: 2.w),
+                                      Text(
+                                        "Order Id: #ORDERNO${serviceOrderDetail?.data?.order?.orderNo}",
+                                        style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              isDark
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                          fontFamily: AppConstants.manropeBold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 1.h),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.inventory,
+                                        size: 18.sp,
+                                        color:
+                                            isDark
+                                                ? Colors.white
+                                                : Colors.black,
+                                      ),
+                                      SizedBox(width: 2.w),
+                                      Text(
+                                        "Collect Token: ${serviceOrderDetail?.data?.order?.tokenNo}",
+                                        style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              isDark
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                          fontFamily: AppConstants.manropeBold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  serviceOrderDetail
+                                              ?.data
+                                              ?.products
+                                              ?.bookingDetails ==
+                                          null
+                                      ? const SizedBox()
+                                      : SizedBox(height: 1.h),
+                                  serviceOrderDetail
+                                              ?.data
+                                              ?.products
+                                              ?.bookingDetails ==
+                                          null
+                                      ? const SizedBox()
+                                      : Row(
+                                        children: [
+                                          Icon(
+                                            Icons.date_range,
+                                            size: 18.sp,
+                                            color:
+                                                isDark
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                          ),
+                                          SizedBox(width: 2.w),
+                                          Text(
+                                            "Booking Confirm: ${formatDateTime(serviceOrderDetail?.data?.products?.bookingDetails?.bookingDatetime ?? "")}",
+                                            style: TextStyle(
+                                              fontSize: 15.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color:
+                                                  isDark
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                              fontFamily:
+                                                  AppConstants.manropeBold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                  SizedBox(height: 1.h),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        getStatusIconData(
+                                          serviceOrderDetail
+                                                  ?.data
+                                                  ?.order
+                                                  ?.status ??
+                                              "",
+                                        ),
+                                        size: 18.sp,
+                                        color: getStatusColor(
+                                          serviceOrderDetail
+                                                  ?.data
+                                                  ?.order
+                                                  ?.status
+                                                  ?.toString()
+                                                  .capitalizeFirst ??
+                                              "",
+                                        ),
+                                      ),
+                                      SizedBox(width: 2.w),
+                                      Text(
+                                        "Status: ${serviceOrderDetail?.data?.order?.status?.toString().capitalizeFirst ?? "Status"}",
+                                        style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: getStatusColor(
+                                            orderDetailModel
+                                                    ?.data
+                                                    ?.order
+                                                    ?.status
+                                                    ?.toString()
+                                                    .capitalizeFirst ??
+                                                "",
+                                          ),
+                                          fontFamily: AppConstants.manropeBold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                              SizedBox(width: 2.w),
+                              SizedBox(height: 1.5.h),
                               Text(
-                                "Order Id: #ORDERNO${orderDetailModel?.data?.order?.orderNo}",
-                                style: TextStyle(
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color:
-                                  isDark
-                                      ? Colors.white
-                                      : Colors.black,
-                                  fontFamily: AppConstants.manropeBold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 1.h),
-                          Row(
-                            children: [
-                              Icon(Icons.inventory, size: 18.sp),
-                              SizedBox(width: 2.w),
-                              Text(
-                                "Collect Code: ${orderDetailModel?.data?.order?.tokenNo}",
-                                style: TextStyle(
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color:
-                                  isDark
-                                      ? Colors.white
-                                      : Colors.black,
-                                  fontFamily: AppConstants.manropeBold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 1.h),
-                          Row(
-                            children: [
-                              Icon(
-                                getStatusIconData(
-                                  orderDetailModel
-                                      ?.data
-                                      ?.order
-                                      ?.status ??
-                                      "",
-                                ),
-                                size: 18.sp,
-                                color: getStatusColor(
-                                  orderDetailModel?.data?.order?.status
-                                      ?.toString()
-                                      .capitalizeFirst ??
-                                      "",
-                                ),
-                              ),
-                              SizedBox(width: 2.w),
-                              Text(
-                                "Status: ${orderDetailModel?.data?.order?.status?.toString().capitalizeFirst ?? "Status"}",
-                                style: TextStyle(
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: getStatusColor(
-                                    orderDetailModel
+                                serviceOrderDetail
                                         ?.data
-                                        ?.order
-                                        ?.status
-                                        ?.toString()
+                                        ?.products
+                                        ?.service
+                                        ?.title
+                                        .toString()
                                         .capitalizeFirst ??
-                                        "",
-                                  ),
+                                    "",
+                                style: TextStyle(
+                                  color: Colors.white,
                                   fontFamily: AppConstants.manropeBold,
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
+                              SizedBox(height: 1.h),
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text:
+                                          "£${serviceOrderDetail?.data?.order?.totalAmount ?? ""}",
+                                      style: TextStyle(
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color:
+                                            isDark
+                                                ? Colors.white
+                                                : Colors.black,
+                                        fontFamily: AppConstants.manrope,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              Container(
+                                width: 92.w,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ReadMoreText(
+                                  serviceOrderDetail
+                                          ?.data
+                                          ?.products
+                                          ?.service
+                                          ?.description ??
+                                      "",
+                                  trimLines: 4,
+                                  trimLength: 145,
+                                  colorClickableText: Colors.blue,
+                                  trimMode: TrimMode.Length,
+                                  trimCollapsedText: ' Show more',
+                                  trimExpandedText: ' Show less',
+                                  moreStyle: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manrope,
+                                    letterSpacing: 1,
+                                    color: AppColors.maincolor,
+                                  ),
+                                  lessStyle: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontFamily: AppConstants.manrope,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1,
+                                    color: AppColors.maincolor,
+                                  ),
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    color: Colors.grey.shade500,
+                                    fontWeight: FontWeight.normal,
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              Text(
+                                "Payment Method",
+                                style: TextStyle(
+                                  fontSize: 19.sp,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: AppConstants.manropeBold,
+                                  color:
+                                      isDark
+                                          ? Colors.white
+                                          : AppColors.maincolor,
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              serviceOrderDetail != null &&
+                                      serviceOrderDetail
+                                              ?.data
+                                              ?.order
+                                              ?.paymentGateway !=
+                                          null
+                                  ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(height: 1.5.h),
+                                      if (orderDetailModel!
+                                              .data!
+                                              .order
+                                              ?.paymentGateway!
+                                              .toLowerCase() ==
+                                          'stripe')
+                                        paymentOptionContainer(
+                                          image:
+                                              "assets/images/stripe_pay_image2.png",
+                                          value: "Stripe",
+                                        ),
+                                      if (serviceOrderDetail!
+                                              .data!
+                                              .order
+                                              ?.paymentGateway!
+                                              .toLowerCase() ==
+                                          'googlepay')
+                                        paymentOptionContainer(
+                                          image: "assets/images/google_pay.png",
+                                          value: "Google Pay",
+                                        ),
+                                      if (serviceOrderDetail!
+                                              .data!
+                                              .order
+                                              ?.paymentGateway!
+                                              .toLowerCase() ==
+                                          'applepay')
+                                        paymentOptionContainer(
+                                          image: "assets/images/apple_pay.png",
+                                          value: "Apple Pay",
+                                        ),
+                                    ],
+                                  )
+                                  : const SizedBox(),
+                              SizedBox(height: 10.h),
                             ],
                           ),
-                        ],
+                        ),
                       ),
-                      SizedBox(height: 1.5.h),
-                      Text(
+                ],
+              ).paddingOnly(left: 3.w, right: 2.w)
+              : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 4.h),
+                  TitleBar(
+                    title:
                         orderDetailModel?.data?.products?.product?.name
                             .toString()
                             .capitalizeFirst ??
-                            "",
-                        style: TextStyle(
-                          fontFamily: AppConstants.manrope,
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : Colors.black,
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text:
-                              "£${orderDetailModel?.data?.products?.totalPrice ?? ""}",
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.bold,
-                                color:
-                                isDark
-                                    ? Color(0xffCBB88C)
-                                    : Colors.black,
-                                fontFamily: AppConstants.manrope,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      Container(
-                        width: 92.w,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: ReadMoreText(
-                          orderDetailModel
-                              ?.data
-                              ?.products
-                              ?.product
-                              ?.description ??
-                              "",
-                          trimLines: 4,
-                          trimLength: 145,
-                          colorClickableText: Colors.blue,
-                          trimMode: TrimMode.Length,
-                          trimCollapsedText: ' Show more',
-                          trimExpandedText: ' Show less',
-                          moreStyle: TextStyle(
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: AppConstants.manrope,
-                            letterSpacing: 1,
-                            color: AppColors.maincolor,
-                          ),
-                          lessStyle: TextStyle(
-                            fontSize: 15.sp,
-                            fontFamily: AppConstants.manrope,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1,
-                            color: AppColors.maincolor,
-                          ),
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            color:
-                            isDark
-                                ? Colors.white
-                                : Colors.grey.shade500,
-                            fontWeight: FontWeight.normal,
-                            fontFamily: AppConstants.manrope,
-                          ),
-                        ),
-                      ),
-
-                      SizedBox(height: 1.h),
-                      Text(
-                        "Payment Method",
-                        style: TextStyle(
-                          fontSize: 19.sp,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: AppConstants.manropeBold,
-                          color: isDark?Colors.white:AppColors.maincolor,
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      orderDetailModel != null &&
-                          orderDetailModel
-                              ?.data
-                              ?.order
-                              ?.paymentGateway !=
-                              null
-                          ? Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 1.5.h),
-                          if (orderDetailModel!
-                              .data!
-                              .order
-                              ?.paymentGateway!
-                              .toLowerCase() ==
-                              'stripe')
-                            paymentOptionContainer(
-                              image:
-                              "assets/images/stripe_pay_image2.png",
-                              value: "Stripe",
-                            ),
-                          if (orderDetailModel!
-                              .data!
-                              .order
-                              ?.paymentGateway!
-                              .toLowerCase() ==
-                              'googlepay')
-                            paymentOptionContainer(
-                              image: "assets/images/google_pay.png",
-                              value: "Google Pay",
-                            ),
-                          if (orderDetailModel!
-                              .data!
-                              .order
-                              ?.paymentGateway!
-                              .toLowerCase() ==
-                              'applepay')
-                            paymentOptionContainer(
-                              image: "assets/images/apple_pay.png",
-                              value: "Apple Pay",
-                            ),
-                        ],
-                      )
-                          : const SizedBox(),
-                      SizedBox(height: 1.h),
-                      orderDetailModel?.data?.order?.status ==
-                          "collected" ||
-                          orderDetailModel?.data?.order?.status ==
-                              "Collected" ||
-                          orderDetailModel?.data?.order?.status
-                              ?.toLowerCase() ==
-                              "declined" ||
-                          orderDetailModel?.data?.order?.status
-                              ?.toLowerCase() ==
-                              "cancelled"
-                          ? const SizedBox()
-                          : _buildOrderManagementSection(),
-                      SizedBox(height: 10.h),
-                    ],
+                        "",
+                    drawerCallback: () {},
+                    back: () {
+                      Get.back();
+                    },
                   ),
-                ),
-              ),
-            ],
-          ).paddingOnly(left: 2.w, right: 2.w),
+                  SizedBox(height: 2.h),
+                  isLoading
+                      ? Loader().paddingOnly(top: 0.h)
+                      : Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              (orderDetailModel
+                                              ?.data
+                                              ?.products
+                                              ?.product
+                                              ?.images ==
+                                          null ||
+                                      (orderDetailModel
+                                              ?.data
+                                              ?.products
+                                              ?.product
+                                              ?.images)!
+                                          .isEmpty)
+                                  ? Container(
+                                    height: 25.h,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.grey[200],
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: CachedNetworkImage(
+                                        width: double.infinity,
+                                        imageUrl:
+                                            (orderDetailModel
+                                                    ?.data
+                                                    ?.products
+                                                    ?.product
+                                                    ?.image)
+                                                .toString(),
+                                        fit: BoxFit.fill,
+                                        placeholder:
+                                            (context, url) => const Center(
+                                              child: CircularProgressIndicator(
+                                                color: AppColors.maincolor,
+                                              ),
+                                            ),
+                                        errorWidget:
+                                            (
+                                              context,
+                                              url,
+                                              error,
+                                            ) => const Image(
+                                              image: AssetImage(
+                                                'assets/images/Applogo_remove_background.png',
+                                              ),
+                                            ),
+                                      ),
+                                    ),
+                                  )
+                                  : CarouselSlider(
+                                    carouselController: _controller,
+                                    options: CarouselOptions(
+                                      height: 25.h,
+                                      autoPlay: true,
+                                      enlargeCenterPage: true,
+                                      viewportFraction: 1.0,
+                                      onPageChanged: (index, reason) {
+                                        setState(() {
+                                          _currentIndex = index;
+                                        });
+                                      },
+                                    ),
+                                    items:
+                                        orderDetailModel!
+                                            .data!
+                                            .products!
+                                            .product!
+                                            .images!
+                                            .map((imageUrl) {
+                                              return Builder(
+                                                builder: (
+                                                  BuildContext context,
+                                                ) {
+                                                  return ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                    child: CachedNetworkImage(
+                                                      imageUrl: imageUrl,
+                                                      fit: BoxFit.cover,
+                                                      width: double.infinity,
+                                                      placeholder:
+                                                          (
+                                                            context,
+                                                            url,
+                                                          ) => const Center(
+                                                            child: CircularProgressIndicator(
+                                                              color:
+                                                                  AppColors
+                                                                      .maincolor,
+                                                            ),
+                                                          ),
+                                                      errorWidget:
+                                                          (
+                                                            context,
+                                                            url,
+                                                            error,
+                                                          ) => const Center(
+                                                            child: Icon(
+                                                              Icons.error,
+                                                              color:
+                                                                  AppColors
+                                                                      .maincolor,
+                                                            ),
+                                                          ),
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            })
+                                            .toList(),
+                                  ),
+
+                              SizedBox(height: 1.h),
+                              if (orderDetailModel
+                                          ?.data
+                                          ?.products
+                                          ?.product
+                                          ?.images !=
+                                      null &&
+                                  orderDetailModel!
+                                      .data!
+                                      .products!
+                                      .product!
+                                      .images!
+                                      .isNotEmpty)
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children:
+                                      orderDetailModel!
+                                          .data!
+                                          .products!
+                                          .product!
+                                          .images!
+                                          .asMap()
+                                          .entries
+                                          .map((entry) {
+                                            return GestureDetector(
+                                              onTap:
+                                                  () => _controller
+                                                      .animateToPage(entry.key),
+                                              child: Container(
+                                                width:
+                                                    _currentIndex == entry.key
+                                                        ? 10
+                                                        : 8,
+                                                height:
+                                                    _currentIndex == entry.key
+                                                        ? 10
+                                                        : 8,
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 4,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color:
+                                                      _currentIndex == entry.key
+                                                          ? AppColors.maincolor
+                                                          : Colors.grey,
+                                                ),
+                                              ),
+                                            );
+                                          })
+                                          .toList(),
+                                )
+                              else
+                                const SizedBox.shrink(), // Or show a placeholder
+
+                              SizedBox(height: 1.h),
+                              SizedBox(height: 1.h),
+                              Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.local_mall,
+                                        size: 18.sp,
+                                        color:
+                                            isDark
+                                                ? Colors.white
+                                                : Colors.black,
+                                      ),
+                                      SizedBox(width: 2.w),
+                                      Text(
+                                        "Order Id: #ORDERNO${orderDetailModel?.data?.order?.orderNo}",
+                                        style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              isDark
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                          fontFamily: AppConstants.manropeBold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 1.h),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.inventory, size: 18.sp),
+                                      SizedBox(width: 2.w),
+                                      Text(
+                                        "Collect Code: ${orderDetailModel?.data?.order?.tokenNo}",
+                                        style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              isDark
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                          fontFamily: AppConstants.manropeBold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 1.h),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        getStatusIconData(
+                                          orderDetailModel
+                                                  ?.data
+                                                  ?.order
+                                                  ?.status ??
+                                              "",
+                                        ),
+                                        size: 18.sp,
+                                        color: getStatusColor(
+                                          orderDetailModel?.data?.order?.status
+                                                  ?.toString()
+                                                  .capitalizeFirst ??
+                                              "",
+                                        ),
+                                      ),
+                                      SizedBox(width: 2.w),
+                                      Text(
+                                        "Status: ${orderDetailModel?.data?.order?.status?.toString().capitalizeFirst ?? "Status"}",
+                                        style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: getStatusColor(
+                                            orderDetailModel
+                                                    ?.data
+                                                    ?.order
+                                                    ?.status
+                                                    ?.toString()
+                                                    .capitalizeFirst ??
+                                                "",
+                                          ),
+                                          fontFamily: AppConstants.manropeBold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 1.5.h),
+                              Text(
+                                orderDetailModel?.data?.products?.product?.name
+                                        .toString()
+                                        .capitalizeFirst ??
+                                    "",
+                                style: TextStyle(
+                                  fontFamily: AppConstants.manrope,
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark ? Colors.white : Colors.black,
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text:
+                                          "£${orderDetailModel?.data?.products?.totalPrice ?? ""}",
+                                      style: TextStyle(
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color:
+                                            isDark
+                                                ? Color(0xffCBB88C)
+                                                : Colors.black,
+                                        fontFamily: AppConstants.manrope,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              Container(
+                                width: 92.w,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ReadMoreText(
+                                  orderDetailModel
+                                          ?.data
+                                          ?.products
+                                          ?.product
+                                          ?.description ??
+                                      "",
+                                  trimLines: 4,
+                                  trimLength: 145,
+                                  colorClickableText: Colors.blue,
+                                  trimMode: TrimMode.Length,
+                                  trimCollapsedText: ' Show more',
+                                  trimExpandedText: ' Show less',
+                                  moreStyle: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manrope,
+                                    letterSpacing: 1,
+                                    color: AppColors.maincolor,
+                                  ),
+                                  lessStyle: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontFamily: AppConstants.manrope,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1,
+                                    color: AppColors.maincolor,
+                                  ),
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    color:
+                                        isDark
+                                            ? Colors.white
+                                            : Colors.grey.shade500,
+                                    fontWeight: FontWeight.normal,
+                                    fontFamily: AppConstants.manrope,
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox(height: 1.h),
+                              Text(
+                                "Payment Method",
+                                style: TextStyle(
+                                  fontSize: 19.sp,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: AppConstants.manropeBold,
+                                  color:
+                                      isDark
+                                          ? Colors.white
+                                          : AppColors.maincolor,
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              orderDetailModel != null &&
+                                      orderDetailModel
+                                              ?.data
+                                              ?.order
+                                              ?.paymentGateway !=
+                                          null
+                                  ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(height: 1.5.h),
+                                      if (orderDetailModel!
+                                              .data!
+                                              .order
+                                              ?.paymentGateway!
+                                              .toLowerCase() ==
+                                          'stripe')
+                                        paymentOptionContainer(
+                                          image:
+                                              "assets/images/stripe_pay_image2.png",
+                                          value: "Stripe",
+                                        ),
+                                      if (orderDetailModel!
+                                              .data!
+                                              .order
+                                              ?.paymentGateway!
+                                              .toLowerCase() ==
+                                          'googlepay')
+                                        paymentOptionContainer(
+                                          image: "assets/images/google_pay.png",
+                                          value: "Google Pay",
+                                        ),
+                                      if (orderDetailModel!
+                                              .data!
+                                              .order
+                                              ?.paymentGateway!
+                                              .toLowerCase() ==
+                                          'applepay')
+                                        paymentOptionContainer(
+                                          image: "assets/images/apple_pay.png",
+                                          value: "Apple Pay",
+                                        ),
+                                    ],
+                                  )
+                                  : const SizedBox(),
+                              SizedBox(height: 1.h),
+                              orderDetailModel?.data?.order?.status ==
+                                          "collected" ||
+                                      orderDetailModel?.data?.order?.status ==
+                                          "Collected" ||
+                                      orderDetailModel?.data?.order?.status
+                                              ?.toLowerCase() ==
+                                          "declined" ||
+                                      orderDetailModel?.data?.order?.status
+                                              ?.toLowerCase() ==
+                                          "cancelled"
+                                  ? const SizedBox()
+                                  : _buildOrderManagementSection(),
+                              SizedBox(height: 10.h),
+                            ],
+                          ),
+                        ),
+                      ),
+                ],
+              ).paddingOnly(left: 2.w, right: 2.w),
           if (isCancleOrder)
             Container(
               color: Colors.black.withValues(alpha: 0.3),
@@ -1088,107 +1092,107 @@ final isDark =theme.isDark;
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton:
-      (isLoading ||
-          orderDetailModel?.data?.order?.status == "Collected" ||
-          orderDetailModel?.data?.order?.status == "cancelled")
-          ? const SizedBox.shrink()
-          : (orderDetailModel?.data?.order?.status?.toLowerCase() ==
-          "declined" ||
-          orderDetailModel?.data?.order?.status?.toLowerCase() ==
-              "packing your bag" ||
-          orderDetailModel?.data?.order?.status?.toLowerCase() ==
-              "ready for collection")
-          ? Container(
-        height: 7.5.h,
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 4.w),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 10,
-              offset: Offset(0, -2),
-            ),
-          ],
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Material(
-                elevation: 1,
-                borderRadius: BorderRadius.circular(12),
-                child: batan(
-                  title: _getStatusMessage(
-                    orderDetailModel?.data?.order?.status,
-                  ),
-                  fontFamily: AppConstants.manropeBold,
-                  route: () {},
-                  color: getStatusColor(
-                    orderDetailModel?.data?.order?.status.toString() ??
-                        "",
-                  ),
-                  fontcolor: Colors.white,
-                  height: 5.h,
-                  fontsize: 15.sp,
-                  iconData: Icons.free_cancellation_outlined,
-                  radius: 12.0,
-                  width: 0,
+          (isLoading ||
+                  orderDetailModel?.data?.order?.status == "Collected" ||
+                  orderDetailModel?.data?.order?.status == "cancelled")
+              ? const SizedBox.shrink()
+              : (orderDetailModel?.data?.order?.status?.toLowerCase() ==
+                      "declined" ||
+                  orderDetailModel?.data?.order?.status?.toLowerCase() ==
+                      "packing your bag" ||
+                  orderDetailModel?.data?.order?.status?.toLowerCase() ==
+                      "ready for collection")
+              ? Container(
+                height: 7.5.h,
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                decoration:  BoxDecoration(
+                  color:theme.isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 10,
+                      offset: Offset(0, -2),
+                    ),
+                  ],
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                 ),
-              ),
-            ),
-          ],
-        ),
-      )
-          : (shouldShowCancelButton ||
-          (orderDetailModel?.data?.order?.status?.toLowerCase() ==
-              "pending approval")) &&
-          (orderDetailModel?.data?.products?.type == "service")
-          ? Container(
-        height: 7.5.h,
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 4.w),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 10,
-              offset: Offset(0, -2),
-            ),
-          ],
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Material(
-                elevation: 1,
-                borderRadius: BorderRadius.circular(12),
-                child: batan(
-                  title: "Cancel Order",
-                  route: () {
-                    showCancelConfirmationDialog(
-                      context: context,
-                      onConfirm: CancleOrder,
-                    );
-                  },
-                  fontFamily: AppConstants.manropeBold,
-                  color: AppColors.maincolor,
-                  fontcolor: AppColors.white,
-                  height: 5.h,
-                  fontsize: 15.sp,
-                  iconData: Icons.free_cancellation_outlined,
-                  radius: 12.0,
-                  width: 0,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Material(
+                        elevation: 1,
+                        borderRadius: BorderRadius.circular(12),
+                        child: batan(
+                          title: _getStatusMessage(
+                            orderDetailModel?.data?.order?.status,
+                          ),
+                          fontFamily: AppConstants.manropeBold,
+                          route: () {},
+                          color: getStatusColor(
+                            orderDetailModel?.data?.order?.status.toString() ??
+                                "",
+                          ),
+                          fontcolor: Colors.white,
+                          height: 5.h,
+                          fontsize: 15.sp,
+                          iconData: Icons.free_cancellation_outlined,
+                          radius: 12.0,
+                          width: 0,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ),
-          ],
-        ),
-      )
-          : const SizedBox.shrink(),
+              )
+              : (shouldShowCancelButton ||
+                      (orderDetailModel?.data?.order?.status?.toLowerCase() ==
+                          "pending approval")) &&
+                  (orderDetailModel?.data?.products?.type == "service")
+              ? Container(
+                height: 7.5.h,
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 10,
+                      offset: Offset(0, -2),
+                    ),
+                  ],
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Material(
+                        elevation: 1,
+                        borderRadius: BorderRadius.circular(12),
+                        child: batan(
+                          title: "Cancel Order",
+                          route: () {
+                            showCancelConfirmationDialog(
+                              context: context,
+                              onConfirm: CancleOrder,
+                            );
+                          },
+                          fontFamily: AppConstants.manropeBold,
+                          color: AppColors.maincolor,
+                          fontcolor: AppColors.white,
+                          height: 5.h,
+                          fontsize: 15.sp,
+                          iconData: Icons.free_cancellation_outlined,
+                          radius: 12.0,
+                          width: 0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+              : const SizedBox.shrink(),
     );
   }
 
@@ -1266,7 +1270,7 @@ final isDark =theme.isDark;
                     ),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: Material (
+                      child: Material(
                         elevation: 1,
                         borderRadius: BorderRadius.circular(12.0),
                         child: batan(
@@ -1395,22 +1399,22 @@ final isDark =theme.isDark;
       if (internet) {
         OrderProvider()
             .orderDetailApi(
-          loginModel?.data?.user?.id.toString() ?? "",
-          widget.orderid,
-          widget.orderProductID,
-        )
+              loginModel?.data?.user?.id.toString() ?? "",
+              widget.orderid,
+              widget.orderProductID,
+            )
             .then((response) async {
-          serviceOrderDetail = ServiceOrderDetail.fromJson(response.data);
-          if (response.statusCode == 200) {
-            setState(() {
-              isLoading = false;
+              serviceOrderDetail = ServiceOrderDetail.fromJson(response.data);
+              if (response.statusCode == 200) {
+                setState(() {
+                  isLoading = false;
+                });
+              } else {
+                setState(() {
+                  isLoading = false;
+                });
+              }
             });
-          } else {
-            setState(() {
-              isLoading = false;
-            });
-          }
-        });
       } else {
         setState(() {
           isLoading = false;
@@ -1426,22 +1430,22 @@ final isDark =theme.isDark;
       if (internet) {
         OrderProvider()
             .orderDetailApi(
-          loginModel?.data?.user?.id.toString() ?? "",
-          widget.orderid,
-          widget.orderProductID,
-        )
+              loginModel?.data?.user?.id.toString() ?? "",
+              widget.orderid,
+              widget.orderProductID,
+            )
             .then((response) async {
-          orderDetailModel = OrderDetailModel.fromJson(response.data);
-          if (response.statusCode == 200) {
-            setState(() {
-              isLoading = false;
+              orderDetailModel = OrderDetailModel.fromJson(response.data);
+              if (response.statusCode == 200) {
+                setState(() {
+                  isLoading = false;
+                });
+              } else {
+                setState(() {
+                  isLoading = false;
+                });
+              }
             });
-          } else {
-            setState(() {
-              isLoading = false;
-            });
-          }
-        });
       } else {
         setState(() {
           isLoading = false;
@@ -1502,7 +1506,7 @@ final isDark =theme.isDark;
     required String value,
   }) {
     String? selectedGateway =
-    orderDetailModel?.data?.order?.paymentGateway?.toLowerCase();
+        orderDetailModel?.data?.order?.paymentGateway?.toLowerCase();
     bool isSelected = selectedGateway == value.toLowerCase();
 
     return Container(
@@ -1510,9 +1514,9 @@ final isDark =theme.isDark;
       padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.8.h),
       decoration: BoxDecoration(
         color:
-        isSelected
-            ? AppColors.maincolor.withValues(alpha: 0.08)
-            : Colors.white,
+            isSelected
+                ? AppColors.maincolor.withValues(alpha: 0.08)
+                : Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isSelected ? AppColors.maincolor : Colors.grey.shade300,
@@ -1541,7 +1545,7 @@ final isDark =theme.isDark;
 
   Widget _buildOrderManagementSection() {
     final theme = Provider.of<ThemeController>(context, listen: false);
-    final isDark=theme.isDark;
+    final isDark = theme.isDark;
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 2.w),
       child: Column(
@@ -1553,7 +1557,7 @@ final isDark =theme.isDark;
               fontSize: 19.sp,
               fontWeight: FontWeight.bold,
               fontFamily: AppConstants.manropeBold,
-              color: isDark?Colors.white:Colors.black,
+              color: isDark ? Colors.white : Colors.black,
             ),
           ),
           SizedBox(height: 2.h),
@@ -1579,11 +1583,11 @@ final isDark =theme.isDark;
                 MessageScreen(
                   chatName: orderDetailModel?.data?.business?.businessName,
                   conciergeID:
-                  (orderDetailModel?.data?.business?.id).toString(),
+                      (orderDetailModel?.data?.business?.id).toString(),
                   type: "order",
                   image: orderDetailModel?.data?.business?.profile,
                   orderproductID:
-                  (orderDetailModel?.data?.products?.id).toString(),
+                      (orderDetailModel?.data?.products?.id).toString(),
                 ),
               );
             },
@@ -1595,11 +1599,11 @@ final isDark =theme.isDark;
 
   Widget _buildExpandableOrderTile() {
     final theme = Provider.of<ThemeController>(context, listen: false);
-    final isDark=theme.isDark;
+    final isDark = theme.isDark;
     return Container(
       margin: EdgeInsets.only(bottom: 2.w),
       decoration: BoxDecoration(
-        color: isDark?Color(0xff212121):Colors.white,
+        color: isDark ? Color(0xff212121) : Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -1631,7 +1635,7 @@ final isDark =theme.isDark;
                     ),
                     child: Icon(
                       Icons.location_on,
-                      color: isDark?Colors.white:AppColors.maincolor,
+                      color: isDark ? Colors.white : AppColors.maincolor,
                       size: 20.sp,
                     ),
                   ),
@@ -1646,7 +1650,7 @@ final isDark =theme.isDark;
                             fontSize: 18.sp,
                             fontWeight: FontWeight.normal,
                             fontFamily: AppConstants.manrope,
-                            color: isDark?Colors.white:Colors.black,
+                            color: isDark ? Colors.white : Colors.black,
                           ),
                         ),
                         SizedBox(height: 0.5.h),
@@ -1679,27 +1683,27 @@ final isDark =theme.isDark;
             duration: const Duration(milliseconds: 300),
             height: _isWhereMyOrderExpanded ? null : 0,
             child:
-            _isWhereMyOrderExpanded
-                ? Container(
-              width: double.infinity,
-              padding: EdgeInsets.fromLTRB(4.w, 0, 4.w, 3.w),
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: Colors.grey[200]!, width: 1),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 2.h),
-                  OrderStepsWidget(
-                    currentStatus:
-                    orderDetailModel?.data?.order?.status ?? "",
-                  ),
-                ],
-              ),
-            )
-                : const SizedBox.shrink(),
+                _isWhereMyOrderExpanded
+                    ? Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.fromLTRB(4.w, 0, 4.w, 3.w),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          top: BorderSide(color: Colors.grey[200]!, width: 1),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 2.h),
+                          OrderStepsWidget(
+                            currentStatus:
+                                orderDetailModel?.data?.order?.status ?? "",
+                          ),
+                        ],
+                      ),
+                    )
+                    : const SizedBox.shrink(),
           ),
         ],
       ),
@@ -1713,11 +1717,11 @@ final isDark =theme.isDark;
     required VoidCallback onTap,
   }) {
     final theme = Provider.of<ThemeController>(context, listen: false);
-    final isDark=theme.isDark;
+    final isDark = theme.isDark;
     return Container(
       margin: EdgeInsets.only(bottom: 2.w),
       decoration: BoxDecoration(
-        color:isDark?Color(0xff1A1A1A):Colors.white,
+        color: isDark ? Color(0xff1A1A1A) : Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -1736,15 +1740,19 @@ final isDark =theme.isDark;
             color: AppColors.maincolor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, color: isDark?Colors.white:AppColors.maincolor, size: 20.sp),
+          child: Icon(
+            icon,
+            color: isDark ? Colors.white : AppColors.maincolor,
+            size: 20.sp,
+          ),
         ),
         title: Text(
           title,
           style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.normal,
-              fontFamily: AppConstants.manrope,
-              color: isDark?Colors.white:Colors.black
+            fontSize: 18.sp,
+            fontWeight: FontWeight.normal,
+            fontFamily: AppConstants.manrope,
+            color: isDark ? Colors.white : Colors.black,
           ),
         ),
         subtitle: Text(
@@ -1774,7 +1782,7 @@ final isDark =theme.isDark;
 
     bool canAmend = isPendingApproval || isOrderPlaced;
     final theme = Provider.of<ThemeController>(context, listen: false);
-    final isDark=theme.isDark;
+    final isDark = theme.isDark;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1782,18 +1790,21 @@ final isDark =theme.isDark;
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          backgroundColor: isDark?Color(0xff1a1a1a):Colors.white,
+          backgroundColor: isDark ? Color(0xff1a1a1a) : Colors.white,
           title: Row(
             children: [
               Container(
                 padding: EdgeInsets.all(2.w),
                 decoration: BoxDecoration(
-                  color: isDark?Color(0xff212121):AppColors.maincolor.withValues(alpha: 0.1),
+                  color:
+                      isDark
+                          ? Color(0xff212121)
+                          : AppColors.maincolor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
                   Icons.edit,
-                  color: isDark?Colors.white:AppColors.maincolor,
+                  color: isDark ? Colors.white : AppColors.maincolor,
                   size: 20.sp,
                 ),
               ),
@@ -1804,7 +1815,7 @@ final isDark =theme.isDark;
                   fontSize: 19.sp,
                   fontWeight: FontWeight.bold,
                   fontFamily: AppConstants.manrope,
-                  color: isDark?Colors.white:Colors.black,
+                  color: isDark ? Colors.white : Colors.black,
                 ),
               ),
             ],
@@ -1839,7 +1850,7 @@ final isDark =theme.isDark;
                           fontSize: 17.sp,
                           fontWeight: FontWeight.w600,
                           color:
-                          canAmend ? Colors.blue[700] : Colors.orange[700],
+                              canAmend ? Colors.blue[700] : Colors.orange[700],
                           fontFamily: AppConstants.manrope,
                         ),
                       ),
@@ -1856,7 +1867,7 @@ final isDark =theme.isDark;
                       "Your order can be modified since it's still in the ${isPendingApproval ? 'pending approval' : 'order placed'} stage.",
                       style: TextStyle(
                         fontSize: 15.sp,
-                        color: isDark?Colors.white:Colors.grey[700],
+                        color: isDark ? Colors.white : Colors.grey[700],
                         fontFamily: AppConstants.manrope,
                         height: 1.5,
                       ),
@@ -1867,7 +1878,7 @@ final isDark =theme.isDark;
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
-                        color: isDark?Colors.white:Colors.black,
+                        color: isDark ? Colors.white : Colors.black,
                         fontFamily: AppConstants.manrope,
                       ),
                     ),
@@ -1890,7 +1901,7 @@ final isDark =theme.isDark;
                       "Unfortunately, orders cannot be modified once they have been confirmed by the store and are being prepared.",
                       style: TextStyle(
                         fontSize: 15.sp,
-                        color: isDark?Colors.white:Colors.grey[700],
+                        color: isDark ? Colors.white : Colors.grey[700],
                         fontFamily: AppConstants.manrope,
                         height: 1.5,
                       ),
@@ -1903,7 +1914,7 @@ final isDark =theme.isDark;
                           "• Items cannot be added or removed",
                           style: TextStyle(
                             fontSize: 15.sp,
-                            color: isDark?Colors.white:Colors.grey[600],
+                            color: isDark ? Colors.white : Colors.grey[600],
                             fontFamily: AppConstants.manrope,
                           ),
                         ),
@@ -1911,7 +1922,7 @@ final isDark =theme.isDark;
                           "• Quantities cannot be changed",
                           style: TextStyle(
                             fontSize: 15.sp,
-                            color: isDark?Colors.white:Colors.grey[600],
+                            color: isDark ? Colors.white : Colors.grey[600],
                             fontFamily: AppConstants.manrope,
                           ),
                         ),
@@ -1919,7 +1930,7 @@ final isDark =theme.isDark;
                           "• Delivery address cannot be modified",
                           style: TextStyle(
                             fontSize: 15.sp,
-                            color: isDark?Colors.white:Colors.grey[600],
+                            color: isDark ? Colors.white : Colors.grey[600],
                             fontFamily: AppConstants.manrope,
                           ),
                         ),
@@ -1941,15 +1952,20 @@ final isDark =theme.isDark;
                     AddToCartView(
                       isAmend: true,
                       businessID:
-                      orderDetailModel?.data?.business?.id.toString() ?? "",
+                          orderDetailModel?.data?.business?.id.toString() ?? "",
                       orderID:
-                      orderDetailModel?.data?.order?.id.toString() ?? "",
+                          orderDetailModel?.data?.order?.id.toString() ?? "",
                     ),
                   );
                 }
               },
-              color: isDark?Color(0xffCBB88C):canAmend ? AppColors.maincolor : AppColors.maincolor,
-              fontcolor: isDark?Colors.black:Colors.white,
+              color:
+                  isDark
+                      ? Color(0xffCBB88C)
+                      : canAmend
+                      ? AppColors.maincolor
+                      : AppColors.maincolor,
+              fontcolor: isDark ? Colors.black : Colors.white,
               height: 5.h,
               width: double.infinity,
               fontsize: 18,
@@ -1970,7 +1986,7 @@ final isDark =theme.isDark;
 
     bool canCancel = isPendingApproval || isOrderPlaced;
     final theme = Provider.of<ThemeController>(context, listen: false);
-    final isDark=theme.isDark;
+    final isDark = theme.isDark;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1978,18 +1994,21 @@ final isDark =theme.isDark;
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          backgroundColor: isDark?Color(0xff1a1a1a):Colors.white,
+          backgroundColor: isDark ? Color(0xff1a1a1a) : Colors.white,
           title: Row(
             children: [
               Container(
                 padding: EdgeInsets.all(2.w),
                 decoration: BoxDecoration(
-                  color: isDark?Color(0xff212121):AppColors.maincolor.withValues(alpha: 0.1),
+                  color:
+                      isDark
+                          ? Color(0xff212121)
+                          : AppColors.maincolor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
                   Icons.cancel,
-                  color: isDark?Colors.white:AppColors.maincolor,
+                  color: isDark ? Colors.white : AppColors.maincolor,
                   size: 20.sp,
                 ),
               ),
@@ -2000,7 +2019,7 @@ final isDark =theme.isDark;
                   fontSize: 19.sp,
                   fontWeight: FontWeight.bold,
                   fontFamily: AppConstants.manropeBold,
-                  color: isDark?Colors.white:Colors.black,
+                  color: isDark ? Colors.white : Colors.black,
                 ),
               ),
             ],
@@ -2051,7 +2070,7 @@ final isDark =theme.isDark;
                       "Your order can be cancelled since it's still in the ${isPendingApproval ? 'pending approval' : 'order placed'} stage.",
                       style: TextStyle(
                         fontSize: 15.sp,
-                        color:      isDark?Colors.white:Colors.grey[700],
+                        color: isDark ? Colors.white : Colors.grey[700],
                         fontFamily: AppConstants.manrope,
                         height: 1.5,
                       ),
@@ -2062,7 +2081,7 @@ final isDark =theme.isDark;
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
-                        color: isDark?Colors.white:Colors.black,
+                        color: isDark ? Colors.white : Colors.black,
                         fontFamily: AppConstants.manrope,
                       ),
                     ),
@@ -2071,7 +2090,7 @@ final isDark =theme.isDark;
                       "• You will receive a full refund\n• The cancellation will be immediate\n• You can place a new order anytime",
                       style: TextStyle(
                         fontSize: 15.sp,
-                        color: isDark?Colors.white:Colors.grey[600],
+                        color: isDark ? Colors.white : Colors.grey[600],
                         fontFamily: AppConstants.manrope,
                       ),
                     ),
@@ -2085,7 +2104,7 @@ final isDark =theme.isDark;
                       "Sorry, this order cannot be cancelled as it has already been confirmed by the store and is being prepared.",
                       style: TextStyle(
                         fontSize: 15.sp,
-                        color: isDark?Colors.white:Colors.grey[700],
+                        color: isDark ? Colors.white : Colors.grey[700],
                         fontFamily: AppConstants.manrope,
                         height: 1.5,
                       ),
@@ -2095,7 +2114,7 @@ final isDark =theme.isDark;
                       "If you have any concerns about your order, please contact our support team through live chat.",
                       style: TextStyle(
                         fontSize: 15.sp,
-                        color: isDark?Colors.white:Colors.grey[600],
+                        color: isDark ? Colors.white : Colors.grey[600],
                         fontFamily: AppConstants.manrope,
                         height: 1.4,
                       ),
@@ -2141,8 +2160,8 @@ final isDark =theme.isDark;
                             onConfirm: CancleOrder,
                           );
                         },
-                        color: isDark?Color(0xffCBB88C):AppColors.maincolor,
-                        fontcolor: isDark?Colors.black:Colors.white,
+                        color: isDark ? Color(0xffCBB88C) : AppColors.maincolor,
+                        fontcolor: isDark ? Colors.black : Colors.white,
                         height: 5.h,
                         fontsize: 16.sp,
                         radius: 12.0,
@@ -2276,135 +2295,135 @@ class OrderStepsWidget extends StatelessWidget {
     }
 
     int currentStatusIndex = steps.indexWhere(
-          (step) => step['status'] == lowerCaseStatus,
+      (step) => step['status'] == lowerCaseStatus,
     );
 
     return Column(
       children:
-      steps.asMap().entries.map((entry) {
-        int index = entry.key;
-        var step = entry.value;
-        bool isLast = index == steps.length - 1;
-        bool isCompleted = index <= currentStatusIndex;
-        bool isActive = index == currentStatusIndex;
+          steps.asMap().entries.map((entry) {
+            int index = entry.key;
+            var step = entry.value;
+            bool isLast = index == steps.length - 1;
+            bool isCompleted = index <= currentStatusIndex;
+            bool isActive = index == currentStatusIndex;
 
-        // 2. Status no prakar ane color nakki karo
-        _StatusType statusType = _getStatusType(
-          step['status']!,
-          index,
-          steps.length,
-        );
+            // 2. Status no prakar ane color nakki karo
+            _StatusType statusType = _getStatusType(
+              step['status']!,
+              index,
+              steps.length,
+            );
 
-        Color stepColor;
-        if (statusType == _StatusType.failed) {
-          stepColor = Colors.red;
-        } else if (statusType == _StatusType.completed) {
-          stepColor = Colors.green; // "Collected" mate Green
-        } else {
-          stepColor = AppColors.maincolor; // Normal In-Progress
-        }
+            Color stepColor;
+            if (statusType == _StatusType.failed) {
+              stepColor = Colors.red;
+            } else if (statusType == _StatusType.completed) {
+              stepColor = Colors.green; // "Collected" mate Green
+            } else {
+              stepColor = AppColors.maincolor; // Normal In-Progress
+            }
 
-        // Active step mate color
-        Color activeColor = isActive ? stepColor : AppColors.maincolor;
+            // Active step mate color
+            Color activeColor = isActive ? stepColor : AppColors.maincolor;
 
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                isActive
-                    ? LiveStatusIndicator(
-                  // *** AA WIDGET HAVE NAVI "GLOWING ORB" EFFECT BATAVSHE ***
-                  color: activeColor,
-                  child: _buildStatusCircle(
-                    step['status'],
-                    isCompleted,
-                    isActive,
-                    activeColor,
-                  ),
-                )
-                    : _buildStatusCircle(
-                  step['status'],
-                  isCompleted,
-                  isActive,
-                  stepColor,
-                ),
-                if (!isLast)
-                  Container(
-                    width: 2,
-                    height: 30,
-                    color:
-                    index < currentStatusIndex
-                        ? stepColor.withValues(alpha: 0.5)
-                        : Colors.grey[300],
-                    margin: const EdgeInsets.symmetric(vertical: 2),
-                  ),
-              ],
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(bottom: isLast ? 0 : 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Column(
                   children: [
-                    Text(
-                      step['title'],
-                      style: TextStyle(
-                        fontSize: isActive ? 17.5.sp : 16.5.sp,
-                        fontWeight:
-                        isActive
-                            ? FontWeight.bold
-                            : isCompleted
-                            ? FontWeight.w600
-                            : FontWeight.normal,
-                        color:
-                        isActive
-                            ? activeColor
-                            : isCompleted
-                            ? Colors.black
-                            : Colors.grey[600],
-                        fontFamily: AppConstants.manropeBold
-                      ),
-                    ),
-                    if (isActive)
-                      Container(
-                        margin: const EdgeInsets.only(top: 8),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: activeColor.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          (statusType == _StatusType.failed)
-                              ? step['title'] // "Declined" or "Cancelled"
-                              : "Live Status",
-                          style: TextStyle(
-                            fontSize: 13.sp,
-                            color: activeColor,
-                            fontWeight: FontWeight.bold,
+                    isActive
+                        ? LiveStatusIndicator(
+                          // *** AA WIDGET HAVE NAVI "GLOWING ORB" EFFECT BATAVSHE ***
+                          color: activeColor,
+                          child: _buildStatusCircle(
+                            step['status'],
+                            isCompleted,
+                            isActive,
+                            activeColor,
                           ),
+                        )
+                        : _buildStatusCircle(
+                          step['status'],
+                          isCompleted,
+                          isActive,
+                          stepColor,
                         ),
+                    if (!isLast)
+                      Container(
+                        width: 2,
+                        height: 30,
+                        color:
+                            index < currentStatusIndex
+                                ? stepColor.withValues(alpha: 0.5)
+                                : Colors.grey[300],
+                        margin: const EdgeInsets.symmetric(vertical: 2),
                       ),
                   ],
                 ),
-              ),
-            ),
-          ],
-        );
-      }).toList(),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: isLast ? 0 : 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          step['title'],
+                          style: TextStyle(
+                            fontSize: isActive ? 17.5.sp : 16.5.sp,
+                            fontWeight:
+                                isActive
+                                    ? FontWeight.bold
+                                    : isCompleted
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                            color:
+                                isActive
+                                    ? activeColor
+                                    : isCompleted
+                                    ? Colors.black
+                                    : Colors.grey[600],
+                            fontFamily: AppConstants.manropeBold,
+                          ),
+                        ),
+                        if (isActive)
+                          Container(
+                            margin: const EdgeInsets.only(top: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: activeColor.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              (statusType == _StatusType.failed)
+                                  ? step['title'] // "Declined" or "Cancelled"
+                                  : "Live Status",
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                color: activeColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }).toList(),
     );
   }
 
   Widget _buildStatusCircle(
-      String status,
-      bool isCompleted,
-      bool isActive,
-      Color color,
-      ) {
+    String status,
+    bool isCompleted,
+    bool isActive,
+    Color color,
+  ) {
     IconData iconData = getStatusIconData(status);
     if (isCompleted && !isActive) {
       iconData = Icons.check;
@@ -2419,17 +2438,17 @@ class OrderStepsWidget extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color:
-        isActive
-            ? color
-            : isCompleted
-            ? color.withValues(alpha: 0.7)
-            : Colors.grey[300],
+            isActive
+                ? color
+                : isCompleted
+                ? color.withValues(alpha: 0.7)
+                : Colors.grey[300],
         border: isActive ? Border.all(color: color, width: 2) : null,
       ),
       child:
-      isCompleted
-          ? Icon(iconData, color: Colors.white, size: isActive ? 12 : 10)
-          : const SizedBox.shrink(),
+          isCompleted
+              ? Icon(iconData, color: Colors.white, size: isActive ? 12 : 10)
+              : const SizedBox.shrink(),
     );
   }
 

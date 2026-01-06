@@ -1,6 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, constant_identifier_names
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wavee/Services/themeServices.dart';
@@ -130,7 +130,8 @@ class AppConstants {
 
   /// Og Url
   static String BASEURL = "https://portal.wavee.ai/api/";
-
+  static String weatherApi =
+      dotenv.env['WEATHER_API'] ?? 'NO WEATHER_API FOUND';
   static const String path = "assets/Svg/";
   static const String manrope1 = "AlbertSans-SemiBold";
 
@@ -185,6 +186,14 @@ class AppConstants {
   static const String securityIcon = "assets/bottomSvgs/securty.svg";
   static const String piracyIcon = "assets/bottomSvgs/priicy.svg";
   static const String personIcon = "assets/bottomSvgs/person.svg";
+  static const String dark = "assets/Svg/dark.svg";
+  static const String light = "assets/Svg/light.svg";
+  static const String emptyCart = "assets/Svg/emptyCart.svg";
+  static const String weatherCloudy = "assets/Svg/weather_cloudy.svg";
+  static const String weatherRainy = "assets/Svg/weather_rainy.svg";
+  static const String weatherThunder = "assets/Svg/weather_thunder.svg";
+  static const String weatherSnow = "assets/Svg/weather_snow.svg";
+  static const String weatherFog = "assets/Svg/weather_fog.svg";
 }
 
 /// ============================================================
@@ -303,7 +312,7 @@ StroyModel? stroymodel;
 /// ============================================================
 /// DATA CLEANUP (LOGOUT)
 /// ============================================================
- handleDataClear(BuildContext context) async {
+handleDataClear(BuildContext context) async {
   print("🧹 GlobalStore: Wiping all sensitive user data...");
 
   /// --- Authentication & Profile ---

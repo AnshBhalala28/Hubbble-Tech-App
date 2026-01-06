@@ -216,7 +216,8 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                                                         isDark
                                                             ? Color(0xffbdab82)
                                                             : Colors.black54,
-                                                    fontFamily: AppConstants.manrope
+                                                    fontFamily:
+                                                        AppConstants.manrope,
                                                   ),
                                                 ),
                                                 const Spacer(),

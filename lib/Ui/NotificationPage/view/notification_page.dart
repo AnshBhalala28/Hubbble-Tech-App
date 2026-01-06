@@ -1,6 +1,6 @@
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
@@ -62,9 +62,10 @@ class _NotificationPageState extends State<NotificationPage> {
               SizedBox(height: 2.h),
               // નોટિફિકેશન લિસ્ટ
               Expanded(
-                child: isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : _buildNotificationList(isDark),
+                child:
+                    isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : _buildNotificationList(isDark),
               ),
             ],
           ),
@@ -125,10 +126,12 @@ class _NotificationPageState extends State<NotificationPage> {
         } else if (type == "visitor") {
           Get.to(() => const VisitorScreen());
         } else if (type == "order") {
-          Get.to(() => Orderdetail_Screen(
-            orderid: notification?.msgTo ?? "",
-            orderProductID: notification?.chatCreateId.toString() ?? "",
-          ));
+          Get.to(
+            () => Orderdetail_Screen(
+              orderid: notification?.msgTo ?? "",
+              orderProductID: notification?.chatCreateId.toString() ?? "",
+            ),
+          );
         }
       },
       child: Container(
@@ -138,16 +141,18 @@ class _NotificationPageState extends State<NotificationPage> {
           color: isDark ? const Color(0xFF252525) : Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isDark
-                ? Colors.white.withOpacity(0.1)
-                : const Color(0xFFD6DBEA).withOpacity(0.5),
+            color:
+                isDark
+                    ? Colors.white.withOpacity(0.1)
+                    : const Color(0xFFD6DBEA).withOpacity(0.5),
             width: 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: isDark
-                  ? Colors.black.withOpacity(0.3)
-                  : const Color(0xFFD6DBEA).withOpacity(0.4),
+              color:
+                  isDark
+                      ? Colors.black.withOpacity(0.3)
+                      : const Color(0xFFD6DBEA).withOpacity(0.4),
               blurRadius: 10,
               spreadRadius: 1,
               offset: const Offset(0, 4),
@@ -162,7 +167,8 @@ class _NotificationPageState extends State<NotificationPage> {
               height: 5.5.h,
               width: 5.5.h,
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF3E3C35) : const Color(0xFFF0F2F8),
+                color:
+                    isDark ? const Color(0xFF3E3C35) : const Color(0xFFF0F2F8),
                 shape: BoxShape.circle,
               ),
               child: Center(
@@ -188,7 +194,8 @@ class _NotificationPageState extends State<NotificationPage> {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15.sp,
-                            color: isDark ? Colors.white : const Color(0xFF1A1A1A),
+                            color:
+                                isDark ? Colors.white : const Color(0xFF1A1A1A),
                             fontFamily: AppConstants.manropeBold,
                           ),
                         ),
@@ -207,7 +214,8 @@ class _NotificationPageState extends State<NotificationPage> {
                     notification?.data ?? "No description available",
                     style: TextStyle(
                       fontSize: 13.sp,
-                      color: isDark ? Colors.grey[400] : const Color(0xFF7A869A),
+                      color:
+                          isDark ? Colors.grey[400] : const Color(0xFF7A869A),
                       fontFamily: AppConstants.manrope,
                     ),
                   ),
@@ -227,7 +235,9 @@ class _NotificationPageState extends State<NotificationPage> {
     String chatType = notification?.msgTo ?? "";
 
     if (notification?.conciergeProfile != null) {
-      chatName = "${notification?.conciergeProfile?.firstName ?? ''} ${notification?.conciergeProfile?.lastName ?? ''}".trim();
+      chatName =
+          "${notification?.conciergeProfile?.firstName ?? ''} ${notification?.conciergeProfile?.lastName ?? ''}"
+              .trim();
       if (notification?.conciergeProfile?.conciergeImage?.isNotEmpty ?? false) {
         profileImage = notification.conciergeProfile!.conciergeImage!.first;
       }
@@ -236,23 +246,31 @@ class _NotificationPageState extends State<NotificationPage> {
       profileImage = notification?.businessProfile?.profile ?? '';
     }
 
-    Get.to(() => MessageScreen(
-      chatName: chatName,
-      conciergeID: notification?.chatCreateId.toString() ?? "",
-      type: chatType,
-      image: profileImage,
-    ));
+    Get.to(
+      () => MessageScreen(
+        chatName: chatName,
+        conciergeID: notification?.chatCreateId.toString() ?? "",
+        type: chatType,
+        image: profileImage,
+      ),
+    );
   }
 
   // ટાઈપ મુજબ આઈકોન નક્કી કરવા
   IconData _getIconByType(String? type) {
     switch (type?.toLowerCase()) {
-      case 'parcel': return Icons.inventory_2_outlined;
-      case 'visitor': return Icons.person_add_alt_1_outlined;
-      case 'messageboard': return Icons.dashboard_customize_outlined;
-      case 'chat': return Icons.chat_bubble_outline;
-      case 'order': return Icons.shopping_bag_outlined;
-      default: return Icons.notifications_none_rounded;
+      case 'parcel':
+        return Icons.inventory_2_outlined;
+      case 'visitor':
+        return Icons.person_add_alt_1_outlined;
+      case 'messageboard':
+        return Icons.dashboard_customize_outlined;
+      case 'chat':
+        return Icons.chat_bubble_outline;
+      case 'order':
+        return Icons.shopping_bag_outlined;
+      default:
+        return Icons.notifications_none_rounded;
     }
   }
 
@@ -275,7 +293,9 @@ class _NotificationPageState extends State<NotificationPage> {
         try {
           await NotificationProvider().notificationReadApi(notificationId);
           getnotificationCount();
-        } catch (e) { log("Read Error: $e"); }
+        } catch (e) {
+          log("Read Error: $e");
+        }
       }
     });
   }
