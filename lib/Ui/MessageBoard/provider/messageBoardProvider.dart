@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
+// Adjust these imports to match your project structure
 import '../../../Utils/apiConfig.dart';
 import '../../../Utils/apiEndpoint.dart';
 import '../../../Utils/file_validation.dart';
@@ -8,17 +9,20 @@ import '../../../Utils/responses.dart';
 import '../../../Utils/storeUserData.dart';
 
 class MessageBoardProvider extends ChangeNotifier {
+  // --- Create Post with Images ---
   Future<Response> addPostApiWithImages({
     required Map<String, String> bodyData,
     required List<dynamic> images, // List<XFile>
   }) async {
     try {
+      // 1. SECURITY: Validate all files before processing
       for (var image in images) {
         await FileValidation.validate(image.path);
       }
 
       String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
+
       FormData formData = FormData.fromMap({
         ...bodyData,
         ...{
@@ -40,22 +44,23 @@ class MessageBoardProvider extends ChangeNotifier {
     } on DioException catch (e) {
       throw Exception(handleDioError(e));
     } catch (e) {
+      // Re-throw validation errors so the UI can display them
       rethrow;
     }
   }
 
+  // --- Local Post (Text only) ---
   Future<Response> localPostApi(Map<String, String> bodyData) async {
     try {
       String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
 
-      // Increase timeouts
       dio.options.connectTimeout = const Duration(seconds: 15);
       dio.options.receiveTimeout = const Duration(seconds: 30);
 
       final response = await dio.post(
         ApiEndpoint.localPost,
-        data: FormData.fromMap(bodyData), // send as form-data
+        data: FormData.fromMap(bodyData),
         options: Options(
           headers: {
             'X-Auth-Token': token,
@@ -72,12 +77,14 @@ class MessageBoardProvider extends ChangeNotifier {
     }
   }
 
+  // --- Create Group ---
   Future<Response> createGroupApi({
     required Map<String, String> bodyData,
     required List<dynamic> images, // List<XFile>
     required List<String> memberIds,
   }) async {
     try {
+      // 1. SECURITY: Validate image
       if (images.isNotEmpty) {
         await FileValidation.validate(images.first.path);
       }
@@ -112,6 +119,7 @@ class MessageBoardProvider extends ChangeNotifier {
     }
   }
 
+  // --- Send Message ---
   Future<Response> sendMessageApi(Map<String, String> bodyData) async {
     try {
       String token = await SaveDataLocal.getValidToken();
@@ -123,11 +131,10 @@ class MessageBoardProvider extends ChangeNotifier {
       final Map<String, dynamic> formMap = {...bodyData};
 
       if (filePath != null && filePath.isNotEmpty) {
+        // 1. SECURITY: Validate file
         await FileValidation.validate(filePath);
+
         final mediaType = FileValidation.getMediaType(filePath);
-        if (mediaType == null) {
-          throw Exception("Unsupported file type");
-        }
 
         formMap['files'] = await MultipartFile.fromFile(
           filePath,
@@ -153,18 +160,18 @@ class MessageBoardProvider extends ChangeNotifier {
     }
   }
 
+  // --- Add Like/Comment ---
   Future<Response> addLikeCommentApi(Map<String, String> bodyData) async {
     try {
       String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
 
-      // Increase timeouts
       dio.options.connectTimeout = const Duration(seconds: 15);
       dio.options.receiveTimeout = const Duration(seconds: 30);
 
       final response = await dio.post(
         ApiEndpoint.addLikeComment,
-        data: FormData.fromMap(bodyData), // safer for Laravel form data
+        data: FormData.fromMap(bodyData),
         options: Options(
           headers: {
             'X-Auth-Token': token,
@@ -181,6 +188,7 @@ class MessageBoardProvider extends ChangeNotifier {
     }
   }
 
+  // --- Get Post Comments ---
   Future<Response> getPostCommentApi(Map<String, String> bodyData) async {
     try {
       String token = await SaveDataLocal.getValidToken();
@@ -198,6 +206,7 @@ class MessageBoardProvider extends ChangeNotifier {
     }
   }
 
+  // --- Delete Post ---
   Future<Response> localPostDeleteApi(Map<String, String> bodyData) async {
     try {
       String token = await SaveDataLocal.getValidToken();
@@ -215,6 +224,7 @@ class MessageBoardProvider extends ChangeNotifier {
     }
   }
 
+  // --- Get User/Friend Info ---
   Future<Response> appFriendUserPersonalInfoApi(
     Map<String, String> bodyData,
   ) async {
@@ -235,11 +245,13 @@ class MessageBoardProvider extends ChangeNotifier {
     }
   }
 
+  // --- Edit Post ---
   Future<Response> editPostApi({
     required Map<String, String> bodyData,
     required List<dynamic> images, // List<XFile>
   }) async {
     try {
+      // 1. SECURITY: Validate images
       for (var image in images) {
         await FileValidation.validate(image.path);
       }

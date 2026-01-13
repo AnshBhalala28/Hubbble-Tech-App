@@ -25,7 +25,6 @@ class OrderProvider extends ChangeNotifier {
         "URL VAE${ApiEndpoint.myOrder}?user_id=$userID&type=$type&status=$status&page=$page",
       );
       throw Exception(handleDioError(e));
-
     } catch (e) {
       print(
         "URL VAE${ApiEndpoint.myOrder}?user_id=$userID&type=$type&status=$status&page=$page",

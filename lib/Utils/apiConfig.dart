@@ -18,7 +18,7 @@ class DioHelper {
 
       // Load the SSL certificate from assets
       final sslCert = await rootBundle.load(
-        'assets/certificates/api_cert3.pem',
+        'assets/certificates/wavee_ai_cert.pem',
       );
 
       // Create a SecurityContext that trusts system roots AND our specific certificate

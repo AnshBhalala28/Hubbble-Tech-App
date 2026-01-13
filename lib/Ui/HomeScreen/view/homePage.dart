@@ -25,7 +25,6 @@ import 'package:wavee/Ui/CommunityScreen/view/communityScreen.dart';
 import 'package:wavee/Ui/Event/view/eventScreen.dart';
 import 'package:wavee/Ui/Manintenance/view/maintenanceView.dart';
 import 'package:wavee/Ui/Parcel/view/parcelViewScreen.dart';
-import 'package:wavee/Ui/Spotlight/view/spotlightView.dart';
 import 'package:wavee/Ui/ViewProfile/modal/profile_model.dart';
 import 'package:wavee/Ui/ViewProfile/view/viewProfile.dart';
 import 'package:wavee/Ui/Visitor/view/visitorsScreen.dart';
@@ -56,7 +55,6 @@ import '../modal/chatShowCountModal.dart';
 import '../modal/messageBoardModal.dart';
 import '../modal/parcelShowCount.dart';
 import '../modal/visitorShowCountModel.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class HomePage extends StatefulWidget {
   int? selected;

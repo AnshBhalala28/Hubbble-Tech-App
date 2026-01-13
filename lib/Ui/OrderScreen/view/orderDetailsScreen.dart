@@ -1106,8 +1106,8 @@ class _Orderdetail_ScreenState extends State<Orderdetail_Screen> {
                 height: 7.5.h,
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(horizontal: 4.w),
-                decoration:  BoxDecoration(
-                  color:theme.isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
+                decoration: BoxDecoration(
+                  color: theme.isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black12,

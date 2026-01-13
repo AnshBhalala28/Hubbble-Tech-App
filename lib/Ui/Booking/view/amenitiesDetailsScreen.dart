@@ -2697,7 +2697,7 @@ class _Form_ScreenState extends State<Form_Screen> {
     required String location,
     required String attendeeInitials,
   }) {
-    final theme = context.watch<ThemeController>();
+    final theme = Provider.of<ThemeController>(context, listen: false);
 
     showDialog(
       context: context,

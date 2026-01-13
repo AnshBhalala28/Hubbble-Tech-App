@@ -433,11 +433,7 @@ class _MessageboardState extends State<Messageboard> {
                           borderRadius: BorderRadius.circular(20),
                           dropdownColor: Colors.white,
                           selectedItemBuilder: (BuildContext context) {
-                            return [
-
-                              'My Building',
-                              'Local',
-                            ].map((String value) {
+                            return ['My Building', 'Local'].map((String value) {
                               return Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
@@ -456,11 +452,7 @@ class _MessageboardState extends State<Messageboard> {
                             }).toList();
                           },
                           items:
-                              [
-
-                                'My Building',
-                                'Local',
-                              ].map((String value) {
+                              ['My Building', 'Local'].map((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
                                   child: Padding(
@@ -764,8 +756,7 @@ class _MessageboardState extends State<Messageboard> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-
-                              selectedOption == "My Building"
+                      selectedOption == "My Building"
                           ? messageBoardModal?.data?.length == 0 ||
                                   messageBoardModal?.data?.length == null
                               ? Center(

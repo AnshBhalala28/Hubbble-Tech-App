@@ -271,7 +271,7 @@ class _LoginScreenState extends State<LoginScreen> {
       keyboardType: keyboardType,
       validator: validator,
 
-      style: TextStyle(color: kWhiteText,fontFamily: AppConstants.manrope),
+      style: TextStyle(color: kWhiteText, fontFamily: AppConstants.manrope),
       cursorColor: kAccentColor,
       decoration: InputDecoration(
         hintText: hint,

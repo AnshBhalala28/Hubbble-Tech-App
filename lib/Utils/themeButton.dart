@@ -191,16 +191,18 @@ class ThemeToggleButton extends StatelessWidget {
                   AnimatedAlign(
                     duration: const Duration(milliseconds: 250),
                     curve: Curves.easeInOut,
-                    alignment: theme.isDark
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
+                    alignment:
+                        theme.isDark
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
                     child: Container(
                       height: knobSize,
                       width: knobSize,
                       decoration: BoxDecoration(
-                        color: theme.isDark
-                            ? const Color(0xFF4B5D8A)
-                            : const Color(0xFFC5B388),
+                        color:
+                            theme.isDark
+                                ? const Color(0xFF4B5D8A)
+                                : const Color(0xFFC5B388),
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
@@ -212,9 +214,7 @@ class ThemeToggleButton extends StatelessWidget {
                       ),
                       child: Center(
                         child: SvgPicture.asset(
-                          theme.isDark
-                              ? AppConstants.dark
-                              : AppConstants.light,
+                          theme.isDark ? AppConstants.dark : AppConstants.light,
                           height: iconSize,
                           width: iconSize,
                           colorFilter: const ColorFilter.mode(

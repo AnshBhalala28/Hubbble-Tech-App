@@ -68,7 +68,7 @@ class _Order_ScreenState extends State<Order_Screen> {
     "Booking Confirmed",
   ];
 
-    String selectedType = "products";
+  String selectedType = "products";
 
   @override
   void initState() {

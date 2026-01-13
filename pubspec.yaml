@@ -119,10 +119,9 @@ flutter:
     - assets/
     - assets/images/
     - assets/Svg/
-#    - assets/certificates/wavee_cert.pem
-    - assets/certificates/api_cert3.pem
+    - assets/bottomSvgs/
+    - assets/certificates/wavee_ai_cert.pem
     - .env
-    # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
