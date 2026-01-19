@@ -67,7 +67,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
           SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(height: 4.h),
+                SizedBox(height: 6.h),
                 TitleBar(
                   back: () {
                     Get.back();
