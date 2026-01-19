@@ -1858,8 +1858,8 @@ class _Form_ScreenState extends State<Form_Screen> {
                               color:
                                   (calendar1SelectedDate != null &&
                                           operatingHoursString != "Closed")
-                                      ? AppColors.maincolor
-                                      : AppColors.maincolor,
+                                      ? AppColors.lightText
+                                      : Colors.grey,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
@@ -3038,12 +3038,12 @@ class _Form_ScreenState extends State<Form_Screen> {
       daysOfWeekStyle: DaysOfWeekStyle(
         weekdayStyle: TextStyle(
           color: secondaryTextColor,
-          fontFamily: AppConstants.manrope,
+          fontFamily: AppConstants.manropeBold,
           fontWeight: FontWeight.w600,
         ),
         weekendStyle: TextStyle(
           color: secondaryTextColor,
-          fontFamily: AppConstants.manrope,
+          fontFamily: AppConstants.manropeBold,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -3068,7 +3068,7 @@ class _Form_ScreenState extends State<Form_Screen> {
           return _buildCalendarDay(
             day: day,
             textColor: Colors.white,
-            bgColor: AppColors.maincolor,
+            bgColor: AppColors.lightText,
             isBold: true,
           );
         },

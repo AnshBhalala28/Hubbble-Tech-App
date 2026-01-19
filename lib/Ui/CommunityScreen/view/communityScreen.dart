@@ -1019,44 +1019,44 @@ class _CommunityScreenState extends State<CommunityScreen>
 ''';
 
   // 3. _applyMapStyle મેથડમાં ફેરફાર
-  void _applyMapStyle(bool isDark) {
-    if (mapController != null) {
-      try {
-        // Clear any previous style first
-        mapController!.setMapStyle(null);
-
-        // Add small delay
-        Future.delayed(Duration(milliseconds: 50), () {
-          if (mapController != null) {
-            // Apply appropriate style
-            if (isDark) {
-              mapController!.setMapStyle(_darkMapStyle);
-            } else {
-              mapController!.setMapStyle(_lightMapStyle);
-            }
-          }
-        });
-      } catch (e) {
-        print("Error applying map style: $e");
-      }
-    }
-  }
+  // void _applyMapStyle(bool isDark) {
+  //   if (mapController != null) {
+  //     try {
+  //       // Clear any previous style first
+  //       mapController!.setMapStyle(null);
+  //
+  //       // Add small delay
+  //       Future.delayed(Duration(milliseconds: 50), () {
+  //         if (mapController != null) {
+  //           // Apply appropriate style
+  //           if (isDark) {
+  //             mapController!.setMapStyle(_darkMapStyle);
+  //           } else {
+  //             mapController!.setMapStyle(_lightMapStyle);
+  //           }
+  //         }
+  //       });
+  //     } catch (e) {
+  //       print("Error applying map style: $e");
+  //     }
+  //   }
+  // }
 
   @override
   void didUpdateWidget(covariant CommunityScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _applyMapStyle(
-            Provider.of<ThemeController>(context, listen: false).isDark,
-          );
-        }
-      });
-    }
+    // if (oldWidget != null) {
+    //   WidgetsBinding.instance.addPostFrameCallback((_) {
+    //     if (mounted) {
+    //       _applyMapStyle(
+    //         Provider.of<ThemeController>(context, listen: false).isDark,
+    //       );
+    //     }
+    //   });
+    // }
   }
-
+  bool isMapReady = false;
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeController>();
@@ -1075,44 +1075,74 @@ class _CommunityScreenState extends State<CommunityScreen>
         },
         child: Stack(
           children: [
+            // isLocationFetched
+            //     ?
+            // GoogleMap(
+            //       key: ValueKey(theme.isDark),
+            //       // આ લાઇન જરૂરી છે
+            //       onMapCreated: (GoogleMapController controller) async {
+            //         mapController = controller;
+            //         _customInfoWindowController.googleMapController =
+            //             controller;
+            //
+            //         // Map create થયા પછી તરત જ style અપ્લાય કરો
+            //         await Future.delayed(Duration(milliseconds: 300));
+            //         _applyMapStyle(theme.isDark);
+            //       },
+            //       onCameraIdle: _onCameraIdle,
+            //       myLocationButtonEnabled: false,
+            //       zoomControlsEnabled: false,
+            //       compassEnabled: false,
+            //       indoorViewEnabled: true,
+            //       mapToolbarEnabled: false,
+            //       myLocationEnabled: false,
+            //       zoomGesturesEnabled: true,
+            //       mapType: MapType.normal,
+            //       initialCameraPosition: CameraPosition(
+            //         target: LatLng(double.parse(AppLat), double.parse(AppLon)),
+            //         zoom: 14.0,
+            //       ),
+            //       markers: _markers,
+            //       onTap: (_) {
+            //         _customInfoWindowController.hideInfoWindow!();
+            //       },
+            //       onCameraMove: (position) {
+            //         _customInfoWindowController.onCameraMove!();
+            //       },
+            //     )
+            //     : const Center(
+            //       child: CircularProgressIndicator(),
+            //     ), // or fallback UI
             isLocationFetched
-                ? GoogleMap(
-                  key: ValueKey(theme.isDark),
-                  // આ લાઇન જરૂરી છે
-                  onMapCreated: (GoogleMapController controller) async {
-                    mapController = controller;
-                    _customInfoWindowController.googleMapController =
-                        controller;
+                ? AnimatedOpacity(
+              // જો મેપ રેડી હોય તો જ દેખાશે, નહીંતર ટ્રાન્સપરન્ટ રહેશે
+              opacity: isMapReady ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 500), // સ્મૂધ એનિમેશન
+              child: GoogleMap(
+                key: ValueKey(theme.isDark),
+                style: theme.isDark ? _darkMapStyle : _lightMapStyle,
+                onMapCreated: (GoogleMapController controller) {
+                  mapController = controller;
+                  _customInfoWindowController.googleMapController = controller;
 
-                    // Map create થયા પછી તરત જ style અપ્લાય કરો
-                    await Future.delayed(Duration(milliseconds: 300));
-                    _applyMapStyle(theme.isDark);
-                  },
-                  onCameraIdle: _onCameraIdle,
-                  myLocationButtonEnabled: false,
-                  zoomControlsEnabled: false,
-                  compassEnabled: false,
-                  indoorViewEnabled: true,
-                  mapToolbarEnabled: false,
-                  myLocationEnabled: false,
-                  zoomGesturesEnabled: true,
-                  mapType: MapType.normal,
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(double.parse(AppLat), double.parse(AppLon)),
-                    zoom: 14.0,
-                  ),
-                  markers: _markers,
-                  onTap: (_) {
-                    _customInfoWindowController.hideInfoWindow!();
-                  },
-                  onCameraMove: (position) {
-                    _customInfoWindowController.onCameraMove!();
-                  },
-                )
-                : const Center(
-                  child: CircularProgressIndicator(),
-                ), // or fallback UI
-
+                  // મેપ બની ગયા પછી થોડીક જ વારમાં તેને વિઝિબલ કરો
+                  Future.delayed(const Duration(milliseconds: 150), () {
+                    if (mounted) {
+                      setState(() {
+                        isMapReady = true;
+                      });
+                    }
+                  });
+                },
+                // બાકીનો તમારો કોડ...
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(double.parse(AppLat), double.parse(AppLon)),
+                  zoom: 14.0,
+                ),
+                markers: _markers,
+              ),
+            )
+                : const SizedBox(),
             CustomInfoWindow(
               controller: _customInfoWindowController,
               height: 27.h,
@@ -1243,7 +1273,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                           ),
                           border: Border.all(
                             color:
-                                theme.isDark ? Color(0xffbdab82) : Colors.white,
+                                theme.isDark
+                                    ? const Color(
+                                      0xFFCDBA81,
+                                    ).withValues(alpha: 0.15)
+                                    : Colors.white,
                             width: 3.sp,
                           ),
                           color:
@@ -1254,7 +1288,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                             Icon(
                               Icons.favorite,
                               color:
-                                  theme.isDark ? Color(0xffbdab82) : Colors.red,
+                                  theme.isDark ? Color(0xffbdab82) :AppColors.lightText,
                               size: 17.sp,
                             ),
                             const SizedBox(width: 10),
@@ -1267,7 +1301,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                 color:
                                     theme.isDark
                                         ? Color(0xffbdab82)
-                                        : Colors.black87,
+                                        : AppColors.lightText,
                               ),
                             ),
                           ],
@@ -1292,7 +1326,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                           ),
                           border: Border.all(
                             color:
-                                theme.isDark ? Color(0xffbdab82) : Colors.white,
+                                theme.isDark
+                                    ? const Color(
+                                      0xFFCDBA81,
+                                    ).withValues(alpha: 0.15)
+                                    : Colors.white,
                             width: 3.sp,
                           ),
                           color:
@@ -1305,7 +1343,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                               color:
                                   theme.isDark
                                       ? Color(0xffbdab82)
-                                      : Colors.black87,
+                                      : AppColors.lightText,
                               size: 17.sp,
                             ),
                             const SizedBox(width: 10),
@@ -1318,7 +1356,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                 color:
                                     theme.isDark
                                         ? Color(0xffbdab82)
-                                        : Colors.black87,
+                                        : AppColors.lightText,
                               ),
                             ),
                           ],
@@ -1359,7 +1397,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                                 border: Border.all(
                                   color:
                                       theme.isDark
-                                          ? Color(0xffbdab82)
+                                          ? const Color(
+                                            0xFFCDBA81,
+                                          ).withValues(alpha: 0.15)
                                           : Colors.white,
                                   width: 3.sp,
                                 ),
@@ -1377,25 +1417,29 @@ class _CommunityScreenState extends State<CommunityScreen>
                                     width: 3.5.h,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: getCategoryColor(
-                                        categoriesModel
-                                                ?.data?[i]
-                                                .categoryName ??
-                                            "",
-                                      ),
+                                      // color: getCategoryColor(
+                                      //   categoriesModel
+                                      //           ?.data?[i]
+                                      //           .categoryName ??
+                                      //       "",
+                                      // ),
                                     ),
                                     child: Center(
                                       child: ClipOval(
                                         child: Image.network(
                                           categoriesModel?.data?[i].img ?? "",
-                                          height: 2.h,
-                                          width: 2.h,
+                                          height: 2.2.h,
+                                          width: 2.2.h,
                                           fit: BoxFit.cover,
+                                          color:
+                                              theme.isDark
+                                                  ? Color(0xffbdab82)
+                                                  : AppColors.lightText,
                                         ),
                                       ),
                                     ),
                                   ),
-                                  SizedBox(width: 2.w),
+                                  SizedBox(width: 1.w),
                                   Text(
                                     categoriesModel?.data?[i].categoryName ??
                                         "",
@@ -1406,7 +1450,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                                       color:
                                           theme.isDark
                                               ? Color(0xffbdab82)
-                                              : Colors.black87,
+                                              : AppColors.lightText,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -1420,7 +1464,13 @@ class _CommunityScreenState extends State<CommunityScreen>
                 ),
               ),
             ),
-
+            if (!isMapReady)
+              Container(
+                color: theme.isDark ? const Color(0xff1A1A1A) : const Color(0xFFF0F2F5),
+                child: const Center(
+                  child: Loader(),
+                ),
+              ),
             if (isMapLoading)
               Positioned.fill(
                 child: Container(
@@ -2744,16 +2794,40 @@ class _CommunityScreenState extends State<CommunityScreen>
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                CircleAvatar(
-                                                  radius: 10,
-                                                  backgroundColor: Colors.blue,
-                                                  backgroundImage: NetworkImage(
-                                                    categoriesModel
-                                                            ?.data?[i]
-                                                            .img ??
-                                                        "",
+                                                CachedNetworkImage(
+                                                  imageUrl: categoriesModel?.data?[i].img ?? "",
+                                                  imageBuilder: (context, imageProvider) => Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      image: DecorationImage(
+                                                        image: imageProvider,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  placeholder: (context, url) => Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    alignment: Alignment.center,
+                                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                                  ),
+                                                  errorWidget: (context, url, error) => Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Colors.blue,
+                                                    ),
+                                                    child: Icon(
+                                                      Icons.person,
+                                                      size: 12,
+                                                      color: Colors.white,
+                                                    ),
                                                   ),
                                                 ),
+
                                                 const SizedBox(width: 4),
                                                 Text(
                                                   categoriesModel
@@ -3158,7 +3232,8 @@ class _CommunityScreenState extends State<CommunityScreen>
     VoidCallback onTap,
     Color iconColor,
     Color textColor,
-  ) {
+  )
+  {
     final theme = Provider.of<ThemeController>(context, listen: false);
 
     return Material(

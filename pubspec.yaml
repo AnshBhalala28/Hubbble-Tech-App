@@ -120,6 +120,7 @@ flutter:
     - assets/images/
     - assets/Svg/
     - assets/bottomSvgs/
+    - assets/onboardImages/
     - assets/certificates/wavee_ai_cert.pem
     - .env
 

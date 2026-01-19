@@ -167,7 +167,7 @@ class _HomePageState extends State<HomePage>
             String realLastName = nameMap['last_name'] ?? "";
 
             // 4. Combine them
-            fullName = "$realFirstName $realLastName".trim();
+            fullName = "$realFirstName ".trim();
           } else {
             fullName = "";
           }
@@ -201,9 +201,9 @@ class _HomePageState extends State<HomePage>
               colors:
                   isDark
                       ? [
-                        const Color(0xf0CBB88C),
+                        const Color(0xf0E2DCCB),
                         const Color(0xFFFFE181),
-                        const Color(0xf0CBB88C),
+                        const Color(0xf0E2DCCB),
                       ]
                       : [
                         const Color(0xFF4B5D8A),
@@ -216,8 +216,8 @@ class _HomePageState extends State<HomePage>
           child: Text(
             "${_getGreeting()}, $fullName",
             style: TextStyle(
-              fontSize: 20.sp, // Slightly larger to match the screenshot weight
-              color: Colors.white, // Required for ShaderMask
+              fontSize: 20.sp,
+              color: Colors.white,
               fontFamily: AppConstants.manropeBold,
             ),
           ),
@@ -273,11 +273,11 @@ class _HomePageState extends State<HomePage>
                             SizedBox(width: 2.w),
                             ThemeToggleButton(),
                           ],
-                        ).paddingOnly(top: 1.h, bottom: 1.h),
+                        ).paddingOnly(top: 1.h, bottom: 0.h),
 
                         Text(
                           DateFormat(
-                            'EEEE d MMMM',
+                            'EEEE, d MMMM',
                           ).format(DateTime.now()).toUpperCase(),
                           style: TextStyle(
                             // 5. Toggle between Gold (Dark) and LightText (Light)
@@ -593,14 +593,14 @@ class _HomePageState extends State<HomePage>
                                       ],
                                     ),
                                   ),
-                                  Icon(
-                                    Icons.chevron_right,
-                                    color:
-                                        theme.isDark
-                                            ? const Color(0xFFCDBA81)
-                                            : const Color(0xFF3E5481),
-                                    size: 22.sp,
-                                  ),
+                                  // Icon(
+                                  //   Icons.chevron_right,
+                                  //   color:
+                                  //       theme.isDark
+                                  //           ? const Color(0xFFCDBA81)
+                                  //           : const Color(0xFF3E5481),
+                                  //   size: 22.sp,
+                                  // ),
                                 ],
                               ),
                             ),

@@ -39,9 +39,9 @@ class _ParcelScreenState extends State<ParcelScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeController>();
-
+final isDark=theme.isDark;
     return Scaffold(
-      backgroundColor: theme.isDark ? AppColors.darkBack : Color(0xf01A1A1A),
+      backgroundColor: isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
       body: Column(
         children: [
           SizedBox(height: 6.h),
@@ -74,7 +74,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color:
-                          theme.isDark
+                          isDark
                               ? isSelected
                                   ? AppColors.white
                                   : const Color(0xFF212121)
@@ -96,7 +96,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
                       style: TextStyle(
                         fontSize: 15.sp,
                         color:
-                            theme.isDark
+                            isDark
                                 ? isSelected
                                     ? Colors.black
                                     : Colors.grey[600]
@@ -120,7 +120,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
             child: Container(
               padding: EdgeInsets.only(left: 2.w, right: 2.w, top: 2.h),
               decoration: BoxDecoration(
-                color: theme.isDark ? AppColors.darkOptional : AppColors.white,
+                color: isDark ? AppColors.darkOptional : AppColors.white,
 
                 borderRadius: BorderRadius.circular(22),
               ),
@@ -136,7 +136,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
                     Color statusColor =
                         isCollected
                             ? const Color(0xFF00A67E)
-                            : theme.isDark
+                            : isDark
                             ? Color(0xf0CBB88C)
                             : const Color(0xFF4A6FA5);
                     IconData statusIcon =
@@ -148,7 +148,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
                       margin: EdgeInsets.only(bottom: 2.h),
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: theme.isDark ? Color(0xf0252525) : Colors.white,
+                        color: isDark ? Color(0xf0252525) : Colors.white,
                         borderRadius: BorderRadius.circular(25),
                         border: Border.all(color: Colors.grey.withOpacity(0.1)),
                       ),
@@ -200,7 +200,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                 padding: EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   color:
-                                      theme.isDark
+                                      isDark
                                           ? Color(0xf036342F)
                                           : const Color(0xFFF0F2F5),
                                   shape: BoxShape.circle,
@@ -209,7 +209,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                   AppConstants.parcel,
                                   width: 8.w,
                                   color:
-                                      theme.isDark
+                                      isDark
                                           ? Color(0xf0CBB88C)
                                           : AppColors.lightText,
                                 ),
@@ -227,7 +227,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.bold,
                                         color:
-                                            theme.isDark
+                                            isDark
                                                 ? AppColors.white
                                                 : Colors.black,
                                         fontFamily: AppConstants.manrope,
@@ -286,14 +286,14 @@ class _ParcelScreenState extends State<ParcelScreen> {
                       (_) => Center(
                         child: CircularProgressIndicator(
                           color:
-                              theme.isDark ? Colors.white : AppColors.maincolor,
+                              isDark ? Colors.white : AppColors.maincolor,
                         ),
                       ),
                   newPageProgressIndicatorBuilder:
                       (_) => Center(
                         child: CircularProgressIndicator(
                           color:
-                              theme.isDark ? Colors.white : AppColors.maincolor,
+                              isDark ? Colors.white : AppColors.maincolor,
                         ),
                       ),
                 ),

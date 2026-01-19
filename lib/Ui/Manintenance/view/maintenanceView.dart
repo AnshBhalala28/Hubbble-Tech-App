@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -103,16 +104,13 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                             margin: EdgeInsets.symmetric(horizontal: 1.2.w),
                             decoration: BoxDecoration(
                               color:
-                                  theme.isDark
-                                      ? (isSelected
-                                          ? Colors
-                                              .white // selected → white (image jevu)
-                                          : const Color(
-                                            0xFF212121,
-                                          )) // dark chip bg
-                                      : (isSelected
-                                          ? AppColors.maincolor
-                                          : Colors.white),
+                              theme.isDark
+                                  ? isSelected
+                                  ? AppColors.white
+                                  : const Color(0xFF212121)
+                                  : isSelected
+                                  ? const Color(0xFF1A1A1A)
+                                  : Colors.grey.withValues(alpha: .2),
                               borderRadius: BorderRadius.circular(
                                 25,
                               ), // image ma more round
@@ -155,7 +153,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                         style: TextStyle(
                           fontSize: 17.sp,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.black,
+                          color:theme.isDark? AppColors.white:AppColors.black,
                           fontFamily: AppConstants.manrope,
                         ),
                       ).paddingOnly(top: 30.h),
@@ -616,222 +614,340 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
   void showAddRequestBottomSheet(BuildContext context) {
     final ImagePicker picker = ImagePicker();
     final theme = Provider.of<ThemeController>(context, listen: false);
+
     showModalBottomSheet(
       context: context,
-      backgroundColor: theme.isDark ? Color(0xff1A1A1A) : AppColors.white,
+      backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-      ),
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: 16,
-            right: 16,
-            top: 24,
-          ),
-          child: StatefulBuilder(
-            builder: (context, setState) {
-              return SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Add Maintenance',
-                        style: TextStyle(
-                          fontSize: 19.sp,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: AppConstants.manropeBold,
-                          color: theme.isDark ? Colors.white : Colors.black,
-                        ),
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(30.0),
+              ),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                child: Container(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+                    left: 20,
+                    right: 20,
+                    top: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color:
+                        theme.isDark
+                            ? const Color(0xff1A1A1A).withOpacity(0.85)
+                            : Colors.white.withOpacity(0.9),
+                    border: Border(
+                      top: BorderSide(
+                        color: theme.isDark ? Colors.white10 : Colors.black12,
+                        width: 1,
                       ),
-                      SizedBox(height: 2.h),
-
-                      /// Subject Field
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "Subject",
-                          style: TextStyle(
-                            fontFamily: AppConstants.manrope,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
-                            color: theme.isDark ? Colors.white : Colors.black,
+                    ),
+                  ),
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: _formKey,
+                      // Make sure _formKey is defined in your class
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // --- Top Handle ---
+                          Container(
+                            width: 45,
+                            height: 5,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
-                        ),
-                      ).paddingOnly(bottom: 1.h),
-                      TextFormField(
-                        controller: subjectController,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Please enter subject';
-                          }
-                          return null;
-                        },
-                        style: const TextStyle(
-                          fontFamily: AppConstants.manrope1,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        decoration: inputDecoration(
-                          cr: AppColors.black,
-                          hintText: "Enter Subject",
-                        ),
-                      ),
-                      SizedBox(height: 1.5.h),
+                          SizedBox(height: 2.h),
 
-                      /// Note Field
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "Note",
-                          style: TextStyle(
-                            fontFamily: AppConstants.manrope,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
-                            color: theme.isDark ? Colors.white : Colors.black,
+                          // --- Title ---
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.build_circle_outlined,
+                                color:
+                                    theme.isDark
+                                        ? const Color(0xffCBB88C)
+                                        : AppColors.maincolor,
+                                size: 24,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'Add Maintenance',
+                                style: TextStyle(
+                                  fontSize: 19.sp,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: AppConstants.manropeBold,
+                                  color:
+                                      theme.isDark
+                                          ? Colors.white
+                                          : Colors.black,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ).paddingOnly(bottom: 1.h),
-                      TextFormField(
-                        controller: noteController,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Please enter note';
-                          }
-                          return null;
-                        },
-                        style: const TextStyle(
-                          fontFamily: AppConstants.manrope1,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        decoration: inputDecoration(
-                          hintText: "Enter Note",
-                          cr: AppColors.black,
-                        ),
-                        maxLines: 4,
-                      ),
-                      SizedBox(height: 2.h),
+                          SizedBox(height: 3.h),
 
-                      /// Image Picker
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "Attach Image (optional)",
-                          style: TextStyle(
-                            fontFamily: AppConstants.manrope,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
-                            color: theme.isDark ? Colors.white : Colors.black,
+                          // --- Subject Field ---
+                          _buildCustomField(
+                            label: "Subject",
+                            hint: "Enter Subject",
+                            controller: subjectController,
+                            icon: Icons.title_rounded,
+                            theme: theme,
                           ),
-                        ),
-                      ).paddingOnly(bottom: 1.h),
+                          SizedBox(height: 2.h),
 
-                      GestureDetector(
-                        onTap: () async {
-                          final pickedFile = await picker.pickImage(
-                            source: ImageSource.gallery,
-                            imageQuality: 80,
-                          );
-                          if (pickedFile != null) {
-                            setState(() {
-                              selectedImage = File(pickedFile.path);
-                            });
-                          }
-                        },
-                        child: Container(
-                          height: 150,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(12),
-                            color:
-                                theme.isDark
-                                    ? Color(0xff252525)
-                                    : Colors.grey.shade100,
+                          // --- Note Field ---
+                          _buildCustomField(
+                            label: "Note",
+                            hint: "Enter detailed description",
+                            controller: noteController,
+                            icon: Icons.notes_rounded,
+                            maxLines: 4,
+                            theme: theme,
                           ),
-                          child:
-                              selectedImage != null
-                                  ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Image.file(
-                                      selectedImage!,
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                    ),
-                                  )
-                                  : Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.add_a_photo,
-                                          color:
-                                              theme.isDark
-                                                  ? Colors.white
-                                                  : Colors.grey,
-                                        ),
-                                        SizedBox(height: 5),
-                                        Text(
-                                          "Pick an Image",
-                                          style: TextStyle(
-                                            color:
-                                                theme.isDark
-                                                    ? Colors.white
-                                                    : Colors.grey,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                          SizedBox(height: 2.5.h),
+
+                          // --- Image Picker ---
+                          _buildImagePickerUI(theme, setState, picker),
+
+                          SizedBox(height: 4.h),
+
+                          // --- Submit Button ---
+                          isLoading
+                              ? Center(
+                                child: CircularProgressIndicator(
+                                  color: AppColors.maincolor,
+                                ),
+                              )
+                              : ElevatedButton(
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    setState(() => isLoading = true);
+                                    // Call your function
+                                    AddMaintenance(selectedImage);
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      theme.isDark
+                                          ? const Color(0xffCBB88C)
+                                          : AppColors.lightText,
+                                  foregroundColor:
+                                      theme.isDark
+                                          ? Colors.black
+                                          : Colors.white,
+                                  minimumSize: Size(double.infinity, 6.h),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
                                   ),
-                        ),
+                                  elevation: 0,
+                                ),
+                                child: Text(
+                                  "Submit Request",
+                                  style: TextStyle(
+                                    fontSize: 17.sp,
+                                    // fontWeight: FontWeight.bold,
+                                    fontFamily: AppConstants.manropeBold,
+                                  ),
+                                ),
+                              ),
+                          SizedBox(height: 2.h),
+                        ],
                       ),
-                      SizedBox(height: 2.h),
-
-                      /// Submit Button
-                      isLoading
-                          ? const CircularProgressIndicator(
-                            color: AppColors.maincolor,
-                          )
-                          : batan(
-                            title: "Submit",
-                            route: () {
-                              bool isValid = _formKey.currentState!.validate();
-
-                              if (isValid) {
-                                setState(() {
-                                  isLoading = true;
-                                });
-
-                                /// You can send `selectedImage` along with form data here
-                                AddMaintenance(selectedImage);
-
-                                Navigator.of(context).pop();
-                              }
-                            },
-                            color:
-                                theme.isDark
-                                    ? Color(0xffCBB88C)
-                                    : AppColors.maincolor,
-                            fontcolor:
-                                theme.isDark ? Colors.black : Colors.white,
-                            height: 5.5.h,
-                            width: double.infinity,
-                            fontsize: 16.sp,
-                            radius: 20.0,
-                          ),
-                      SizedBox(height: 5.h),
-                    ],
+                    ),
                   ),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         );
       },
+    );
+  }
+
+  Widget _buildCustomField({
+    required String label,
+    required String hint,
+    required TextEditingController controller,
+    required IconData icon,
+    int maxLines = 1,
+    required var theme,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 8),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontFamily: AppConstants.manrope,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.bold,
+              color: theme.isDark ? Colors.white70 : Colors.black87,
+            ),
+          ),
+        ),
+        TextFormField(
+          controller: controller,
+          maxLines: maxLines,
+          validator:
+              (value) =>
+                  value == null || value.isEmpty
+                      ? 'This field is required'
+                      : null,
+          style: TextStyle(
+            color: theme.isDark ? Colors.white : Colors.black,
+            fontFamily: AppConstants.manrope,
+          ),
+          decoration: InputDecoration(
+            prefixIcon: Icon(
+              icon,
+              color: theme.isDark ? AppColors.white : AppColors.maincolor,
+              size: 20,
+            ),
+            hintText: hint,
+            hintStyle: TextStyle(
+              color: theme.isDark ? AppColors.white : Colors.black,
+              fontSize: 15.sp,
+              fontFamily: AppConstants.manrope,
+            ),
+            filled: true,
+            fillColor:
+                theme.isDark
+                    ? Colors.white.withOpacity(0.05)
+                    : Colors.grey.shade100,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: BorderSide(
+                color: theme.isDark ? Colors.white12 : Colors.grey.shade300,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: BorderSide(
+                color: AppColors.maincolor.withOpacity(0.5),
+              ),
+            ),
+            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 1.h),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildImagePickerUI(theme, setState, picker) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 8),
+          child: Text(
+            "Attach Evidence (Optional)",
+            style: TextStyle(
+              fontFamily: AppConstants.manropeBold,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.bold,
+              color: theme.isDark ? Colors.white70 : Colors.black87,
+            ),
+          ),
+        ),
+        GestureDetector(
+          onTap: () async {
+            final pickedFile = await picker.pickImage(
+              source: ImageSource.gallery,
+              imageQuality: 80,
+            );
+            if (pickedFile != null) {
+              setState(() => selectedImage = File(pickedFile.path));
+            }
+          },
+          child: Container(
+            height: 140,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color:
+                  theme.isDark
+                      ? Colors.white.withOpacity(0.05)
+                      : Colors.grey.shade50,
+              border: Border.all(
+                color: theme.isDark ? Colors.white12 : Colors.grey.shade300,
+                width: 1,
+              ),
+            ),
+            child:
+                selectedImage != null
+                    ? Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.file(
+                            selectedImage!,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: double.infinity,
+                          ),
+                        ),
+                        Positioned(
+                          top: 10,
+                          right: 10,
+                          child: GestureDetector(
+                            onTap: () => setState(() => selectedImage = null),
+                            child: CircleAvatar(
+                              backgroundColor: Colors.red.shade600,
+                              radius: 15,
+                              child: const Icon(
+                                Icons.close,
+                                size: 18,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                    : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.add_photo_alternate_outlined,
+                          size: 40,
+                          color:
+                              theme.isDark
+                                  ? Colors.white
+                                  : AppColors.maincolor.withOpacity(0.7),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          "Tap to upload image",
+                          style: TextStyle(
+                            color:
+                                theme.isDark
+                                    ? Colors.white
+                                    : Colors.grey.shade600,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: AppConstants.manrope,
+                          ),
+                        ),
+                      ],
+                    ),
+          ),
+        ),
+      ],
     );
   }
 
