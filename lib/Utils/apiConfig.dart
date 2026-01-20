@@ -51,12 +51,6 @@ class DioHelper {
           return client;
         },
       );
-
-      log(
-        kDebugMode
-            ? "🧪 DEBUG MODE (SSL bypass)"
-            : "✅ RELEASE MODE (SSL pinning ON)",
-      );
     } catch (e, s) {
       log("❌ Dio init failed", error: e, stackTrace: s);
       rethrow;
