@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wavee/Services/themeServices.dart';
+import 'package:wavee/Utils/customAppBar.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
@@ -13,6 +15,7 @@ import '../../../Utils/errorDialog.dart';
 import '../../../Utils/loader.dart';
 import '../../MessageScreen/modal/UserPersonalInfoModel.dart';
 import '../Provider/messageScreenProvider.dart';
+
 
 class UserProfileScreen extends StatefulWidget {
   final String? id;
@@ -37,39 +40,30 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeController>();
+    final isDark = theme.isDark;
+    final Color blueColor = const Color(0xFF5A6385);
+
+    final Color iconColor = isDark ? Color(0xf0B8A780) : blueColor;
+    final Color subtitleColor =
+    isDark ? Colors.grey.shade500 : Colors.grey.shade600;
+    final Color titleColor = isDark ? Colors.white : const Color(0xFF1A1A1A);
+
     return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          'View Profile',
-          style: TextStyle(
-            color: Colors.black87,
-            fontFamily: AppConstants.manrope,
-            fontSize: 17.sp,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        leading: IconButton(
-          icon: Container(
-            padding: EdgeInsets.all(1.w),
-            decoration: const BoxDecoration(),
-            child: Icon(Icons.arrow_back, color: Colors.black87, size: 22.sp),
-          ),
-          onPressed: () => Get.back(),
-        ),
-      ),
+      backgroundColor: isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
+
       body:
           isSending
               ? Loader()
               : Column(
                 children: [
+                  SizedBox(height: 6.h,),
+                  TitleBar(title: "View Profile", drawerCallback: () {
+
+                  },),
                   Container(
                     width: double.infinity,
-                    decoration: const BoxDecoration(color: Colors.white),
+                    // decoration: const BoxDecoration(color: Colors.white),
                     child: Column(
                       children: [
                         SizedBox(height: 2.h),
@@ -110,7 +104,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             fontSize: 18.sp,
                             fontFamily: AppConstants.manropeBold,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: isDark ? AppColors.white : Colors.black,
                           ),
                         ),
                         SizedBox(height: 3.h),
@@ -118,108 +112,92 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     ),
                   ),
                   SizedBox(height: 2.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5.w),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(5.w, 3.h, 5.w, 1.h),
-                            child: Text(
-                              "Personal Information",
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                fontFamily: AppConstants.manrope,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
-                              ),
-                            ),
-                          ),
-                          const Divider(),
-                          infoCard(
-                            "Email",
-                            userpersonalInfoModel?.data?.email.toString() ??
-                                "N/A",
-                            Icons.email,
-                            () {},
-                          ),
-
-                          // buildProfileDetailItem(
-                          //   Icons.email_outlined,
-                          //   "Email",
-                          //   userpersonalInfoModel?.data?.email,
-                          //   () {},
-                          // ),
-                          infoCard(
-                            "Phone",
-                            userpersonalInfoModel?.data?.phoneNumber
-                                    .toString() ??
-                                "N/A",
-                            Icons.phone_outlined,
-                            () {
-                              final phone =
-                                  userpersonalInfoModel?.data?.phoneNumber;
-                              if (phone != null &&
-                                  phone.toString().isNotEmpty) {
-                                final telUrl = Uri.parse(
-                                  "tel:${phone.toString()}",
-                                );
-                                launchUrl(
-                                  telUrl,
-                                  mode: LaunchMode.externalApplication,
-                                );
-                              }
-                            },
-                          ),
-                          // buildProfileDetailItem(
-                          //   Icons.phone_outlined,
-                          //   "Phone",
-                          //   userpersonalInfoModel?.data?.phoneNumber,
-                          //   () {
-                          //     final phone =
-                          //         userpersonalInfoModel?.data?.phoneNumber;
-                          //     if (phone != null &&
-                          //         phone.toString().isNotEmpty) {
-                          //       final telUrl = Uri.parse(
-                          //         "tel:${phone.toString()}",
-                          //       );
-                          //       launchUrl(
-                          //         telUrl,
-                          //         mode: LaunchMode.externalApplication,
-                          //       );
-                          //     }
-                          //   },
-                          // ),
-                          // buildProfileDetailItem(
-                          //     Icons.calendar_today_outlined,
-                          //     "Date of Birth",
-                          //     userpersonalInfoModel?.data?.dateOfBirth),
-                          // buildProfileDetailItem(Icons.person, "Gender",
-                          //     userpersonalInfoModel?.data?.gender),
-                          SizedBox(height: 2.h),
-                        ],
-                      ),
+                  Container(
+                    decoration: BoxDecoration(
+                      // color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                  ),
-                  // batan(
-                  //   title: "Block",
-                  //   route: () {
-                  //     showBlockUserDialog(context, supportUrl);
-                  //   },
-                  //   color: AppColors.maincolor,
-                  //   fontcolor: AppColors.white,
-                  //   height: 5.h,
-                  //   fontsize: 18.sp,
-                  //   radius: 12.0,
-                  // ).paddingOnly(left: 4.4.w, right: 4.4.w, top: 2.h),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Personal Information",
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            fontFamily: AppConstants.manrope,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? AppColors.white : Colors.black87,
+                          ),
+                        ),
+
+
+                        SizedBox(height: 1.h,),
+
+                        buildSingleInfoCard(
+                          ontap: () {
+
+                          },
+                          icon: Icons.email_outlined,
+
+                          label: "EMAIL",
+                          value: userpersonalInfoModel?.data?.email
+                              .toString() ?? "N/A",
+                          iconBg:
+                          theme.isDark
+                              ? Color(0xf036342F)
+                              : Color(0xf0E9EAEF),
+
+                          iconColor: iconColor,
+                          labelColor: subtitleColor,
+                          valueColor: titleColor,
+                          cardColor:
+                          theme.isDark ? Color(0xf0252525) : Colors.white,
+                          isDark: isDark,
+                        ),
+                        SizedBox(height: 1.h,),
+                        buildSingleInfoCard(
+                          ontap: () {
+                            final phone =
+                                userpersonalInfoModel?.data?.phoneNumber;
+                            if (phone != null &&
+                                phone
+                                    .toString()
+                                    .isNotEmpty) {
+                              final telUrl = Uri.parse(
+                                "tel:${phone.toString()}",
+                              );
+                              launchUrl(
+                                telUrl,
+                                mode: LaunchMode.externalApplication,
+                              );
+                            }
+                          },
+                          icon: Icons.phone,
+
+                          label: "PHONE",
+                          value: userpersonalInfoModel?.data?.phoneNumber
+                              .toString() ??
+                              "N/A",
+                          iconBg:
+                          theme.isDark
+                              ? Color(0xf036342F)
+                              : Color(0xf0E9EAEF),
+
+                          iconColor: iconColor,
+                          labelColor: subtitleColor,
+                          valueColor: titleColor,
+                          cardColor:
+                          theme.isDark ? Color(0xf0252525) : Colors.white,
+                          isDark: isDark,
+                        ),
+                        SizedBox(height: 2.h),
+                      ],
+                    ),
+                  ), // batan(
+
                   SizedBox(height: 3.h),
                 ],
-              ),
+          ).paddingOnly(left: 3.w, right: 3.w),
     );
   }
 
@@ -545,6 +523,80 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
+  Widget buildSingleInfoCard({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color iconBg,
+    required Color iconColor,
+    required Color labelColor,
+    required Color valueColor,
+    required Color cardColor,
+    required bool isDark,
+    required VoidCallback ontap,
+
+  }) {
+    return GestureDetector(
+      onTap: ontap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: cardColor,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: iconBg),
+          boxShadow:
+          isDark
+              ? []
+              : [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.08),
+              blurRadius: 20,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.8.h),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(color: iconBg, shape: BoxShape.circle),
+              child: Icon(icon, color: iconColor, size: 19.sp),
+            ),
+            SizedBox(width: 3.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
+                      color: labelColor,
+                      fontFamily: AppConstants.manrope,
+                    ),
+                  ),
+                  SizedBox(height: 0.3.h),
+                  Text(
+                    value,
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w500,
+                      color: valueColor,
+                      fontFamily: AppConstants.manrope,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 3,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
   userpersonalinfoapi() async {
     checkInternet().then((internet) async {
       if (internet) {

@@ -1134,7 +1134,14 @@ class _CommunityScreenState extends State<CommunityScreen>
                     }
                   });
                 },
-                // બાકીનો તમારો કોડ...
+                myLocationButtonEnabled: false,
+                zoomControlsEnabled: false,
+                compassEnabled: false,
+                indoorViewEnabled: true,
+                mapToolbarEnabled: false,
+                myLocationEnabled: false,
+                zoomGesturesEnabled: true,
+                mapType: MapType.normal,
                 initialCameraPosition: CameraPosition(
                   target: LatLng(double.parse(AppLat), double.parse(AppLon)),
                   zoom: 14.0,
