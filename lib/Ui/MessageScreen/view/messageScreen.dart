@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
@@ -186,7 +185,7 @@ class _MessageScreenState extends State<MessageScreen> {
                     padding: const EdgeInsets.only(top: 20, left: 5),
                     decoration: BoxDecoration(
                       color:
-                      theme.isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
+                          theme.isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.1),
@@ -207,7 +206,7 @@ class _MessageScreenState extends State<MessageScreen> {
                           icon: Icon(
                             Icons.arrow_back,
                             color:
-                            theme.isDark ? AppColors.white : Colors.black,
+                                theme.isDark ? AppColors.white : Colors.black,
                             size: 24,
                           ),
                           onPressed: () {
@@ -217,23 +216,23 @@ class _MessageScreenState extends State<MessageScreen> {
                         InkWell(
                           onTap: () {
                             String friendid =
-                            (widget.conciergeID.toString() ==
-                                (loginModel?.data?.user?.id
-                                    .toString() ??
-                                    ""))
-                                ? (widget.senderid?.toString() ?? "")
-                                : (widget.conciergeID?.toString() ?? "");
+                                (widget.conciergeID.toString() ==
+                                        (loginModel?.data?.user?.id
+                                                .toString() ??
+                                            ""))
+                                    ? (widget.senderid?.toString() ?? "")
+                                    : (widget.conciergeID?.toString() ?? "");
 
                             if (widget.type == "concierge") {
                               _timer?.cancel();
                               Get.to(
-                                    () => UserProfileScreen(id: widget.conciergeID),
+                                () => UserProfileScreen(id: widget.conciergeID),
                               );
                             } else if (widget.type == "residents") {
                               _timer?.cancel();
 
                               Get.to(
-                                    () => AppUserFriendProfileScreen(id: friendid),
+                                () => AppUserFriendProfileScreen(id: friendid),
                               );
                             } else if (widget.type == "business") {
                               Get.to(
@@ -254,12 +253,12 @@ class _MessageScreenState extends State<MessageScreen> {
                                 imageUrl: widget.image ?? "",
                                 placeholder:
                                     (context, url) =>
-                                    Container(color: Colors.grey[200]),
+                                        Container(color: Colors.grey[200]),
                                 errorWidget:
                                     (context, url, error) => const Icon(
-                                  Icons.person,
-                                  color: Colors.grey,
-                                ),
+                                      Icons.person,
+                                      color: Colors.grey,
+                                    ),
                                 width: 40,
                                 height: 40,
                                 fit: BoxFit.cover,
@@ -280,9 +279,9 @@ class _MessageScreenState extends State<MessageScreen> {
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
                                   color:
-                                  theme.isDark
-                                      ? AppColors.white
-                                      : Colors.black,
+                                      theme.isDark
+                                          ? AppColors.white
+                                          : Colors.black,
                                 ),
                               ),
                               Text(
@@ -305,9 +304,9 @@ class _MessageScreenState extends State<MessageScreen> {
                             ),
                             decoration: BoxDecoration(
                               color:
-                              theme.isDark
-                                  ? Color(0xf035332F)
-                                  : AppColors.maincolor.withOpacity(0.1),
+                                  theme.isDark
+                                      ? Color(0xf035332F)
+                                      : AppColors.maincolor.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
                                 color: AppColors.maincolor.withOpacity(0.2),
@@ -319,9 +318,9 @@ class _MessageScreenState extends State<MessageScreen> {
                                 fontFamily: AppConstants.manrope,
                                 fontSize: 14.sp,
                                 color:
-                                theme.isDark
-                                    ? Color(0xf0CBB880)
-                                    : AppColors.maincolor,
+                                    theme.isDark
+                                        ? Color(0xf0CBB880)
+                                        : AppColors.maincolor,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -333,307 +332,307 @@ class _MessageScreenState extends State<MessageScreen> {
                   // Messages List
                   Expanded(
                     child:
-                    isLoading
-                        ? Center(child: Loader())
-                        : messageModel?.data?.isEmpty ?? true
-                        ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.chat_bubble_outline,
-                            size: 60,
-                            color: Colors.grey[300],
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            "No messages yet",
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey,
-                              fontFamily: AppConstants.manrope,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "Start a conversation",
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color: Colors.grey,
-                              fontFamily: AppConstants.manrope,
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                        : ListView.builder(
-                      reverse: true,
-                      controller: _scrollController,
-                      padding: const EdgeInsets.all(16),
-                      itemCount: messageModel?.data?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final message = messageModel?.data?[index];
-                        bool isMe =
-                            message?.sender?.id ==
-                                loginModel?.data?.user?.id;
-                        final messageTime = formatMessageTime(
-                          message?.createdAt,
-                        );
-
-                        // build date separator widget
-                        Widget dateWidget = const SizedBox.shrink();
-                        final int len = messageModel?.data?.length ?? 0;
-                        if (index == (len - 1)) {
-                          dateWidget = Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 16,
-                            ),
-                            child: Text(
-                              formatDateTime(
-                                message?.createdAt,
-                              ).split('•')[0].trim(),
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey[600],
-                                fontFamily: AppConstants.manrope,
-                              ),
-                            ),
-                          );
-                        } else if (index < len - 1) {
-                          final currentDate =
-                          message?.createdAt != null
-                              ? DateTime.parse(
-                            message!.createdAt!,
-                          ).toLocal()
-                              : null;
-                          final nextDate =
-                          messageModel
-                              ?.data?[index + 1]
-                              .createdAt !=
-                              null
-                              ? DateTime.parse(
-                            messageModel!
-                                .data![index + 1]
-                                .createdAt!,
-                          ).toLocal()
-                              : null;
-
-                          if (currentDate != null &&
-                              nextDate != null &&
-                              currentDate.day != nextDate.day) {
-                            dateWidget = Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 16,
-                              ),
-                              child: Text(
-                                DateFormat(
-                                  "dd MMMM yyyy",
-                                ).format(nextDate),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                  fontFamily: AppConstants.manrope,
-                                ),
-                              ),
-                            );
-                          }
-                        }
-
-                        // Message bubble
-                        return Column(
-                          children: [
-                            dateWidget,
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 4,
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                isMe
-                                    ? MainAxisAlignment.end
-                                    : MainAxisAlignment.start,
-                                crossAxisAlignment:
-                                CrossAxisAlignment.end,
+                        isLoading
+                            ? Center(child: Loader())
+                            : messageModel?.data?.isEmpty ?? true
+                            ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  // Sender's avatar (only for received messages)
-                                  if (!isMe)
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        right: 8,
-                                      ),
-                                      child: CircleAvatar(
-                                        radius: 17,
-                                        backgroundColor:
-                                        Colors.grey[200],
-                                        child: ClipRRect(
-                                          borderRadius:
-                                          BorderRadius.circular(16),
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                            widget.image ?? '',
-                                            width: 15.h,
-                                            height: 15.h,
-                                            fit: BoxFit.fill,
-                                            placeholder:
-                                                (
-                                                context,
-                                                url,
-                                                ) => Container(
-                                              color:
-                                              Colors.grey[200],
-                                            ),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                            const Icon(
-                                              Icons.person,
-                                              size: 16,
-                                              color:
-                                              Colors.grey,
-                                            ),
-                                          ),
-                                        ),
+                                  Icon(
+                                    Icons.chat_bubble_outline,
+                                    size: 60,
+                                    color: Colors.grey[300],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    "No messages yet",
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey,
+                                      fontFamily: AppConstants.manrope,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    "Start a conversation",
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: Colors.grey,
+                                      fontFamily: AppConstants.manrope,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                            : ListView.builder(
+                              reverse: true,
+                              controller: _scrollController,
+                              padding: const EdgeInsets.all(16),
+                              itemCount: messageModel?.data?.length ?? 0,
+                              itemBuilder: (context, index) {
+                                final message = messageModel?.data?[index];
+                                bool isMe =
+                                    message?.sender?.id ==
+                                    loginModel?.data?.user?.id;
+                                final messageTime = formatMessageTime(
+                                  message?.createdAt,
+                                );
+
+                                // build date separator widget
+                                Widget dateWidget = const SizedBox.shrink();
+                                final int len = messageModel?.data?.length ?? 0;
+                                if (index == (len - 1)) {
+                                  dateWidget = Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 16,
+                                    ),
+                                    child: Text(
+                                      formatDateTime(
+                                        message?.createdAt,
+                                      ).split('•')[0].trim(),
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey[600],
+                                        fontFamily: AppConstants.manrope,
                                       ),
                                     ),
+                                  );
+                                } else if (index < len - 1) {
+                                  final currentDate =
+                                      message?.createdAt != null
+                                          ? DateTime.parse(
+                                            message!.createdAt!,
+                                          ).toLocal()
+                                          : null;
+                                  final nextDate =
+                                      messageModel
+                                                  ?.data?[index + 1]
+                                                  .createdAt !=
+                                              null
+                                          ? DateTime.parse(
+                                            messageModel!
+                                                .data![index + 1]
+                                                .createdAt!,
+                                          ).toLocal()
+                                          : null;
 
-                                  // Message bubble
-                                  Flexible(
-                                    child: Container(
-                                      constraints: BoxConstraints(
-                                        maxWidth: 75.w,
+                                  if (currentDate != null &&
+                                      nextDate != null &&
+                                      currentDate.day != nextDate.day) {
+                                    dateWidget = Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 16,
                                       ),
-                                      child: Column(
+                                      child: Text(
+                                        DateFormat(
+                                          "dd MMMM yyyy",
+                                        ).format(nextDate),
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey[600],
+                                          fontFamily: AppConstants.manrope,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
+
+                                // Message bubble
+                                return Column(
+                                  children: [
+                                    dateWidget,
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 4,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            isMe
+                                                ? MainAxisAlignment.end
+                                                : MainAxisAlignment.start,
                                         crossAxisAlignment:
-                                        isMe
-                                            ? CrossAxisAlignment.end
-                                            : CrossAxisAlignment
-                                            .start,
+                                            CrossAxisAlignment.end,
                                         children: [
-                                          Container(
-                                            padding:
-                                            const EdgeInsets.symmetric(
-                                              horizontal: 16,
-                                              vertical: 12,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color:
-                                              theme.isDark
-                                                  ? isMe
-                                                  ? Color(
-                                                0xf0CBB880,
-                                              )
-                                                  : Color(
-                                                0xf0242424,
-                                              )
-                                                  : isMe
-                                                  ? AppColors
-                                                  .lightText
-                                                  : Colors.white,
-                                              borderRadius: BorderRadius.only(
-                                                topLeft:
-                                                const Radius.circular(
-                                                  20,
-                                                ),
-                                                topRight:
-                                                const Radius.circular(
-                                                  20,
-                                                ),
-                                                bottomLeft:
-                                                isMe
-                                                    ? const Radius.circular(
-                                                  20,
-                                                )
-                                                    : const Radius.circular(
-                                                  4,
-                                                ),
-                                                bottomRight:
-                                                isMe
-                                                    ? const Radius.circular(
-                                                  4,
-                                                )
-                                                    : const Radius.circular(
-                                                  20,
+                                          // Sender's avatar (only for received messages)
+                                          if (!isMe)
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                right: 8,
+                                              ),
+                                              child: CircleAvatar(
+                                                radius: 17,
+                                                backgroundColor:
+                                                    Colors.grey[200],
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl:
+                                                        widget.image ?? '',
+                                                    width: 15.h,
+                                                    height: 15.h,
+                                                    fit: BoxFit.fill,
+                                                    placeholder:
+                                                        (
+                                                          context,
+                                                          url,
+                                                        ) => Container(
+                                                          color:
+                                                              Colors.grey[200],
+                                                        ),
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            const Icon(
+                                                              Icons.person,
+                                                              size: 16,
+                                                              color:
+                                                                  Colors.grey,
+                                                            ),
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                            child: getMessageWidget(
-                                              message,
-                                              isMe,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets.only(
-                                              top: 4,
-                                              right: 8,
-                                              left: 8,
-                                            ),
-                                            child: Text(
-                                              messageTime,
-                                              style: TextStyle(
-                                                fontSize: 10,
-                                                color: Colors.grey[600],
-                                                fontFamily:
-                                                AppConstants
-                                                    .manrope,
+
+                                          // Message bubble
+                                          Flexible(
+                                            child: Container(
+                                              constraints: BoxConstraints(
+                                                maxWidth: 75.w,
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    isMe
+                                                        ? CrossAxisAlignment.end
+                                                        : CrossAxisAlignment
+                                                            .start,
+                                                children: [
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          horizontal: 16,
+                                                          vertical: 12,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      color:
+                                                          theme.isDark
+                                                              ? isMe
+                                                                  ? Color(
+                                                                    0xf0CBB880,
+                                                                  )
+                                                                  : Color(
+                                                                    0xf0242424,
+                                                                  )
+                                                              : isMe
+                                                              ? AppColors
+                                                                  .lightText
+                                                              : Colors.white,
+                                                      borderRadius: BorderRadius.only(
+                                                        topLeft:
+                                                            const Radius.circular(
+                                                              20,
+                                                            ),
+                                                        topRight:
+                                                            const Radius.circular(
+                                                              20,
+                                                            ),
+                                                        bottomLeft:
+                                                            isMe
+                                                                ? const Radius.circular(
+                                                                  20,
+                                                                )
+                                                                : const Radius.circular(
+                                                                  4,
+                                                                ),
+                                                        bottomRight:
+                                                            isMe
+                                                                ? const Radius.circular(
+                                                                  4,
+                                                                )
+                                                                : const Radius.circular(
+                                                                  20,
+                                                                ),
+                                                      ),
+                                                    ),
+                                                    child: getMessageWidget(
+                                                      message,
+                                                      isMe,
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                          top: 4,
+                                                          right: 8,
+                                                          left: 8,
+                                                        ),
+                                                    child: Text(
+                                                      messageTime,
+                                                      style: TextStyle(
+                                                        fontSize: 10,
+                                                        color: Colors.grey[600],
+                                                        fontFamily:
+                                                            AppConstants
+                                                                .manrope,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ),
+
+                                          // User's avatar (only for sent messages)
+                                          if (isMe)
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 8,
+                                              ),
+                                              child: CircleAvatar(
+                                                radius: 17,
+                                                backgroundColor:
+                                                    Colors.grey[200],
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl:
+                                                        message
+                                                            ?.sender
+                                                            ?.profile ??
+                                                        "",
+                                                    width: 15.w,
+                                                    height: 15.w,
+                                                    fit: BoxFit.cover,
+                                                    placeholder:
+                                                        (
+                                                          context,
+                                                          url,
+                                                        ) => Container(
+                                                          color:
+                                                              Colors.grey[200],
+                                                        ),
+                                                    errorWidget:
+                                                        (
+                                                          context,
+                                                          url,
+                                                          error,
+                                                        ) => Image.asset(
+                                                          "assets/images/Applogo_remove_background.png",
+                                                          fit: BoxFit.fill,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
                                         ],
                                       ),
                                     ),
-                                  ),
-
-                                  // User's avatar (only for sent messages)
-                                  if (isMe)
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 8,
-                                      ),
-                                      child: CircleAvatar(
-                                        radius: 17,
-                                        backgroundColor:
-                                        Colors.grey[200],
-                                        child: ClipRRect(
-                                          borderRadius:
-                                          BorderRadius.circular(16),
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                            message
-                                                ?.sender
-                                                ?.profile ??
-                                                "",
-                                            width: 15.w,
-                                            height: 15.w,
-                                            fit: BoxFit.cover,
-                                            placeholder:
-                                                (
-                                                context,
-                                                url,
-                                                ) => Container(
-                                              color:
-                                              Colors.grey[200],
-                                            ),
-                                            errorWidget:
-                                                (
-                                                context,
-                                                url,
-                                                error,
-                                                ) => Image.asset(
-                                              "assets/images/Applogo_remove_background.png",
-                                              fit: BoxFit.fill,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
+                                  ],
+                                );
+                              },
                             ),
-                          ],
-                        );
-                      },
-                    ),
                   ),
 
                   // File Preview Section (નવું ઍડ કરેલું)
@@ -644,13 +643,10 @@ class _MessageScreenState extends State<MessageScreen> {
                         vertical: 12,
                       ),
                       decoration: BoxDecoration(
-                        color: theme.isDark
-                            ? Color(0xf0242424)
-                            : Colors.grey[100],
+                        color:
+                            theme.isDark ? Color(0xf0242424) : Colors.grey[100],
                         border: Border(
-                          top: BorderSide(
-                            color: Colors.grey.withOpacity(0.2),
-                          ),
+                          top: BorderSide(color: Colors.grey.withOpacity(0.2)),
                         ),
                       ),
                       child: Row(
@@ -660,9 +656,10 @@ class _MessageScreenState extends State<MessageScreen> {
                             child: Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: theme.isDark
-                                    ? Color(0xf035332F)
-                                    : Colors.white,
+                                color:
+                                    theme.isDark
+                                        ? Color(0xf035332F)
+                                        : Colors.white,
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
                                   color: AppColors.maincolor.withOpacity(0.3),
@@ -675,7 +672,9 @@ class _MessageScreenState extends State<MessageScreen> {
                                     width: 40,
                                     height: 40,
                                     decoration: BoxDecoration(
-                                      color: AppColors.maincolor.withOpacity(0.1),
+                                      color: AppColors.maincolor.withOpacity(
+                                        0.1,
+                                      ),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Icon(
@@ -692,7 +691,8 @@ class _MessageScreenState extends State<MessageScreen> {
                                   // File Info
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           _previewFileName ?? 'File',
@@ -700,9 +700,10 @@ class _MessageScreenState extends State<MessageScreen> {
                                             fontFamily: AppConstants.manrope,
                                             fontSize: 14,
                                             fontWeight: FontWeight.w600,
-                                            color: theme.isDark
-                                                ? AppColors.white
-                                                : Colors.black,
+                                            color:
+                                                theme.isDark
+                                                    ? AppColors.white
+                                                    : Colors.black,
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
@@ -818,9 +819,9 @@ class _MessageScreenState extends State<MessageScreen> {
                       padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
                       decoration: BoxDecoration(
                         color:
-                        theme.isDark
-                            ? Color(0xf01A1A1A)
-                            : Color(0xFFF0F2F5),
+                            theme.isDark
+                                ? Color(0xf01A1A1A)
+                                : Color(0xFFF0F2F5),
                         border: Border(
                           top: BorderSide(
                             color: Colors.grey.withOpacity(0.1),
@@ -849,9 +850,9 @@ class _MessageScreenState extends State<MessageScreen> {
                               icon: Icon(
                                 Icons.add,
                                 color:
-                                theme.isDark
-                                    ? Color(0xf0CBB880)
-                                    : Color(0xf0242424),
+                                    theme.isDark
+                                        ? Color(0xf0CBB880)
+                                        : Color(0xf0242424),
                                 size: 24,
                               ),
                               onPressed: () {
@@ -866,9 +867,9 @@ class _MessageScreenState extends State<MessageScreen> {
                             child: Container(
                               decoration: BoxDecoration(
                                 color:
-                                theme.isDark
-                                    ? Color(0xf01A1A1A)
-                                    : Color(0xFFF0F2F5),
+                                    theme.isDark
+                                        ? Color(0xf01A1A1A)
+                                        : Color(0xFFF0F2F5),
                                 borderRadius: BorderRadius.circular(25),
                                 border: Border.all(
                                   color: Colors.grey.withOpacity(0.2),
@@ -907,9 +908,9 @@ class _MessageScreenState extends State<MessageScreen> {
                                     icon: Icon(
                                       Icons.send,
                                       color:
-                                      theme.isDark
-                                          ? Color(0xf0CBB880)
-                                          : Color(0xf0242424),
+                                          theme.isDark
+                                              ? Color(0xf0CBB880)
+                                              : Color(0xf0242424),
                                       size: 24,
                                     ),
                                     onPressed: () {
@@ -1025,13 +1026,13 @@ class _MessageScreenState extends State<MessageScreen> {
           style: TextStyle(
             fontFamily: AppConstants.manrope,
             color:
-            theme.isDark
-                ? isMe
-                ? Colors.black
-                : Colors.white
-                : isMe
-                ? Colors.white
-                : Colors.black,
+                theme.isDark
+                    ? isMe
+                        ? Colors.black
+                        : Colors.white
+                    : isMe
+                    ? Colors.white
+                    : Colors.black,
             fontSize: 16,
           ),
         );
@@ -1040,33 +1041,32 @@ class _MessageScreenState extends State<MessageScreen> {
         return GestureDetector(
           onTap: () {
             log(
-                "getFullFileUrl(message.file)getFullFileUrl(message.file)${getFormattedImageUrl(
-                    message.file)}");
-            Get.to(PdfView(link: getFormattedImageUrl(message.file)));
-
+              "getFullFileUrl(message.file)getFullFileUrl(message.file)${message.file ?? ""}",
+            );
+            Get.to(PdfView(link: message.file ?? ""));
           },
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: CachedNetworkImage(
-              imageUrl: getFormattedImageUrl(message.file),
+              imageUrl: message.file ?? "",
 
               width: 200,
               height: 200,
               fit: BoxFit.cover,
               placeholder:
                   (context, url) => Container(
-                width: 200,
-                height: 200,
-                color: Colors.grey[200],
-                child: const Center(child: CircularProgressIndicator()),
-              ),
+                    width: 200,
+                    height: 200,
+                    color: Colors.grey[200],
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
               errorWidget:
                   (context, url, error) => Container(
-                width: 200,
-                height: 200,
-                color: Colors.grey[200],
-                child: const Icon(Icons.broken_image, size: 40),
-              ),
+                    width: 200,
+                    height: 200,
+                    color: Colors.grey[200],
+                    child: const Icon(Icons.broken_image, size: 40),
+                  ),
             ),
           ),
         );
@@ -1119,9 +1119,9 @@ class _MessageScreenState extends State<MessageScreen> {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color:
-                isMe
-                    ? Colors.white.withOpacity(0.3)
-                    : Colors.grey.withOpacity(0.3),
+                    isMe
+                        ? Colors.white.withOpacity(0.3)
+                        : Colors.grey.withOpacity(0.3),
               ),
             ),
             child: Row(
@@ -1148,9 +1148,9 @@ class _MessageScreenState extends State<MessageScreen> {
                           fontFamily: AppConstants.manrope,
                           fontSize: 12,
                           color:
-                          isMe
-                              ? Colors.white.withOpacity(0.8)
-                              : Colors.grey[600],
+                              isMe
+                                  ? Colors.white.withOpacity(0.8)
+                                  : Colors.grey[600],
                         ),
                       ),
                     ],
@@ -1179,34 +1179,21 @@ class _MessageScreenState extends State<MessageScreen> {
     }
   }
 
-  String getFormattedImageUrl(String? path) {
-    if (path == null || path.isEmpty) return "";
-
-    // જો પાથ પહેલેથી http થી શરૂ થતો હોય તો ડાયરેક્ટ રિટર્ન કરો
-    if (path.startsWith("http")) return path;
-
-    // પાથની શરૂઆત જો '/' થી થતી હોય તો તેને વ્યવસ્થિત રીતે જોડો
-    String cleanPath = path.startsWith("/") ? path : "/$path";
-
-    return "https://portal.wavee.ai$cleanPath";
-  }
-
-
   void MessageApi() async {
     checkInternet().then((internet) async {
       if (internet) {
         try {
           String userId = loginModel?.data?.user?.id.toString() ?? '';
           String conciergeId =
-          (widget.conciergeID.toString() ==
-              (loginModel?.data?.user?.id.toString() ?? ""))
-              ? (widget.senderid?.toString() ?? "")
-              : (widget.conciergeID?.toString() ?? "");
+              (widget.conciergeID.toString() ==
+                      (loginModel?.data?.user?.id.toString() ?? ""))
+                  ? (widget.senderid?.toString() ?? "")
+                  : (widget.conciergeID?.toString() ?? "");
 
           String type =
-          widget.type?.isNotEmpty == true
-              ? widget.type.toString() ?? ""
-              : 'business';
+              widget.type?.isNotEmpty == true
+                  ? widget.type.toString() ?? ""
+                  : 'business';
 
           var response = await MessageProvider().messageApi(
             userId,
@@ -1219,8 +1206,7 @@ class _MessageScreenState extends State<MessageScreen> {
             messageModel = MessageModel.fromJson(response.data);
             log("response ${response.data}");
 
-          log("====================================");
-
+            log("====================================");
           } else {
             // Handle error
           }
@@ -1249,20 +1235,20 @@ class _MessageScreenState extends State<MessageScreen> {
       setState(() {
         isSending = true;
         loadingMessage =
-        type == 2
-            ? 'Sending Photo'
-            : type == 3
-            ? 'Sending Video'
-            : type == 1
-            ? 'Sending Message'
-            : 'Sending File';
+            type == 2
+                ? 'Sending Photo'
+                : type == 3
+                ? 'Sending Video'
+                : type == 1
+                ? 'Sending Message'
+                : 'Sending File';
       });
     }
     String conciergeId =
-    (widget.conciergeID.toString() ==
-        (loginModel?.data?.user?.id.toString() ?? ""))
-        ? (widget.senderid?.toString() ?? "")
-        : (widget.conciergeID?.toString() ?? "");
+        (widget.conciergeID.toString() ==
+                (loginModel?.data?.user?.id.toString() ?? ""))
+            ? (widget.senderid?.toString() ?? "")
+            : (widget.conciergeID?.toString() ?? "");
     final Map<String, String> data = {
       "message": _messageController.text.trim(),
       "sender_id": loginModel?.data?.user?.id.toString() ?? '',
@@ -1308,97 +1294,97 @@ class _MessageScreenState extends State<MessageScreen> {
       backgroundColor: Colors.transparent,
       builder:
           (context) => Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              spreadRadius: 2,
-            ),
-          ],
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "Choose File Type",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: AppConstants.manrope,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildFileTypeButton(
-                      icon: Icons.photo,
-                      label: "Photo",
-                      onTap: () async {
-                        final XFile? photo = await _picker.pickImage(
-                          source: ImageSource.gallery,
-                        );
-                        if (photo != null) {
-                          setState(() {
-                            // Store file for preview instead of sending immediately
-                            _previewFile = File(photo.path);
-                            _previewFileName = photo.name;
-                            _previewFileType = 2;
-                          });
-                          Navigator.pop(context);
-                        }
-                      },
-                    ),
-                    _buildFileTypeButton(
-                      icon: Icons.picture_as_pdf,
-                      label: "PDF",
-                      onTap: () async {
-                        FilePickerResult? result = await FilePicker.platform
-                            .pickFiles(
-                          type: FileType.custom,
-                          allowedExtensions: ['pdf'],
-                        );
-                        if (result != null) {
-                          setState(() {
-                            // Store file for preview instead of sending immediately
-                            _previewFile = File(
-                              result.files.single.path.toString(),
-                            );
-                            _previewFileName = result.files.single.name;
-                            _previewFileType = 4;
-                          });
-                          Navigator.pop(context);
-                        }
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                    "Cancel",
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 16,
-                      fontFamily: AppConstants.manrope,
-                    ),
-                  ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  spreadRadius: 2,
                 ),
               ],
             ),
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Choose File Type",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: AppConstants.manrope,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildFileTypeButton(
+                          icon: Icons.photo,
+                          label: "Photo",
+                          onTap: () async {
+                            final XFile? photo = await _picker.pickImage(
+                              source: ImageSource.gallery,
+                            );
+                            if (photo != null) {
+                              setState(() {
+                                // Store file for preview instead of sending immediately
+                                _previewFile = File(photo.path);
+                                _previewFileName = photo.name;
+                                _previewFileType = 2;
+                              });
+                              Navigator.pop(context);
+                            }
+                          },
+                        ),
+                        _buildFileTypeButton(
+                          icon: Icons.picture_as_pdf,
+                          label: "PDF",
+                          onTap: () async {
+                            FilePickerResult? result = await FilePicker.platform
+                                .pickFiles(
+                                  type: FileType.custom,
+                                  allowedExtensions: ['pdf'],
+                                );
+                            if (result != null) {
+                              setState(() {
+                                // Store file for preview instead of sending immediately
+                                _previewFile = File(
+                                  result.files.single.path.toString(),
+                                );
+                                _previewFileName = result.files.single.name;
+                                _previewFileType = 4;
+                              });
+                              Navigator.pop(context);
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 16,
+                          fontFamily: AppConstants.manrope,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
-      ),
     );
   }
 
@@ -1441,13 +1427,13 @@ class _MessageScreenState extends State<MessageScreen> {
     setState(() {
       isSending = true;
       loadingMessage =
-      type == 2
-          ? 'Sending Photo'
-          : type == 3
-          ? 'Sending Video'
-          : type == 1
-          ? 'Sending Message'
-          : 'Sending File';
+          type == 2
+              ? 'Sending Photo'
+              : type == 3
+              ? 'Sending Video'
+              : type == 1
+              ? 'Sending Message'
+              : 'Sending File';
     });
 
     Map<String, String> data = {
