@@ -20,6 +20,7 @@ import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
 import '../../../Utils/const.dart';
 import '../../../Utils/errorDialog.dart';
+import '../../../Utils/liveIndicator.dart';
 import '../../../Utils/loader.dart';
 import '../../CommunityScreen/view/storyView.dart';
 import '../../HomeScreen/View/homePage.dart' hide LiveIndicator;
@@ -27,8 +28,6 @@ import '../../ViewProfile/modal/profile_model.dart';
 import '../../messageScreen/View/messageScreen.dart';
 import '../../viewProfile/Provider/profileProvider.dart';
 import '../Provider/chatScreenProvider.dart';
-import '../../../Utils/liveIndicator.dart';
-
 
 class ChatScreen extends StatefulWidget {
   int? selected;
@@ -1557,4 +1556,3 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     });
   }
 }
-

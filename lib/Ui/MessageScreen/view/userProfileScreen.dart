@@ -16,7 +16,6 @@ import '../../../Utils/loader.dart';
 import '../../MessageScreen/modal/UserPersonalInfoModel.dart';
 import '../Provider/messageScreenProvider.dart';
 
-
 class UserProfileScreen extends StatefulWidget {
   final String? id;
 
@@ -46,7 +45,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     final Color iconColor = isDark ? Color(0xf0B8A780) : blueColor;
     final Color subtitleColor =
-    isDark ? Colors.grey.shade500 : Colors.grey.shade600;
+        isDark ? Colors.grey.shade500 : Colors.grey.shade600;
     final Color titleColor = isDark ? Colors.white : const Color(0xFF1A1A1A);
 
     return Scaffold(
@@ -57,10 +56,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               ? Loader()
               : Column(
                 children: [
-                  SizedBox(height: 6.h,),
-                  TitleBar(title: "View Profile", drawerCallback: () {
-
-                  },),
+                  SizedBox(height: 6.h),
+                  TitleBar(title: "View Profile", drawerCallback: () {}),
                   Container(
                     width: double.infinity,
                     // decoration: const BoxDecoration(color: Colors.white),
@@ -130,39 +127,34 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                         ),
 
-
-                        SizedBox(height: 1.h,),
+                        SizedBox(height: 1.h),
 
                         buildSingleInfoCard(
-                          ontap: () {
-
-                          },
+                          ontap: () {},
                           icon: Icons.email_outlined,
 
                           label: "EMAIL",
-                          value: userpersonalInfoModel?.data?.email
-                              .toString() ?? "N/A",
+                          value:
+                              userpersonalInfoModel?.data?.email.toString() ??
+                              "N/A",
                           iconBg:
-                          theme.isDark
-                              ? Color(0xf036342F)
-                              : Color(0xf0E9EAEF),
+                              theme.isDark
+                                  ? Color(0xf036342F)
+                                  : Color(0xf0E9EAEF),
 
                           iconColor: iconColor,
                           labelColor: subtitleColor,
                           valueColor: titleColor,
                           cardColor:
-                          theme.isDark ? Color(0xf0252525) : Colors.white,
+                              theme.isDark ? Color(0xf0252525) : Colors.white,
                           isDark: isDark,
                         ),
-                        SizedBox(height: 1.h,),
+                        SizedBox(height: 1.h),
                         buildSingleInfoCard(
                           ontap: () {
                             final phone =
                                 userpersonalInfoModel?.data?.phoneNumber;
-                            if (phone != null &&
-                                phone
-                                    .toString()
-                                    .isNotEmpty) {
+                            if (phone != null && phone.toString().isNotEmpty) {
                               final telUrl = Uri.parse(
                                 "tel:${phone.toString()}",
                               );
@@ -175,19 +167,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           icon: Icons.phone,
 
                           label: "PHONE",
-                          value: userpersonalInfoModel?.data?.phoneNumber
-                              .toString() ??
+                          value:
+                              userpersonalInfoModel?.data?.phoneNumber
+                                  .toString() ??
                               "N/A",
                           iconBg:
-                          theme.isDark
-                              ? Color(0xf036342F)
-                              : Color(0xf0E9EAEF),
+                              theme.isDark
+                                  ? Color(0xf036342F)
+                                  : Color(0xf0E9EAEF),
 
                           iconColor: iconColor,
                           labelColor: subtitleColor,
                           valueColor: titleColor,
                           cardColor:
-                          theme.isDark ? Color(0xf0252525) : Colors.white,
+                              theme.isDark ? Color(0xf0252525) : Colors.white,
                           isDark: isDark,
                         ),
                         SizedBox(height: 2.h),
@@ -197,7 +190,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
                   SizedBox(height: 3.h),
                 ],
-          ).paddingOnly(left: 3.w, right: 3.w),
+              ).paddingOnly(left: 3.w, right: 3.w),
     );
   }
 
@@ -534,7 +527,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     required Color cardColor,
     required bool isDark,
     required VoidCallback ontap,
-
   }) {
     return GestureDetector(
       onTap: ontap,
@@ -544,15 +536,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           borderRadius: BorderRadius.circular(24),
           border: Border.all(color: iconBg),
           boxShadow:
-          isDark
-              ? []
-              : [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.08),
-              blurRadius: 20,
-              offset: const Offset(0, 5),
-            ),
-          ],
+              isDark
+                  ? []
+                  : [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.08),
+                      blurRadius: 20,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
         ),
         padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.8.h),
         child: Row(
@@ -597,6 +589,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       ),
     );
   }
+
   userpersonalinfoapi() async {
     checkInternet().then((internet) async {
       if (internet) {

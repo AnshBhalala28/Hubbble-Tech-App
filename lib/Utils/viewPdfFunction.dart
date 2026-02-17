@@ -35,14 +35,23 @@ class _PdfViewState extends State<PdfView> {
   }
 
   // 🔹 EXTENSION FROM QUERY PARAM
+  // String _getExtension(String url) {
+  //   final uri = Uri.tryParse(url);
+  //   if (uri == null) return '';
+  //
+  //   final path = uri.queryParameters['path'];
+  //   if (path == null) return '';
+  //
+  //   return path.split('.').last.toLowerCase();
+  // }
   String _getExtension(String url) {
     final uri = Uri.tryParse(url);
     if (uri == null) return '';
 
-    final path = uri.queryParameters['path'];
-    if (path == null) return '';
+    final path = uri.path; // ✅ direct URL path
+    if (path.isEmpty) return '';
 
-    return path.split('.').last.toLowerCase();
+    return path.split('.').last.toLowerCase(); // handles .PDF also
   }
 
   // 🔹 FILE NAME

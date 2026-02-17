@@ -17,7 +17,6 @@ import '../../../Utils/colors.dart';
 import '../../../Utils/const.dart';
 import '../../../Utils/customAppBar.dart';
 import '../../../Utils/customBatan.dart';
-import '../../../Utils/customInputDecoration.dart';
 import '../../../Utils/errorDialog.dart';
 import '../../../Utils/loader.dart';
 import '../Provider/maintenanceProvider.dart';
@@ -104,13 +103,13 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                             margin: EdgeInsets.symmetric(horizontal: 1.2.w),
                             decoration: BoxDecoration(
                               color:
-                              theme.isDark
-                                  ? isSelected
-                                  ? AppColors.white
-                                  : const Color(0xFF212121)
-                                  : isSelected
-                                  ? const Color(0xFF1A1A1A)
-                                  : Colors.grey.withValues(alpha: .2),
+                                  theme.isDark
+                                      ? isSelected
+                                          ? AppColors.white
+                                          : const Color(0xFF212121)
+                                      : isSelected
+                                      ? const Color(0xFF1A1A1A)
+                                      : Colors.grey.withValues(alpha: .2),
                               borderRadius: BorderRadius.circular(
                                 25,
                               ), // image ma more round
@@ -153,7 +152,8 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                         style: TextStyle(
                           fontSize: 17.sp,
                           fontWeight: FontWeight.bold,
-                          color:theme.isDark? AppColors.white:AppColors.black,
+                          color:
+                              theme.isDark ? AppColors.white : AppColors.black,
                           fontFamily: AppConstants.manrope,
                         ),
                       ).paddingOnly(top: 30.h),

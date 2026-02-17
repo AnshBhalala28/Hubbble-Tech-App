@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -594,11 +595,270 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                 ),
                                               ),
                                             ),
-                                            SizedBox(height: 2.h),
+                                            SizedBox(height: 1.h),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                          horizontal: 4.w,
+                                                          vertical: 1.h,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      color:
+                                                          theme.isDark
+                                                              ? Color(
+                                                                0xff262626,
+                                                              )
+                                                              : Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            14,
+                                                          ),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.black
+                                                              .withOpacity(
+                                                                0.05,
+                                                              ),
+                                                          blurRadius: 10,
+                                                          offset: const Offset(
+                                                            0,
+                                                            4,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                      border: Border.all(
+                                                        color:
+                                                            Colors
+                                                                .grey
+                                                                .shade400,
+                                                        width: 1,
+                                                      ),
+                                                    ),
+                                                    child: Row(
+                                                      children: [
+                                                        /// 🔹 Status Icon
+                                                        Container(
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                2.w,
+                                                              ),
+                                                          decoration: BoxDecoration(
+                                                            color:
+                                                                theme.isDark
+                                                                    ? Color(
+                                                                      0xFFCFB583,
+                                                                    ).withValues(
+                                                                      alpha:
+                                                                          0.2,
+                                                                    )
+                                                                    : AppColors
+                                                                        .maincolor
+                                                                        .withOpacity(
+                                                                          0.12,
+                                                                        ),
+                                                            shape:
+                                                                BoxShape.circle,
+                                                          ),
+                                                          child: Icon(
+                                                            CupertinoIcons
+                                                                .person_circle,
+                                                            size: 18.sp,
+                                                            color:
+                                                                theme.isDark
+                                                                    ? Colors
+                                                                        .white
+                                                                    : AppColors
+                                                                        .maincolor,
+                                                          ),
+                                                        ),
+
+                                                        SizedBox(width: 3.w),
+
+                                                        /// 🔹 Text
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                "Residents per Session",
+                                                                style: TextStyle(
+                                                                  fontSize:
+                                                                      14.sp,
+                                                                  fontFamily:
+                                                                      AppConstants
+                                                                          .manrope,
+                                                                  color:
+                                                                      theme.isDark
+                                                                          ? Colors
+                                                                              .white
+                                                                          : Colors
+                                                                              .grey
+                                                                              .shade600,
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 0.4.h,
+                                                              ),
+                                                              Text(
+                                                                booking?.capacity
+                                                                        ?.toString() ??
+                                                                    "Unknown",
+                                                                style: TextStyle(
+                                                                  fontSize:
+                                                                      15.sp,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontFamily:
+                                                                      AppConstants
+                                                                          .manropeBold,
+                                                                  color:
+                                                                      theme.isDark
+                                                                          ? Colors
+                                                                              .white
+                                                                          : Colors
+                                                                              .black,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+
+                                                SizedBox(width: 2.w),
+
+                                                Container(
+                                                  width: 39.w,
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 4.w,
+                                                    vertical: 1.h,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        theme.isDark
+                                                            ? Color(0xff262626)
+                                                            : Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          14,
+                                                        ),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.black
+                                                            .withOpacity(0.05),
+                                                        blurRadius: 10,
+                                                        offset: const Offset(
+                                                          0,
+                                                          4,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                    border: Border.all(
+                                                      color:
+                                                          Colors.grey.shade400,
+                                                      width: 1,
+                                                    ),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      /// 🔹 Status Icon
+                                                      Container(
+                                                        padding: EdgeInsets.all(
+                                                          2.w,
+                                                        ),
+                                                        decoration: BoxDecoration(
+                                                          color:
+                                                              theme.isDark
+                                                                  ? Color(
+                                                                    0xFFCFB583,
+                                                                  ).withValues(
+                                                                    alpha: 0.2,
+                                                                  )
+                                                                  : AppColors
+                                                                      .maincolor
+                                                                      .withOpacity(
+                                                                        0.12,
+                                                                      ),
+                                                          shape:
+                                                              BoxShape.circle,
+                                                        ),
+                                                        child: Icon(
+                                                          Icons.calendar_month,
+                                                          size: 18.sp,
+                                                          color:
+                                                              theme.isDark
+                                                                  ? Colors.white
+                                                                  : AppColors
+                                                                      .maincolor,
+                                                        ),
+                                                      ),
+
+                                                      SizedBox(width: 3.w),
+
+                                                      /// 🔹 Text
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              "Per Month",
+                                                              style: TextStyle(
+                                                                fontSize: 14.sp,
+                                                                fontFamily:
+                                                                    AppConstants
+                                                                        .manrope,
+                                                                color:
+                                                                    theme.isDark
+                                                                        ? Colors
+                                                                            .white
+                                                                        : Colors
+                                                                            .grey
+                                                                            .shade600,
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              height: 0.4.h,
+                                                            ),
+                                                            Text(
+                                                              booking?.maxBookingPerMonth
+                                                                      ?.toString() ??
+                                                                  "Unknown",
+                                                              style: TextStyle(
+                                                                fontSize: 15.sp,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontFamily:
+                                                                    AppConstants
+                                                                        .manropeBold,
+                                                                color:
+                                                                    theme.isDark
+                                                                        ? Colors
+                                                                            .white
+                                                                        : Colors
+                                                                            .black,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 1.h),
                                             Container(
-                                              margin: EdgeInsets.only(
-                                                bottom: 2.h,
-                                              ),
                                               padding: EdgeInsets.symmetric(
                                                 horizontal: 4.w,
                                                 vertical: 1.h,
@@ -708,7 +968,7 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                         Text(
                                                           "Session Status",
                                                           style: TextStyle(
-                                                            fontSize: 13.sp,
+                                                            fontSize: 14.sp,
                                                             fontFamily:
                                                                 AppConstants
                                                                     .manrope,

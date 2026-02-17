@@ -121,6 +121,7 @@ class Data1 {
   int? totalBookingSlots;
   int? bookedSlots;
   int? availableSlots;
+  int? maxBookingPerMonth;
 
   List<ExistingBooking> existingBookings = [];
 
@@ -151,6 +152,7 @@ class Data1 {
             : [];
 
     capacity = json['capacity'];
+    maxBookingPerMonth = json['max_booking_per_month'];
     maxBookingPerDay = json['max_booking_per_day'];
     status = json['status'];
     deletedAt = json['deleted_at'];
@@ -183,6 +185,7 @@ class Data1 {
       'booking_limit_duration': bookingLimitDuration,
       'duration_options': durationOptions,
       'capacity': capacity,
+      'max_booking_per_month': maxBookingPerMonth,
       'max_booking_per_day': maxBookingPerDay,
       'status': status,
       'deleted_at': deletedAt,

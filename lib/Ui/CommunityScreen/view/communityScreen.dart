@@ -1056,7 +1056,9 @@ class _CommunityScreenState extends State<CommunityScreen>
     //   });
     // }
   }
+
   bool isMapReady = false;
+
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeController>();
@@ -1115,40 +1117,44 @@ class _CommunityScreenState extends State<CommunityScreen>
             //     ), // or fallback UI
             isLocationFetched
                 ? AnimatedOpacity(
-              // જો મેપ રેડી હોય તો જ દેખાશે, નહીંતર ટ્રાન્સપરન્ટ રહેશે
-              opacity: isMapReady ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 500), // સ્મૂધ એનિમેશન
-              child: GoogleMap(
-                key: ValueKey(theme.isDark),
-                style: theme.isDark ? _darkMapStyle : _lightMapStyle,
-                onMapCreated: (GoogleMapController controller) {
-                  mapController = controller;
-                  _customInfoWindowController.googleMapController = controller;
+                  // જો મેપ રેડી હોય તો જ દેખાશે, નહીંતર ટ્રાન્સપરન્ટ રહેશે
+                  opacity: isMapReady ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 500), // સ્મૂધ એનિમેશન
+                  child: GoogleMap(
+                    key: ValueKey(theme.isDark),
+                    style: theme.isDark ? _darkMapStyle : _lightMapStyle,
+                    onMapCreated: (GoogleMapController controller) {
+                      mapController = controller;
+                      _customInfoWindowController.googleMapController =
+                          controller;
 
-                  // મેપ બની ગયા પછી થોડીક જ વારમાં તેને વિઝિબલ કરો
-                  Future.delayed(const Duration(milliseconds: 150), () {
-                    if (mounted) {
-                      setState(() {
-                        isMapReady = true;
+                      // મેપ બની ગયા પછી થોડીક જ વારમાં તેને વિઝિબલ કરો
+                      Future.delayed(const Duration(milliseconds: 150), () {
+                        if (mounted) {
+                          setState(() {
+                            isMapReady = true;
+                          });
+                        }
                       });
-                    }
-                  });
-                },
-                myLocationButtonEnabled: false,
-                zoomControlsEnabled: false,
-                compassEnabled: false,
-                indoorViewEnabled: true,
-                mapToolbarEnabled: false,
-                myLocationEnabled: false,
-                zoomGesturesEnabled: true,
-                mapType: MapType.normal,
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(double.parse(AppLat), double.parse(AppLon)),
-                  zoom: 14.0,
-                ),
-                markers: _markers,
-              ),
-            )
+                    },
+                    myLocationButtonEnabled: false,
+                    zoomControlsEnabled: false,
+                    compassEnabled: false,
+                    indoorViewEnabled: true,
+                    mapToolbarEnabled: false,
+                    myLocationEnabled: false,
+                    zoomGesturesEnabled: true,
+                    mapType: MapType.normal,
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(
+                        double.parse(AppLat),
+                        double.parse(AppLon),
+                      ),
+                      zoom: 14.0,
+                    ),
+                    markers: _markers,
+                  ),
+                )
                 : const SizedBox(),
             CustomInfoWindow(
               controller: _customInfoWindowController,
@@ -1295,7 +1301,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                             Icon(
                               Icons.favorite,
                               color:
-                                  theme.isDark ? Color(0xffbdab82) :AppColors.lightText,
+                                  theme.isDark
+                                      ? Color(0xffbdab82)
+                                      : AppColors.lightText,
                               size: 17.sp,
                             ),
                             const SizedBox(width: 10),
@@ -1473,10 +1481,11 @@ class _CommunityScreenState extends State<CommunityScreen>
             ),
             if (!isMapReady)
               Container(
-                color: theme.isDark ? const Color(0xff1A1A1A) : const Color(0xFFF0F2F5),
-                child: const Center(
-                  child: Loader(),
-                ),
+                color:
+                    theme.isDark
+                        ? const Color(0xff1A1A1A)
+                        : const Color(0xFFF0F2F5),
+                child: const Center(child: Loader()),
               ),
             if (isMapLoading)
               Positioned.fill(
@@ -2802,37 +2811,64 @@ class _CommunityScreenState extends State<CommunityScreen>
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 CachedNetworkImage(
-                                                  imageUrl: categoriesModel?.data?[i].img ?? "",
-                                                  imageBuilder: (context, imageProvider) => Container(
-                                                    width: 20,
-                                                    height: 20,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      image: DecorationImage(
-                                                        image: imageProvider,
-                                                        fit: BoxFit.cover,
+                                                  imageUrl:
+                                                      categoriesModel
+                                                          ?.data?[i]
+                                                          .img ??
+                                                      "",
+                                                  imageBuilder:
+                                                      (
+                                                        context,
+                                                        imageProvider,
+                                                      ) => Container(
+                                                        width: 20,
+                                                        height: 20,
+                                                        decoration: BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          image: DecorationImage(
+                                                            image:
+                                                                imageProvider,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                  placeholder: (context, url) => Container(
-                                                    width: 20,
-                                                    height: 20,
-                                                    alignment: Alignment.center,
-                                                    child: CircularProgressIndicator(strokeWidth: 2),
-                                                  ),
-                                                  errorWidget: (context, url, error) => Container(
-                                                    width: 20,
-                                                    height: 20,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color: Colors.blue,
-                                                    ),
-                                                    child: Icon(
-                                                      Icons.person,
-                                                      size: 12,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
+                                                  placeholder:
+                                                      (
+                                                        context,
+                                                        url,
+                                                      ) => Container(
+                                                        width: 20,
+                                                        height: 20,
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                              strokeWidth: 2,
+                                                            ),
+                                                      ),
+                                                  errorWidget:
+                                                      (
+                                                        context,
+                                                        url,
+                                                        error,
+                                                      ) => Container(
+                                                        width: 20,
+                                                        height: 20,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                              shape:
+                                                                  BoxShape
+                                                                      .circle,
+                                                              color:
+                                                                  Colors.blue,
+                                                            ),
+                                                        child: Icon(
+                                                          Icons.person,
+                                                          size: 12,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
                                                 ),
 
                                                 const SizedBox(width: 4),
@@ -3239,8 +3275,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     VoidCallback onTap,
     Color iconColor,
     Color textColor,
-  )
-  {
+  ) {
     final theme = Provider.of<ThemeController>(context, listen: false);
 
     return Material(

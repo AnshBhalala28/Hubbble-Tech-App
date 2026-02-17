@@ -39,7 +39,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeController>();
-final isDark=theme.isDark;
+    final isDark = theme.isDark;
     return Scaffold(
       backgroundColor: isDark ? Color(0xf01A1A1A) : Color(0xFFF0F2F5),
       body: Column(
@@ -285,15 +285,13 @@ final isDark=theme.isDark;
                   firstPageProgressIndicatorBuilder:
                       (_) => Center(
                         child: CircularProgressIndicator(
-                          color:
-                              isDark ? Colors.white : AppColors.maincolor,
+                          color: isDark ? Colors.white : AppColors.maincolor,
                         ),
                       ),
                   newPageProgressIndicatorBuilder:
                       (_) => Center(
                         child: CircularProgressIndicator(
-                          color:
-                              isDark ? Colors.white : AppColors.maincolor,
+                          color: isDark ? Colors.white : AppColors.maincolor,
                         ),
                       ),
                 ),
