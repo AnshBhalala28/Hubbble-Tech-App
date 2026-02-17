@@ -2770,8 +2770,9 @@ class _HomePageState extends State<HomePage>
       setState(() {
         _weathermodel = weather;
       });
-    } catch (e) {
+    } catch (e,stackTrace) {
       print(e);
+      print("ERror $stackTrace");
     }
   }
 

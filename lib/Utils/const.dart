@@ -126,10 +126,10 @@ String formatTime12(String? time) {
 
 class AppConstants {
   /// Dev Url
-  // static String BASEURL = "https://development.wavee.ai/api/";
+  static String BASEURL = "https://development.wavee.ai/api/";
 
   /// Og Url
-  static String BASEURL = "https://portal.wavee.ai/api/";
+  // static String BASEURL = "https://portal.wavee.ai/api/";
   static String weatherApi =
       dotenv.env['WEATHER_API'] ?? 'NO WEATHER_API FOUND';
   static const String path = "assets/Svg/";

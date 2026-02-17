@@ -36,19 +36,42 @@ class AmenitiesProvider extends ChangeNotifier {
     }
   }
 
+  // Future<Response> addBookingApi(Map<String, String> bodyData) async {
+  //   try {
+  //     String token = await SaveDataLocal.getValidToken();
+  //     final dio = await DioHelper.getDio();
+  //     final response = await dio.post(
+  //       ApiEndpoint.bookAmenity,
+  //       data: bodyData,
+  //       options: Options(headers: {'X-Auth-Token': token}),
+  //     );
+  //     return response;
+  //   } on DioException catch (e) {
+  //     log("error ${e.response?.data}");
+  //     throw Exception(handleDioError(e));
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
+
   Future<Response> addBookingApi(Map<String, String> bodyData) async {
     try {
       String token = await SaveDataLocal.getValidToken();
       final dio = await DioHelper.getDio();
+
       final response = await dio.post(
         ApiEndpoint.bookAmenity,
         data: bodyData,
         options: Options(headers: {'X-Auth-Token': token}),
       );
+
       return response;
     } on DioException catch (e) {
-      log("error ${e.response!.data}");
-      throw Exception(handleDioError(e));
+      // 👇 IMPORTANT: return backend response even on 400
+      if (e.response != null) {
+        return e.response!;
+      }
+      rethrow;
     } catch (e) {
       rethrow;
     }

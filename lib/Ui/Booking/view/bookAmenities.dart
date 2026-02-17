@@ -132,7 +132,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                 child: GestureDetector(
                                   onTap:
                                       () => Get.to(
-                                        () => Form_Screen(
+                                        () => AmenitiesDetail(
                                           amenites_id: booking.id.toString(),
                                           isPage: false,
                                         ),
@@ -252,7 +252,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                   title: "Book Now",
                                   route:
                                       () => Get.to(
-                                        () => Form_Screen(
+                                        () => AmenitiesDetail(
                                           amenites_id: booking.id.toString(),
                                           isPage: false,
                                         ),

@@ -259,7 +259,7 @@ class _BookingScreenState extends State<BookingScreen> {
     return GestureDetector(
       onTap: () {
         Get.to(
-          () => Form_Screen(
+          () => AmenitiesDetail(
             amenites_id: booking['amenity']['id'].toString(),
             status: booking['status'],
             bookingDate: booking['requested_at'],

@@ -21,6 +21,8 @@ class WeatherService {
       log("Weather Api:- $BASE_URL?q=$cityName&appid=$apiKey&units=metric");
       return WeatherModel.fromJson(jsonDecode(response.body));
     } else {
+      log("Weather Api:- $BASE_URL?q=$cityName&appid=$apiKey&units=metric");
+
       throw Exception("Failed to load Weather data");
     }
   }
