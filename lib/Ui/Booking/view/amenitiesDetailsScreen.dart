@@ -2206,7 +2206,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
               ),
               if (isAllDayBooking) ...[
                 const Spacer(),
-                batan(
+                isAlreadyBooked?SizedBox(): batan(
                   title: "Custom Session",
                   route: () {
                     if (isAllDayBooking) {
@@ -2284,11 +2284,10 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                         : openTime;
 
                     final bool isSelected = selectedStartTime == openTime;
-                    final bool isAlreadyBooked = _isSlotAlreadyBookedByMe(
+                    isAlreadyBooked = _isSlotAlreadyBookedByMe(
                       openTime,
                       calendar1SelectedDate!,
                     );
-
                     return GestureDetector(
                       onTap: isAlreadyBooked
                           ? null
@@ -5953,5 +5952,5 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     );
   }
 
-
+  bool isAlreadyBooked=false;
 }
