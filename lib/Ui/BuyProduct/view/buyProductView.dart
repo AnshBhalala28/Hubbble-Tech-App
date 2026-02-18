@@ -914,7 +914,8 @@ class _BuyProductViewState extends State<BuyProductView> {
     required String title,
     required IconData icon,
     required Widget child,
-  }) {
+  })
+  {
     final theme = Provider.of<ThemeController>(context, listen: false);
     final isDark = theme.isDark;
     return Container(

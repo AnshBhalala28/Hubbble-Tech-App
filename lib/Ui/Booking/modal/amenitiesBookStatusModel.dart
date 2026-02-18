@@ -231,7 +231,7 @@ class Amenity {
   OperatingHours? operatingHours;
   List<String>? durationOptions;
   int? capacity;
-  int? maxBookingPerDay;
+var maxBookingPerDay;
   String? status;
   String? createdAt;
   String? updatedAt;

@@ -359,7 +359,7 @@ class _BookingScreenState extends State<BookingScreen> {
                           fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
                           color: pTextColor,
-                          fontFamily: AppConstants.manrope,
+                          fontFamily: AppConstants.manropeBold,
                         ),
                       ),
                       SizedBox(height: 0.8.h),
@@ -374,7 +374,8 @@ class _BookingScreenState extends State<BookingScreen> {
                       // સમય બતાવવા માટે
                       _iconDetail(
                         Icons.access_time,
-                        formatTime12(booking['requested_at']),
+                        // formatTime12(booking['requested_at']),
+                        booking['start_time'],
                         // આ આપોઆપ "09:55 AM" બતાવશે
                         sTextColor,
                       ),
@@ -437,10 +438,15 @@ class _BookingScreenState extends State<BookingScreen> {
             );
             setState(() => isLoading = false);
           }
-        } catch (e) {
+        } catch (e, stackTrace) {
           setState(() => isLoading = false);
           log(
             "bookAmenitiesStatusModel?.databookAmenitiesStatusModel?.data${bookAmenitiesStatusModel?.data}",
+          );
+          log(
+            "bookAmenitiesStatusModel?.databookAmenitiesStatusModel?.data$stackTrace",
+          ); log(
+            "bookAmenitiesStatusModel?.databookAmenitiesStatusModel?.data$e",
           );
         }
       }

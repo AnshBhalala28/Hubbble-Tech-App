@@ -41,6 +41,7 @@ class ApiEndpoint {
   static String updateCartQuantity = "${baseUrl}updateCartQuantity";
   static String removeFromCart = "${baseUrl}removeFromCart";
   static String amenities = "${baseUrl}amenities";
+  static String addSlot = "${baseUrl}get-time-slots";
   static String bookAmenity = "${baseUrl}bookAmenity";
   static String checkBooked = "${baseUrl}get-amenity-booking-time";
   static String cancleBookingAmenity = "${baseUrl}cancel-amenity-booking";

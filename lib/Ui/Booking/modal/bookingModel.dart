@@ -105,15 +105,15 @@ class Data1 {
   OperatingHours? operatingHours;
   String? bookingLimitDuration;
   List<String> durationOptions = [];
-  int? capacity;
-  int? maxBookingPerDay;
-  String? status;
-  String? createdAt;
-  String? updatedAt;
-  int? totalBookingSlots;
-  int? bookedSlots;
-  int? availableSlots;
-  int? maxBookingPerMonth;
+  var capacity;
+  var maxBookingPerDay;
+  var status;
+  var createdAt;
+  var updatedAt;
+  var totalBookingSlots;
+  var bookedSlots;
+  var availableSlots;
+  var maxBookingPerMonth;
   String? isAllDayBooking;
   var maintenanceDuration;
   List<ExistingBooking> existingBookings = [];
@@ -144,7 +144,7 @@ class Data1 {
     isAllDayBooking = json['is_all_day_booking'];
     maintenanceDuration = json['maintenance_duration'];
 
-    final oh = json['operating_hours'];
+    final oh = json['remaining_slots'];
     if (oh is Map<String, dynamic>) {
       operatingHours = OperatingHours.fromJson(oh);
     }
@@ -165,7 +165,7 @@ class Data1 {
       'description': description,
       'image_url': imageUrl,
       'rules_notice': rulesNotice,
-      'operating_hours': operatingHours?.toJson(),
+      'remaining_slots': operatingHours?.toJson(),
       'booking_limit_duration': bookingLimitDuration,
       'duration_options': durationOptions,
       'capacity': capacity,
