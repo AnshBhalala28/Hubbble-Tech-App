@@ -732,21 +732,21 @@ class Address {
 /// ===== Unit =====
 
 class Unit {
-  int? id;
-  String? buildingId; // store as String for flexibility
-  int? userId;
-  String? blockNumber;
-  String? flatNumber;
-  int? noOfKeys;
-  String? keysOut;
-  String? parkingOption;
+  var id;
+var  buildingId; // store as String for flexibility
+  var userId;
+  var blockNumber;
+  var flatNumber;
+  var noOfKeys;
+  var keysOut;
+  var parkingOption;
   List<String>? documentsFiles;
   List<String>? documentsFilesLabel;
-  String? keyWaiver;
-  String? lettingAgentInfo;
-  String? bicycleScooterInfo;
-  String? createdAt;
-  String? updatedAt;
+  var keyWaiver;
+  var lettingAgentInfo;
+  var bicycleScooterInfo;
+  var createdAt;
+  var updatedAt;
 
   Unit({
     this.id,

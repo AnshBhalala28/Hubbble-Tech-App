@@ -173,8 +173,8 @@ class December {
   int? userId;
   String? status;
   String? requestedAt;
-  var rsvp;
-  var attended;
+  dynamic rsvp;
+  dynamic attended;
   Amenity? amenity;
   String? startTime;
   String? endTime;
@@ -200,8 +200,13 @@ class December {
     attended = json['attended'];
     endTime = json['end_time'];
     startTime = json['start_time'];
-    amenity =
-        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
+
+    // Handle amenity field with type checking
+    if (json['amenity'] != null && json['amenity'] is Map<String, dynamic>) {
+      amenity = Amenity.fromJson(json['amenity']);
+    } else {
+      amenity = null;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -231,7 +236,7 @@ class Amenity {
   OperatingHours? operatingHours;
   List<String>? durationOptions;
   int? capacity;
-var maxBookingPerDay;
+  dynamic maxBookingPerDay;
   String? status;
   String? createdAt;
   String? updatedAt;
@@ -257,13 +262,31 @@ var maxBookingPerDay;
     userId = json['user_id'];
     name = json['name'];
     description = json['description'];
-    imageUrl = json['image_url'].cast<String>();
+
+    if (json['image_url'] != null && json['image_url'] is List) {
+      imageUrl = (json['image_url'] as List)
+          .where((e) => e != null)
+          .map((e) => e.toString())
+          .toList();
+    } else {
+      imageUrl = [];
+    }
+
     rulesNotice = json['rules_notice'];
-    operatingHours =
-        json['operating_hours'] != null
-            ? OperatingHours.fromJson(json['operating_hours'])
-            : null;
-    durationOptions = json['duration_options'].cast<String>();
+
+    if (json['operating_hours'] != null && json['operating_hours'] is Map<String, dynamic>) {
+      operatingHours = OperatingHours.fromJson(json['operating_hours']);
+    } else {
+      operatingHours = null;
+    }
+
+    if (json['duration_options'] != null && json['duration_options'] is List) {
+      durationOptions =
+          (json['duration_options'] as List).map((e) => e.toString()).toList();
+    } else {
+      durationOptions = [];
+    }
+
     capacity = json['capacity'];
     maxBookingPerDay = json['max_booking_per_day'];
     status = json['status'];
@@ -314,6 +337,7 @@ class OperatingHours {
   static List<Monday> _parseDay(dynamic dayData) {
     if (dayData is List) {
       return dayData
+          .where((e) => e is Map<String, dynamic>)
           .map((e) => Monday.fromJson(e as Map<String, dynamic>))
           .toList();
     }
@@ -357,8 +381,8 @@ class June {
   int? userId;
   String? status;
   String? requestedAt;
-  String? rsvp;
-  String? attended;
+  dynamic rsvp;
+  dynamic attended;
   Amenity? amenity;
   String? startTime;
   String? endTime;
@@ -384,8 +408,12 @@ class June {
     attended = json['attended'];
     endTime = json['end_time'];
     startTime = json['start_time'];
-    amenity =
-        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
+
+    if (json['amenity'] != null && json['amenity'] is Map<String, dynamic>) {
+      amenity = Amenity.fromJson(json['amenity']);
+    } else {
+      amenity = null;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -410,8 +438,8 @@ class November {
   int? userId;
   String? status;
   String? requestedAt;
-  String? rsvp;
-  String? attended;
+  dynamic rsvp;
+  dynamic attended;
   Amenity? amenity;
   String? startTime;
   String? endTime;
@@ -437,8 +465,12 @@ class November {
     attended = json['attended'];
     endTime = json['end_time'];
     startTime = json['start_time'];
-    amenity =
-        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
+
+    if (json['amenity'] != null && json['amenity'] is Map<String, dynamic>) {
+      amenity = Amenity.fromJson(json['amenity']);
+    } else {
+      amenity = null;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -463,8 +495,8 @@ class October {
   int? userId;
   String? status;
   String? requestedAt;
-  String? rsvp;
-  String? attended;
+  dynamic rsvp;
+  dynamic attended;
   Amenity? amenity;
   String? startTime;
   String? endTime;
@@ -490,8 +522,12 @@ class October {
     attended = json['attended'];
     endTime = json['end_time'];
     startTime = json['start_time'];
-    amenity =
-        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
+
+    if (json['amenity'] != null && json['amenity'] is Map<String, dynamic>) {
+      amenity = Amenity.fromJson(json['amenity']);
+    } else {
+      amenity = null;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -516,8 +552,8 @@ class September {
   int? userId;
   String? status;
   String? requestedAt;
-  String? rsvp;
-  String? attended;
+  dynamic rsvp;
+  dynamic attended;
   Amenity? amenity;
   String? startTime;
   String? endTime;
@@ -543,8 +579,12 @@ class September {
     attended = json['attended'];
     endTime = json['end_time'];
     startTime = json['start_time'];
-    amenity =
-        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
+
+    if (json['amenity'] != null && json['amenity'] is Map<String, dynamic>) {
+      amenity = Amenity.fromJson(json['amenity']);
+    } else {
+      amenity = null;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -569,8 +609,8 @@ class August {
   int? userId;
   String? status;
   String? requestedAt;
-  String? rsvp;
-  String? attended;
+  dynamic rsvp;
+  dynamic attended;
   Amenity? amenity;
   String? startTime;
   String? endTime;
@@ -596,8 +636,12 @@ class August {
     attended = json['attended'];
     endTime = json['end_time'];
     startTime = json['start_time'];
-    amenity =
-        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
+
+    if (json['amenity'] != null && json['amenity'] is Map<String, dynamic>) {
+      amenity = Amenity.fromJson(json['amenity']);
+    } else {
+      amenity = null;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -622,8 +666,8 @@ class July {
   int? userId;
   String? status;
   String? requestedAt;
-  String? rsvp;
-  String? attended;
+  dynamic rsvp;
+  dynamic attended;
   Amenity? amenity;
   String? startTime;
   String? endTime;
@@ -649,8 +693,12 @@ class July {
     attended = json['attended'];
     endTime = json['end_time'];
     startTime = json['start_time'];
-    amenity =
-        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
+
+    if (json['amenity'] != null && json['amenity'] is Map<String, dynamic>) {
+      amenity = Amenity.fromJson(json['amenity']);
+    } else {
+      amenity = null;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -675,8 +723,8 @@ class May {
   int? userId;
   String? status;
   String? requestedAt;
-  String? rsvp;
-  String? attended;
+  dynamic rsvp;
+  dynamic attended;
   Amenity? amenity;
   String? startTime;
   String? endTime;
@@ -702,8 +750,12 @@ class May {
     attended = json['attended'];
     endTime = json['end_time'];
     startTime = json['start_time'];
-    amenity =
-        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
+
+    if (json['amenity'] != null && json['amenity'] is Map<String, dynamic>) {
+      amenity = Amenity.fromJson(json['amenity']);
+    } else {
+      amenity = null;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -728,8 +780,8 @@ class April {
   int? userId;
   String? status;
   String? requestedAt;
-  String? rsvp;
-  String? attended;
+  dynamic rsvp;
+  dynamic attended;
   Amenity? amenity;
   String? startTime;
   String? endTime;
@@ -755,8 +807,12 @@ class April {
     attended = json['attended'];
     endTime = json['end_time'];
     startTime = json['start_time'];
-    amenity =
-        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
+
+    if (json['amenity'] != null && json['amenity'] is Map<String, dynamic>) {
+      amenity = Amenity.fromJson(json['amenity']);
+    } else {
+      amenity = null;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -781,8 +837,8 @@ class March {
   int? userId;
   String? status;
   String? requestedAt;
-  String? rsvp;
-  String? attended;
+  dynamic rsvp;
+  dynamic attended;
   String? startTime;
   String? endTime;
   Amenity? amenity;
@@ -808,8 +864,12 @@ class March {
     attended = json['attended'];
     endTime = json['end_time'];
     startTime = json['start_time'];
-    amenity =
-        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
+
+    if (json['amenity'] != null && json['amenity'] is Map<String, dynamic>) {
+      amenity = Amenity.fromJson(json['amenity']);
+    } else {
+      amenity = null;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -834,8 +894,8 @@ class February {
   int? userId;
   String? status;
   String? requestedAt;
-  String? rsvp;
-  String? attended;
+  dynamic rsvp;
+  dynamic attended;
   String? startTime;
   String? endTime;
   Amenity? amenity;
@@ -861,8 +921,13 @@ class February {
     attended = json['attended'];
     endTime = json['end_time'];
     startTime = json['start_time'];
-    amenity =
-        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
+
+    // FIXED: Check if amenity is a Map before parsing
+    if (json['amenity'] != null && json['amenity'] is Map<String, dynamic>) {
+      amenity = Amenity.fromJson(json['amenity']);
+    } else {
+      amenity = null;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -887,8 +952,8 @@ class January {
   int? userId;
   String? status;
   String? requestedAt;
-  String? rsvp;
-  String? attended;
+  dynamic rsvp;
+  dynamic attended;
   Amenity? amenity;
   String? startTime;
   String? endTime;
@@ -914,8 +979,12 @@ class January {
     attended = json['attended'];
     endTime = json['end_time'];
     startTime = json['start_time'];
-    amenity =
-        json['amenity'] != null ? Amenity.fromJson(json['amenity']) : null;
+
+    if (json['amenity'] != null && json['amenity'] is Map<String, dynamic>) {
+      amenity = Amenity.fromJson(json['amenity']);
+    } else {
+      amenity = null;
+    }
   }
 
   Map<String, dynamic> toJson() {

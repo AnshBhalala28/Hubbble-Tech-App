@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -29,6 +30,8 @@ class MessageProvider extends ChangeNotifier {
         options: Options(headers: {'X-Auth-Token': token}),
       );
     } on DioException catch (e) {
+      log("Errror${e.message}");
+      log("Errror${e.response?.data}");
       throw Exception(handleDioError(e));
     } catch (e) {
       rethrow;

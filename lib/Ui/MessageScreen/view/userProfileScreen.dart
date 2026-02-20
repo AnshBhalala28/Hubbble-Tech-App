@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,6 +37,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       isSending = true;
     });
     userpersonalinfoapi();
+    print(widget.id);
   }
 
   @override
@@ -601,7 +604,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             userpersonalInfoModel = UserPersonalInfoModel.fromJson(
               response.data,
             );
-
             setState(() {
               isSending = false;
             });

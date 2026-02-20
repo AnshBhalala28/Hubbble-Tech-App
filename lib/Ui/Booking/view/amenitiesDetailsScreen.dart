@@ -149,83 +149,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
   String calendar1SelectedDateStr = '';
   bool calendar1Loading = false;
 
-  DateTime _parseTime(String timeStr, DateTime onDate) {
-    final String cleanTimeStr = timeStr.trim();
-
-    try {
-      final format24 = DateFormat("HH:mm");
-      final dt = format24.parse(cleanTimeStr);
-      return DateTime(
-        onDate.year,
-        onDate.month,
-        onDate.day,
-        dt.hour,
-        dt.minute,
-      );
-    } catch (e) {
-      try {
-        final format12 = DateFormat("h:mm a");
-        final dt = format12.parse(cleanTimeStr);
-        return DateTime(
-          onDate.year,
-          onDate.month,
-          onDate.day,
-          dt.hour,
-          dt.minute,
-        );
-      } catch (e2) {
-        print("!!! Failed to parse time: '$timeStr' !!!");
-        return DateTime.now();
-      }
-    }
-  }
-
-  List<String> _extractStartTimesFromOperatingHours(OperatingHours? hours,
-      DateTime selectedDate,) {
-    List<String> startTimes = [];
-
-    if (hours == null) return startTimes;
-
-    final weekday = getWeekdayName(selectedDate).toLowerCase();
-    List<TimeSlot>? timeSlots;
-
-    switch (weekday) {
-      case 'monday':
-        timeSlots = hours.monday;
-        break;
-      case 'tuesday':
-        timeSlots = hours.tuesday;
-        break;
-      case 'wednesday':
-        timeSlots = hours.wednesday;
-        break;
-      case 'thursday':
-        timeSlots = hours.thursday;
-        break;
-      case 'friday':
-        timeSlots = hours.friday;
-        break;
-      case 'saturday':
-        timeSlots = hours.saturday;
-        break;
-      case 'sunday':
-        timeSlots = hours.sunday;
-        break;
-    }
-
-    if (timeSlots == null || timeSlots.isEmpty) {
-      return startTimes;
-    }
-
-    for (var slot in timeSlots) {
-      if (slot.open != null && slot.open!.isNotEmpty) {
-        startTimes.add(slot.open!);
-      }
-    }
-
-    return startTimes;
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeController>();
@@ -2165,24 +2088,36 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
   }
 
   Widget _buildTimeSelectionFromOperatingHours(OperatingHours? hours) {
-    List<Map<String, String>> timeSlots = _extractTimeSlotsFromOperatingHours(
+    // List<Map<String, String>> timeSlots = _extractTimeSlotsFromOperatingHours(
+    //   hours,
+    //   calendar1SelectedDate!,
+    // );
+
+    List<Map<String, String>> baseSlots =
+    _extractTimeSlotsFromOperatingHours(
       hours,
+      calendar1SelectedDate!,
+    );
+
+    List<Map<String, String>> timeSlots =
+    splitSlotByBookings(
+      baseSlots,
+      statusModal?.data ?? [],
       calendar1SelectedDate!,
     );
     final theme = context.watch<ThemeController>();
 
-    // Get maintenance duration and all-day booking flag from the selected amenity
     final selectedAmenity = amenitiesModel?.data?.data?.first;
     int? maintenanceMins = int.tryParse(selectedAmenity?.maintenanceDuration ?? "0") ?? 0;
     bool showMaintenanceNote = maintenanceMins > 0;
-
-    // IMPORTANT: Check if it's all-day booking (value is "1" as string)
     bool isAllDayBooking = selectedAmenity?.isAllDayBooking == "1";
-
-    print("isAllDayBooking value: ${selectedAmenity?.isAllDayBooking}"); // Debug print
-    print("isAllDayBooking boolean: $isAllDayBooking"); // Debug print
-    print("Time slots count: ${timeSlots.length}"); // Debug print
-
+    int allowedDuration =
+    selectedAmenity?.durationOptions?.isNotEmpty == true
+        ? int.tryParse(
+      selectedAmenity!.durationOptions!.first.toString(),
+    ) ??
+        60
+        : 60;
     return Container(
       padding: EdgeInsets.all(3.w),
       decoration: BoxDecoration(
@@ -2206,34 +2141,82 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
               ),
               if (isAllDayBooking) ...[
                 const Spacer(),
-                isAlreadyBooked?SizedBox(): batan(
+                isAlreadyBooked
+                    ? SizedBox()
+                    : batan(
                   title: "Custom Session",
                   route: () {
-                    if (isAllDayBooking) {
-                      // For all-day booking, open custom time picker
-                      _showCustomTimePicker(
-                        hours: hours,
-                        selectedDate: calendar1SelectedDate!,
-                        initialOpenTime: timeSlots.isNotEmpty ? timeSlots
-                            .first['open'] ?? '' : '',
-                        initialCloseTime: timeSlots.isNotEmpty ? timeSlots
-                            .first['close'] ?? '' : '',
-                        onTimeSelected: (startTime, endTime) {
-                          setState(() {
-                            selectedStartTime = startTime;
-                            selectEndTime = endTime;
 
-                            // Calculate duration in minutes
-                            TimeOfDay start = _parseTimeOfDay(startTime);
-                            TimeOfDay end = _parseTimeOfDay(endTime);
-                            selectedDurationInMinutes =
-                                _calculateDurationInMinutes(start, end);
-                          });
-                          addSlotAPi(startTime, endTime,
-                              selectedAmenity?.name.toString() ?? "");
-                        },
-                      );
+                    // if (timeSlots.isEmpty) {
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     const SnackBar(content: Text("No slots available")),
+                    //   );
+                    //   return;
+                    // }
+                    //
+                    // _showCustomTimePicker(
+                    //   hours: hours,
+                    //   selectedDate: calendar1SelectedDate!,
+                    //
+                    //   initialOpenTime: timeSlots.last['open'] ?? '09:00',
+                    //   initialCloseTime: timeSlots.last['close'] ?? '10:00',
+                    //
+                    //   onTimeSelected: (startTime, endTime) {
+                    //     setState(() {
+                    //       selectedStartTime = startTime;
+                    //       selectEndTime = endTime;
+                    //
+                    //       TimeOfDay start = _parseTimeOfDay(startTime);
+                    //       TimeOfDay end = _parseTimeOfDay(endTime);
+                    //
+                    //       selectedDurationInMinutes =
+                    //           _calculateDurationInMinutes(start, end);
+                    //     });
+                    //
+                    //     addSlotAPi(
+                    //       startTime,
+                    //       endTime,
+                    //       selectedAmenity?.name.toString() ?? "",
+                    //     );
+                    //   },
+                    // );
+
+                    Map<String, String> defaultSlot;
+
+                    /// 🔥 If user already selected slot → use it
+                    if (selectedStartTime != null &&
+                        timeSlots.any((slot) => slot['open'] == selectedStartTime)) {
+                      defaultSlot =
+                          timeSlots.firstWhere((slot) => slot['open'] == selectedStartTime);
+                    } else {
+                      /// 🔥 Otherwise use LAST available slot
+                      defaultSlot = timeSlots.last;
                     }
+
+                    _showCustomTimePicker(
+                      hours: hours,
+                      selectedDate: calendar1SelectedDate!,
+                      initialOpenTime: defaultSlot['open'] ?? '09:00',
+                      initialCloseTime: defaultSlot['close'] ?? '10:00',
+                      onTimeSelected: (startTime, endTime) {
+                        setState(() {
+                          selectedStartTime = startTime;
+                          selectEndTime = endTime;
+
+                          TimeOfDay start = _parseTimeOfDay(startTime);
+                          TimeOfDay end = _parseTimeOfDay(endTime);
+
+                          selectedDurationInMinutes =
+                              _calculateDurationInMinutes(start, end);
+                        });
+
+                        addSlotAPi(
+                          startTime,
+                          endTime,
+                          selectedAmenity?.name.toString() ?? "",
+                        );
+                      },
+                    );
                   },
                   color: AppColors.lightText,
                   fontcolor: Colors.white,
@@ -2272,25 +2255,62 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                   spacing: 8.0,
                   runSpacing: 8.0,
                   children: timeSlots.asMap().entries.map((entry) {
-                    final int index = entry.key;
                     final Map<String, String> slot = entry.value;
                     final String openTime = slot['open'] ?? '';
                     final String closeTime = slot['close'] ?? '';
-
-                    // For all-day booking, show both open and close times
-                    // For non-all-day booking, show only open time
-                    final String displayTime = isAllDayBooking
-                        ? "$openTime - $closeTime"
-                        : openTime;
-
+                    final String displayTime = "$openTime - $closeTime";
                     final bool isSelected = selectedStartTime == openTime;
-                    isAlreadyBooked = _isSlotAlreadyBookedByMe(
+
+                    // ✅ Already booked check
+                    // bool isBooked = _isSlotAlreadyBookedByMe(
+                    //   openTime,
+                    //   calendar1SelectedDate!,
+                    // );
+                    bool isBooked = _isSlotAlreadyBookedByMe(
                       openTime,
                       calendar1SelectedDate!,
+                      slotCloseTime: closeTime, // ← add this
                     );
+                    bool isInvalidDuration = false;
+
+                    if (isAllDayBooking && openTime.isNotEmpty && closeTime.isNotEmpty) {
+                      TimeOfDay open = _parseTimeOfDay(openTime);
+                      TimeOfDay close = _parseTimeOfDay(closeTime);
+                      int durationMins = _calculateDurationInMinutes(open, close);
+
+                      /// 🔥 SLOT VALID ONLY IF MATCHES API DURATION
+                      if (durationMins != allowedDuration) {
+                        isInvalidDuration = true;
+                      }
+                    }
+                    bool isDisabled = isBooked || isInvalidDuration;
                     return GestureDetector(
-                      onTap: isAlreadyBooked
-                          ? null
+                      onTap: isDisabled
+                          ? () {
+                        // ✅ Over 90 min mate specific message
+                        if (isInvalidDuration) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Row(
+                                children: [
+                                  Icon(Icons.info_outline,
+                                      color: Colors.white, size: 18),
+                                  SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      "This slot exceeds 90 minutes. Please use 'Custom Session' to select your preferred time.",
+                                      style: TextStyle(fontSize: 13),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              backgroundColor: Colors.orange.shade700,
+                              duration: Duration(seconds: 4),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        }
+                      }
                           : () {
                         setState(() {
                           selectedStartTime = openTime;
@@ -2305,15 +2325,20 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                           vertical: 1.h,
                         ),
                         decoration: BoxDecoration(
-                          color: isAlreadyBooked
+                          // ✅ Over 90 min mate orange tint
+                          color: isBooked
                               ? Colors.grey.shade300
+                              :  isInvalidDuration
+                              ? Colors.orange.shade50
                               : isSelected
                               ? AppColors.maincolor
                               : AppColors.bgcolor,
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: isAlreadyBooked
+                            color: isBooked
                                 ? Colors.grey.shade400
+                                : isInvalidDuration
+                                ? Colors.orange.shade300
                                 : isSelected
                                 ? AppColors.maincolor
                                 : Colors.grey.shade300,
@@ -2325,8 +2350,10 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                             Text(
                               displayTime,
                               style: TextStyle(
-                                color: isAlreadyBooked
+                                color: isBooked
                                     ? Colors.grey.shade600
+                                    : isInvalidDuration
+                                    ? Colors.orange.shade800
                                     : isSelected
                                     ? Colors.white
                                     : Colors.black,
@@ -2334,9 +2361,12 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                 fontWeight: isSelected
                                     ? FontWeight.bold
                                     : FontWeight.normal,
+                                decoration: isBooked
+                                    ? TextDecoration.lineThrough
+                                    : null,
                               ),
                             ),
-                            if (isAlreadyBooked)
+                            if (isBooked)
                               Padding(
                                 padding: const EdgeInsets.only(top: 2),
                                 child: Text(
@@ -2345,6 +2375,21 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                     fontSize: 10.sp,
                                     color: Colors.red,
                                     fontFamily: AppConstants.manrope,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            // ✅ NEW: Over 90 min label
+                            if (isInvalidDuration)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2),
+                                child: Text(
+                                  "Use Custom Session",
+                                  style: TextStyle(
+                                    fontSize: 10.sp,
+                                    color: Colors.orange.shade700,
+                                    fontFamily: AppConstants.manrope,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
@@ -2355,7 +2400,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                   }).toList(),
                 ),
 
-                // Show maintenance time note if applicable
                 if (timeSlots.isNotEmpty && showMaintenanceNote) ...[
                   SizedBox(height: 1.5.h),
                   Container(
@@ -2518,24 +2562,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     return formattedSlots.isEmpty ? "Closed" : formattedSlots.join(', ');
   }
 
-  String _formatTimeTo12Hour1(String time24) {
-    try {
-      if (time24.contains(':')) {
-        final parts = time24.split(':');
-        if (parts.length >= 2) {
-          int hour = int.parse(parts[0]);
-          int minute = int.parse(parts[1]);
-
-          DateTime dateTime = DateTime(2000, 1, 1, hour, minute);
-          return DateFormat('h:mm a').format(dateTime);
-        }
-      }
-      return time24;
-    } catch (e) {
-      return time24;
-    }
-  }
-
   Widget _buildOperatingHoursDisplay(String operatingHoursStr,
       List<ExistingBooking> existingBookings,)
   {
@@ -2689,7 +2715,105 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     );
   }
 
+  DateTime _timeToDateTime(String time, DateTime date) {
+    time = time.trim();
 
+    /// CASE 1 → 24h format "13:45" or "13:45:00"
+    if (RegExp(r'^\d{1,2}:\d{2}').hasMatch(time) && !time.contains("AM") && !time.contains("PM")) {
+      final parts = time.split(":");
+      return DateTime(
+        date.year,
+        date.month,
+        date.day,
+        int.parse(parts[0]),
+        int.parse(parts[1]),
+      );
+    }
+
+    /// CASE 2 → 12h format "01:45 PM"
+    try {
+      final parsed = DateFormat("hh:mm a").parse(time);
+      return DateTime(
+        date.year,
+        date.month,
+        date.day,
+        parsed.hour,
+        parsed.minute,
+      );
+    } catch (_) {}
+
+    /// CASE 3 → fallback try with seconds "01:45:00 PM"
+    try {
+      final parsed = DateFormat("hh:mm:ss a").parse(time);
+      return DateTime(
+        date.year,
+        date.month,
+        date.day,
+        parsed.hour,
+        parsed.minute,
+      );
+    } catch (_) {}
+
+    /// FINAL fallback to avoid crash
+    return DateTime(date.year, date.month, date.day, 0, 0);
+  }
+  String _formatTime(DateTime dt) {
+    return DateFormat("HH:mm").format(dt);
+  }
+
+
+  List<Map<String, String>> splitSlotByBookings(
+      List<Map<String, String>> slots,
+      List bookingData,
+      DateTime selectedDate,
+      ) {
+    List<Map<String, String>> result = [];
+
+    for (var slot in slots) {
+      DateTime slotStart = _timeToDateTime(slot['open']!, selectedDate);
+      DateTime slotEnd = _timeToDateTime(slot['close']!, selectedDate);
+
+      DateTime currentStart = slotStart;
+
+      /// Sort bookings by start time (important)
+      List filteredBookings = bookingData.where((b) =>
+      b.bookingDate ==
+          DateFormat('yyyy-MM-dd').format(selectedDate)).toList();
+
+      filteredBookings.sort((a, b) =>
+          a.startTime.compareTo(b.startTime));
+
+      for (var booking in filteredBookings) {
+        DateTime bookedStart =
+        _timeToDateTime(booking.startTime, selectedDate);
+        DateTime bookedEnd =
+        _timeToDateTime(booking.endTime, selectedDate);
+
+        /// Add free time before booked slot
+        if (currentStart.isBefore(bookedStart)) {
+          result.add({
+            "open": _formatTime(currentStart),
+            "close": _formatTime(bookedStart),
+          });
+        }
+
+        /// Move pointer after booking
+        if (bookedEnd.isAfter(currentStart)) {
+          currentStart = bookedEnd;
+        }
+      }
+
+      /// Add remaining time after last booking
+      if (currentStart.isBefore(slotEnd)) {
+        result.add({
+          "open": _formatTime(currentStart),
+          "close": _formatTime(slotEnd),
+        });
+      }
+    }
+
+    return result;
+  }
   Widget buildSlotBox({
     required String label,
     required String value,
@@ -3475,24 +3599,40 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
         });
       },
 
+      // onDaySelected: (newSelectedDay, focusedDay) {
+      //   setState(() {
+      //     calendar1SelectedDate = newSelectedDay;
+      //     calendar1SelectedDateStr = DateFormat(
+      //       'dd/MM/yyyy',
+      //     ).format(newSelectedDay);
+      //     calendar1FocusedMonth = focusedDay;
+      //     calendar1Loading = true;
+      //     selectedStartTime = null;
+      //   });
+      //
+      //   AmenitiesApi(date: calendar1SelectedDateStr).then((_) {
+      //     setState(() {
+      //       calendar1Loading = false;
+      //     });
+      //   });
+      // },
       onDaySelected: (newSelectedDay, focusedDay) {
         setState(() {
           calendar1SelectedDate = newSelectedDay;
-          calendar1SelectedDateStr = DateFormat(
-            'dd/MM/yyyy',
-          ).format(newSelectedDay);
+          calendar1SelectedDateStr =
+              DateFormat('dd/MM/yyyy').format(newSelectedDay);
           calendar1FocusedMonth = focusedDay;
           calendar1Loading = true;
           selectedStartTime = null;
         });
 
         AmenitiesApi(date: calendar1SelectedDateStr).then((_) {
+          statusApi(); // Add this to refresh booking status
           setState(() {
             calendar1Loading = false;
           });
         });
       },
-
       // --- Styling Section ---
       daysOfWeekStyle: DaysOfWeekStyle(
         weekdayStyle: TextStyle(
@@ -3713,7 +3853,10 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
 
       /// ✅ SUCCESS
       if (response.statusCode == 200 || response.statusCode == 201) {
+        final resData = response.data["data"];
 
+        String start = resData["start_time"] ?? time;
+        String end = resData["end_time"] ?? endTime;
         String durationStr = "${(duration / 60).toStringAsFixed(1)} hr";
 
         if (duration < 60) {
@@ -3727,10 +3870,9 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
           context: context,
           location: name,
           selectedDate: date,
-          selectedTime: time,
+          selectedTime: start,
           duration: durationStr,
-          endTime: DateFormat("hh:mm a")
-              .format(DateFormat("HH:mm").parse(endTime)),
+          endTime: end,
         );
 
         return true;
@@ -3901,36 +4043,74 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     return time;
   }
 
-  bool _isSlotAlreadyBookedByMe(String slotTime, DateTime selectedDate) {
+  bool _isSlotAlreadyBookedByMe(String slotOpenTime, DateTime selectedDate,
+      {String? slotCloseTime}) {
     final data = statusModal?.data;
     if (data == null || data.isEmpty) return false;
 
     final String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
-    final String uiTime24 = convertTo24(slotTime);
-    final String uiHms = _toHms(uiTime24);
+
+    // Convert slot open/close to minutes for overlap check
+    final String slotOpen24 = convertTo24(slotOpenTime);
+    final String slotClose24 = slotCloseTime != null ? convertTo24(slotCloseTime) : '';
+
+    int slotOpenMins = _timeToMinutes(slotOpen24);
+    int slotCloseMins = slotClose24.isNotEmpty ? _timeToMinutes(slotClose24) : slotOpenMins + 1;
+
+    final selectedAmenity = amenitiesModel?.data?.data?.first;
+    bool isAllDayBooking = selectedAmenity?.isAllDayBooking == "1";
 
     for (final booking in data) {
       final String? bDate = booking.bookingDate;
       final String? bStart = booking.startTime;
+      final String? bEnd = booking.endTime;
+
       if (bDate == null || bStart == null) continue;
       if (bDate != dateStr) continue;
 
-      String bookingHms = _toHms(bStart);
+      if (isAllDayBooking && slotCloseTime != null && bEnd != null) {
+        // ✅ Overlap check: slot and booking overlap karе che ke nahi
+        // Overlap condition: slotOpen < bookingEnd AND slotClose > bookingStart
+        int bookingStartMins = _timeToMinutes(bStart);
+        int bookingEndMins = _timeToMinutes(bEnd);
 
-      if (booking.isFirstSlot == "false") {
-        final DateTime parsed = DateFormat('HH:mm:ss').parseStrict(bookingHms);
-        final DateTime adjusted = parsed.subtract(const Duration(minutes: 30));
-        bookingHms = DateFormat('HH:mm:ss').format(adjusted);
-      }
+        bool overlaps = slotOpenMins < bookingEndMins && slotCloseMins > bookingStartMins;
 
-      print('Comparing >> UI Slot: $uiHms  |  Booking Final Time: $bookingHms');
+        if (overlaps) {
+          print('✅ OVERLAP FOUND: Slot $slotOpenTime-$slotCloseTime overlaps with booking $bStart-$bEnd');
+          return true;
+        }
+      } else {
+        // Original exact match logic for non-all-day booking
+        String bookingHms = _toHms(bStart);
+        String uiHms = _toHms(slotOpen24);
 
-      if (bookingHms == uiHms) {
-        print('🎯 MATCHED: Slot is booked!');
-        return true;
+        if (booking.isFirstSlot == "false") {
+          final DateTime parsed = DateFormat('HH:mm:ss').parseStrict(bookingHms);
+          final DateTime adjusted = parsed.subtract(const Duration(minutes: 30));
+          bookingHms = DateFormat('HH:mm:ss').format(adjusted);
+        }
+
+        if (bookingHms == uiHms) return true;
       }
     }
+
     return false;
+  }
+
+  int _timeToMinutes(String time) {
+    try {
+      // Handle HH:mm:ss format
+      final parts = time.split(':');
+      if (parts.length >= 2) {
+        int hours = int.parse(parts[0]);
+        int minutes = int.parse(parts[1]);
+        return hours * 60 + minutes;
+      }
+    } catch (e) {
+      print('Error converting time to minutes: $time - $e');
+    }
+    return 0;
   }
 
   statusApi() {
@@ -3981,685 +4161,89 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     });
   }
 
-
-  // Future<void> _showCustomTimePicker({
-  //   required OperatingHours? hours,
-  //   required DateTime selectedDate,
-  //   required String initialOpenTime,
-  //   required String initialCloseTime,
-  //   required Function(String startTime, String endTime) onTimeSelected,
-  // }) async
-  // {
-  //   if (hours == null) return;
-  //
-  //   // Get operating hours for the selected day
-  //   final weekday = getWeekdayName(selectedDate).toLowerCase();
-  //   List<TimeSlot>? timeSlots;
-  //
-  //   switch (weekday) {
-  //     case 'monday':
-  //       timeSlots = hours.monday;
-  //       break;
-  //     case 'tuesday':
-  //       timeSlots = hours.tuesday;
-  //       break;
-  //     case 'wednesday':
-  //       timeSlots = hours.wednesday;
-  //       break;
-  //     case 'thursday':
-  //       timeSlots = hours.thursday;
-  //       break;
-  //     case 'friday':
-  //       timeSlots = hours.friday;
-  //       break;
-  //     case 'saturday':
-  //       timeSlots = hours.saturday;
-  //       break;
-  //     case 'sunday':
-  //       timeSlots = hours.sunday;
-  //       break;
-  //   }
-  //
-  //   if (timeSlots == null || timeSlots.isEmpty) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(
-  //           content: Text("No operating hours available for this day")),
-  //     );
-  //     return;
-  //   }
-  //
-  //   // Get operating hours range
-  //   String? earliestOpen;
-  //   String? latestClose;
-  //
-  //   for (var slot in timeSlots) {
-  //     if (slot.open != null && (earliestOpen == null ||
-  //         _isTimeEarlierString(slot.open!, earliestOpen))) {
-  //       earliestOpen = slot.open!;
-  //     }
-  //     if (slot.close != null && (latestClose == null ||
-  //         _isTimeLaterString(slot.close!, latestClose))) {
-  //       latestClose = slot.close!;
-  //     }
-  //   }
-  //
-  //   if (earliestOpen == null || latestClose == null) return;
-  //
-  //   TimeOfDay minStartTime = _parseTimeOfDay(earliestOpen);
-  //   TimeOfDay maxEndTime = _parseTimeOfDay(latestClose);
-  //
-  //   // Parse initial times
-  //   TimeOfDay initialStart = _parseTimeOfDay(initialOpenTime);
-  //   TimeOfDay initialEnd = _parseTimeOfDay(initialCloseTime);
-  //
-  //   // Get maintenance duration
-  //   final selectedAmenity = amenitiesModel?.data?.data?.first;
-  //   int maintenanceMins = int.tryParse(
-  //       selectedAmenity?.maintenanceDuration ?? "0") ?? 0;
-  //
-  //   // Min/Max duration constants
-  //   const int minDurationMinutes = 60;
-  //   const int maxDurationMinutes = 90;
-  //
-  //   TimeOfDay selectedStartTime = initialStart;
-  //   TimeOfDay selectedEndTime = initialEnd;
-  //
-  //   // Create a DateTime object for today to use with time picker
-  //   final now = DateTime.now();
-  //   final today = DateTime(now.year, now.month, now.day);
-  //
-  //   // Create min and max DateTime for time picker
-  //   DateTime minStartDateTime = DateTime(
-  //     today.year, today.month, today.day,
-  //     minStartTime.hour, minStartTime.minute,
-  //   );
-  //
-  //   DateTime maxEndDateTime = DateTime(
-  //     today.year, today.month, today.day,
-  //     maxEndTime.hour, maxEndTime.minute,
-  //   );
-  //
-  //   // Show time picker dialog
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return StatefulBuilder(
-  //         builder: (context, setState) {
-  //           int currentDuration = _calculateDurationInMinutes(
-  //             selectedStartTime,
-  //             selectedEndTime,
-  //           );
-  //           bool isDurationValid = currentDuration >= minDurationMinutes &&
-  //               currentDuration <= maxDurationMinutes;
-  //           bool isNearMaxDuration = currentDuration >=
-  //               maxDurationMinutes - 30 &&
-  //               currentDuration <= maxDurationMinutes;
-  //
-  //           return AlertDialog(
-  //             title: const Text('Select Time Range'),
-  //             content: Column(
-  //               mainAxisSize: MainAxisSize.min,
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 // Operating hours info
-  //                 Container(
-  //                   padding: EdgeInsets.all(3.w),
-  //                   decoration: BoxDecoration(
-  //                     color: AppColors.maincolor.withOpacity(0.1),
-  //                     borderRadius: BorderRadius.circular(8),
-  //                   ),
-  //                   child: Row(
-  //                     children: [
-  //                       Icon(Icons.access_time, color: AppColors.maincolor,
-  //                           size: 18.sp),
-  //                       SizedBox(width: 2.w),
-  //                       Expanded(
-  //                         child: Text(
-  //                           "Operating Hours: ${_formatTimeRange(
-  //                               earliestOpen.toString())} - ${_formatTimeRange(
-  //                               latestClose.toString())}",
-  //                           style: TextStyle(
-  //                             fontSize: 12.sp,
-  //                             fontWeight: FontWeight.w500,
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //
-  //                 SizedBox(height: 2.h),
-  //
-  //                 // Start Time Picker with restricted hours
-  //                 ListTile(
-  //                   title: const Text('Start Time',
-  //                       style: TextStyle(fontWeight: FontWeight.bold)),
-  //                   subtitle: Text(
-  //                     selectedStartTime.format(context),
-  //                     style: TextStyle(
-  //                       fontSize: 16.sp,
-  //                       color: AppColors.maincolor,
-  //                       fontWeight: FontWeight.w500,
-  //                     ),
-  //                   ),
-  //                   trailing: const Icon(Icons.access_time),
-  //                   onTap: () async {
-  //                     // Create initial DateTime for picker
-  //                     DateTime initialDateTime = DateTime(
-  //                       today.year, today.month, today.day,
-  //                       selectedStartTime.hour, selectedStartTime.minute,
-  //                     );
-  //
-  //                     final TimeOfDay? picked = await showTimePicker(
-  //                       context: context,
-  //                       initialTime: selectedStartTime,
-  //                       // Use builder to customize the time picker
-  //                       builder: (BuildContext context, Widget? child) {
-  //                         return MediaQuery(
-  //                           data: MediaQuery.of(context).copyWith(
-  //                             // Ensure 24-hour format for consistent comparison
-  //                             alwaysUse24HourFormat: true,
-  //                           ),
-  //                           child: child!,
-  //                         );
-  //                       },
-  //                     );
-  //
-  //                     if (picked != null) {
-  //                       // Create DateTime for comparison
-  //                       DateTime pickedDateTime = DateTime(
-  //                         today.year, today.month, today.day,
-  //                         picked.hour, picked.minute,
-  //                       );
-  //
-  //                       // Check if picked time is within operating hours
-  //                       if (pickedDateTime.isBefore(minStartDateTime) ||
-  //                           pickedDateTime.isAfter(maxEndDateTime)) {
-  //                         ScaffoldMessenger.of(context).showSnackBar(
-  //                           SnackBar(
-  //                             content: Text(
-  //                               "Please select time between ${minStartTime
-  //                                   .format(context)} and ${maxEndTime.format(
-  //                                   context)}",
-  //                             ),
-  //                             backgroundColor: Colors.orange,
-  //                             duration: const Duration(seconds: 2),
-  //                           ),
-  //                         );
-  //                         return;
-  //                       }
-  //
-  //                       setState(() {
-  //                         selectedStartTime = picked;
-  //                         // Adjust end time if needed
-  //                         TimeOfDay suggestedEnd = TimeOfDay(
-  //                           hour: picked.hour + 1,
-  //                           minute: picked.minute,
-  //                         );
-  //
-  //                         // Create DateTime for suggested end
-  //                         DateTime suggestedEndDateTime = DateTime(
-  //                           today.year, today.month, today.day,
-  //                           suggestedEnd.hour, suggestedEnd.minute,
-  //                         );
-  //
-  //                         // Check if suggested end exceeds max operating hours
-  //                         if (suggestedEndDateTime.isAfter(maxEndDateTime)) {
-  //                           suggestedEnd = maxEndTime;
-  //                         }
-  //
-  //                         // Ensure end time is after start time
-  //                         if (_isTimeLaterTimeOfDay(suggestedEnd, picked)) {
-  //                           selectedEndTime = suggestedEnd;
-  //                         } else {
-  //                           // If suggested end is not after start, set to start + 1 hour or max
-  //                           selectedEndTime = TimeOfDay(
-  //                             hour: picked.hour + 1 > maxEndTime.hour
-  //                                 ? maxEndTime.hour
-  //                                 : picked.hour + 1,
-  //                             minute: picked.minute,
-  //                           );
-  //                         }
-  //                       });
-  //                     }
-  //                   },
-  //                 ),
-  //
-  //                 // End Time Picker with restricted hours
-  //                 ListTile(
-  //                   title: const Text('End Time',
-  //                       style: TextStyle(fontWeight: FontWeight.bold)),
-  //                   subtitle: Text(
-  //                     selectedEndTime.format(context),
-  //                     style: TextStyle(
-  //                       fontSize: 16.sp,
-  //                       color: AppColors.maincolor,
-  //                       fontWeight: FontWeight.w500,
-  //                     ),
-  //                   ),
-  //                   trailing: const Icon(Icons.access_time),
-  //                   onTap: () async {
-  //                     // Create initial DateTime for picker
-  //                     DateTime initialDateTime = DateTime(
-  //                       today.year, today.month, today.day,
-  //                       selectedEndTime.hour, selectedEndTime.minute,
-  //                     );
-  //
-  //                     final TimeOfDay? picked = await showTimePicker(
-  //                       context: context,
-  //                       initialTime: selectedEndTime,
-  //                       builder: (BuildContext context, Widget? child) {
-  //                         return MediaQuery(
-  //                           data: MediaQuery.of(context).copyWith(
-  //                             alwaysUse24HourFormat: true,
-  //                           ),
-  //                           child: child!,
-  //                         );
-  //                       },
-  //                     );
-  //
-  //                     if (picked != null) {
-  //                       // Create DateTime for comparison
-  //                       DateTime pickedDateTime = DateTime(
-  //                         today.year, today.month, today.day,
-  //                         picked.hour, picked.minute,
-  //                       );
-  //                       DateTime startDateTime = DateTime(
-  //                         today.year, today.month, today.day,
-  //                         selectedStartTime.hour, selectedStartTime.minute,
-  //                       );
-  //
-  //                       // Check if picked time is within operating hours
-  //                       if (pickedDateTime.isBefore(minStartDateTime) ||
-  //                           pickedDateTime.isAfter(maxEndDateTime)) {
-  //                         ScaffoldMessenger.of(context).showSnackBar(
-  //                           SnackBar(
-  //                             content: Text(
-  //                               "Please select time between ${minStartTime
-  //                                   .format(context)} and ${maxEndTime.format(
-  //                                   context)}",
-  //                             ),
-  //                             backgroundColor: Colors.orange,
-  //                             duration: const Duration(seconds: 2),
-  //                           ),
-  //                         );
-  //                         return;
-  //                       }
-  //
-  //                       // Check if end time is after start time
-  //                       if (!pickedDateTime.isAfter(startDateTime)) {
-  //                         ScaffoldMessenger.of(context).showSnackBar(
-  //                           const SnackBar(
-  //                             content: Text(
-  //                                 "End time must be after start time"),
-  //                             backgroundColor: Colors.red,
-  //                             duration: Duration(seconds: 2),
-  //                           ),
-  //                         );
-  //                         return;
-  //                       }
-  //
-  //                       setState(() {
-  //                         selectedEndTime = picked;
-  //                       });
-  //                     }
-  //                   },
-  //                 ),
-  //
-  //                 SizedBox(height: 1.h),
-  //
-  //                 // Duration info
-  //                 Container(
-  //                   padding: EdgeInsets.all(3.w),
-  //                   decoration: BoxDecoration(
-  //                     color: isDurationValid
-  //                         ? Colors.green.withOpacity(0.1)
-  //                         : Colors.red.withOpacity(0.1),
-  //                     borderRadius: BorderRadius.circular(8),
-  //                   ),
-  //                   child: Column(
-  //                     children: [
-  //                       Row(
-  //                         children: [
-  //                           Icon(
-  //                             Icons.timer,
-  //                             color: isDurationValid ? Colors.green : Colors
-  //                                 .red,
-  //                             size: 18.sp,
-  //                           ),
-  //                           SizedBox(width: 2.w),
-  //                           Text(
-  //                             "Duration: ${currentDuration} minutes",
-  //                             style: TextStyle(
-  //                               fontSize: 14.sp,
-  //                               fontWeight: FontWeight.bold,
-  //                               color: isDurationValid ? Colors.green : Colors
-  //                                   .red,
-  //                             ),
-  //                           ),
-  //                         ],
-  //                       ),
-  //                       if (!isDurationValid) ...[
-  //                         SizedBox(height: 0.5.h),
-  //                         Text(
-  //                           currentDuration < minDurationMinutes
-  //                               ? "Minimum duration is $minDurationMinutes minutes"
-  //                               : "Maximum duration is $maxDurationMinutes minutes",
-  //                           style: TextStyle(
-  //                             fontSize: 12.sp,
-  //                             color: Colors.red,
-  //                           ),
-  //                         ),
-  //                       ],
-  //                     ],
-  //                   ),
-  //                 ),
-  //
-  //                 // Warning for near max duration + maintenance
-  //                 if (isNearMaxDuration && maintenanceMins > 0) ...[
-  //                   SizedBox(height: 1.h),
-  //                   Container(
-  //                     padding: EdgeInsets.all(2.w),
-  //                     decoration: BoxDecoration(
-  //                       color: Colors.amber.withOpacity(0.1),
-  //                       borderRadius: BorderRadius.circular(8),
-  //                       border: Border.all(color: Colors.amber.shade200),
-  //                     ),
-  //                     child: Row(
-  //                       children: [
-  //                         Icon(
-  //                           Icons.warning_amber_rounded,
-  //                           size: 16.sp,
-  //                           color: Colors.amber.shade800,
-  //                         ),
-  //                         SizedBox(width: 2.w),
-  //                         Expanded(
-  //                           child: Text(
-  //                             "You're selecting $currentDuration minutes. +$maintenanceMins minutes maintenance time will be added automatically.",
-  //                             style: TextStyle(
-  //                               fontSize: 12.sp,
-  //                               color: Colors.amber.shade800,
-  //                               fontWeight: FontWeight.w500,
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                 ],
-  //
-  //                 // Maintenance info
-  //                 if (maintenanceMins > 0) ...[
-  //                   SizedBox(height: 1.h),
-  //                   Container(
-  //                     padding: EdgeInsets.all(2.w),
-  //                     decoration: BoxDecoration(
-  //                       color: Colors.blue.withOpacity(0.1),
-  //                       borderRadius: BorderRadius.circular(8),
-  //                     ),
-  //                     child: Row(
-  //                       children: [
-  //                         Icon(
-  //                           Icons.build_circle_outlined,
-  //                           size: 16.sp,
-  //                           color: Colors.blue.shade700,
-  //                         ),
-  //                         SizedBox(width: 2.w),
-  //                         Expanded(
-  //                           child: Text(
-  //                             "+$maintenanceMins minute${maintenanceMins > 1
-  //                                 ? 's'
-  //                                 : ''} maintenance time will be included before next booking",
-  //                             style: TextStyle(
-  //                               fontSize: 12.sp,
-  //                               color: Colors.blue.shade700,
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ],
-  //             ),
-  //             actions: [
-  //               TextButton(
-  //                 onPressed: () => Navigator.pop(context),
-  //                 child: const Text('Cancel'),
-  //               ),
-  //               ElevatedButton(
-  //                 onPressed: isDurationValid
-  //                     ? () {
-  //                   Navigator.pop(context);
-  //                   onTimeSelected(
-  //                     _formatTimeForAPI(selectedStartTime),
-  //                     _formatTimeForAPI(selectedEndTime),
-  //                   );
-  //                 }
-  //                     : null,
-  //                 style: ElevatedButton.styleFrom(
-  //                   backgroundColor: isDurationValid
-  //                       ? AppColors.maincolor
-  //                       : Colors.grey,
-  //                 ),
-  //                 child: const Text('Select'),
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
-
   Future<void> _showCustomTimePicker({
     required OperatingHours? hours,
     required DateTime selectedDate,
     required String initialOpenTime,
     required String initialCloseTime,
     required Function(String startTime, String endTime) onTimeSelected,
-  }) async {
+  }) async
+  {
+
     if (hours == null) return;
 
-    // Get operating hours for the selected day
-    final weekday = getWeekdayName(selectedDate).toLowerCase();
-    List<TimeSlot>? timeSlots;
+    /// 🔥 IMPORTANT FIX
+    /// Selected slot MUST be the session user clicked earlier
+    final TimeOfDay slotOpen = _parseTimeOfDay(initialOpenTime);
+    final TimeOfDay slotClose = _parseTimeOfDay(initialCloseTime);
 
-    switch (weekday) {
-      case 'monday':
-        timeSlots = hours.monday;
-        break;
-      case 'tuesday':
-        timeSlots = hours.tuesday;
-        break;
-      case 'wednesday':
-        timeSlots = hours.wednesday;
-        break;
-      case 'thursday':
-        timeSlots = hours.thursday;
-        break;
-      case 'friday':
-        timeSlots = hours.friday;
-        break;
-      case 'saturday':
-        timeSlots = hours.saturday;
-        break;
-      case 'sunday':
-        timeSlots = hours.sunday;
-        break;
-    }
+    /// Parse initial selection
+    TimeOfDay selectedStartTime = slotOpen;
+    TimeOfDay selectedEndTime = slotClose;
 
-    if (timeSlots == null || timeSlots.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("No operating hours available for this day")),
-      );
-      return;
-    }
-
-    // Get ALL operating hours ranges (not just min/max)
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-
-    // Parse initial times
-    TimeOfDay initialStart = _parseTimeOfDay(initialOpenTime);
-    TimeOfDay initialEnd = _parseTimeOfDay(initialCloseTime);
-
-    // Get maintenance duration
     final selectedAmenity = amenitiesModel?.data?.data?.first;
-    int maintenanceMins = int.tryParse(
-        selectedAmenity?.maintenanceDuration ?? "0") ?? 0;
-
-    // Min/Max duration constants
-    const int minDurationMinutes = 60;
-    const int maxDurationMinutes = 90;
-
-    TimeOfDay selectedStartTime = initialStart;
-    TimeOfDay selectedEndTime = initialEnd;
-
-    // Helper Functions for Slot Management
-    // ====================================
-
-    // Function to check if a time is within ANY available slot
-    bool isTimeInAnySlot(TimeOfDay time) {
-      for (var slot in timeSlots!) {
-        TimeOfDay slotOpen = _parseTimeOfDay(slot.open!);
-        TimeOfDay slotClose = _parseTimeOfDay(slot.close!);
-
-        if (_isTimeBetweenInclusive(time, slotOpen, slotClose)) {
-          return true;
-        }
-      }
-      return false;
+    int maintenanceMins =
+        int.tryParse(selectedAmenity?.maintenanceDuration ?? "0") ?? 0;
+    //
+    // const int minDurationMinutes = 60;
+    // const int maxDurationMinutes = 90;
+    int fixedDuration =
+    selectedAmenity?.durationOptions?.isNotEmpty == true
+        ? int.tryParse(
+      selectedAmenity!.durationOptions!.first.toString(),
+    ) ??
+        60
+        : 60;
+    bool isTimeInSelectedSlot(TimeOfDay time) {
+      return _isTimeBetweenInclusive(time, slotOpen, slotClose);
     }
-
-    // Function to find which slot a time belongs to
-    TimeSlot? findSlotForTime(TimeOfDay time) {
-      for (var slot in timeSlots!) {
-        TimeOfDay slotOpen = _parseTimeOfDay(slot.open!);
-        TimeOfDay slotClose = _parseTimeOfDay(slot.close!);
-
-        if (_isTimeBetweenInclusive(time, slotOpen, slotClose)) {
-          return slot;
-        }
-      }
-      return null;
-    }
-
-    // Function to check if start and end times are in the same slot
-    bool areTimesInSameSlot(TimeOfDay start, TimeOfDay end) {
-      TimeSlot? startSlot = findSlotForTime(start);
-      TimeSlot? endSlot = findSlotForTime(end);
-
-      return startSlot != null &&
-          endSlot != null &&
-          startSlot.open == endSlot.open &&
-          startSlot.close == endSlot.close;
-    }
-
-    // Function to check if a time range is within a single slot
-    bool isTimeRangeInSlot(TimeOfDay start, TimeOfDay end, TimeSlot slot) {
-      TimeOfDay slotOpen = _parseTimeOfDay(slot.open!);
-      TimeOfDay slotClose = _parseTimeOfDay(slot.close!);
-
+    bool isValidEndTimeForStart(TimeOfDay start, TimeOfDay end) {
       int startMinutes = start.hour * 60 + start.minute;
       int endMinutes = end.hour * 60 + end.minute;
       int slotOpenMinutes = slotOpen.hour * 60 + slotOpen.minute;
       int slotCloseMinutes = slotClose.hour * 60 + slotClose.minute;
 
-      // Check if both start and end are within the same slot
-      // and the range doesn't cross the slot boundary
-      return startMinutes >= slotOpenMinutes &&
-          endMinutes <= slotCloseMinutes &&
-          startMinutes < endMinutes;
-    }
-
-    // Function to get the slot that contains a time
-    TimeSlot? getSlotContainingTime(TimeOfDay time) {
-      for (var slot in timeSlots!) {
-        TimeOfDay slotOpen = _parseTimeOfDay(slot.open!);
-        TimeOfDay slotClose = _parseTimeOfDay(slot.close!);
-
-        if (_isTimeBetweenInclusive(time, slotOpen, slotClose)) {
-          return slot;
-        }
-      }
-      return null;
-    }
-
-    // Function to check if end time is valid for a given start time
-    bool isValidEndTimeForStart(TimeOfDay start, TimeOfDay end) {
-      TimeSlot? startSlot = getSlotContainingTime(start);
-      if (startSlot == null) return false;
-
-      TimeOfDay slotOpen = _parseTimeOfDay(startSlot.open!);
-      TimeOfDay slotClose = _parseTimeOfDay(startSlot.close!);
-
-      int startMinutes = start.hour * 60 + start.minute;
-      int endMinutes = end.hour * 60 + end.minute;
-      int slotCloseMinutes = slotClose.hour * 60 + slotClose.minute;
-
-      // End time must be:
-      // 1. After start time
-      // 2. Within the same slot
-      // 3. Not exceed slot close time
       return endMinutes > startMinutes &&
-          endMinutes <= slotCloseMinutes &&
-          getSlotContainingTime(end) == startSlot;
+          endMinutes >= slotOpenMinutes &&
+          endMinutes <= slotCloseMinutes;
+    }
+    TimeOfDay _addMinutes(TimeOfDay time, int minutesToAdd) {
+      final totalMinutes = time.hour * 60 + time.minute + minutesToAdd;
+      return TimeOfDay(
+        hour: (totalMinutes ~/ 60) % 24,
+        minute: totalMinutes % 60,
+      );
     }
 
-    // Function to get slot boundaries as string
-    String getSlotBoundariesText(TimeOfDay time) {
-      TimeSlot? slot = getSlotContainingTime(time);
-      if (slot != null) {
-        String openTime = _formatTimeTo12Hour(slot.open!);
-        String closeTime = _formatTimeTo12Hour(slot.close!);
-        return "Current slot: $openTime - $closeTime";
-      }
-      return "";
-    }
-
-    // Show time picker dialog
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            int currentDuration = _calculateDurationInMinutes(
-              selectedStartTime,
-              selectedEndTime,
-            );
-            bool isDurationValid = currentDuration >= minDurationMinutes &&
-                currentDuration <= maxDurationMinutes;
-            bool isNearMaxDuration = currentDuration >=
-                maxDurationMinutes - 30 &&
-                currentDuration <= maxDurationMinutes;
 
-            // Check if times are in valid slots
-            bool isStartInAnySlot = isTimeInAnySlot(selectedStartTime);
-            bool isEndInAnySlot = isTimeInAnySlot(selectedEndTime);
+            int currentDuration =
+            _calculateDurationInMinutes(selectedStartTime, selectedEndTime);
 
-            // Check if end time is valid for the selected start time
-            bool isEndTimeValidForStart = isValidEndTimeForStart(selectedStartTime, selectedEndTime);
+            // bool isDurationValid =
+            //     currentDuration >= minDurationMinutes &&
+            //         currentDuration <= maxDurationMinutes;
+            //
+            // bool isNearMaxDuration =
+            //     currentDuration >= maxDurationMinutes - 30 &&
+            //         currentDuration <= maxDurationMinutes;
 
-            // Check if start and end are in the same slot
-            bool areTimesInSameValidSlot = areTimesInSameSlot(selectedStartTime, selectedEndTime);
+            bool isStartInSlot = isTimeInSelectedSlot(selectedStartTime);
+            bool isEndInSlot = isTimeInSelectedSlot(selectedEndTime);
+            bool isEndTimeValidForStart =
+            isValidEndTimeForStart(selectedStartTime, selectedEndTime);
 
-            // Check if the range doesn't cross slot boundaries
-            bool isRangeWithinSlot = false;
-            TimeSlot? startSlot = getSlotContainingTime(selectedStartTime);
-            if (startSlot != null) {
-              isRangeWithinSlot = isTimeRangeInSlot(selectedStartTime, selectedEndTime, startSlot);
-            }
-
-            // Final validation - more strict
-            bool isValidSelection = isDurationValid &&
-                isStartInAnySlot &&
-                isEndInAnySlot &&
-                areTimesInSameValidSlot &&
-                isRangeWithinSlot &&
-                isEndTimeValidForStart;
-
+            // bool isValidSelection =
+            //     isDurationValid &&
+            //         isStartInSlot &&
+            //         isEndInSlot &&
+            //         isEndTimeValidForStart;
+            bool isValidSelection =
+                isStartInSlot && isEndInSlot && isEndTimeValidForStart;
             return AlertDialog(
               title: const Text('Select Time Range'),
               content: SingleChildScrollView(
@@ -4667,86 +4251,53 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Operating hours info - Show all available slots
+
+                    /// ✅ SELECTED SLOT INFO (NOW CORRECT)
                     Container(
                       padding: EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: AppColors.maincolor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                            color: AppColors.maincolor.withOpacity(0.3)),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
                         children: [
-                          Row(
-                            children: [
-                              Icon(Icons.access_time, color: AppColors.maincolor, size: 18),
-                              SizedBox(width: 8),
-                              Text(
-                                "Available Time Slots",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.maincolor,
-                                ),
+                          Icon(Icons.access_time,
+                              color: AppColors.maincolor, size: 18),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              "${_formatTimeTo12Hour(initialOpenTime)} - ${_formatTimeTo12Hour(initialCloseTime)}",
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
                               ),
-                            ],
+                            ),
                           ),
-                          SizedBox(height: 8),
-                          // Show all available slots with AM/PM format
-                          ...timeSlots!.map((slot) {
-                            String openTime = _formatTimeTo12Hour(slot.open ?? '');
-                            String closeTime = _formatTimeTo12Hour(slot.close ?? '');
-                            return Padding(
-                              padding: EdgeInsets.only(bottom: 4),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 8,
-                                    height: 8,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.maincolor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      "$openTime - $closeTime",
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }).toList(),
                         ],
                       ),
                     ),
 
                     SizedBox(height: 16),
 
-                    // Show current selected slot info
+                    /// CURRENT SELECTION INFO (unchanged design)
                     Container(
                       padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: AppColors.maincolor.withOpacity(0.05),
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: AppColors.maincolor.withOpacity(0.3)),
+                        border: Border.all(
+                            color: AppColors.maincolor.withOpacity(0.3)),
                       ),
                       child: Row(
                         children: [
-                          Icon(
-                            Icons.timer,
-                            color: AppColors.maincolor,
-                            size: 16,
-                          ),
+                          Icon(Icons.timer,
+                              color: AppColors.maincolor, size: 16),
                           SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              "Selected: ${_formatTimeTo12Hour(initialOpenTime)} - ${_formatTimeTo12Hour(initialCloseTime)}",
+                              "Selected: ${_formatTimeOfDayTo12Hour(selectedStartTime)} - ${_formatTimeOfDayTo12Hour(selectedEndTime)}",
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
@@ -4760,359 +4311,87 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
 
                     SizedBox(height: 16),
 
-                    // Show current slot boundaries if start time is valid
-                    if (isStartInAnySlot) ...[
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.info_outline, color: Colors.blue, size: 16),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                getSlotBoundariesText(selectedStartTime),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.blue.shade700,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                    /// SLOT HOURS INFO (correct now)
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.info_outline,
+                              color: Colors.blue, size: 16),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              "Slot hours: ${_formatTimeTo12Hour(initialOpenTime)} - ${_formatTimeTo12Hour(initialCloseTime)}",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.blue.shade700,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 8),
-                    ],
+                    ),
 
-                    // Validation warnings
-                    if (!isStartInAnySlot) ...[
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.error, color: Colors.red, size: 16),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                "Start time must be within an available slot",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                    ],
+                    SizedBox(height: 8),
 
-                    if (!isEndInAnySlot) ...[
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.error, color: Colors.red, size: 16),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                "End time must be within an available slot",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                    ],
-
-                    if (isStartInAnySlot && isEndInAnySlot && !areTimesInSameValidSlot) ...[
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.orange.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.warning, color: Colors.orange, size: 16),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                "Start and end times must be within the same time slot",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.orange,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                    ],
-
-                    if (isStartInAnySlot && isEndInAnySlot && !isRangeWithinSlot) ...[
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.orange.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.timeline, color: Colors.orange, size: 16),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                "Selected time range crosses slot boundaries. Please select within a single time slot.",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.orange,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                    ],
-
-                    if (isStartInAnySlot && isEndInAnySlot && !isEndTimeValidForStart) ...[
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.orange.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.access_time, color: Colors.orange, size: 16),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                "End time must be after start time and within the same slot",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.orange,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                    ],
-
-                    // Start Time Picker with AM/PM
+                    /// START PICKER
                     ListTile(
                       title: const Text('Start Time',
                           style: TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle: Text(
-                        _formatTimeOfDayTo12Hour(selectedStartTime),
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.maincolor,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                      subtitle:
+                      Text(_formatTimeOfDayTo12Hour(selectedStartTime)),
                       trailing: const Icon(Icons.access_time),
                       onTap: () async {
-                        final TimeOfDay? picked = await showTimePicker(
+                        final picked = await showTimePicker(
                           context: context,
                           initialTime: selectedStartTime,
-                          builder: (BuildContext context, Widget? child) {
-                            return MediaQuery(
-                              data: MediaQuery.of(context).copyWith(
-                                alwaysUse24HourFormat: false,
-                              ),
-                              child: child!,
-                            );
-                          },
                         );
 
-                        if (picked != null) {
-                          // Check if picked time is within ANY available slot
-                          if (!isTimeInAnySlot(picked)) {
-                            // Find the nearest valid time
-                            TimeOfDay? nearestValidTime;
-                            int minDiff = 999999;
+                        if (picked == null) return;
 
-                            for (var slot in timeSlots!) {
-                              TimeOfDay slotOpen = _parseTimeOfDay(slot.open!);
-                              TimeOfDay slotClose = _parseTimeOfDay(slot.close!);
-
-                              int pickedMinutes = picked.hour * 60 + picked.minute;
-                              int openMinutes = slotOpen.hour * 60 + slotOpen.minute;
-                              int closeMinutes = slotClose.hour * 60 + slotClose.minute;
-
-                              if (pickedMinutes < openMinutes) {
-                                int diff = openMinutes - pickedMinutes;
-                                if (diff < minDiff) {
-                                  minDiff = diff;
-                                  nearestValidTime = slotOpen;
-                                }
-                              } else if (pickedMinutes > closeMinutes) {
-                                int diff = pickedMinutes - closeMinutes;
-                                if (diff < minDiff) {
-                                  minDiff = diff;
-                                  nearestValidTime = slotClose;
-                                }
-                              }
-                            }
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  nearestValidTime != null
-                                      ? "Please select time within available slots. Nearest valid time: ${_formatTimeOfDayTo12Hour(nearestValidTime)}"
-                                      : "Please select time within available slots",
-                                ),
-                                backgroundColor: Colors.orange,
-                                duration: const Duration(seconds: 3),
-                              ),
-                            );
-                            return;
-                          }
-
-                          setState(() {
-                            selectedStartTime = picked;
-
-                            // Adjust end time to maintain same slot
-                            TimeSlot? currentSlot = findSlotForTime(picked);
-                            if (currentSlot != null) {
-                              TimeOfDay slotClose = _parseTimeOfDay(currentSlot.close!);
-
-                              // Set suggested end time (start + 1 hour or slot close, whichever is smaller)
-                              int suggestedHour = picked.hour + 1;
-                              int suggestedMinute = picked.minute;
-
-                              // Handle hour overflow
-                              if (suggestedHour >= 24) {
-                                suggestedHour = 23;
-                                suggestedMinute = 59;
-                              }
-
-                              TimeOfDay suggestedEnd = TimeOfDay(
-                                hour: suggestedHour,
-                                minute: suggestedMinute,
-                              );
-
-                              // Don't exceed slot close time
-                              if (_isTimeLaterTimeOfDay(suggestedEnd, slotClose)) {
-                                suggestedEnd = slotClose;
-                              }
-
-                              // Make sure end time is after start time
-                              if (_isTimeLaterTimeOfDay(suggestedEnd, picked)) {
-                                selectedEndTime = suggestedEnd;
-                              } else {
-                                // If suggested end is not after start, set to slot close
-                                selectedEndTime = slotClose;
-                              }
-                            }
-                          });
+                        if (!isTimeInSelectedSlot(picked)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  "Select time within ${_formatTimeTo12Hour(initialOpenTime)} - ${_formatTimeTo12Hour(initialCloseTime)}"),
+                              backgroundColor: Colors.orange,
+                            ),
+                          );
+                          return;
                         }
+
+                        setState(() {
+                          selectedStartTime = picked;
+                          selectedEndTime = _addMinutes(picked, fixedDuration);
+                        });
                       },
                     ),
 
-                    // End Time Picker with AM/PM
+                    /// END PICKER
                     ListTile(
                       title: const Text('End Time',
                           style: TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle: Text(
-                        _formatTimeOfDayTo12Hour(selectedEndTime),
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.maincolor,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                      subtitle:
+                      Text(_formatTimeOfDayTo12Hour(selectedEndTime)),
                       trailing: const Icon(Icons.access_time),
-                      onTap: () async {
-                        final TimeOfDay? picked = await showTimePicker(
-                          context: context,
-                          initialTime: selectedEndTime,
-                          builder: (BuildContext context, Widget? child) {
-                            return MediaQuery(
-                              data: MediaQuery.of(context).copyWith(
-                                alwaysUse24HourFormat: false,
-                              ),
-                              child: child!,
-                            );
-                          },
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("End time is fixed (${fixedDuration} mins session)"),
+                            backgroundColor: Colors.blue,
+                          ),
                         );
-
-                        if (picked != null) {
-                          // Check if end time is after start time
-                          if (!_isTimeLaterTimeOfDay(picked, selectedStartTime)) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("End time must be after start time"),
-                                backgroundColor: Colors.red,
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
-                            return;
-                          }
-
-                          // Check if end time is within ANY available slot
-                          if (!isTimeInAnySlot(picked)) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  "Please select end time within available slots",
-                                ),
-                                backgroundColor: Colors.orange,
-                                duration: const Duration(seconds: 2),
-                              ),
-                            );
-                            return;
-                          }
-
-                          // Check if end time is valid for the selected start time
-                          if (!isValidEndTimeForStart(selectedStartTime, picked)) {
-                            TimeSlot? startSlot = getSlotContainingTime(selectedStartTime);
-                            if (startSlot != null) {
-                              String slotCloseTime = _formatTimeOfDayTo12Hour(_parseTimeOfDay(startSlot.close!));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    "End time must be within the same slot and not exceed $slotCloseTime",
-                                  ),
-                                  backgroundColor: Colors.orange,
-                                  duration: const Duration(seconds: 3),
-                                ),
-                              );
-                            }
-                            return;
-                          }
-
-                          setState(() {
-                            selectedEndTime = picked;
-                          });
-                        }
                       },
                     ),
 
                     SizedBox(height: 8),
 
-                    // Duration info
+                    /// DURATION INFO (unchanged design)
                     Container(
                       padding: EdgeInsets.all(12),
                       decoration: BoxDecoration(
@@ -5121,76 +4400,28 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                             : Colors.red.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Column(
+                      child: Row(
                         children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.timer,
-                                color: isValidSelection ? Colors.green : Colors.red,
-                                size: 18,
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                "Duration: ${currentDuration} minutes",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: isValidSelection ? Colors.green : Colors.red,
-                                ),
-                              ),
-                            ],
-                          ),
-                          if (!isDurationValid) ...[
-                            SizedBox(height: 4),
-                            Text(
-                              currentDuration < minDurationMinutes
-                                  ? "Minimum duration is $minDurationMinutes minutes"
-                                  : "Maximum duration is $maxDurationMinutes minutes",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.red,
-                              ),
+                          Icon(Icons.timer,
+                              color: isValidSelection
+                                  ? Colors.green
+                                  : Colors.red,
+                              size: 18),
+                          SizedBox(width: 8),
+                          Text(
+                            "Session duration: $fixedDuration minutes",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: isValidSelection
+                                  ? Colors.green
+                                  : Colors.red,
                             ),
-                          ],
+                          ),
                         ],
                       ),
                     ),
-
-                    // Warning for near max duration + maintenance
-                    if (isNearMaxDuration && maintenanceMins > 0) ...[
-                      SizedBox(height: 8),
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.amber.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.amber.shade200),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.warning_amber_rounded,
-                              size: 16,
-                              color: Colors.amber.shade800,
-                            ),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                "You're selecting $currentDuration minutes. +$maintenanceMins minutes maintenance time will be added automatically.",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.amber.shade800,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-
-                    // Maintenance info
+                    /// MAINTENANCE INFO (dynamic, same design style)
                     if (maintenanceMins > 0) ...[
                       SizedBox(height: 8),
                       Container(
@@ -5209,10 +4440,11 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                             SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                "+$maintenanceMins minute${maintenanceMins > 1 ? 's' : ''} maintenance time will be included before next booking",
+                                "+$maintenanceMins mins maintenance time will be included in the selected session duration for this amenity",
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Colors.blue.shade700,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
@@ -5232,9 +4464,14 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                   onPressed: isValidSelection
                       ? () {
                     Navigator.pop(context);
+
+                    /// 🔥 MAINTENANCE ADDED HERE
+                    final TimeOfDay apiEndTime =
+                    _addMinutes(selectedEndTime, maintenanceMins);
+
                     onTimeSelected(
                       _formatTimeForAPI(selectedStartTime),
-                      _formatTimeForAPI(selectedEndTime),
+                      _formatTimeForAPI(apiEndTime),
                     );
                   }
                       : null,
@@ -5260,7 +4497,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     );
   }
 
-// Helper function to check if a time is between two times (inclusive)
   bool _isTimeBetweenInclusive(TimeOfDay time, TimeOfDay start, TimeOfDay end) {
     int timeMinutes = time.hour * 60 + time.minute;
     int startMinutes = start.hour * 60 + start.minute;
@@ -5276,23 +4512,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     }
   }
 
-// Helper function to check if a time is strictly between two times
-  bool _isTimeBetween(TimeOfDay time, TimeOfDay start, TimeOfDay end) {
-    int timeMinutes = time.hour * 60 + time.minute;
-    int startMinutes = start.hour * 60 + start.minute;
-    int endMinutes = end.hour * 60 + end.minute;
-
-    // For normal time ranges where start < end
-    if (startMinutes <= endMinutes) {
-      return timeMinutes >= startMinutes && timeMinutes < endMinutes;
-    }
-    // For ranges that cross midnight (if needed)
-    else {
-      return timeMinutes >= startMinutes || timeMinutes < endMinutes;
-    }
-  }
-
-// Helper function to format TimeOfDay to 12-hour format
   String _formatTimeOfDayTo12Hour(TimeOfDay time) {
     final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
     final period = time.period == DayPeriod.am ? 'AM' : 'PM';
@@ -5300,7 +4519,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     return '$hour:$minute $period';
   }
 
-// Update existing helper functions to handle AM/PM
   String _formatTimeTo12Hour(String time24) {
     if (time24.isEmpty) return '';
     try {
@@ -5318,24 +4536,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
       return time24;
     }
   }
-// Update existing helper functions to handle AM/PM
-//   String _formatTimeTo12Hour(String time24) {
-//     if (time24.isEmpty) return '';
-//     try {
-//       final parts = time24.split(':');
-//       if (parts.length != 2) return time24;
-//
-//       int hour = int.parse(parts[0]);
-//       int minute = int.parse(parts[1]);
-//
-//       final period = hour >= 12 ? 'PM' : 'AM';
-//       hour = hour == 0 ? 12 : hour > 12 ? hour - 12 : hour;
-//
-//       return '$hour:${minute.toString().padLeft(2, '0')} $period';
-//     } catch (e) {
-//       return time24;
-//     }
-//   }
+
   Future<void> addSlotAPi(String startTime, String endTime,
       String amenitiesName) async {
     setState(() {
@@ -5364,7 +4565,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
 
             showConfirmSlotDialog(start, end, amenitiesName);
           }
-          // AmenitiesApi(date: calendar1SelectedDateStr);
+          AmenitiesApi(date: calendar1SelectedDateStr);
           // statusApi();
         } else {
           if (mounted) {
@@ -5394,59 +4595,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
         isRsvpLoading = false;
       });
       if (mounted) buildErrorDialog(context, 'Error', "Internet Required");
-    }
-  }
-
-
-  bool _isTimeEarlierString(String time1, String time2) {
-    try {
-      DateTime dt1 = _parseTimeString(time1);
-      DateTime dt2 = _parseTimeString(time2);
-      return dt1.isBefore(dt2);
-    } catch (e) {
-      return false;
-    }
-  }
-
-  bool _isTimeLaterString(String time1, String time2) {
-    try {
-      DateTime dt1 = _parseTimeString(time1);
-      DateTime dt2 = _parseTimeString(time2);
-      return dt1.isAfter(dt2);
-    } catch (e) {
-      return false;
-    }
-  }
-
-  bool _isTimeLaterTimeOfDay(TimeOfDay time1, TimeOfDay time2) {
-    if (time1.hour > time2.hour) return true;
-    if (time1.hour == time2.hour && time1.minute > time2.minute) return true;
-    return false;
-  }
-
-  DateTime _parseTimeString(String timeStr) {
-    try {
-      if (timeStr.contains(':')) {
-        final parts = timeStr.split(':');
-        int hour = int.parse(parts[0]);
-        int minute = int.parse(parts[1]);
-        return DateTime(2000, 1, 1, hour, minute);
-      }
-    } catch (e) {
-      print("Error parsing time: $e ");
-    }
-    return DateTime.now();
-  }
-
-  String _formatTimeRange(String time24) {
-    try {
-      final parts = time24.split(':');
-      int hour = int.parse(parts[0]);
-      int minute = int.parse(parts[1]);
-      TimeOfDay time = TimeOfDay(hour: hour, minute: minute);
-      return time.format(context);
-    } catch (e) {
-      return time24;
     }
   }
 
@@ -5650,69 +4798,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
       },
     );
   }
-  Widget _buildSectionCard({
-    required String title,
-    required IconData icon,
-    required Widget child,
-  })
-  {
-    final theme = Provider.of<ThemeController>(context, listen: false);
-    final isDark = theme.isDark;
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: isDark ? Color(0xff2B2B2B) : Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.all(3.w),
-            decoration: BoxDecoration(
-              color: isDark ? Color(0xff2B2B2B) : Colors.grey[50],
-              // border: Border.all(color: isDark?Color(0xff383838):Colors.grey),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(2.w),
-                  decoration: BoxDecoration(
-                    color: AppColors.maincolor.withValues(alpha: 0.1),
-                    border: Border.all(
-                      color: isDark ? Color(0xff383838) : Colors.grey,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    icon,
-                    color: isDark ? Colors.white : AppColors.maincolor,
-                    size: 20.sp,
-                  ),
-                ),
-                SizedBox(width: 3.w),
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontFamily: AppConstants.manropeBold,
-                    fontWeight: FontWeight.w600,
-                    color: isDark ? Colors.white : Colors.black87,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(padding: EdgeInsets.all(4.w), child: child),
-        ],
-      ),
-    );
-  }
-  // Add this helper method inside your State class
+
   Widget _buildOperatingHoursExpansionTile(OperatingHours? operatingHours) {
     final theme = context.watch<ThemeController>();
 
@@ -5867,7 +4953,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                       children: [
                         // Day indicator
                         Container(
-                          width: 90,
+                          width: 25.w,
                           child: Row(
                             children: [
                               Container(
@@ -5880,22 +4966,21 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                   shape: BoxShape.circle,
                                 ),
                               ),
-                              SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  day,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: theme.isDark ? Colors.white : Colors.black87,
-                                    fontFamily: AppConstants.manrope,
-                                  ),
+                              SizedBox(width: 2.w),
+                              Text(
+                                day,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: theme.isDark ? Colors.white : Colors
+                                      .black87,
+                                  fontFamily: AppConstants.manropeBold,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        SizedBox(width: 8),
+                        SizedBox(width: 10.w),
                         // Time slots
                         Expanded(
                           child: slots != null && slots.isNotEmpty
@@ -5954,3 +5039,4 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
 
   bool isAlreadyBooked=false;
 }
+

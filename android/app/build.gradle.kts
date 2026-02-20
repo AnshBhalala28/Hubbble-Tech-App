@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
@@ -5,7 +7,6 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-import java.util.Properties
 val localProperties = Properties().apply {
     val localFile = rootProject.file("local.properties")
     if (localFile.exists()) {
@@ -14,7 +15,7 @@ val localProperties = Properties().apply {
 }
 
 val keystoreProperties = Properties().apply {
-    val keystoreFile = rootProject.file("key.properties")
+    val keystoreFile = rootProject.file("release-key.properties")
     if (keystoreFile.exists()) {
         keystoreFile.inputStream().use { load(it) }
     }
@@ -37,22 +38,24 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "21"
+        jvmTarget = "17"
     }
 
     signingConfigs {
         create("release") {
-            keyAlias = keystoreProperties.getProperty("keyAlias")
-            keyPassword = keystoreProperties.getProperty("keyPassword")
-            storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
-            storePassword = keystoreProperties.getProperty("storePassword")
+            storeFile = file("C:\\Users\\Hiren\\StudioProjects\\waveeai-app-new18-02-2026\\android\\app\\waveeai.jks")
+            storePassword = "123456"
+            keyAlias = "waveeai"
+            keyPassword = "123456"
         }
     }
+
+
 
     buildTypes {
         getByName("release") {
