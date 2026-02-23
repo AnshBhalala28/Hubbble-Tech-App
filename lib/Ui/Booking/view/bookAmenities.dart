@@ -7,6 +7,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wavee/Services/themeServices.dart';
+import 'package:wavee/Ui/Booking/view/amenitiesDetail1.dart';
 
 import '../../../Utils/checkInternetConnection.dart';
 import '../../../Utils/colors.dart';
@@ -130,13 +131,29 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                       theme.isDark ? Color(0xff252525) : null,
                                 ),
                                 child: GestureDetector(
-                                  onTap:
-                                      () => Get.to(
-                                        () => AmenitiesDetail(
+                                  onTap: () {
+                                    final value = booking.isAllDayBooking.toString();
+                                    log("isAllDayBooking value: ${booking.isAllDayBooking}  type: ${booking.isAllDayBooking.runtimeType}");
+                                    log("isAllDayBooking: $value");
+
+                                    if (value == "1") {
+                                      // All day booking → Amenities details
+                                      Get.to(
+                                            () => AmenitiesDetail(
                                           amenites_id: booking.id.toString(),
                                           isPage: false,
                                         ),
-                                      ),
+                                      );
+                                    } else {
+                                      // Slot booking → Form screen
+                                      Get.to(
+                                            () => Form_Screen(
+                                          amenites_id: booking.id.toString(),
+                                          isPage: false,
+                                        ),
+                                      );
+                                    }
+                                  },
                                   child: Container(
                                     height: 33.h,
                                     decoration: BoxDecoration(

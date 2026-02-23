@@ -81,6 +81,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
   String? selectEndTime;
 
   int selectedDurationInMinutes = 60;
+  bool isAlreadyBooked = false;
 
   DateTime? getRequestedDate() {
     if (widget.requestedDate == null) return null;
@@ -159,15 +160,13 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     DateTime firstDay = DateTime(now.year, now.month, 1);
     DateTime lastDay = DateTime(now.year, now.month + 1, 0);
     DateTime requestedDay = getRequestedDate() ?? now;
-    DateTime focusedDay =
-    requestedDay.isBefore(firstDay)
+    DateTime focusedDay = requestedDay.isBefore(firstDay)
         ? firstDay
         : requestedDay.isAfter(lastDay)
         ? lastDay
         : requestedDay;
 
-    final String operatingHoursString =
-    calendar1SelectedDate != null
+    final String operatingHoursString = calendar1SelectedDate != null
         ? getOperatingHours(
       calendar1SelectedDate!,
       selectedAmenity?.operatingHours,
@@ -225,7 +224,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             padding: EdgeInsets.zero,
-
                             itemCount:
                             amenitiesModel?.data?.data?.length ?? 0,
                             itemBuilder: (context, index) {
@@ -278,33 +276,31 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                             child: CarouselSlider(
                                               options: CarouselOptions(
                                                 autoPlay: true,
-                                                viewportFraction: 1.0,
+                                                viewportFraction:
+                                                1.0,
                                                 enlargeCenterPage:
                                                 false,
                                                 height: 25.h,
                                                 onPageChanged: (index,
-                                                    reason,) {
+                                                    reason) {
                                                   setState(() {
                                                     currentIndex =
                                                         index;
                                                   });
                                                 },
                                               ),
-                                              items:
-                                              imageList.map((url) {
+                                              items: imageList
+                                                  .map((url) {
                                                 return Stack(
-                                                  fit:
-                                                  StackFit
+                                                  fit: StackFit
                                                       .expand,
                                                   children: [
                                                     CachedNetworkImage(
                                                       imageUrl: url,
-                                                      fit:
-                                                      BoxFit
+                                                      fit: BoxFit
                                                           .cover,
-                                                      placeholder:
-                                                          (context,
-                                                          url,) =>
+                                                      placeholder: (context,
+                                                          url) =>
                                                       const Center(
                                                         child:
                                                         CircularProgressIndicator(),
@@ -312,26 +308,25 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                       errorWidget:
                                                           (context,
                                                           url,
-                                                          error,) =>
-                                                      const Center(
-                                                        child: Icon(
-                                                          Icons
-                                                              .error,
-                                                          color:
-                                                          Colors.red,
-                                                        ),
-                                                      ),
+                                                          error) {
+                                                        return const Center(
+                                                          child: Icon(
+                                                            Icons
+                                                                .error,
+                                                            color:
+                                                            Colors.red,
+                                                          ),
+                                                        );
+                                                      },
                                                     ).marginOnly(
                                                       right: 0.5.w,
                                                     ),
                                                     Container(
                                                       decoration: const BoxDecoration(
                                                         gradient: LinearGradient(
-                                                          begin:
-                                                          Alignment
+                                                          begin: Alignment
                                                               .bottomCenter,
-                                                          end:
-                                                          Alignment
+                                                          end: Alignment
                                                               .topCenter,
                                                           colors: [
                                                             Colors
@@ -341,10 +336,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                           ],
                                                         ),
                                                       ),
-                                                      margin:
-                                                      EdgeInsets.only(
-                                                        right:
-                                                        1.w,
+                                                      margin: EdgeInsets.only(
+                                                        right: 1.w,
                                                       ),
                                                     ),
                                                   ],
@@ -361,44 +354,43 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                             children: List.generate(
                                               imageList.length,
                                                   (dotIndex) {
-                                                    return AnimatedContainer(
-                                                      duration: const Duration(
-                                                        milliseconds: 300,
-                                                      ),
-                                                      margin:
-                                                      const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 4,
-                                                      ),
-                                                      width:
-                                                      currentIndex ==
-                                                          dotIndex
-                                                          ? 10
-                                                          : 6,
-                                                      height:
-                                                      currentIndex ==
-                                                          dotIndex
-                                                          ? 10
-                                                          : 6,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        color:
-                                                        currentIndex ==
-                                                            dotIndex
-                                                            ? AppColors
-                                                            .maincolor
-                                                            : Colors.grey,
-                                                      ),
-                                                    );
-                                                  },
+                                                return AnimatedContainer(
+                                                  duration:
+                                                  const Duration(
+                                                    milliseconds: 300,
+                                                  ),
+                                                  margin:
+                                                  const EdgeInsets
+                                                      .symmetric(
+                                                    horizontal: 4,
+                                                  ),
+                                                  width: currentIndex ==
+                                                      dotIndex
+                                                      ? 10
+                                                      : 6,
+                                                  height: currentIndex ==
+                                                      dotIndex
+                                                      ? 10
+                                                      : 6,
+                                                  decoration:
+                                                  BoxDecoration(
+                                                    shape:
+                                                    BoxShape.circle,
+                                                    color: currentIndex ==
+                                                        dotIndex
+                                                        ? AppColors
+                                                        .maincolor
+                                                        : Colors.grey,
+                                                  ),
+                                                );
+                                              },
                                             ),
                                           ),
                                         SizedBox(height: 1.h),
                                         Text(
                                           booking?.name ?? '',
                                           style: TextStyle(
-                                            color:
-                                            theme.isDark
+                                            color: theme.isDark
                                                 ? Colors.white
                                                 : AppColors.black,
                                             fontFamily:
@@ -415,27 +407,28 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                             BorderRadius.circular(10),
                                           ),
                                           child: ReadMoreText(
-                                            booking?.description == null ||
+                                            booking?.description ==
+                                                null ||
                                                 booking?.description ==
                                                     ""
                                                 ? "N/A"
-                                                : "${booking?.description
-                                                .toString()
-                                                .capitalizeFirst}",
+                                                : "${booking?.description.toString().capitalizeFirst}",
                                             trimLines: 4,
                                             trimLength: 145,
-                                            colorClickableText: Colors.blue,
+                                            colorClickableText:
+                                            Colors.blue,
                                             trimMode: TrimMode.Length,
-                                            trimCollapsedText: ' Show more',
-                                            trimExpandedText: ' Show less',
+                                            trimCollapsedText:
+                                            ' Show more',
+                                            trimExpandedText:
+                                            ' Show less',
                                             moreStyle: TextStyle(
                                               fontSize: 15.sp,
                                               fontWeight: FontWeight.bold,
                                               fontFamily:
                                               AppConstants.manrope,
                                               letterSpacing: 1,
-                                              color:
-                                              theme.isDark
+                                              color: theme.isDark
                                                   ? Colors.white
                                                   : AppColors.maincolor,
                                             ),
@@ -445,20 +438,17 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                               AppConstants.manrope,
                                               fontWeight: FontWeight.bold,
                                               letterSpacing: 1,
-                                              color:
-                                              theme.isDark
+                                              color: theme.isDark
                                                   ? Colors.white
                                                   : AppColors.maincolor,
                                             ),
                                             style: TextStyle(
                                               fontSize: 16.sp,
-                                              color:
-                                              theme.isDark
+                                              color: theme.isDark
                                                   ? Colors.white
-                                                  : Colors
-                                                  .grey
-                                                  .shade500,
-                                              fontWeight: FontWeight.normal,
+                                                  : Colors.grey.shade500,
+                                              fontWeight:
+                                              FontWeight.normal,
                                               fontFamily:
                                               AppConstants.manrope,
                                             ),
@@ -469,17 +459,13 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                           children: [
                                             Expanded(
                                               child: Container(
-                                                padding:
-                                                EdgeInsets.symmetric(
+                                                padding: EdgeInsets.symmetric(
                                                   horizontal: 4.w,
                                                   vertical: 1.h,
                                                 ),
                                                 decoration: BoxDecoration(
-                                                  color:
-                                                  theme.isDark
-                                                      ? Color(
-                                                    0xff262626,
-                                                  )
+                                                  color: theme.isDark
+                                                      ? Color(0xff262626)
                                                       : Colors.white,
                                                   borderRadius:
                                                   BorderRadius.circular(
@@ -492,38 +478,35 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                         0.05,
                                                       ),
                                                       blurRadius: 10,
-                                                      offset: const Offset(
+                                                      offset:
+                                                      const Offset(
                                                         0,
                                                         4,
                                                       ),
                                                     ),
                                                   ],
                                                   border: Border.all(
-                                                    color:
-                                                    Colors
-                                                        .grey
-                                                        .shade400,
+                                                    color: Colors
+                                                        .grey.shade400,
                                                     width: 1,
                                                   ),
                                                 ),
                                                 child: Row(
                                                   children: [
-
                                                     /// 🔹 Status Icon
                                                     Container(
                                                       padding:
                                                       EdgeInsets.all(
                                                         2.w,
                                                       ),
-                                                      decoration: BoxDecoration(
-                                                        color:
-                                                        theme.isDark
+                                                      decoration:
+                                                      BoxDecoration(
+                                                        color: theme.isDark
                                                             ? Color(
                                                           0xFFCFB583,
                                                         ).withValues(
-                                                          alpha:
-                                                          0.2,
-                                                        )
+                                                            alpha:
+                                                            0.2)
                                                             : AppColors
                                                             .maincolor
                                                             .withOpacity(
@@ -536,17 +519,13 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                         CupertinoIcons
                                                             .person_circle,
                                                         size: 18.sp,
-                                                        color:
-                                                        theme.isDark
-                                                            ? Colors
-                                                            .white
+                                                        color: theme.isDark
+                                                            ? Colors.white
                                                             : AppColors
                                                             .maincolor,
                                                       ),
                                                     ),
-
                                                     SizedBox(width: 3.w),
-
                                                     /// 🔹 Text
                                                     Expanded(
                                                       child: Column(
@@ -556,14 +535,15 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                         children: [
                                                           Text(
                                                             "Residents per Session",
-                                                            style: TextStyle(
+                                                            style:
+                                                            TextStyle(
                                                               fontSize:
                                                               14.sp,
                                                               fontFamily:
                                                               AppConstants
                                                                   .manrope,
-                                                              color:
-                                                              theme.isDark
+                                                              color: theme
+                                                                  .isDark
                                                                   ? Colors
                                                                   .white
                                                                   : Colors
@@ -578,7 +558,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                             booking?.capacity
                                                                 ?.toString() ??
                                                                 "Unknown",
-                                                            style: TextStyle(
+                                                            style:
+                                                            TextStyle(
                                                               fontSize:
                                                               15.sp,
                                                               fontWeight:
@@ -587,8 +568,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                               fontFamily:
                                                               AppConstants
                                                                   .manropeBold,
-                                                              color:
-                                                              theme.isDark
+                                                              color: theme
+                                                                  .isDark
                                                                   ? Colors
                                                                   .white
                                                                   : Colors
@@ -602,9 +583,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                 ),
                                               ),
                                             ),
-
                                             SizedBox(width: 2.w),
-
                                             Container(
                                               width: 39.w,
                                               padding: EdgeInsets.symmetric(
@@ -612,8 +591,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                 vertical: 1.h,
                                               ),
                                               decoration: BoxDecoration(
-                                                color:
-                                                theme.isDark
+                                                color: theme.isDark
                                                     ? Color(0xff262626)
                                                     : Colors.white,
                                                 borderRadius:
@@ -623,57 +601,57 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                 boxShadow: [
                                                   BoxShadow(
                                                     color: Colors.black
-                                                        .withOpacity(0.05),
+                                                        .withOpacity(
+                                                      0.05,
+                                                    ),
                                                     blurRadius: 10,
-                                                    offset: const Offset(
+                                                    offset:
+                                                    const Offset(
                                                       0,
                                                       4,
                                                     ),
                                                   ),
                                                 ],
                                                 border: Border.all(
-                                                  color:
-                                                  Colors.grey.shade400,
+                                                  color: Colors
+                                                      .grey.shade400,
                                                   width: 1,
                                                 ),
                                               ),
                                               child: Row(
                                                 children: [
-
                                                   /// 🔹 Status Icon
                                                   Container(
-                                                    padding: EdgeInsets.all(
+                                                    padding:
+                                                    EdgeInsets.all(
                                                       2.w,
                                                     ),
-                                                    decoration: BoxDecoration(
-                                                      color:
-                                                      theme.isDark
+                                                    decoration:
+                                                    BoxDecoration(
+                                                      color: theme.isDark
                                                           ? Color(
                                                         0xFFCFB583,
                                                       ).withValues(
-                                                        alpha: 0.2,
-                                                      )
+                                                          alpha: 0.2)
                                                           : AppColors
                                                           .maincolor
                                                           .withOpacity(
                                                         0.12,
                                                       ),
-                                                      shape:
-                                                      BoxShape.circle,
+                                                      shape: BoxShape
+                                                          .circle,
                                                     ),
                                                     child: Icon(
-                                                      Icons.calendar_month,
+                                                      Icons
+                                                          .calendar_month,
                                                       size: 18.sp,
-                                                      color:
-                                                      theme.isDark
+                                                      color: theme.isDark
                                                           ? Colors.white
                                                           : AppColors
                                                           .maincolor,
                                                     ),
                                                   ),
-
                                                   SizedBox(width: 3.w),
-
                                                   /// 🔹 Text
                                                   Expanded(
                                                     child: Column(
@@ -683,14 +661,14 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                       children: [
                                                         Text(
                                                           "Bookings Available",
-
                                                           style: TextStyle(
-                                                            fontSize: 14.sp,
+                                                            fontSize:
+                                                            14.sp,
                                                             fontFamily:
                                                             AppConstants
                                                                 .manrope,
-                                                            color:
-                                                            theme.isDark
+                                                            color: theme
+                                                                .isDark
                                                                 ? Colors
                                                                 .white
                                                                 : Colors
@@ -702,20 +680,21 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                           height: 0.4.h,
                                                         ),
                                                         Text(
-                                                          booking
-                                                              ?.maxBookingPerMonth
+                                                          booking?.availableSlots
                                                               ?.toString() ??
                                                               "Unknown",
-                                                          style: TextStyle(
-                                                            fontSize: 15.sp,
+                                                          style:
+                                                          TextStyle(
+                                                            fontSize:
+                                                            15.sp,
                                                             fontWeight:
                                                             FontWeight
                                                                 .bold,
                                                             fontFamily:
                                                             AppConstants
                                                                 .manropeBold,
-                                                            color:
-                                                            theme.isDark
+                                                            color: theme
+                                                                .isDark
                                                                 ? Colors
                                                                 .white
                                                                 : Colors
@@ -737,8 +716,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                             vertical: 1.h,
                                           ),
                                           decoration: BoxDecoration(
-                                            color:
-                                            booking?.status == "active"
+                                            color: booking?.status ==
+                                                "active"
                                                 ? theme.isDark
                                                 ? Color(0xff262626)
                                                 : Colors.white
@@ -753,34 +732,30 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                 color: Colors.black
                                                     .withOpacity(0.05),
                                                 blurRadius: 10,
-                                                offset: const Offset(0, 4),
+                                                offset:
+                                                const Offset(0, 4),
                                               ),
                                             ],
                                             border: Border.all(
-                                              color:
-                                              booking?.status ==
+                                              color: booking?.status ==
                                                   "active"
                                                   ? Colors.grey.shade400
                                                   : booking?.status ==
                                                   "inactive"
                                                   ? Colors.red
                                                   : Colors
-                                                  .grey
-                                                  .shade400,
+                                                  .grey.shade400,
                                               width: 1,
                                             ),
                                           ),
                                           child: Row(
                                             children: [
-
                                               /// 🔹 Status Icon
                                               Container(
-                                                padding: EdgeInsets.all(
-                                                  2.w,
-                                                ),
+                                                padding:
+                                                EdgeInsets.all(2.w),
                                                 decoration: BoxDecoration(
-                                                  color:
-                                                  booking?.status ==
+                                                  color: booking?.status ==
                                                       "active"
                                                       ? theme.isDark
                                                       ? Color(
@@ -791,8 +766,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                       .withOpacity(
                                                     0.12,
                                                   )
-                                                      : booking
-                                                      ?.status ==
+                                                      : booking?.status ==
                                                       "inactive"
                                                       ? Colors.red
                                                       .withOpacity(
@@ -801,7 +775,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                       : Colors
                                                       .grey
                                                       .shade300,
-                                                  shape: BoxShape.circle,
+                                                  shape:
+                                                  BoxShape.circle,
                                                 ),
                                                 child: Icon(
                                                   booking?.status ==
@@ -810,18 +785,18 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                       .check_circle_rounded
                                                       : booking?.status ==
                                                       "inactive"
-                                                      ? Icons.cancel_rounded
-                                                      : Icons.info_outline,
+                                                      ? Icons
+                                                      .cancel_rounded
+                                                      : Icons
+                                                      .info_outline,
                                                   size: 18.sp,
-                                                  color:
-                                                  booking?.status ==
+                                                  color: booking?.status ==
                                                       "active"
                                                       ? theme.isDark
                                                       ? Colors.white
                                                       : AppColors
                                                       .maincolor
-                                                      : booking
-                                                      ?.status ==
+                                                      : booking?.status ==
                                                       "inactive"
                                                       ? Colors.red
                                                       : Colors
@@ -829,9 +804,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                       .shade700,
                                                 ),
                                               ),
-
                                               SizedBox(width: 3.w),
-
                                               /// 🔹 Text
                                               Expanded(
                                                 child: Column(
@@ -846,16 +819,16 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                         fontFamily:
                                                         AppConstants
                                                             .manrope,
-                                                        color:
-                                                        theme.isDark
-                                                            ? Colors
-                                                            .white
+                                                        color: theme
+                                                            .isDark
+                                                            ? Colors.white
                                                             : Colors
                                                             .grey
                                                             .shade600,
                                                       ),
                                                     ),
-                                                    SizedBox(height: 0.4.h),
+                                                    SizedBox(
+                                                        height: 0.4.h),
                                                     Text(
                                                       booking?.status
                                                           ?.toString()
@@ -864,22 +837,22 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                       style: TextStyle(
                                                         fontSize: 15.sp,
                                                         fontWeight:
-                                                        FontWeight.bold,
+                                                        FontWeight
+                                                            .bold,
                                                         fontFamily:
                                                         AppConstants
                                                             .manropeBold,
-                                                        color:
-                                                        booking?.status ==
+                                                        color: booking?.status ==
                                                             "active"
                                                             ? theme.isDark
                                                             ? Colors
                                                             .white
                                                             : Colors
                                                             .black
-                                                            : booking
-                                                            ?.status ==
+                                                            : booking?.status ==
                                                             "inactive"
-                                                            ? Colors.red
+                                                            ? Colors
+                                                            .red
                                                             : Colors
                                                             .grey
                                                             .shade800,
@@ -891,7 +864,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                             ],
                                           ),
                                         ),
-
                                         GestureDetector(
                                           onTap: () {
                                             if (booking?.rulesNotice ==
@@ -914,7 +886,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                             /// 🔹 Open PDF / Image
                                             Get.to(
                                               PdfView(
-                                                link: booking!.rulesNotice!,
+                                                link: booking!
+                                                    .rulesNotice!,
                                               ),
                                             );
                                           },
@@ -927,50 +900,42 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                               vertical: 1.6.h,
                                             ),
                                             decoration: BoxDecoration(
-                                              color:
-                                              booking?.status ==
+                                              color: booking?.status ==
                                                   "active"
                                                   ? theme.isDark
-                                                  ? Color(
-                                                0xff262626,
-                                              )
+                                                  ? Color(0xff262626)
                                                   : Colors.white
-                                                  : Colors
-                                                  .grey
-                                                  .shade300,
+                                                  : Colors.grey.shade300,
                                               borderRadius:
-                                              BorderRadius.circular(14),
+                                              BorderRadius.circular(
+                                                  14),
                                               boxShadow: [
                                                 BoxShadow(
                                                   color: Colors.black
                                                       .withOpacity(0.05),
                                                   blurRadius: 10,
-                                                  offset: const Offset(
-                                                    0,
-                                                    4,
-                                                  ),
+                                                  offset:
+                                                  const Offset(0, 4),
                                                 ),
                                               ],
                                               border: Border.all(
-                                                color: Colors.grey.shade400,
+                                                color:
+                                                Colors.grey.shade400,
                                                 width: 1,
                                               ),
                                             ),
                                             child: Row(
                                               children: [
-
                                                 /// 🔹 Leading Icon
                                                 Container(
-                                                  padding: EdgeInsets.all(
-                                                    2.w,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color:
-                                                    booking?.status ==
+                                                  padding:
+                                                  EdgeInsets.all(2.w),
+                                                  decoration:
+                                                  BoxDecoration(
+                                                    color: booking?.status ==
                                                         "active"
                                                         ? theme.isDark
-                                                        ? Colors
-                                                        .white
+                                                        ? Colors.white
                                                         : AppColors
                                                         .maincolor
                                                         .withOpacity(
@@ -979,14 +944,14 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                         : Colors
                                                         .grey
                                                         .shade400,
-                                                    shape: BoxShape.circle,
+                                                    shape:
+                                                    BoxShape.circle,
                                                   ),
                                                   child: Icon(
                                                     Icons
                                                         .picture_as_pdf_rounded,
                                                     size: 18.sp,
-                                                    color:
-                                                    booking?.status ==
+                                                    color: booking?.status ==
                                                         "active"
                                                         ? AppColors
                                                         .maincolor
@@ -995,9 +960,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                         .shade700,
                                                   ),
                                                 ),
-
                                                 SizedBox(width: 3.w),
-
                                                 /// 🔹 Text
                                                 Expanded(
                                                   child: Column(
@@ -1015,8 +978,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                           fontFamily:
                                                           AppConstants
                                                               .manropeBold,
-                                                          color:
-                                                          booking?.status ==
+                                                          color: booking?.status ==
                                                               "active"
                                                               ? theme.isDark
                                                               ? Colors
@@ -1038,8 +1000,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                           fontFamily:
                                                           AppConstants
                                                               .manrope,
-                                                          color:
-                                                          theme.isDark
+                                                          color: theme
+                                                              .isDark
                                                               ? Colors
                                                               .white
                                                               : Colors
@@ -1050,30 +1012,24 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                     ],
                                                   ),
                                                 ),
-
                                                 /// 🔹 Arrow
                                                 Icon(
                                                   Icons
                                                       .arrow_forward_ios_rounded,
                                                   size: 14.sp,
-                                                  color:
-                                                  booking?.status ==
+                                                  color: booking?.status ==
                                                       "active"
                                                       ? theme.isDark
                                                       ? Colors.white
+                                                      : Colors.black54
                                                       : Colors
-                                                      .black54
-                                                      : Colors
-                                                      .grey
-                                                      .shade600,
+                                                      .grey.shade600,
                                                 ),
                                               ],
                                             ),
                                           ),
                                         ),
-
                                         SizedBox(height: 1.h),
-
                                         SizedBox(height: 2.h),
                                         Column(
                                           crossAxisAlignment:
@@ -1086,85 +1042,90 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                     width: 150,
                                                     height: 4.5.h,
                                                     padding:
-                                                    const EdgeInsets.symmetric(
+                                                    const EdgeInsets
+                                                        .symmetric(
                                                       horizontal: 8,
                                                     ),
-                                                    decoration: BoxDecoration(
-                                                      color:
-                                                      AppColors.bgcolor,
+                                                    decoration:
+                                                    BoxDecoration(
+                                                      color: AppColors
+                                                          .bgcolor,
                                                       borderRadius:
-                                                      BorderRadius.circular(
+                                                      BorderRadius
+                                                          .circular(
                                                         12,
                                                       ),
                                                     ),
-                                                    child: DropdownButtonHideUnderline(
-                                                      child: DropdownButton<
-                                                          int
-                                                      >(
+                                                    child:
+                                                    DropdownButtonHideUnderline(
+                                                      child:
+                                                      DropdownButton<
+                                                          int>(
                                                         dropdownColor:
                                                         Colors.white,
                                                         borderRadius:
-                                                        BorderRadius.circular(
+                                                        BorderRadius
+                                                            .circular(
                                                           12,
                                                         ),
                                                         padding:
-                                                        EdgeInsets.zero,
+                                                        EdgeInsets
+                                                            .zero,
                                                         value:
                                                         calendar1SelectedMonthIndex,
                                                         items: List.generate(
                                                           calendar1Months
                                                               .length,
-                                                              (index,
-                                                              ) => DropdownMenuItem(
-                                                            value: index,
-                                                            child: Center(
-                                                              child: Text(
-                                                                calendar1Months[index],
-                                                                style: const TextStyle(
-                                                                  fontFamily:
-                                                                  AppConstants
-                                                                      .manrope,
-                                                                  color:
-                                                                  AppColors
-                                                                      .black,
+                                                              (index) =>
+                                                              DropdownMenuItem(
+                                                                value: index,
+                                                                child: Center(
+                                                                  child: Text(
+                                                                    calendar1Months[
+                                                                    index],
+                                                                    style: const TextStyle(
+                                                                      fontFamily:
+                                                                      AppConstants.manrope,
+                                                                      color:
+                                                                      AppColors.black,
+                                                                    ),
+                                                                  ),
                                                                 ),
                                                               ),
-                                                            ),
-                                                          ),
                                                         ),
-                                                        onChanged:
-                                                        widget.status ==
+                                                        onChanged: widget
+                                                            .status ==
                                                             null
                                                             ? (value) {
                                                           if (value !=
                                                               null) {
-                                                            setState(() {
-                                                              calendar1SelectedMonthIndex =
-                                                                  value;
-                                                              calendar1FocusedMonth =
-                                                                  DateTime(
-                                                                    DateTime
-                                                                        .now()
-                                                                        .year,
-                                                                    value +
+                                                            setState(
+                                                                    () {
+                                                                  calendar1SelectedMonthIndex =
+                                                                      value;
+                                                                  calendar1FocusedMonth =
+                                                                      DateTime(
+                                                                        DateTime.now()
+                                                                            .year,
+                                                                        value +
+                                                                            1,
                                                                         1,
-                                                                    1,
+                                                                      );
+                                                                  calendar1SelectedDate =
+                                                                      calendar1FocusedMonth;
+                                                                  calendar1SelectedDateStr =
+                                                                      DateFormat(
+                                                                        'dd/MM/yyyy',
+                                                                      ).format(
+                                                                        calendar1SelectedDate!,
+                                                                      );
+                                                                  selectedStartTime =
+                                                                  null;
+                                                                  AmenitiesApi(
+                                                                    date:
+                                                                    calendar1SelectedDateStr,
                                                                   );
-                                                              calendar1SelectedDate =
-                                                                  calendar1FocusedMonth;
-                                                              calendar1SelectedDateStr =
-                                                                  DateFormat(
-                                                                    'dd/MM/yyyy',
-                                                                  ).format(
-                                                                    calendar1SelectedDate!,
-                                                                  );
-                                                              selectedStartTime =
-                                                              null;
-                                                              AmenitiesApi(
-                                                                date:
-                                                                calendar1SelectedDateStr,
-                                                              );
-                                                            });
+                                                                });
                                                           }
                                                         }
                                                             : null,
@@ -1174,8 +1135,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                   const Spacer(),
                                                   Icon(
                                                     Icons.calendar_month,
-                                                    color:
-                                                    theme.isDark
+                                                    color: theme.isDark
                                                         ? Colors.white
                                                         : AppColors
                                                         .maincolor,
@@ -1188,17 +1148,19 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                   : TableCalendar(
                                                 firstDay: firstDay,
                                                 lastDay: lastDay,
-                                                focusedDay: focusedDay,
+                                                focusedDay:
+                                                focusedDay,
                                                 calendarFormat:
                                                 CalendarFormat
                                                     .month,
-                                                headerVisible: false,
-                                                daysOfWeekStyle: DaysOfWeekStyle(
+                                                headerVisible:
+                                                false,
+                                                daysOfWeekStyle:
+                                                DaysOfWeekStyle(
                                                   weekdayStyle:
                                                   TextStyle(
                                                     color:
-                                                    Colors
-                                                        .black,
+                                                    Colors.black,
                                                     fontFamily:
                                                     AppConstants
                                                         .manrope,
@@ -1210,8 +1172,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                   weekendStyle:
                                                   TextStyle(
                                                     color:
-                                                    Colors
-                                                        .black,
+                                                    Colors.black,
                                                     fontFamily:
                                                     AppConstants
                                                         .manrope,
@@ -1221,7 +1182,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                         .normal,
                                                   ),
                                                 ),
-                                                calendarStyle: const CalendarStyle(
+                                                calendarStyle:
+                                                const CalendarStyle(
                                                   todayDecoration:
                                                   BoxDecoration(
                                                     color:
@@ -1242,8 +1204,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                   selectedTextStyle:
                                                   TextStyle(
                                                     color:
-                                                    Colors
-                                                        .white,
+                                                    Colors.white,
                                                     fontFamily:
                                                     AppConstants
                                                         .manrope,
@@ -1251,8 +1212,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                   todayTextStyle:
                                                   TextStyle(
                                                     color:
-                                                    Colors
-                                                        .white,
+                                                    Colors.white,
                                                     fontFamily:
                                                     AppConstants
                                                         .manrope,
@@ -1260,8 +1220,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                   defaultTextStyle:
                                                   TextStyle(
                                                     color:
-                                                    Colors
-                                                        .black,
+                                                    Colors.black,
                                                     fontFamily:
                                                     AppConstants
                                                         .manrope,
@@ -1269,30 +1228,32 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                   weekendTextStyle:
                                                   TextStyle(
                                                     color:
-                                                    Colors
-                                                        .black,
+                                                    Colors.black,
                                                     fontFamily:
                                                     AppConstants
                                                         .manrope,
                                                   ),
                                                   outsideTextStyle:
                                                   TextStyle(
-                                                    color:
-                                                    Colors.grey,
+                                                    color: Colors
+                                                        .grey,
                                                   ),
                                                 ),
-                                                selectedDayPredicate: (day,) {
+                                                selectedDayPredicate:
+                                                    (day) {
                                                   return isSameDay(
                                                     getRequestedDate(),
                                                     day,
                                                   );
                                                 },
-                                                calendarBuilders: CalendarBuilders(
-                                                  defaultBuilder: (context,
+                                                calendarBuilders:
+                                                CalendarBuilders(
+                                                  defaultBuilder:
+                                                      (context,
                                                       day,
-                                                      focusedDay,) {
-                                                    bool
-                                                    isSelected = isSameDay(
+                                                      focusedDay) {
+                                                    bool isSelected =
+                                                    isSameDay(
                                                       getRequestedDate(),
                                                       day,
                                                     );
@@ -1302,15 +1263,16 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                                 .month;
                                                     return Container(
                                                       margin:
-                                                      const EdgeInsets.all(
+                                                      const EdgeInsets
+                                                          .all(
                                                         6.0,
                                                       ),
                                                       alignment:
                                                       Alignment
                                                           .center,
-                                                      decoration: BoxDecoration(
-                                                        color:
-                                                        isSelected
+                                                      decoration:
+                                                      BoxDecoration(
+                                                        color: isSelected
                                                             ? AppColors
                                                             .maincolor
                                                             : Colors
@@ -1321,9 +1283,9 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                       ),
                                                       child: Text(
                                                         '${day.day}',
-                                                        style: TextStyle(
-                                                          color:
-                                                          isSameMonth
+                                                        style:
+                                                        TextStyle(
+                                                          color: isSameMonth
                                                               ? (isSelected
                                                               ? Colors.white
                                                               : Colors.black)
@@ -1357,22 +1319,24 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                       getRequestedDate()!,
                                                     )
                                                         : "N/A",
-                                                    style: TextStyle(
-                                                      fontSize: 16.sp,
+                                                    style:
+                                                    TextStyle(
+                                                      fontSize:
+                                                      16.sp,
                                                       fontWeight:
                                                       FontWeight
                                                           .w600,
-                                                      color:
-                                                      AppColors
+                                                      color: AppColors
                                                           .maincolor,
                                                       fontFamily:
                                                       AppConstants
                                                           .manropeBold,
-                                                      letterSpacing: 1,
+                                                      letterSpacing:
+                                                      1,
                                                     ),
                                                   ),
-                                                  SizedBox(height: 6),
-
+                                                  SizedBox(
+                                                      height: 6),
                                                   Row(
                                                     children: [
                                                       Row(
@@ -1382,37 +1346,35 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                                 .access_time,
                                                           ),
                                                           SizedBox(
-                                                            width: 6,
+                                                            width:
+                                                            6,
                                                           ),
                                                           Text(
                                                             formatTime12(
                                                               widget
                                                                   .startTime,
                                                             ),
-                                                            style: TextStyle(
+                                                            style:
+                                                            TextStyle(
                                                               fontSize:
                                                               15.sp,
                                                               color:
-                                                              Colors
-                                                                  .black87,
+                                                              Colors.black87,
                                                               fontFamily:
-                                                              AppConstants
-                                                                  .manrope,
+                                                              AppConstants.manrope,
                                                               fontWeight:
-                                                              FontWeight
-                                                                  .w500,
+                                                              FontWeight.w500,
                                                             ),
                                                           ),
                                                         ],
                                                       ),
-
                                                       SizedBox(
                                                         width: 10,
                                                       ),
-
                                                       Text(
                                                         "→",
-                                                        style: TextStyle(
+                                                        style:
+                                                        TextStyle(
                                                           fontSize:
                                                           15.sp,
                                                           fontWeight:
@@ -1423,11 +1385,9 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                               .maincolor,
                                                         ),
                                                       ),
-
                                                       SizedBox(
                                                         width: 10,
                                                       ),
-
                                                       Row(
                                                         children: [
                                                           Icon(
@@ -1435,25 +1395,24 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                                 .access_time_outlined,
                                                           ),
                                                           SizedBox(
-                                                            width: 6,
+                                                            width:
+                                                            6,
                                                           ),
                                                           Text(
                                                             formatTime12(
                                                               widget
                                                                   .endtime,
                                                             ),
-                                                            style: TextStyle(
+                                                            style:
+                                                            TextStyle(
                                                               fontSize:
                                                               15.sp,
                                                               color:
-                                                              Colors
-                                                                  .black87,
+                                                              Colors.black87,
                                                               fontFamily:
-                                                              AppConstants
-                                                                  .manrope,
+                                                              AppConstants.manrope,
                                                               fontWeight:
-                                                              FontWeight
-                                                                  .w500,
+                                                              FontWeight.w500,
                                                             ),
                                                           ),
                                                         ],
@@ -1462,33 +1421,9 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                   ),
                                                 ],
                                               )
-                                                  :_buildOperatingHoursExpansionTile(selectedAmenity?.operatingHours),
-
-                                              // Column(
-                                              //       children: [
-                                              //         _buildSectionCard(
-                                              //           title: "Opening Hours",
-                                              //           icon: Icons.access_time,
-                                              //           child:Container(),
-                                              //         ),
-                                              //         Text(
-                                              //                                                         "Operating Hours: $operatingHoursString",
-                                              //                                                         style: TextStyle(
-                                              //         letterSpacing: 1,
-                                              //         fontSize: 16.sp,
-                                              //         color:
-                                              //         theme.isDark
-                                              //             ? Colors.white
-                                              //             : AppColors
-                                              //             .maincolor,
-                                              //         fontFamily:
-                                              //         AppConstants
-                                              //             .manropeBold,
-                                              //                                                         ),
-                                              //                                                       ),
-                                              //       ],
-                                              //     ),
-
+                                                  : _buildOperatingHoursExpansionTile(
+                                                  selectedAmenity
+                                                      ?.operatingHours),
                                               if (calendar1SelectedDate !=
                                                   null &&
                                                   widget.status == null &&
@@ -1500,9 +1435,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                       ?.existingBookings ??
                                                       [],
                                                 ),
-
                                                 SizedBox(height: 2.h),
-
                                                 // Time Selection from Operating Hours
                                                 _buildTimeSelectionFromOperatingHours(
                                                   selectedAmenity
@@ -1515,12 +1448,12 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                     EdgeInsets.symmetric(
                                                       vertical: 4.h,
                                                     ),
-                                                    child: const Center(
+                                                    child:
+                                                    const Center(
                                                       child:
                                                       CircularProgressIndicator(),
                                                     ),
                                                   ),
-
                                               SizedBox(height: 2.h),
                                             ],
                                             if (showBookingDetails) ...[
@@ -1532,22 +1465,19 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                 ),
                                                 width: double.infinity,
                                                 decoration: BoxDecoration(
-                                                  color:
-                                                  theme.isDark
+                                                  color: theme.isDark
                                                       ? Color(
                                                     0xf0252525,
                                                   )
-                                                      : AppColors
-                                                      .bgcolor,
+                                                      : AppColors.bgcolor,
                                                   borderRadius:
-                                                  BorderRadius.circular(
+                                                  BorderRadius
+                                                      .circular(
                                                     12,
                                                   ),
                                                   border: Border.all(
-                                                    color:
-                                                    Colors
-                                                        .grey
-                                                        .shade300,
+                                                    color: Colors
+                                                        .grey.shade300,
                                                   ),
                                                 ),
                                                 child: Column(
@@ -1563,7 +1493,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                       style: TextStyle(
                                                         fontSize: 17.sp,
                                                         fontWeight:
-                                                        FontWeight.bold,
+                                                        FontWeight
+                                                            .bold,
                                                         fontFamily:
                                                         AppConstants
                                                             .manrope,
@@ -1581,9 +1512,10 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                               Icon(
                                                                 Icons
                                                                     .calendar_month,
-                                                                size: 22.sp,
-                                                                color:
-                                                                theme.isDark
+                                                                size:
+                                                                22.sp,
+                                                                color: theme
+                                                                    .isDark
                                                                     ? AppColors
                                                                     .white
                                                                     : AppColors
@@ -1604,12 +1536,12 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                                 textAlign:
                                                                 TextAlign
                                                                     .center,
-                                                                style: TextStyle(
+                                                                style:
+                                                                TextStyle(
                                                                   fontSize:
                                                                   15.sp,
                                                                   fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                                  FontWeight.bold,
                                                                   fontFamily:
                                                                   AppConstants
                                                                       .manropeBold,
@@ -1622,10 +1554,12 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                           child: Column(
                                                             children: [
                                                               Icon(
-                                                                Icons.timer,
-                                                                size: 22.sp,
-                                                                color:
-                                                                theme.isDark
+                                                                Icons
+                                                                    .timer,
+                                                                size:
+                                                                22.sp,
+                                                                color: theme
+                                                                    .isDark
                                                                     ? AppColors
                                                                     .white
                                                                     : AppColors
@@ -1639,14 +1573,15 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                                 textAlign:
                                                                 TextAlign
                                                                     .center,
-                                                                style: TextStyle(
+                                                                style:
+                                                                TextStyle(
                                                                   fontWeight:
                                                                   FontWeight
                                                                       .bold,
                                                                   fontSize:
                                                                   15.sp,
-                                                                  color:
-                                                                  theme.isDark
+                                                                  color: theme
+                                                                      .isDark
                                                                       ? AppColors
                                                                       .white
                                                                       : Colors
@@ -1665,9 +1600,10 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                               Icon(
                                                                 Icons
                                                                     .timelapse,
-                                                                size: 22.sp,
-                                                                color:
-                                                                theme.isDark
+                                                                size:
+                                                                22.sp,
+                                                                color: theme
+                                                                    .isDark
                                                                     ? AppColors
                                                                     .white
                                                                     : AppColors
@@ -1679,18 +1615,18 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                               Text(
                                                                 selectEndTime ??
                                                                     "N/A",
-
                                                                 textAlign:
                                                                 TextAlign
                                                                     .center,
-                                                                style: TextStyle(
+                                                                style:
+                                                                TextStyle(
                                                                   fontWeight:
                                                                   FontWeight
                                                                       .bold,
                                                                   fontSize:
                                                                   15.sp,
-                                                                  color:
-                                                                  theme.isDark
+                                                                  color: theme
+                                                                      .isDark
                                                                       ? AppColors
                                                                       .white
                                                                       : Colors
@@ -1715,38 +1651,39 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                       width:
                                                       double
                                                           .infinity,
-                                                      child: const CircularProgressIndicator(
+                                                      child:
+                                                      const CircularProgressIndicator(
                                                         color:
                                                         AppColors
                                                             .maincolor,
                                                       ),
                                                     )
                                                         : GestureDetector(
-                                                      onTap: () {
+                                                      onTap:
+                                                          () {
                                                         AddBookingApi(
                                                           calendar1SelectedDateStr,
                                                           selectedStartTime!,
-
                                                           selectEndTime
                                                               .toString(),
                                                           selectedDurationInMinutes,
                                                           booking?.name ??
                                                               selectEndTime
                                                                   .toString(),
-
                                                         );
                                                       },
-                                                      child: Container(
+                                                      child:
+                                                      Container(
                                                         height: 6.h,
                                                         alignment:
                                                         Alignment
                                                             .center,
-                                                        width:
-                                                        double
+                                                        width: double
                                                             .infinity,
-                                                        decoration: BoxDecoration(
-                                                          color:
-                                                          AppColors.lightText,
+                                                        decoration:
+                                                        BoxDecoration(
+                                                          color: AppColors
+                                                              .lightText,
                                                           borderRadius:
                                                           BorderRadius.circular(
                                                             12,
@@ -1762,17 +1699,16 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                           children: [
                                                             Text(
                                                               "Book Now",
-                                                              style: TextStyle(
+                                                              style:
+                                                              TextStyle(
                                                                 fontSize:
                                                                 18.sp,
                                                                 color:
                                                                 AppColors.white,
                                                                 fontFamily:
-                                                                AppConstants
-                                                                    .manrope,
+                                                                AppConstants.manrope,
                                                                 fontWeight:
-                                                                FontWeight
-                                                                    .normal,
+                                                                FontWeight.normal,
                                                               ),
                                                             ),
                                                             SizedBox(
@@ -1785,53 +1721,42 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                               width:
                                                               4.h,
                                                               alignment:
-                                                              Alignment
-                                                                  .center,
-                                                              decoration: BoxDecoration(
+                                                              Alignment.center,
+                                                              decoration:
+                                                              BoxDecoration(
                                                                 shape:
                                                                 BoxShape.circle,
-                                                                border: Border
-                                                                    .all(
+                                                                border:
+                                                                Border.all(
                                                                   color:
-                                                                  AppColors
-                                                                      .white,
+                                                                  AppColors.white,
                                                                 ),
                                                               ),
-                                                              child: Stack(
+                                                              child:
+                                                              Stack(
                                                                 alignment:
-                                                                Alignment
-                                                                    .center,
+                                                                Alignment.center,
                                                                 children: [
-                                                                  Transform
-                                                                      .translate(
+                                                                  Transform.translate(
                                                                     offset: const Offset(
                                                                       -4,
                                                                       0,
                                                                     ),
                                                                     child: Icon(
-                                                                      Icons
-                                                                          .arrow_forward_ios,
-                                                                      color:
-                                                                      Colors
-                                                                          .white,
-                                                                      size:
-                                                                      14.sp,
+                                                                      Icons.arrow_forward_ios,
+                                                                      color: Colors.white,
+                                                                      size: 14.sp,
                                                                     ),
                                                                   ),
-                                                                  Transform
-                                                                      .translate(
+                                                                  Transform.translate(
                                                                     offset: const Offset(
                                                                       4,
                                                                       0,
                                                                     ),
                                                                     child: Icon(
-                                                                      Icons
-                                                                          .arrow_forward_ios,
-                                                                      color:
-                                                                      Colors
-                                                                          .white,
-                                                                      size:
-                                                                      14.sp,
+                                                                      Icons.arrow_forward_ios,
+                                                                      color: Colors.white,
+                                                                      size: 14.sp,
                                                                     ),
                                                                   ),
                                                                 ],
@@ -1869,76 +1794,9 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                 )
                     : !showBookingDetails
                     ? GestureDetector(
-                  // onTap: () {
-                  //   if (amenitiesModel?.data?.data?[0].status ==
-                  //       "inactive") {
-                  //     ScaffoldMessenger.of(context).showSnackBar(
-                  //       const SnackBar(
-                  //         duration: Duration(milliseconds: 800),
-                  //         content: Text(
-                  //           "This amenity is currently inactive and cannot be booked.",
-                  //         ),
-                  //       ),
-                  //     );
-                  //     return;
-                  //   }
-                  //   final amenityData =
-                  //       amenitiesModel?.data?.data?.first;
-                  //   if (amenityData != null &&
-                  //       amenityData.availableSlots != null &&
-                  //       amenityData.availableSlots! <= 0) {
-                  //     ScaffoldMessenger.of(context).showSnackBar(
-                  //       const SnackBar(
-                  //         duration: Duration(milliseconds: 1200),
-                  //         content: Text(
-                  //           "Booking limit reached for this day. Please select another date.",
-                  //         ),
-                  //       ),
-                  //     );
-                  //     return;
-                  //   }
-                  //   if (calendar1SelectedDate == null) {
-                  //     ScaffoldMessenger.of(context).showSnackBar(
-                  //       const SnackBar(
-                  //         duration: Duration(milliseconds: 800),
-                  //         content: Text(
-                  //           "Please select a date before booking.",
-                  //         ),
-                  //       ),
-                  //     );
-                  //     return;
-                  //   }
-                  //
-                  //   if (selectedStartTime == null ||
-                  //       selectedStartTime!.isEmpty) {
-                  //     ScaffoldMessenger.of(context).showSnackBar(
-                  //       const SnackBar(
-                  //         duration: Duration(milliseconds: 800),
-                  //         content: Text("Please select a start time."),
-                  //       ),
-                  //     );
-                  //     return;
-                  //   }
-                  //
-                  //   if (operatingHoursString == "Closed") {
-                  //     ScaffoldMessenger.of(context).showSnackBar(
-                  //       const SnackBar(
-                  //         duration: Duration(milliseconds: 800),
-                  //         content: Text(
-                  //           "Selected date is closed. Please choose another.",
-                  //         ),
-                  //       ),
-                  //     );
-                  //     return;
-                  //   }
-                  //
-                  //   setState(() {
-                  //     showBookingDetails = true;
-                  //   });
-                  // },
-                  // In the build method where the Book Now button is
                   onTap: () {
-                    if (amenitiesModel?.data?.data?[0].status == "inactive") {
+                    if (amenitiesModel?.data?.data?[0].status ==
+                        "inactive") {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           duration: Duration(milliseconds: 800),
@@ -1950,16 +1808,21 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                       return;
                     }
 
-                    final amenityData = amenitiesModel?.data?.data?.first;
+                    final amenityData =
+                        amenitiesModel?.data?.data?.first;
 
                     // Check if available slots is "unlimited" or numeric and <= 0
-                    String availableSlots = amenityData?.availableSlots
-                        ?.toString() ?? "0";
-                    bool isAvailableUnlimited = availableSlots.toLowerCase() ==
+                    String availableSlots = amenityData
+                        ?.availableSlots
+                        ?.toString() ??
+                        "0";
+                    bool isAvailableUnlimited = availableSlots
+                        .toLowerCase() ==
                         "unlimited";
 
                     // Only validate slots if NOT unlimited AND availableSlots <= 0
-                    if (!isAvailableUnlimited && amenityData != null &&
+                    if (!isAvailableUnlimited &&
+                        amenityData != null &&
                         amenityData.availableSlots != null &&
                         amenityData.availableSlots! <= 0) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -1990,7 +1853,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           duration: Duration(milliseconds: 800),
-                          content: Text("Please select a start time."),
+                          content: Text(
+                              "Please select a start time."),
                         ),
                       );
                       return;
@@ -2017,16 +1881,17 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                     alignment: Alignment.center,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color:
-                      (calendar1SelectedDate != null &&
+                      color: (calendar1SelectedDate != null &&
                           operatingHoursString != "Closed")
                           ? AppColors.lightText
                           : Colors.grey,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment:
+                      MainAxisAlignment.center,
+                      crossAxisAlignment:
+                      CrossAxisAlignment.center,
                       children: [
                         Text(
                           "Book Now",
@@ -2044,7 +1909,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.white),
+                            border:
+                            Border.all(color: AppColors.white),
                           ),
                           child: Stack(
                             alignment: Alignment.center,
@@ -2087,20 +1953,16 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     );
   }
 
+  // ====================== TIME SELECTION WIDGET ======================
+  String? tappedSlotOpen;
+  String? tappedSlotClose;
   Widget _buildTimeSelectionFromOperatingHours(OperatingHours? hours) {
-    // List<Map<String, String>> timeSlots = _extractTimeSlotsFromOperatingHours(
-    //   hours,
-    //   calendar1SelectedDate!,
-    // );
-
-    List<Map<String, String>> baseSlots =
-    _extractTimeSlotsFromOperatingHours(
+    List<Map<String, String>> baseSlots = _extractTimeSlotsFromOperatingHours(
       hours,
       calendar1SelectedDate!,
     );
 
-    List<Map<String, String>> timeSlots =
-    splitSlotByBookings(
+    List<Map<String, String>> timeSlots = splitSlotByBookings(
       baseSlots,
       statusModal?.data ?? [],
       calendar1SelectedDate!,
@@ -2108,16 +1970,17 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     final theme = context.watch<ThemeController>();
 
     final selectedAmenity = amenitiesModel?.data?.data?.first;
-    int? maintenanceMins = int.tryParse(selectedAmenity?.maintenanceDuration ?? "0") ?? 0;
+    int? maintenanceMins =
+        int.tryParse(selectedAmenity?.maintenanceDuration ?? "0") ?? 0;
     bool showMaintenanceNote = maintenanceMins > 0;
     bool isAllDayBooking = selectedAmenity?.isAllDayBooking == "1";
-    int allowedDuration =
-    selectedAmenity?.durationOptions?.isNotEmpty == true
+    int allowedDuration = selectedAmenity?.durationOptions?.isNotEmpty == true
         ? int.tryParse(
       selectedAmenity!.durationOptions!.first.toString(),
     ) ??
         60
         : 60;
+
     return Container(
       padding: EdgeInsets.all(3.w),
       decoration: BoxDecoration(
@@ -2131,7 +1994,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
           Row(
             children: [
               Text(
-                isAllDayBooking ? "Select Time Slot" : "Select Start Time",
+                isAllDayBooking ? "Select Time Slot" : "Select Your Time",
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
@@ -2146,50 +2009,16 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                     : batan(
                   title: "Custom Session",
                   route: () {
-
-                    // if (timeSlots.isEmpty) {
-                    //   ScaffoldMessenger.of(context).showSnackBar(
-                    //     const SnackBar(content: Text("No slots available")),
-                    //   );
-                    //   return;
-                    // }
-                    //
-                    // _showCustomTimePicker(
-                    //   hours: hours,
-                    //   selectedDate: calendar1SelectedDate!,
-                    //
-                    //   initialOpenTime: timeSlots.last['open'] ?? '09:00',
-                    //   initialCloseTime: timeSlots.last['close'] ?? '10:00',
-                    //
-                    //   onTimeSelected: (startTime, endTime) {
-                    //     setState(() {
-                    //       selectedStartTime = startTime;
-                    //       selectEndTime = endTime;
-                    //
-                    //       TimeOfDay start = _parseTimeOfDay(startTime);
-                    //       TimeOfDay end = _parseTimeOfDay(endTime);
-                    //
-                    //       selectedDurationInMinutes =
-                    //           _calculateDurationInMinutes(start, end);
-                    //     });
-                    //
-                    //     addSlotAPi(
-                    //       startTime,
-                    //       endTime,
-                    //       selectedAmenity?.name.toString() ?? "",
-                    //     );
-                    //   },
-                    // );
-
                     Map<String, String> defaultSlot;
 
-                    /// 🔥 If user already selected slot → use it
+                    /// If user already selected slot → use it
                     if (selectedStartTime != null &&
-                        timeSlots.any((slot) => slot['open'] == selectedStartTime)) {
-                      defaultSlot =
-                          timeSlots.firstWhere((slot) => slot['open'] == selectedStartTime);
+                        timeSlots.any((slot) =>
+                        slot['open'] == selectedStartTime)) {
+                      defaultSlot = timeSlots.firstWhere((slot) =>
+                      slot['open'] == selectedStartTime);
                     } else {
-                      /// 🔥 Otherwise use LAST available slot
+                      /// Otherwise use LAST available slot
                       defaultSlot = timeSlots.last;
                     }
 
@@ -2261,60 +2090,76 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                     final String displayTime = "$openTime - $closeTime";
                     final bool isSelected = selectedStartTime == openTime;
 
-                    // ✅ Already booked check
-                    // bool isBooked = _isSlotAlreadyBookedByMe(
-                    //   openTime,
-                    //   calendar1SelectedDate!,
-                    // );
+                    // Check if slot is already booked
                     bool isBooked = _isSlotAlreadyBookedByMe(
                       openTime,
                       calendar1SelectedDate!,
-                      slotCloseTime: closeTime, // ← add this
+                      slotCloseTime: closeTime,
                     );
+
                     bool isInvalidDuration = false;
 
-                    if (isAllDayBooking && openTime.isNotEmpty && closeTime.isNotEmpty) {
+                    if (isAllDayBooking &&
+                        openTime.isNotEmpty &&
+                        closeTime.isNotEmpty) {
                       TimeOfDay open = _parseTimeOfDay(openTime);
                       TimeOfDay close = _parseTimeOfDay(closeTime);
-                      int durationMins = _calculateDurationInMinutes(open, close);
+                      int durationMins =
+                      _calculateDurationInMinutes(open, close);
 
-                      /// 🔥 SLOT VALID ONLY IF MATCHES API DURATION
+                      /// Slot valid only if matches API duration
                       if (durationMins != allowedDuration) {
                         isInvalidDuration = true;
                       }
                     }
+
                     bool isDisabled = isBooked || isInvalidDuration;
+
                     return GestureDetector(
                       onTap: isDisabled
                           ? () {
-                        // ✅ Over 90 min mate specific message
+
+                        if (isBooked) return;
                         if (isInvalidDuration) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Row(
-                                children: [
-                                  Icon(Icons.info_outline,
-                                      color: Colors.white, size: 18),
-                                  SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      "This slot exceeds 90 minutes. Please use 'Custom Session' to select your preferred time.",
-                                      style: TextStyle(fontSize: 13),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              backgroundColor: Colors.orange.shade700,
-                              duration: Duration(seconds: 4),
-                              behavior: SnackBarBehavior.floating,
-                            ),
+
+                          _showCustomTimePicker(
+                            hours: hours,
+                            selectedDate: calendar1SelectedDate!,
+                            initialOpenTime: openTime,      // ✅ tapped slot open
+                            initialCloseTime: closeTime,    // ✅ tapped slot close
+                            onTimeSelected: (startTime, endTime) {
+                              setState(() {
+                                selectedStartTime = startTime;
+                                selectEndTime = endTime;
+
+                                TimeOfDay start = _parseTimeOfDay(startTime);
+                                TimeOfDay end = _parseTimeOfDay(endTime);
+
+                                selectedDurationInMinutes =
+                                    _calculateDurationInMinutes(start, end);
+                              });
+
+                              addSlotAPi(
+                                startTime,
+                                endTime,
+                                selectedAmenity?.name.toString() ?? "",
+                              );
+                            },
                           );
+
+                          return;
                         }
+                        // setState(() {
+                        //   selectedStartTime = openTime;
+                        //   selectEndTime = closeTime;
+                        // });
                       }
                           : () {
                         setState(() {
                           selectedStartTime = openTime;
                           if (isAllDayBooking) {
+                            selectEndTime = closeTime;
+                          } else {
                             selectEndTime = closeTime;
                           }
                         });
@@ -2325,10 +2170,9 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                           vertical: 1.h,
                         ),
                         decoration: BoxDecoration(
-                          // ✅ Over 90 min mate orange tint
                           color: isBooked
                               ? Colors.grey.shade300
-                              :  isInvalidDuration
+                              : isInvalidDuration
                               ? Colors.orange.shade50
                               : isSelected
                               ? AppColors.maincolor
@@ -2361,9 +2205,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                 fontWeight: isSelected
                                     ? FontWeight.bold
                                     : FontWeight.normal,
-                                decoration: isBooked
-                                    ? TextDecoration.lineThrough
-                                    : null,
+                                decoration:
+                                isBooked ? TextDecoration.lineThrough : null,
                               ),
                             ),
                             if (isBooked)
@@ -2379,8 +2222,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                   ),
                                 ),
                               ),
-                            // ✅ NEW: Over 90 min label
-                            if (isInvalidDuration)
+                            if (isInvalidDuration && isAllDayBooking)
                               Padding(
                                 padding: const EdgeInsets.only(top: 2),
                                 child: Text(
@@ -2438,6 +2280,626 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
       ),
     );
   }
+
+
+  // ====================== CUSTOM TIME PICKER ======================
+
+  Future<void> _showCustomTimePicker({
+    required OperatingHours? hours,
+    required DateTime selectedDate,
+    required String initialOpenTime,
+    required String initialCloseTime,
+    required Function(String startTime, String endTime) onTimeSelected,
+  }) async {
+    if (hours == null) return;
+
+    final selectedAmenity = amenitiesModel?.data?.data?.first;
+
+    bool isAllDayBooking = selectedAmenity?.isAllDayBooking == "1";
+
+    int maintenanceMins =
+        int.tryParse(selectedAmenity?.maintenanceDuration ?? "0") ?? 0;
+
+    int fixedDuration = isAllDayBooking
+        ? (selectedAmenity?.durationOptions?.isNotEmpty == true
+        ? int.tryParse(
+        selectedAmenity!.durationOptions!.first.toString()) ??
+        60
+        : 60)
+        : 0;
+
+    final TimeOfDay slotOpen = _parseTimeOfDay(initialOpenTime);
+    final TimeOfDay slotClose = _parseTimeOfDay(initialCloseTime);
+
+    TimeOfDay selectedStartTime = slotOpen;
+    TimeOfDay selectedEndTime = slotClose;
+
+    /// 👇 Track if user changed time manually
+    bool hasUserChangedTime = false;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            bool isStartInSlot =
+            _isTimeBetweenInclusive(selectedStartTime, slotOpen, slotClose);
+            bool isEndInSlot =
+            _isTimeBetweenInclusive(selectedEndTime, slotOpen, slotClose);
+            bool isEndAfterStart =
+                _calculateDurationInMinutes(
+                    selectedStartTime, selectedEndTime) >
+                    0;
+
+            bool isValidSelection =
+                isStartInSlot && isEndInSlot && isEndAfterStart;
+
+            return AlertDialog(
+              title: Text(
+                  isAllDayBooking ? 'Select Time Range' : 'Select Your Time'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    /// SLOT INFO
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.maincolor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                            color: AppColors.maincolor.withOpacity(0.3)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.access_time,
+                              color: AppColors.maincolor, size: 18),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              "Available slot: ${_formatTimeTo12Hour(initialOpenTime)} - ${_formatTimeTo12Hour(initialCloseTime)}",
+                              style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    /// START PICKER
+                    ListTile(
+                      title: const Text('Start Time',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      subtitle:
+                      Text(_formatTimeOfDayTo12Hour(selectedStartTime)),
+                      trailing: const Icon(Icons.access_time),
+                      onTap: () async {
+                        final picked = await showTimePicker(
+                          context: context,
+                          initialTime: selectedStartTime,
+                        );
+
+                        if (picked == null) return;
+
+                        if (!_isTimeBetweenInclusive(
+                            picked, slotOpen, slotClose)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  "Select time within ${_formatTimeTo12Hour(initialOpenTime)} - ${_formatTimeTo12Hour(initialCloseTime)}"),
+                              backgroundColor: Colors.orange,
+                            ),
+                          );
+                          return;
+                        }
+
+                        setState(() {
+                          hasUserChangedTime = true;
+                          selectedStartTime = picked;
+
+                          /// Fixed session auto end
+                          if (isAllDayBooking && fixedDuration > 0) {
+                            selectedEndTime =
+                                _addMinutes(picked, fixedDuration);
+                          }
+
+                          /// Prevent end < start
+                          if (_calculateDurationInMinutes(
+                              selectedStartTime, selectedEndTime) <=
+                              0) {
+                            selectedEndTime =
+                                _addMinutes(picked, 60);
+                          }
+                        });
+                      },
+                    ),
+
+                    /// END PICKER
+                    ListTile(
+                      title: const Text('End Time',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      subtitle:
+                      Text(_formatTimeOfDayTo12Hour(selectedEndTime)),
+                      trailing: const Icon(Icons.access_time),
+                      onTap: isAllDayBooking
+                          ? null
+                          : () async {
+                        final picked = await showTimePicker(
+                          context: context,
+                          initialTime: selectedEndTime,
+                        );
+
+                        if (picked == null) return;
+
+                        if (!_isTimeBetweenInclusive(
+                            picked, slotOpen, slotClose)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  "End time must be within slot"),
+                              backgroundColor: Colors.orange,
+                            ),
+                          );
+                          return;
+                        }
+
+                        if (_calculateDurationInMinutes(
+                            selectedStartTime, picked) <=
+                            0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  "End must be after start time"),
+                              backgroundColor: Colors.orange,
+                            ),
+                          );
+                          return;
+                        }
+
+                        setState(() {
+                          hasUserChangedTime = true;
+                          selectedEndTime = picked;
+                        });
+                      },
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    /// DURATION INFO
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: isValidSelection
+                            ? Colors.green.withOpacity(0.1)
+                            : Colors.red.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.timer,
+                              color: isValidSelection
+                                  ? Colors.green
+                                  : Colors.red,
+                              size: 18),
+                          const SizedBox(width: 8),
+                          Text(
+                            isAllDayBooking
+                                ? "Fixed session: $fixedDuration minutes"
+                                : "Session duration: ${_calculateDurationInMinutes(selectedStartTime, selectedEndTime)} minutes",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: isValidSelection
+                                  ? Colors.green
+                                  : Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    /// MAINTENANCE INFO
+                    if (maintenanceMins > 0) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.build_circle_outlined,
+                                size: 16,
+                                color: Colors.blue.shade700),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                "+$maintenanceMins mins maintenance will be added after booking",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.blue.shade700,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+
+              /// ACTIONS
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+
+                ElevatedButton(
+                  onPressed: (isValidSelection && hasUserChangedTime)
+                      ? () {
+                    Navigator.pop(context);
+
+                    final TimeOfDay apiEndTime =
+                    _addMinutes(selectedEndTime, maintenanceMins);
+
+                    onTimeSelected(
+                      _formatTimeForAPI(selectedStartTime),
+                      _formatTimeForAPI(apiEndTime),
+                    );
+                  }
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: (isValidSelection && hasUserChangedTime)
+                        ? AppColors.lightText
+                        : Colors.grey,
+                  ),
+                  child: const Text(
+                    'Select',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+  // ====================== FIXED ADD BOOKING API ======================
+  int calculateDurationFromTimes(String start24, String end24) {
+    final s = start24.split(":");
+    final e = end24.split(":");
+
+    final startMin = int.parse(s[0]) * 60 + int.parse(s[1]);
+    final endMin = int.parse(e[0]) * 60 + int.parse(e[1]);
+
+    return endMin - startMin;
+  }
+  Future<bool> AddBookingApi(
+      String date,
+      String time,
+      String apiEndTime,
+      int duration,
+      String name,
+      ) async
+  {
+    final selectedAmenity = amenitiesModel?.data?.data?.first;
+    bool isAllDayBooking = selectedAmenity?.isAllDayBooking == "1";
+
+    String apiTime = convertTo24(time);
+    String apitime2 = convertTo24(apiEndTime);
+
+    Map<String, String> data = {
+      "user_id": loginModel?.data?.user?.id.toString() ?? "",
+      "amenity_id": widget.amenites_id ?? '',
+      "date": date,
+      "start_time": apiTime,
+      "end_time": apitime2, // Always use the exact end time from user selection
+      "is_first_slot": (!showPlus30).toString(),
+    };
+
+    // Only add duration_minutes if it's all-day booking
+    // For non-all-day bookings, we send the exact end time without duration
+    if (isAllDayBooking) {
+      data["duration_minutes"] = duration.toString();
+    }
+
+    log("BOOKING DATA => $data");
+
+    setState(() => isGlobalLoading = true);
+
+    bool hasInternet = await checkInternet();
+    if (!hasInternet) {
+      if (mounted) buildErrorDialog(context, 'Error', "Internet Required");
+      setState(() => isGlobalLoading = false);
+      return false;
+    }
+
+    try {
+      var response = await AmenitiesProvider().addBookingApi(data);
+
+      log("BOOKING RESPONSE => ${response.data}");
+
+      setState(() => isGlobalLoading = false);
+
+      /// ✅ SUCCESS
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final resData = response.data["data"];
+
+        String start = resData["start_time"] ?? time;
+        String end = resData["end_time"] ?? apiEndTime;
+
+        // Calculate duration for display only
+        int finalDuration = calculateDurationFromTimes(start, end);
+
+        /// Convert duration to readable text
+        String durationStr;
+        if (finalDuration < 60) {
+          durationStr = "$finalDuration min";
+        } else if (finalDuration % 60 == 0) {
+          durationStr = "${(finalDuration / 60).toInt()} hr";
+        } else {
+          durationStr = "${(finalDuration / 60).toStringAsFixed(1)} hr";
+        }
+
+        showTornTicketDialog(
+          attendeeInitials: 'NP',
+          context: context,
+          location: name,
+          selectedDate: date,
+          selectedTime: start,
+          duration: durationStr,
+          endTime: end,
+        );
+
+        return true;
+      }
+
+      /// ❌ SAFE ERROR MESSAGE HANDLING
+      String msg = "Please try again later.";
+
+      if (response.data != null && response.data is Map) {
+        final backendMsg = response.data['message']?.toString() ?? "";
+
+        // Show only small readable messages
+        if (backendMsg.isNotEmpty &&
+            backendMsg.length < 120 &&
+            !backendMsg.toLowerCase().contains("html") &&
+            !backendMsg.toLowerCase().contains("exception") &&
+            !backendMsg.toLowerCase().contains("stack") &&
+            !backendMsg.toLowerCase().contains("error:")) {
+          msg = backendMsg;
+        }
+      }
+
+      showSnackBar(
+        context: context,
+        title: "Booking Failed",
+        message: msg,
+        backgoundColor: AppColors.redColor,
+        ColorText: Colors.white,
+      );
+
+      return false;
+    } catch (e, stacktrace) {
+      log("BOOKING ERROR => $e");
+      log("BOOKING STACK => $stacktrace");
+
+      setState(() => isGlobalLoading = false);
+
+      /// ❌ BIG ERROR HIDE FROM USER
+      showSnackBar(
+        context: context,
+        title: "Oops",
+        message: "Please try again later.",
+        backgoundColor: AppColors.redColor,
+        ColorText: Colors.white,
+      );
+
+      return false;
+    }
+  }
+
+  // ====================== FIXED CONFIRM SLOT DIALOG ======================
+
+  void showConfirmSlotDialog(String start, String end, String amenitiesName) {
+    final selectedAmenity = amenitiesModel?.data?.data?.first;
+    bool isAllDayBooking = selectedAmenity?.isAllDayBooking == "1";
+    int? maintenanceMins =
+        int.tryParse(selectedAmenity?.maintenanceDuration ?? "0") ?? 0;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 26),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Top Icon Circle
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withOpacity(0.12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.check_circle_rounded,
+                    color: Colors.green,
+                    size: 36,
+                  ),
+                ),
+
+                const SizedBox(height: 18),
+
+                // Title
+                const Text(
+                  "Confirm Slot Booking",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+
+                const SizedBox(height: 14),
+
+                // Description
+                const Text(
+                  "Please confirm your selected time slot",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black54,
+                  ),
+                ),
+
+                const SizedBox(height: 18),
+
+                // Time Box
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 18, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: AppColors.maincolor.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.access_time, size: 18),
+                      const SizedBox(width: 8),
+                      Text(
+                        "$start  →  $end",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.maincolor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                 SizedBox(height: 2.h),
+                if (maintenanceMins > 0) ...[
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.build_circle_outlined,
+                            size: 16,
+                            color: Colors.blue.shade700),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            "+$maintenanceMins mins maintenance will be added after booking",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.blue.shade700,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+                SizedBox(height: 2.h,),
+                Row(
+                  children: [
+                    // Cancel button
+                    Expanded(
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 13),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          "Cancel",
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    // Confirm button
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.maincolor,
+                          padding: const EdgeInsets.symmetric(vertical: 13),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                          // Calculate duration only if needed for display or all-day booking
+                          int durationToPass = 0;
+                          if (isAllDayBooking) {
+                            durationToPass = selectedDurationInMinutes;
+                          }
+
+                          AddBookingApi(
+                            calendar1SelectedDateStr,
+                            start.toString(),
+                            end.toString(),
+                            durationToPass, // Pass 0 for non-all-day bookings
+                            amenitiesName.toString(),
+                          );
+                        },
+                        child: isGlobalLoading
+                            ? Container(
+                          height: 6.h,
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          child: const CircularProgressIndicator(
+                            color: AppColors.maincolor,
+                          ),
+                        )
+                            : const Text(
+                          "Confirm",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // ====================== HELPER FUNCTIONS ======================
+
   List<Map<String, String>> _extractTimeSlotsFromOperatingHours(
       OperatingHours? hours,
       DateTime selectedDate,
@@ -2477,19 +2939,9 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
       return timeSlots;
     }
 
-    // Get the all-day booking flag (as string comparison)
-    final selectedAmenity = amenitiesModel?.data?.data?.first;
-    bool isAllDayBooking = selectedAmenity?.isAllDayBooking == "1";
-
-    print("Extracting time slots - isAllDayBooking: $isAllDayBooking");
-    print("Time slot objects count: ${timeSlotObjects.length}");
-
     for (var slot in timeSlotObjects) {
       if (slot.open != null && slot.open!.isNotEmpty) {
-        // Format open time to 12-hour format
         String formattedOpen = _formatTimeTo12Hour(slot.open!);
-
-        // Format close time if available
         String formattedClose = '';
         if (slot.close != null && slot.close!.isNotEmpty) {
           formattedClose = _formatTimeTo12Hour(slot.close!);
@@ -2500,13 +2952,12 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
           'rawOpen': slot.open!,
           'rawClose': slot.close ?? '',
         });
-
-        print("Added slot: $formattedOpen - $formattedClose");
       }
     }
 
     return timeSlots;
   }
+
   String getOperatingHours(DateTime selectedDate, OperatingHours? hours) {
     if (hours == null) return "No operating hours available";
 
@@ -2541,9 +2992,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
       return "Closed";
     }
 
-    final selectedAmenity = amenitiesModel?.data?.data?.first;
-    bool isAllDayBooking = selectedAmenity?.isAllDayBooking == "1";
-
     List<String> formattedSlots = [];
     for (var slot in timeSlots) {
       if (slot.open != null && slot.open!.isNotEmpty) {
@@ -2551,7 +2999,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
 
         if (slot.close != null && slot.close!.isNotEmpty) {
           String formattedClose = _formatTimeTo12Hour(slot.close!);
-          // Always show both open and close times since we have multiple slots
           formattedSlots.add('$formattedOpen - $formattedClose');
         } else {
           formattedSlots.add(formattedOpen);
@@ -2562,22 +3009,143 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     return formattedSlots.isEmpty ? "Closed" : formattedSlots.join(', ');
   }
 
-  Widget _buildOperatingHoursDisplay(String operatingHoursStr,
-      List<ExistingBooking> existingBookings,)
+  String getWeekdayName(DateTime date) {
+    switch (date.weekday) {
+      case DateTime.monday:
+        return 'monday';
+      case DateTime.tuesday:
+        return 'tuesday';
+      case DateTime.wednesday:
+        return 'wednesday';
+      case DateTime.thursday:
+        return 'thursday';
+      case DateTime.friday:
+        return 'friday';
+      case DateTime.saturday:
+        return 'saturday';
+      case DateTime.sunday:
+        return 'sunday';
+      default:
+        return '';
+    }
+  }
+
+
+  List<Map<String, String>> splitSlotByBookings(
+      List<Map<String, String>> slots,
+      List bookingData,
+      DateTime selectedDate,
+      )
+  {
+    List<Map<String, String>> result = [];
+
+    for (var slot in slots) {
+      DateTime slotStart = _timeToDateTime(slot['open']!, selectedDate);
+      DateTime slotEnd = _timeToDateTime(slot['close']!, selectedDate);
+
+      DateTime currentStart = slotStart;
+
+      /// Sort bookings by start time
+      List filteredBookings = bookingData.where((b) =>
+      b.bookingDate == DateFormat('yyyy-MM-dd').format(selectedDate)).toList();
+
+      filteredBookings.sort((a, b) => a.startTime.compareTo(b.startTime));
+
+      for (var booking in filteredBookings) {
+        DateTime bookedStart = _timeToDateTime(booking.startTime, selectedDate);
+        DateTime bookedEnd = _timeToDateTime(booking.endTime, selectedDate);
+
+        /// Add free time before booked slot
+        if (currentStart.isBefore(bookedStart)) {
+          result.add({
+            "open": _formatTime(currentStart),
+            "close": _formatTime(bookedStart),
+          });
+        }
+
+        /// Move pointer after booking
+        if (bookedEnd.isAfter(currentStart)) {
+          currentStart = bookedEnd;
+        }
+      }
+
+      /// Add remaining time after last booking
+      if (currentStart.isBefore(slotEnd)) {
+        result.add({
+          "open": _formatTime(currentStart),
+          "close": _formatTime(slotEnd),
+        });
+      }
+    }
+
+    return result;
+  }
+
+
+  DateTime _timeToDateTime(String time, DateTime date) {
+    time = time.trim();
+
+    /// CASE 1 → 24h format "13:45" or "13:45:00"
+    if (RegExp(r'^\d{1,2}:\d{2}').hasMatch(time) &&
+        !time.contains("AM") &&
+        !time.contains("PM")) {
+      final parts = time.split(":");
+      return DateTime(
+        date.year,
+        date.month,
+        date.day,
+        int.parse(parts[0]),
+        int.parse(parts[1]),
+      );
+    }
+
+    /// CASE 2 → 12h format "01:45 PM"
+    try {
+      final parsed = DateFormat("hh:mm a").parse(time);
+      return DateTime(
+        date.year,
+        date.month,
+        date.day,
+        parsed.hour,
+        parsed.minute,
+      );
+    } catch (_) {}
+
+    /// CASE 3 → fallback try with seconds "01:45:00 PM"
+    try {
+      final parsed = DateFormat("hh:mm:ss a").parse(time);
+      return DateTime(
+        date.year,
+        date.month,
+        date.day,
+        parsed.hour,
+        parsed.minute,
+      );
+    } catch (_) {}
+
+    /// FINAL fallback
+    return DateTime(date.year, date.month, date.day, 0, 0);
+  }
+
+  String _formatTime(DateTime dt) {
+    return DateFormat("HH:mm").format(dt);
+  }
+
+  Widget _buildOperatingHoursDisplay(
+      String operatingHoursStr, List<ExistingBooking> existingBookings)
   {
     final theme = context.watch<ThemeController>();
     final selectedAmenity = amenitiesModel?.data?.data?.first;
-    int? maintenanceMins = int.tryParse(selectedAmenity?.maintenanceDuration??"0")??0;
-    bool showMaintenanceNote = maintenanceMins != null && maintenanceMins > 0;
-    bool isAllDayBooking = selectedAmenity?.isAllDayBooking == 1;
+    int? maintenanceMins =
+        int.tryParse(selectedAmenity?.maintenanceDuration ?? "0") ?? 0;
 
     // Check if values are "unlimited" or numeric
-    String totalSlots = amenitiesModel?.data?.data?[0].totalBookingSlots
-        ?.toString() ?? "0";
-    String bookedSlots = amenitiesModel?.data?.data?[0].bookedSlots
-        ?.toString() ?? "0";
-    String availableSlots = amenitiesModel?.data?.data?[0].availableSlots
-        ?.toString() ?? "0";
+    String totalSlots =
+        amenitiesModel?.data?.data?[0].totalBookingSlots?.toString() ?? "0";
+    String bookedSlots =
+        amenitiesModel?.data?.data?[0].bookedSlots?.toString() ?? "0";
+    String availableSlots =
+        amenitiesModel?.data?.data?[0].availableSlots?.toString() ?? "0";
 
     // Check if any value is "unlimited"
     bool isTotalUnlimited = totalSlots.toLowerCase() == "unlimited";
@@ -2653,58 +3221,32 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                     ),
                     SizedBox(height: 1.h),
                     ...existingBookings.map((booking) {
-                      String startFormatted = _formatTimeTo12Hour(
-                          booking.startTime ?? '');
+                      String startFormatted =
+                      _formatTimeTo12Hour(booking.startTime ?? '');
 
-                      // For all-day booking, show both start and end times
-                      if (isAllDayBooking) {
-                        String endFormatted = _formatTimeTo12Hour(booking
-                            .endTime ?? '');
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: 0.5.h),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.schedule,
-                                size: 16,
-                                color: Colors.orange.shade700,
+                      String endFormatted =
+                      _formatTimeTo12Hour(booking.endTime ?? '');
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 0.5.h),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.schedule,
+                              size: 16,
+                              color: Colors.orange.shade700,
+                            ),
+                            SizedBox(width: 1.w),
+                            Text(
+                              "$startFormatted - $endFormatted",
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: Colors.orange.shade900,
+                                fontFamily: AppConstants.manrope,
                               ),
-                              SizedBox(width: 1.w),
-                              Text(
-                                "$startFormatted - $endFormatted",
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: Colors.orange.shade900,
-                                  fontFamily: AppConstants.manrope,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      } else {
-                        // For regular booking, show only start time
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: 0.5.h),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.schedule,
-                                size: 16,
-                                color: Colors.orange.shade700,
-                              ),
-                              SizedBox(width: 1.w),
-                              Text(
-                                startFormatted,
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: Colors.orange.shade900,
-                                  fontFamily: AppConstants.manrope,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
+                            ),
+                          ],
+                        ),
+                      );
                     }).toList(),
                   ],
                 ),
@@ -2715,105 +3257,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     );
   }
 
-  DateTime _timeToDateTime(String time, DateTime date) {
-    time = time.trim();
-
-    /// CASE 1 → 24h format "13:45" or "13:45:00"
-    if (RegExp(r'^\d{1,2}:\d{2}').hasMatch(time) && !time.contains("AM") && !time.contains("PM")) {
-      final parts = time.split(":");
-      return DateTime(
-        date.year,
-        date.month,
-        date.day,
-        int.parse(parts[0]),
-        int.parse(parts[1]),
-      );
-    }
-
-    /// CASE 2 → 12h format "01:45 PM"
-    try {
-      final parsed = DateFormat("hh:mm a").parse(time);
-      return DateTime(
-        date.year,
-        date.month,
-        date.day,
-        parsed.hour,
-        parsed.minute,
-      );
-    } catch (_) {}
-
-    /// CASE 3 → fallback try with seconds "01:45:00 PM"
-    try {
-      final parsed = DateFormat("hh:mm:ss a").parse(time);
-      return DateTime(
-        date.year,
-        date.month,
-        date.day,
-        parsed.hour,
-        parsed.minute,
-      );
-    } catch (_) {}
-
-    /// FINAL fallback to avoid crash
-    return DateTime(date.year, date.month, date.day, 0, 0);
-  }
-  String _formatTime(DateTime dt) {
-    return DateFormat("HH:mm").format(dt);
-  }
-
-
-  List<Map<String, String>> splitSlotByBookings(
-      List<Map<String, String>> slots,
-      List bookingData,
-      DateTime selectedDate,
-      ) {
-    List<Map<String, String>> result = [];
-
-    for (var slot in slots) {
-      DateTime slotStart = _timeToDateTime(slot['open']!, selectedDate);
-      DateTime slotEnd = _timeToDateTime(slot['close']!, selectedDate);
-
-      DateTime currentStart = slotStart;
-
-      /// Sort bookings by start time (important)
-      List filteredBookings = bookingData.where((b) =>
-      b.bookingDate ==
-          DateFormat('yyyy-MM-dd').format(selectedDate)).toList();
-
-      filteredBookings.sort((a, b) =>
-          a.startTime.compareTo(b.startTime));
-
-      for (var booking in filteredBookings) {
-        DateTime bookedStart =
-        _timeToDateTime(booking.startTime, selectedDate);
-        DateTime bookedEnd =
-        _timeToDateTime(booking.endTime, selectedDate);
-
-        /// Add free time before booked slot
-        if (currentStart.isBefore(bookedStart)) {
-          result.add({
-            "open": _formatTime(currentStart),
-            "close": _formatTime(bookedStart),
-          });
-        }
-
-        /// Move pointer after booking
-        if (bookedEnd.isAfter(currentStart)) {
-          currentStart = bookedEnd;
-        }
-      }
-
-      /// Add remaining time after last booking
-      if (currentStart.isBefore(slotEnd)) {
-        result.add({
-          "open": _formatTime(currentStart),
-          "close": _formatTime(slotEnd),
-        });
-      }
-    }
-
-    return result;
-  }
   Widget buildSlotBox({
     required String label,
     required String value,
@@ -2846,14 +3289,12 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
             const SizedBox(width: 2),
             SizedBox(
               width: value == "Unlimited" ? 15.w : 10.w,
-              // More width for "Unlimited"
               child: Text(
                 value,
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: value == "Unlimited" ? 13.sp : 15.sp,
-                  // Slightly smaller for "Unlimited"
                   fontFamily: AppConstants.manrope,
                   fontWeight: FontWeight.w600,
                   color: theme.isDark ? Colors.white : color,
@@ -2866,22 +3307,879 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     );
   }
 
-  String getWeekdayName(DateTime date) {
-    switch (date.weekday) {
-      case DateTime.monday:
-        return 'monday';
-      case DateTime.tuesday:
-        return 'tuesday';
-      case DateTime.wednesday:
-        return 'wednesday';
-      case DateTime.thursday:
-        return 'thursday';
-      case DateTime.friday:
-        return 'friday';
-      case DateTime.saturday:
-        return 'saturday';
-      case DateTime.sunday:
-        return 'sunday';
+  bool _isSlotAlreadyBookedByMe(String slotOpenTime, DateTime selectedDate,
+      {String? slotCloseTime}) {
+    final data = statusModal?.data;
+    if (data == null || data.isEmpty) return false;
+
+    final String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
+
+    // Convert slot open/close to minutes for overlap check
+    final String slotOpen24 = convertTo24(slotOpenTime);
+    final String slotClose24 =
+    slotCloseTime != null ? convertTo24(slotCloseTime) : '';
+
+    int slotOpenMins = _timeToMinutes(slotOpen24);
+    int slotCloseMins =
+    slotClose24.isNotEmpty ? _timeToMinutes(slotClose24) : slotOpenMins + 1;
+
+    for (final booking in data) {
+      final String? bDate = booking.bookingDate;
+      final String? bStart = booking.startTime;
+      final String? bEnd = booking.endTime;
+
+      if (bDate == null || bStart == null) continue;
+      if (bDate != dateStr) continue;
+
+      // Overlap check for all bookings
+      if (slotCloseTime != null && bEnd != null) {
+        int bookingStartMins = _timeToMinutes(bStart);
+        int bookingEndMins = _timeToMinutes(bEnd);
+
+        bool overlaps = slotOpenMins < bookingEndMins &&
+            slotCloseMins > bookingStartMins;
+
+        if (overlaps) {
+          return true;
+        }
+      } else {
+        // Original exact match logic for simple slots
+        String bookingHms = _toHms(bStart);
+        String uiHms = _toHms(slotOpen24);
+
+        if (booking.isFirstSlot == "false") {
+          final DateTime parsed = DateFormat('HH:mm:ss').parseStrict(bookingHms);
+          final DateTime adjusted = parsed.subtract(const Duration(minutes: 30));
+          bookingHms = DateFormat('HH:mm:ss').format(adjusted);
+        }
+
+        if (bookingHms == uiHms) return true;
+      }
+    }
+
+    return false;
+  }
+
+  int _timeToMinutes(String time) {
+    try {
+      final parts = time.split(':');
+      if (parts.length >= 2) {
+        int hours = int.parse(parts[0]);
+        int minutes = int.parse(parts[1]);
+        return hours * 60 + minutes;
+      }
+    } catch (e) {
+      print('Error converting time to minutes: $time - $e');
+    }
+    return 0;
+  }
+
+  String _toHms(String time) {
+    final parts = time.split(':');
+    if (parts.length == 2) {
+      return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}:00';
+    } else if (parts.length == 3) {
+      return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}:${parts[2].padLeft(2, '0')}';
+    }
+    return time;
+  }
+
+  String convertTo24(String time) {
+    try {
+      final parsed = DateFormat("hh:mm a").parse(time);
+      return DateFormat("HH:mm").format(parsed);
+    } catch (e) {
+      return time;
+    }
+  }
+
+  String _formatTimeTo12Hour(String time24) {
+    if (time24.isEmpty) return '';
+    try {
+      final parts = time24.split(':');
+      if (parts.length != 2) return time24;
+
+      int hour = int.parse(parts[0]);
+      int minute = int.parse(parts[1]);
+
+      final period = hour >= 12 ? 'PM' : 'AM';
+      hour = hour == 0 ? 12 : hour > 12 ? hour - 12 : hour;
+
+      return '$hour:${minute.toString().padLeft(2, '0')} $period';
+    } catch (e) {
+      return time24;
+    }
+  }
+
+  String _formatTimeOfDayTo12Hour(TimeOfDay time) {
+    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
+    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
+    final minute = time.minute.toString().padLeft(2, '0');
+    return '$hour:$minute $period';
+  }
+
+  String _formatTimeForAPI(TimeOfDay time) {
+    String hour = time.hour.toString().padLeft(2, '0');
+    String minute = time.minute.toString().padLeft(2, '0');
+    return "$hour:$minute";
+  }
+
+  TimeOfDay _parseTimeOfDay(String timeStr) {
+    try {
+      try {
+        final dateTime = DateFormat("h:mm a").parse(timeStr);
+        return TimeOfDay.fromDateTime(dateTime);
+      } catch (e) {
+        final dateTime = DateFormat("HH:mm").parse(timeStr);
+        return TimeOfDay.fromDateTime(dateTime);
+      }
+    } catch (e, stackTrace) {
+      print("Error parsing time: $timeStr");
+      print("Error: $e");
+      print("StackTrace: $stackTrace");
+    }
+
+    return const TimeOfDay(hour: 9, minute: 0);
+  }
+
+  TimeOfDay _addMinutes(TimeOfDay time, int minutesToAdd) {
+    final totalMinutes = time.hour * 60 + time.minute + minutesToAdd;
+    return TimeOfDay(
+      hour: (totalMinutes ~/ 60) % 24,
+      minute: totalMinutes % 60,
+    );
+  }
+
+  int _calculateDurationInMinutes(TimeOfDay start, TimeOfDay end) {
+    int startMinutes = start.hour * 60 + start.minute;
+    int endMinutes = end.hour * 60 + end.minute;
+    return endMinutes - startMinutes;
+  }
+
+  bool _isTimeBetweenInclusive(
+      TimeOfDay time, TimeOfDay start, TimeOfDay end) {
+    int timeMinutes = time.hour * 60 + time.minute;
+    int startMinutes = start.hour * 60 + start.minute;
+    int endMinutes = end.hour * 60 + end.minute;
+
+    if (startMinutes <= endMinutes) {
+      return timeMinutes >= startMinutes && timeMinutes <= endMinutes;
+    } else {
+      return timeMinutes >= startMinutes || timeMinutes <= endMinutes;
+    }
+  }
+
+  // ====================== ADD SLOT API ======================
+
+  Future<void> addSlotAPi(String startTime, String endTime,
+      String amenitiesName) async {
+    setState(() {
+      isRsvpLoading = true;
+    });
+    Map<String, String> data = {
+      "start_time": startTime,
+      "end_time": endTime,
+      "user_id": loginModel?.data?.user?.id.toString() ?? "",
+      "amenity_id": widget.amenites_id.toString() ?? "",
+      "date": calendar1SelectedDateStr ?? "",
+    };
+    log("add Slot api $data");
+    bool hasInternet = await checkInternet();
+    if (hasInternet) {
+      try {
+        var response = await AmenitiesProvider().addSlotApi(data);
+        if (response.statusCode == 200) {
+          if (mounted) {
+            log("API SUCCESS${response.statusCode}");
+            log("API SUCCESS${response.data}");
+            final resData = response.data["data"];
+
+            String start = resData["start_time"] ?? startTime;
+            String end = resData["end_time"] ?? endTime;
+
+            showConfirmSlotDialog(start, end, amenitiesName);
+          }
+          AmenitiesApi(date: calendar1SelectedDateStr);
+        } else {
+          if (mounted) {
+            Get.back();
+            showSnackBar(
+              context: context,
+              title: "Error",
+              message: "Failed to add slot.",
+              backgoundColor: AppColors.maincolor,
+              ColorText: Colors.white,
+            );
+          }
+        }
+      } catch (e, stackTrace) {
+        print("addSlotApi Error: $e");
+        print("addSlotApi Error: $stackTrace");
+        if (mounted) Get.back();
+      } finally {
+        if (mounted) {
+          setState(() {
+            isRsvpLoading = false;
+          });
+        }
+      }
+    } else {
+      setState(() {
+        isRsvpLoading = false;
+      });
+      if (mounted) buildErrorDialog(context, 'Error', "Internet Required");
+    }
+  }
+
+  // ====================== CALENDAR VIEW ======================
+
+  DateTime focusedMonth = DateTime.now();
+
+  Widget _buildCalendar1View() {
+    final DateTime now = DateTime.now();
+    final DateTime todayOnly = DateTime(now.year, now.month, now.day);
+
+    calendar1SelectedDate ??= todayOnly;
+    calendar1SelectedDateStr = DateFormat(
+      'dd/MM/yyyy',
+    ).format(calendar1SelectedDate!);
+
+    final theme = context.watch<ThemeController>();
+    final bool isDark = theme.isDark;
+
+    final Color primaryTextColor = isDark ? Colors.white : Colors.black;
+    final Color secondaryTextColor = isDark ? Colors.white70 : Colors.black87;
+    final Color disabledTextColor = isDark ? Colors.white30 : Colors.grey;
+    final Color todayBgColor = isDark ? Colors.white24 : Colors.grey[300]!;
+
+    final DateTime kFirstDay = DateTime(now.year - 1, now.month, 1);
+    final DateTime kLastDay = DateTime(now.year + 1, now.month + 1, 0);
+
+    return TableCalendar(
+      firstDay: kFirstDay,
+      lastDay: kLastDay,
+      focusedDay: calendar1FocusedMonth,
+      calendarFormat: CalendarFormat.month,
+      headerVisible: false,
+      selectedDayPredicate: (day) => isSameDay(calendar1SelectedDate, day),
+      enabledDayPredicate: (day) {
+        final DateTime dayOnly = DateTime(day.year, day.month, day.day);
+        return !dayOnly.isBefore(todayOnly);
+      },
+      onPageChanged: (focusedDay) {
+        setState(() {
+          calendar1FocusedMonth = focusedDay;
+        });
+      },
+      onDaySelected: (newSelectedDay, focusedDay) {
+        setState(() {
+          calendar1SelectedDate = newSelectedDay;
+          calendar1SelectedDateStr =
+              DateFormat('dd/MM/yyyy').format(newSelectedDay);
+          calendar1FocusedMonth = focusedDay;
+          calendar1Loading = true;
+          selectedStartTime = null;
+        });
+
+        AmenitiesApi(date: calendar1SelectedDateStr).then((_) {
+          statusApi(); // Refresh booking status
+          setState(() {
+            calendar1Loading = false;
+          });
+        });
+      },
+      daysOfWeekStyle: DaysOfWeekStyle(
+        weekdayStyle: TextStyle(
+          color: secondaryTextColor,
+          fontFamily: AppConstants.manropeBold,
+          fontWeight: FontWeight.w600,
+        ),
+        weekendStyle: TextStyle(
+          color: secondaryTextColor,
+          fontFamily: AppConstants.manropeBold,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      calendarStyle: const CalendarStyle(
+        outsideDaysVisible: true,
+      ),
+      calendarBuilders: CalendarBuilders(
+        defaultBuilder: (context, day, focusedDay) {
+          return _buildCalendarDay(
+            day: day,
+            textColor: primaryTextColor,
+            isBold: false,
+          );
+        },
+        selectedBuilder: (context, day, focusedDay) {
+          return _buildCalendarDay(
+            day: day,
+            textColor: Colors.white,
+            bgColor: AppColors.lightText,
+            isBold: true,
+          );
+        },
+        todayBuilder: (context, day, focusedDay) {
+          return _buildCalendarDay(
+            day: day,
+            textColor: primaryTextColor,
+            bgColor: todayBgColor,
+            isBold: true,
+          );
+        },
+        disabledBuilder: (context, day, focusedDay) {
+          return _buildCalendarDay(
+            day: day,
+            textColor: disabledTextColor,
+            isBold: false,
+          );
+        },
+        outsideBuilder: (context, day, focusedDay) {
+          return _buildCalendarDay(
+            day: day,
+            textColor: disabledTextColor,
+            isBold: false,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildCalendarDay({
+    required DateTime day,
+    required Color textColor,
+    Color? bgColor,
+    bool isBold = false,
+  }) {
+    return Container(
+      margin: const EdgeInsets.all(6.0),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: bgColor ?? Colors.transparent,
+        shape: BoxShape.circle,
+      ),
+      child: Text(
+        '${day.day}',
+        style: TextStyle(
+          color: textColor,
+          fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+          fontFamily: AppConstants.manrope,
+          fontSize: 14,
+        ),
+      ),
+    );
+  }
+
+  // ====================== OPERATING HOURS EXPANSION TILE ======================
+
+  Widget _buildOperatingHoursExpansionTile(OperatingHours? operatingHours) {
+    final theme = context.watch<ThemeController>();
+
+    if (operatingHours == null) {
+      return Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: theme.isDark ? Color(0xff262626) : Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.info_outline, color: Colors.grey, size: 20),
+            SizedBox(width: 8),
+            Text(
+              "No operating hours available",
+              style: TextStyle(
+                color: theme.isDark ? Colors.white70 : Colors.grey.shade600,
+                fontSize: 14,
+                fontFamily: AppConstants.manrope,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final Map<String, List<TimeSlot>?> daysMap = {
+      'Monday': operatingHours.monday,
+      'Tuesday': operatingHours.tuesday,
+      'Wednesday': operatingHours.wednesday,
+      'Thursday': operatingHours.thursday,
+      'Friday': operatingHours.friday,
+      'Saturday': operatingHours.saturday,
+      'Sunday': operatingHours.sunday,
+    };
+
+    bool hasAnyHours =
+    daysMap.values.any((slots) => slots != null && slots.isNotEmpty);
+
+    if (!hasAnyHours) {
+      return Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: theme.isDark ? Color(0xff262626) : Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.access_time_filled, color: Colors.grey, size: 20),
+            SizedBox(width: 8),
+            Text(
+              "No operating hours set",
+              style: TextStyle(
+                color: theme.isDark ? Colors.white70 : Colors.grey.shade600,
+                fontSize: 14,
+                fontFamily: AppConstants.manrope,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Container(
+      margin: EdgeInsets.only(top: 8),
+      decoration: BoxDecoration(
+        color: theme.isDark ? Color(0xff262626) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: theme.isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+        child: ExpansionTile(
+          tilePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          childrenPadding: EdgeInsets.zero,
+          leading: Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.maincolor.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.access_time,
+              color: AppColors.maincolor,
+              size: 20,
+            ),
+          ),
+          title: Text(
+            "Operating Hours",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: theme.isDark ? Colors.white : Colors.black87,
+              fontFamily: AppConstants.manropeBold,
+            ),
+          ),
+          subtitle: Text(
+            "Tap to view daily schedule",
+            style: TextStyle(
+              fontSize: 13,
+              color: theme.isDark ? Colors.white70 : Colors.grey.shade600,
+              fontFamily: AppConstants.manrope,
+            ),
+          ),
+          iconColor: AppColors.maincolor,
+          collapsedIconColor: AppColors.maincolor,
+          children: [
+            Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: theme.isDark
+                        ? Colors.grey.shade800
+                        : Colors.grey.shade200,
+                    width: 1,
+                  ),
+                ),
+              ),
+              child: Column(
+                children: daysMap.entries.map((entry) {
+                  final day = entry.key;
+                  final slots = entry.value;
+
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 8),
+                    padding:
+                    EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    decoration: BoxDecoration(
+                      color:
+                      theme.isDark ? Color(0xff1E1E1E) : Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: theme.isDark
+                            ? Colors.grey.shade700
+                            : Colors.grey.shade200,
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 25.w,
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: slots != null && slots.isNotEmpty
+                                      ? Colors.green
+                                      : Colors.grey,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              SizedBox(width: 2.w),
+                              Text(
+                                day,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: theme.isDark
+                                      ? Colors.white
+                                      : Colors.black87,
+                                  fontFamily: AppConstants.manropeBold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 10.w),
+                        Expanded(
+                          child: slots != null && slots.isNotEmpty
+                              ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: slots.map((slot) {
+                              String openTime = _formatTimeTo12Hour(
+                                  slot.open ?? '');
+                              String closeTime = _formatTimeTo12Hour(
+                                  slot.close ?? '');
+
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: slots.length > 1 ? 4 : 0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.schedule,
+                                      size: 14,
+                                      color: AppColors.maincolor,
+                                    ),
+                                    SizedBox(width: 6),
+                                    Expanded(
+                                      child: Text(
+                                        "$openTime - $closeTime",
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          color: theme.isDark
+                                              ? Colors.white70
+                                              : Colors.grey.shade700,
+                                          fontFamily: AppConstants.manrope,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          )
+                              : Text(
+                            "Closed",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.red.shade400,
+                              fontFamily: AppConstants.manrope,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ====================== API CALLS ======================
+
+  Future<bool> AmenitiesApi({required String date}) async {
+    if (date.isEmpty) return false;
+    if (!load) {
+      setState(() {
+        calendar1Loading = true;
+      });
+    }
+    bool hasInternet = await checkInternet();
+    if (!hasInternet) {
+      if (mounted) buildErrorDialog(context, 'Error', "Internet Required");
+      setState(() {
+        isLoading = false;
+        load = false;
+        calendar1Loading = false;
+      });
+      return false;
+    }
+    try {
+      var response = await AmenitiesProvider().amenitiesApi(
+        loginModel?.data?.user?.id.toString() ?? '',
+        widget.amenites_id ?? "",
+        date,
+        '',
+      );
+      if (response.statusCode == 200) {
+        amenitiesModel = AmenitiesModel.fromJson(response.data);
+
+        if (amenitiesModel?.data?.data?.isNotEmpty == true &&
+            amenitiesModel!.data!.data!.first.durationOptions?.isNotEmpty ==
+                true) {
+          selectedDurationInMinutes = int.tryParse(
+            amenitiesModel!.data!.data!.first.durationOptions!.first,
+          ) ??
+              60;
+        } else {
+          selectedDurationInMinutes = 60;
+        }
+
+        setState(() {
+          amenitiesModel = amenitiesModel;
+          isLoading = false;
+          load = false;
+          calendar1Loading = false;
+        });
+        return true;
+      } else {
+        setState(() {
+          isLoading = false;
+          load = false;
+          calendar1Loading = false;
+        });
+        return false;
+      }
+    } catch (e) {
+      print("AmenitiesApi Error: $e");
+      setState(() {
+        isLoading = false;
+        load = false;
+        calendar1Loading = false;
+      });
+      return false;
+    }
+  }
+
+  statusApi() {
+    final Map<String, String> data = {};
+    data['user_id'] = loginModel?.data?.user?.id.toString() ?? "";
+    log("Data $data");
+    checkInternet().then((internet) async {
+      if (internet) {
+        AmenitiesProvider()
+            .bookingStatusApi(data)
+            .then((response) async {
+          statusModal = StatusModal.fromJson(response.data);
+
+          if (response.statusCode == 200) {
+            setState(() {
+              isLoading = false;
+            });
+          } else if (response.statusCode == 422) {
+            setState(() {
+              isLoading = false;
+            });
+          } else {
+            log("errror ");
+            setState(() {
+              isLoading = false;
+            });
+          }
+
+          setState(() {
+            isLoading = false;
+          });
+          return false;
+        }).catchError((error) {
+          setState(() {
+            isLoading = false;
+          });
+
+          return false;
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        buildErrorDialog(context, 'Error', "Internet Required");
+        return false;
+      }
+    });
+  }
+
+  Future<void> RSVPAmenityApi(String bookingid, String rsvp) async {
+    setState(() {
+      isRsvpLoading = true;
+    });
+    Map<String, String> data = {"booking_id": bookingid, "rsvp_status": rsvp};
+    bool hasInternet = await checkInternet();
+    if (hasInternet) {
+      try {
+        var response = await AmenitiesProvider().rsvpToAmenityApi(data);
+        if (response.statusCode == 200) {
+          if (mounted) {
+            Get.back();
+            Get.offAll(() => const BookingScreen());
+            showSnackBar(
+              context: context,
+              title: "RSVP Updated",
+              message: "Your response has been recorded.",
+              backgoundColor: AppColors.maincolor,
+              ColorText: Colors.white,
+            );
+          }
+        } else {
+          if (mounted) {
+            Get.back();
+            showSnackBar(
+              context: context,
+              title: "Error",
+              message: "Failed to update RSVP.",
+              backgoundColor: AppColors.maincolor,
+              ColorText: Colors.white,
+            );
+          }
+        }
+      } catch (e) {
+        print("RSVPApi Error: $e");
+        if (mounted) Get.back();
+      } finally {
+        if (mounted) {
+          setState(() {
+            isRsvpLoading = false;
+          });
+        }
+      }
+    } else {
+      setState(() {
+        isRsvpLoading = false;
+      });
+      if (mounted) buildErrorDialog(context, 'Error', "Internet Required");
+    }
+  }
+
+  Future<void> RSVPAmenityAttend(String bookingid,
+      String attended,
+      String rsvp,) async {
+    setState(() {
+      isRsvpLoading = true;
+    });
+    Map<String, String> data = {
+      "booking_id": bookingid,
+      "attended": attended,
+      "rsvp_status": rsvp,
+    };
+    bool hasInternet = await checkInternet();
+    if (hasInternet) {
+      try {
+        var response = await AmenitiesProvider().rsvpToAmenityApi(data);
+        if (response.statusCode == 200) {
+          if (mounted) {
+            Get.back();
+            Get.offAll(() => const BookingScreen());
+            showSnackBar(
+              context: context,
+              title: "Attendance Marked",
+              message: "Thank you for attending!",
+              backgoundColor: AppColors.maincolor,
+              ColorText: Colors.white,
+            );
+          }
+        } else {
+          if (mounted) {
+            Get.back();
+            showSnackBar(
+              context: context,
+              title: "Error",
+              message: "Failed to mark attendance.",
+              backgoundColor: AppColors.maincolor,
+              ColorText: Colors.white,
+            );
+          }
+        }
+      } catch (e) {
+        print("AttendApi Error: $e");
+        if (mounted) Get.back();
+      } finally {
+        if (mounted) {
+          setState(() {
+            isRsvpLoading = false;
+          });
+        }
+      }
+    } else {
+      setState(() {
+        isRsvpLoading = false;
+      });
+      if (mounted) buildErrorDialog(context, 'Error', "Internet Required");
+    }
+  }
+
+  // ====================== UTILITY FUNCTIONS ======================
+
+  void _generateDatesBasedOnSelection() {
+    DateTime today = DateTime.now();
+    dates.clear();
+    if (selectedValue == "days") {
+      DateTime startOfWeek = today.subtract(Duration(days: today.weekday - 1));
+      for (int i = 0; i < 7; i++) {
+        DateTime date = startOfWeek.add(Duration(days: i));
+        dates.add({
+          'day': date.day.toString(),
+          'weekday': _getWeekday(date.weekday),
+          'fullDate': date,
+        });
+        if (date.day == today.day &&
+            date.month == today.month &&
+            date.year == today.year) {
+          selectedIndex = i;
+        }
+      }
+    }
+    setState(() {});
+  }
+
+  String _getWeekday(int weekday) {
+    switch (weekday) {
+      case 1:
+        return 'Mon';
+      case 2:
+        return 'Tue';
+      case 3:
+        return 'Wed';
+      case 4:
+        return 'Thu';
+      case 5:
+        return 'Fri';
+      case 6:
+        return 'Sat';
+      case 7:
+        return 'Sun';
       default:
         return '';
     }
@@ -2904,6 +4202,18 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
       }
     }
   }
+
+  String formatDate(String? rawDate) {
+    if (rawDate == null || rawDate.isEmpty) return "N/A";
+    try {
+      DateTime parsedDate = DateTime.parse(rawDate);
+      return DateFormat('dd-MM-yyyy').format(parsedDate);
+    } catch (e) {
+      return "Invalid date";
+    }
+  }
+
+  // ====================== STATUS CONTAINER ======================
 
   Widget buildStatusContainer(String status,
       String amenityName,
@@ -3030,7 +4340,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
               children: [
                 CircleAvatar(
                   radius: 32,
-                  backgroundColor: AppColors.maincolor.withValues(alpha: 0.1),
+                  backgroundColor:
+                  AppColors.maincolor.withValues(alpha: 0.1),
                   child: const Icon(
                     Icons.event_available,
                     color: AppColors.maincolor,
@@ -3073,7 +4384,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                       child: ElevatedButton(
                         onPressed: () {
                           Get.back();
-
                           RSVPAmenityApi(bookingID, 'maybe');
                         },
                         style: ElevatedButton.styleFrom(
@@ -3124,7 +4434,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                       child: ElevatedButton(
                         onPressed: () {
                           Get.back();
-
                           RSVPAmenityApi(bookingID, 'accept');
                         },
                         style: ElevatedButton.styleFrom(
@@ -3175,7 +4484,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 CircleAvatar(
-                  backgroundColor: AppColors.maincolor.withValues(alpha: 0.1),
+                  backgroundColor:
+                  AppColors.maincolor.withValues(alpha: 0.1),
                   radius: 32,
                   child: const Icon(
                     Icons.how_to_reg,
@@ -3261,15 +4571,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     );
   }
 
-  String formatDate(String? rawDate) {
-    if (rawDate == null || rawDate.isEmpty) return "N/A";
-    try {
-      DateTime parsedDate = DateTime.parse(rawDate);
-      return DateFormat('dd-MM-yyyy').format(parsedDate);
-    } catch (e) {
-      return "Invalid date";
-    }
-  }
+  // ====================== TORN TICKET DIALOG ======================
 
   void showTornTicketDialog({
     required BuildContext context,
@@ -3298,7 +4600,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                   theme.isDark ? Color(0xff262626) : Colors.white,
                   height: 51.h,
                   borderRadius: 12,
-
                   child: Container(
                     padding: const EdgeInsets.all(20),
                     width: double.infinity,
@@ -3314,8 +4615,9 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                 fontSize: 20.sp,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: AppConstants.manrope,
-                                color:
-                                theme.isDark ? Colors.white : Colors.black,
+                                color: theme.isDark
+                                    ? Colors.white
+                                    : Colors.black,
                               ),
                             ),
                           ),
@@ -3326,8 +4628,9 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                               style: TextStyle(
                                 fontSize: 14,
                                 fontFamily: AppConstants.manrope,
-                                color:
-                                theme.isDark ? Colors.white : Colors.grey,
+                                color: theme.isDark
+                                    ? Colors.white
+                                    : Colors.grey,
                               ),
                             ),
                           ),
@@ -3336,8 +4639,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
-                              color:
-                              theme.isDark
+                              color: theme.isDark
                                   ? Color(0xff262626)
                                   : Colors.grey.withValues(alpha: 0.20),
                             ),
@@ -3349,8 +4651,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                   children: [
                                     Icon(
                                       Icons.calendar_today,
-                                      color:
-                                      theme.isDark
+                                      color: theme.isDark
                                           ? Colors.white
                                           : Colors.amber[800],
                                       size: 20,
@@ -3362,8 +4663,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                         fontSize: 15.sp,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: AppConstants.manrope,
-                                        color:
-                                        theme.isDark
+                                        color: theme.isDark
                                             ? Colors.white
                                             : Colors.black,
                                       ),
@@ -3376,8 +4676,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                   children: [
                                     Icon(
                                       Icons.access_time_filled,
-                                      color:
-                                      theme.isDark
+                                      color: theme.isDark
                                           ? Colors.white
                                           : Colors.green[700],
                                       size: 22,
@@ -3389,8 +4688,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                         fontSize: 15.sp,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: AppConstants.manrope,
-                                        color:
-                                        theme.isDark
+                                        color: theme.isDark
                                             ? Colors.white
                                             : Colors.black,
                                       ),
@@ -3398,8 +4696,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                     const SizedBox(width: 6),
                                     Icon(
                                       Icons.arrow_forward,
-                                      color:
-                                      theme.isDark
+                                      color: theme.isDark
                                           ? Colors.white
                                           : Colors.black,
                                       size: 15.sp,
@@ -3411,8 +4708,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                         fontSize: 15.sp,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: AppConstants.manrope,
-                                        color:
-                                        theme.isDark
+                                        color: theme.isDark
                                             ? Colors.white
                                             : Colors.black,
                                       ),
@@ -3425,8 +4721,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                   children: [
                                     Icon(
                                       Icons.timelapse,
-                                      color:
-                                      theme.isDark
+                                      color: theme.isDark
                                           ? Colors.white
                                           : Colors.blue[700],
                                       size: 22,
@@ -3438,8 +4733,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                         fontSize: 15.sp,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: AppConstants.manrope,
-                                        color:
-                                        theme.isDark
+                                        color: theme.isDark
                                             ? Colors.white
                                             : Colors.black,
                                       ),
@@ -3456,7 +4750,9 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                             "Amenities",
                             style: TextStyle(
                               fontSize: 14.sp,
-                              color: theme.isDark ? Colors.white : Colors.black,
+                              color: theme.isDark
+                                  ? Colors.white
+                                  : Colors.black,
                               fontFamily: AppConstants.manropeBold,
                               letterSpacing: 1,
                             ),
@@ -3468,7 +4764,9 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               fontFamily: AppConstants.manropeBold,
-                              color: theme.isDark ? Colors.white : Colors.black,
+                              color: theme.isDark
+                                  ? Colors.white
+                                  : Colors.black,
                             ),
                           ),
 
@@ -3479,12 +4777,12 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                             route: () {
                               Get.offAll(() => const BookingScreen());
                             },
-                            color:
-                            theme.isDark
+                            color: theme.isDark
                                 ? Color(0xffCBB88C)
                                 : AppColors.maincolor,
-                            fontcolor:
-                            theme.isDark ? Colors.black : Colors.white,
+                            fontcolor: theme.isDark
+                                ? Colors.black
+                                : Colors.white,
                             height: 5.h,
                             width: double.infinity,
                             fontsize: 18.sp,
@@ -3511,1532 +4809,4 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
       },
     );
   }
-
-  void _generateDatesBasedOnSelection() {
-    DateTime today = DateTime.now();
-    dates.clear();
-    if (selectedValue == "days") {
-      DateTime startOfWeek = today.subtract(Duration(days: today.weekday - 1));
-      for (int i = 0; i < 7; i++) {
-        DateTime date = startOfWeek.add(Duration(days: i));
-        dates.add({
-          'day': date.day.toString(),
-          'weekday': _getWeekday(date.weekday),
-          'fullDate': date,
-        });
-        if (date.day == today.day &&
-            date.month == today.month &&
-            date.year == today.year) {
-          selectedIndex = i;
-        }
-      }
-    }
-    setState(() {});
-  }
-
-  String _getWeekday(int weekday) {
-    switch (weekday) {
-      case 1:
-        return 'Mon';
-      case 2:
-        return 'Tue';
-      case 3:
-        return 'Wed';
-      case 4:
-        return 'Thu';
-      case 5:
-        return 'Fri';
-      case 6:
-        return 'Sat';
-      case 7:
-        return 'Sun';
-      default:
-        return '';
-    }
-  }
-
-  DateTime focusedMonth = DateTime.now();
-
-  Widget _buildCalendar1View() {
-    final DateTime now = DateTime.now();
-    final DateTime todayOnly = DateTime(now.year, now.month, now.day);
-
-    calendar1SelectedDate ??= todayOnly;
-    calendar1SelectedDateStr = DateFormat(
-      'dd/MM/yyyy',
-    ).format(calendar1SelectedDate!);
-
-    final theme = context.watch<ThemeController>();
-    final bool isDark = theme.isDark;
-
-    // Theme based colors
-    final Color primaryTextColor = isDark ? Colors.white : Colors.black;
-    final Color secondaryTextColor = isDark ? Colors.white70 : Colors.black87;
-    final Color disabledTextColor = isDark ? Colors.white30 : Colors.grey;
-    final Color todayBgColor = isDark ? Colors.white24 : Colors.grey[300]!;
-
-    final DateTime kFirstDay = DateTime(now.year - 1, now.month, 1);
-    final DateTime kLastDay = DateTime(now.year + 1, now.month + 1, 0);
-
-    return TableCalendar(
-      firstDay: kFirstDay,
-      lastDay: kLastDay,
-      focusedDay: calendar1FocusedMonth,
-      calendarFormat: CalendarFormat.month,
-      headerVisible: false,
-
-      // Header tame custom banavyu hoy em lage che
-      selectedDayPredicate: (day) => isSameDay(calendar1SelectedDate, day),
-
-      enabledDayPredicate: (day) {
-        final DateTime dayOnly = DateTime(day.year, day.month, day.day);
-        return !dayOnly.isBefore(todayOnly);
-      },
-
-      onPageChanged: (focusedDay) {
-        setState(() {
-          calendar1FocusedMonth = focusedDay;
-        });
-      },
-
-      // onDaySelected: (newSelectedDay, focusedDay) {
-      //   setState(() {
-      //     calendar1SelectedDate = newSelectedDay;
-      //     calendar1SelectedDateStr = DateFormat(
-      //       'dd/MM/yyyy',
-      //     ).format(newSelectedDay);
-      //     calendar1FocusedMonth = focusedDay;
-      //     calendar1Loading = true;
-      //     selectedStartTime = null;
-      //   });
-      //
-      //   AmenitiesApi(date: calendar1SelectedDateStr).then((_) {
-      //     setState(() {
-      //       calendar1Loading = false;
-      //     });
-      //   });
-      // },
-      onDaySelected: (newSelectedDay, focusedDay) {
-        setState(() {
-          calendar1SelectedDate = newSelectedDay;
-          calendar1SelectedDateStr =
-              DateFormat('dd/MM/yyyy').format(newSelectedDay);
-          calendar1FocusedMonth = focusedDay;
-          calendar1Loading = true;
-          selectedStartTime = null;
-        });
-
-        AmenitiesApi(date: calendar1SelectedDateStr).then((_) {
-          statusApi(); // Add this to refresh booking status
-          setState(() {
-            calendar1Loading = false;
-          });
-        });
-      },
-      // --- Styling Section ---
-      daysOfWeekStyle: DaysOfWeekStyle(
-        weekdayStyle: TextStyle(
-          color: secondaryTextColor,
-          fontFamily: AppConstants.manropeBold,
-          fontWeight: FontWeight.w600,
-        ),
-        weekendStyle: TextStyle(
-          color: secondaryTextColor,
-          fontFamily: AppConstants.manropeBold,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-
-      calendarStyle: CalendarStyle(
-        // Ahiya default styles che, pan Builders badhu override kari deshe
-        outsideDaysVisible: true,
-      ),
-
-      calendarBuilders: CalendarBuilders(
-        // 1. Regular Days
-        defaultBuilder: (context, day, focusedDay) {
-          return _buildCalendarDay(
-            day: day,
-            textColor: primaryTextColor,
-            isBold: false,
-          );
-        },
-
-        // 2. Selected Day
-        selectedBuilder: (context, day, focusedDay) {
-          return _buildCalendarDay(
-            day: day,
-            textColor: Colors.white,
-            bgColor: AppColors.lightText,
-            isBold: true,
-          );
-        },
-
-        // 3. Today
-        todayBuilder: (context, day, focusedDay) {
-          return _buildCalendarDay(
-            day: day,
-            textColor: primaryTextColor,
-            bgColor: todayBgColor,
-            isBold: true,
-          );
-        },
-
-        // 4. Disabled Days (Past dates)
-        disabledBuilder: (context, day, focusedDay) {
-          return _buildCalendarDay(
-            day: day,
-            textColor: disabledTextColor,
-            isBold: false,
-          );
-        },
-
-        // 5. Outside Days (Next/Prev month dates)
-        outsideBuilder: (context, day, focusedDay) {
-          return _buildCalendarDay(
-            day: day,
-            textColor: disabledTextColor,
-            isBold: false,
-          );
-        },
-      ),
-    );
-  }
-
-  // Common Helper function for cleaner code
-  Widget _buildCalendarDay({
-    required DateTime day,
-    required Color textColor,
-    Color? bgColor,
-    bool isBold = false,
-  }) {
-    return Container(
-      margin: const EdgeInsets.all(6.0),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: bgColor ?? Colors.transparent,
-        shape: BoxShape.circle,
-      ),
-      child: Text(
-        '${day.day}',
-        style: TextStyle(
-          color: textColor,
-          fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-          fontFamily: AppConstants.manrope,
-          fontSize: 14,
-        ),
-      ),
-    );
-  }
-
-  Future<bool> AmenitiesApi({required String date}) async {
-    if (date.isEmpty) return false;
-    if (!load) {
-      setState(() {
-        calendar1Loading = true;
-      });
-    }
-    bool hasInternet = await checkInternet();
-    if (!hasInternet) {
-      if (mounted) buildErrorDialog(context, 'Error', "Internet Required");
-      setState(() {
-        isLoading = false;
-        load = false;
-        calendar1Loading = false;
-      });
-      return false;
-    }
-    try {
-      var response = await AmenitiesProvider().amenitiesApi(
-        loginModel?.data?.user?.id.toString() ?? '',
-        widget.amenites_id ?? "",
-        date,
-        '',
-      );
-      if (response.statusCode == 200) {
-        amenitiesModel = AmenitiesModel.fromJson(response.data);
-
-        if (amenitiesModel?.data?.data?.isNotEmpty == true &&
-            amenitiesModel!.data!.data!.first.durationOptions?.isNotEmpty ==
-                true) {
-          selectedDurationInMinutes =
-              int.tryParse(
-                amenitiesModel!.data!.data!.first.durationOptions!.first,
-              ) ??
-                  60;
-        } else {
-          selectedDurationInMinutes = 60;
-        }
-
-        setState(() {
-          amenitiesModel = amenitiesModel;
-          isLoading = false;
-          load = false;
-          calendar1Loading = false;
-        });
-        return true;
-      } else {
-        setState(() {
-          isLoading = false;
-          load = false;
-          calendar1Loading = false;
-        });
-        return false;
-      }
-    } catch (e) {
-      print("AmenitiesApi Error: $e");
-      setState(() {
-        isLoading = false;
-        load = false;
-        calendar1Loading = false;
-      });
-      return false;
-    }
-  }
-
-  String convertTo24(String time) {
-    try {
-      final parsed = DateFormat("hh:mm a").parse(time);
-      return DateFormat("HH:mm").format(parsed);
-    } catch (e) {
-      return time;
-    }
-  }
-
-  String calculateEndTime(String startTime, int durationMinutes) {
-    try {
-      final start = DateFormat("HH:mm:ss").parse(startTime);
-      final end = start.add(Duration(minutes: durationMinutes));
-      return DateFormat("HH:mm:ss").format(end);
-    } catch (e) {
-      return startTime;
-    }
-  }
-  Future<bool> AddBookingApi(
-      String date,
-      String time,
-      String apiEndTime,
-      int duration,
-      String name,) async {
-
-    String apiTime = convertTo24(time);
-    String apitime2 = convertTo24(apiEndTime);
-    String endTime = calculateEndTime(apiTime, duration);
-
-    Map<String, String> data = {
-      "user_id": loginModel?.data?.user?.id.toString() ?? "",
-      "amenity_id": widget.amenites_id ?? '',
-      "date": date,
-      "start_time": apiTime,
-      "end_time": apitime2,
-      "is_first_slot": (!showPlus30).toString(),
-      "duration_minutes": duration.toString(),
-    };
-
-    log("BOOKING DATA => $data");
-
-    setState(() => isGlobalLoading = true);
-
-    bool hasInternet = await checkInternet();
-    if (!hasInternet) {
-      if (mounted) buildErrorDialog(context, 'Error', "Internet Required");
-      setState(() => isGlobalLoading = false);
-      return false;
-    }
-
-    try {
-      var response = await AmenitiesProvider().addBookingApi(data);
-
-      log("BOOKING RESPONSE => ${response.data}");
-
-      setState(() => isGlobalLoading = false);
-
-      /// ✅ SUCCESS
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final resData = response.data["data"];
-
-        String start = resData["start_time"] ?? time;
-        String end = resData["end_time"] ?? endTime;
-        String durationStr = "${(duration / 60).toStringAsFixed(1)} hr";
-
-        if (duration < 60) {
-          durationStr = "$duration min";
-        } else if (duration % 60 == 0) {
-          durationStr = "${(duration / 60).toInt()} hr";
-        }
-
-        showTornTicketDialog(
-          attendeeInitials: 'NP',
-          context: context,
-          location: name,
-          selectedDate: date,
-          selectedTime: start,
-          duration: durationStr,
-          endTime: end,
-        );
-
-        return true;
-      }
-
-      /// ❌ SAFE ERROR MESSAGE HANDLING
-      String msg = "Please try again later.";
-
-      if (response.data != null && response.data is Map) {
-        final backendMsg = response.data['message']?.toString() ?? "";
-
-        // 👇 Show only small readable messages
-        if (backendMsg.isNotEmpty &&
-            backendMsg.length < 120 &&
-            !backendMsg.toLowerCase().contains("html") &&
-            !backendMsg.toLowerCase().contains("exception") &&
-            !backendMsg.toLowerCase().contains("stack") &&
-            !backendMsg.toLowerCase().contains("error:")) {
-          msg = backendMsg;
-        }
-      }
-
-      showSnackBar(
-        context: context,
-        title: "Booking Failed",
-        message: msg,
-        backgoundColor: AppColors.redColor,
-        ColorText: Colors.white,
-      );
-
-      return false;
-
-    } catch (e, stacktrace) {
-
-      log("BOOKING ERROR => $e");
-      log("BOOKING STACK => $stacktrace");
-
-      setState(() => isGlobalLoading = false);
-
-      /// ❌ BIG ERROR HIDE FROM USER
-      showSnackBar(
-        context: context,
-        title: "Oops",
-        message: "Please try again later.",
-        backgoundColor: AppColors.redColor,
-        ColorText: Colors.white,
-      );
-
-      return false;
-    }
-  }
-
-  Future<void> RSVPAmenityApi(String bookingid, String rsvp) async {
-    setState(() {
-      isRsvpLoading = true;
-    });
-    Map<String, String> data = {"booking_id": bookingid, "rsvp_status": rsvp};
-    bool hasInternet = await checkInternet();
-    if (hasInternet) {
-      try {
-        var response = await AmenitiesProvider().rsvpToAmenityApi(data);
-        if (response.statusCode == 200) {
-          if (mounted) {
-            Get.back();
-            Get.offAll(() => const BookingScreen());
-            showSnackBar(
-              context: context,
-              title: "RSVP Updated",
-              message: "Your response has been recorded.",
-              backgoundColor: AppColors.maincolor,
-              ColorText: Colors.white,
-            );
-          }
-        } else {
-          if (mounted) {
-            Get.back();
-            showSnackBar(
-              context: context,
-              title: "Error",
-              message: "Failed to update RSVP.",
-              backgoundColor: AppColors.maincolor,
-              ColorText: Colors.white,
-            );
-          }
-        }
-      } catch (e) {
-        print("RSVPApi Error: $e");
-        if (mounted) Get.back();
-      } finally {
-        if (mounted) {
-          setState(() {
-            isRsvpLoading = false;
-          });
-        }
-      }
-    } else {
-      setState(() {
-        isRsvpLoading = false;
-      });
-      if (mounted) buildErrorDialog(context, 'Error', "Internet Required");
-    }
-  }
-
-  Future<void> RSVPAmenityAttend(String bookingid,
-      String attended,
-      String rsvp,) async {
-    setState(() {
-      isRsvpLoading = true;
-    });
-    Map<String, String> data = {
-      "booking_id": bookingid,
-      "attended": attended,
-      "rsvp_status": rsvp,
-    };
-    bool hasInternet = await checkInternet();
-    if (hasInternet) {
-      try {
-        var response = await AmenitiesProvider().rsvpToAmenityApi(data);
-        if (response.statusCode == 200) {
-          if (mounted) {
-            Get.back();
-            Get.offAll(() => const BookingScreen());
-            showSnackBar(
-              context: context,
-              title: "Attendance Marked",
-              message: "Thank you for attending!",
-              backgoundColor: AppColors.maincolor,
-              ColorText: Colors.white,
-            );
-          }
-        } else {
-          if (mounted) {
-            Get.back();
-            showSnackBar(
-              context: context,
-              title: "Error",
-              message: "Failed to mark attendance.",
-              backgoundColor: AppColors.maincolor,
-              ColorText: Colors.white,
-            );
-          }
-        }
-      } catch (e) {
-        print("AttendApi Error: $e");
-        if (mounted) Get.back();
-      } finally {
-        if (mounted) {
-          setState(() {
-            isRsvpLoading = false;
-          });
-        }
-      }
-    } else {
-      setState(() {
-        isRsvpLoading = false;
-      });
-      if (mounted) buildErrorDialog(context, 'Error', "Internet Required");
-    }
-  }
-
-  String _toHms(String time) {
-    final parts = time.split(':');
-    if (parts.length == 2) {
-      return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}:00';
-    } else if (parts.length == 3) {
-      return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}:${parts[2].padLeft(2, '0')}';
-    }
-    return time;
-  }
-
-  bool _isSlotAlreadyBookedByMe(String slotOpenTime, DateTime selectedDate,
-      {String? slotCloseTime}) {
-    final data = statusModal?.data;
-    if (data == null || data.isEmpty) return false;
-
-    final String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
-
-    // Convert slot open/close to minutes for overlap check
-    final String slotOpen24 = convertTo24(slotOpenTime);
-    final String slotClose24 = slotCloseTime != null ? convertTo24(slotCloseTime) : '';
-
-    int slotOpenMins = _timeToMinutes(slotOpen24);
-    int slotCloseMins = slotClose24.isNotEmpty ? _timeToMinutes(slotClose24) : slotOpenMins + 1;
-
-    final selectedAmenity = amenitiesModel?.data?.data?.first;
-    bool isAllDayBooking = selectedAmenity?.isAllDayBooking == "1";
-
-    for (final booking in data) {
-      final String? bDate = booking.bookingDate;
-      final String? bStart = booking.startTime;
-      final String? bEnd = booking.endTime;
-
-      if (bDate == null || bStart == null) continue;
-      if (bDate != dateStr) continue;
-
-      if (isAllDayBooking && slotCloseTime != null && bEnd != null) {
-        // ✅ Overlap check: slot and booking overlap karе che ke nahi
-        // Overlap condition: slotOpen < bookingEnd AND slotClose > bookingStart
-        int bookingStartMins = _timeToMinutes(bStart);
-        int bookingEndMins = _timeToMinutes(bEnd);
-
-        bool overlaps = slotOpenMins < bookingEndMins && slotCloseMins > bookingStartMins;
-
-        if (overlaps) {
-          print('✅ OVERLAP FOUND: Slot $slotOpenTime-$slotCloseTime overlaps with booking $bStart-$bEnd');
-          return true;
-        }
-      } else {
-        // Original exact match logic for non-all-day booking
-        String bookingHms = _toHms(bStart);
-        String uiHms = _toHms(slotOpen24);
-
-        if (booking.isFirstSlot == "false") {
-          final DateTime parsed = DateFormat('HH:mm:ss').parseStrict(bookingHms);
-          final DateTime adjusted = parsed.subtract(const Duration(minutes: 30));
-          bookingHms = DateFormat('HH:mm:ss').format(adjusted);
-        }
-
-        if (bookingHms == uiHms) return true;
-      }
-    }
-
-    return false;
-  }
-
-  int _timeToMinutes(String time) {
-    try {
-      // Handle HH:mm:ss format
-      final parts = time.split(':');
-      if (parts.length >= 2) {
-        int hours = int.parse(parts[0]);
-        int minutes = int.parse(parts[1]);
-        return hours * 60 + minutes;
-      }
-    } catch (e) {
-      print('Error converting time to minutes: $time - $e');
-    }
-    return 0;
-  }
-
-  statusApi() {
-    final Map<String, String> data = {};
-    data['user_id'] = loginModel?.data?.user?.id.toString() ?? "";
-    log("Data $data");
-    checkInternet().then((internet) async {
-      if (internet) {
-        AmenitiesProvider()
-            .bookingStatusApi(data)
-            .then((response) async {
-          statusModal = StatusModal.fromJson(response.data);
-
-          if (response.statusCode == 200) {
-            setState(() {
-              isLoading = false;
-            });
-          } else if (response.statusCode == 422) {
-            setState(() {
-              isLoading = false;
-            });
-          } else {
-            log("errror ");
-            setState(() {
-              isLoading = false;
-            });
-          }
-
-          setState(() {
-            isLoading = false;
-          });
-          return false;
-        })
-            .catchError((error) {
-          setState(() {
-            isLoading = false;
-          });
-
-          return false;
-        });
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-        buildErrorDialog(context, 'Error', "Internet Required");
-        return false;
-      }
-    });
-  }
-
-  Future<void> _showCustomTimePicker({
-    required OperatingHours? hours,
-    required DateTime selectedDate,
-    required String initialOpenTime,
-    required String initialCloseTime,
-    required Function(String startTime, String endTime) onTimeSelected,
-  }) async
-  {
-
-    if (hours == null) return;
-
-    /// 🔥 IMPORTANT FIX
-    /// Selected slot MUST be the session user clicked earlier
-    final TimeOfDay slotOpen = _parseTimeOfDay(initialOpenTime);
-    final TimeOfDay slotClose = _parseTimeOfDay(initialCloseTime);
-
-    /// Parse initial selection
-    TimeOfDay selectedStartTime = slotOpen;
-    TimeOfDay selectedEndTime = slotClose;
-
-    final selectedAmenity = amenitiesModel?.data?.data?.first;
-    int maintenanceMins =
-        int.tryParse(selectedAmenity?.maintenanceDuration ?? "0") ?? 0;
-    //
-    // const int minDurationMinutes = 60;
-    // const int maxDurationMinutes = 90;
-    int fixedDuration =
-    selectedAmenity?.durationOptions?.isNotEmpty == true
-        ? int.tryParse(
-      selectedAmenity!.durationOptions!.first.toString(),
-    ) ??
-        60
-        : 60;
-    bool isTimeInSelectedSlot(TimeOfDay time) {
-      return _isTimeBetweenInclusive(time, slotOpen, slotClose);
-    }
-    bool isValidEndTimeForStart(TimeOfDay start, TimeOfDay end) {
-      int startMinutes = start.hour * 60 + start.minute;
-      int endMinutes = end.hour * 60 + end.minute;
-      int slotOpenMinutes = slotOpen.hour * 60 + slotOpen.minute;
-      int slotCloseMinutes = slotClose.hour * 60 + slotClose.minute;
-
-      return endMinutes > startMinutes &&
-          endMinutes >= slotOpenMinutes &&
-          endMinutes <= slotCloseMinutes;
-    }
-    TimeOfDay _addMinutes(TimeOfDay time, int minutesToAdd) {
-      final totalMinutes = time.hour * 60 + time.minute + minutesToAdd;
-      return TimeOfDay(
-        hour: (totalMinutes ~/ 60) % 24,
-        minute: totalMinutes % 60,
-      );
-    }
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-
-            int currentDuration =
-            _calculateDurationInMinutes(selectedStartTime, selectedEndTime);
-
-            // bool isDurationValid =
-            //     currentDuration >= minDurationMinutes &&
-            //         currentDuration <= maxDurationMinutes;
-            //
-            // bool isNearMaxDuration =
-            //     currentDuration >= maxDurationMinutes - 30 &&
-            //         currentDuration <= maxDurationMinutes;
-
-            bool isStartInSlot = isTimeInSelectedSlot(selectedStartTime);
-            bool isEndInSlot = isTimeInSelectedSlot(selectedEndTime);
-            bool isEndTimeValidForStart =
-            isValidEndTimeForStart(selectedStartTime, selectedEndTime);
-
-            // bool isValidSelection =
-            //     isDurationValid &&
-            //         isStartInSlot &&
-            //         isEndInSlot &&
-            //         isEndTimeValidForStart;
-            bool isValidSelection =
-                isStartInSlot && isEndInSlot && isEndTimeValidForStart;
-            return AlertDialog(
-              title: const Text('Select Time Range'),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-
-                    /// ✅ SELECTED SLOT INFO (NOW CORRECT)
-                    Container(
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.maincolor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                            color: AppColors.maincolor.withOpacity(0.3)),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.access_time,
-                              color: AppColors.maincolor, size: 18),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              "${_formatTimeTo12Hour(initialOpenTime)} - ${_formatTimeTo12Hour(initialCloseTime)}",
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: 16),
-
-                    /// CURRENT SELECTION INFO (unchanged design)
-                    Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: AppColors.maincolor.withOpacity(0.05),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                            color: AppColors.maincolor.withOpacity(0.3)),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.timer,
-                              color: AppColors.maincolor, size: 16),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              "Selected: ${_formatTimeOfDayTo12Hour(selectedStartTime)} - ${_formatTimeOfDayTo12Hour(selectedEndTime)}",
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.maincolor,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: 16),
-
-                    /// SLOT HOURS INFO (correct now)
-                    Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.info_outline,
-                              color: Colors.blue, size: 16),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              "Slot hours: ${_formatTimeTo12Hour(initialOpenTime)} - ${_formatTimeTo12Hour(initialCloseTime)}",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.blue.shade700,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: 8),
-
-                    /// START PICKER
-                    ListTile(
-                      title: const Text('Start Time',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle:
-                      Text(_formatTimeOfDayTo12Hour(selectedStartTime)),
-                      trailing: const Icon(Icons.access_time),
-                      onTap: () async {
-                        final picked = await showTimePicker(
-                          context: context,
-                          initialTime: selectedStartTime,
-                        );
-
-                        if (picked == null) return;
-
-                        if (!isTimeInSelectedSlot(picked)) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                  "Select time within ${_formatTimeTo12Hour(initialOpenTime)} - ${_formatTimeTo12Hour(initialCloseTime)}"),
-                              backgroundColor: Colors.orange,
-                            ),
-                          );
-                          return;
-                        }
-
-                        setState(() {
-                          selectedStartTime = picked;
-                          selectedEndTime = _addMinutes(picked, fixedDuration);
-                        });
-                      },
-                    ),
-
-                    /// END PICKER
-                    ListTile(
-                      title: const Text('End Time',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle:
-                      Text(_formatTimeOfDayTo12Hour(selectedEndTime)),
-                      trailing: const Icon(Icons.access_time),
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("End time is fixed (${fixedDuration} mins session)"),
-                            backgroundColor: Colors.blue,
-                          ),
-                        );
-                      },
-                    ),
-
-                    SizedBox(height: 8),
-
-                    /// DURATION INFO (unchanged design)
-                    Container(
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: isValidSelection
-                            ? Colors.green.withOpacity(0.1)
-                            : Colors.red.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.timer,
-                              color: isValidSelection
-                                  ? Colors.green
-                                  : Colors.red,
-                              size: 18),
-                          SizedBox(width: 8),
-                          Text(
-                            "Session duration: $fixedDuration minutes",
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: isValidSelection
-                                  ? Colors.green
-                                  : Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    /// MAINTENANCE INFO (dynamic, same design style)
-                    if (maintenanceMins > 0) ...[
-                      SizedBox(height: 8),
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.build_circle_outlined,
-                              size: 16,
-                              color: Colors.blue.shade700,
-                            ),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                "+$maintenanceMins mins maintenance time will be included in the selected session duration for this amenity",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.blue.shade700,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel'),
-                ),
-                ElevatedButton(
-                  onPressed: isValidSelection
-                      ? () {
-                    Navigator.pop(context);
-
-                    /// 🔥 MAINTENANCE ADDED HERE
-                    final TimeOfDay apiEndTime =
-                    _addMinutes(selectedEndTime, maintenanceMins);
-
-                    onTimeSelected(
-                      _formatTimeForAPI(selectedStartTime),
-                      _formatTimeForAPI(apiEndTime),
-                    );
-                  }
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isValidSelection
-                        ? AppColors.lightText
-                        : Colors.grey,
-                  ),
-                  child: Text(
-                    'Select',
-                    style: TextStyle(
-                      fontFamily: AppConstants.manrope,
-                      color: Colors.white,
-                      fontSize: 15,
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  bool _isTimeBetweenInclusive(TimeOfDay time, TimeOfDay start, TimeOfDay end) {
-    int timeMinutes = time.hour * 60 + time.minute;
-    int startMinutes = start.hour * 60 + start.minute;
-    int endMinutes = end.hour * 60 + end.minute;
-
-    // For normal time ranges where start < end
-    if (startMinutes <= endMinutes) {
-      return timeMinutes >= startMinutes && timeMinutes <= endMinutes;
-    }
-    // For ranges that cross midnight (if needed)
-    else {
-      return timeMinutes >= startMinutes || timeMinutes <= endMinutes;
-    }
-  }
-
-  String _formatTimeOfDayTo12Hour(TimeOfDay time) {
-    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
-    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
-    final minute = time.minute.toString().padLeft(2, '0');
-    return '$hour:$minute $period';
-  }
-
-  String _formatTimeTo12Hour(String time24) {
-    if (time24.isEmpty) return '';
-    try {
-      final parts = time24.split(':');
-      if (parts.length != 2) return time24;
-
-      int hour = int.parse(parts[0]);
-      int minute = int.parse(parts[1]);
-
-      final period = hour >= 12 ? 'PM' : 'AM';
-      hour = hour == 0 ? 12 : hour > 12 ? hour - 12 : hour;
-
-      return '$hour:${minute.toString().padLeft(2, '0')} $period';
-    } catch (e) {
-      return time24;
-    }
-  }
-
-  Future<void> addSlotAPi(String startTime, String endTime,
-      String amenitiesName) async {
-    setState(() {
-      isRsvpLoading = true;
-    });
-    Map<String, String> data = {
-      "start_time": startTime,
-      "end_time": endTime,
-      "user_id": loginModel?.data?.user?.id.toString() ?? "",
-      "amenity_id": widget.amenites_id.toString() ?? "",
-      "date": calendar1SelectedDateStr ?? "",
-    };
-    log("add Slot api $data");
-    bool hasInternet = await checkInternet();
-    if (hasInternet) {
-      try {
-        var response = await AmenitiesProvider().addSlotApi(data);
-        if (response.statusCode == 200) {
-          if (mounted) {
-            log("API SUCESS${response.statusCode}");
-            log("API SUCESS${response.data}");
-            final resData = response.data["data"];
-
-            String start = resData["start_time"] ?? startTime;
-            String end = resData["end_time"] ?? endTime;
-
-            showConfirmSlotDialog(start, end, amenitiesName);
-          }
-          AmenitiesApi(date: calendar1SelectedDateStr);
-          // statusApi();
-        } else {
-          if (mounted) {
-            Get.back();
-            showSnackBar(
-              context: context,
-              title: "Error",
-              message: "Failed to add slot.",
-              backgoundColor: AppColors.maincolor,
-              ColorText: Colors.white,
-            );
-          }
-        }
-      } catch (e, stackTrace) {
-        print("RSVPApi Error: $e");
-        print("RSVPApi Error: $stackTrace");
-        if (mounted) Get.back();
-      } finally {
-        if (mounted) {
-          setState(() {
-            isRsvpLoading = false;
-          });
-        }
-      }
-    } else {
-      setState(() {
-        isRsvpLoading = false;
-      });
-      if (mounted) buildErrorDialog(context, 'Error', "Internet Required");
-    }
-  }
-
-  String _formatTimeForAPI(TimeOfDay time) {
-    String hour = time.hour.toString().padLeft(2, '0');
-    String minute = time.minute.toString().padLeft(2, '0');
-    return "$hour:$minute";
-  }
-
-  TimeOfDay _parseTimeOfDay(String timeStr) {
-    try {
-      try {
-        final dateTime = DateFormat("h:mm a").parse(timeStr);
-        return TimeOfDay.fromDateTime(dateTime);
-      } catch (e) {
-        final dateTime = DateFormat("HH:mm").parse(timeStr);
-        return TimeOfDay.fromDateTime(dateTime);
-      }
-    } catch (e, stackTrace) {
-      print("Error parsing time: $timeStr");
-      print("Error: $e");
-      print("StackTrace: $stackTrace");
-    }
-
-    return const TimeOfDay(hour: 9, minute: 0);
-  }
-
-  int _calculateDurationInMinutes(TimeOfDay start, TimeOfDay end) {
-    int startMinutes = start.hour * 60 + start.minute;
-    int endMinutes = end.hour * 60 + end.minute;
-    return endMinutes - startMinutes;
-  }
-
-  void showConfirmSlotDialog(String start, String end, String amenitiesName) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 26),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-
-                // ✅ Top Icon Circle
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.12),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.check_circle_rounded,
-                    color: Colors.green,
-                    size: 36,
-                  ),
-                ),
-
-                const SizedBox(height: 18),
-
-                // ✅ Title
-                const Text(
-                  "Confirm Slot Booking",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-
-                const SizedBox(height: 14),
-
-                // ✅ Description
-                const Text(
-                  "Please confirm your selected time slot",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black54,
-                  ),
-                ),
-
-                const SizedBox(height: 18),
-
-                // ✅ Time Box
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 18, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: AppColors.maincolor.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.access_time, size: 18),
-                      const SizedBox(width: 8),
-                      Text(
-                        "$start  →  $end",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.maincolor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 26),
-
-                // ✅ Buttons Row
-                Row(
-                  children: [
-
-                    // Cancel button
-                    Expanded(
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 13),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          "Cancel",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(width: 12),
-
-                    // Confirm button
-                    Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.maincolor,
-                          padding: const EdgeInsets.symmetric(vertical: 13),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onPressed: () {
-                          AddBookingApi(
-                            calendar1SelectedDateStr,
-                            start.toString(),
-
-                            end
-                                .toString(),
-                            selectedDurationInMinutes,
-                            amenitiesName
-                                .toString(),
-
-                          );
-
-                          // showSnackBar(
-                          //   context: context,
-                          //   title: "Success",
-                          //   message: "Slot confirmed successfully!",
-                          //   backgoundColor: Colors.green,
-                          //   ColorText: Colors.white,
-                          // );
-                        },
-                        child: isGlobalLoading
-                            ? Container(
-                          height: 6.h,
-                          alignment:
-                          Alignment
-                              .center,
-                          width:
-                          double
-                              .infinity,
-                          child: const CircularProgressIndicator(
-                            color:
-                            AppColors
-                                .maincolor,
-                          ),
-                        )
-                            : const Text(
-                          "Confirm",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildOperatingHoursExpansionTile(OperatingHours? operatingHours) {
-    final theme = context.watch<ThemeController>();
-
-    if (operatingHours == null) {
-      return Container(
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: theme.isDark ? Color(0xff262626) : Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.info_outline, color: Colors.grey, size: 20),
-            SizedBox(width: 8),
-            Text(
-              "No operating hours available",
-              style: TextStyle(
-                color: theme.isDark ? Colors.white70 : Colors.grey.shade600,
-                fontSize: 14,
-                fontFamily: AppConstants.manrope,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    // Map of days with their time slots
-    final Map<String, List<TimeSlot>?> daysMap = {
-      'Monday': operatingHours.monday,
-      'Tuesday': operatingHours.tuesday,
-      'Wednesday': operatingHours.wednesday,
-      'Thursday': operatingHours.thursday,
-      'Friday': operatingHours.friday,
-      'Saturday': operatingHours.saturday,
-      'Sunday': operatingHours.sunday,
-    };
-
-    // Check if any day has operating hours
-    bool hasAnyHours = daysMap.values.any((slots) => slots != null && slots.isNotEmpty);
-
-    if (!hasAnyHours) {
-      return Container(
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: theme.isDark ? Color(0xff262626) : Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.access_time_filled, color: Colors.grey, size: 20),
-            SizedBox(width: 8),
-            Text(
-              "No operating hours set",
-              style: TextStyle(
-                color: theme.isDark ? Colors.white70 : Colors.grey.shade600,
-                fontSize: 14,
-                fontFamily: AppConstants.manrope,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Container(
-      margin: EdgeInsets.only(top: 8),
-      decoration: BoxDecoration(
-        color: theme.isDark ? Color(0xff262626) : Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: theme.isDark ? Colors.grey.shade800 : Colors.grey.shade300,
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          dividerColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-        ),
-        child: ExpansionTile(
-          tilePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          childrenPadding: EdgeInsets.zero,
-          leading: Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppColors.maincolor.withOpacity(0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.access_time,
-              color: AppColors.maincolor,
-              size: 20,
-            ),
-          ),
-          title: Text(
-            "Operating Hours",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: theme.isDark ? Colors.white : Colors.black87,
-              fontFamily: AppConstants.manropeBold,
-            ),
-          ),
-          subtitle: Text(
-            "Tap to view daily schedule",
-            style: TextStyle(
-              fontSize: 13,
-              color: theme.isDark ? Colors.white70 : Colors.grey.shade600,
-              fontFamily: AppConstants.manrope,
-            ),
-          ),
-          iconColor: AppColors.maincolor,
-          collapsedIconColor: AppColors.maincolor,
-          children: [
-            Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(
-                    color: theme.isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-                    width: 1,
-                  ),
-                ),
-              ),
-              child: Column(
-                children: daysMap.entries.map((entry) {
-                  final day = entry.key;
-                  final slots = entry.value;
-
-                  return Container(
-                    margin: EdgeInsets.only(bottom: 8),
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: theme.isDark ? Color(0xff1E1E1E) : Colors.grey.shade50,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: theme.isDark ? Colors.grey.shade700 : Colors.grey.shade200,
-                        width: 1,
-                      ),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Day indicator
-                        Container(
-                          width: 25.w,
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 8,
-                                height: 8,
-                                decoration: BoxDecoration(
-                                  color: slots != null && slots.isNotEmpty
-                                      ? Colors.green
-                                      : Colors.grey,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              SizedBox(width: 2.w),
-                              Text(
-                                day,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: theme.isDark ? Colors.white : Colors
-                                      .black87,
-                                  fontFamily: AppConstants.manropeBold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: 10.w),
-                        // Time slots
-                        Expanded(
-                          child: slots != null && slots.isNotEmpty
-                              ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: slots.map((slot) {
-                              String openTime = _formatTimeTo12Hour(slot.open ?? '');
-                              String closeTime = _formatTimeTo12Hour(slot.close ?? '');
-
-                              return Padding(
-                                padding: EdgeInsets.only(bottom: slots.length > 1 ? 4 : 0),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.schedule,
-                                      size: 14,
-                                      color: AppColors.maincolor,
-                                    ),
-                                    SizedBox(width: 6),
-                                    Expanded(
-                                      child: Text(
-                                        "$openTime - $closeTime",
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          color: theme.isDark ? Colors.white70 : Colors.grey.shade700,
-                                          fontFamily: AppConstants.manrope,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                          )
-                              : Text(
-                            "Closed",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.red.shade400,
-                              fontFamily: AppConstants.manrope,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  bool isAlreadyBooked=false;
 }
-

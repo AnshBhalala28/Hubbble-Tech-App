@@ -258,21 +258,21 @@ class _BookingScreenState extends State<BookingScreen> {
 
     return GestureDetector(
       onTap: () {
-        Get.to(
-          () => AmenitiesDetail(
-            amenites_id: booking['amenity']['id'].toString(),
-            status: booking['status'],
-            bookingDate: booking['requested_at'],
-            attend: booking['attended']?.toString() ?? "",
-            rsvp: booking['rsvp'],
-            EventName: booking['amenity']['name'],
-            bookingId: booking['booking_id'].toString(),
-            requestedDate: booking['requested_at'] ?? "N/A",
-            startTime: booking['start_time'] ?? "N/A",
-            endtime: booking['end_time'] ?? "N/A",
-            isPage: true,
-          ),
-        );
+        // Get.to(
+        //   () => AmenitiesDetail(
+        //     amenites_id: booking['amenity']['id'].toString(),
+        //     status: booking['status'],
+        //     bookingDate: booking['requested_at'],
+        //     attend: booking['attended']?.toString() ?? "",
+        //     rsvp: booking['rsvp'],
+        //     EventName: booking['amenity']['name'],
+        //     bookingId: booking['booking_id'].toString(),
+        //     requestedDate: booking['requested_at'] ?? "N/A",
+        //     startTime: booking['start_time'] ?? "N/A",
+        //     endtime: booking['end_time'] ?? "N/A",
+        //     isPage: true,
+        //   ),
+        // );
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 2.h),
@@ -375,13 +375,13 @@ class _BookingScreenState extends State<BookingScreen> {
                       _iconDetail(
                         Icons.access_time,
                         // formatTime12(booking['requested_at']),
-                        booking['start_time'],
+                        "${formatTime12(booking['start_time'])} - ${formatTime12(booking['end_time'])}",
                         // આ આપોઆપ "09:55 AM" બતાવશે
                         sTextColor,
                       ),
                       _iconDetail(
                         Icons.location_on_outlined,
-                        "Lower Ground Floor",
+                        booking['amenity']?['building_name'] ?? "Location not specified",
                         sTextColor,
                       ),
                     ],
@@ -472,12 +472,33 @@ class _BookingScreenState extends State<BookingScreen> {
 
   String formatTime12(String? rawDate) {
     if (rawDate == null || rawDate.isEmpty) return "N/A";
+
     try {
-      // આખી સ્ટ્રિંગમાંથી ટાઈમ પાર્સ કરશે
-      DateTime parsedDate = DateFormat("yyyy-MM-dd hh:mm a").parse(rawDate);
+      DateTime parsedDate;
+
+      // Try parsing full datetime with seconds
+      try {
+        parsedDate = DateFormat("yyyy-MM-dd HH:mm:ss").parse(rawDate);
+      } catch (_) {
+        // Try parsing without seconds
+        try {
+          parsedDate = DateFormat("yyyy-MM-dd HH:mm").parse(rawDate);
+        } catch (_) {
+          // Try parsing already 12-hour format
+          try {
+            parsedDate = DateFormat("yyyy-MM-dd hh:mm a").parse(rawDate);
+          } catch (_) {
+            // Try parsing time only (24-hour)
+            parsedDate = DateFormat("HH:mm").parse(rawDate);
+          }
+        }
+      }
+
+      // Convert to 12-hour format
       return DateFormat('hh:mm a').format(parsedDate);
+
     } catch (e) {
-      return rawDate; // જો પહેલેથી જ ફક્ત ટાઈમ આવતો હોય તો તે જ બતાવશે
+      return rawDate; // fallback if parsing fails
     }
   }
 }

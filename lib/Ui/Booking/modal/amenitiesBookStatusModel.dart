@@ -231,6 +231,7 @@ class Amenity {
   int? userId;
   String? name;
   String? description;
+  String? buildingName;
   List<String>? imageUrl;
   String? rulesNotice;
   OperatingHours? operatingHours;
@@ -247,6 +248,7 @@ class Amenity {
     this.name,
     this.description,
     this.imageUrl,
+    this.buildingName,
     this.rulesNotice,
     this.operatingHours,
     this.durationOptions,
@@ -262,7 +264,7 @@ class Amenity {
     userId = json['user_id'];
     name = json['name'];
     description = json['description'];
-
+    buildingName = json['building_name'];
     if (json['image_url'] != null && json['image_url'] is List) {
       imageUrl = (json['image_url'] as List)
           .where((e) => e != null)
@@ -299,6 +301,7 @@ class Amenity {
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['name'] = this.name;
+    data['building_name'] = this.buildingName;
     data['description'] = this.description;
     data['image_url'] = this.imageUrl;
     data['rules_notice'] = this.rulesNotice;
