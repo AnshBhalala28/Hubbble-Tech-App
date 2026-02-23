@@ -211,7 +211,7 @@ class _MessageScreenState extends State<MessageScreen> {
             children: [
               Column(
                 children: [
-                  // Header with user info
+                  SizedBox(height: 3.h,),
                   _buildHeader(theme),
 
                   // Messages List
