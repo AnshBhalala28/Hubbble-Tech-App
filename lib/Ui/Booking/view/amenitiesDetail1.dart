@@ -756,51 +756,55 @@ class _Form_ScreenState extends State<Form_Screen> {
                                                       Expanded(
                                                         child: Column(
                                                           crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
+                                                          CrossAxisAlignment
+                                                              .start,
                                                           children: [
                                                             Text(
-                                                              "Per Month",
+                                                              "Bookings Available",
                                                               style: TextStyle(
-                                                                fontSize: 14.sp,
+                                                                fontSize:
+                                                                14.sp,
                                                                 fontFamily:
-                                                                    AppConstants
-                                                                        .manrope,
-                                                                color:
-                                                                    theme.isDark
-                                                                        ? Colors
-                                                                            .white
-                                                                        : Colors
-                                                                            .grey
-                                                                            .shade600,
+                                                                AppConstants
+                                                                    .manrope,
+                                                                color: theme
+                                                                    .isDark
+                                                                    ? Colors
+                                                                    .white
+                                                                    : Colors
+                                                                    .grey
+                                                                    .shade600,
                                                               ),
                                                             ),
                                                             SizedBox(
                                                               height: 0.4.h,
                                                             ),
                                                             Text(
-                                                              booking?.maxBookingPerMonth
-                                                                      ?.toString() ??
+                                                              booking?.availableSlots
+                                                                  ?.toString() ??
                                                                   "Unknown",
-                                                              style: TextStyle(
-                                                                fontSize: 15.sp,
+                                                              style:
+                                                              TextStyle(
+                                                                fontSize:
+                                                                15.sp,
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                                FontWeight
+                                                                    .bold,
                                                                 fontFamily:
-                                                                    AppConstants
-                                                                        .manropeBold,
-                                                                color:
-                                                                    theme.isDark
-                                                                        ? Colors
-                                                                            .white
-                                                                        : Colors
-                                                                            .black,
+                                                                AppConstants
+                                                                    .manropeBold,
+                                                                color: theme
+                                                                    .isDark
+                                                                    ? Colors
+                                                                    .white
+                                                                    : Colors
+                                                                    .black,
                                                               ),
                                                             ),
                                                           ],
                                                         ),
                                                       ),
+
                                                     ],
                                                   ),
                                                 ),

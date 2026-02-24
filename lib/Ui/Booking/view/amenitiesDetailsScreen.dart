@@ -121,7 +121,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     _generateDatesBasedOnSelection();
     AmenitiesApi(date: calendar1SelectedDateStr);
 
-    statusApi();
+    // statusApi();
   }
 
   int selectedMonthIndex = DateTime.now().month - 1;
@@ -1957,16 +1957,18 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
   String? tappedSlotOpen;
   String? tappedSlotClose;
   Widget _buildTimeSelectionFromOperatingHours(OperatingHours? hours) {
-    List<Map<String, String>> baseSlots = _extractTimeSlotsFromOperatingHours(
+    List<Map<String, String>> baseSlots =
+    _extractTimeSlotsFromOperatingHours(
       hours,
       calendar1SelectedDate!,
     );
 
-    List<Map<String, String>> timeSlots = splitSlotByBookings(
-      baseSlots,
-      statusModal?.data ?? [],
-      calendar1SelectedDate!,
-    );
+    List<Map<String, String>> timeSlots =baseSlots;
+    // splitSlotByBookings(
+    //   baseSlots,
+    //   statusModal?.data ?? [],
+    //   calendar1SelectedDate!,
+    // );
     final theme = context.watch<ThemeController>();
 
     final selectedAmenity = amenitiesModel?.data?.data?.first;
@@ -1980,7 +1982,14 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     ) ??
         60
         : 60;
+    print("====== SLOT DEBUG START ======");
+    print("Selected Date: $calendar1SelectedDate");
 
+    print("Maintenance mins: ${selectedAmenity?.maintenanceDuration}");
+    print("Parsed maintenance: $maintenanceMins");
+
+    print("Allowed Duration: $allowedDuration");
+    print("Is All Day Booking: $isAllDayBooking");
     return Container(
       padding: EdgeInsets.all(3.w),
       decoration: BoxDecoration(
@@ -2002,59 +2011,59 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                   color: theme.isDark ? Colors.white : Colors.black,
                 ),
               ),
-              if (isAllDayBooking) ...[
-                const Spacer(),
-                isAlreadyBooked
-                    ? SizedBox()
-                    : batan(
-                  title: "Custom Session",
-                  route: () {
-                    Map<String, String> defaultSlot;
-
-                    /// If user already selected slot → use it
-                    if (selectedStartTime != null &&
-                        timeSlots.any((slot) =>
-                        slot['open'] == selectedStartTime)) {
-                      defaultSlot = timeSlots.firstWhere((slot) =>
-                      slot['open'] == selectedStartTime);
-                    } else {
-                      /// Otherwise use LAST available slot
-                      defaultSlot = timeSlots.last;
-                    }
-
-                    _showCustomTimePicker(
-                      hours: hours,
-                      selectedDate: calendar1SelectedDate!,
-                      initialOpenTime: defaultSlot['open'] ?? '09:00',
-                      initialCloseTime: defaultSlot['close'] ?? '10:00',
-                      onTimeSelected: (startTime, endTime) {
-                        setState(() {
-                          selectedStartTime = startTime;
-                          selectEndTime = endTime;
-
-                          TimeOfDay start = _parseTimeOfDay(startTime);
-                          TimeOfDay end = _parseTimeOfDay(endTime);
-
-                          selectedDurationInMinutes =
-                              _calculateDurationInMinutes(start, end);
-                        });
-
-                        addSlotAPi(
-                          startTime,
-                          endTime,
-                          selectedAmenity?.name.toString() ?? "",
-                        );
-                      },
-                    );
-                  },
-                  color: AppColors.lightText,
-                  fontcolor: Colors.white,
-                  height: 4.h,
-                  radius: 12.0,
-                  width: 40.w,
-                  fontsize: 16.sp,
-                ),
-              ],
+              // if (isAllDayBooking) ...[
+              //   const Spacer(),
+              //   isAlreadyBooked
+              //       ? SizedBox()
+              //       : batan(
+              //     title: "Custom Session",
+              //     route: () {
+              //       Map<String, String> defaultSlot;
+              //
+              //       /// If user already selected slot → use it
+              //       if (selectedStartTime != null &&
+              //           timeSlots.any((slot) =>
+              //           slot['open'] == selectedStartTime)) {
+              //         defaultSlot = timeSlots.firstWhere((slot) =>
+              //         slot['open'] == selectedStartTime);
+              //       } else {
+              //         /// Otherwise use LAST available slot
+              //         defaultSlot = timeSlots.last;
+              //       }
+              //
+              //       _showCustomTimePicker(
+              //         hours: hours,
+              //         selectedDate: calendar1SelectedDate!,
+              //         initialOpenTime: defaultSlot['open'] ?? '09:00',
+              //         initialCloseTime: defaultSlot['close'] ?? '10:00',
+              //         onTimeSelected: (startTime, endTime) {
+              //           setState(() {
+              //             selectedStartTime = startTime;
+              //             selectEndTime = endTime;
+              //
+              //             TimeOfDay start = _parseTimeOfDay(startTime);
+              //             TimeOfDay end = _parseTimeOfDay(endTime);
+              //
+              //             selectedDurationInMinutes =
+              //                 _calculateDurationInMinutes(start, end);
+              //           });
+              //
+              //           addSlotAPi(
+              //             startTime,
+              //             endTime,
+              //             selectedAmenity?.name.toString() ?? "",
+              //           );
+              //         },
+              //       );
+              //     },
+              //     color: AppColors.lightText,
+              //     fontcolor: Colors.white,
+              //     height: 4.h,
+              //     radius: 12.0,
+              //     width: 40.w,
+              //     fontsize: 16.sp,
+              //   ),
+              // ],
             ],
           ),
           SizedBox(height: 1.h),
@@ -2087,16 +2096,14 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                     final Map<String, String> slot = entry.value;
                     final String openTime = slot['open'] ?? '';
                     final String closeTime = slot['close'] ?? '';
-                    final String displayTime = "$openTime - $closeTime";
+                    // final String displayTime = "$openTime - $closeTime";
                     final bool isSelected = selectedStartTime == openTime;
-
+                    final String displayTime =
+                        "${slot['displayOpen']} - ${slot['displayClose']}";
                     // Check if slot is already booked
-                    bool isBooked = _isSlotAlreadyBookedByMe(
-                      openTime,
-                      calendar1SelectedDate!,
-                      slotCloseTime: closeTime,
-                    );
-
+                    bool isBooked = false;
+                    // _isSlotAlreadyBookedByMe( openTime, calendar1SelectedDate!, slotCloseTime: closeTime, // ← add this
+                    //     );
                     bool isInvalidDuration = false;
 
                     if (isAllDayBooking &&
@@ -2209,19 +2216,19 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                 isBooked ? TextDecoration.lineThrough : null,
                               ),
                             ),
-                            if (isBooked)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 2),
-                                child: Text(
-                                  "Booked",
-                                  style: TextStyle(
-                                    fontSize: 10.sp,
-                                    color: Colors.red,
-                                    fontFamily: AppConstants.manrope,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
+                            // if (isBooked)
+                            //   Padding(
+                            //     padding: const EdgeInsets.only(top: 2),
+                            //     child: Text(
+                            //       "Booked",
+                            //       style: TextStyle(
+                            //         fontSize: 10.sp,
+                            //         color: Colors.red,
+                            //         fontFamily: AppConstants.manrope,
+                            //         fontWeight: FontWeight.bold,
+                            //       ),
+                            //     ),
+                            //   ),
                             if (isInvalidDuration && isAllDayBooking)
                               Padding(
                                 padding: const EdgeInsets.only(top: 2),
@@ -2290,7 +2297,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     required String initialOpenTime,
     required String initialCloseTime,
     required Function(String startTime, String endTime) onTimeSelected,
-  }) async {
+  }) async
+  {
     if (hours == null) return;
 
     final selectedAmenity = amenitiesModel?.data?.data?.first;
@@ -2900,10 +2908,69 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
 
   // ====================== HELPER FUNCTIONS ======================
 
+  // List<Map<String, String>> _extractTimeSlotsFromOperatingHours(
+  //     OperatingHours? hours,
+  //     DateTime selectedDate,
+  //     )
+  // {
+  //   List<Map<String, String>> timeSlots = [];
+  //
+  //   if (hours == null) return timeSlots;
+  //
+  //   final weekday = getWeekdayName(selectedDate).toLowerCase();
+  //   List<TimeSlot>? timeSlotObjects;
+  //
+  //   switch (weekday) {
+  //     case 'monday':
+  //       timeSlotObjects = hours.monday;
+  //       break;
+  //     case 'tuesday':
+  //       timeSlotObjects = hours.tuesday;
+  //       break;
+  //     case 'wednesday':
+  //       timeSlotObjects = hours.wednesday;
+  //       break;
+  //     case 'thursday':
+  //       timeSlotObjects = hours.thursday;
+  //       break;
+  //     case 'friday':
+  //       timeSlotObjects = hours.friday;
+  //       break;
+  //     case 'saturday':
+  //       timeSlotObjects = hours.saturday;
+  //       break;
+  //     case 'sunday':
+  //       timeSlotObjects = hours.sunday;
+  //       break;
+  //   }
+  //
+  //   if (timeSlotObjects == null || timeSlotObjects.isEmpty) {
+  //     return timeSlots;
+  //   }
+  //
+  //   for (var slot in timeSlotObjects) {
+  //     if (slot.open != null && slot.open!.isNotEmpty) {
+  //       String formattedOpen = _formatTimeTo12Hour(slot.open!);
+  //       String formattedClose = '';
+  //       if (slot.close != null && slot.close!.isNotEmpty) {
+  //         formattedClose = _formatTimeTo12Hour(slot.close!);
+  //       }
+  //       timeSlots.add({
+  //         'open': formattedOpen,
+  //         'close': formattedClose,
+  //         'rawOpen': slot.open!,
+  //         'rawClose': slot.close ?? '',
+  //       });
+  //     }
+  //   }
+  //
+  //   return timeSlots;
+  // }
   List<Map<String, String>> _extractTimeSlotsFromOperatingHours(
       OperatingHours? hours,
       DateTime selectedDate,
-      ) {
+      )
+  {
     List<Map<String, String>> timeSlots = [];
 
     if (hours == null) return timeSlots;
@@ -2934,30 +3001,39 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
         timeSlotObjects = hours.sunday;
         break;
     }
-
+    print("---- OPERATING HOURS RAW SLOTS ----");
+    print("Weekday: $weekday");
     if (timeSlotObjects == null || timeSlotObjects.isEmpty) {
       return timeSlots;
     }
 
     for (var slot in timeSlotObjects) {
-      if (slot.open != null && slot.open!.isNotEmpty) {
-        String formattedOpen = _formatTimeTo12Hour(slot.open!);
-        String formattedClose = '';
-        if (slot.close != null && slot.close!.isNotEmpty) {
-          formattedClose = _formatTimeTo12Hour(slot.close!);
-        }
-        timeSlots.add({
-          'open': formattedOpen,
-          'close': formattedClose,
-          'rawOpen': slot.open!,
-          'rawClose': slot.close ?? '',
-        });
-      }
-    }
+      if (slot.open == null || slot.open!.isEmpty) continue;
 
+      /// 🔴 RAW TIME (logic, split, booking mate)
+      final rawOpen = slot.open!;
+      final rawClose = slot.close ?? '';
+
+      /// 🟢 DISPLAY TIME (UI mate)
+      final displayOpen = _formatTimeTo12Hour(rawOpen);
+      final displayClose =
+      rawClose.isNotEmpty ? _formatTimeTo12Hour(rawClose) : '';
+
+      timeSlots.add({
+        /// RAW values → calculations ma use karvana
+        'open': rawOpen,
+        'close': rawClose,
+
+        /// UI display values → screen par show karvana
+        'displayOpen': displayOpen,
+        'displayClose': displayClose,
+      });
+      print("Slot from API: ${slot.open} → ${slot.close}");
+      print("Formatted: $displayOpen → $displayClose");
+    }
+    print("Base slots generated: $timeSlots");
     return timeSlots;
   }
-
   String getOperatingHours(DateTime selectedDate, OperatingHours? hours) {
     if (hours == null) return "No operating hours available";
 
@@ -3031,12 +3107,60 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
   }
 
 
+  // List<Map<String, String>> splitSlotByBookings(
+  //     List<Map<String, String>> slots,
+  //     List bookingData,
+  //     DateTime selectedDate,
+  //     )
+  // {
+  //   List<Map<String, String>> result = [];
+  //
+  //   for (var slot in slots) {
+  //     DateTime slotStart = _timeToDateTime(slot['open']!, selectedDate);
+  //     DateTime slotEnd = _timeToDateTime(slot['close']!, selectedDate);
+  //
+  //     DateTime currentStart = slotStart;
+  //
+  //     /// Sort bookings by start time
+  //     List filteredBookings = bookingData.where((b) =>
+  //     b.bookingDate == DateFormat('yyyy-MM-dd').format(selectedDate)).toList();
+  //
+  //     filteredBookings.sort((a, b) => a.startTime.compareTo(b.startTime));
+  //
+  //     for (var booking in filteredBookings) {
+  //       DateTime bookedStart = _timeToDateTime(booking.startTime, selectedDate);
+  //       DateTime bookedEnd = _timeToDateTime(booking.endTime, selectedDate);
+  //
+  //       /// Add free time before booked slot
+  //       if (currentStart.isBefore(bookedStart)) {
+  //         result.add({
+  //           "open": _formatTime(currentStart),
+  //           "close": _formatTime(bookedStart),
+  //         });
+  //       }
+  //
+  //       /// Move pointer after booking
+  //       if (bookedEnd.isAfter(currentStart)) {
+  //         currentStart = bookedEnd;
+  //       }
+  //     }
+  //
+  //     /// Add remaining time after last booking
+  //     if (currentStart.isBefore(slotEnd)) {
+  //       result.add({
+  //         "open": _formatTime(currentStart),
+  //         "close": _formatTime(slotEnd),
+  //       });
+  //     }
+  //   }
+  //
+  //   return result;
+  // }
   List<Map<String, String>> splitSlotByBookings(
       List<Map<String, String>> slots,
       List bookingData,
       DateTime selectedDate,
-      )
-  {
+      ) {
     List<Map<String, String>> result = [];
 
     for (var slot in slots) {
@@ -3045,15 +3169,19 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
 
       DateTime currentStart = slotStart;
 
-      /// Sort bookings by start time
+      /// Sort bookings by start time (important)
       List filteredBookings = bookingData.where((b) =>
-      b.bookingDate == DateFormat('yyyy-MM-dd').format(selectedDate)).toList();
+      b.bookingDate ==
+          DateFormat('yyyy-MM-dd').format(selectedDate)).toList();
 
-      filteredBookings.sort((a, b) => a.startTime.compareTo(b.startTime));
+      filteredBookings.sort((a, b) =>
+          a.startTime.compareTo(b.startTime));
 
       for (var booking in filteredBookings) {
-        DateTime bookedStart = _timeToDateTime(booking.startTime, selectedDate);
-        DateTime bookedEnd = _timeToDateTime(booking.endTime, selectedDate);
+        DateTime bookedStart =
+        _timeToDateTime(booking.startTime, selectedDate);
+        DateTime bookedEnd =
+        _timeToDateTime(booking.endTime, selectedDate);
 
         /// Add free time before booked slot
         if (currentStart.isBefore(bookedStart)) {
@@ -3080,7 +3208,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
 
     return result;
   }
-
 
   DateTime _timeToDateTime(String time, DateTime date) {
     time = time.trim();
@@ -3307,58 +3434,58 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     );
   }
 
-  bool _isSlotAlreadyBookedByMe(String slotOpenTime, DateTime selectedDate,
-      {String? slotCloseTime}) {
-    final data = statusModal?.data;
-    if (data == null || data.isEmpty) return false;
-
-    final String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
-
-    // Convert slot open/close to minutes for overlap check
-    final String slotOpen24 = convertTo24(slotOpenTime);
-    final String slotClose24 =
-    slotCloseTime != null ? convertTo24(slotCloseTime) : '';
-
-    int slotOpenMins = _timeToMinutes(slotOpen24);
-    int slotCloseMins =
-    slotClose24.isNotEmpty ? _timeToMinutes(slotClose24) : slotOpenMins + 1;
-
-    for (final booking in data) {
-      final String? bDate = booking.bookingDate;
-      final String? bStart = booking.startTime;
-      final String? bEnd = booking.endTime;
-
-      if (bDate == null || bStart == null) continue;
-      if (bDate != dateStr) continue;
-
-      // Overlap check for all bookings
-      if (slotCloseTime != null && bEnd != null) {
-        int bookingStartMins = _timeToMinutes(bStart);
-        int bookingEndMins = _timeToMinutes(bEnd);
-
-        bool overlaps = slotOpenMins < bookingEndMins &&
-            slotCloseMins > bookingStartMins;
-
-        if (overlaps) {
-          return true;
-        }
-      } else {
-        // Original exact match logic for simple slots
-        String bookingHms = _toHms(bStart);
-        String uiHms = _toHms(slotOpen24);
-
-        if (booking.isFirstSlot == "false") {
-          final DateTime parsed = DateFormat('HH:mm:ss').parseStrict(bookingHms);
-          final DateTime adjusted = parsed.subtract(const Duration(minutes: 30));
-          bookingHms = DateFormat('HH:mm:ss').format(adjusted);
-        }
-
-        if (bookingHms == uiHms) return true;
-      }
-    }
-
-    return false;
-  }
+  // bool _isSlotAlreadyBookedByMe(String slotOpenTime, DateTime selectedDate,
+  //     {String? slotCloseTime}) {
+  //   final data = statusModal?.data;
+  //   if (data == null || data.isEmpty) return false;
+  //
+  //   final String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
+  //
+  //   // Convert slot open/close to minutes for overlap check
+  //   final String slotOpen24 = convertTo24(slotOpenTime);
+  //   final String slotClose24 =
+  //   slotCloseTime != null ? convertTo24(slotCloseTime) : '';
+  //
+  //   int slotOpenMins = _timeToMinutes(slotOpen24);
+  //   int slotCloseMins =
+  //   slotClose24.isNotEmpty ? _timeToMinutes(slotClose24) : slotOpenMins + 1;
+  //
+  //   for (final booking in data) {
+  //     final String? bDate = booking.bookingDate;
+  //     final String? bStart = booking.startTime;
+  //     final String? bEnd = booking.endTime;
+  //
+  //     if (bDate == null || bStart == null) continue;
+  //     if (bDate != dateStr) continue;
+  //
+  //     // Overlap check for all bookings
+  //     if (slotCloseTime != null && bEnd != null) {
+  //       int bookingStartMins = _timeToMinutes(bStart);
+  //       int bookingEndMins = _timeToMinutes(bEnd);
+  //
+  //       bool overlaps = slotOpenMins < bookingEndMins &&
+  //           slotCloseMins > bookingStartMins;
+  //
+  //       if (overlaps) {
+  //         return true;
+  //       }
+  //     } else {
+  //       // Original exact match logic for simple slots
+  //       String bookingHms = _toHms(bStart);
+  //       String uiHms = _toHms(slotOpen24);
+  //
+  //       if (booking.isFirstSlot == "false") {
+  //         final DateTime parsed = DateFormat('HH:mm:ss').parseStrict(bookingHms);
+  //         final DateTime adjusted = parsed.subtract(const Duration(minutes: 30));
+  //         bookingHms = DateFormat('HH:mm:ss').format(adjusted);
+  //       }
+  //
+  //       if (bookingHms == uiHms) return true;
+  //     }
+  //   }
+  //
+  //   return false;
+  // }
 
   int _timeToMinutes(String time) {
     try {
