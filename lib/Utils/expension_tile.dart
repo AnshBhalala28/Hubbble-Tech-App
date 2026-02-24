@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Services/themeServices.dart';
-import 'package:wavee/Utils/const.dart';
+import 'package:wavee/services/themeServices.dart';
+import 'package:wavee/utils/const.dart';
 
 class CustomExpansionTile extends StatefulWidget {
   final String title;

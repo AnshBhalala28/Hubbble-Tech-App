@@ -2,22 +2,22 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/ui/category/modal/categoryDetailModal.dart';
+import 'package:wavee/ui/cart_screen/model/cartDetailsModal.dart';
 
-import '../../../Utils/checkInternetConnection.dart';
-import '../../../Utils/colors.dart';
-import '../../../Utils/const.dart';
-import '../../../Utils/customAppBar.dart';
-import '../../../Utils/customBatan.dart';
-import '../../../Utils/errorDialog.dart';
-import '../../../Utils/loader.dart';
-import '../../../Utils/productDisable.dart';
-import '../../CartScreen/model/cartDetailsModal.dart';
-import '../../CartScreen/provider/addToCartProvider.dart';
-import '../../CartScreen/view/cartViewScreen.dart';
-import '../../CommunityDetailsPage/Provider/communityDetailProvider.dart';
-import '../../productDetailPage/provider/productProvider.dart';
-import '../../productDetailPage/view/productDetailPage.dart';
-import '../Modal/categoryDetailModal.dart';
+import '../../../utils/checkInternetConnection.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/const.dart';
+import '../../../utils/customAppBar.dart';
+import '../../../utils/customBatan.dart';
+import '../../../utils/errorDialog.dart';
+import '../../../utils/loader.dart';
+import '../../../utils/productDisable.dart';
+import '../../cart_screen/provider/addToCartProvider.dart';
+import '../../cart_screen/view/cartViewScreen.dart';
+import '../../community_details_page/provider/communityDetailProvider.dart';
+import '../../product_detail_page/provider/productProvider.dart';
+import '../../product_detail_page/view/productDetailPage.dart';
 
 class CategoryScreen extends StatefulWidget {
   String? categoryID;
@@ -58,7 +58,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
       body:
           isLoading
-              ? Loader()
+              ? const Loader()
               : Stack(
                 children: [
                   Column(
@@ -540,7 +540,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   if (isAddtoCart)
                     Container(
                       color: Colors.black.withValues(alpha: 0.3),
-                      child: Center(child: Loader()),
+                      child: const Center(child: Loader()),
                     ),
                 ],
               ),

@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/ui/authentication/modal/login_model.dart';
 
 // --- Keep your existing imports ---
-import '../../../Utils/checkInternetConnection.dart';
-import '../../../Utils/const.dart';
-import '../../../Utils/customSnackBars.dart';
-import '../../../Utils/storeUserData.dart';
-import '../../HomeScreen/View/homePage.dart';
-import '../modal/login_model.dart';
+import '../../../utils/checkInternetConnection.dart';
+import '../../../utils/const.dart';
+import '../../../utils/customSnackBars.dart';
+import '../../../utils/storeUserData.dart';
+import '../../home_screen/view/homePage.dart';
 import '../provider/authenticationProvider.dart';
 import 'forgotPassword.dart';
 
@@ -225,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? SizedBox(
                               height: 23.sp,
                               width: 23.sp,
-                              child: CircularProgressIndicator(
+                              child: const CircularProgressIndicator(
                                 color: Colors.white,
                                 strokeWidth: 3,
                               ),

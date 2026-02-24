@@ -17,7 +17,7 @@ class AppTheme {
     ),
     colorScheme: const ColorScheme.light(
       primary: Color(0xFFF0C88C),
-      background: Color(0xFFF0F2F5),
+      surface: Color(0xFFF0F2F5),
     ),
   );
 
@@ -37,7 +37,7 @@ class AppTheme {
     ),
     colorScheme: const ColorScheme.dark(
       primary: Color(0xFF4B5D8A),
-      background: Color(0xFF1A1A1A),
+      surface: Color(0xFF1A1A1A),
     ),
   );
 }

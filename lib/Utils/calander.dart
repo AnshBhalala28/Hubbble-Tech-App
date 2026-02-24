@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:wavee/Utils/colors.dart';
+import 'package:wavee/utils/colors.dart';
 
 import 'const.dart';
 
@@ -238,9 +238,9 @@ class _CustomCalendarState extends State<CustomCalendar> {
         ],
 
         // Days of week header
-        Row(
+        const Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: const [
+          children: [
             Text("Mon", style: TextStyle(fontWeight: FontWeight.bold)),
             Text("Tue", style: TextStyle(fontWeight: FontWeight.bold)),
             Text("Wed", style: TextStyle(fontWeight: FontWeight.bold)),
@@ -357,7 +357,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 if ((event["eventtitle"] ?? "").isNotEmpty) ...[
-                                  SizedBox(height: 4),
+                                  const SizedBox(height: 4),
                                   Text(
                                     "Description :- ${event["eventtitle"] ?? ""}",
                                     style: TextStyle(
@@ -367,7 +367,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
                                     ),
                                   ),
                                 ],
-                                SizedBox(height: 4),
+                                const SizedBox(height: 4),
                                 Row(
                                   children: [
                                     Icon(
@@ -375,7 +375,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
                                       size: 14.sp,
                                       color: Colors.grey[600],
                                     ),
-                                    SizedBox(width: 4),
+                                    const SizedBox(width: 4),
                                     Text(
                                       StringFormatDate(event["time"] ?? "N/A"),
                                       style: TextStyle(

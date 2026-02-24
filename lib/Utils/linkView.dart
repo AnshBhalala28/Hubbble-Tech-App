@@ -1,8 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:wavee/Utils/colors.dart';
-import 'package:wavee/Utils/const.dart';
-import 'package:wavee/Utils/inAppWebView.dart';
+import 'package:wavee/utils/colors.dart';
+import 'package:wavee/utils/const.dart';
+import 'package:wavee/utils/inAppWebView.dart';
 
 class ExpandableClickableText extends StatefulWidget {
   final String text;
@@ -10,11 +10,11 @@ class ExpandableClickableText extends StatefulWidget {
   final TextStyle? style;
 
   const ExpandableClickableText({
-    Key? key,
+    super.key,
     required this.text,
     this.trimLength = 150,
     this.style,
-  }) : super(key: key);
+  });
 
   @override
   State<ExpandableClickableText> createState() =>
@@ -28,7 +28,7 @@ class _ExpandableClickableTextState extends State<ExpandableClickableText> {
   Widget build(BuildContext context) {
     final visibleText =
         widget.text.length > widget.trimLength && !isExpanded
-            ? widget.text.substring(0, widget.trimLength) + "..."
+            ? "${widget.text.substring(0, widget.trimLength)}..."
             : widget.text;
 
     return Column(

@@ -64,7 +64,7 @@ class _PdfViewState extends State<PdfView> {
   @override
   Widget build(BuildContext context) {
     final fileName =
-        widget.link != null ? _getFileName(widget.link!) : 'View File';
+    widget.link != null ? _getFileName(widget.link!) : 'View File';
 
     return Scaffold(
       backgroundColor: AppColors.maincolor,

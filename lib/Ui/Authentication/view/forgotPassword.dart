@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/ui/authentication/modal/forgotPasswordModel.dart';
 
-import '../../../Utils/checkInternetConnection.dart';
-import '../../../Utils/colors.dart';
-import '../../../Utils/const.dart';
-import '../../../Utils/customSnackBars.dart';
-import '../../../Utils/errorDialog.dart';
-import '../View/loginscreen.dart';
-import '../modal/forgotPasswordModel.dart';
+import '../../../utils/checkInternetConnection.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/const.dart';
+import '../../../utils/customSnackBars.dart';
+import '../../../utils/errorDialog.dart';
+import '../view/loginscreen.dart';
 import '../provider/authenticationProvider.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {

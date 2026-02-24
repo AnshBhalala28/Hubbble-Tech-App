@@ -6,32 +6,32 @@
 // import 'package:sizer/sizer.dart';
 // import 'package:url_launcher/url_launcher.dart';
 // import 'package:wavee/Screen/Add%20to%20Cart/view/add_to_cart_view.dart';
-// import 'package:wavee/Screen/Authcation/View/loginscreen.dart' show LoginScreen;
-// import 'package:wavee/Screen/Booking/View/booking_screen.dart';
-// import 'package:wavee/Screen/Booking/View/event_booking_screen.dart';
-// import 'package:wavee/Screen/Booking/View/service_booking_screen.dart';
-// import 'package:wavee/Screen/Chatscreen/View/chatscreen.dart';
-// import 'package:wavee/Screen/Favourites/View/FavouriteBusinessesPage.dart';
-// import 'package:wavee/Screen/Message_board/View/messageboard.dart';
-// import 'package:wavee/Screen/visitor/View/visitorscreen.dart';
+// import 'package:wavee/Screen/Authcation/view/loginscreen.dart' show LoginScreen;
+// import 'package:wavee/Screen/booking/view/booking_screen.dart';
+// import 'package:wavee/Screen/booking/view/event_booking_screen.dart';
+// import 'package:wavee/Screen/booking/view/service_booking_screen.dart';
+// import 'package:wavee/Screen/Chatscreen/view/chatscreen.dart';
+// import 'package:wavee/Screen/Favourites/view/FavouriteBusinessesPage.dart';
+// import 'package:wavee/Screen/Message_board/view/messageboard.dart';
+// import 'package:wavee/Screen/visitor/view/visitorscreen.dart';
 // import 'package:wavee/comman/const.dart';
 // import 'package:wavee/comman/custom_button.dart';
 // import 'package:wavee/comman/error_dialog.dart';
 // import 'package:wavee/comman/store_local.dart';
 //
 // import '../Screen/Authcation/Model/DeleteAccountModel.dart';
-// import '../Screen/Authcation/Provider/authcation_provider.dart';
-// import '../Screen/Booking/View/book_amenities.dart';
+// import '../Screen/Authcation/provider/authcation_provider.dart';
+// import '../Screen/booking/view/book_amenities.dart';
 // import '../Screen/Community Screen/Community Screen/view/community_screen.dart';
-// import '../Screen/Event/View/event_screen.dart';
-// import '../Screen/Manintenance/View/maintenance_view.dart';
-// import '../Screen/Oredrscreen/View/order_screen_view.dart';
-// import '../Screen/Parcel/parcel_Screen_View/parcel_View.dart';
-// import '../Screen/upcomingRequest/View/Request_Page.dart';
-// import '../Screen/upcomingRequest/View/group_screen.dart';
+// import '../Screen/event/view/event_screen.dart';
+// import '../Screen/maintenance/view/maintenance_view.dart';
+// import '../Screen/Oredrscreen/view/order_screen_view.dart';
+// import '../Screen/parcel/parcel_Screen_View/parcel_View.dart';
+// import '../Screen/upcoming_request/view/Request_Page.dart';
+// import '../Screen/upcoming_request/view/group_screen.dart';
 // import '../Screen/viewProfile/Model/profile_model.dart';
-// import '../Screen/viewProfile/Provider/profile_provider.dart';
-// import '../Screen/viewProfile/View/viewprofile.dart';
+// import '../Screen/viewProfile/provider/profile_provider.dart';
+// import '../Screen/viewProfile/view/view_profile.dart';
 // import 'check_inernet_connecty.dart';
 // import 'colors.dart';
 // import 'custom_snack_bar.dart';
@@ -165,7 +165,7 @@
 //                                 ),
 //                                 SizedBox(width: 4.w),
 //                                 Text(
-//                                   'Parcel',
+//                                   'parcel',
 //                                   style: TextStyle(
 //                                     fontFamily: AppConstants.manrope,
 //                                     color: Colors.black,

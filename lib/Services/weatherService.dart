@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'package:wavee/Services/weatherModal.dart';
+import 'package:wavee/services/weatherModal.dart';
 
 class WeatherService {
   static const BASE_URL = "https://api.openweathermap.org/data/2.5/weather";

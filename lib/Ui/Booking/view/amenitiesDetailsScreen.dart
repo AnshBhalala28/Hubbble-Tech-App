@@ -11,20 +11,20 @@ import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:torn_ticket/torn_ticket.dart';
-import 'package:wavee/Ui/Booking/modal/statusModal.dart';
-import 'package:wavee/Utils/customSnackBars.dart';
-import 'package:wavee/Utils/viewPdfFunction.dart';
+import 'package:wavee/ui/booking/modal/bookingModel.dart';
+import 'package:wavee/ui/booking/modal/statusModal.dart';
+import 'package:wavee/utils/customSnackBars.dart';
+import 'package:wavee/utils/viewPdfFunction.dart';
 
-import '../../../Services/themeServices.dart';
-import '../../../Utils/checkInternetConnection.dart';
-import '../../../Utils/colors.dart';
-import '../../../Utils/const.dart';
-import '../../../Utils/customAppBar.dart';
-import '../../../Utils/customBatan.dart';
-import '../../../Utils/errorDialog.dart';
-import '../../../Utils/loader.dart';
-import '../Provider/bookingsProvider.dart';
-import '../modal/bookingModel.dart';
+import '../../../services/themeServices.dart';
+import '../../../utils/checkInternetConnection.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/const.dart';
+import '../../../utils/customAppBar.dart';
+import '../../../utils/customBatan.dart';
+import '../../../utils/errorDialog.dart';
+import '../../../utils/loader.dart';
+import '../provider/bookingsProvider.dart';
 import 'bookAmenities.dart';
 import 'bookingScreen.dart';
 
@@ -2800,7 +2800,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                   ),
                 ),
 
-                 SizedBox(height: 2.h),
+                SizedBox(height: 2.h),
                 if (maintenanceMins > 0) ...[
                   const SizedBox(height: 8),
                   Container(

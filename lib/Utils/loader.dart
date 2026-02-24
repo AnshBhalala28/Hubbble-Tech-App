@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Services/themeServices.dart';
+import 'package:wavee/services/themeServices.dart';
 
 import 'colors.dart'; // Ensure this path is correct for your project
 

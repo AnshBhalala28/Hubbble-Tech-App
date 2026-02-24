@@ -21,12 +21,12 @@ class AppColors {
   static const Color lightBack = Color(0xFFF0F2F5);
 
   // 2. Define Dark Mode colors based on your screenshot
-  static const Color darkBgColor = const Color(0xFF1C1C1C); // Main Background
-  static const Color darkPillColor = const Color(0xFF2B2B2C); // Pill Background
-  static const Color creamTextColor = const Color(
+  static const Color darkBgColor = Color(0xFF1C1C1C); // Main Background
+  static const Color darkPillColor = Color(0xFF2B2B2C); // Pill Background
+  static const Color creamTextColor = Color(
     0xFFEAE0C8,
   ); // "Good Afternoon" & Info Text
-  static const Color goldDateColor = const Color(0xFFCDBA81); // Date Text
+  static const Color goldDateColor = Color(0xFFCDBA81); // Date Text
   static Color darkBorderColor = Colors.white.withValues(
     alpha: 0.1,
   ); // Subtle border

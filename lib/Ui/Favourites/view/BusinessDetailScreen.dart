@@ -22,13 +22,13 @@
 // import '../../Community Screen/Community Screen/Model/BusnessViewModal.dart';
 // import '../../Community Screen/Community Screen/Model/OfferPromoAsViewedModel.dart';
 // import '../../Community Screen/Community Screen/Model/businesslikemodel.dart';
-// import '../../Community Screen/Community Screen/Provider/community_provider.dart';
+// import '../../Community Screen/Community Screen/provider/community_provider.dart';
 // import '../../Community Screen/Community Screen/view/FullScreenImageView.dart';
-// import '../../Event/Model/send_event_model.dart';
-// import '../../Event/Provider/eventProvider.dart';
-// import '../../messageScreen/View/messageScreen.dart';
+// import '../../event/Model/send_event_model.dart';
+// import '../../event/provider/eventProvider.dart';
+// import '../../messageScreen/view/messageScreen.dart';
 // import '../../productDetailPage/view/product_detail_page.dart';
-// import '../../serviceDetailPage/View/service_detail_page.dart';
+// import '../../serviceDetailPage/view/service_detail_page.dart';
 //
 // class BusinessDetailScreen extends StatefulWidget {
 //   final BusnessViewModal? busnessviewmodal;
@@ -482,7 +482,7 @@
 //                                     ),
 //                                     onPressed: () {
 //                                       Get.to(
-//                                         MessageScreen(
+//                                         message_screen(
 //                                           type: "business",
 //                                           chatName:
 //                                               busnessviewmodal
@@ -1829,7 +1829,7 @@
 //               child: ListTile(
 //                 onTap: () {
 //                   Get.to(
-//                     () => ProductDetailPage(
+//                     () => product_detail_page(
 //                       productID: product.id.toString() ?? "",
 //                       type: "product",
 //                     ),

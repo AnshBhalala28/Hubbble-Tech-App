@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -11,15 +10,14 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Services/appTheme.dart';
-import 'package:wavee/Services/themeServices.dart';
-import 'package:wavee/Ui/InitScreens/view/welcomeScreen.dart';
-
-import 'Ui/Authentication/modal/login_model.dart';
-import 'Utils/chatCounter.dart';
-import 'Utils/colors.dart';
-import 'Utils/storeUserData.dart';
+import 'package:wavee/services/appTheme.dart';
+import 'package:wavee/services/themeServices.dart';
+import 'package:wavee/ui/init_screens/view/welcomeScreen.dart';
 import 'firebase_options.dart';
+import 'ui/authentication/modal/login_model.dart';
+import 'utils/chatCounter.dart';
+import 'utils/colors.dart';
+import 'utils/storeUserData.dart';
 
 String? myDeviceToken;
 

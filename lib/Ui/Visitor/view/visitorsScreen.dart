@@ -7,18 +7,18 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Services/themeServices.dart';
-import 'package:wavee/Ui/MessageScreen/modal/SendMessageModel.dart';
-import 'package:wavee/Utils/checkInternetConnection.dart';
-import 'package:wavee/Utils/errorDialog.dart';
-import 'package:wavee/Utils/loader.dart';
+import 'package:wavee/services/themeServices.dart';
+import 'package:wavee/ui/message_screen/modal/SendMessageModel.dart';
+import 'package:wavee/ui/message_screen/provider/messageScreenProvider.dart';
+import 'package:wavee/utils/checkInternetConnection.dart';
+import 'package:wavee/utils/errorDialog.dart';
+import 'package:wavee/utils/loader.dart';
 
-import '../../../Utils/colors.dart';
-import '../../../Utils/const.dart';
-import '../../../Utils/customAppBar.dart';
-import '../../../Utils/customButton.dart';
-import '../../HomeScreen/Provider/homescreenProvider.dart' show HomeProvider;
-import '../../MessageScreen/provider/messageScreenProvider.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/const.dart';
+import '../../../utils/customAppBar.dart';
+import '../../../utils/customButton.dart';
+import '../../home_screen/provider/homescreenProvider.dart';
 import '../modal/latest_visitor_modal/latest_visitor_modal.dart';
 
 class VisitorScreen extends StatefulWidget {
@@ -89,9 +89,9 @@ class _VisitorScreenState extends State<VisitorScreen> {
     return s
         .split(' ')
         .map((word) {
-          if (word.isEmpty) return word;
-          return word[0].toUpperCase() + word.substring(1).toLowerCase();
-        })
+      if (word.isEmpty) return word;
+      return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    })
         .join(' ');
   }
 
@@ -121,7 +121,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
                     padding: EdgeInsets.only(left: 2.w, right: 2.w),
                     decoration: BoxDecoration(
                       color:
-                          theme.isDark ? AppColors.darkOptional : AppColors.white,
+                      theme.isDark ? AppColors.darkOptional : AppColors.white,
 
                       borderRadius: BorderRadius.circular(22),
                     ),
@@ -140,13 +140,13 @@ class _VisitorScreenState extends State<VisitorScreen> {
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
                               color:
-                                  theme.isDark ? Color(0xFF252525) : Colors.white,
+                              theme.isDark ? Color(0xFF252525) : Colors.white,
                               borderRadius: BorderRadius.circular(30),
                               border: Border.all(
                                 color:
-                                    theme.isDark
-                                        ? Color(0xf0313131)
-                                        : Colors.grey.shade200,
+                                theme.isDark
+                                    ? Color(0xf0313131)
+                                    : Colors.grey.shade200,
                                 width: 1,
                               ),
                             ),
@@ -163,9 +163,9 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                               : Icons.access_time,
                                           size: 20,
                                           color:
-                                              isCheckedIn
-                                                  ? const Color(0xFF27AE60)
-                                                  : Colors.grey.shade600,
+                                          isCheckedIn
+                                              ? const Color(0xFF27AE60)
+                                              : Colors.grey.shade600,
                                         ),
                                         const SizedBox(width: 8),
                                         Text(
@@ -174,9 +174,9 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                               : "Checked Out",
                                           style: TextStyle(
                                             color:
-                                                isCheckedIn
-                                                    ? const Color(0xFF27AE60)
-                                                    : Colors.grey.shade600,
+                                            isCheckedIn
+                                                ? const Color(0xFF27AE60)
+                                                : Colors.grey.shade600,
                                             fontWeight: FontWeight.w600,
                                             fontSize: 15.sp,
                                             fontFamily: AppConstants.manropeBold,
@@ -214,9 +214,9 @@ class _VisitorScreenState extends State<VisitorScreen> {
 
                                       decoration: BoxDecoration(
                                         color:
-                                            theme.isDark
-                                                ? Color(0xf036342F)
-                                                : const Color(0xFFF0F2F5),
+                                        theme.isDark
+                                            ? Color(0xf036342F)
+                                            : const Color(0xFFF0F2F5),
                                         // લાઈટ બ્લુઈશ ગ્રે બેકગ્રાઉન્ડ
                                         shape: BoxShape.circle,
                                       ),
@@ -224,9 +224,9 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                         "assets/Svg/visitor1.svg",
                                         width: 8.w,
                                         color:
-                                            theme.isDark
-                                                ? Color(0xf0CBB88C)
-                                                : AppColors.lightText,
+                                        theme.isDark
+                                            ? Color(0xf0CBB88C)
+                                            : AppColors.lightText,
                                       ),
                                     ),
                                     const SizedBox(width: 15),
@@ -234,7 +234,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             capitalizeEachWord(
@@ -244,9 +244,9 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                               fontSize: 16.sp,
                                               fontWeight: FontWeight.bold,
                                               color:
-                                                  theme.isDark
-                                                      ? AppColors.white
-                                                      : Color(0xFF2D3748),
+                                              theme.isDark
+                                                  ? AppColors.white
+                                                  : Color(0xFF2D3748),
                                               fontFamily: AppConstants.manropeBold,
                                             ),
                                           ),
@@ -274,14 +274,14 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                               const SizedBox(width: 5),
                                               Text(
                                                 (visitor.keyLog != null &&
-                                                        int.tryParse(
-                                                              visitor.keyLog!,
-                                                            ) !=
-                                                            null &&
-                                                        int.parse(
-                                                              visitor.keyLog!,
-                                                            ) >=
-                                                            0)
+                                                    int.tryParse(
+                                                      visitor.keyLog!,
+                                                    ) !=
+                                                        null &&
+                                                    int.parse(
+                                                      visitor.keyLog!,
+                                                    ) >=
+                                                        0)
                                                     ? "Key: Yes"
                                                     : "Key: No",
                                                 style: TextStyle(
@@ -369,55 +369,55 @@ class _VisitorScreenState extends State<VisitorScreen> {
 
                         firstPageProgressIndicatorBuilder:
                             (_) => Center(
-                              child: CircularProgressIndicator(
-                                color:
-                                    theme.isDark
-                                        ? Colors.white
-                                        : AppColors.maincolor,
-                              ),
-                            ),
+                          child: CircularProgressIndicator(
+                            color:
+                            theme.isDark
+                                ? Colors.white
+                                : AppColors.maincolor,
+                          ),
+                        ),
                         newPageProgressIndicatorBuilder:
                             (_) => Center(
-                              child: CircularProgressIndicator(
-                                color:
-                                    theme.isDark
-                                        ? Colors.white
-                                        : AppColors.maincolor,
-                              ),
-                            ),
+                          child: CircularProgressIndicator(
+                            color:
+                            theme.isDark
+                                ? Colors.white
+                                : AppColors.maincolor,
+                          ),
+                        ),
                         noItemsFoundIndicatorBuilder:
                             (_) => Center(
-                              child: Text(
-                                'No Visitors Available',
-                                style: TextStyle(
-                                  fontFamily: AppConstants.manrope,
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                          child: Text(
+                            'No Visitors Available',
+                            style: TextStyle(
+                              fontFamily: AppConstants.manrope,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
                             ),
+                          ),
+                        ),
                         firstPageErrorIndicatorBuilder:
                             (_) => Center(
-                              child: Text(
-                                'No Visitors Available',
-                                style: TextStyle(
-                                  fontFamily: AppConstants.manrope,
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                          child: Text(
+                            'No Visitors Available',
+                            style: TextStyle(
+                              fontFamily: AppConstants.manrope,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
                             ),
+                          ),
+                        ),
                         newPageErrorIndicatorBuilder:
                             (_) => Center(
-                              child: Text(
-                                'Failed to load more',
-                                style: TextStyle(
-                                  fontFamily: AppConstants.manrope,
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                          child: Text(
+                            'Failed to load more',
+                            style: TextStyle(
+                              fontFamily: AppConstants.manrope,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
                             ),
+                          ),
+                        ),
                       ),
                     ),
                   ),

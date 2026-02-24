@@ -4,16 +4,16 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/ui/booking/modal/serviceBookingModel.dart';
 
-import '../../../Utils/checkInternetConnection.dart';
-import '../../../Utils/colors.dart';
-import '../../../Utils/const.dart';
-import '../../../Utils/customAppBar.dart';
-import '../../../Utils/customBatan.dart';
-import '../../../Utils/errorDialog.dart';
-import '../../../Utils/loader.dart';
-import '../Provider/bookingsProvider.dart';
-import '../modal/serviceBookingModel.dart';
+import '../../../utils/checkInternetConnection.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/const.dart';
+import '../../../utils/customAppBar.dart';
+import '../../../utils/customBatan.dart';
+import '../../../utils/errorDialog.dart';
+import '../../../utils/loader.dart';
+import '../provider/bookingsProvider.dart';
 
 class ServiceBookingScreen extends StatefulWidget {
   const ServiceBookingScreen({super.key});
@@ -103,7 +103,7 @@ class _ServiceBookingScreenState extends State<ServiceBookingScreen> {
             ),
           ),
           isLoading
-              ? Loader().paddingOnly(top: 30.h)
+              ? const Loader().paddingOnly(top: 30.h)
               : serviceBookingModel?.data?.length == 0 ||
                   serviceBookingModel?.data?.length == null
               ? Center(

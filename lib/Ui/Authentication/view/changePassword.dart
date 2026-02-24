@@ -3,17 +3,17 @@
 // import 'package:get/get.dart' hide FormData, MultipartFile;
 // import 'package:sizer/sizer.dart';
 //
-// import '../../../Utils/apiConfig.dart';
-// import '../../../Utils/apiEndpoint.dart';
-// import '../../../Utils/checkInternetConnection.dart';
-// import '../../../Utils/colors.dart';
-// import '../../../Utils/const.dart';
-// import '../../../Utils/customAppBar.dart';
-// import '../../../Utils/customInputDecoration.dart';
-// import '../../../Utils/customSnackBars.dart';
-// import '../../../Utils/errorDialog.dart';
-// import '../../../Utils/storeUserData.dart';
-// import '../View/loginscreen.dart';
+// import '../../../utils/apiConfig.dart';
+// import '../../../utils/apiEndpoint.dart';
+// import '../../../utils/checkInternetConnection.dart';
+// import '../../../utils/colors.dart';
+// import '../../../utils/const.dart';
+// import '../../../utils/customAppBar.dart';
+// import '../../../utils/customInputDecoration.dart';
+// import '../../../utils/customSnackBars.dart';
+// import '../../../utils/errorDialog.dart';
+// import '../../../utils/storeUserData.dart';
+// import '../view/loginscreen.dart';
 // import '../provider/authenticationProvider.dart';
 //
 // class ChangePasswordScreen extends StatefulWidget {
@@ -352,20 +352,20 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart' hide FormData, MultipartFile;
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Services/themeServices.dart';
+import 'package:wavee/services/themeServices.dart';
 
 // --- Imports from your project structure ---
-import '../../../Utils/apiConfig.dart';
-import '../../../Utils/apiEndpoint.dart';
-import '../../../Utils/checkInternetConnection.dart';
-import '../../../Utils/colors.dart';
-import '../../../Utils/const.dart';
-import '../../../Utils/customAppBar.dart';
-import '../../../Utils/customSnackBars.dart';
-import '../../../Utils/errorDialog.dart';
-import '../../../Utils/storeUserData.dart';
-import '../View/loginscreen.dart';
+import '../../../utils/apiConfig.dart';
+import '../../../utils/apiEndpoint.dart';
+import '../../../utils/checkInternetConnection.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/const.dart';
+import '../../../utils/customAppBar.dart';
+import '../../../utils/customSnackBars.dart';
+import '../../../utils/errorDialog.dart';
+import '../../../utils/storeUserData.dart';
 import '../provider/authenticationProvider.dart';
+import '../view/loginscreen.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -493,7 +493,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
     // Requirements Box
     final Color reqBoxColor =
-        isDark ? Color(0xf0282623) : const Color(0xFFE9EEF5);
+        isDark ? const Color(0xf0282623) : const Color(0xFFE9EEF5);
     final Color reqDefaultTextColor =
         isDark ? const Color(0xFFCFB583) : Colors.blue.shade900;
     final BoxBorder? reqBoxBorder =
@@ -540,7 +540,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       child: Icon(
                         Icons.shield_outlined,
                         size: 25.sp,
-                        color: isDark ? Color(0xf0B6A57F) : AppColors.lightText,
+                        color:
+                            isDark
+                                ? const Color(0xf0B6A57F)
+                                : AppColors.lightText,
                       ),
                     ),
                     SizedBox(height: 2.h),
@@ -1016,7 +1019,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               "Something went wrong (${response.statusCode}). Please try again.";
         });
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       // <--- Added stackTrace capture here
 
       if (e is DioException) {

@@ -48,10 +48,10 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("C:\\Users\\Hiren\\StudioProjects\\waveeai-app-new18-02-2026\\android\\app\\waveeai.jks")
-            storePassword = "123456"
-            keyAlias = "waveeai"
-            keyPassword = "123456"
+            storeFile = file("../waveeai.jks")
+            storePassword = System.getenv("APP_STORE_PASSWORD") ?: "123456"
+            keyAlias = System.getenv("APP_KEY_ALIAS") ?: "waveeai"
+            keyPassword = System.getenv("APP_KEY_PASSWORD") ?: "123456"
         }
     }
 

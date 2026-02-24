@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_typedefs/rx_typedefs.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Services/themeServices.dart'; // Ensure this path matches your project
+import 'package:wavee/services/themeServices.dart'; // Ensure this path matches your project
 
 import 'colors.dart';
 import 'const.dart';

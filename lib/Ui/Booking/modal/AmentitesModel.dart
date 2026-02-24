@@ -66,9 +66,9 @@ class Data {
     imageUrl = json['image_url'].cast<String>();
     rulesNotice = json['rules_notice'];
     operatingHours =
-        json['operating_hours'] != null
-            ? OperatingHours.fromJson(json['operating_hours'])
-            : null;
+    json['operating_hours'] != null
+        ? OperatingHours.fromJson(json['operating_hours'])
+        : null;
     durationOptions = json['duration_options'].cast<String>();
     capacity = json['capacity'];
     maxBookingPerDay = json['max_booking_per_day'];

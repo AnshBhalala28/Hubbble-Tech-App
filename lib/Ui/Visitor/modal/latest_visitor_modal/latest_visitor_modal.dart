@@ -614,7 +614,8 @@ List<T>? _safeList<T>(dynamic value, T Function(dynamic) builder) {
 List<String>? _safeStringList(dynamic value) {
   if (value == null) return [];
   if (value is List) return value.map((e) => e.toString()).toList();
-  if (value is String && value.contains(","))
+  if (value is String && value.contains(",")) {
     return value.split(",").map((e) => e.trim()).toList();
+  }
   return [value.toString()];
 }

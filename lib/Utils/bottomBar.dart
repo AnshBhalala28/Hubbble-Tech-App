@@ -4,12 +4,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart'; // Ensure you have provider imported
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Services/themeServices.dart'; // Import your ThemeController
-
-import '../Ui/Chatscreen/View/chatScreen.dart';
-import '../Ui/CommunityScreen/view/communityScreen.dart';
-import '../Ui/HomeScreen/View/homePage.dart';
-import '../Ui/cartScreen/view/cartViewScreen.dart';
+import 'package:wavee/services/themeServices.dart'; // Import your ThemeController
+import 'package:wavee/ui/cart_screen/view/cartViewScreen.dart';
+import 'package:wavee/ui/chat_screen/view/chatScreen.dart';
+import '../ui/community_screen/view/communityScreen.dart';
+import '../ui/home_screen/view/homePage.dart';
 import 'colors.dart';
 import 'const.dart';
 

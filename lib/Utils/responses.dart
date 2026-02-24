@@ -6,8 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:wavee/Utils/colors.dart';
-import 'package:wavee/Utils/customSnackBars.dart';
+import 'package:wavee/utils/colors.dart';
+import 'package:wavee/utils/customSnackBars.dart';
 
 import 'CustomExpection.dart';
 

@@ -5,17 +5,17 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Services/themeServices.dart';
+import 'package:wavee/services/themeServices.dart';
 
-import '../../../Utils/checkInternetConnection.dart';
-import '../../../Utils/colors.dart';
-import '../../../Utils/const.dart';
-import '../../../Utils/customAppBar.dart';
-import '../../../Utils/customBatan.dart';
-import '../../../Utils/errorDialog.dart';
-import '../../../Utils/loader.dart';
-import '../../Event/View/eventDetails.dart';
-import '../Provider/bookingsProvider.dart';
+import '../../../utils/checkInternetConnection.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/const.dart';
+import '../../../utils/customAppBar.dart';
+import '../../../utils/customBatan.dart';
+import '../../../utils/errorDialog.dart';
+import '../../../utils/loader.dart';
+import '../../event/view/eventDetails.dart';
+import '../provider/bookingsProvider.dart';
 import '../modal/eventBookingModal.dart';
 import '../modal/eventDetailModel.dart';
 
@@ -65,7 +65,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
               children: [
                 SizedBox(height: 4.h),
                 TitleBar(
-                  title: "Event Booking",
+                  title: "event Booking",
                   drawerCallback: () {},
                   back: () {
                     Get.back();
@@ -99,12 +99,15 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                             decoration: BoxDecoration(
                               border: Border.all(
                                 width: 0.5,
-                                color: isDark ? Color(0xffbdab82) : Colors.grey,
+                                color:
+                                    isDark
+                                        ? const Color(0xffbdab82)
+                                        : Colors.grey,
                               ),
                               color:
                                   selectedCategory == index
                                       ? isDark
-                                          ? Color(0xff272727)
+                                          ? const Color(0xff272727)
                                           : AppColors.maincolor
                                       : isDark
                                       ? Colors.black
@@ -139,7 +142,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
 
                 SizedBox(height: 2.h),
                 isLoading
-                    ? Center(child: Loader()).paddingOnly(top: 25.h)
+                    ? const Center(child: Loader()).paddingOnly(top: 25.h)
                     : eventBookingModal?.data?.length == null ||
                         eventBookingModal?.data?.length == 0
                     ? Center(
@@ -174,7 +177,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                                   decoration: BoxDecoration(
                                     color:
                                         isDark
-                                            ? Color(0xff272727)
+                                            ? const Color(0xff272727)
                                             : Colors.white,
                                     borderRadius: BorderRadius.circular(20),
                                     boxShadow: [
@@ -214,7 +217,9 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                                                     fontWeight: FontWeight.w600,
                                                     color:
                                                         isDark
-                                                            ? Color(0xffbdab82)
+                                                            ? const Color(
+                                                              0xffbdab82,
+                                                            )
                                                             : Colors.black54,
                                                     fontFamily:
                                                         AppConstants.manrope,
@@ -279,7 +284,9 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                                                   size: 16,
                                                   color:
                                                       isDark
-                                                          ? Color(0xffbdab82)
+                                                          ? const Color(
+                                                            0xffbdab82,
+                                                          )
                                                           : Colors.black45,
                                                 ),
                                                 const SizedBox(width: 4),
@@ -320,12 +327,12 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
           if (isDetailLoading)
             Container(
               color: Colors.black.withValues(alpha: 0.3),
-              child: Center(child: Loader()),
+              child: const Center(child: Loader()),
             ),
           if (isRsvpLoading)
             Container(
               color: Colors.black.withValues(alpha: 0.3),
-              child: Center(child: Loader()),
+              child: const Center(child: Loader()),
             ),
         ],
       ),
@@ -530,13 +537,13 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                   width: 20.w,
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
-                    color: isDark ? Color(0xffbdab82) : Colors.grey[300],
+                    color: isDark ? const Color(0xffbdab82) : Colors.grey[300],
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
               ),
               SizedBox(height: 2.h),
-              _detailRow("Event Name", event?.eventName ?? "-"),
+              _detailRow("event Name", event?.eventName ?? "-"),
               _detailRow("Location", event?.eventLocation ?? "-"),
               _detailRow(
                 "Date",
@@ -601,7 +608,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                       Get.back();
                     }
                   },
-                  color: isDark ? Color(0xffbdab82) : AppColors.maincolor,
+                  color: isDark ? const Color(0xffbdab82) : AppColors.maincolor,
                   fontcolor: AppColors.white,
                   height: 5.h,
                   width: double.infinity,
@@ -795,7 +802,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                 fontWeight: FontWeight.w600,
                 fontFamily: AppConstants.manropeBold,
                 fontSize: 15.sp,
-                color: isDark ? Color(0xffbdab82) : AppColors.blackColor,
+                color: isDark ? const Color(0xffbdab82) : AppColors.blackColor,
               ),
             ),
           ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
-import '../Ui/CommunityScreen/view/FullScreenVideoPlayer.dart';
+import '../ui/community_screen/view/FullScreenVideoPlayer.dart';
 
 class VideoWidget extends StatefulWidget {
   final String videoUrl;

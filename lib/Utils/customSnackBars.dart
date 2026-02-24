@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wavee/Services/themeServices.dart';
+import 'package:wavee/services/themeServices.dart';
 
 void showSnackBar({
   required BuildContext context,
@@ -46,7 +46,6 @@ class _TopSnackBar extends StatefulWidget {
   final IconData? IconName;
 
   const _TopSnackBar({
-    Key? key,
     required this.onDismiss,
     this.ontap,
     required this.title,
@@ -55,7 +54,7 @@ class _TopSnackBar extends StatefulWidget {
     this.ColorText,
     this.IconColor,
     this.IconName,
-  }) : super(key: key);
+  });
 
   @override
   State<_TopSnackBar> createState() => _TopSnackBarState();

@@ -5,15 +5,15 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wavee/ui/booking/modal/amenitiesBookStatusModel.dart';
 
-import '../../../Services/themeServices.dart' show ThemeController;
-import '../../../Utils/checkInternetConnection.dart';
-import '../../../Utils/const.dart';
-import '../../../Utils/customAppBar.dart';
-import '../../../Utils/loader.dart';
-import '../../HomeScreen/View/homePage.dart';
-import '../Provider/bookingsProvider.dart';
-import '../modal/amenitiesBookStatusModel.dart';
+import '../../../services/themeServices.dart' show ThemeController;
+import '../../../utils/checkInternetConnection.dart';
+import '../../../utils/const.dart';
+import '../../../utils/customAppBar.dart';
+import '../../../utils/loader.dart';
+import '../../home_screen/view/homePage.dart';
+import '../provider/bookingsProvider.dart';
 import 'amenitiesDetailsScreen.dart';
 import 'bookAmenities.dart';
 
@@ -66,18 +66,18 @@ class _BookingScreenState extends State<BookingScreen> {
 
     // થીમ મુજબ કલર સેટિંગ્સ
     final bgColor =
-        theme.isDark ? const Color(0xFF121212) : const Color(0xFFF0F2F5);
+    theme.isDark ? const Color(0xFF121212) : const Color(0xFFF0F2F5);
     final cardColor = theme.isDark ? const Color(0xFF1E1E1E) : Colors.white;
     final primaryTextColor = theme.isDark ? Colors.white : Colors.black;
     final secondaryTextColor = theme.isDark ? Colors.white70 : Colors.black54;
     final filterBtnColor =
-        theme.isDark ? const Color(0xFFD4C18F) : const Color(0xFF5B6B8E);
+    theme.isDark ? const Color(0xFFD4C18F) : const Color(0xFF5B6B8E);
     final filterTxtColor = theme.isDark ? Colors.black : Colors.white;
     final iconBgColor =
-        theme.isDark ? Color(0xf036342F) : const Color(0xFFF0F2F8);
+    theme.isDark ? Color(0xf036342F) : const Color(0xFFF0F2F8);
 
     Map<String, dynamic>? bookingsData =
-        bookAmenitiesStatusModel?.data?.toJson();
+    bookAmenitiesStatusModel?.data?.toJson();
     final List<dynamic> nonEmptyBookings = [];
     bookingsData?.forEach((monthName, bookings) {
       if (bookings != null && bookings.isNotEmpty) {
@@ -131,33 +131,33 @@ class _BookingScreenState extends State<BookingScreen> {
 
               Expanded(
                 child:
-                    isLoading
-                        ? Center(child: Loader())
-                        : nonEmptyBookings.isEmpty
-                        ? Center(
-                          child: Text(
-                            "No Bookings Found",
-                            style: TextStyle(
-                              color: secondaryTextColor,
-                              fontSize: 15.sp,
-                            ),
-                          ),
-                        )
-                        : ListView.builder(
-                          itemCount: nonEmptyBookings.length,
-                          padding: EdgeInsets.only(bottom: 12.h),
-                          itemBuilder: (context, index) {
-                            final booking = nonEmptyBookings[index]['booking'];
-                            return _buildBookingCard(
-                              booking,
-                              cardColor,
-                              primaryTextColor,
-                              secondaryTextColor,
-                              iconBgColor,
-                              theme.isDark,
-                            );
-                          },
-                        ),
+                isLoading
+                    ? Center(child: Loader())
+                    : nonEmptyBookings.isEmpty
+                    ? Center(
+                  child: Text(
+                    "No Bookings Found",
+                    style: TextStyle(
+                      color: secondaryTextColor,
+                      fontSize: 15.sp,
+                    ),
+                  ),
+                )
+                    : ListView.builder(
+                  itemCount: nonEmptyBookings.length,
+                  padding: EdgeInsets.only(bottom: 12.h),
+                  itemBuilder: (context, index) {
+                    final booking = nonEmptyBookings[index]['booking'];
+                    return _buildBookingCard(
+                      booking,
+                      cardColor,
+                      primaryTextColor,
+                      secondaryTextColor,
+                      iconBgColor,
+                      theme.isDark,
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -167,31 +167,31 @@ class _BookingScreenState extends State<BookingScreen> {
       // Floating Action Button (ઈમેજ મુજબ મોટું બટન)
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton:
-          isLoading
-              ? Container()
-              : Container(
-                padding: EdgeInsets.symmetric(horizontal: 4.w),
-                width: double.infinity,
-                height: 7.h,
-                child: FloatingActionButton.extended(
-                  elevation: 2,
-                  backgroundColor: filterBtnColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  onPressed: () => Get.to(() => const BookAmenities_Screen()),
-                  icon: Icon(Icons.add, color: filterTxtColor, size: 24),
-                  label: Text(
-                    "Book Amenity",
-                    style: TextStyle(
-                      color: filterTxtColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15.sp,
-                      fontFamily: AppConstants.manropeBold,
-                    ),
-                  ),
-                ),
-              ),
+      isLoading
+          ? Container()
+          : Container(
+        padding: EdgeInsets.symmetric(horizontal: 4.w),
+        width: double.infinity,
+        height: 7.h,
+        child: FloatingActionButton.extended(
+          elevation: 2,
+          backgroundColor: filterBtnColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          onPressed: () => Get.to(() => const BookAmenities_Screen()),
+          icon: Icon(Icons.add, color: filterTxtColor, size: 24),
+          label: Text(
+            "Book Amenity",
+            style: TextStyle(
+              color: filterTxtColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 15.sp,
+              fontFamily: AppConstants.manropeBold,
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -215,17 +215,17 @@ class _BookingScreenState extends State<BookingScreen> {
         },
         itemBuilder:
             (context) =>
-                ["all", "confirmed", "pending", "cancelled"]
-                    .map(
-                      (e) => PopupMenuItem(
-                        value: e,
-                        child: Text(
-                          e.capitalizeFirst!,
-                          style: TextStyle(fontFamily: AppConstants.manrope),
-                        ),
-                      ),
-                    )
-                    .toList(),
+            ["all", "confirmed", "pending", "cancelled"]
+                .map(
+                  (e) => PopupMenuItem(
+                value: e,
+                child: Text(
+                  e.capitalizeFirst!,
+                  style: TextStyle(fontFamily: AppConstants.manrope),
+                ),
+              ),
+            )
+                .toList(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
 
@@ -246,13 +246,13 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   Widget _buildBookingCard(
-    dynamic booking,
-    Color cardColor,
-    Color pTextColor,
-    Color sTextColor,
-    Color iconBg,
-    bool isDark,
-  ) {
+      dynamic booking,
+      Color cardColor,
+      Color pTextColor,
+      Color sTextColor,
+      Color iconBg,
+      bool isDark,
+      ) {
     String status = booking['status'] ?? "Pending";
     Color sColor = getStatusColor(status, booking['attended']?.toString());
 
@@ -284,15 +284,15 @@ class _BookingScreenState extends State<BookingScreen> {
             color: isDark ? Colors.white12 : Colors.grey.withOpacity(0.1),
           ),
           boxShadow:
-              isDark
-                  ? []
-                  : [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.02),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+          isDark
+              ? []
+              : [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.02),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Column(
           children: [
@@ -502,3 +502,4 @@ class _BookingScreenState extends State<BookingScreen> {
     }
   }
 }
+

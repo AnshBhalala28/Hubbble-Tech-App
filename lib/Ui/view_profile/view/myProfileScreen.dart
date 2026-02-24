@@ -1,0 +1,342 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:sizer/sizer.dart';
+import 'package:wavee/utils/customSnackBars.dart';
+
+import '../../../utils/checkInternetConnection.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/const.dart';
+import '../../../utils/customAppBar.dart';
+import '../../../utils/customBatan.dart';
+import '../../../utils/loader.dart';
+import '../../home_screen/view/homePage.dart';
+import '../modal/profile_model.dart';
+import '../provider/profileProvider.dart';
+
+class Myprofile_Screen extends StatefulWidget {
+  final int? id;
+
+  const Myprofile_Screen({super.key, this.id});
+
+  @override
+  State<Myprofile_Screen> createState() => _Myprofile_ScreenState();
+}
+
+class _Myprofile_ScreenState extends State<Myprofile_Screen> {
+  final GlobalKey<ScaffoldState> Myprofile = GlobalKey<ScaffoldState>();
+
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+
+  File? selectedImage;
+  bool isLoading = true;
+  bool isEditing = false;
+  bool showButton = false; // NEW FOR ANIMATION
+
+  String profileImage = "";
+  ProfileModel? profileModel;
+
+  @override
+  void initState() {
+    super.initState();
+    GetProfile();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          if (isLoading)
+            const Center(child: Loader())
+          else
+            SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 3.w),
+              child: Column(
+                children: [
+                  SizedBox(height: 6.h),
+                  TitleBar(
+                    back: () => Get.back(),
+                    title: "My Profile",
+                    drawerCallback: () {},
+                  ),
+                  SizedBox(height: 3.h),
+
+                  /// Profile Image
+                  GestureDetector(
+                    onTap: pickImage,
+                    child: Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        CircleAvatar(
+                          radius: 35.sp,
+                          backgroundColor: Colors.grey.shade300,
+                          backgroundImage:
+                              selectedImage != null
+                                  ? FileImage(selectedImage!)
+                                  : (profileImage.isNotEmpty
+                                          ? NetworkImage(profileImage)
+                                          : const AssetImage(
+                                            'assets/images/waveeLogoShort.png',
+                                          ))
+                                      as ImageProvider,
+                        ),
+                        Container(
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.maincolor,
+                          ),
+                          padding: const EdgeInsets.all(8),
+                          child: Icon(
+                            Icons.camera_alt,
+                            size: 18.sp,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 4.h),
+
+                  Text(
+                    nameController.text,
+                    style: TextStyle(
+                      fontSize: 19.sp,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: AppConstants.manrope,
+                    ),
+                  ),
+                  SizedBox(height: 3.h),
+
+                  infoCard("Full Name", nameController.text, Icons.person),
+                  infoCard("Email", emailController.text, Icons.email),
+
+                  SizedBox(height: 2.h),
+
+                  /// 🔥 ANIMATED BUTTON (Fade + Slide)
+                  AnimatedSlide(
+                    duration: const Duration(milliseconds: 350),
+                    offset:
+                        showButton ? const Offset(0, 0) : const Offset(0, 0.3),
+                    curve: Curves.easeOutBack,
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 300),
+                      opacity: showButton ? 1 : 0,
+                      child:
+                          showButton
+                              ? batan(
+                                title: "Update Profile Image",
+                                route: () {
+                                  EditProfile();
+                                },
+                                color: AppColors.maincolor,
+                                fontcolor: Colors.white,
+                                height: 5.h,
+                                width: double.infinity,
+                                radius: 12.0,
+                                fontsize: 18.sp,
+                                fontFamily: AppConstants.manrope,
+                              )
+                              : const SizedBox.shrink(),
+                    ),
+                  ),
+
+                  SizedBox(height: 3.h),
+                ],
+              ),
+            ),
+
+          if (isEditing)
+            Container(
+              color: Colors.black.withValues(alpha: 0.3),
+              child: const Center(child: Loader()),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// CARD UI
+  Widget infoCard(String label, String value, IconData icon) {
+    return Material(
+      elevation: 1,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.5.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 11.w,
+              height: 11.w,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: AppColors.maincolor,
+              ),
+              child: Icon(icon, size: 18.sp, color: Colors.white),
+            ),
+            SizedBox(width: 3.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontFamily: AppConstants.manrope,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16.sp,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  SizedBox(height: 0.6.h),
+                  Text(
+                    value.isNotEmpty ? value : "—",
+                    style: TextStyle(
+                      fontFamily: AppConstants.manrope,
+                      fontSize: 16.sp,
+                      color: Colors.grey.shade700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    ).marginOnly(bottom: 1.h);
+  }
+
+  /// GET PROFILE API
+  void GetProfile() {
+    final Map<String, String> data = {"id": widget.id.toString()};
+
+    checkInternet().then((internet) async {
+      if (internet) {
+        ProfileProvider().profileApi(data).then((response) async {
+          profileModel = ProfileModel.fromJson(response.data);
+
+          if (response.statusCode == 200) {
+            var user = profileModel?.data?.user;
+
+            nameController.text =
+                "${capitalize(user?.name?.firstName)} ${capitalize(user?.name?.lastName)}";
+            emailController.text = user?.email ?? "N/A";
+            profileImage = user?.profile ?? "";
+          }
+
+          setState(() => isLoading = false);
+        });
+      } else {
+        setState(() => isLoading = false);
+      }
+    });
+  }
+
+  /// PICK IMAGE WITH ANIMATION
+  Future<void> pickImage() async {
+    final pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
+
+    if (pickedFile != null) {
+      setState(() {
+        selectedImage = File(pickedFile.path);
+        showButton = true;
+      });
+    } else {
+      showSnackBar(
+        context: context,
+        title: "No Image Selected",
+        message: "Please choose an image.",
+        backgoundColor: Colors.orange,
+        ColorText: Colors.white,
+      );
+    }
+  }
+
+  /// UPDATE PROFILE
+  void EditProfile() {
+    final Map<String, String> data = {
+      'update_id': profileModel?.data?.id.toString() ?? '',
+      "apartment_number": profileModel?.data?.unitsId.toString() ?? '',
+    };
+
+    setState(() => isEditing = true);
+
+    checkInternet().then((internet) async {
+      if (internet) {
+        ProfileProvider().profileEdit(data, selectedImage).then((response) {
+          if (response.statusCode == 200) {
+            var result = ProfileModel.fromJson(response.data);
+
+            if (result.status == 200) {
+              selectedImage = null;
+              showButton = false;
+              setState(() {});
+
+              Get.offAll(HomePage(userName: ""));
+              showSnackBar(
+                context: context,
+                title: "Success",
+                message: "Profile updated successfully",
+                backgoundColor: AppColors.maincolor,
+                ColorText: Colors.white,
+              );
+            } else {
+              showSnackBar(
+                context: context,
+                title: "Error",
+                message: "Failed to update profile",
+                backgoundColor: AppColors.redColor,
+                ColorText: Colors.white,
+              );
+            }
+          } else {
+            showSnackBar(
+              context: context,
+              title: "Error",
+              message: "Server error, please try again",
+              backgoundColor: AppColors.redColor,
+              ColorText: Colors.white,
+            );
+          }
+
+          setState(() => isEditing = false);
+        });
+      } else {
+        showSnackBar(
+          context: context,
+          title: "Error",
+
+          message: "Internet Required",
+          backgoundColor: AppColors.maincolor,
+          ColorText: Colors.white,
+        );
+      }
+    });
+  }
+
+  String capitalize(String? s) {
+    if (s == null || s.isEmpty) return '';
+    return s
+        .split(' ')
+        .map(
+          (word) =>
+              word.isNotEmpty
+                  ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+                  : '',
+        )
+        .join(' ');
+  }
+}

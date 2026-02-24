@@ -3,10 +3,10 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../../../Utils/apiConfig.dart';
-import '../../../Utils/apiEndpoint.dart';
-import '../../../Utils/responses.dart';
-import '../../../Utils/storeUserData.dart';
+import '../../../utils/apiConfig.dart';
+import '../../../utils/apiEndpoint.dart';
+import '../../../utils/responses.dart';
+import '../../../utils/storeUserData.dart';
 
 class EventProvider extends ChangeNotifier {
   Future<Response> eventapi(Map<String, String> bodyData) async {

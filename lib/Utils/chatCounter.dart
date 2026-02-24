@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 
-import '../Ui/HomeScreen/Provider/homescreenProvider.dart';
-import '../Ui/HomeScreen/modal/chatShowCountModal.dart';
-import '../Ui/HomeScreen/modal/parcelShowCount.dart';
-import '../Ui/HomeScreen/modal/visitorShowCountModel.dart';
+import '../ui/home_screen/modal/chatShowCountModal.dart';
+import '../ui/home_screen/modal/parcelShowCount.dart';
+import '../ui/home_screen/modal/visitorShowCountModel.dart';
+import '../ui/home_screen/provider/homescreenProvider.dart';
 import 'checkInternetConnection.dart';
 import 'const.dart'; // Tamari const file
 

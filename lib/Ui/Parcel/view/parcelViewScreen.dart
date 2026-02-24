@@ -6,20 +6,19 @@ import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Services/themeServices.dart';
-import 'package:wavee/Ui/MessageScreen/modal/SendMessageModel.dart';
-import 'package:wavee/Utils/checkInternetConnection.dart';
-import 'package:wavee/Utils/colors.dart';
-import 'package:wavee/Utils/errorDialog.dart';
-import 'package:wavee/Utils/loader.dart';
+import 'package:wavee/services/themeServices.dart';
+import 'package:wavee/ui/message_screen/modal/SendMessageModel.dart';
+import 'package:wavee/ui/message_screen/provider/messageScreenProvider.dart';
+import 'package:wavee/utils/checkInternetConnection.dart';
+import 'package:wavee/utils/colors.dart';
+import 'package:wavee/utils/customBatan.dart';
+import 'package:wavee/utils/errorDialog.dart';
+import 'package:wavee/utils/loader.dart';
 
-import '../../../Utils/const.dart';
-import '../../../Utils/customAppBar.dart';
-import '../../../Utils/customButton.dart' show batan;
-import '../../MessageScreen/Provider/messageScreenProvider.dart';
-import '../../MessageScreen/view/messageScreen.dart';
-import '../Provider/parcelProvider.dart';
+import '../../../utils/const.dart';
+import '../../../utils/customAppBar.dart';
 import '../modal/parcel_model.dart';
+import '../provider/parcelProvider.dart';
 
 class ParcelScreen extends StatefulWidget {
   const ParcelScreen({super.key});
@@ -39,7 +38,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
   void initState() {
     super.initState();
     _pagingController.addPageRequestListener(
-      (pageKey) => ParselViewApi(pageKey),
+          (pageKey) => ParselViewApi(pageKey),
     );
   }
 
@@ -85,13 +84,13 @@ class _ParcelScreenState extends State<ParcelScreen> {
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           color:
-                              isDark
-                                  ? isSelected
-                                      ? AppColors.white
-                                      : const Color(0xFF212121)
-                                  : isSelected
-                                  ? const Color(0xFF1A1A1A)
-                                  : Colors.white,
+                          isDark
+                              ? isSelected
+                              ? AppColors.white
+                              : const Color(0xFF212121)
+                              : isSelected
+                              ? const Color(0xFF1A1A1A)
+                              : Colors.white,
                           borderRadius: BorderRadius.circular(30),
                           boxShadow: [
                             if (!isSelected)
@@ -107,15 +106,15 @@ class _ParcelScreenState extends State<ParcelScreen> {
                           style: TextStyle(
                             fontSize: 15.sp,
                             color:
-                                isDark
-                                    ? isSelected
-                                        ? Colors.black
-                                        : Colors.grey[600]
-                                    : isSelected
-                                    ? Colors.white
-                                    : Colors.grey[600],
+                            isDark
+                                ? isSelected
+                                ? Colors.black
+                                : Colors.grey[600]
+                                : isSelected
+                                ? Colors.white
+                                : Colors.grey[600],
                             fontWeight:
-                                isSelected ? FontWeight.bold : FontWeight.w500,
+                            isSelected ? FontWeight.bold : FontWeight.w500,
                             fontFamily: AppConstants.manropeBold,
                           ),
                         ),
@@ -145,15 +144,15 @@ class _ParcelScreenState extends State<ParcelScreen> {
                         bool isCollected =
                             parcel.deliveryStatus?.toLowerCase() == "collected";
                         Color statusColor =
-                            isCollected
-                                ? const Color(0xFF00A67E)
-                                : isDark
-                                ? Color(0xf0CBB88C)
-                                : const Color(0xFF4A6FA5);
+                        isCollected
+                            ? const Color(0xFF00A67E)
+                            : isDark
+                            ? Color(0xf0CBB88C)
+                            : const Color(0xFF4A6FA5);
                         IconData statusIcon =
-                            isCollected
-                                ? Icons.check_circle_outline
-                                : Icons.access_time;
+                        isCollected
+                            ? Icons.check_circle_outline
+                            : Icons.access_time;
 
                         return Container(
                           margin: EdgeInsets.only(bottom: 2.h),
@@ -211,18 +210,18 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                     padding: EdgeInsets.all(12),
                                     decoration: BoxDecoration(
                                       color:
-                                          isDark
-                                              ? Color(0xf036342F)
-                                              : const Color(0xFFF0F2F5),
+                                      isDark
+                                          ? Color(0xf036342F)
+                                          : const Color(0xFFF0F2F5),
                                       shape: BoxShape.circle,
                                     ),
                                     child: SvgPicture.asset(
                                       AppConstants.parcel,
                                       width: 8.w,
                                       color:
-                                          isDark
-                                              ? Color(0xf0CBB88C)
-                                              : AppColors.lightText,
+                                      isDark
+                                          ? Color(0xf0CBB88C)
+                                          : AppColors.lightText,
                                     ),
                                   ),
                                   const SizedBox(width: 15),
@@ -238,9 +237,9 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                             fontSize: 16.sp,
                                             fontWeight: FontWeight.bold,
                                             color:
-                                                isDark
-                                                    ? AppColors.white
-                                                    : Colors.black,
+                                            isDark
+                                                ? AppColors.white
+                                                : Colors.black,
                                             fontFamily: AppConstants.manrope,
                                           ),
                                         ),
@@ -313,8 +312,8 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                             GestureDetector(
                                               onTap: () {
                                                 _openReplyBottomSheet(parcel, isCollected
-                                                                      ? "Concierge Desk"
-                                                                      : "In Transit");
+                                                    ? "Concierge Desk"
+                                                    : "In Transit");
                                               },
                                               child: Container(
                                                 padding: const EdgeInsets.all(10),
@@ -346,16 +345,16 @@ class _ParcelScreenState extends State<ParcelScreen> {
                       },
                       firstPageProgressIndicatorBuilder:
                           (_) => Center(
-                            child: CircularProgressIndicator(
-                              color: isDark ? Colors.white : AppColors.maincolor,
-                            ),
-                          ),
+                        child: CircularProgressIndicator(
+                          color: isDark ? Colors.white : AppColors.maincolor,
+                        ),
+                      ),
                       newPageProgressIndicatorBuilder:
                           (_) => Center(
-                            child: CircularProgressIndicator(
-                              color: isDark ? Colors.white : AppColors.maincolor,
-                            ),
-                          ),
+                        child: CircularProgressIndicator(
+                          color: isDark ? Colors.white : AppColors.maincolor,
+                        ),
+                      ),
                     ),
                   ),
                 ).paddingOnly(bottom: 1.h),
@@ -382,14 +381,14 @@ class _ParcelScreenState extends State<ParcelScreen> {
 
       // Filter logic based on tab index
       final filteredItems =
-          allItems.where((parcel) {
-            if (selectedCategory == 1)
-              return parcel.deliveryStatus?.toLowerCase() == "collected";
-            if (selectedCategory == 2)
-              return parcel.deliveryStatus?.toLowerCase() ==
-                  "pending"; // or your 'awaiting' status
-            return true;
-          }).toList();
+      allItems.where((parcel) {
+        if (selectedCategory == 1)
+          return parcel.deliveryStatus?.toLowerCase() == "collected";
+        if (selectedCategory == 2)
+          return parcel.deliveryStatus?.toLowerCase() ==
+              "pending"; // or your 'awaiting' status
+        return true;
+      }).toList();
 
       final isLastPage = pageKey >= (parcelViewModal.data?.totalPages ?? 1);
       if (isLastPage) {
@@ -539,6 +538,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
                           height: 5.h,
                           radius: 15.0,
                           fontsize: 16.sp,
+                          width: 50.w
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -552,7 +552,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
       },
     );
   }
- bool isSending=false;
+  bool isSending=false;
   void SendMessagApi(String conciergeID,parcelID) {
     setState(() {
       isSending = true;

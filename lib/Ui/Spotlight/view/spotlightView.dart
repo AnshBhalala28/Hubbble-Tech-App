@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Services/themeServices.dart';
-import 'package:wavee/Utils/const.dart';
-import 'package:wavee/Utils/customAppBar.dart';
+import 'package:wavee/services/themeServices.dart';
+import 'package:wavee/utils/const.dart';
+import 'package:wavee/utils/customAppBar.dart';
 
 class Spotlightview extends StatefulWidget {
   const Spotlightview({super.key});
@@ -39,7 +39,7 @@ class _SpotlightviewState extends State<Spotlightview> {
         children: [
           TitleBar(
             back: () => Get.back(),
-            title: 'Spotlight',
+            title: 'spotlight',
             drawerCallback: () {},
           ),
           SizedBox(height: 3.h),
@@ -92,7 +92,7 @@ class _SpotlightviewState extends State<Spotlightview> {
     Color subText,
     bool isDark,
   ) {
-    if (activeTab == 0)
+    if (activeTab == 0) {
       return _buildImpactTab(
         cardColor,
         innerColor,
@@ -101,7 +101,8 @@ class _SpotlightviewState extends State<Spotlightview> {
         subText,
         isDark,
       );
-    if (activeTab == 1)
+    }
+    if (activeTab == 1) {
       return _buildPartnersTab(
         cardColor,
         innerColor,
@@ -110,6 +111,7 @@ class _SpotlightviewState extends State<Spotlightview> {
         subText,
         isDark,
       );
+    }
     return _buildBadgesTab(cardColor, innerColor, gold, text, subText, isDark);
   }
 
@@ -277,7 +279,7 @@ class _SpotlightviewState extends State<Spotlightview> {
                   Row(
                     children: [
                       Icon(Icons.card_giftcard, color: gold),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Text(
                         "Rewards",
                         style: TextStyle(
@@ -336,7 +338,7 @@ class _SpotlightviewState extends State<Spotlightview> {
                         backgroundColor: gold,
                         shape: const StadiumBorder(),
                       ),
-                      child: Text(
+                      child: const Text(
                         "Redeem",
                         style: TextStyle(
                           color: Colors.black,
@@ -643,9 +645,9 @@ class _SpotlightviewState extends State<Spotlightview> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 "£5.00 per tree",
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.grey,
                   fontSize: 12,
                   fontFamily: AppConstants.manrope,

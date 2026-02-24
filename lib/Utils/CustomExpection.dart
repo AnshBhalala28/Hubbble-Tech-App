@@ -20,9 +20,9 @@ class CustomException implements Exception {
       return result;
     } else {
       // In production, return a generic user-friendly message based on the prefix.
-      if (_prefix != null && _prefix!.isNotEmpty) {
+      if (_prefix != null && _prefix.isNotEmpty) {
         // Clean up prefix (e.g., "Error: " -> "Error")
-        return _prefix!.replaceAll(RegExp(r'[:\s]+$'), "");
+        return _prefix.replaceAll(RegExp(r'[:\s]+$'), "");
       }
       return "An unexpected error occurred. Please try again later.";
     }

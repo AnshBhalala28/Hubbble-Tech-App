@@ -3,20 +3,20 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wavee/Services/themeServices.dart';
-import 'package:wavee/Ui/Event/View/eventDetails.dart';
+import 'package:wavee/services/themeServices.dart';
+import 'package:wavee/ui/event/modal/eventModel.dart';
+import 'package:wavee/ui/event/view/eventDetails.dart';
 
-import '../../../Utils/checkInternetConnection.dart';
-import '../../../Utils/colors.dart';
-import '../../../Utils/const.dart';
-import '../../../Utils/customAppBar.dart';
-import '../Provider/eventProvider.dart';
-import '../modal/eventModel.dart';
+import '../../../utils/checkInternetConnection.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/const.dart';
+import '../../../utils/customAppBar.dart';
+import '../provider/eventProvider.dart';
 
 class EventScreen extends StatefulWidget {
   final String? userId;
 
-  EventScreen({super.key, this.userId});
+  const EventScreen({super.key, this.userId});
 
   @override
   State<EventScreen> createState() => _EventScreenState();
@@ -79,9 +79,9 @@ class _EventScreenState extends State<EventScreen> {
           // --- Custom Calendar Card ---
           Container(
             margin: EdgeInsets.only(top: 2.h),
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
-              color: theme.isDark ? Color(0xf00FF212121) : Colors.white,
+              color: theme.isDark ? const Color(0xf00ff212121) : Colors.white,
               borderRadius: BorderRadius.circular(30),
             ),
             child: Column(
@@ -94,7 +94,7 @@ class _EventScreenState extends State<EventScreen> {
                       decoration: BoxDecoration(
                         color:
                             theme.isDark
-                                ? Color(0xf033312C)
+                                ? const Color(0xf033312C)
                                 : AppColors.lightText.withValues(alpha: .2),
                         shape: BoxShape.circle,
                       ),
@@ -103,7 +103,7 @@ class _EventScreenState extends State<EventScreen> {
                           Icons.chevron_left,
                           color:
                               theme.isDark
-                                  ? Color(0xf0CBB88C)
+                                  ? const Color(0xf0CBB88C)
                                   : AppColors.lightText,
                           size: 22.sp,
                         ),
@@ -130,7 +130,7 @@ class _EventScreenState extends State<EventScreen> {
                       decoration: BoxDecoration(
                         color:
                             theme.isDark
-                                ? Color(0xf033312C)
+                                ? const Color(0xf033312C)
                                 : AppColors.lightText.withValues(alpha: .2),
                         shape: BoxShape.circle,
                       ),
@@ -140,7 +140,7 @@ class _EventScreenState extends State<EventScreen> {
                           Icons.chevron_right,
                           color:
                               theme.isDark
-                                  ? Color(0xf0CBB88C)
+                                  ? const Color(0xf0CBB88C)
                                   : AppColors.lightText,
                           size: 22.sp,
                         ),
@@ -311,7 +311,7 @@ class _EventScreenState extends State<EventScreen> {
                       child: CircularProgressIndicator(
                         color:
                             theme.isDark
-                                ? Color(0xf0CBB88C)
+                                ? const Color(0xf0CBB88C)
                                 : AppColors.maincolor,
                       ),
                     )
@@ -336,7 +336,7 @@ class _EventScreenState extends State<EventScreen> {
       onTap: () {
         Get.to(
           EventDetail(
-            eventID: event?.id.toString() ?? "",
+            eventID: event.id.toString() ?? "",
             status: event_list_Model?.data?.data?[index].requestEvent,
           ),
         );
@@ -345,11 +345,11 @@ class _EventScreenState extends State<EventScreen> {
         margin: EdgeInsets.only(bottom: 2.h),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: theme.isDark ? Color(0xf0252525) : Colors.white,
+          color: theme.isDark ? const Color(0xf0252525) : Colors.white,
           borderRadius: BorderRadius.circular(25),
           border: Border.all(
             width: 1,
-            color: theme.isDark ? Color(0xf0353535) : Colors.transparent,
+            color: theme.isDark ? const Color(0xf0353535) : Colors.transparent,
           ),
         ),
         child: Row(
@@ -360,7 +360,7 @@ class _EventScreenState extends State<EventScreen> {
               decoration: BoxDecoration(
                 color:
                     theme.isDark
-                        ? Color(0xf0CBB88C).withValues(alpha: .2)
+                        ? const Color(0xf0CBB88C).withValues(alpha: .2)
                         : const Color(0xFFF1F3F6),
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -370,7 +370,10 @@ class _EventScreenState extends State<EventScreen> {
                     DateFormat('dd').format(DateTime.parse(event!.eventDate!)),
                     style: TextStyle(
                       fontSize: 15.sp,
-                      color: theme.isDark ? Color(0xf0CBB88C) : AppColors.black,
+                      color:
+                          theme.isDark
+                              ? const Color(0xf0CBB88C)
+                              : AppColors.black,
                       fontWeight: FontWeight.bold,
                       fontFamily: AppConstants.manrope,
                     ),
@@ -379,7 +382,10 @@ class _EventScreenState extends State<EventScreen> {
                     DateFormat('MMM').format(DateTime.parse(event.eventDate!)),
                     style: TextStyle(
                       fontSize: 13.sp,
-                      color: theme.isDark ? Color(0xf0CBB88C) : AppColors.black,
+                      color:
+                          theme.isDark
+                              ? const Color(0xf0CBB88C)
+                              : AppColors.black,
 
                       fontFamily: AppConstants.manrope,
                     ),
@@ -394,8 +400,12 @@ class _EventScreenState extends State<EventScreen> {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.wine_bar, size: 14, color: Colors.orange),
-                      SizedBox(width: 4),
+                      const Icon(
+                        Icons.wine_bar,
+                        size: 14,
+                        color: Colors.orange,
+                      ),
+                      const SizedBox(width: 4),
                       Text(
                         "Social",
                         style: TextStyle(
@@ -405,7 +415,7 @@ class _EventScreenState extends State<EventScreen> {
                           fontFamily: AppConstants.manrope,
                         ),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       _buildFeaturedBadge(),
                     ],
                   ),
@@ -450,8 +460,8 @@ class _EventScreenState extends State<EventScreen> {
       decoration: BoxDecoration(
         color:
             theme.isDark
-                ? Color(0xf0CBB88C).withValues(alpha: .2)
-                : Color(0xFFE8EEF5),
+                ? const Color(0xf0CBB88C).withValues(alpha: .2)
+                : const Color(0xFFE8EEF5),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -459,14 +469,20 @@ class _EventScreenState extends State<EventScreen> {
           Icon(
             Icons.star,
             size: 12,
-            color: theme.isDark ? Color(0xf0CBB88C) : Color(0xFF5D6A78),
+            color:
+                theme.isDark
+                    ? const Color(0xf0CBB88C)
+                    : const Color(0xFF5D6A78),
           ),
-          SizedBox(width: 4),
+          const SizedBox(width: 4),
           Text(
             "Featured",
             style: TextStyle(
               fontSize: 12.sp,
-              color: theme.isDark ? Color(0xf0CBB88C) : Color(0xFF5D6A78),
+              color:
+                  theme.isDark
+                      ? const Color(0xf0CBB88C)
+                      : const Color(0xFF5D6A78),
 
               fontFamily: AppConstants.manrope,
             ),
@@ -488,8 +504,8 @@ class _EventScreenState extends State<EventScreen> {
 
     return Row(
       children: [
-        Icon(Icons.access_time, size: 16, color: Colors.grey),
-        SizedBox(width: 4),
+        const Icon(Icons.access_time, size: 16, color: Colors.grey),
+        const SizedBox(width: 4),
         Text(
           formattedTime, // Ahia hve badlayelo time dekhase
           style: TextStyle(
@@ -499,11 +515,11 @@ class _EventScreenState extends State<EventScreen> {
             fontFamily: AppConstants.manrope,
           ),
         ),
-        SizedBox(width: 12),
-        Icon(Icons.circle, size: 4, color: Colors.grey),
-        SizedBox(width: 12),
-        Icon(Icons.people_outline, size: 16, color: Colors.grey),
-        SizedBox(width: 4),
+        const SizedBox(width: 12),
+        const Icon(Icons.circle, size: 4, color: Colors.grey),
+        const SizedBox(width: 12),
+        const Icon(Icons.people_outline, size: 16, color: Colors.grey),
+        const SizedBox(width: 4),
         Text(
           "42/60",
           style: TextStyle(
@@ -524,19 +540,19 @@ class _EventScreenState extends State<EventScreen> {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
 
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color:
                   theme.isDark
-                      ? Color(0xf0CBB88C).withValues(alpha: .2)
+                      ? const Color(0xf0CBB88C).withValues(alpha: .2)
                       : AppColors.lightText,
             ),
             child: Icon(
               Icons.calendar_today_outlined,
               size: 22.sp,
-              color: theme.isDark ? Color(0xf0CBB88C) : Colors.white,
+              color: theme.isDark ? const Color(0xf0CBB88C) : Colors.white,
             ),
           ).paddingOnly(bottom: 1.h),
           Text(
