@@ -2389,6 +2389,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                         final picked = await showTimePicker(
                           context: context,
                           initialTime: selectedStartTime,
+                          initialEntryMode: TimePickerEntryMode.dialOnly,
                         );
 
                         if (picked == null) return;
@@ -2439,6 +2440,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                         final picked = await showTimePicker(
                           context: context,
                           initialTime: selectedEndTime,
+                          initialEntryMode: TimePickerEntryMode.dialOnly,
+
                         );
 
                         if (picked == null) return;

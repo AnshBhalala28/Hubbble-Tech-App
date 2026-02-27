@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import "package:flutter_dotenv/flutter_dotenv.dart";
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -19,110 +18,9 @@ import 'utils/chatCounter.dart';
 import 'utils/colors.dart';
 import 'utils/storeUserData.dart';
 
-String? myDeviceToken;
-
-@pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  if (message.notification == null) {
-    _showAwesomeNotification(message, "Background (Data Only)");
-  } else {
-    log(
-      "Firebase will show notification automatically (notification payload present)",
-    );
-  }
-}
-
-/// Runs only once after fresh iOS reinstall
-Future<void> _handleFreshInstallIOS() async {
-  if (!Platform.isIOS) return;
-
-  final prefs = await SharedPreferences.getInstance();
-  const flag = 'has_launched_once';
-
-  final hasLaunchedBefore = prefs.getBool(flag) ?? false;
-  if (hasLaunchedBefore) return;
-
-  try {
-    const storage = FlutterSecureStorage();
-    await SaveDataLocal.clearUserData();
-    await storage.deleteAll(
-      iOptions: const IOSOptions(
-        accessibility: KeychainAccessibility.first_unlock,
-      ),
-    );
-  } catch (e) {
-    log("Keychain clear error: $e");
-  }
-
-  await AwesomeNotifications().resetGlobalBadge();
-  await prefs.setBool(flag, true);
-}
-
-void _showAwesomeNotification(RemoteMessage message, String source) async {
-  bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
-  if (!isAllowed) {
-    return;
-  }
-
-  String? title = message.notification?.title ?? message.data['title'] ?? '';
-  String? body = message.notification?.body ?? message.data['body'] ?? '';
-
-  // Note: removed invalid 'playSound' parameter from NotificationContent
-  AwesomeNotifications().createNotification(
-    content: NotificationContent(
-      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      channelKey: 'basic_channel',
-      title: title,
-      body: body,
-      notificationLayout: NotificationLayout.Default,
-      autoDismissible: true,
-      wakeUpScreen: true,
-      category: NotificationCategory.Message,
-    ),
-  );
-}
-
 void main() async {
+  // 1. Ensure the Flutter engine is fully initialized
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await _handleFreshInstallIOS();
-  Get.put(GlobalCountsController());
-
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  // Initialize Awesome Notifications - no 'playSound' used here.
-  AwesomeNotifications().initialize(null, [
-    NotificationChannel(
-      channelKey: 'basic_channel',
-      channelName: 'Basic Notifications',
-      channelDescription: 'Used for basic notifications',
-      defaultColor: AppColors.maincolor,
-      ledColor: Colors.white,
-      importance: NotificationImportance.Max,
-      // highest importance
-      channelShowBadge: true,
-      enableLights: true,
-      enableVibration: true,
-      vibrationPattern: lowVibrationPattern,
-      // soundSource: null, // leave soundSource unset so system default is used
-    ),
-  ], debug: true);
-
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  await messaging.requestPermission(
-    alert: true,
-    badge: true,
-    sound: true,
-    provisional: false,
-  );
-
-  bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
-  if (!isAllowed) {
-    AwesomeNotifications().requestPermissionToSendNotifications();
-  }
-  await dotenv.load(fileName: ".env");
 
   runApp(
     ChangeNotifierProvider(
@@ -134,7 +32,6 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   final LoginModel? loginModel;
-
   const MyApp({super.key, this.loginModel});
 
   @override
@@ -142,34 +39,84 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  bool _initialized = false;
+  String? _initError;
+
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid) setupFirebaseListeners();
+    _initializeApp();
   }
 
-  Future<void> setupFirebaseListeners() async {
-    myDeviceToken = await FirebaseMessaging.instance.getToken();
+  Future<void> _initializeApp() async {
+    try {
+      // Step A: Firebase with 10s timeout
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      ).timeout(const Duration(seconds: 10));
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      _showAwesomeNotification(message, "Foreground");
-    });
+      // Step B: Guarded .env loading
+      try {
+        await dotenv.load(fileName: ".env");
+      } catch (e) {
+        log("Environment load warning: $e");
+      }
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {});
+      await _handleFreshInstallIOS();
+      Get.put(GlobalCountsController());
 
-    checkInitialMessage();
+      // Step C: Notifications with 5s timeout
+      await AwesomeNotifications().initialize(
+        null,
+        [
+          NotificationChannel(
+            channelKey: 'basic_channel',
+            channelName: 'Basic Notifications',
+            channelDescription: 'Used for basic notifications',
+            defaultColor: AppColors.maincolor,
+            ledColor: Colors.white,
+            importance: NotificationImportance.Max,
+          ),
+        ],
+        debug: true,
+      ).timeout(const Duration(seconds: 5));
+
+      if (mounted) {
+        setState(() => _initialized = true);
+      }
+    } catch (e) {
+      log("Initialization Error/Timeout: $e");
+      if (mounted) {
+        setState(() => _initError = "Startup took too long or failed: $e");
+      }
+    }
   }
 
-  Future<void> checkInitialMessage() async {
-    RemoteMessage? initialMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
+  Future<void> _handleFreshInstallIOS() async {
+    if (!Platform.isIOS) return;
+    final prefs = await SharedPreferences.getInstance();
 
-    if (initialMessage != null) {}
+    // Check if this is the first time the app is launched
+    if (prefs.getBool('has_launched_once') ?? false) return;
+
+    try {
+      const storage = FlutterSecureStorage();
+      await SaveDataLocal.clearUserData();
+      await storage.deleteAll(
+        iOptions: const IOSOptions(accessibility: KeychainAccessibility.first_unlock),
+      );
+      await AwesomeNotifications().resetGlobalBadge();
+      await prefs.setBool('has_launched_once', true);
+      log("✅ Fresh install cleanup completed for iOS");
+    } catch (e) {
+      log("⚠️ Keychain/Secure Storage error: $e");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeController>();
+
     return Sizer(
       builder: (context, orientation, screenType) {
         return GetMaterialApp(
@@ -178,9 +125,68 @@ class _MyAppState extends State<MyApp> {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: theme.isDark ? ThemeMode.dark : ThemeMode.light,
-          home: const WelcomeScreen(),
+          // Diagnostic Routing Logic:
+          home: _initError != null
+              ? _ErrorUI(error: _initError!) // Display startup error
+              : (!_initialized
+              ? const _LoadingUI() // Display spinner during init
+              : const WelcomeScreen()), // Display main app
         );
       },
+    );
+  }
+}
+
+class _LoadingUI extends StatelessWidget {
+  const _LoadingUI();
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+}
+
+class _ErrorUI extends StatelessWidget {
+  final String error;
+  const _ErrorUI({required this.error});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, color: Colors.red, size: 64),
+              const SizedBox(height: 16),
+              const Text(
+                "App Startup Error",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                error,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.grey, fontSize: 14),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () {
+                  // This is a simple way to trigger a "retry" by rebuilding the state
+                  // In a real app, you might use an 'AppReset' controller
+                },
+                child: const Text("Try Again"),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

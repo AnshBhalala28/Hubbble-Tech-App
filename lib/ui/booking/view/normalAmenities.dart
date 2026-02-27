@@ -21,7 +21,7 @@ import 'package:wavee/utils/customSnackBars.dart';
 import 'package:wavee/utils/errorDialog.dart';
 import 'package:wavee/utils/loader.dart';
 import 'package:wavee/utils/viewPdfFunction.dart';
-import 'package:wavee/ui/booking/Provider/bookingsProvider.dart';
+import 'package:wavee/ui/booking/provider/bookingsProvider.dart';
 import 'package:wavee/ui/booking/modal/bookingModel.dart';
 import 'package:wavee/ui/booking/view/bookAmenities.dart';
 import 'package:wavee/ui/booking/view/bookingScreen.dart';
@@ -2242,7 +2242,7 @@ class _NormalAmenitiesState extends State<NormalAmenities> {
                                   },
                           child: Container(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 7.w,
+                              horizontal: 4.w,
                               vertical: 1.h,
                             ),
                             decoration: BoxDecoration(

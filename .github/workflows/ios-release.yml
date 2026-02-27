@@ -1,0 +1,75 @@
+name: Build iOS Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+#      - 'v*-ios'
+
+jobs:
+  build:
+    # Explicitly use macos-15 to ensure Xcode 26 availability
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Select Xcode Version
+        # This path is standard for GitHub macOS 15 runners
+        run: sudo xcode-select -s /Applications/Xcode_26.0.1.app/Contents/Developer
+
+      - name: Recreate sensitive config files
+        run: |
+          mkdir -p ios/Runner
+          echo "${{ secrets.ENV_FILE_BASE64 }}" | base64 --decode > .env
+          echo "${{ secrets.GOOGLE_SERVICE_INFO_BASE64 }}" | base64 --decode > ios/Runner/GoogleService-Info.plist
+          echo "${{ secrets.SECRETS_XCCONFIG_BASE64 }}" | base64 --decode > ios/Secrets.xcconfig
+          
+          echo "VERIFYING FILE SIZES (Should not be 0):"
+          ls -lh .env
+          ls -lh ios/Runner/GoogleService-Info.plist
+          echo "Configuration files restored."
+
+      - name: Install Apple Certificate
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.IOS_P12_BASE64 }}
+          p12-password: ${{ secrets.IOS_P12_PASSWORD }}
+          keychain-password: ${{ secrets.IOS_KEYCHAIN_PASSWORD }}
+
+      - name: Install Provisioning Profile
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
+          echo "Provision profile installed"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.2'
+          architecture: x64
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build IPA
+        run: |
+          # The --release flag combined with Xcode 26 will use the iOS 26 SDK
+          flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
+
+      - name: Get IPA path
+        id: ipa
+        run: |
+          # Use quotes to handle the space in "Wavee Ai.ipa"
+          IPA_PATH=$(find build/ios/ipa -name "*.ipa" | head -n 1)
+          echo "ipa_path=$IPA_PATH" >> $GITHUB_OUTPUT
+
+      - name: Upload to TestFlight
+        uses: apple-actions/upload-testflight-build@v1
+        with:
+          app-path: ${{ steps.ipa.outputs.ipa_path }}
+          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPSTORE_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_P8_KEY }}
