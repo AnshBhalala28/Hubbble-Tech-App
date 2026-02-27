@@ -48,7 +48,13 @@ app.*.map.json
 ios/Config.xcconfig
 ios/Runner/Config.xcconfig
 
-
 # Firebase configuration files (contain API keys)
 
 
+/keystore.txt
+/.env
+/android/app/google-services.json
+/android/app/waveeai.jks
+/android/local.properties
+/ios/Runner/GoogleService-Info.plist
+/android/release-key.properties

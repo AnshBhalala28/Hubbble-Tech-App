@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -19,7 +18,8 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - uses: subosito/flutter-action@v2
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.41.2'
           cache: true
@@ -27,13 +27,22 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # Decode keystore using your secret name
-      - name: Decode keystore
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/waveeai.jks
+      - name: Decode ENV file
+        run: echo "${{ secrets.ENV_BASE64 }}" | base64 --decode > .env
 
-      # Build the signed App Bundle
-      # The env names here must match what we put in build.gradle.kts
+      - name: Decode google-services.json
+        run: echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > android/app/google-services.json
+
+      - name: Decode keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > release-key.properties
+
+      - name: Create release-key.properties
+        run: |
+          echo "storePassword=${{ secrets.STORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=waveeai.jks" >> android/key.properties
+
       - name: Build App Bundle
         run: flutter build appbundle --release
         env:
@@ -41,7 +50,6 @@ jobs:
           APP_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           APP_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-      # Automatic upload to Google Play Console
       - name: Upload to Play Store
         uses: r0adkll/upload-google-play@v1
         with:
@@ -51,9 +59,10 @@ jobs:
           track: internal
           status: completed
 
-      # Keep a copy of the build in GitHub
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: android-release-bundle
           path: build/app/outputs/bundle/release/app-release.aab
+
+

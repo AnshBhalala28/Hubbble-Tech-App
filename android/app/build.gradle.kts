@@ -48,7 +48,7 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("../waveeai.jks")
+            storeFile = file("waveeai.jks")
             storePassword = System.getenv("APP_STORE_PASSWORD") ?: "123456"
             keyAlias = System.getenv("APP_KEY_ALIAS") ?: "waveeai"
             keyPassword = System.getenv("APP_KEY_PASSWORD") ?: "123456"
