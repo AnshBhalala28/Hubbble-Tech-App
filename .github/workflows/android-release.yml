@@ -3,8 +3,8 @@ name: Build Android Release
 on:
   push:
     tags:
-      - 'v*'
-#      - 'v*-android'
+#      - 'v*'
+      - 'v*-android'
 
 jobs:
   build:
