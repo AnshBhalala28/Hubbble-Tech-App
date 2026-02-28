@@ -519,7 +519,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 61.0.0;
+				MARKETING_VERSION = 62.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wavee.comunity;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -714,7 +714,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 61.0.0;
+				MARKETING_VERSION = 62.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wavee.comunity;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -747,7 +747,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 61.0.0;
+				MARKETING_VERSION = 62.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wavee.comunity;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
