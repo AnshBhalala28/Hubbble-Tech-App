@@ -17,7 +17,7 @@
         <key>provisioningProfiles</key>
         <dict>
             <key>com.wavee.comunity</key>
-            <string>WaveeAiIosRelease</string>
+            <string>Wavee_Release</string>
         </dict>
     </dict>
 </plist>
