@@ -3,8 +3,8 @@ name: Build iOS Release
 on:
   push:
     tags:
-#      - 'v*'
-      - 'v*-ios'
+      - 'v*'
+#      - 'v*-ios'
 
 jobs:
   build:

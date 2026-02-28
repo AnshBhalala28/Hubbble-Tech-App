@@ -1,85 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>CFBundleDisplayName</key>
-	<string>Wavee Ai</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>Wavee Ai</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>LSSupportsOpeningDocumentsInPlace</key>
-	<true/>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<false/>
-	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>Wavee Ai requires camera access to take profile photos and documents.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Wavee Ai needs access to your location always to show nearby communities and chat location features.</string>
-	<key>NSLocationUsageDescription</key>
-	<string>Wavee Ai needs your location to find nearby communities.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Wavee Ai needs your location while the app is in use to offer better services.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Wavee Ai needs access to your photo library to upload profile and document images.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Wavee Ai requests photo library access for profile and chat features.</string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Wavee Ai needs access to your location to show nearby communities and features even when the app is not actively open.</string>
-	<key>NSUserActivityTypes</key>
-	<array>
-		<string>INSendMessageIntent</string>
-	</array>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>remote-notification</string>
-	</array>
-	<key>UIFileSharingEnabled</key>
-	<true/>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
-	<key>UIStatusBarStyle</key>
-	<string></string>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>GMSApiKey</key>
-    <string>$(GOOGLE_MAPS_API_KEY)</string>
-</dict>
+    <dict>
+        <key>CADisableMinimumFrameDurationOnPhone</key>
+        <true/>
+        <key>CFBundleDevelopmentRegion</key>
+        <string>$(DEVELOPMENT_LANGUAGE)</string>
+        <key>CFBundleDisplayName</key>
+        <string>Wavee Ai</string>
+        <key>CFBundleExecutable</key>
+        <string>$(EXECUTABLE_NAME)</string>
+        <key>CFBundleIdentifier</key>
+        <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+        <key>CFBundleInfoDictionaryVersion</key>
+        <string>6.0</string>
+        <key>CFBundleName</key>
+        <string>Wavee Ai</string>
+        <key>CFBundlePackageType</key>
+        <string>APPL</string>
+        <key>CFBundleShortVersionString</key>
+        <string>61.0.0</string>
+        <key>CFBundleSignature</key>
+        <string>????</string>
+        <key>CFBundleVersion</key>
+        <string>1</string>
+        <key>LSRequiresIPhoneOS</key>
+        <true/>
+        <key>LSSupportsOpeningDocumentsInPlace</key>
+        <true/>
+        <key>NSAppTransportSecurity</key>
+        <dict>
+            <key>NSAllowsArbitraryLoads</key>
+            <false/>
+        </dict>
+        <key>NSCameraUsageDescription</key>
+        <string>Wavee Ai requires camera access to take profile photos and documents.</string>
+        <key>NSLocationAlwaysUsageDescription</key>
+        <string>Wavee Ai needs access to your location always to show nearby communities and chat location features.</string>
+        <key>NSLocationUsageDescription</key>
+        <string>Wavee Ai needs your location to find nearby communities.</string>
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>Wavee Ai needs your location while the app is in use to offer better services.</string>
+        <key>NSPhotoLibraryAddUsageDescription</key>
+        <string>Wavee Ai needs access to your photo library to upload profile and document images.</string>
+        <key>NSPhotoLibraryUsageDescription</key>
+        <string>Wavee Ai requests photo library access for profile and chat features.</string>
+        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>Wavee Ai needs access to your location to show nearby communities and features even when the app is not actively open.</string>
+        <key>NSUserActivityTypes</key>
+        <array>
+            <string>INSendMessageIntent</string>
+        </array>
+        <key>ITSAppUsesNonExemptEncryption</key>
+        <false/>
+        <key>UIApplicationSupportsIndirectInputEvents</key>
+        <true/>
+        <key>UIBackgroundModes</key>
+        <array>
+            <string>fetch</string>
+            <string>remote-notification</string>
+        </array>
+        <key>UIFileSharingEnabled</key>
+        <true/>
+        <key>UILaunchStoryboardName</key>
+        <string>LaunchScreen</string>
+        <key>UIMainStoryboardFile</key>
+        <string>Main</string>
+        <key>UIStatusBarStyle</key>
+        <string></string>
+        <key>UISupportedInterfaceOrientations</key>
+        <array>
+            <string>UIInterfaceOrientationPortrait</string>
+            <string>UIInterfaceOrientationLandscapeLeft</string>
+            <string>UIInterfaceOrientationLandscapeRight</string>
+        </array>
+        <key>UISupportedInterfaceOrientations~ipad</key>
+        <array>
+            <string>UIInterfaceOrientationPortrait</string>
+            <string>UIInterfaceOrientationPortraitUpsideDown</string>
+            <string>UIInterfaceOrientationLandscapeLeft</string>
+            <string>UIInterfaceOrientationLandscapeRight</string>
+        </array>
+        <key>GMSApiKey</key>
+        <string>$(GOOGLE_MAPS_API_KEY)</string>
+        <key>UIApplicationSceneManifest</key>
+        <dict>
+            <key>UIApplicationSupportsMultipleScenes</key>
+            <false/>
+            <key>UISceneConfigurations</key>
+            <dict>
+                <key>UIWindowSceneSessionRoleApplication</key>
+                <array>
+                    <dict>
+                        <key>UISceneClassName</key>
+                        <string>UIWindowScene</string>
+                        <key>UISceneDelegateClassName</key>
+                        <string>FlutterSceneDelegate</string>
+                        <key>UISceneConfigurationName</key>
+                        <string>flutter</string>
+                        <key>UISceneStoryboardFile</key>
+                        <string>Main</string>
+                    </dict>
+                </array>
+            </dict>
+        </dict>
+    </dict>
 </plist>
