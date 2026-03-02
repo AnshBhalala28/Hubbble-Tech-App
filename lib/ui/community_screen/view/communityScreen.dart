@@ -3569,115 +3569,118 @@ class _CommunityScreenState extends State<CommunityScreen>
                                   ).paddingOnly(left: 2.w),
                                   Container(
                                     margin: EdgeInsets.only(top: 1.5.h),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        for (
-                                          int i = 0;
-                                          i <
-                                              (busnessviewmodal
-                                                      ?.data
-                                                      ?.business
-                                                      ?.tags
-                                                      ?.length ??
-                                                  0);
-                                          i++
-                                        ) ...[
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 2.w,
-                                              vertical: 0.5.h,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              border: Border.all(
-                                                color:
-                                                    theme.isDark
-                                                        ? const Color(
-                                                          0xffbdab82,
-                                                        )
-                                                        : Colors.black
-                                                            .withValues(
-                                                              alpha: .2,
-                                                            ),
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          for (
+                                            int i = 0;
+                                            i <
+                                                (busnessviewmodal
+                                                        ?.data
+                                                        ?.business
+                                                        ?.tags
+                                                        ?.length ??
+                                                    0);
+                                            i++
+                                          ) ...[
+                                            Container(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 2.w,
+                                                vertical: 0.5.h,
                                               ),
-                                            ),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Container(
-                                                  height: 2.h,
-                                                  width: 2.h,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                  child: ClipOval(
-                                                    child: CachedNetworkImage(
-                                                      imageUrl:
-                                                          busnessviewmodal
-                                                              ?.data
-                                                              ?.business
-                                                              ?.tags?[i]
-                                                              .img ??
-                                                          "",
-                                                      height: 3.h,
-                                                      width: 3.h,
-                                                      fit: BoxFit.cover,
-                                                      placeholder:
-                                                          (
-                                                            context,
-                                                            url,
-                                                          ) => const Center(
-                                                            child:
-                                                                CircularProgressIndicator(
-                                                                  strokeWidth:
-                                                                      1,
-                                                                ),
-                                                          ),
-                                                      errorWidget:
-                                                          (
-                                                            context,
-                                                            url,
-                                                            error,
-                                                          ) => const Image(
-                                                            image: AssetImage(
-                                                              "assets/images/waveeLogoShort.png",
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                border: Border.all(
+                                                  color:
+                                                      theme.isDark
+                                                          ? const Color(
+                                                            0xffbdab82,
+                                                          )
+                                                          : Colors.black
+                                                              .withValues(
+                                                                alpha: .2,
+                                                              ),
+                                                ),
+                                              ),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Container(
+                                                    height: 2.h,
+                                                    width: 2.h,
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                          shape: BoxShape.circle,
+                                                        ),
+                                                    child: ClipOval(
+                                                      child: CachedNetworkImage(
+                                                        imageUrl:
+                                                            busnessviewmodal
+                                                                ?.data
+                                                                ?.business
+                                                                ?.tags?[i]
+                                                                .img ??
+                                                            "",
+                                                        height: 3.h,
+                                                        width: 3.h,
+                                                        fit: BoxFit.cover,
+                                                        placeholder:
+                                                            (
+                                                              context,
+                                                              url,
+                                                            ) => const Center(
+                                                              child:
+                                                                  CircularProgressIndicator(
+                                                                    strokeWidth:
+                                                                        1,
+                                                                  ),
                                                             ),
-                                                          ),
+                                                        errorWidget:
+                                                            (
+                                                              context,
+                                                              url,
+                                                              error,
+                                                            ) => const Image(
+                                                              image: AssetImage(
+                                                                "assets/images/waveeLogoShort.png",
+                                                              ),
+                                                            ),
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                                SizedBox(width: 1.w),
-                                                Text(
-                                                  busnessviewmodal
-                                                          ?.data
-                                                          ?.business
-                                                          ?.tags?[i]
-                                                          .name ??
-                                                      "No Tags",
-                                                  style: TextStyle(
-                                                    color:
-                                                        theme.isDark
-                                                            ? const Color(
-                                                              0xffbdab82,
-                                                            )
-                                                            : Colors.black87,
-                                                    fontSize: 14.sp,
-                                                    fontWeight: FontWeight.w400,
-                                                    fontFamily:
-                                                        AppConstants.manrope,
+                                                  SizedBox(width: 1.w),
+                                                  Text(
+                                                    busnessviewmodal
+                                                            ?.data
+                                                            ?.business
+                                                            ?.tags?[i]
+                                                            .name ??
+                                                        "No Tags",
+                                                    style: TextStyle(
+                                                      color:
+                                                          theme.isDark
+                                                              ? const Color(
+                                                                0xffbdab82,
+                                                              )
+                                                              : Colors.black87,
+                                                      fontSize: 14.sp,
+                                                      fontWeight: FontWeight.w400,
+                                                      fontFamily:
+                                                          AppConstants.manrope,
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(width: 2.w),
+                                            SizedBox(width: 2.w),
+                                          ],
                                         ],
-                                      ],
-                                    ).paddingOnly(left: 2.w, bottom: 1.h),
+                                      ).paddingOnly(left: 2.w, bottom: 1.h),
+                                    ),
                                   ),
                                 ],
                               ),

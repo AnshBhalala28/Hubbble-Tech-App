@@ -1439,7 +1439,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                 // Time Selection from Operating Hours
                                                 _buildTimeSelectionFromOperatingHours(
                                                   selectedAmenity
-                                                      ?.operatingHours,
+                                                      ?.remainingSlots   ,
                                                 ),
                                               ] else
                                                 if (calendar1Loading)
@@ -1956,10 +1956,14 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
   // ====================== TIME SELECTION WIDGET ======================
   String? tappedSlotOpen;
   String? tappedSlotClose;
-  Widget _buildTimeSelectionFromOperatingHours(OperatingHours? hours) {
-    List<Map<String, String>> baseSlots =
-    _extractTimeSlotsFromOperatingHours(
-      hours,
+  Widget _buildTimeSelectionFromOperatingHours(OperatingHours? remainingSlots) {
+    // List<Map<String, String>> baseSlots =
+    // _extractTimeSlotsFromOperatingHours(
+    //   hours,
+    //   calendar1SelectedDate!,
+    // );
+    List<Map<String, String>> baseSlots = _extractTimeSlotsFromOperatingHours(
+      remainingSlots,
       calendar1SelectedDate!,
     );
 
@@ -2130,7 +2134,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                         if (isInvalidDuration) {
 
                           _showCustomTimePicker(
-                            hours: hours,
+                            hours: remainingSlots,
                             selectedDate: calendar1SelectedDate!,
                             initialOpenTime: openTime,      // ✅ tapped slot open
                             initialCloseTime: closeTime,    // ✅ tapped slot close
@@ -2320,8 +2324,10 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     final TimeOfDay slotClose = _parseTimeOfDay(initialCloseTime);
 
     TimeOfDay selectedStartTime = slotOpen;
-    TimeOfDay selectedEndTime = slotClose;
-
+    // TimeOfDay selectedEndTime = slotClose;
+    TimeOfDay selectedEndTime = isAllDayBooking
+        ? _addMinutes(slotOpen, fixedDuration + maintenanceMins)
+        : slotClose;
     /// 👇 Track if user changed time manually
     bool hasUserChangedTime = false;
 
@@ -2412,16 +2418,20 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
 
                           /// Fixed session auto end
                           if (isAllDayBooking && fixedDuration > 0) {
-                            selectedEndTime =
-                                _addMinutes(picked, fixedDuration);
+                            selectedEndTime = _addMinutes(
+                              picked,
+                              fixedDuration + maintenanceMins,
+                            );
                           }
 
                           /// Prevent end < start
                           if (_calculateDurationInMinutes(
                               selectedStartTime, selectedEndTime) <=
                               0) {
-                            selectedEndTime =
-                                _addMinutes(picked, 60);
+                            selectedEndTime = _addMinutes(
+                              picked,
+                              60 + maintenanceMins,
+                            );
                           }
                         });
                       },
@@ -2440,8 +2450,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                         final picked = await showTimePicker(
                           context: context,
                           initialTime: selectedEndTime,
-                          initialEntryMode: TimePickerEntryMode.dialOnly,
-
                         );
 
                         if (picked == null) return;
@@ -2558,12 +2566,12 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                       ? () {
                     Navigator.pop(context);
 
-                    final TimeOfDay apiEndTime =
-                    _addMinutes(selectedEndTime, maintenanceMins);
+                    // final TimeOfDay apiEndTime =
+                    // _addMinutes(selectedEndTime, maintenanceMins);
 
                     onTimeSelected(
                       _formatTimeForAPI(selectedStartTime),
-                      _formatTimeForAPI(apiEndTime),
+                      _formatTimeForAPI(selectedEndTime),
                     );
                   }
                       : null,
@@ -2909,8 +2917,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     );
   }
 
-  // ====================== HELPER FUNCTIONS ======================
-
   // List<Map<String, String>> _extractTimeSlotsFromOperatingHours(
   //     OperatingHours? hours,
   //     DateTime selectedDate,
@@ -2946,66 +2952,56 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
   //       timeSlotObjects = hours.sunday;
   //       break;
   //   }
-  //
+  //   print("---- OPERATING HOURS RAW SLOTS ----");
+  //   print("Weekday: $weekday");
   //   if (timeSlotObjects == null || timeSlotObjects.isEmpty) {
   //     return timeSlots;
   //   }
   //
   //   for (var slot in timeSlotObjects) {
-  //     if (slot.open != null && slot.open!.isNotEmpty) {
-  //       String formattedOpen = _formatTimeTo12Hour(slot.open!);
-  //       String formattedClose = '';
-  //       if (slot.close != null && slot.close!.isNotEmpty) {
-  //         formattedClose = _formatTimeTo12Hour(slot.close!);
-  //       }
-  //       timeSlots.add({
-  //         'open': formattedOpen,
-  //         'close': formattedClose,
-  //         'rawOpen': slot.open!,
-  //         'rawClose': slot.close ?? '',
-  //       });
-  //     }
-  //   }
+  //     if (slot.open == null || slot.open!.isEmpty) continue;
   //
+  //     /// 🔴 RAW TIME (logic, split, booking mate)
+  //     final rawOpen = slot.open!;
+  //     final rawClose = slot.close ?? '';
+  //
+  //     /// 🟢 DISPLAY TIME (UI mate)
+  //     final displayOpen = _formatTimeTo12Hour(rawOpen);
+  //     final displayClose =
+  //     rawClose.isNotEmpty ? _formatTimeTo12Hour(rawClose) : '';
+  //
+  //     timeSlots.add({
+  //       /// RAW values → calculations ma use karvana
+  //       'open': rawOpen,
+  //       'close': rawClose,
+  //
+  //       /// UI display values → screen par show karvana
+  //       'displayOpen': displayOpen,
+  //       'displayClose': displayClose,
+  //     });
+  //     print("Slot from API: ${slot.open} → ${slot.close}");
+  //     print("Formatted: $displayOpen → $displayClose");
+  //   }
+  //   print("Base slots generated: $timeSlots");
   //   return timeSlots;
   // }
   List<Map<String, String>> _extractTimeSlotsFromOperatingHours(
       OperatingHours? hours,
       DateTime selectedDate,
-      )
-  {
+      ) {
     List<Map<String, String>> timeSlots = [];
 
     if (hours == null) return timeSlots;
 
     final weekday = getWeekdayName(selectedDate).toLowerCase();
-    List<TimeSlot>? timeSlotObjects;
 
-    switch (weekday) {
-      case 'monday':
-        timeSlotObjects = hours.monday;
-        break;
-      case 'tuesday':
-        timeSlotObjects = hours.tuesday;
-        break;
-      case 'wednesday':
-        timeSlotObjects = hours.wednesday;
-        break;
-      case 'thursday':
-        timeSlotObjects = hours.thursday;
-        break;
-      case 'friday':
-        timeSlotObjects = hours.friday;
-        break;
-      case 'saturday':
-        timeSlotObjects = hours.saturday;
-        break;
-      case 'sunday':
-        timeSlotObjects = hours.sunday;
-        break;
-    }
+    // Get slots for the selected day from operating hours
+    List<TimeSlot>? timeSlotObjects = hours.getSlotsForDay(weekday);
+
     print("---- OPERATING HOURS RAW SLOTS ----");
     print("Weekday: $weekday");
+    print("Raw slots: ${timeSlotObjects?.length}");
+
     if (timeSlotObjects == null || timeSlotObjects.isEmpty) {
       return timeSlots;
     }
@@ -3019,8 +3015,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
 
       /// 🟢 DISPLAY TIME (UI mate)
       final displayOpen = _formatTimeTo12Hour(rawOpen);
-      final displayClose =
-      rawClose.isNotEmpty ? _formatTimeTo12Hour(rawClose) : '';
+      final displayClose = rawClose.isNotEmpty ? _formatTimeTo12Hour(rawClose) : '';
 
       timeSlots.add({
         /// RAW values → calculations ma use karvana
@@ -3031,41 +3026,69 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
         'displayOpen': displayOpen,
         'displayClose': displayClose,
       });
+
       print("Slot from API: ${slot.open} → ${slot.close}");
       print("Formatted: $displayOpen → $displayClose");
     }
-    print("Base slots generated: $timeSlots");
+
+    print("Base slots generated: ${timeSlots.length}");
     return timeSlots;
   }
+  // String getOperatingHours(DateTime selectedDate, OperatingHours? hours) {
+  //   if (hours == null) return "No operating hours available";
+  //
+  //   final weekday = getWeekdayName(selectedDate).toLowerCase();
+  //   List<TimeSlot>? timeSlots;
+  //
+  //   switch (weekday) {
+  //     case 'monday':
+  //       timeSlots = hours.monday;
+  //       break;
+  //     case 'tuesday':
+  //       timeSlots = hours.tuesday;
+  //       break;
+  //     case 'wednesday':
+  //       timeSlots = hours.wednesday;
+  //       break;
+  //     case 'thursday':
+  //       timeSlots = hours.thursday;
+  //       break;
+  //     case 'friday':
+  //       timeSlots = hours.friday;
+  //       break;
+  //     case 'saturday':
+  //       timeSlots = hours.saturday;
+  //       break;
+  //     case 'sunday':
+  //       timeSlots = hours.sunday;
+  //       break;
+  //   }
+  //
+  //   if (timeSlots == null || timeSlots.isEmpty) {
+  //     return "Closed";
+  //   }
+  //
+  //   List<String> formattedSlots = [];
+  //   for (var slot in timeSlots) {
+  //     if (slot.open != null && slot.open!.isNotEmpty) {
+  //       String formattedOpen = _formatTimeTo12Hour(slot.open!);
+  //
+  //       if (slot.close != null && slot.close!.isNotEmpty) {
+  //         String formattedClose = _formatTimeTo12Hour(slot.close!);
+  //         formattedSlots.add('$formattedOpen - $formattedClose');
+  //       } else {
+  //         formattedSlots.add(formattedOpen);
+  //       }
+  //     }
+  //   }
+  //
+  //   return formattedSlots.isEmpty ? "Closed" : formattedSlots.join(', ');
+  // }
   String getOperatingHours(DateTime selectedDate, OperatingHours? hours) {
     if (hours == null) return "No operating hours available";
 
     final weekday = getWeekdayName(selectedDate).toLowerCase();
-    List<TimeSlot>? timeSlots;
-
-    switch (weekday) {
-      case 'monday':
-        timeSlots = hours.monday;
-        break;
-      case 'tuesday':
-        timeSlots = hours.tuesday;
-        break;
-      case 'wednesday':
-        timeSlots = hours.wednesday;
-        break;
-      case 'thursday':
-        timeSlots = hours.thursday;
-        break;
-      case 'friday':
-        timeSlots = hours.friday;
-        break;
-      case 'saturday':
-        timeSlots = hours.saturday;
-        break;
-      case 'sunday':
-        timeSlots = hours.sunday;
-        break;
-    }
+    List<TimeSlot>? timeSlots = hours.getSlotsForDay(weekday);
 
     if (timeSlots == null || timeSlots.isEmpty) {
       return "Closed";
@@ -3087,7 +3110,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
 
     return formattedSlots.isEmpty ? "Closed" : formattedSlots.join(', ');
   }
-
   String getWeekdayName(DateTime date) {
     switch (date.weekday) {
       case DateTime.monday:
@@ -3110,55 +3132,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
   }
 
 
-  // List<Map<String, String>> splitSlotByBookings(
-  //     List<Map<String, String>> slots,
-  //     List bookingData,
-  //     DateTime selectedDate,
-  //     )
-  // {
-  //   List<Map<String, String>> result = [];
-  //
-  //   for (var slot in slots) {
-  //     DateTime slotStart = _timeToDateTime(slot['open']!, selectedDate);
-  //     DateTime slotEnd = _timeToDateTime(slot['close']!, selectedDate);
-  //
-  //     DateTime currentStart = slotStart;
-  //
-  //     /// Sort bookings by start time
-  //     List filteredBookings = bookingData.where((b) =>
-  //     b.bookingDate == DateFormat('yyyy-MM-dd').format(selectedDate)).toList();
-  //
-  //     filteredBookings.sort((a, b) => a.startTime.compareTo(b.startTime));
-  //
-  //     for (var booking in filteredBookings) {
-  //       DateTime bookedStart = _timeToDateTime(booking.startTime, selectedDate);
-  //       DateTime bookedEnd = _timeToDateTime(booking.endTime, selectedDate);
-  //
-  //       /// Add free time before booked slot
-  //       if (currentStart.isBefore(bookedStart)) {
-  //         result.add({
-  //           "open": _formatTime(currentStart),
-  //           "close": _formatTime(bookedStart),
-  //         });
-  //       }
-  //
-  //       /// Move pointer after booking
-  //       if (bookedEnd.isAfter(currentStart)) {
-  //         currentStart = bookedEnd;
-  //       }
-  //     }
-  //
-  //     /// Add remaining time after last booking
-  //     if (currentStart.isBefore(slotEnd)) {
-  //       result.add({
-  //         "open": _formatTime(currentStart),
-  //         "close": _formatTime(slotEnd),
-  //       });
-  //     }
-  //   }
-  //
-  //   return result;
-  // }
   List<Map<String, String>> splitSlotByBookings(
       List<Map<String, String>> slots,
       List bookingData,
@@ -3437,82 +3410,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     );
   }
 
-  // bool _isSlotAlreadyBookedByMe(String slotOpenTime, DateTime selectedDate,
-  //     {String? slotCloseTime}) {
-  //   final data = statusModal?.data;
-  //   if (data == null || data.isEmpty) return false;
-  //
-  //   final String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
-  //
-  //   // Convert slot open/close to minutes for overlap check
-  //   final String slotOpen24 = convertTo24(slotOpenTime);
-  //   final String slotClose24 =
-  //   slotCloseTime != null ? convertTo24(slotCloseTime) : '';
-  //
-  //   int slotOpenMins = _timeToMinutes(slotOpen24);
-  //   int slotCloseMins =
-  //   slotClose24.isNotEmpty ? _timeToMinutes(slotClose24) : slotOpenMins + 1;
-  //
-  //   for (final booking in data) {
-  //     final String? bDate = booking.bookingDate;
-  //     final String? bStart = booking.startTime;
-  //     final String? bEnd = booking.endTime;
-  //
-  //     if (bDate == null || bStart == null) continue;
-  //     if (bDate != dateStr) continue;
-  //
-  //     // Overlap check for all bookings
-  //     if (slotCloseTime != null && bEnd != null) {
-  //       int bookingStartMins = _timeToMinutes(bStart);
-  //       int bookingEndMins = _timeToMinutes(bEnd);
-  //
-  //       bool overlaps = slotOpenMins < bookingEndMins &&
-  //           slotCloseMins > bookingStartMins;
-  //
-  //       if (overlaps) {
-  //         return true;
-  //       }
-  //     } else {
-  //       // Original exact match logic for simple slots
-  //       String bookingHms = _toHms(bStart);
-  //       String uiHms = _toHms(slotOpen24);
-  //
-  //       if (booking.isFirstSlot == "false") {
-  //         final DateTime parsed = DateFormat('HH:mm:ss').parseStrict(bookingHms);
-  //         final DateTime adjusted = parsed.subtract(const Duration(minutes: 30));
-  //         bookingHms = DateFormat('HH:mm:ss').format(adjusted);
-  //       }
-  //
-  //       if (bookingHms == uiHms) return true;
-  //     }
-  //   }
-  //
-  //   return false;
-  // }
 
-  int _timeToMinutes(String time) {
-    try {
-      final parts = time.split(':');
-      if (parts.length >= 2) {
-        int hours = int.parse(parts[0]);
-        int minutes = int.parse(parts[1]);
-        return hours * 60 + minutes;
-      }
-    } catch (e) {
-      print('Error converting time to minutes: $time - $e');
-    }
-    return 0;
-  }
-
-  String _toHms(String time) {
-    final parts = time.split(':');
-    if (parts.length == 2) {
-      return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}:00';
-    } else if (parts.length == 3) {
-      return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}:${parts[2].padLeft(2, '0')}';
-    }
-    return time;
-  }
 
   String convertTo24(String time) {
     try {
@@ -3602,7 +3500,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
   // ====================== ADD SLOT API ======================
 
   Future<void> addSlotAPi(String startTime, String endTime,
-      String amenitiesName) async {
+      String amenitiesName) async
+  {
     setState(() {
       isRsvpLoading = true;
     });
@@ -3780,7 +3679,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
     required Color textColor,
     Color? bgColor,
     bool isBold = false,
-  }) {
+  })
+  {
     return Container(
       margin: const EdgeInsets.all(6.0),
       alignment: Alignment.center,
@@ -3802,6 +3702,252 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
 
   // ====================== OPERATING HOURS EXPANSION TILE ======================
 
+  // Widget _buildOperatingHoursExpansionTile(OperatingHours? operatingHours) {
+  //   final theme = context.watch<ThemeController>();
+  //
+  //   if (operatingHours == null) {
+  //     return Container(
+  //       padding: EdgeInsets.all(12),
+  //       decoration: BoxDecoration(
+  //         color: theme.isDark ? Color(0xff262626) : Colors.grey.shade100,
+  //         borderRadius: BorderRadius.circular(12),
+  //       ),
+  //       child: Row(
+  //         children: [
+  //           Icon(Icons.info_outline, color: Colors.grey, size: 20),
+  //           SizedBox(width: 8),
+  //           Text(
+  //             "No operating hours available",
+  //             style: TextStyle(
+  //               color: theme.isDark ? Colors.white70 : Colors.grey.shade600,
+  //               fontSize: 14,
+  //               fontFamily: AppConstants.manrope,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     );
+  //   }
+  //
+  //   final Map<String, List<TimeSlot>?> daysMap = {
+  //     'Monday': operatingHours.monday,
+  //     'Tuesday': operatingHours.tuesday,
+  //     'Wednesday': operatingHours.wednesday,
+  //     'Thursday': operatingHours.thursday,
+  //     'Friday': operatingHours.friday,
+  //     'Saturday': operatingHours.saturday,
+  //     'Sunday': operatingHours.sunday,
+  //   };
+  //
+  //   bool hasAnyHours =
+  //   daysMap.values.any((slots) => slots != null && slots.isNotEmpty);
+  //
+  //   if (!hasAnyHours) {
+  //     return Container(
+  //       padding: EdgeInsets.all(12),
+  //       decoration: BoxDecoration(
+  //         color: theme.isDark ? Color(0xff262626) : Colors.grey.shade100,
+  //         borderRadius: BorderRadius.circular(12),
+  //       ),
+  //       child: Row(
+  //         children: [
+  //           Icon(Icons.access_time_filled, color: Colors.grey, size: 20),
+  //           SizedBox(width: 8),
+  //           Text(
+  //             "No operating hours set",
+  //             style: TextStyle(
+  //               color: theme.isDark ? Colors.white70 : Colors.grey.shade600,
+  //               fontSize: 14,
+  //               fontFamily: AppConstants.manrope,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     );
+  //   }
+  //
+  //   return Container(
+  //     margin: EdgeInsets.only(top: 8),
+  //     decoration: BoxDecoration(
+  //       color: theme.isDark ? Color(0xff262626) : Colors.white,
+  //       borderRadius: BorderRadius.circular(16),
+  //       border: Border.all(
+  //         color: theme.isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+  //         width: 1,
+  //       ),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.black.withOpacity(0.03),
+  //           blurRadius: 10,
+  //           offset: const Offset(0, 4),
+  //         ),
+  //       ],
+  //     ),
+  //     child: Theme(
+  //       data: Theme.of(context).copyWith(
+  //         dividerColor: Colors.transparent,
+  //         splashColor: Colors.transparent,
+  //         highlightColor: Colors.transparent,
+  //       ),
+  //       child: ExpansionTile(
+  //         tilePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+  //         childrenPadding: EdgeInsets.zero,
+  //         leading: Container(
+  //           padding: EdgeInsets.all(8),
+  //           decoration: BoxDecoration(
+  //             color: AppColors.maincolor.withOpacity(0.1),
+  //             shape: BoxShape.circle,
+  //           ),
+  //           child: Icon(
+  //             Icons.access_time,
+  //             color: AppColors.maincolor,
+  //             size: 20,
+  //           ),
+  //         ),
+  //         title: Text(
+  //           "Operating Hours",
+  //           style: TextStyle(
+  //             fontSize: 16,
+  //             fontWeight: FontWeight.bold,
+  //             color: theme.isDark ? Colors.white : Colors.black87,
+  //             fontFamily: AppConstants.manropeBold,
+  //           ),
+  //         ),
+  //         subtitle: Text(
+  //           "Tap to view daily schedule",
+  //           style: TextStyle(
+  //             fontSize: 13,
+  //             color: theme.isDark ? Colors.white70 : Colors.grey.shade600,
+  //             fontFamily: AppConstants.manrope,
+  //           ),
+  //         ),
+  //         iconColor: AppColors.maincolor,
+  //         collapsedIconColor: AppColors.maincolor,
+  //         children: [
+  //           Container(
+  //             padding: EdgeInsets.all(16),
+  //             decoration: BoxDecoration(
+  //               border: Border(
+  //                 top: BorderSide(
+  //                   color: theme.isDark
+  //                       ? Colors.grey.shade800
+  //                       : Colors.grey.shade200,
+  //                   width: 1,
+  //                 ),
+  //               ),
+  //             ),
+  //             child: Column(
+  //               children: daysMap.entries.map((entry) {
+  //                 final day = entry.key;
+  //                 final slots = entry.value;
+  //
+  //                 return Container(
+  //                   margin: EdgeInsets.only(bottom: 8),
+  //                   padding:
+  //                   EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+  //                   decoration: BoxDecoration(
+  //                     color:
+  //                     theme.isDark ? Color(0xff1E1E1E) : Colors.grey.shade50,
+  //                     borderRadius: BorderRadius.circular(12),
+  //                     border: Border.all(
+  //                       color: theme.isDark
+  //                           ? Colors.grey.shade700
+  //                           : Colors.grey.shade200,
+  //                       width: 1,
+  //                     ),
+  //                   ),
+  //                   child: Row(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Container(
+  //                         width: 25.w,
+  //                         child: Row(
+  //                           children: [
+  //                             Container(
+  //                               width: 8,
+  //                               height: 8,
+  //                               decoration: BoxDecoration(
+  //                                 color: slots != null && slots.isNotEmpty
+  //                                     ? Colors.green
+  //                                     : Colors.grey,
+  //                                 shape: BoxShape.circle,
+  //                               ),
+  //                             ),
+  //                             SizedBox(width: 2.w),
+  //                             Text(
+  //                               day,
+  //                               style: TextStyle(
+  //                                 fontSize: 14,
+  //                                 fontWeight: FontWeight.w600,
+  //                                 color: theme.isDark
+  //                                     ? Colors.white
+  //                                     : Colors.black87,
+  //                                 fontFamily: AppConstants.manropeBold,
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                       SizedBox(width: 10.w),
+  //                       Expanded(
+  //                         child: slots != null && slots.isNotEmpty
+  //                             ? Column(
+  //                           crossAxisAlignment: CrossAxisAlignment.start,
+  //                           children: slots.map((slot) {
+  //                             String openTime = _formatTimeTo12Hour(
+  //                                 slot.open ?? '');
+  //                             String closeTime = _formatTimeTo12Hour(
+  //                                 slot.close ?? '');
+  //
+  //                             return Padding(
+  //                               padding: EdgeInsets.only(
+  //                                   bottom: slots.length > 1 ? 4 : 0),
+  //                               child: Row(
+  //                                 children: [
+  //                                   Icon(
+  //                                     Icons.schedule,
+  //                                     size: 14,
+  //                                     color: AppColors.maincolor,
+  //                                   ),
+  //                                   SizedBox(width: 6),
+  //                                   Expanded(
+  //                                     child: Text(
+  //                                       "$openTime - $closeTime",
+  //                                       style: TextStyle(
+  //                                         fontSize: 13,
+  //                                         color: theme.isDark
+  //                                             ? Colors.white70
+  //                                             : Colors.grey.shade700,
+  //                                         fontFamily: AppConstants.manrope,
+  //                                       ),
+  //                                     ),
+  //                                   ),
+  //                                 ],
+  //                               ),
+  //                             );
+  //                           }).toList(),
+  //                         )
+  //                             : Text(
+  //                           "Closed",
+  //                           style: TextStyle(
+  //                             fontSize: 13,
+  //                             color: Colors.red.shade400,
+  //                             fontFamily: AppConstants.manrope,
+  //                             fontWeight: FontWeight.w500,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 );
+  //               }).toList(),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
   Widget _buildOperatingHoursExpansionTile(OperatingHours? operatingHours) {
     final theme = context.watch<ThemeController>();
 
@@ -3839,8 +3985,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
       'Sunday': operatingHours.sunday,
     };
 
-    bool hasAnyHours =
-    daysMap.values.any((slots) => slots != null && slots.isNotEmpty);
+    bool hasAnyHours = daysMap.values.any((slots) => slots != null && slots.isNotEmpty);
 
     if (!hasAnyHours) {
       return Container(
@@ -3943,11 +4088,9 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
 
                   return Container(
                     margin: EdgeInsets.only(bottom: 8),
-                    padding:
-                    EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                     decoration: BoxDecoration(
-                      color:
-                      theme.isDark ? Color(0xff1E1E1E) : Colors.grey.shade50,
+                      color: theme.isDark ? Color(0xff1E1E1E) : Colors.grey.shade50,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: theme.isDark
@@ -4048,7 +4191,6 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
       ),
     );
   }
-
   // ====================== API CALLS ======================
 
   Future<bool> AmenitiesApi({required String date}) async {
@@ -4451,7 +4593,8 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
 
   void showRSVPDialog(BuildContext context,
       String eventName,
-      String bookingID,) {
+      String bookingID,)
+  {
     showDialog(
       context: context,
       barrierDismissible: false,

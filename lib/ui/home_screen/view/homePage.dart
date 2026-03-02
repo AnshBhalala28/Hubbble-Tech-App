@@ -842,7 +842,7 @@ class _HomePageState extends State<HomePage>
         "screen": CommunityScreen(),
       },
       {
-        "title": "event",
+        "title": "Event",
         "subtitle": "What's on",
         "icon": AppConstants.eventsIcon,
         "screen": EventScreen(userId: loginModel?.data?.user?.id.toString()),

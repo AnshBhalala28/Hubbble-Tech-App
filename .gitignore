@@ -58,3 +58,4 @@ ios/Runner/Config.xcconfig
 /android/local.properties
 /ios/Runner/GoogleService-Info.plist
 /android/release-key.properties
+/pubspec.lock

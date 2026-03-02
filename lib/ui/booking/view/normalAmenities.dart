@@ -2324,7 +2324,6 @@ class _NormalAmenitiesState extends State<NormalAmenities> {
     );
   }
 
-// ✅ Reusable empty message widget
   Widget _buildEmptyMessage(
       ThemeController theme, {
         required IconData icon,
@@ -4458,3 +4457,4 @@ class _NormalAmenitiesState extends State<NormalAmenities> {
     return false;
   }
 }
+

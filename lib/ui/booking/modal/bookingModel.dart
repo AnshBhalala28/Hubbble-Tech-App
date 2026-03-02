@@ -1,42 +1,28 @@
-// ================= Existing Booking =================
-class ExistingBooking {
-  String? startTime;
-  String? endTime;
+// ---------- Helpers ----------
+int? _toInt(dynamic v) => v == null ? null : int.tryParse(v.toString());
+String? _toStr(dynamic v) => v?.toString();
 
-  ExistingBooking({this.startTime, this.endTime});
-
-  ExistingBooking.fromJson(Map<String, dynamic> json) {
-    startTime = json['start_time']?.toString();
-    endTime = json['end_time']?.toString();
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'start_time': startTime, 'end_time': endTime};
-  }
+List<String> _toStrList(dynamic v) {
+  if (v == null) return [];
+  if (v is List) return v.map((e) => e.toString()).toList();
+  return [v.toString()];
 }
 
-// ================= AmenitiesModel =================
+// ---------- Root ----------
 class AmenitiesModel {
   int? status;
   String? message;
   Data? data;
 
-  AmenitiesModel({this.status, this.message, this.data});
-
-  AmenitiesModel.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    message = json['message'];
-    data = json['data'] is Map<String, dynamic>
-        ? Data.fromJson(json['data'])
-        : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'status': status, 'message': message, 'data': data?.toJson()};
+  AmenitiesModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return;
+    status = _toInt(json['status']);
+    message = _toStr(json['message']);
+    data = json['data'] is Map ? Data.fromJson(json['data']) : null;
   }
 }
 
-// ================= Data (Pagination FULL) =================
+// ---------- Pagination ----------
 class Data {
   int? currentPage;
   List<Data1> data = [];
@@ -50,165 +36,159 @@ class Data {
   int? totalPages;
   List<Links> links = [];
 
-  Data.fromJson(Map<String, dynamic> json) {
-    currentPage = json['current_page'];
+  Data.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return;
+
+    currentPage = _toInt(json['current_page']);
+    firstPageUrl = _toStr(json['first_page_url']);
+    lastPage = _toInt(json['last_page']);
+    lastPageUrl = _toStr(json['last_page_url']);
+    nextPageUrl = _toStr(json['next_page_url']);
+    prevPageUrl = _toStr(json['prev_page_url']);
+    total = _toInt(json['total']);
+    perPage = _toInt(json['per_page']);
+    totalPages = _toInt(json['total_pages']);
 
     if (json['data'] is List) {
       data = (json['data'] as List)
-          .where((e) => e != null)
+          .whereType<Map<String, dynamic>>()
           .map((e) => Data1.fromJson(e))
           .toList();
     }
 
-    firstPageUrl = json['first_page_url'];
-    lastPage = json['last_page'];
-    lastPageUrl = json['last_page_url'];
-    nextPageUrl = json['next_page_url']?.toString();
-    prevPageUrl = json['prev_page_url']?.toString();
-    total = json['total'];
-    perPage = json['per_page'];
-    totalPages = json['total_pages'];
-
     if (json['links'] is List) {
       links = (json['links'] as List)
-          .where((e) => e != null)
+          .whereType<Map<String, dynamic>>()
           .map((e) => Links.fromJson(e))
           .toList();
     }
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'current_page': currentPage,
-      'data': data.map((e) => e.toJson()).toList(),
-      'first_page_url': firstPageUrl,
-      'last_page': lastPage,
-      'last_page_url': lastPageUrl,
-      'next_page_url': nextPageUrl,
-      'prev_page_url': prevPageUrl,
-      'total': total,
-      'per_page': perPage,
-      'total_pages': totalPages,
-      'links': links.map((e) => e.toJson()).toList(),
-    };
-  }
 }
 
-// ================= Data1 (Amenity) =================
+// ---------- Amenity ----------
 class Data1 {
   int? id;
   int? userId;
+  int? conciergeId;
+
   String? name;
   String? description;
   List<String> imageUrl = [];
   String? rulesNotice;
+
   OperatingHours? operatingHours;
+  OperatingHours? remainingSlots;
+
   String? bookingLimitDuration;
   List<String> durationOptions = [];
-  var capacity;
-  var maxBookingPerDay;
-  var status;
-  var createdAt;
-  var updatedAt;
-  var totalBookingSlots;
-  var bookedSlots;
-  var availableSlots;
-  var maxBookingPerMonth;
+
+  int? capacity;
+  int? totalBookingSlots;
+  int? bookedSlots;
+  int? availableSlots;
+
+  String? maxBookingPerDay;
+  String? maxBookingsPerSession;
+  String? maxBookingPerMonth;
+
   String? isAllDayBooking;
-  var maintenanceDuration;
+  String? maintenanceDuration;
+
+  String? status;
+  int? residentId;
+  int? residentUnitId;
+  int? requireConfirmation;
+
+  String? deletedAt;
+  String? createdAt;
+  String? updatedAt;
+
   List<ExistingBooking> existingBookings = [];
 
-  Data1.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    userId = json['user_id'];
-    name = json['name'];
-    description = json['description'];
+  Data1.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return;
 
-    imageUrl = _parseStringList(json['image_url']);
-    durationOptions = _parseStringList(json['duration_options']);
+    id = _toInt(json['id']);
+    userId = _toInt(json['user_id']);
+    conciergeId = _toInt(json['concierge_id']);
 
-    rulesNotice = json['rules_notice'];
-    bookingLimitDuration = json['booking_limit_duration'];
+    name = _toStr(json['name']);
+    description = _toStr(json['description']);
 
-    capacity = json['capacity'];
-    maxBookingPerMonth = json['max_booking_per_month'];
-    maxBookingPerDay = json['max_booking_per_day'];
-    status = json['status'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    imageUrl = _toStrList(json['image_url']);
+    rulesNotice = _toStr(json['rules_notice']);
 
-    totalBookingSlots = json['total_booking_slots'];
-    bookedSlots = json['booked_slots'];
-    availableSlots = json['available_slots'];
+    bookingLimitDuration = _toStr(json['booking_limit_duration']);
+    durationOptions = _toStrList(json['duration_options']);
 
-    isAllDayBooking = json['is_all_day_booking'];
-    maintenanceDuration = json['maintenance_duration'];
+    capacity = _toInt(json['capacity']);
+    totalBookingSlots = _toInt(json['total_booking_slots']);
+    bookedSlots = _toInt(json['booked_slots']);
+    availableSlots = _toInt(json['available_slots']);
 
-    final oh = json['remaining_slots'];
-    if (oh is Map<String, dynamic>) {
-      operatingHours = OperatingHours.fromJson(oh);
+    maxBookingPerDay = _toStr(json['max_booking_per_day']);
+    maxBookingsPerSession = _toStr(json['max_bookings_per_session']);
+    maxBookingPerMonth = _toStr(json['max_booking_per_month']);
+
+    isAllDayBooking = _toStr(json['is_all_day_booking']);
+    maintenanceDuration = _toStr(json['maintenance_duration']);
+
+    status = _toStr(json['status']);
+    residentId = _toInt(json['resident_id']);
+    residentUnitId = _toInt(json['resident_unit_id']);
+    requireConfirmation = _toInt(json['require_confirmation']);
+
+    deletedAt = _toStr(json['deleted_at']);
+    createdAt = _toStr(json['created_at']);
+    updatedAt = _toStr(json['updated_at']);
+
+    if (json['operating_hours'] is Map) {
+      operatingHours = OperatingHours.fromJson(json['operating_hours']);
+    }
+
+    if (json['remaining_slots'] is Map) {
+      remainingSlots = OperatingHours.fromJson(json['remaining_slots']);
     }
 
     if (json['existing_bookings'] is List) {
       existingBookings = (json['existing_bookings'] as List)
-          .where((e) => e != null)
+          .whereType<Map<String, dynamic>>()
           .map((e) => ExistingBooking.fromJson(e))
           .toList();
     }
   }
+}
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'user_id': userId,
-      'name': name,
-      'description': description,
-      'image_url': imageUrl,
-      'rules_notice': rulesNotice,
-      'remaining_slots': operatingHours?.toJson(),
-      'booking_limit_duration': bookingLimitDuration,
-      'duration_options': durationOptions,
-      'capacity': capacity,
-      'max_booking_per_month': maxBookingPerMonth,
-      'max_booking_per_day': maxBookingPerDay,
-      'status': status,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
-      'total_booking_slots': totalBookingSlots,
-      'maintenance_duration': maintenanceDuration,
-      'booked_slots': bookedSlots,
-      'is_all_day_booking': isAllDayBooking,
-      'available_slots': availableSlots,
-      'existing_bookings': existingBookings.map((e) => e.toJson()).toList(),
-    };
-  }
+// ---------- Existing Booking ----------
+class ExistingBooking {
+  String? startTime;
+  String? endTime;
 
-  List<String> _parseStringList(dynamic value) {
-    if (value == null) return [];
-    if (value is List) return value.map((e) => e.toString()).toList();
-    if (value is String && value.isNotEmpty) return [value];
-    return [];
+  ExistingBooking.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return;
+    startTime = _toStr(json['start_time']);
+    endTime = _toStr(json['end_time']);
   }
 }
 
-// ================= TimeSlot =================
-class TimeSlot {
-  String? open;
-  String? close;
-
-  TimeSlot({this.open, this.close});
-
-  TimeSlot.fromJson(Map<String, dynamic> json) {
-    open = json['open']?.toString();
-    close = json['close']?.toString();
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'open': open, 'close': close};
-  }
-}
-
-// ================= Operating Hours =================
+// ---------- Operating Hours ----------
+// class OperatingHours {
+//   Map<String, List<TimeSlot>> days = {};
+//
+//   OperatingHours.fromJson(Map<String, dynamic>? json) {
+//     if (json == null) return;
+//
+//     json.forEach((key, value) {
+//       if (value is List) {
+//         days[key] = value
+//             .whereType<Map<String, dynamic>>()
+//             .map((e) => TimeSlot.fromJson(e))
+//             .toList();
+//       }
+//     });
+//   }
+// }
+// ---------- Operating Hours ----------
 class OperatingHours {
   List<TimeSlot>? monday;
   List<TimeSlot>? tuesday;
@@ -218,49 +198,73 @@ class OperatingHours {
   List<TimeSlot>? saturday;
   List<TimeSlot>? sunday;
 
-  OperatingHours.fromJson(Map<String, dynamic> json) {
-    monday = _parse(json['monday']);
-    tuesday = _parse(json['tuesday']);
-    wednesday = _parse(json['wednesday']);
-    thursday = _parse(json['thursday']);
-    friday = _parse(json['friday']);
-    saturday = _parse(json['saturday']);
-    sunday = _parse(json['sunday']);
+  OperatingHours.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return;
+
+    monday = _parseTimeSlots(json['monday']);
+    tuesday = _parseTimeSlots(json['tuesday']);
+    wednesday = _parseTimeSlots(json['wednesday']);
+    thursday = _parseTimeSlots(json['thursday']);
+    friday = _parseTimeSlots(json['friday']);
+    saturday = _parseTimeSlots(json['saturday']);
+    sunday = _parseTimeSlots(json['sunday']);
   }
 
-  List<TimeSlot>? _parse(dynamic data) {
-    if (data is List) {
-      return data.map((e) => TimeSlot.fromJson(e)).toList();
+  List<TimeSlot>? _parseTimeSlots(dynamic value) {
+    if (value == null) return null;
+    if (value is List) {
+      return value
+          .whereType<Map<String, dynamic>>()
+          .map((e) => TimeSlot.fromJson(e))
+          .toList();
     }
     return null;
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'monday': monday?.map((e) => e.toJson()).toList(),
-      'tuesday': tuesday?.map((e) => e.toJson()).toList(),
-      'wednesday': wednesday?.map((e) => e.toJson()).toList(),
-      'thursday': thursday?.map((e) => e.toJson()).toList(),
-      'friday': friday?.map((e) => e.toJson()).toList(),
-      'saturday': saturday?.map((e) => e.toJson()).toList(),
-      'sunday': sunday?.map((e) => e.toJson()).toList(),
-    };
+  // Helper method to get slots for a specific day
+  List<TimeSlot>? getSlotsForDay(String day) {
+    switch (day.toLowerCase()) {
+      case 'monday':
+        return monday;
+      case 'tuesday':
+        return tuesday;
+      case 'wednesday':
+        return wednesday;
+      case 'thursday':
+        return thursday;
+      case 'friday':
+        return friday;
+      case 'saturday':
+        return saturday;
+      case 'sunday':
+        return sunday;
+      default:
+        return null;
+    }
+  }
+}
+// ---------- Time Slot ----------
+class TimeSlot {
+  String? open;
+  String? close;
+
+  TimeSlot.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return;
+    open = _toStr(json['open']);
+    close = _toStr(json['close']);
   }
 }
 
-// ================= Links =================
+// ---------- Links ----------
 class Links {
   String? url;
   String? label;
   bool? active;
 
-  Links.fromJson(Map<String, dynamic> json) {
-    url = json['url']?.toString();
-    label = json['label']?.toString();
+  Links.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return;
+    url = _toStr(json['url']);
+    label = _toStr(json['label']);
     active = json['active'];
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'url': url, 'label': label, 'active': active};
   }
 }
