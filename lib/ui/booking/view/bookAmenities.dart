@@ -32,7 +32,7 @@ class BookAmenities_Screen extends StatefulWidget {
 
 class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
   final GlobalKey<ScaffoldState> _scaffoldKeyBookAmenities =
-  GlobalKey<ScaffoldState>();
+      GlobalKey<ScaffoldState>();
   final PagingController<int, Data1> _pagingController = PagingController(
     firstPageKey: 1,
   );
@@ -108,188 +108,191 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                     builderDelegate: PagedChildBuilderDelegate<Data1>(
                       noItemsFoundIndicatorBuilder:
                           (_) => Center(
-                        child: Text(
-                          "No Amenities Available",
-                          style: TextStyle(
-                            fontSize: 17.sp,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.black,
-                            fontFamily: AppConstants.manrope,
+                            child: Text(
+                              "No Amenities Available",
+                              style: TextStyle(
+                                fontSize: 17.sp,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.black,
+                                fontFamily: AppConstants.manrope,
+                              ),
+                            ).paddingOnly(bottom: 10.h),
                           ),
-                        ).paddingOnly(bottom: 10.h),
-                      ),
                       itemBuilder:
                           (context, booking, index) => Stack(
-                        alignment: Alignment.topRight,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.white30),
-                              borderRadius: BorderRadius.circular(12),
-                              color:
-                              theme.isDark ? Color(0xff252525) : null,
-                            ),
-                            child: GestureDetector(
-                              onTap: () {
-                                final value = booking.isAllDayBooking.toString();
-                                log("isAllDayBooking value: ${booking.isAllDayBooking}  type: ${booking.isAllDayBooking.runtimeType}");
-                                log("isAllDayBooking: $value");
-
-                                if (value == "1") {
-                                  // All day booking → Amenities details
-                                  Get.to(
-                                        () => AmenitiesDetail(
-                                      amenites_id: booking.id.toString(),
-                                      isPage: false,
-                                    ),
-                                  );
-                                } else {
-                                  // Slot booking → Form screen
-                                  Get.to(
-                                        () => NormalAmenities(
-                                      amenites_id: booking.id.toString(),
-                                      isPage: false,
-                                    ),
-                                  );
-                                }
-                              },
-                              child: Container(
-                                height: 33.h,
+                            alignment: Alignment.topRight,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(5),
                                 decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.white30),
                                   borderRadius: BorderRadius.circular(12),
                                   color:
-                                  theme.isDark
-                                      ? Color(0xff252525)
-                                      : Colors.white,
+                                      theme.isDark ? Color(0xff252525) : null,
                                 ),
-                                child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(12),
-                                        topRight: Radius.circular(12),
-                                      ),
-                                      child: CachedNetworkImage(
-                                        imageUrl:
-                                        (booking.imageUrl != null &&
-                                            booking
-                                                .imageUrl!
-                                                .isNotEmpty)
-                                            ? booking.imageUrl!.first
-                                            : "https://portal.wavee.ai/public/business/img/logos/waveeLogoShort.png",
-                                        fit: BoxFit.cover,
-                                        width: double.infinity,
-                                        height: 20.h,
-                                        placeholder:
-                                            (context, url) => const Center(
-                                          child:
-                                          CircularProgressIndicator(),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    final value =
+                                        booking.isAllDayBooking.toString();
+                                    log(
+                                      "isAllDayBooking value: ${booking.isAllDayBooking}  type: ${booking.isAllDayBooking.runtimeType}",
+                                    );
+                                    log("isAllDayBooking: $value");
+
+                                    if (value == "1") {
+                                      // All day booking → Amenities details
+                                      Get.to(
+                                        () => AmenitiesDetail(
+                                          amenites_id: booking.id.toString(),
+                                          isPage: false,
                                         ),
-                                        errorWidget:
-                                            (
-                                            context,
-                                            url,
-                                            error,
-                                            ) => Image.network(
-                                          "https://portal.wavee.ai/public/business/img/logos/waveeLogoShort.png",
+                                      );
+                                    } else {
+                                      // Slot booking → Form screen
+                                      Get.to(
+                                        () => NormalAmenities(
+                                          amenites_id: booking.id.toString(),
+                                          isPage: false,
                                         ),
-                                      ),
-                                    ),
-                                    SizedBox(height: 1.h),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 2.w,
-                                      ),
-                                      child: Text(
-                                        booking.name ?? "No Title",
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          color:
+                                      );
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 33.h,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color:
                                           theme.isDark
-                                              ? Colors.white
-                                              : Colors.black,
-                                          fontSize: 17.sp,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily:
-                                          AppConstants.manropeBold,
+                                              ? Color(0xff252525)
+                                              : Colors.white,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(12),
+                                            topRight: Radius.circular(12),
+                                          ),
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                (booking.imageUrl != null &&
+                                                        booking
+                                                            .imageUrl!
+                                                            .isNotEmpty)
+                                                    ? booking.imageUrl!.first
+                                                    : "https://portal.wavee.ai/public/business/img/logos/waveeLogoShort.png",
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                            height: 20.h,
+                                            placeholder:
+                                                (context, url) => const Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                ),
+                                            errorWidget:
+                                                (
+                                                  context,
+                                                  url,
+                                                  error,
+                                                ) => Image.network(
+                                                  "https://portal.wavee.ai/public/business/img/logos/waveeLogoShort.png",
+                                                ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 1.h),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 2.w,
+                                          ),
+                                          child: Text(
+                                            booking.name ?? "No Title",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              color:
+                                                  theme.isDark
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                              fontSize: 17.sp,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily:
+                                                  AppConstants.manropeBold,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 0.5.h),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 2.w,
+                                          ),
+                                          child: Text(
+                                            booking.description ??
+                                                "No Description",
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: 15.sp,
+                                              color:
+                                                  theme.isDark
+                                                      ? Colors.white
+                                                      : Colors.grey[700],
+                                              fontFamily: AppConstants.manrope,
+                                            ),
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                            right: 2.w,
+                                            bottom: 1.h,
+                                          ),
+                                          child: Align(
+                                            alignment: Alignment.bottomRight,
+                                            child: Icon(
+                                              Icons.arrow_forward,
+                                              size: 18.sp,
+                                              color:
+                                                  theme.isDark
+                                                      ? Colors.white
+                                                      : AppColors.maincolor,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ).marginOnly(bottom: 1.h),
+                              Positioned(
+                                top: 2.h,
+                                right: 3.w,
+                                child: batan(
+                                  title: "Book Now",
+                                  route:
+                                      () => Get.to(
+                                        () => AmenitiesDetail(
+                                          amenites_id: booking.id.toString(),
+                                          isPage: false,
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(height: 0.5.h),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 2.w,
-                                      ),
-                                      child: Text(
-                                        booking.description ??
-                                            "No Description",
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          color:
-                                          theme.isDark
-                                              ? Colors.white
-                                              : Colors.grey[700],
-                                          fontFamily: AppConstants.manrope,
-                                        ),
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                        right: 2.w,
-                                        bottom: 1.h,
-                                      ),
-                                      child: Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: Icon(
-                                          Icons.arrow_forward,
-                                          size: 18.sp,
-                                          color:
-                                          theme.isDark
-                                              ? Colors.white
-                                              : AppColors.maincolor,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                  color:
+                                      theme.isDark
+                                          ? Color(0xffCBB88C)
+                                          : AppColors.maincolor,
+                                  fontcolor:
+                                      theme.isDark
+                                          ? Colors.black
+                                          : Colors.white,
+                                  height: 4.h,
+                                  width: 22.w,
+                                  fontsize: 15.sp,
+                                  radius: 7.0,
                                 ),
                               ),
-                            ),
-                          ).marginOnly(bottom: 1.h),
-                          Positioned(
-                            top: 2.h,
-                            right: 3.w,
-                            child: batan(
-                              title: "Book Now",
-                              route:
-                                  () => Get.to(
-                                    () => AmenitiesDetail(
-                                  amenites_id: booking.id.toString(),
-                                  isPage: false,
-                                ),
-                              ),
-                              color:
-                              theme.isDark
-                                  ? Color(0xffCBB88C)
-                                  : AppColors.maincolor,
-                              fontcolor:
-                              theme.isDark
-                                  ? Colors.black
-                                  : Colors.white,
-                              height: 4.h,
-                              width: 22.w,
-                              fontsize: 15.sp,
-                              radius: 7.0,
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
                     ),
                   ),
                 ),

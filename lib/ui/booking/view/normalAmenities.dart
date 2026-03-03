@@ -1497,7 +1497,7 @@ class _NormalAmenitiesState extends State<NormalAmenities> {
                                                               .bold,
                                                           fontFamily:
                                                           AppConstants
-                                                              .manrope,
+                                                              .manropeBold,
                                                         ),
                                                       ),
                                                     );
@@ -1704,7 +1704,7 @@ class _NormalAmenitiesState extends State<NormalAmenities> {
                                                         FontWeight.bold,
                                                         fontFamily:
                                                         AppConstants
-                                                            .manrope,
+                                                            .manropeBold,
                                                       ),
                                                     ),
                                                     SizedBox(height: 3.h),

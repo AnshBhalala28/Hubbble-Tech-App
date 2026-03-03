@@ -1497,7 +1497,7 @@ class _AmenitiesDetailState extends State<AmenitiesDetail> {
                                                             .bold,
                                                         fontFamily:
                                                         AppConstants
-                                                            .manrope,
+                                                            .manropeBold,
                                                       ),
                                                     ),
                                                     SizedBox(height: 3.h),
