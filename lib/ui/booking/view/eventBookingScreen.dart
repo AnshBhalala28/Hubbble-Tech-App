@@ -65,7 +65,7 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
               children: [
                 SizedBox(height: 4.h),
                 TitleBar(
-                  title: "Event Booking",
+                  title: "event Booking",
                   drawerCallback: () {},
                   back: () {
                     Get.back();
@@ -99,17 +99,19 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                             decoration: BoxDecoration(
                               border: Border.all(
                                 width: 0.5,
-                                color: isDark
-                                    ? const Color(0xffbdab82)
-                                    : Colors.grey,
+                                color:
+                                    isDark
+                                        ? const Color(0xffbdab82)
+                                        : Colors.grey,
                               ),
-                              color: selectedCategory == index
-                                  ? isDark
-                                        ? const Color(0xff272727)
-                                        : AppColors.maincolor
-                                  : isDark
-                                  ? Colors.black
-                                  : Colors.white,
+                              color:
+                                  selectedCategory == index
+                                      ? isDark
+                                          ? const Color(0xff272727)
+                                          : AppColors.maincolor
+                                      : isDark
+                                      ? Colors.black
+                                      : Colors.white,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             margin: EdgeInsets.symmetric(horizontal: 1.2.w),
@@ -117,14 +119,16 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                               categories[index],
                               style: TextStyle(
                                 fontSize: 16.sp,
-                                color: selectedCategory == index
-                                    ? Colors.white
-                                    : isDark
-                                    ? Colors.white
-                                    : Colors.black,
-                                fontFamily: selectedCategory == index
-                                    ? AppConstants.manropeBold
-                                    : AppConstants.manrope,
+                                color:
+                                    selectedCategory == index
+                                        ? Colors.white
+                                        : isDark
+                                        ? Colors.white
+                                        : Colors.black,
+                                fontFamily:
+                                    selectedCategory == index
+                                        ? AppConstants.manropeBold
+                                        : AppConstants.manrope,
                                 fontWeight: FontWeight.w500,
                                 letterSpacing: 1,
                               ),
@@ -140,177 +144,183 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                 isLoading
                     ? const Center(child: Loader()).paddingOnly(top: 25.h)
                     : eventBookingModal?.data?.length == null ||
-                          eventBookingModal?.data?.length == 0
+                        eventBookingModal?.data?.length == 0
                     ? Center(
-                        child: Text(
-                          "No Bookings Available",
-                          style: TextStyle(
-                            fontSize: 17.sp,
-                            fontWeight: FontWeight.bold,
-                            color: isDark ? AppColors.white : AppColors.black,
-                            fontFamily: AppConstants.manrope,
-                          ),
-                        ).paddingOnly(top: 30.h),
-                      )
+                      child: Text(
+                        "No Bookings Available",
+                        style: TextStyle(
+                          fontSize: 17.sp,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? AppColors.white : AppColors.black,
+                          fontFamily: AppConstants.manrope,
+                        ),
+                      ).paddingOnly(top: 30.h),
+                    )
                     : SizedBox(
-                        child: Column(
-                          children: [
-                            ListView.builder(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              physics: const NeverScrollableScrollPhysics(),
-                              padding: EdgeInsets.zero,
-                              itemCount: eventBookingModal?.data?.length ?? 0,
-                              itemBuilder: (context, index) {
-                                var booking = eventBookingModal?.data?[index];
-                                return GestureDetector(
-                                  onTap: () {
-                                    EventDetailApi(
-                                      booking?.eventId.toString() ?? "",
-                                    );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: isDark
-                                          ? const Color(0xff272727)
-                                          : Colors.white,
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withValues(
-                                            alpha: 0.2,
-                                          ),
-                                          spreadRadius: 2,
-                                          blurRadius: 5,
-                                          offset: const Offset(0, 3),
+                      child: Column(
+                        children: [
+                          ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: EdgeInsets.zero,
+                            itemCount: eventBookingModal?.data?.length ?? 0,
+                            itemBuilder: (context, index) {
+                              var booking = eventBookingModal?.data?[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  EventDetailApi(
+                                    booking?.eventId.toString() ?? "",
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color:
+                                        isDark
+                                            ? const Color(0xff272727)
+                                            : Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withValues(
+                                          alpha: 0.2,
                                         ),
-                                      ],
-                                    ),
-                                    margin: EdgeInsets.symmetric(
-                                      horizontal: 1.w,
-                                      vertical: 1.h,
-                                    ),
-                                    padding: const EdgeInsets.all(12),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(width: 2.h),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    formatDate(
-                                                      booking?.eventDate ?? "",
-                                                    ),
-                                                    style: TextStyle(
-                                                      fontSize: 14.sp,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: isDark
-                                                          ? const Color(
+                                        spreadRadius: 2,
+                                        blurRadius: 5,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: 1.w,
+                                    vertical: 1.h,
+                                  ),
+                                  padding: const EdgeInsets.all(12),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(width: 2.h),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  formatDate(
+                                                    booking?.eventDate ?? "",
+                                                  ),
+                                                  style: TextStyle(
+                                                    fontSize: 14.sp,
+                                                    fontWeight: FontWeight.w600,
+                                                    color:
+                                                        isDark
+                                                            ? const Color(
                                                               0xffbdab82,
                                                             )
-                                                          : Colors.black54,
-                                                      fontFamily:
-                                                          AppConstants.manrope,
-                                                    ),
+                                                            : Colors.black54,
+                                                    fontFamily:
+                                                        AppConstants.manrope,
                                                   ),
-                                                  const Spacer(),
-                                                  Container(
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                          horizontal: 10,
-                                                          vertical: 4,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: getStatusColor(
-                                                        booking?.status ?? '',
-                                                        booking?.rsvp,
-                                                        booking?.isAttended,
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            10,
-                                                          ),
-                                                    ),
-                                                    child: Text(
-                                                      getDisplayStatus(
-                                                        booking?.status ?? '',
-                                                        booking?.rsvp,
-                                                        booking?.isAttended,
-                                                      ),
-                                                      style: const TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white,
-                                                        fontFamily: AppConstants
-                                                            .manropeBold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(height: 1.h),
-                                              Text(
-                                                booking?.eventName ?? '',
-                                                style: TextStyle(
-                                                  fontSize: 16.sp,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily:
-                                                      AppConstants.manropeBold,
-                                                  color: isDark
-                                                      ? Colors.white
-                                                      : Colors.black87,
                                                 ),
+                                                const Spacer(),
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 4,
+                                                      ),
+                                                  decoration: BoxDecoration(
+                                                    color: getStatusColor(
+                                                      booking?.status ?? '',
+                                                      booking?.rsvp,
+                                                      booking?.isAttended,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                  ),
+                                                  child: Text(
+                                                    getDisplayStatus(
+                                                      booking?.status ?? '',
+                                                      booking?.rsvp,
+                                                      booking?.isAttended,
+                                                    ),
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white,
+                                                      fontFamily:
+                                                          AppConstants
+                                                              .manropeBold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 1.h),
+                                            Text(
+                                              booking?.eventName ?? '',
+                                              style: TextStyle(
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily:
+                                                    AppConstants.manropeBold,
+                                                color:
+                                                    isDark
+                                                        ? Colors.white
+                                                        : Colors.black87,
                                               ),
-                                              SizedBox(height: 1.5.h),
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.location_on,
-                                                    size: 16,
-                                                    color: isDark
-                                                        ? const Color(
+                                            ),
+                                            SizedBox(height: 1.5.h),
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.location_on,
+                                                  size: 16,
+                                                  color:
+                                                      isDark
+                                                          ? const Color(
                                                             0xffbdab82,
                                                           )
-                                                        : Colors.black45,
-                                                  ),
-                                                  const SizedBox(width: 4),
-                                                  SizedBox(
-                                                    width: 70.w,
-                                                    child: Text(
-                                                      booking?.eventLocation ??
-                                                          "",
-                                                      style: TextStyle(
-                                                        fontSize: 14.sp,
-                                                        fontFamily: AppConstants
-                                                            .manropeBold,
-                                                        color: isDark
-                                                            ? Colors.white
-                                                            : Colors.black54,
-                                                      ),
+                                                          : Colors.black45,
+                                                ),
+                                                const SizedBox(width: 4),
+                                                SizedBox(
+                                                  width: 70.w,
+                                                  child: Text(
+                                                    booking?.eventLocation ??
+                                                        "",
+                                                    style: TextStyle(
+                                                      fontSize: 14.sp,
+                                                      fontFamily:
+                                                          AppConstants
+                                                              .manropeBold,
+                                                      color:
+                                                          isDark
+                                                              ? Colors.white
+                                                              : Colors.black54,
                                                     ),
                                                   ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
+                    ),
               ],
             ).paddingSymmetric(horizontal: 3.w, vertical: 2.h),
           ),
@@ -498,9 +508,8 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
     BuildContext context,
     EventDetailModel? booking,
   ) {
-    final event = booking?.data?.isNotEmpty == true
-        ? booking!.data!.first
-        : null;
+    final event =
+        booking?.data?.isNotEmpty == true ? booking!.data!.first : null;
     final theme = Provider.of<ThemeController>(context, listen: false);
     final isDark = theme.isDark;
     showModalBottomSheet(
@@ -540,8 +549,8 @@ class _EventbookingScreenState extends State<EventbookingScreen> {
                 "Date",
                 event?.eventDate != null
                     ? DateFormat(
-                        'dd MMM yyyy, hh:mm a',
-                      ).format(DateTime.parse(event!.eventDate!))
+                      'dd MMM yyyy, hh:mm a',
+                    ).format(DateTime.parse(event!.eventDate!))
                     : "-",
               ),
               _detailRow(

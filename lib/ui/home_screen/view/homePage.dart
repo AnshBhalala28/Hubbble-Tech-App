@@ -1732,14 +1732,18 @@ class _HomePageState extends State<HomePage>
     });
   }
 
-  void _refreshCounts() {
-    // This function will be called by the notification listeners
-    log("Refreshing counts due to push notification...");
-    ChatShowCount();
-    VisitorShowCount();
-    ParcelShowCount();
-  }
+  Future<void> _refreshCounts() async {
+    if (loginModel?.data?.user?.id == null) {
+      log("⚠️ User not loaded yet. Skipping refresh.");
+      return;
+    }
 
+    log("🔄 Refreshing counts...");
+
+    await ChatShowCount();
+    await VisitorShowCount();
+    await ParcelShowCount();
+  }
   void _setupFirebaseMessagingListeners() {
     // 1. For messages received while the app is in the FOREGROUND
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -2010,7 +2014,7 @@ class _HomePageState extends State<HomePage>
     });
   }
 
-  ChatShowCount() async {
+  Future<void> ChatShowCount() async {
     final Map<String, String> bodyData = {};
     bodyData['sender_id'] = '1';
     bodyData['receiver_id'] = loginModel?.data?.user?.id.toString() ?? "";
@@ -2064,7 +2068,7 @@ class _HomePageState extends State<HomePage>
     });
   }
 
-  ParcelShowCount() async {
+  Future<void>  ParcelShowCount() async {
     final Map<String, String> bodyData = {};
     bodyData["user_id"] = loginModel?.data?.user?.id.toString() ?? "";
     bodyData["type"] = "count";
@@ -2119,7 +2123,7 @@ class _HomePageState extends State<HomePage>
     });
   }
 
-  VisitorShowCount() async {
+  Future<void> VisitorShowCount() async {
     final Map<String, String> bodyData = {};
     bodyData["user_id"] = loginModel?.data?.user?.id.toString() ?? "";
     bodyData["count"] = "visitor";
