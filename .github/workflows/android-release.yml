@@ -56,11 +56,11 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_CONFIG_JSON }}
           packageName: com.wavee.community
           releaseFiles: build/app/outputs/bundle/release/app-release.aab
-          track: production
-          status: draft
+          track: internal
+          status: completed
           inAppUpdatePriority: 3
-#          track: internal
-#          status: completed
+#          track: production
+#          status: draft
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
