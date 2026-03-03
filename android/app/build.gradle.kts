@@ -46,22 +46,15 @@ android {
         jvmTarget = "17"
     }
 
-//    signingConfigs {
-//        create("release") {
-//            storeFile = file("waveeai.jks")
-//            storePassword = System.getenv("APP_STORE_PASSWORD")
-//            keyAlias = System.getenv("APP_KEY_ALIAS")
-//            keyPassword = System.getenv("APP_KEY_PASSWORD")
-//        }
-//    }
     signingConfigs {
         create("release") {
-            keyAlias = "waveeai"
-            keyPassword = "123456"
-            storeFile = file("C:\\Users\\Hiren\\StudioProjects\\waveeai-app-new\\android\\app\\waveeai.jks")
-            storePassword = "123456"
+            storeFile = file("waveeai.jks")
+            storePassword = System.getenv("APP_STORE_PASSWORD")
+            keyAlias = System.getenv("APP_KEY_ALIAS")
+            keyPassword = System.getenv("APP_KEY_PASSWORD")
         }
     }
+
 
 
 
