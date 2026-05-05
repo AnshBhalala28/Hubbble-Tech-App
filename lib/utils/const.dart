@@ -121,10 +121,10 @@ String formatTime12(String? time) {
 
 class AppConstants {
   /// Dev Url
-  // static String BASEURL = "https://development.wavee.ai/api/";
+  static String BASEURL = "https://development.wavee.ai/api/";
 
   /// Og Url
-  static String BASEURL = "https://portal.wavee.ai/api/";
+  // static String BASEURL = "https://portal.wavee.ai/api/";
   static String weatherApi =
       dotenv.env['WEATHER_API'] ?? 'NO WEATHER_API FOUND';
   static const String path = "assets/Svg/";
@@ -189,6 +189,16 @@ class AppConstants {
   static const String weatherThunder = "assets/Svg/weather_thunder.svg";
   static const String weatherSnow = "assets/Svg/weather_snow.svg";
   static const String weatherFog = "assets/Svg/weather_fog.svg";
+
+  ///Hubble Tech
+  static String guests = "assets/Svg/guests.svg";
+  static String rooms = "assets/Svg/room.svg";
+  static String link = "assets/Svg/link.svg";
+  static String note = "assets/Svg/note.svg";
+  static String title = "assets/Svg/title.svg";
+  static String celebration = "assets/Svg/celebration.svg";
+  static String contracts = "assets/Svg/contracts.svg";
+  static String accommodation = "assets/Svg/accommodation.svg";
 }
 
 /// ============================================================

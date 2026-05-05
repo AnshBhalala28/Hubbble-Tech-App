@@ -17,11 +17,14 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:wavee/services/themeServices.dart';
 import 'package:wavee/services/weatherModal.dart';
 import 'package:wavee/services/weatherService.dart';
+import 'package:wavee/ui/accommodation/view/viewAccommodation.dart';
 import 'package:wavee/ui/booking/view/eventBookingScreen.dart';
 import 'package:wavee/ui/booking/view/bookAmenities.dart';
 import 'package:wavee/ui/booking/view/bookingScreen.dart';
 import 'package:wavee/ui/community_screen/view/communityScreen.dart';
+import 'package:wavee/ui/contracts/view/viewContracts.dart';
 import 'package:wavee/ui/event/view/eventScreen.dart';
+import 'package:wavee/ui/event_details/view/viewEventDetailsScreen.dart';
 import 'package:wavee/ui/home_screen/modal/chatShowCountModal.dart';
 import 'package:wavee/ui/home_screen/modal/messageBoardModal.dart';
 import 'package:wavee/ui/home_screen/modal/parcelShowCount.dart';
@@ -110,7 +113,7 @@ class _HomePageState extends State<HomePage>
     setState(() {
       isLoading = true;
     });
-    _fetchWeather();
+   // _fetchWeather();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkDefaultPassword();
     });
@@ -292,201 +295,201 @@ class _HomePageState extends State<HomePage>
                             letterSpacing: 1.5,
                           ),
                         ),
-                        Row(
-                          children: [
-                            Container(
-                              height: 4.h,
-                              decoration: BoxDecoration(
-                                color:
-                                    theme.isDark
-                                        ? AppColors.darkPillColor
-                                        : AppColors.white,
-                                borderRadius: BorderRadius.circular(25),
-
-                                border: Border.all(
-                                  color:
-                                      theme.isDark
-                                          ? AppColors.darkBorderColor
-                                          : AppColors.lightText.withValues(
-                                            alpha: 0.3,
-                                          ),
-                                  width: 1,
-                                ),
-                                boxShadow:
-                                    theme.isDark
-                                        ? []
-                                        : [
-                                          BoxShadow(
-                                            color: AppColors.lightText
-                                                .withValues(alpha: 0.15),
-                                            spreadRadius: 0,
-                                            blurRadius: 10,
-                                            offset: const Offset(0, 5),
-                                          ),
-                                        ],
-                              ),
-                              padding: const EdgeInsets.all(5),
-                              child: Row(
-                                children: [
-                                  // Icon(
-                                  //   Icons.apartment,
-                                  //   color:
-                                  //       theme.isDark
-                                  //           ? Color(0xf0AC9D79)
-                                  //           : AppColors.lightText,
-                                  // ),
-                                  SvgPicture.asset(
-                                    AppConstants.aprtmentIcon,
-                                    width: 10.w,
-                                    color:
-                                        theme.isDark
-                                            ? const Color(0xf0AC9D79)
-                                            : AppColors.lightText,
-                                  ),
-
-                                  SizedBox(width: 2.w),
-                                  Text(
-                                    capitalize(
-                                      profileModel
-                                              ?.data
-                                              ?.buildingDocument
-                                              ?.buildingName ??
-                                          "N/A",
-                                    ),
-                                    style: TextStyle(
-                                      color:
-                                          theme.isDark
-                                              ? const Color(0xf0BDBDBE)
-                                              : AppColors.lightText,
-                                      fontFamily: AppConstants.manropeBold,
-                                      fontSize: 14.sp,
-                                    ),
-                                  ),
-                                ],
-                              ).paddingSymmetric(horizontal: 3.w),
-                            ).paddingOnly(top: 2.h, left: 2.w, right: 2.w),
-                            Container(
-                              height: 4.h,
-                              decoration: BoxDecoration(
-                                color:
-                                    theme.isDark
-                                        ? AppColors.darkPillColor
-                                        : AppColors.white,
-                                borderRadius: BorderRadius.circular(25),
-                                border: Border.all(
-                                  color:
-                                      theme.isDark
-                                          ? AppColors.darkBorderColor
-                                          : AppColors.lightText.withValues(
-                                            alpha: 0.3,
-                                          ),
-                                  width: 1,
-                                ),
-                                boxShadow:
-                                    theme.isDark
-                                        ? []
-                                        : [
-                                          BoxShadow(
-                                            color: AppColors.lightText
-                                                .withValues(alpha: 0.15),
-                                            blurRadius: 10,
-                                            offset: const Offset(0, 5),
-                                          ),
-                                        ],
-                              ),
-                              child: Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    getWeatherSvg(_weathermodel?.mainCondition),
-                                    width: getWeatherIconSize(
-                                      _weathermodel?.mainCondition,
-                                    ),
-                                    colorFilter: ColorFilter.mode(
-                                      theme.isDark
-                                          ? const Color(0xffAC9D79)
-                                          : AppColors.lightText,
-                                      BlendMode.srcIn,
-                                    ),
-                                  ),
-
-                                  SizedBox(width: 2.w),
-
-                                  /// 🌡 Temperature
-                                  Text(
-                                    _weathermodel == null
-                                        ? "loading.."
-                                        : "${_weathermodel!.temperature.round()}°C",
-                                    style: TextStyle(
-                                      color:
-                                          theme.isDark
-                                              ? const Color(0xf0BDBDBE)
-                                              : AppColors.lightText,
-                                      fontFamily: AppConstants.manropeBold,
-                                      fontSize: 14.sp,
-                                    ),
-                                  ),
-                                ],
-                              ).paddingSymmetric(horizontal: 3.w),
-                            ).paddingOnly(top: 2.h, left: 2.w),
-
-                            // Container(
-                            //   height: 4.h,
-                            //   decoration: BoxDecoration(
-                            //     color:
-                            //         theme.isDark
-                            //             ? AppColors.darkPillColor
-                            //             : AppColors.white,
-                            //     borderRadius: BorderRadius.circular(25),
-                            //     border: Border.all(
-                            //       color:
-                            //           theme.isDark
-                            //               ? AppColors.darkBorderColor
-                            //               : AppColors.lightText.withValues(
-                            //                 alpha: 0.3,
-                            //               ),
-                            //       width: 1,
-                            //     ),
-                            //     boxShadow:
-                            //         theme.isDark
-                            //             ? []
-                            //             : [
-                            //               BoxShadow(
-                            //                 color: AppColors.lightText
-                            //                     .withValues(alpha: 0.15),
-                            //                 spreadRadius: 0,
-                            //                 blurRadius: 10,
-                            //                 offset: Offset(0, 5),
-                            //               ),
-                            //             ],
-                            //   ),
-                            //   child: Row(
-                            //     children: [
-                            //
-                            //       SvgPicture.asset(AppConstants.light, width: 5.w,
-                            //         color:
-                            //         theme.isDark
-                            //             ? Color(0xf0AC9D79)
-                            //             : AppColors.lightText,
-                            //       ),
-                            //       SizedBox(width: 2.w),
-                            //       Text(
-                            //         (_weathermodel?.temperature.round() == null)
-                            //             ? "loading.."
-                            //             : "${_weathermodel?.temperature.round()}°C",
-                            //         style: TextStyle(
-                            //           color: theme.isDark
-                            //               ? AppColors.creamTextColor
-                            //               : AppColors.lightText,
-                            //           fontFamily: AppConstants.manropeBold,
-                            //           fontSize: 15.sp,
-                            //         ),
-                            //       ),
-                            //
-                            //     ],
-                            //   ).paddingSymmetric(horizontal: 3.w),
-                            // ).paddingOnly(top: 2.h, left: 2.w),
-                          ],
-                        ),
+                        // Row(
+                        //   children: [
+                        //     Container(
+                        //       height: 4.h,
+                        //       decoration: BoxDecoration(
+                        //         color:
+                        //             theme.isDark
+                        //                 ? AppColors.darkPillColor
+                        //                 : AppColors.white,
+                        //         borderRadius: BorderRadius.circular(25),
+                        //
+                        //         border: Border.all(
+                        //           color:
+                        //               theme.isDark
+                        //                   ? AppColors.darkBorderColor
+                        //                   : AppColors.lightText.withValues(
+                        //                     alpha: 0.3,
+                        //                   ),
+                        //           width: 1,
+                        //         ),
+                        //         boxShadow:
+                        //             theme.isDark
+                        //                 ? []
+                        //                 : [
+                        //                   BoxShadow(
+                        //                     color: AppColors.lightText
+                        //                         .withValues(alpha: 0.15),
+                        //                     spreadRadius: 0,
+                        //                     blurRadius: 10,
+                        //                     offset: const Offset(0, 5),
+                        //                   ),
+                        //                 ],
+                        //       ),
+                        //       padding: const EdgeInsets.all(5),
+                        //       child: Row(
+                        //         children: [
+                        //           // Icon(
+                        //           //   Icons.apartment,
+                        //           //   color:
+                        //           //       theme.isDark
+                        //           //           ? Color(0xf0AC9D79)
+                        //           //           : AppColors.lightText,
+                        //           // ),
+                        //           SvgPicture.asset(
+                        //             AppConstants.aprtmentIcon,
+                        //             width: 10.w,
+                        //             color:
+                        //                 theme.isDark
+                        //                     ? const Color(0xf0AC9D79)
+                        //                     : AppColors.lightText,
+                        //           ),
+                        //
+                        //           SizedBox(width: 2.w),
+                        //           Text(
+                        //             capitalize(
+                        //               profileModel
+                        //                       ?.data
+                        //                       ?.buildingDocument
+                        //                       ?.buildingName ??
+                        //                   "N/A",
+                        //             ),
+                        //             style: TextStyle(
+                        //               color:
+                        //                   theme.isDark
+                        //                       ? const Color(0xf0BDBDBE)
+                        //                       : AppColors.lightText,
+                        //               fontFamily: AppConstants.manropeBold,
+                        //               fontSize: 14.sp,
+                        //             ),
+                        //           ),
+                        //         ],
+                        //       ).paddingSymmetric(horizontal: 3.w),
+                        //     ).paddingOnly(top: 2.h, left: 2.w, right: 2.w),
+                        //     Container(
+                        //       height: 4.h,
+                        //       decoration: BoxDecoration(
+                        //         color:
+                        //             theme.isDark
+                        //                 ? AppColors.darkPillColor
+                        //                 : AppColors.white,
+                        //         borderRadius: BorderRadius.circular(25),
+                        //         border: Border.all(
+                        //           color:
+                        //               theme.isDark
+                        //                   ? AppColors.darkBorderColor
+                        //                   : AppColors.lightText.withValues(
+                        //                     alpha: 0.3,
+                        //                   ),
+                        //           width: 1,
+                        //         ),
+                        //         boxShadow:
+                        //             theme.isDark
+                        //                 ? []
+                        //                 : [
+                        //                   BoxShadow(
+                        //                     color: AppColors.lightText
+                        //                         .withValues(alpha: 0.15),
+                        //                     blurRadius: 10,
+                        //                     offset: const Offset(0, 5),
+                        //                   ),
+                        //                 ],
+                        //       ),
+                        //       child: Row(
+                        //         children: [
+                        //           SvgPicture.asset(
+                        //             getWeatherSvg(_weathermodel?.mainCondition),
+                        //             width: getWeatherIconSize(
+                        //               _weathermodel?.mainCondition,
+                        //             ),
+                        //             colorFilter: ColorFilter.mode(
+                        //               theme.isDark
+                        //                   ? const Color(0xffAC9D79)
+                        //                   : AppColors.lightText,
+                        //               BlendMode.srcIn,
+                        //             ),
+                        //           ),
+                        //
+                        //           SizedBox(width: 2.w),
+                        //
+                        //           /// 🌡 Temperature
+                        //           Text(
+                        //             _weathermodel == null
+                        //                 ? "loading.."
+                        //                 : "${_weathermodel!.temperature.round()}°C",
+                        //             style: TextStyle(
+                        //               color:
+                        //                   theme.isDark
+                        //                       ? const Color(0xf0BDBDBE)
+                        //                       : AppColors.lightText,
+                        //               fontFamily: AppConstants.manropeBold,
+                        //               fontSize: 14.sp,
+                        //             ),
+                        //           ),
+                        //         ],
+                        //       ).paddingSymmetric(horizontal: 3.w),
+                        //     ).paddingOnly(top: 2.h, left: 2.w),
+                        //
+                        //     // Container(
+                        //     //   height: 4.h,
+                        //     //   decoration: BoxDecoration(
+                        //     //     color:
+                        //     //         theme.isDark
+                        //     //             ? AppColors.darkPillColor
+                        //     //             : AppColors.white,
+                        //     //     borderRadius: BorderRadius.circular(25),
+                        //     //     border: Border.all(
+                        //     //       color:
+                        //     //           theme.isDark
+                        //     //               ? AppColors.darkBorderColor
+                        //     //               : AppColors.lightText.withValues(
+                        //     //                 alpha: 0.3,
+                        //     //               ),
+                        //     //       width: 1,
+                        //     //     ),
+                        //     //     boxShadow:
+                        //     //         theme.isDark
+                        //     //             ? []
+                        //     //             : [
+                        //     //               BoxShadow(
+                        //     //                 color: AppColors.lightText
+                        //     //                     .withValues(alpha: 0.15),
+                        //     //                 spreadRadius: 0,
+                        //     //                 blurRadius: 10,
+                        //     //                 offset: Offset(0, 5),
+                        //     //               ),
+                        //     //             ],
+                        //     //   ),
+                        //     //   child: Row(
+                        //     //     children: [
+                        //     //
+                        //     //       SvgPicture.asset(AppConstants.light, width: 5.w,
+                        //     //         color:
+                        //     //         theme.isDark
+                        //     //             ? Color(0xf0AC9D79)
+                        //     //             : AppColors.lightText,
+                        //     //       ),
+                        //     //       SizedBox(width: 2.w),
+                        //     //       Text(
+                        //     //         (_weathermodel?.temperature.round() == null)
+                        //     //             ? "loading.."
+                        //     //             : "${_weathermodel?.temperature.round()}°C",
+                        //     //         style: TextStyle(
+                        //     //           color: theme.isDark
+                        //     //               ? AppColors.creamTextColor
+                        //     //               : AppColors.lightText,
+                        //     //           fontFamily: AppConstants.manropeBold,
+                        //     //           fontSize: 15.sp,
+                        //     //         ),
+                        //     //       ),
+                        //     //
+                        //     //     ],
+                        //     //   ).paddingSymmetric(horizontal: 3.w),
+                        //     // ).paddingOnly(top: 2.h, left: 2.w),
+                        //   ],
+                        // ),
                         parcelCount == 0
                             ? const SizedBox.shrink()
                             : Container(
@@ -801,21 +804,21 @@ class _HomePageState extends State<HomePage>
     // --- Data Logic (My Home Grid) ---
     final List<Map<String, dynamic>> homeServices = [
       {
-        "title": "Building",
-        "subtitle": "Info & docs",
-        "icon": AppConstants.aprtmentIcon,
-        "screen": MyBuilding_Screen(id: loginModel?.data?.user?.id ?? 0),
+        "title": "Event",
+        "subtitle": "Event Detail",
+        "icon": AppConstants.celebration,
+        "screen": ViewEventDetailsScreen(),
       },
       {
-        "title": "Maintenance",
-        "subtitle": "Submit request",
-        "icon": AppConstants.maintainIcon,
+        "title": "Accommodation",
+        "subtitle": "Maintenance request",
+        "icon": AppConstants.accommodation,
         "screen": const MaintenanceScreen(),
       },
       {
-        "title": "Amenities",
-        "subtitle": "Gym, pool & more",
-        "icon": AppConstants.amenityIcon,
+        "title": "Contracts",
+        "subtitle": "Amenities access",
+        "icon": AppConstants.contracts,
         "screen": const BookAmenities_Screen(),
       },
       {
@@ -1299,7 +1302,7 @@ class _HomePageState extends State<HomePage>
               Row(
                 children: [
                   Text(
-                    "My Home",
+                    "My Event",
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
@@ -1320,7 +1323,7 @@ class _HomePageState extends State<HomePage>
               ),
               SizedBox(height: 0.5.h),
               Text(
-                "Building services & bookings",
+                "Explore events & manage bookings",
                 style: TextStyle(
                   fontSize: 14.5.sp,
                   color: subTextColor,
@@ -1595,19 +1598,19 @@ class _HomePageState extends State<HomePage>
           ),
           _buildQuickAccessBtn(
             theme: theme,
-            label: "Visitors",
+            label: "Accommodation",
             iconPath: AppConstants.visitorHomeIcon,
             count: visitorCount,
 
-            onTap: () => Get.to(const VisitorScreen()),
+            onTap: () => Get.to( ViewAccommodation()),
           ),
           _buildQuickAccessBtn(
             theme: theme,
-            label: "Parcels",
+            label: "Contracts",
             iconPath: AppConstants.parcel,
             count: parcelCount,
 
-            onTap: () => Get.to(const ParcelScreen()),
+            onTap: () => Get.to( ViewContracts()),
           ),
         ],
       ),
@@ -2772,23 +2775,23 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  final _weatherService = WeatherService(AppConstants.weatherApi);
-  WeatherModel? _weathermodel;
-
-  _fetchWeather() async {
-    String cityName = await _weatherService.getCurrentCity();
-
-    try {
-      final weather = await _weatherService.getWeather(cityName);
-
-      setState(() {
-        _weathermodel = weather;
-      });
-    } catch (e, stackTrace) {
-      print(e);
-      print("ERror $stackTrace");
-    }
-  }
+  // final _weatherService = WeatherService(AppConstants.weatherApi);
+  // WeatherModel? _weathermodel;
+  //
+  // _fetchWeather() async {
+  //   String cityName = await _weatherService.getCurrentCity();
+  //
+  //   try {
+  //     final weather = await _weatherService.getWeather(cityName);
+  //
+  //     setState(() {
+  //       _weathermodel = weather;
+  //     });
+  //   } catch (e, stackTrace) {
+  //     print(e);
+  //     print("ERror $stackTrace");
+  //   }
+  // }
 
   String getWeatherSvg(String? condition) {
     if (condition == null) return AppConstants.weatherCloudy;
