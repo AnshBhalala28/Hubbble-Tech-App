@@ -31,6 +31,7 @@ import 'package:wavee/ui/home_screen/modal/parcelShowCount.dart';
 import 'package:wavee/ui/home_screen/modal/visitorShowCountModel.dart';
 import 'package:wavee/ui/maintenance/view/maintenanceView.dart';
 import 'package:wavee/ui/message_board/modal/Localpost_model.dart';
+import 'package:wavee/ui/my_meetings/view/myMeetingScreen.dart';
 import 'package:wavee/ui/parcel/view/parcelViewScreen.dart';
 import 'package:wavee/ui/view_profile/modal/profile_model.dart';
 import 'package:wavee/ui/view_profile/view/viewProfile.dart';
@@ -813,21 +814,19 @@ class _HomePageState extends State<HomePage>
         "title": "Accommodation",
         "subtitle": "Maintenance request",
         "icon": AppConstants.accommodation,
-        "screen": const MaintenanceScreen(),
+        "screen": ViewAccommodation(),
       },
       {
         "title": "Contracts",
         "subtitle": "Amenities access",
         "icon": AppConstants.contracts,
-        "screen": const BookAmenities_Screen(),
+        "screen": const ViewContracts(),
       },
       {
-        "title": "My Bookings",
-        "subtitle": "View schedule",
+        "title": "My Meetings",
+        "subtitle": "View meetings",
         "icon": AppConstants.calendrIcon,
-        "screen": BookingScreen(
-          id: loginModel?.data?.user?.id.toString() ?? "",
-        ),
+        "screen": MyMeetingsScreen(),
       },
     ];
 
