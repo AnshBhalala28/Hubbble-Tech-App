@@ -96,7 +96,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                 SizedBox(height: 4.h),
                 TitleBar(
                   back: () => Get.to(HomePage(userName: "", selected: 1)),
-                  title: 'Amenities',
+                  title: 'Event Space',
                   drawerCallback: () {},
                 ),
                 SizedBox(height: 3.h),
@@ -109,7 +109,7 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                       noItemsFoundIndicatorBuilder:
                           (_) => Center(
                         child: Text(
-                          "No Amenities Available",
+                          "No Event Space Available",
                           style: TextStyle(
                             fontSize: 17.sp,
                             fontWeight: FontWeight.bold,
@@ -239,6 +239,10 @@ class _BookAmenities_ScreenState extends State<BookAmenities_Screen> {
                                         ),
                                       ),
                                     ),
+
+                                    SizedBox(height: 1.5.h),
+
+
                                     const Spacer(),
                                     Padding(
                                       padding: EdgeInsets.only(

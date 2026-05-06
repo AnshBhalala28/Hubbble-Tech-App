@@ -822,10 +822,10 @@ class _HomePageState extends State<HomePage>
         "screen": ViewAccommodation(),
       },
       {
-        "title": "Contracts",
+        "title": "Event Space",
         "subtitle": "Amenities access",
         "icon": AppConstants.contracts,
-        "screen": const ViewContracts(),
+        "screen":  BookAmenities_Screen(),
       },
       {
         "title": "My Meetings",
@@ -867,7 +867,7 @@ class _HomePageState extends State<HomePage>
         "title": "Profile",
         "subtitle": "Your details",
         "icon": AppConstants.personIcon,
-        "screen": GroomBrideProfile(),
+        "screen": ViewProfile(id: 0),
       },
       {
         "title": "Security",
