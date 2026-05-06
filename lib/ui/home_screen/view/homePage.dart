@@ -23,8 +23,10 @@ import 'package:wavee/ui/booking/view/bookAmenities.dart';
 import 'package:wavee/ui/booking/view/bookingScreen.dart';
 import 'package:wavee/ui/community_screen/view/communityScreen.dart';
 import 'package:wavee/ui/contracts/view/viewContracts.dart';
+import 'package:wavee/ui/delivery/view/deliverScreen.dart';
 import 'package:wavee/ui/event/view/eventScreen.dart';
 import 'package:wavee/ui/event_details/view/viewEventDetailsScreen.dart';
+import 'package:wavee/ui/groombrideprofile/view/groomBrideProfile.dart';
 import 'package:wavee/ui/home_screen/modal/chatShowCountModal.dart';
 import 'package:wavee/ui/home_screen/modal/messageBoardModal.dart';
 import 'package:wavee/ui/home_screen/modal/parcelShowCount.dart';
@@ -33,7 +35,10 @@ import 'package:wavee/ui/maintenance/view/maintenanceView.dart';
 import 'package:wavee/ui/message_board/modal/Localpost_model.dart';
 import 'package:wavee/ui/my_meetings/view/myMeetingScreen.dart';
 import 'package:wavee/ui/parcel/view/parcelViewScreen.dart';
+import 'package:wavee/ui/venue/view/venueDetalis.dart';
+import 'package:wavee/ui/venue/view/venueProfile.dart';
 import 'package:wavee/ui/view_profile/modal/profile_model.dart';
+import 'package:wavee/ui/view_profile/view/myProfileScreen.dart';
 import 'package:wavee/ui/view_profile/view/viewProfile.dart';
 import 'package:wavee/ui/visitor/view/visitorsScreen.dart';
 import 'package:wavee/ui/authentication/modal/login_model.dart';
@@ -862,7 +867,7 @@ class _HomePageState extends State<HomePage>
         "title": "Profile",
         "subtitle": "Your details",
         "icon": AppConstants.personIcon,
-        "screen": ViewProfile(id: loginModel?.data?.user?.id),
+        "screen": GroomBrideProfile(),
       },
       {
         "title": "Security",
@@ -1597,19 +1602,17 @@ class _HomePageState extends State<HomePage>
           ),
           _buildQuickAccessBtn(
             theme: theme,
-            label: "Accommodation",
+            label: "Venue",
             iconPath: AppConstants.visitorHomeIcon,
             count: visitorCount,
-
-            onTap: () => Get.to( ViewAccommodation()),
+            onTap: () => Get.to( VenueProfileScreen()),
           ),
           _buildQuickAccessBtn(
             theme: theme,
-            label: "Contracts",
+            label: "Deliver/Collections",
             iconPath: AppConstants.parcel,
             count: parcelCount,
-
-            onTap: () => Get.to( ViewContracts()),
+            onTap: () => Get.to( DeliverScreen()),
           ),
         ],
       ),

@@ -199,6 +199,8 @@ class AppConstants {
   static String celebration = "assets/Svg/celebration.svg";
   static String contracts = "assets/Svg/contracts.svg";
   static String accommodation = "assets/Svg/accommodation.svg";
+  static String rupee = "assets/Svg/rupee.svg";
+  static String phone = "assets/Svg/phone.svg";
 }
 
 /// ============================================================
