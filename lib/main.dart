@@ -15,6 +15,7 @@ import 'package:wavee/services/themeServices.dart';
 import 'package:wavee/ui/init_screens/view/welcomeScreen.dart';
 import 'firebase_options.dart';
 import 'ui/authentication/modal/login_model.dart';
+import 'ui/suppliers/view/suppliersView.dart';
 import 'utils/chatCounter.dart';
 import 'utils/colors.dart';
 import 'utils/storeUserData.dart';
@@ -178,7 +179,7 @@ class _MyAppState extends State<MyApp> {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: theme.isDark ? ThemeMode.dark : ThemeMode.light,
-          home: const WelcomeScreen(),
+          home:  WelcomeScreen(),
         );
       },
     );

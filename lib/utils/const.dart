@@ -164,7 +164,7 @@ class AppConstants {
   static const String bottomOne = "assets/bottomSvgs/bottom-one.svg";
   static const String bottomTwo = "assets/bottomSvgs/bottom-two.svg";
   static const String bottomThree = "assets/bottomSvgs/bottom-three.svg";
-  static const String bottomFour = "assets/bottomSvgs/bottom-four.svg";
+  static const String bottomFour = "assets/bottomSvgs/bottom-four1.svg";
   static const String spotlightIcon = "assets/bottomSvgs/spotlight.svg";
   static const String chatHomeIcon = "assets/bottomSvgs/chatHome.svg";
   static const String aprtmentIcon = "assets/bottomSvgs/aprtment.svg";

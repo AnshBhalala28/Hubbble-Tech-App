@@ -7,6 +7,7 @@ import 'package:sizer/sizer.dart';
 import 'package:wavee/services/themeServices.dart'; // Import your ThemeController
 import 'package:wavee/ui/cart_screen/view/cartViewScreen.dart';
 import 'package:wavee/ui/chat_screen/view/chatScreen.dart';
+import 'package:wavee/ui/suppliers/view/suppliersView.dart';
 import '../ui/community_screen/view/communityScreen.dart';
 import '../ui/home_screen/view/homePage.dart';
 import 'colors.dart';
@@ -154,10 +155,9 @@ class _BottomBarState extends State<BottomBar> {
             ),
             onTap:
                 () => _navigateToScreen(
-                  AddToCartView(
+                  SuppliersView(
                     selected: 4,
-                    fromBottomBar: true,
-                    isAmend: false,
+
                   ),
                 ),
           ),

@@ -297,12 +297,12 @@ class _AddToCartViewState extends State<AddToCartView> {
             ),
           ],
         ).paddingSymmetric(horizontal: 3.w),
-        bottomNavigationBar: Obx(
-          () => BottomBar(
-            selected: 4,
-            chatCount: countsController.chatCount.value,
-          ),
-        ),
+        // bottomNavigationBar: Obx(
+        //   () => BottomBar(
+        //     selected: 4,
+        //     chatCount: countsController.chatCount.value,
+        //   ),
+        // ),
       ),
     );
   }
